@@ -10,8 +10,8 @@ namespace Dragoon_Modifier {
             writeMemory("0x" + (address + Constants.OFFSET).ToString("x8"), type, write, file = "");
         }
 
-        public void WriteByte(long address, byte write, string file = "") {
-            writeMemory("0x" + (address + Constants.OFFSET).ToString("x8"), "byte", write.ToString(), file = "");
+        public void WriteByte(long address, int write, string file = "") {
+            writeMemory("0x" + (address + Constants.OFFSET).ToString("x8"), "byte", write.ToString("X"), file = "");
         }
 
         public void WriteShort(long address, ushort write, string file = "") {
@@ -27,7 +27,7 @@ namespace Dragoon_Modifier {
         }
 
         public ushort ReadShort(long address, string file = "") {
-            return (ushort)read2Byte("0x" + (address + Constants.OFFSET).ToString("x8"), file);
+            return (ushort) read2Byte("0x" + (address + Constants.OFFSET).ToString("x8"), file);
         }
 
         public int ReadInteger(long address, string file = "") {
@@ -79,7 +79,7 @@ namespace Dragoon_Modifier {
         }
 
         public bool WriteByteU(long address, byte write, string file = "") {
-            return writeMemory("0x" + address.ToString("x8"), "byte", write.ToString(), file = "");
+            return writeMemory("0x" + address.ToString("x8"), "byte", write.ToString("X"), file = "");
         }
 
         public bool WriteShortU(long address, ushort write, string file = "") {

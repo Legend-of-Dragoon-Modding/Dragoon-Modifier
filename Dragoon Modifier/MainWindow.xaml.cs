@@ -53,8 +53,8 @@ namespace Dragoon_Modifier {
                         mi.IsChecked = miSaveSlot.Items.IndexOf(mi) == slot ? true : false;
                 }
 
-                if (Constants.KEY.GetValue("Emulator") != null) {
-                    int slot = (int) Constants.KEY.GetValue("Emulator");
+                if (Constants.KEY.GetValue("EmulatorType") != null) {
+                    int slot = (int) Constants.KEY.GetValue("EmulatorType");
                     Constants.EMULATOR = (byte) slot;
 
                     if (Constants.EMULATOR == 8) {
@@ -641,7 +641,7 @@ namespace Dragoon_Modifier {
 
             Constants.KEY.SetValue("Save Slot", Constants.SAVE_SLOT);
             if (Constants.EMULATOR != 255)
-                Constants.KEY.SetValue("Emulator", (int) Constants.EMULATOR);
+                Constants.KEY.SetValue("EmulatorType", (int) Constants.EMULATOR);
             Constants.KEY.SetValue("Region", (int) Constants.REGION);
             Constants.KEY.SetValue("LoadPreset", miOpenPreset.IsChecked);
             if (miOpenPreset.IsChecked)
