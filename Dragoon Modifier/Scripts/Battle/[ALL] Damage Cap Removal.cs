@@ -1,4 +1,8 @@
-//Author: Zychronix
+/*
+ Author: Zychronix
+ Description: Scans for damage cap in battle and changes it to 50000.
+ Notes: Any cap higher than 50000 seems unstable.
+*/
 using Dragoon_Modifier;
 using System;
 using System.Collections;

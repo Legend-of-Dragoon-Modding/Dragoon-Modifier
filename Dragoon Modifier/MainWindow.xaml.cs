@@ -171,7 +171,7 @@ namespace Dragoon_Modifier {
             SubScript script = (SubScript) lst.SelectedItem;
             if (script.state != ScriptState.DISABLED) {
                 Constants.WriteOutput("Opening script '" + script.ToString() + "'...");
-                if (script.Open(emulator) == 0) {
+                if (script.Click(emulator) == 0) {
                     Constants.WriteOutput("Script failed.");
                 }
             } else {
@@ -300,6 +300,7 @@ namespace Dragoon_Modifier {
                 fieldThread.Start();
                 battleThread.Start();
                 hotkeyThread.Start();
+                otherThread.Start();
                 Constants.WriteOutput("Program opened.");
             } else {
                 Constants.WriteOutput("Program failed to open. Please open " + Constants.EMULATOR_NAME + " then press attach.");
