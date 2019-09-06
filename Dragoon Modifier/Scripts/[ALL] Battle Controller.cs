@@ -46,7 +46,7 @@ public class BattleController {
 	}
 	
 	public static int GetOffset() {
-		int[] discOffset = {0xDB0, 0x0, 0x1458, 0x1B0};
+		int[] discOffset = {0xD80, 0x0, 0x1458, 0x1B0};
 		int[] charOffset = {0x0, 0x180, -0x180, 0x420, 0x540, 0x180, 0x350, 0x2F0, -0x180};
 		int partyOffset = 0;
 		if (Globals.PARTY_SLOT[0] < 9 && Globals.PARTY_SLOT[1] < 9 && Globals.PARTY_SLOT[2] < 9) {
