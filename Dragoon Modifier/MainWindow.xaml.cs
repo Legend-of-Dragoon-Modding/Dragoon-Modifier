@@ -91,7 +91,7 @@ namespace Dragoon_Modifier {
                 }
 
                 if (Constants.EMULATOR != 255) {
-                    miAttach_Click(null, null);
+                    SetupEmulator();
                 } else {
                     Constants.WriteOutput("Please pick an emulator to use in the settings menu.");
                 }
