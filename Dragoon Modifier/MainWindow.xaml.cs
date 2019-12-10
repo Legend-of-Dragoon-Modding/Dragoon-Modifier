@@ -11,7 +11,7 @@ using System.Linq;
 using System.Collections;
 
 namespace Dragoon_Modifier {
-    public partial class MainWindow : Window {
+    public partial class MainWindow {
 
         public static Emulator emulator = new Emulator();
         public Thread fieldThread, battleThread, hotkeyThread, otherThread;
@@ -181,7 +181,7 @@ namespace Dragoon_Modifier {
 
         public void ChangeTitle(string preset) {
             this.preset = preset;
-            this.Title = "Dragoon Modifier 3.0 (" + preset + ")";
+            this.Title = " Dragoon Modifier " + Constants.VERSION + " (" + preset + ")";
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
@@ -215,9 +215,9 @@ namespace Dragoon_Modifier {
                     if (script.state == ScriptState.DISABLED && index >= 2)
                         continue;
                     currentScript = script.ToString();
-                    this.Dispatcher.BeginInvoke(new Action(() => {
+                    //this.Dispatcher.BeginInvoke(new Action(() => {
                         run = script.Run(emulator);
-                    }), DispatcherPriority.ContextIdle);
+                    //}), DispatcherPriority.ContextIdle);
                 }
                 Thread.Sleep(500);
             }
@@ -233,9 +233,9 @@ namespace Dragoon_Modifier {
                     if (script.state == ScriptState.DISABLED && index >= 2)
                         continue;
                     currentScript = script.ToString();
-                    this.Dispatcher.BeginInvoke(new Action(() => {
+                    //this.Dispatcher.BeginInvoke(new Action(() => {
                         run = script.Run(emulator);
-                    }), DispatcherPriority.ContextIdle);
+                    //}), DispatcherPriority.ContextIdle);
                 }
                 Thread.Sleep(250);
             }
@@ -249,9 +249,9 @@ namespace Dragoon_Modifier {
                     if (script.state == ScriptState.DISABLED)
                         continue;
                     currentScript = script.ToString();
-                    this.Dispatcher.BeginInvoke(new Action(() => {
+                    //this.Dispatcher.BeginInvoke(new Action(() => {
                         run = script.Run(emulator);
-                    }), DispatcherPriority.ContextIdle);
+                    //}), DispatcherPriority.ContextIdle);
                 }
                 Thread.Sleep(1000);
             }
@@ -265,9 +265,9 @@ namespace Dragoon_Modifier {
                     if (script.state == ScriptState.DISABLED)
                         continue;
                     currentScript = script.ToString();
-                    this.Dispatcher.BeginInvoke(new Action(() => {
+                    //this.Dispatcher.BeginInvoke(new Action(() => {
                         run = script.Run(emulator);
-                    }), DispatcherPriority.ContextIdle);
+                    //}), DispatcherPriority.ContextIdle);
                 }
                 Thread.Sleep(1000);
             }

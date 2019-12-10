@@ -2,10 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace Dragoon_Modifier {
     public class Constants {
+        public static string VERSION = "3.0";
         public static bool RUN = true;
         public static bool DEBUG_MODE = true;
         public static TextBox CONSOLE;
@@ -74,27 +77,31 @@ namespace Dragoon_Modifier {
         }
 
         public static void WriteOutput(string text) {
-            if (CONSOLE.LineCount == 1 || CONSOLE.LineCount > 2000) {
-                CONSOLE.Text = "-----LOGCUT-----\r\n" + text;
-            } else {
-                CONSOLE.AppendText("\r\n" + text);
-            }
-            if (!CONSOLE.IsFocused) {
-                CONSOLE.ScrollToEnd();
-            }
-        }
-
-        public static void WriteDebug(string text) {
-            if (DEBUG_MODE) {
+            Application.Current.Dispatcher.Invoke(() => {
                 if (CONSOLE.LineCount == 1 || CONSOLE.LineCount > 2000) {
-                    CONSOLE.Text = "-----LOGCUT-----\r\n[DEBUG] " + text;
+                    CONSOLE.Text = "-----LOGCUT-----\r\n" + text;
                 } else {
-                    CONSOLE.AppendText("\r\n[DEBUG] " + text);
+                    CONSOLE.AppendText("\r\n" + text);
                 }
                 if (!CONSOLE.IsFocused) {
                     CONSOLE.ScrollToEnd();
                 }
-            }
+            });
+        }
+
+        public static void WriteDebug(string text) {
+            Application.Current.Dispatcher.Invoke(() => {
+                if (DEBUG_MODE) {
+                    if (CONSOLE.LineCount == 1 || CONSOLE.LineCount > 2000) {
+                        CONSOLE.Text = "-----LOGCUT-----\r\n[DEBUG] " + text;
+                    } else {
+                        CONSOLE.AppendText("\r\n[DEBUG] " + text);
+                    }
+                    if (!CONSOLE.IsFocused) {
+                        CONSOLE.ScrollToEnd();
+                    }
+                }
+            });
         }
 
         public static int GetAddress(string text) {
