@@ -12,6 +12,7 @@ using System.Windows.Controls;
 
 namespace Dragoon_Modifier {
     public partial class MainWindow {
+        #region Variables
         public static Emulator emulator = new Emulator();
         public Thread fieldThread, battleThread, hotkeyThread, otherThread;
         public string preset = "";
@@ -19,7 +20,9 @@ namespace Dragoon_Modifier {
 
         public TextBlock[,] monsterDisplay = new TextBlock[5,6];
         public TextBlock[,] characterDisplay = new TextBlock[3,9];
+        #endregion
 
+        #region Startup
         public MainWindow() {
             try {
                 InitializeComponent();
@@ -270,7 +273,9 @@ namespace Dragoon_Modifier {
                 } catch (Exception e) { }
             }
         }
+        #endregion
 
+        #region Threads
         public void FieldController() {
             string currentScript = "";
             int run = 1;
@@ -344,25 +349,10 @@ namespace Dragoon_Modifier {
                 Thread.Sleep(1000);
             }
         }
+        #endregion
 
-        private void ChangeScriptState(string type, SubScript script) {
-            try {
-                if (script.state != ScriptState.LOCKED) {
-                    script.state = script.state == ScriptState.DISABLED ? ScriptState.ENABLED : ScriptState.DISABLED;
-                    Constants.WriteOutput("Script '" + script.ToString() + "' is now " + (script.state == ScriptState.DISABLED ? "disabled." : "enabled."));
-                    if (script.state == ScriptState.ENABLED) {
-                        script.Open(emulator);
-                    } else {
-                        script.Close(emulator);
-                    }
-                } else {
-                    Constants.WriteOutput("The script '" + script.ToString() + "' is locked and can't be disabled.");
-                }
-            } catch (Exception ex) {
-                Constants.WriteOutput("Please select a " + type + " script.");
-            }
-        }
-
+        #region Scripts
+        #region Battle Stats Display
         public void FieldUI() {
             lblEncounter.Text = "Encounter Value: " + Globals.BATTLE_VALUE;
             lblEnemyID.Text = "Enemy ID: " + Globals.ENCOUNTER_ID;
@@ -409,6 +399,73 @@ namespace Dragoon_Modifier {
                     }
                     lblTurnOrder.Text = "Turn Order: ";
                 }
+            }
+        }
+
+        public void TurnOrder() {
+            try {
+                object[,] battleTurns = new object[9, 3];
+                int lastNumber = 0;
+                object temp1;
+                object temp2;
+                string turnLabel = "";
+                for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
+                    if (emulator.ReadShort(Globals.M_POINT - (i * 0x388)) > 0) {
+                        battleTurns[lastNumber, 0] = monsterDisplay[i, 0].Text;
+                        battleTurns[lastNumber, 1] = emulator.ReadShort(Globals.M_POINT - (i * 0x388) + 0x44);
+                        lastNumber += 1;
+                    }
+                }
+                for (int i = 0; i < 3; i++) {
+                    if (Globals.PARTY_SLOT[i] < 9) {
+                        if (emulator.ReadShort(Globals.C_POINT - (i * 0x388)) > 0) {
+                            battleTurns[lastNumber, 0] = characterDisplay[i, 0].Text;
+                            battleTurns[lastNumber, 1] = emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x44);
+                            lastNumber += 1;
+                        }
+                    }
+                }
+                for (int i = lastNumber - 1; i >= 0; i--) {
+                    for (int x = 0; x < i; x++) {
+                        if (Convert.ToInt16(battleTurns[x, 1]) < Convert.ToInt16((battleTurns[x + 1, 1]))) {
+                            temp1 = battleTurns[x, 0];
+                            temp2 = battleTurns[x, 1];
+                            battleTurns[x, 0] = battleTurns[x + 1, 0];
+                            battleTurns[x, 1] = battleTurns[x + 1, 1];
+                            battleTurns[x + 1, 0] = temp1;
+                            battleTurns[x + 1, 1] = temp2;
+                        }
+                    }
+                }
+                for (int i = 0; i < lastNumber; i++) {
+                    turnLabel += battleTurns[i, 0] + "»";
+                }
+                if (lastNumber >= 0 && turnLabel.Length > 1) {
+                    lblTurnOrder.Text = "Turn Order: " + turnLabel.Substring(0, turnLabel.Length - 1);
+                } else {
+                    lblTurnOrder.Text = "Turn Order: ";
+                }
+            } catch (Exception e) { }
+        }
+        #endregion
+        #endregion
+
+        #region Settings
+        private void ChangeScriptState(string type, SubScript script) {
+            try {
+                if (script.state != ScriptState.LOCKED) {
+                    script.state = script.state == ScriptState.DISABLED ? ScriptState.ENABLED : ScriptState.DISABLED;
+                    Constants.WriteOutput("Script '" + script.ToString() + "' is now " + (script.state == ScriptState.DISABLED ? "disabled." : "enabled."));
+                    if (script.state == ScriptState.ENABLED) {
+                        script.Open(emulator);
+                    } else {
+                        script.Close(emulator);
+                    }
+                } else {
+                    Constants.WriteOutput("The script '" + script.ToString() + "' is locked and can't be disabled.");
+                }
+            } catch (Exception ex) {
+                Constants.WriteOutput("Please select a " + type + " script.");
             }
         }
 
@@ -756,11 +813,9 @@ namespace Dragoon_Modifier {
             Constants.WriteOutput("-------------");
             Constants.WriteOutput("Version 3.0 - Revision 1");
         }
+        #endregion
 
-        private void Window_Closed(object sender, EventArgs e) {
-            CloseEmulator();
-        }
-
+        #region UI
         public void GenericSwitchButton(object sender, EventArgs e) {
             Button test = (Button) sender;
             if (!dmScripts.ContainsKey(test.Name)) {
@@ -779,51 +834,11 @@ namespace Dragoon_Modifier {
                 sender.Background = new SolidColorBrush(Color.FromArgb(255, 168, 211, 255));
             }
         }
+        #endregion
 
-        public void TurnOrder() {
-            try {
-                object[,] battleTurns = new object[9, 3];
-                int lastNumber = 0;
-                object temp1;
-                object temp2;
-                string turnLabel = "";
-                for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                    if (emulator.ReadShort(Globals.M_POINT - (i * 0x388)) > 0) {
-                        battleTurns[lastNumber, 0] = monsterDisplay[i, 0].Text;
-                        battleTurns[lastNumber, 1] = emulator.ReadShort(Globals.M_POINT - (i * 0x388) + 0x44);
-                        lastNumber += 1;
-                    }
-                }
-                for (int i = 0; i < 3; i++) {
-                    if (Globals.PARTY_SLOT[i] < 9) {
-                        if (emulator.ReadShort(Globals.C_POINT - (i * 0x388)) > 0) {
-                            battleTurns[lastNumber, 0] = characterDisplay[i, 0].Text;
-                            battleTurns[lastNumber, 1] = emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x44);
-                            lastNumber += 1;
-                        }
-                    }
-                }
-                for (int i = lastNumber - 1; i >= 0; i--) {
-                    for (int x = 0; x < i; x++) {
-                        if (Convert.ToInt16(battleTurns[x, 1]) < Convert.ToInt16((battleTurns[x + 1, 1]))) {
-                            temp1 = battleTurns[x, 0];
-                            temp2 = battleTurns[x, 1];
-                            battleTurns[x, 0] = battleTurns[x + 1, 0];
-                            battleTurns[x, 1] = battleTurns[x + 1, 1];
-                            battleTurns[x + 1, 0] = temp1;
-                            battleTurns[x + 1, 1] = temp2;
-                        }
-                    }
-                }
-                for (int i = 0; i < lastNumber; i++) {
-                    turnLabel += battleTurns[i, 0] + "»";
-                }
-                if (lastNumber >= 0 && turnLabel.Length > 1) {
-                    lblTurnOrder.Text = "Turn Order: " + turnLabel.Substring(0, turnLabel.Length - 1);
-                } else {
-                    lblTurnOrder.Text = "Turn Order: ";
-                }
-            } catch (Exception e) {}
+        #region On Close
+        private void Window_Closed(object sender, EventArgs e) {
+            CloseEmulator();
         }
 
         public void CloseEmulator() {
@@ -838,5 +853,6 @@ namespace Dragoon_Modifier {
             if (miOpenPreset.IsChecked)
                 Constants.KEY.SetValue("Preset", preset);
         }
+        #endregion
     }
 }

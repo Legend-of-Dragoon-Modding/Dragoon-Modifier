@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Interop;
 
 namespace Dragoon_Modifier {
-    public partial class InputWindow : Window {
+    public partial class InputWindow {
         private const int GWL_STYLE = -16;
         private const int WS_SYSMENU = 0x80000;
         [DllImport("user32.dll", SetLastError = true)]

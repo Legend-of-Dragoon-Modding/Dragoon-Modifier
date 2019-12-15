@@ -1237,67 +1237,6 @@
                     <ListBox x:Name="lstUltimateShop" Grid.Row="4"/>
                 </Grid>
             </TabItem>
-            <TabItem x:Name="tabSettings" Header="Settings">
-                <Grid HorizontalAlignment="Stretch" Margin="0" Background="#FFB6B6B6" >
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="25*"/>
-                        <ColumnDefinition Width="50*"/>
-                        <ColumnDefinition Width="25*"/>
-                    </Grid.ColumnDefinitions>
-                    <DockPanel Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" Grid.RowSpan="10" HorizontalAlignment="Stretch" Margin="0">
-                        <Grid Margin="0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition Height="8*"/>
-                            </Grid.RowDefinitions>
-                            <TextBlock Grid.Row="0" Text="Credits" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            <Button x:Name="btnCredits1" Grid.Row="1" Content="Zychronix&#10;  Creator" FontFamily="/#Segoe WP Black" FontSize="12" Background="#FFFFA8A8" Foreground="White"/>
-                            <Button x:Name="btnCredits3" Grid.Row="2" Content=" Spyrokid&#10;BGM Killer" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="12"/>
-                            <Button x:Name="btnCredits4" Grid.Row="3" Content="     Lorc&#10;RPG Icons" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="12"/>
-                            <Button x:Name="btnCredits5" Grid.Row="4" Content="   VoodooDod&#10;RPG Icons Font" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="12"/>
-                            <Button x:Name="btnCredits6" Grid.Row="5" Content="          MahApps&#10;Metro Window Style" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="12"/>
-                            <Button x:Name="btnCredits7" Grid.Row="6" Content="  Xifanie/NoOneee&#10;Extended Inventory" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="12"/>
-                        </Grid>
-                    </DockPanel>
-                    <TextBlock Grid.Row="0" Text="Emulator" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <ComboBox x:Name="cboVersion" Grid.Row="0" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch"/>
-                    <TextBlock Grid.Row="1" Text="Sounds" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <ComboBox x:Name="cboSounds" Grid.Row="1" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch"/>
-                    <TextBlock Grid.Row="2" Text="Auto Kill BGM" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <ComboBox x:Name="cboBGM" Grid.Row="2" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch"/>
-                    <TextBlock Grid.Row="3" Text="Aspect Camera" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <ComboBox x:Name="cboCamera" Grid.Row="3" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch"/>
-                    <TextBlock Grid.Row="4" Text="Save Slot" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <ComboBox x:Name="cboSaveSlot" Grid.Row="4" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch"/>
-                    <TextBlock Grid.Row="5" Text="Hotkeys" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <ComboBox x:Name="cboHotkeys" Grid.Row="5" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch"/>
-                    <TextBlock Grid.Row="6" Text="Damage Cap" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <ComboBox x:Name="cboDamageCap" Grid.Row="6" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch"/>
-                    <TextBlock Grid.Row="7" Text="Camera Zoom" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblZoom" Grid.Row="7" Grid.Column="2" Text="100.00%" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Slider x:Name="sldZoom" Grid.Row="7" Grid.Column="1" VerticalAlignment="Center" Value="4096" Minimum="2048" Maximum="6144" TickFrequency="1" IsSnapToTickEnabled="True"/>
-                    <Button x:Name="btnBugList" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3" Content="Bug List" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                    <Button x:Name="btnClearSave" Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="3" Content="Delete Save Slot" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                </Grid>
-            </TabItem>
             <TabItem x:Name="tabHelp" Header="Help">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -1806,7 +1745,7 @@
                     <TextBlock x:Name="lbllSPHIM" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="SPHIM" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Grid>
             </TabItem>
-            <TabItem x:Name="tabScripts" Header="Scripts">
+            <TabItem x:Name="tabSettings" Header="Settings">
                 <Grid>
                     <DockPanel>
                         <Menu DockPanel.Dock="Top" Background="#FFB6B6B6">
