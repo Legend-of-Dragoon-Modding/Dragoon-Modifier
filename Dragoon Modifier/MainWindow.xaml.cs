@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
 using System.IO;
 using System.Threading;
 using System.Diagnostics;
@@ -9,6 +8,7 @@ using System.Windows.Media;
 using System.Collections.Generic;
 using System.Linq;
 using System.Collections;
+using System.Windows.Controls;
 
 namespace Dragoon_Modifier {
     public partial class MainWindow {
@@ -16,6 +16,10 @@ namespace Dragoon_Modifier {
         public static Emulator emulator = new Emulator();
         public Thread fieldThread, battleThread, hotkeyThread, otherThread;
         public string preset = "";
+        public static Dictionary<string, bool> dmScripts = new Dictionary<string, bool>();
+
+        public TextBlock[,] monsterDisplay = new TextBlock[5,6];
+        public TextBlock[,] characterDisplay = new TextBlock[3,9];
 
         public MainWindow() {
             try {
@@ -41,6 +45,7 @@ namespace Dragoon_Modifier {
                     lstOther.Items.Add(new SubScript(file));
 
                 Constants.Init();
+                InitUI();
 
                 if (Constants.KEY.GetValue("Save Slot") == null) {
                     foreach (MenuItem mi in miSaveSlot.Items)
@@ -100,6 +105,66 @@ namespace Dragoon_Modifier {
                 MessageBox.Show("Error loading Scripts folder.");
                 Application.Current.Shutdown();
             }
+        }
+
+        public void InitUI() {
+            monsterDisplay[0, 0] = lblEnemy1Name;
+            monsterDisplay[0, 1] = lblEnemy1HP;
+            monsterDisplay[0, 2] = lblEnemy1ATK;
+            monsterDisplay[0, 3] = lblEnemy1DEF;
+            monsterDisplay[0, 4] = lblEnemy1SPD;
+            monsterDisplay[0, 5] = lblEnemy1TRN;
+            monsterDisplay[1, 0] = lblEnemy2Name;
+            monsterDisplay[1, 1] = lblEnemy2HP;
+            monsterDisplay[1, 2] = lblEnemy2ATK;
+            monsterDisplay[1, 3] = lblEnemy2DEF;
+            monsterDisplay[1, 4] = lblEnemy2SPD;
+            monsterDisplay[1, 5] = lblEnemy2TRN;
+            monsterDisplay[2, 0] = lblEnemy3Name;
+            monsterDisplay[2, 1] = lblEnemy3HP;
+            monsterDisplay[2, 2] = lblEnemy3ATK;
+            monsterDisplay[2, 3] = lblEnemy3DEF;
+            monsterDisplay[2, 4] = lblEnemy3SPD;
+            monsterDisplay[2, 5] = lblEnemy3TRN;
+            monsterDisplay[3, 0] = lblEnemy4Name;
+            monsterDisplay[3, 1] = lblEnemy4HP;
+            monsterDisplay[3, 2] = lblEnemy4ATK;
+            monsterDisplay[3, 3] = lblEnemy4DEF;
+            monsterDisplay[3, 4] = lblEnemy4SPD;
+            monsterDisplay[3, 5] = lblEnemy4TRN;
+            monsterDisplay[4, 0] = lblEnemy5Name;
+            monsterDisplay[4, 1] = lblEnemy5HP;
+            monsterDisplay[4, 2] = lblEnemy5ATK;
+            monsterDisplay[4, 3] = lblEnemy5DEF;
+            monsterDisplay[4, 4] = lblEnemy5SPD;
+            monsterDisplay[4, 5] = lblEnemy5TRN;
+            characterDisplay[0,0] = lblCharacter1Name;
+            characterDisplay[0,1] = lblCharacter1HMP;
+            characterDisplay[0,2] = lblCharacter1ATK;
+            characterDisplay[0,3] = lblCharacter1DEF;
+            characterDisplay[0,4] = lblCharacter1VHIT;
+            characterDisplay[0,5] = lblCharacter1DATK;
+            characterDisplay[0,6] = lblCharacter1DDEF;
+            characterDisplay[0,7] = lblCharacter1SPD;
+            characterDisplay[0,8] = lblCharacter1TRN;
+            characterDisplay[1,0] = lblCharacter2Name;
+            characterDisplay[1,1] = lblCharacter2HMP;
+            characterDisplay[1,2] = lblCharacter2ATK;
+            characterDisplay[1,3] = lblCharacter2DEF;
+            characterDisplay[1,4] = lblCharacter2VHIT;
+            characterDisplay[1,5] = lblCharacter2DATK;
+            characterDisplay[1,6] = lblCharacter2DDEF;
+            characterDisplay[1,7] = lblCharacter2SPD;
+            characterDisplay[1,8] = lblCharacter2TRN;
+            characterDisplay[2,0] = lblCharacter3Name;
+            characterDisplay[2,1] = lblCharacter3HMP;
+            characterDisplay[2,2] = lblCharacter3ATK;
+            characterDisplay[2,3] = lblCharacter3DEF;
+            characterDisplay[2,4] = lblCharacter3VHIT;
+            characterDisplay[2,5] = lblCharacter3DATK;
+            characterDisplay[2,6] = lblCharacter3DDEF;
+            characterDisplay[2,7] = lblCharacter3SPD;
+            characterDisplay[2,8] = lblCharacter3TRN;
         }
 
         private void LoadPreset() {
@@ -215,11 +280,14 @@ namespace Dragoon_Modifier {
                     if (script.state == ScriptState.DISABLED && index >= 2)
                         continue;
                     currentScript = script.ToString();
-                    //this.Dispatcher.BeginInvoke(new Action(() => {
+                    this.Dispatcher.BeginInvoke(new Action(() => {
                         run = script.Run(emulator);
-                    //}), DispatcherPriority.ContextIdle);
+                    }), DispatcherPriority.ContextIdle);
                 }
                 Thread.Sleep(500);
+                this.Dispatcher.BeginInvoke(new Action(() => {
+                    FieldUI();
+                }), DispatcherPriority.ContextIdle);
             }
         }
 
@@ -233,11 +301,14 @@ namespace Dragoon_Modifier {
                     if (script.state == ScriptState.DISABLED && index >= 2)
                         continue;
                     currentScript = script.ToString();
-                    //this.Dispatcher.BeginInvoke(new Action(() => {
+                    this.Dispatcher.BeginInvoke(new Action(() => {
                         run = script.Run(emulator);
-                    //}), DispatcherPriority.ContextIdle);
+                    }), DispatcherPriority.ContextIdle);
                 }
                 Thread.Sleep(250);
+                this.Dispatcher.BeginInvoke(new Action(() => {
+                    BattleUI();
+                }), DispatcherPriority.ContextIdle);
             }
         }
 
@@ -249,9 +320,9 @@ namespace Dragoon_Modifier {
                     if (script.state == ScriptState.DISABLED)
                         continue;
                     currentScript = script.ToString();
-                    //this.Dispatcher.BeginInvoke(new Action(() => {
+                    this.Dispatcher.BeginInvoke(new Action(() => {
                         run = script.Run(emulator);
-                    //}), DispatcherPriority.ContextIdle);
+                    }), DispatcherPriority.ContextIdle);
                 }
                 Thread.Sleep(1000);
             }
@@ -265,9 +336,9 @@ namespace Dragoon_Modifier {
                     if (script.state == ScriptState.DISABLED)
                         continue;
                     currentScript = script.ToString();
-                    //this.Dispatcher.BeginInvoke(new Action(() => {
+                    this.Dispatcher.BeginInvoke(new Action(() => {
                         run = script.Run(emulator);
-                    //}), DispatcherPriority.ContextIdle);
+                    }), DispatcherPriority.ContextIdle);
                 }
                 Thread.Sleep(1000);
             }
@@ -291,19 +362,72 @@ namespace Dragoon_Modifier {
             }
         }
 
-        private void miAttach_Click(object sender, RoutedEventArgs e) {
-            int processID = emulator.getProcIDFromName(Constants.EMULATOR_NAME);
+        public void FieldUI() {
+            lblEncounter.Text = "Encounter Value: " + Globals.BATTLE_VALUE;
+            lblEnemyID.Text = "Enemy ID: " + Globals.ENCOUNTER_ID;
+            lblMapID.Text = "Map ID: " + Globals.MAP;
+        }
 
-            if (processID > 0) {
-                Constants.RUN = true;
-                emulator.OpenProcess(processID);
-                fieldThread.Start();
-                battleThread.Start();
-                hotkeyThread.Start();
-                otherThread.Start();
-                Constants.WriteOutput("Program opened.");
+        public void BattleUI() {
+            if (Globals.IN_BATTLE && Globals.STATS_CHANGED) {
+                Constants.BATTLE_UI = true;
+                for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
+                    monsterDisplay[i, 0].Text = emulator.ReadName(0xC69D0 + (0x2C * i));
+                    monsterDisplay[i, 1].Text = " " + emulator.ReadShort(Globals.M_POINT - (i * 0x388)) + "/" + emulator.ReadShort(Globals.M_POINT - (i * 0x388) + 0x8);
+                    monsterDisplay[i, 2].Text = " " + emulator.ReadShort(Globals.M_POINT - (i * 0x388) + 0x2C) + "/" + emulator.ReadShort(Globals.M_POINT - (i * 0x388) + 0x2E);
+                    monsterDisplay[i, 3].Text = " " + emulator.ReadShort(Globals.M_POINT - (i * 0x388) + 0x30) + "/" + emulator.ReadShort(Globals.M_POINT - (i * 0x388) + 0x32);
+                    monsterDisplay[i, 4].Text = " " + emulator.ReadShort(Globals.M_POINT - (i * 0x388) + 0x2A);
+                    monsterDisplay[i, 5].Text = " " + emulator.ReadShort(Globals.M_POINT - (i * 0x388) + 0x44);
+                }
+                for (int i = 0; i < 3; i++) {
+                    if (Globals.PARTY_SLOT[i] < 9) {
+                        characterDisplay[i, 0].Text = Constants.GetCharName(Globals.PARTY_SLOT[i]);
+                        characterDisplay[i, 1].Text = " " + emulator.ReadShort(Globals.C_POINT - (i * 0x388)) + "/" + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x8) + "\r\n\r\n " + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x4) + "/" + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0xA);
+                        characterDisplay[i, 2].Text = " " + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x2C) + "\r\n\r\n " + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x2E);
+                        characterDisplay[i, 3].Text = " " + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x30) + "\r\n\r\n " + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x32);
+                        characterDisplay[i, 4].Text = " " + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x34) + "/" + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x36) + "\r\n\r\n " + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x38) + "/" + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x3A);
+                        characterDisplay[i, 5].Text = " " + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0xA4) + "\r\n\r\n " + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0xA8);
+                        characterDisplay[i, 6].Text = " " + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0xA8) + "\r\n\r\n " + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0xAA);
+                        characterDisplay[i, 7].Text = " " + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x2A) + "\r\n\r\n " + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x2);
+                        characterDisplay[i, 8].Text = " " + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x44);
+                    }
+                }
+                TurnOrder();
             } else {
-                Constants.WriteOutput("Program failed to open. Please open " + Constants.EMULATOR_NAME + " then press attach.");
+                if (!Globals.IN_BATTLE && Constants.BATTLE_UI) {
+                    Constants.BATTLE_UI = false;
+                    for (int i = 0; i < 5; i++) {
+                        for (int x = 0; x < 6; x++) {
+                            monsterDisplay[i, x].Text = "";
+                        }
+                    }
+                    for (int i = 0; i < 3; i++) {
+                        for (int x = 0; x < 9; x++) {
+                            characterDisplay[i, x].Text = "";
+                        }
+                    }
+                    lblTurnOrder.Text = "Turn Order: ";
+                }
+            }
+        }
+
+        private void miAttach_Click(object sender, RoutedEventArgs e) {
+            if (!Constants.RUN) {
+                int processID = emulator.getProcIDFromName(Constants.EMULATOR_NAME);
+
+                if (processID > 0) {
+                    Constants.RUN = true;
+                    emulator.OpenProcess(processID);
+                    fieldThread.Start();
+                    battleThread.Start();
+                    hotkeyThread.Start();
+                    otherThread.Start();
+                    Constants.WriteOutput("Program opened.");
+                } else {
+                    Constants.WriteOutput("Program failed to open. Please open " + Constants.EMULATOR_NAME + " then press attach.");
+                }
+            } else {
+                Constants.WriteOutput("Program is already attached to " + Constants.EMULATOR_NAME + ".");
             }
         }
 
@@ -634,6 +758,71 @@ namespace Dragoon_Modifier {
 
         private void Window_Closed(object sender, EventArgs e) {
             CloseEmulator();
+        }
+
+        public void GenericSwitchButton(object sender, EventArgs e) {
+            Button test = (Button) sender;
+            if (!dmScripts.ContainsKey(test.Name)) {
+                dmScripts.Add(test.Name, false);
+            } else {
+                dmScripts[test.Name] = dmScripts[test.Name] ? false : true;
+            }
+
+            TurnOnOffButton(ref test);
+        }
+
+        public void TurnOnOffButton(ref Button sender) {
+            if (dmScripts[sender.Name]) {
+                sender.Background = new SolidColorBrush(Color.FromArgb(255, 255, 168, 168));
+            } else {
+                sender.Background = new SolidColorBrush(Color.FromArgb(255, 168, 211, 255));
+            }
+        }
+
+        public void TurnOrder() {
+            try {
+                object[,] battleTurns = new object[9, 3];
+                int lastNumber = 0;
+                object temp1;
+                object temp2;
+                string turnLabel = "";
+                for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
+                    if (emulator.ReadShort(Globals.M_POINT - (i * 0x388)) > 0) {
+                        battleTurns[lastNumber, 0] = monsterDisplay[i, 0].Text;
+                        battleTurns[lastNumber, 1] = emulator.ReadShort(Globals.M_POINT - (i * 0x388) + 0x44);
+                        lastNumber += 1;
+                    }
+                }
+                for (int i = 0; i < 3; i++) {
+                    if (Globals.PARTY_SLOT[i] < 9) {
+                        if (emulator.ReadShort(Globals.C_POINT - (i * 0x388)) > 0) {
+                            battleTurns[lastNumber, 0] = characterDisplay[i, 0].Text;
+                            battleTurns[lastNumber, 1] = emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x44);
+                            lastNumber += 1;
+                        }
+                    }
+                }
+                for (int i = lastNumber - 1; i >= 0; i--) {
+                    for (int x = 0; x < i; x++) {
+                        if (Convert.ToInt16(battleTurns[x, 1]) < Convert.ToInt16((battleTurns[x + 1, 1]))) {
+                            temp1 = battleTurns[x, 0];
+                            temp2 = battleTurns[x, 1];
+                            battleTurns[x, 0] = battleTurns[x + 1, 0];
+                            battleTurns[x, 1] = battleTurns[x + 1, 1];
+                            battleTurns[x + 1, 0] = temp1;
+                            battleTurns[x + 1, 1] = temp2;
+                        }
+                    }
+                }
+                for (int i = 0; i < lastNumber; i++) {
+                    turnLabel += battleTurns[i, 0] + "»";
+                }
+                if (lastNumber >= 0 && turnLabel.Length > 1) {
+                    lblTurnOrder.Text = "Turn Order: " + turnLabel.Substring(0, turnLabel.Length - 1);
+                } else {
+                    lblTurnOrder.Text = "Turn Order: ";
+                }
+            } catch (Exception e) {}
         }
 
         public void CloseEmulator() {

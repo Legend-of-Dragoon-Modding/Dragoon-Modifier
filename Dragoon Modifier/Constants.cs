@@ -11,6 +11,7 @@ namespace Dragoon_Modifier {
         public static string VERSION = "3.0";
         public static bool RUN = true;
         public static bool DEBUG_MODE = true;
+        public static bool BATTLE_UI = false;
         public static TextBox CONSOLE;
         public static long OFFSET = 0xA579A0;
         public static Region REGION = Region.USA;
@@ -113,5 +114,29 @@ namespace Dragoon_Modifier {
             WriteOutput("Emulator:  " + Constants.EMULATOR_NAME);
             WriteOutput("Save Slot: " + (Constants.SAVE_SLOT + 1));
         }
+
+        public static string GetCharName(byte partySlot) {
+            if (partySlot == 0) {
+                return "Dart";
+            } else if (partySlot == 1) {
+                return "Lavitz";
+            } else if (partySlot == 2) {
+                return "Shana";
+            } else if (partySlot == 3) {
+                return "Rose";
+            } else if (partySlot == 4) {
+                return "Haschel";
+            } else if (partySlot == 5) {
+                return "Albert";
+            } else if (partySlot == 6) {
+                return "Meru";
+            } else if (partySlot == 7) {
+                return "Kongol";
+            } else if (partySlot == 8) {
+                return "Miranda";
+            }
+            return "Null";
+        }
+
     }
 }

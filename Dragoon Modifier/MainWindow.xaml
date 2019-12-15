@@ -1016,23 +1016,23 @@
                             <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Text="*Green buttons do not have an inactive or active state. New Game+ only activates when it is detected." Foreground="White" FontFamily="/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Grid>
                     </DockPanel>
-                    <Button x:Name="btnSoloMode" Grid.Row="1" Grid.Column="0" Content="Solo Mode" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2"/>
-                    <Button x:Name="btnSaveAnywhere" Grid.Row="1" Grid.Column="2" Content="Save Anywhere" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                    <Button x:Name="btnEATB" Grid.Row="1" Grid.Column="3" Content="Extra Turn Battle" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                    <Button x:Name="btnNeverGuard" Grid.Row="2" Grid.Column="0" Content="Never Guard" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2"/>
-                    <Button x:Name="btnElementBomb" Grid.Row="2" Grid.Column="2" Content="Elemental Bomb" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                    <Button x:Name="btnHPNames" Grid.Row="2" Grid.Column="3" Content="Monster HPs as Names" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" />
-                    <Button x:Name="btnEnrage" Grid.Row="3" Grid.Column="0"  Content="Enrage" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2"/>
-                    <Button x:Name="btnDragoonChanges"  Grid.Row="3" Grid.Column="2"  Content="Dragoon Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                    <Button x:Name="btnShopChanges" Grid.Row="3" Grid.Column="3"  Content="Shop Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                    <Button x:Name="btnAdditionChanges" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Content="Addition Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                    <Button x:Name="btnHalfSP" Grid.Row="4" Grid.Column="2" Content="Half SP Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                    <Button x:Name="btnRemoveCaps" Grid.Row="4" Grid.Column="3" Content="Remove Damage Caps" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                    <Button x:Name="btnIconChanges" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Content="Icon Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                    <Button x:Name="btnEquipChanges" Grid.Row="5" Grid.Column="2" Content="Equip Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                    <Button x:Name="btnDropChanges" Grid.Row="5" Grid.Column="3" Content="Drop Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                    <Button x:Name="btnHPCapBreak" Grid.Row="6" Grid.Column="2" Content="Break 9999 HP Cap" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                    <Button x:Name="btnSoulEater" Grid.Row="6" Grid.Column="3" Content="No HP Decay Soul Eater" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
+                    <Button x:Name="btnSoloMode" Grid.Row="1" Grid.Column="0" Content="Solo Mode" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2" Click="GenericSwitchButton"/>
+                    <Button x:Name="btnSaveAnywhere" Grid.Row="1" Grid.Column="2" Content="Save Anywhere" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
+                    <Button x:Name="btnEATB" Grid.Row="1" Grid.Column="3" Content="Extra Turn Battle" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
+                    <Button x:Name="btnNeverGuard" Grid.Row="2" Grid.Column="0" Content="Never Guard" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2" Click="GenericSwitchButton"/>
+                    <Button x:Name="btnElementBomb" Grid.Row="2" Grid.Column="2" Content="Elemental Bomb" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
+                    <Button x:Name="btnHPNames" Grid.Row="2" Grid.Column="3" Content="Monster HPs as Names" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
+                    <Button x:Name="btnEnrage" Grid.Row="3" Grid.Column="0"  Content="Enrage" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2" Click="GenericSwitchButton"/>
+                    <Button x:Name="btnDragoonChanges"  Grid.Row="3" Grid.Column="2"  Content="Dragoon Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
+                    <Button x:Name="btnShopChanges" Grid.Row="3" Grid.Column="3"  Content="Shop Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
+                    <Button x:Name="btnAdditionChanges" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Content="Addition Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
+                    <Button x:Name="btnHalfSP" Grid.Row="4" Grid.Column="2" Content="Half SP Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
+                    <Button x:Name="btnRemoveCaps" Grid.Row="4" Grid.Column="3" Content="Remove Damage Caps" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
+                    <Button x:Name="btnIconChanges" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Content="Icon Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
+                    <Button x:Name="btnEquipChanges" Grid.Row="5" Grid.Column="2" Content="Equip Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
+                    <Button x:Name="btnDropChanges" Grid.Row="5" Grid.Column="3" Content="Drop Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
+                    <Button x:Name="btnHPCapBreak" Grid.Row="6" Grid.Column="2" Content="Break 9999 HP Cap" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
+                    <Button x:Name="btnSoulEater" Grid.Row="6" Grid.Column="3" Content="No HP Decay Soul Eater" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
                     <Button x:Name="btnSwitchSoloChar" Grid.Row="7" Grid.Column="0" Content="Switch Solo Character" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2"/>
                     <ComboBox x:Name="cboSwitchChar" Grid.Row="7" Grid.Column="2" Grid.ColumnSpan="2" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="Black"/>
                     <Button x:Name="btnSwitchEXP" Grid.Row="8" Grid.Column="0" Content="Switch EXP" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2"/>
@@ -1046,7 +1046,7 @@
                                 <ColumnDefinition Width="20*"/>
                             </Grid.ColumnDefinitions>
                             <Button x:Name="btnAddPartyMembers" Grid.Row="0" Grid.Column="0" Content="Add Party Members" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                            <Button x:Name="btnAddPartyMembersOn" Grid.Row="0" Grid.Column="1" Content="On" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
+                            <Button x:Name="btnAddPartyMembersOn" Grid.Row="0" Grid.Column="1" Content="On" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
                         </Grid>
                     </DockPanel>
 
@@ -1117,9 +1117,9 @@
                             <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Text="*Green buttons do not have an inactive or active state. New Game+ only activates when it is detected." Foreground="White" FontFamily="/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Grid>
                     </DockPanel>
-                    <Button x:Name="btnUltimateBoss" Grid.Row="1" Grid.Column="0" Content="Ultimate Boss" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
+                    <Button x:Name="btnUltimateBoss" Grid.Row="1" Grid.Column="0" Content="Ultimate Boss" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
                     <ComboBox x:Name="cboUltimateBoss" Grid.Row="1" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch"/>
-                    <Button x:Name="btnRows" Grid.Row="2" Grid.Column="0" Content="Battle Rows" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2"/>
+                    <Button x:Name="btnRows" Grid.Row="2" Grid.Column="0" Content="Battle Rows" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2" Click="GenericSwitchButton"/>
                     <DockPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"  Grid.RowSpan="7" HorizontalAlignment="Stretch" Margin="0" >
                         <Grid>
                             <Grid.RowDefinitions>
@@ -1160,7 +1160,7 @@
                             <ComboBox x:Name="cboKongolBoost" Grid.Row="6" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch"/>
                         </Grid>
                     </DockPanel>
-                    <Button x:Name="btnQTB" Grid.Row="1" Grid.Column="3" Content="Quick Turn Battle" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
+                    <Button x:Name="btnQTB" Grid.Row="1" Grid.Column="3" Content="Quick Turn Battle" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
                     <DockPanel Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="1" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
                         <Grid Margin="0"  >
                             <Grid.ColumnDefinitions>
@@ -1171,7 +1171,7 @@
                             <ComboBox x:Name="cboQTB" Grid.Row="0" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20"/>
                         </Grid>
                     </DockPanel>
-                    <Button x:Name="btnSoloModeEXP" Grid.Row="3" Grid.Column="3" Content="Solo Mode 33% EXP" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
+                    <Button x:Name="btnSoloModeEXP" Grid.Row="3" Grid.Column="3" Content="Solo Mode 33% EXP" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
                     <DockPanel Grid.Row="4" Grid.Column="3" Grid.ColumnSpan="1" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
                         <Grid Margin="0"  >
                             <Grid.ColumnDefinitions>
@@ -1184,13 +1184,13 @@
                     </DockPanel>
                     <Button x:Name="btnFlowerStorm" Grid.Row="5" Grid.Column="3" Content="Flower Storm" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
                     <ComboBox x:Name="cboFlowerStorm" Grid.Row="6" Grid.Column="3" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                    <Button x:Name="btnATB" Grid.Row="7" Grid.Column="3" Content="Action Turn Battle" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" IsEnabled="True"/>
-                    <Button x:Name="btnCharmPotion" Grid.Row="8" Grid.Column="3" Content="Auto Charm Potion" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                    <Button x:Name="btnDivineRed" Grid.Row="9" Grid.Column="2" Content="Divine Red-Eye" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                    <Button x:Name="btnNoDragoon" Grid.Row="10" Grid.Column="0" Content="No Dragoon" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
+                    <Button x:Name="btnATB" Grid.Row="7" Grid.Column="3" Content="Action Turn Battle" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
+                    <Button x:Name="btnCharmPotion" Grid.Row="8" Grid.Column="3" Content="Auto Charm Potion" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
+                    <Button x:Name="btnDivineRed" Grid.Row="9" Grid.Column="2" Content="Divine Red-Eye" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
+                    <Button x:Name="btnNoDragoon" Grid.Row="10" Grid.Column="0" Content="No Dragoon" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
                     <Button x:Name="btnElementArrow" Grid.Row="10" Grid.Column="2" Content="Element Arrow" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                    <Button x:Name="btnBlackRoom" Grid.Row="10" Grid.Column="1" Content="Black Room" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                    <Button x:Name="btnEarlyAdditions" Grid.Row="11" Grid.Column="0" Content="Early Additions" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
+                    <Button x:Name="btnBlackRoom" Grid.Row="10" Grid.Column="1" Content="Black Room" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
+                    <Button x:Name="btnEarlyAdditions" Grid.Row="11" Grid.Column="0" Content="Early Additions" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
                     <Button x:Name="btnduoMode" Grid.Row="11" Grid.Column="1" Content="Duo Mode" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
                     <ComboBox x:Name="cboElement" Grid.Row="11" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20"/>
                 </Grid>
@@ -1209,7 +1209,7 @@
                     </Grid.ColumnDefinitions>
 
                     <Button x:Name="btnCheckDart" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Content="Check Dart" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                    <Button x:Name="btnUnequipDart" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Content="No Dart Mode" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
+                    <Button x:Name="btnUnequipDart" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Content="No Dart Mode" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
                     <Button x:Name="btnAdditionSelect" Grid.Row="2" Grid.Column="0" Content="Equip Addition" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
                     <ComboBox x:Name="cboAddition" Grid.Row="2" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20"/>
                 </Grid>
@@ -1809,62 +1809,62 @@
             <TabItem x:Name="tabScripts" Header="Scripts">
                 <Grid>
                     <DockPanel>
-                        <Menu DockPanel.Dock="Top">
-                            <MenuItem x:Name="miAttach" Header="Attach" Click="miAttach_Click"/>
-                            <MenuItem Header="Menu">
-                                <MenuItem x:Name="miNew" Header="New" Click="miNew_Click"/>
-                                <MenuItem x:Name="miOpen" Header="Open" Click="miOpen_Click"/>
-                                <MenuItem x:Name="miSave" Header="Save" Click="miSave_Click"/>
+                        <Menu DockPanel.Dock="Top" Background="#FFB6B6B6">
+                            <MenuItem x:Name="miAttach" Header="Attach" Background="#FFB6B6B6" Foreground="White" Click="miAttach_Click"/>
+                            <MenuItem Header="Menu" Background="#FFB6B6B6" Foreground="White">
+                                <MenuItem x:Name="miNew" Header="New" Background="#FFB6B6B6" Foreground="White" Click="miNew_Click"/>
+                                <MenuItem x:Name="miOpen" Header="Open" Background="#FFB6B6B6" Foreground="White" Click="miOpen_Click"/>
+                                <MenuItem x:Name="miSave" Header="Save" Background="#FFB6B6B6" Foreground="White" Click="miSave_Click"/>
                             </MenuItem>
-                            <MenuItem Header="Settings">
-                                <MenuItem x:Name="miEmulator" Header="Emulator">
-                                    <MenuItem Header="ePSXe 1.6.0" IsCheckable="True" Click="miEmulator_Click"/>
-                                    <MenuItem Header="ePSXe 1.7.0" IsCheckable="True" Click="miEmulator_Click"/>
-                                    <MenuItem Header="ePSXe 1.8.0" IsCheckable="True" Click="miEmulator_Click"/>
-                                    <MenuItem Header="ePSXe 1.9.0" IsCheckable="True" Click="miEmulator_Click"/>
-                                    <MenuItem Header="ePSXe 1.9.25" IsCheckable="True" Click="miEmulator_Click"/>
-                                    <MenuItem Header="ePSXe 2.0" IsCheckable="True" Click="miEmulator_Click"/>
-                                    <MenuItem Header="ePSXe 2.0.2" IsCheckable="True" Click="miEmulator_Click"/>
-                                    <MenuItem Header="ePSXe 2.0.5" IsCheckable="True" Click="miEmulator_Click"/>
-                                    <MenuItem Header="RetroArch" IsCheckable="True" Click="miEmulator_Click"/>
-                                    <MenuItem Header="PCSX2" IsCheckable="True" Click="miEmulator_Click"/>
+                            <MenuItem Header="Settings" Background="#FFB6B6B6" Foreground="White">
+                                <MenuItem x:Name="miEmulator" Background="#FFB6B6B6" Foreground="White" Header="Emulator">
+                                    <MenuItem Header="ePSXe 1.6.0" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
+                                    <MenuItem Header="ePSXe 1.7.0" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
+                                    <MenuItem Header="ePSXe 1.8.0" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
+                                    <MenuItem Header="ePSXe 1.9.0" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
+                                    <MenuItem Header="ePSXe 1.9.25" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
+                                    <MenuItem Header="ePSXe 2.0" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
+                                    <MenuItem Header="ePSXe 2.0.2" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
+                                    <MenuItem Header="ePSXe 2.0.5" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
+                                    <MenuItem Header="RetroArch" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
+                                    <MenuItem Header="PCSX2" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
                                 </MenuItem>
-                                <MenuItem x:Name="miRegion" Header="Region">
-                                    <MenuItem Header="USA" IsCheckable="True" IsChecked="True" Click="miRegion_Click"/>
-                                    <MenuItem Header="JPN" IsCheckable="True" Click="miRegion_Click"/>
-                                    <MenuItem Header="EUR" IsCheckable="True" Click="miRegion_Click"/>
+                                <MenuItem x:Name="miRegion" Header="Region" Background="#FFB6B6B6" Foreground="White">
+                                    <MenuItem Header="USA" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" IsChecked="True" Click="miRegion_Click"/>
+                                    <MenuItem Header="JPN" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miRegion_Click"/>
+                                    <MenuItem Header="EUR" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miRegion_Click"/>
                                 </MenuItem>
-                                <MenuItem x:Name="miSaveSlot" Header="Save Slot">
-                                    <MenuItem Header="1" IsCheckable="True" Click="miSaveSlot_Click"/>
-                                    <MenuItem Header="2" IsCheckable="True" Click="miSaveSlot_Click"/>
-                                    <MenuItem Header="3" IsCheckable="True" Click="miSaveSlot_Click"/>
-                                    <MenuItem Header="4" IsCheckable="True" Click="miSaveSlot_Click"/>
-                                    <MenuItem Header="5" IsCheckable="True" Click="miSaveSlot_Click"/>
-                                    <MenuItem Header="6" IsCheckable="True" Click="miSaveSlot_Click"/>
-                                    <MenuItem Header="7" IsCheckable="True" Click="miSaveSlot_Click"/>
-                                    <MenuItem Header="8" IsCheckable="True" Click="miSaveSlot_Click"/>
-                                    <MenuItem Header="9" IsCheckable="True" Click="miSaveSlot_Click"/>
-                                    <MenuItem Header="10" IsCheckable="True" Click="miSaveSlot_Click"/>
-                                    <MenuItem Header="11" IsCheckable="True" Click="miSaveSlot_Click"/>
-                                    <MenuItem Header="12" IsCheckable="True" Click="miSaveSlot_Click"/>
-                                    <MenuItem Header="13" IsCheckable="True" Click="miSaveSlot_Click"/>
-                                    <MenuItem Header="14" IsCheckable="True" Click="miSaveSlot_Click"/>
-                                    <MenuItem Header="15" IsCheckable="True" Click="miSaveSlot_Click"/>
+                                <MenuItem x:Name="miSaveSlot" Header="Save Slot" Background="#FFB6B6B6" Foreground="White">
+                                    <MenuItem Header="1" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
+                                    <MenuItem Header="2" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
+                                    <MenuItem Header="3" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
+                                    <MenuItem Header="4" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
+                                    <MenuItem Header="5" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
+                                    <MenuItem Header="6" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
+                                    <MenuItem Header="7" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
+                                    <MenuItem Header="8" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
+                                    <MenuItem Header="9" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
+                                    <MenuItem Header="10" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
+                                    <MenuItem Header="11" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
+                                    <MenuItem Header="12" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
+                                    <MenuItem Header="13" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
+                                    <MenuItem Header="14" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
+                                    <MenuItem Header="15" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
                                 </MenuItem>
-                                <MenuItem x:Name="miOpenPreset" Header="Open Preset on Open" Click="miOpenPreset_Click"/>
+                                <MenuItem x:Name="miOpenPreset" Header="Open Preset on Open" Background="#FFB6B6B6" Foreground="White" Click="miOpenPreset_Click"/>
                             </MenuItem>
-                            <MenuItem Header="About">
-                                <MenuItem x:Name="miAuthor" Header="Author" Click="miAuthor_Click"/>
-                                <MenuItem Header="Credits">
-                                    <MenuItem x:Name="miCredits" Header="Credits" Click="miCredits_Click"/>
-                                    <MenuItem x:Name="miCredits1" Header="Zychronix" Click="miCredits1_Click"/>
-                                    <MenuItem x:Name="miCredits2" Header="Illeprih" Click="miCredits2_Click"/>
-                                    <MenuItem x:Name="miCredits3" Header="erfg12" Click="miCredits3_Click"/>
-                                    <MenuItem x:Name="miCredits4" Header="CS-Script" Click="miCredits4_Click"/>
+                            <MenuItem Header="About" Background="#FFB6B6B6" Foreground="White">
+                                <MenuItem x:Name="miAuthor" Background="#FFB6B6B6" Foreground="White" Header="Author" Click="miAuthor_Click"/>
+                                <MenuItem Header="Credits" Background="#FFB6B6B6" Foreground="White">
+                                    <MenuItem x:Name="miCredits" Background="#FFB6B6B6" Foreground="White" Header="Credits" Click="miCredits_Click"/>
+                                    <MenuItem x:Name="miCredits1" Background="#FFB6B6B6" Foreground="White" Header="Zychronix" Click="miCredits1_Click"/>
+                                    <MenuItem x:Name="miCredits2" Background="#FFB6B6B6" Foreground="White" Header="Illeprih" Click="miCredits2_Click"/>
+                                    <MenuItem x:Name="miCredits3" Background="#FFB6B6B6" Foreground="White" Header="erfg12" Click="miCredits3_Click"/>
+                                    <MenuItem x:Name="miCredits4" Background="#FFB6B6B6" Foreground="White" Header="CS-Script" Click="miCredits4_Click"/>
                                 </MenuItem>
-                                <MenuItem x:Name="miVersion" Header="Version" Click="miVersion_Click"/>
+                                <MenuItem x:Name="miVersion" Background="#FFB6B6B6" Foreground="White" Header="Version" Click="miVersion_Click"/>
                             </MenuItem>
-                            <MenuItem x:Name="miLog" Click="miLog_Click" Header="Expand Log"/>
+                            <MenuItem x:Name="miLog" Header="Expand Log" Background="#FFB6B6B6" Foreground="White" Click="miLog_Click" />
                         </Menu>
                         <Grid>
                             <Grid.RowDefinitions>
@@ -1878,10 +1878,10 @@
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
-                            <Button x:Name="btnField" Click="btnField_Click" Grid.Column="0" Grid.Row="0" Content="Field" Background="#FFB6B6B6" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
-                            <Button x:Name="btnBattle" Click="btnBattle_Click" Grid.Column="1" Grid.Row="0" Content="Battle" Background="#FFB6B6B6" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
-                            <Button x:Name="btnHotkeys" Click="btnHotkeys_Click" Grid.Column="2" Grid.Row="0" Content="Hotkeys" Background="#FFB6B6B6" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
-                            <Button x:Name="btnOther" Click="btnOther_Click" Grid.Column="3" Grid.Row="0" Content="Other" Background="#FFB6B6B6" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
+                            <Button x:Name="btnField" Click="btnField_Click" Grid.Column="0" Grid.Row="0" Content="Field" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
+                            <Button x:Name="btnBattle" Click="btnBattle_Click" Grid.Column="1" Grid.Row="0" Content="Battle" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
+                            <Button x:Name="btnHotkeys" Click="btnHotkeys_Click" Grid.Column="2" Grid.Row="0" Content="Hotkeys" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
+                            <Button x:Name="btnOther" Click="btnOther_Click" Grid.Column="3" Grid.Row="0" Content="Other" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
                             <ListView x:Name="lstField" Grid.Column="0" Grid.Row="1" FontFamily="Consolas" MouseDoubleClick="lstField_MouseDoubleClick" ScrollViewer.ScrollChanged="lstField_ScrollChanged"/>
                             <ListView x:Name="lstBattle" Grid.Column="1" Grid.Row="1" FontFamily="Consolas" MouseDoubleClick="lstBattle_MouseDoubleClick" ScrollViewer.ScrollChanged="lstBattle_ScrollChanged"/>
                             <ListView x:Name="lstHotkey" Grid.Column="2" Grid.Row="1" FontFamily="Consolas" MouseDoubleClick="lstHotkey_MouseDoubleClick" ScrollViewer.ScrollChanged="lstHotkey_ScrollChanged"/>
