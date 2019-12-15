@@ -13,6 +13,8 @@ namespace Dragoon_Modifier {
         public static bool DEBUG_MODE = true;
         public static bool BATTLE_UI = false;
         public static TextBox CONSOLE;
+        public static TextBlock GLOG;
+        public static TextBlock PLOG;
         public static long OFFSET = 0xA579A0;
         public static Region REGION = Region.USA;
         public static byte EMULATOR = 255;
@@ -102,6 +104,18 @@ namespace Dragoon_Modifier {
                         CONSOLE.ScrollToEnd();
                     }
                 }
+            });
+        }
+
+        public static void WriteGLog(string text) {
+            Application.Current.Dispatcher.Invoke(() => {
+                GLOG.Text = text;
+            });
+        }
+
+        public static void WritePLog(string text) {
+            Application.Current.Dispatcher.Invoke(() => {
+                PLOG.Text = text;
             });
         }
 

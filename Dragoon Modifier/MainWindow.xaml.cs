@@ -12,7 +12,6 @@ using System.Windows.Controls;
 
 namespace Dragoon_Modifier {
     public partial class MainWindow {
-
         public static Emulator emulator = new Emulator();
         public Thread fieldThread, battleThread, hotkeyThread, otherThread;
         public string preset = "";
@@ -25,6 +24,8 @@ namespace Dragoon_Modifier {
             try {
                 InitializeComponent();
                 Constants.CONSOLE = txtOutput;
+                Constants.GLOG = stsGame;
+                Constants.PLOG = stsProgram;
                 fieldThread = new Thread(FieldController);
                 battleThread = new Thread(BattleController);
                 hotkeyThread = new Thread(HotkeysController);
@@ -373,23 +374,23 @@ namespace Dragoon_Modifier {
                 Constants.BATTLE_UI = true;
                 for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
                     monsterDisplay[i, 0].Text = emulator.ReadName(0xC69D0 + (0x2C * i));
-                    monsterDisplay[i, 1].Text = " " + emulator.ReadShort(Globals.M_POINT - (i * 0x388)) + "/" + emulator.ReadShort(Globals.M_POINT - (i * 0x388) + 0x8);
-                    monsterDisplay[i, 2].Text = " " + emulator.ReadShort(Globals.M_POINT - (i * 0x388) + 0x2C) + "/" + emulator.ReadShort(Globals.M_POINT - (i * 0x388) + 0x2E);
-                    monsterDisplay[i, 3].Text = " " + emulator.ReadShort(Globals.M_POINT - (i * 0x388) + 0x30) + "/" + emulator.ReadShort(Globals.M_POINT - (i * 0x388) + 0x32);
-                    monsterDisplay[i, 4].Text = " " + emulator.ReadShort(Globals.M_POINT - (i * 0x388) + 0x2A);
-                    monsterDisplay[i, 5].Text = " " + emulator.ReadShort(Globals.M_POINT - (i * 0x388) + 0x44);
+                    monsterDisplay[i, 1].Text = " " + emulator.ReadShort(Globals.MONS_ADDRESS[i]) + "/" + emulator.ReadShort(Globals.MONS_ADDRESS[i] + 0x8);
+                    monsterDisplay[i, 2].Text = " " + emulator.ReadShort(Globals.MONS_ADDRESS[i] + 0x2C) + "/" + emulator.ReadShort(Globals.MONS_ADDRESS[i] + 0x2E);
+                    monsterDisplay[i, 3].Text = " " + emulator.ReadShort(Globals.MONS_ADDRESS[i] + 0x30) + "/" + emulator.ReadShort(Globals.MONS_ADDRESS[i] + 0x32);
+                    monsterDisplay[i, 4].Text = " " + emulator.ReadShort(Globals.MONS_ADDRESS[i] + 0x2A);
+                    monsterDisplay[i, 5].Text = " " + emulator.ReadShort(Globals.MONS_ADDRESS[i] + 0x44);
                 }
                 for (int i = 0; i < 3; i++) {
                     if (Globals.PARTY_SLOT[i] < 9) {
                         characterDisplay[i, 0].Text = Constants.GetCharName(Globals.PARTY_SLOT[i]);
-                        characterDisplay[i, 1].Text = " " + emulator.ReadShort(Globals.C_POINT - (i * 0x388)) + "/" + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x8) + "\r\n\r\n " + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x4) + "/" + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0xA);
-                        characterDisplay[i, 2].Text = " " + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x2C) + "\r\n\r\n " + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x2E);
-                        characterDisplay[i, 3].Text = " " + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x30) + "\r\n\r\n " + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x32);
-                        characterDisplay[i, 4].Text = " " + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x34) + "/" + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x36) + "\r\n\r\n " + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x38) + "/" + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x3A);
-                        characterDisplay[i, 5].Text = " " + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0xA4) + "\r\n\r\n " + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0xA8);
-                        characterDisplay[i, 6].Text = " " + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0xA8) + "\r\n\r\n " + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0xAA);
-                        characterDisplay[i, 7].Text = " " + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x2A) + "\r\n\r\n " + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x2);
-                        characterDisplay[i, 8].Text = " " + emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x44);
+                        characterDisplay[i, 1].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i]) + "/" + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x8) + "\r\n\r\n " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x4) + "/" + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0xA);
+                        characterDisplay[i, 2].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x2C) + "\r\n\r\n " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x2E);
+                        characterDisplay[i, 3].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x30) + "\r\n\r\n " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x32);
+                        characterDisplay[i, 4].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x34) + "/" + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x36) + "\r\n\r\n " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x38) + "/" + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x3A);
+                        characterDisplay[i, 5].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0xA4) + "\r\n\r\n " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0xA8);
+                        characterDisplay[i, 6].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0xA8) + "\r\n\r\n " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0xAA);
+                        characterDisplay[i, 7].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x2A) + "\r\n\r\n " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x2);
+                        characterDisplay[i, 8].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x44);
                     }
                 }
                 TurnOrder();

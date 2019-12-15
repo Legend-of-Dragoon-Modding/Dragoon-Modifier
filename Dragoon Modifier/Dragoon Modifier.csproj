@@ -312,6 +312,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(ProjectDir)Scripts\*.*" "$(ProjectDir)bin\$(ConfigurationName)\Scripts\" /E /Y
-xcopy "$(ProjectDir)Presets\*.*" "$(ProjectDir)bin\$(ConfigurationName)\Presets\" /E /Y</PostBuildEvent>
+xcopy "$(ProjectDir)Presets\*.*" "$(ProjectDir)bin\$(ConfigurationName)\Presets\" /E /Y
+xcopy "$(ProjectDir)Mods\*.*" "$(ProjectDir)bin\$(ConfigurationName)\Mods\" /E /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>
