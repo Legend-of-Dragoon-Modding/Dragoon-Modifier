@@ -27,6 +27,8 @@ namespace Dragoon_Modifier {
         public bool shopChange = false;
         public bool wroteIcons = false;
         public bool firstWriteIcons = false;
+        public bool firstDamageCapRemoval = false;
+        public int lastItemUsedDamageCap = 0;
         #endregion
         #endregion
 
@@ -313,6 +315,10 @@ namespace Dragoon_Modifier {
             string currentScript = "";
             int run = 1;
             while (run == 1 && Constants.RUN) {
+
+                if (dmScripts.ContainsKey("btnRemoveCaps") && dmScripts["btnRemoveCaps"])
+                    RemoveDamageCap();
+
                 foreach (SubScript script in lstBattle.Items) {
                     if (script.state == ScriptState.DISABLED)
                         continue;
@@ -731,6 +737,51 @@ namespace Dragoon_Modifier {
                 offset = 0x23C;
             }
             return offset;
+        }
+        #endregion
+
+        #region Damage Cap Removal
+        public void RemoveDamageCap() {
+            if (Globals.IN_BATTLE && Globals.STATS_CHANGED) {
+                if (!firstDamageCapRemoval) {
+                    emulator.WriteInteger(Constants.GetAddress("DAMAGE_CAP"), 50000);
+                    emulator.WriteInteger(Constants.GetAddress("DAMAGE_CAP") + 0x8, 50000);
+                    emulator.WriteInteger(Constants.GetAddress("DAMAGE_CAP") + 0x14, 50000);
+                    DamageCapScan();
+                    firstDamageCapRemoval = true;
+                } else {
+                    ushort currentItem = emulator.ReadShort(Globals.M_POINT + 0xABC);
+                    if (lastItemUsedDamageCap != currentItem) {
+                        lastItemUsedDamageCap = currentItem;
+                        if ((lastItemUsedDamageCap >= 0xC1 && lastItemUsedDamageCap <= 0xCA) || (lastItemUsedDamageCap >= 0xCF && lastItemUsedDamageCap <= 0xD2) || lastItemUsedDamageCap == 0xD6 || lastItemUsedDamageCap == 0xD8 || lastItemUsedDamageCap == 0xDC || (lastItemUsedDamageCap >= 0xF1 && lastItemUsedDamageCap <= 0xF8) || lastItemUsedDamageCap == 0xFA) {
+                            DamageCapScan();
+                        }
+                    }
+                    for (int i = 0; i < 3; i++) {
+                        if (Globals.PARTY_SLOT[i] < 9) {
+                            if (emulator.ReadByte(Globals.C_POINT - 0xA8 - (0x388 * i)) == 24) {
+                                DamageCapScan();
+                            }
+                        }
+                    }
+                }
+            } else {
+                firstDamageCapRemoval = false;
+                lastItemUsedDamageCap = 0;
+            }
+        }
+
+        public void DamageCapScan() {
+            ArrayList damageCapScan = emulator.ScanAllAOB("0F 27", 0xA8660, 0x2A865F);
+            long lastAddress = 0;
+            foreach (var address in damageCapScan) {
+                long capAddress = (long) address;
+                if (emulator.ReadShortU(capAddress) == 9999 && (lastAddress + 0x10) == capAddress) {
+                    emulator.WriteIntegerU(capAddress, 50000);
+                    emulator.WriteIntegerU(lastAddress, 50000);
+                }
+                lastAddress = capAddress;
+            }
         }
         #endregion
         #endregion
