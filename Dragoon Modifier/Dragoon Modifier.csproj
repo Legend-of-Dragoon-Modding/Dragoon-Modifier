@@ -240,6 +240,7 @@
     <Compile Include="Region.cs" />
     <Compile Include="ScriptState.cs" />
     <Compile Include="SubScript.cs" />
+    <Compile Include="UniformTabPanel.cs" />
     <Page Include="InputWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

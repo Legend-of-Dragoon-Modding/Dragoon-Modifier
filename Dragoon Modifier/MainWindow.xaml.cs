@@ -24,11 +24,17 @@ namespace Dragoon_Modifier {
 #endregion
 
         #region Script Variables
+        //Shop Changes
         public bool shopChange = false;
         public bool wroteIcons = false;
+        //Icon Changes
         public bool firstWriteIcons = false;
+        //Damage Cap
         public bool firstDamageCapRemoval = false;
         public int lastItemUsedDamageCap = 0;
+        //Solo Mode
+        public bool addSoloPartyMembers = false;
+        public bool soloModeOnBattleEntry = false;
         #endregion
         #endregion
 
@@ -179,6 +185,13 @@ namespace Dragoon_Modifier {
             characterDisplay[2,6] = lblCharacter3DDEF;
             characterDisplay[2,7] = lblCharacter3SPD;
             characterDisplay[2,8] = lblCharacter3TRN;
+
+
+            cboSoloLeader.Items.Add("Slot 1");
+            cboSoloLeader.Items.Add("Slot 2");
+            cboSoloLeader.Items.Add("Slot 3");
+
+            cboSoloLeader.SelectedIndex = 0;
         }
 
         private void LoadPreset() {
@@ -295,6 +308,8 @@ namespace Dragoon_Modifier {
                     SaveAnywhere();
                 if (dmScripts.ContainsKey("btnShopChanges") && dmScripts["btnShopChanges"])
                     ShopChanges();
+                if (dmScripts.ContainsKey("btnSoloMode") && dmScripts["btnSoloMode"])
+                    SoloModeField();
 
                 foreach (SubScript script in lstField.Items) {
                     if (script.state == ScriptState.DISABLED)
@@ -304,6 +319,7 @@ namespace Dragoon_Modifier {
                         run = script.Run(emulator);
                     }), DispatcherPriority.ContextIdle);
                 }
+
                 Thread.Sleep(500);
                 this.Dispatcher.BeginInvoke(new Action(() => {
                     FieldUI();
@@ -318,6 +334,8 @@ namespace Dragoon_Modifier {
 
                 if (dmScripts.ContainsKey("btnRemoveCaps") && dmScripts["btnRemoveCaps"])
                     RemoveDamageCap();
+                //if (dmScripts.ContainsKey("btnSoloMode") && dmScripts["btnSoloMode"])
+                //    SoloModeBattle();
 
                 foreach (SubScript script in lstBattle.Items) {
                     if (script.state == ScriptState.DISABLED)
@@ -327,6 +345,7 @@ namespace Dragoon_Modifier {
                         run = script.Run(emulator);
                     }), DispatcherPriority.ContextIdle);
                 }
+
                 Thread.Sleep(250);
                 this.Dispatcher.BeginInvoke(new Action(() => {
                     BattleUI();
@@ -784,6 +803,48 @@ namespace Dragoon_Modifier {
             }
         }
         #endregion
+
+        #region Never Guard
+        public void ApplyNeverGuard() {
+            if (Globals.IN_BATTLE && Globals.STATS_CHANGED) {
+                for (int i = 0; i < 3; i++) {
+                    if (Globals.PARTY_SLOT[i] < 9) {
+                        emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0x4C, 0);
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region Solo Mode
+        public void SoloModeField() {
+            if (!Globals.IN_BATTLE && !addSoloPartyMembers) {
+                if (emulator.ReadByte(Constants.GetAddress("PARTY_SLOT") + 0x4) != 255 || emulator.ReadByte(Constants.GetAddress("PARTY_SLOT") + 0x8) != 255) {
+                    for (int i = 0; i < 8; i++) {
+                        emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + i + 0x4, 255);
+                    }
+                }
+            }
+        }
+
+        public void SoloModeBattle() {
+            if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !soloModeOnBattleEntry) {
+                for (int i = 0; i < 3; i++) {
+                    if (i != cboSoloLeader.SelectedIndex) {
+                        emulator.WriteInteger(Globals.CHAR_ADDRESS[i], 0);
+                        emulator.WriteInteger(Globals.CHAR_ADDRESS[i] + 0x8, 0);
+                        emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0x12C, 200);
+                        emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0x45, 25);
+                    } else {
+                        //battle rows
+                    }
+                }
+                soloModeOnBattleEntry = true;
+            } else {
+                soloModeOnBattleEntry = false;
+            }
+        }
+        #endregion
         #endregion
 
         #region Settings
@@ -1152,7 +1213,7 @@ namespace Dragoon_Modifier {
         #endregion
 
         #region UI
-        public void GenericSwitchButton(object sender, EventArgs e) {
+        public void SwitchButton(object sender, EventArgs e) {
             Button test = (Button) sender;
             if (!dmScripts.ContainsKey(test.Name)) {
                 dmScripts.Add(test.Name, true);
@@ -1169,6 +1230,10 @@ namespace Dragoon_Modifier {
             } else {
                 sender.Background = new SolidColorBrush(Color.FromArgb(255, 168, 211, 255));
             }
+        }
+
+        public void GreenButton(object sender, EventArgs e) {
+
         }
         #endregion
 

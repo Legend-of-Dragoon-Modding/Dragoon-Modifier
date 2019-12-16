@@ -21,6 +21,9 @@ public class BattleController {
         int encounterValue = emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE"));
         if (Globals.IN_BATTLE && !Globals.STATS_CHANGED && encounterValue == 41215) {
             Constants.WriteOutput("Battle detected. Loading...");
+            Globals.UNIQUE_MONSTER_IDS = new List<int>();
+            Globals.MONSTER_TABLE = new List<dynamic>();
+            Globals.MONSTER_IDS = new List<int>();
             Thread.Sleep(3000);
             Globals.MONSTER_SIZE = emulator.ReadByte(Constants.GetAddress("MONSTER_SIZE"));
             Globals.UNIQUE_MONSTERS = emulator.ReadByte(Constants.GetAddress("UNIQUE_MONSTERS"));
@@ -78,9 +81,6 @@ public class BattleController {
     }
 
     public static void LoDDictInIt(Emulator emulator) {
-        Globals.UNIQUE_MONSTER_IDS = new List<int>();
-        Globals.MONSTER_TABLE = new List<dynamic>();
-
         for (int monster = 0; monster < Globals.UNIQUE_MONSTERS; monster++) {
             Globals.UNIQUE_MONSTER_IDS.Add(emulator.ReadShortU(Constants.GetAddress("UNIQUE_SLOT") + (int) Constants.OFFSET + (monster * 0x1A8)));
         }

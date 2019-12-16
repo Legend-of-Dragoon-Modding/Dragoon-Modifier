@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       xmlns:wpfx="http://schemas.xceed.com/wpf/xaml/toolkit"
+                      xmlns:local="clr-namespace:Dragoon_Modifier"
                       mc:Ignorable="d"
         Closed="Window_Closed"
         Loaded="Window_Loaded"
@@ -53,8 +54,34 @@
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*" MaxHeight="25"/>
         </Grid.RowDefinitions>
-        <TabControl Grid.Row="0" TabStripPlacement="Top" BorderThickness="0" Margin="0,0,0,0" Grid.RowSpan="2" Background="#FFDADADA">
+        <TabControl Grid.Row="0" TabStripPlacement="Top" BorderThickness="0" Margin="0,0,0,0" Grid.RowSpan="2" Background="#FFDADADA" Style="{DynamicResource TabControlStyle}">
             <TabControl.Resources>
+                <Style x:Key="TabControlStyle" TargetType="{x:Type TabControl}">
+                    <Setter Property="SnapsToDevicePixels" Value="True" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type TabControl}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+
+                                    <Border>
+                                        <local:UniformTabPanel x:Name="HeaderPanel" />
+                                    </Border>
+
+                                    <Border x:Name="Border" Grid.Row="1"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}">
+                                        <ContentPresenter x:Name="PART_SelectedContentHost" ContentSource="SelectedContent" />
+                                    </Border>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
                 <Style TargetType="TabItem">
                     <Setter Property="Template">
                         <Setter.Value>
@@ -1016,26 +1043,26 @@
                             <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Text="*Green buttons do not have an inactive or active state. New Game+ only activates when it is detected." Foreground="White" FontFamily="/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Grid>
                     </DockPanel>
-                    <Button x:Name="btnSoloMode" Grid.Row="1" Grid.Column="0" Content="Solo Mode" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2" Click="GenericSwitchButton"/>
-                    <Button x:Name="btnSaveAnywhere" Grid.Row="1" Grid.Column="2" Content="Save Anywhere" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
-                    <Button x:Name="btnEATB" Grid.Row="1" Grid.Column="3" Content="Extra Turn Battle" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
-                    <Button x:Name="btnNeverGuard" Grid.Row="2" Grid.Column="0" Content="Never Guard" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2" Click="GenericSwitchButton"/>
-                    <Button x:Name="btnElementBomb" Grid.Row="2" Grid.Column="2" Content="Elemental Bomb" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
-                    <Button x:Name="btnHPNames" Grid.Row="2" Grid.Column="3" Content="Monster HPs as Names" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
-                    <Button x:Name="btnEnrage" Grid.Row="3" Grid.Column="0"  Content="Enrage" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2" Click="GenericSwitchButton"/>
-                    <Button x:Name="btnDragoonChanges"  Grid.Row="3" Grid.Column="2"  Content="Dragoon Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
-                    <Button x:Name="btnShopChanges" Grid.Row="3" Grid.Column="3"  Content="Shop Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
-                    <Button x:Name="btnAdditionChanges" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Content="Addition Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
-                    <Button x:Name="btnHalfSP" Grid.Row="4" Grid.Column="2" Content="Half SP Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
-                    <Button x:Name="btnRemoveCaps" Grid.Row="4" Grid.Column="3" Content="Remove Damage Caps" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
-                    <Button x:Name="btnIconChanges" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Content="Icon Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
-                    <Button x:Name="btnEquipChanges" Grid.Row="5" Grid.Column="2" Content="Equip Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
-                    <Button x:Name="btnDropChanges" Grid.Row="5" Grid.Column="3" Content="Drop Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
-                    <Button x:Name="btnHPCapBreak" Grid.Row="6" Grid.Column="2" Content="Break 9999 HP Cap" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
-                    <Button x:Name="btnSoulEater" Grid.Row="6" Grid.Column="3" Content="No HP Decay Soul Eater" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
-                    <Button x:Name="btnSwitchSoloChar" Grid.Row="7" Grid.Column="0" Content="Switch Solo Character" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2"/>
+                    <Button x:Name="btnSoloMode" Grid.Row="1" Grid.Column="0" Content="Solo Mode" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2" Click="SwitchButton"/>
+                    <Button x:Name="btnSaveAnywhere" Grid.Row="1" Grid.Column="2" Content="Save Anywhere" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <Button x:Name="btnEATB" Grid.Row="1" Grid.Column="3" Content="Extra Turn Battle" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <Button x:Name="btnNeverGuard" Grid.Row="2" Grid.Column="0" Content="Never Guard" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2" Click="SwitchButton"/>
+                    <Button x:Name="btnElementBomb" Grid.Row="2" Grid.Column="2" Content="Elemental Bomb" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <Button x:Name="btnHPNames" Grid.Row="2" Grid.Column="3" Content="Monster HPs as Names" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <Button x:Name="btnEnrage" Grid.Row="3" Grid.Column="0"  Content="Enrage" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2" Click="SwitchButton"/>
+                    <Button x:Name="btnDragoonChanges"  Grid.Row="3" Grid.Column="2"  Content="Dragoon Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <Button x:Name="btnShopChanges" Grid.Row="3" Grid.Column="3"  Content="Shop Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <Button x:Name="btnAdditionChanges" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Content="Addition Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <Button x:Name="btnHalfSP" Grid.Row="4" Grid.Column="2" Content="Half SP Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <Button x:Name="btnRemoveCaps" Grid.Row="4" Grid.Column="3" Content="Remove Damage Caps" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <Button x:Name="btnIconChanges" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Content="Icon Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <Button x:Name="btnEquipChanges" Grid.Row="5" Grid.Column="2" Content="Equip Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <Button x:Name="btnDropChanges" Grid.Row="5" Grid.Column="3" Content="Drop Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <Button x:Name="btnHPCapBreak" Grid.Row="6" Grid.Column="2" Content="Break 9999 HP Cap" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <Button x:Name="btnSoulEater" Grid.Row="6" Grid.Column="3" Content="No HP Decay Soul Eater" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <Button x:Name="btnSwitchSoloChar" Grid.Row="7" Grid.Column="0" Content="Switch Solo Character" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2" Click="GreenButton"/>
                     <ComboBox x:Name="cboSwitchChar" Grid.Row="7" Grid.Column="2" Grid.ColumnSpan="2" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="Black"/>
-                    <Button x:Name="btnSwitchEXP" Grid.Row="8" Grid.Column="0" Content="Switch EXP" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2"/>
+                    <Button x:Name="btnSwitchEXP" Grid.Row="8" Grid.Column="0" Content="Switch EXP" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2" Click="GreenButton"/>
                     <ComboBox x:Name="cboSwitch1" Grid.Row="8" Grid.Column="2" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" Foreground="Black"/>
                     <ComboBox x:Name="cboSwitch2" Grid.Row="8" Grid.Column="3" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" Foreground="Black"/>
 
@@ -1045,8 +1072,8 @@
                                 <ColumnDefinition Width="80*"/>
                                 <ColumnDefinition Width="20*"/>
                             </Grid.ColumnDefinitions>
-                            <Button x:Name="btnAddPartyMembers" Grid.Row="0" Grid.Column="0" Content="Add Party Members" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                            <Button x:Name="btnAddPartyMembersOn" Grid.Row="0" Grid.Column="1" Content="On" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
+                            <Button x:Name="btnAddPartyMembers" Grid.Row="0" Grid.Column="0" Content="Add Party Members" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
+                            <Button x:Name="btnAddPartyMembersOn" Grid.Row="0" Grid.Column="1" Content="On" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                         </Grid>
                     </DockPanel>
 
@@ -1058,8 +1085,8 @@
                                 <ColumnDefinition Width="80*"/>
                                 <ColumnDefinition Width="20*"/>
                             </Grid.ColumnDefinitions>
-                            <Button x:Name="btnAspectRatio" Grid.Row="0" Grid.Column="0" Content="Aspect Ratio" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                            <Button x:Name="btnAspectRatioOff" Grid.Row="0" Grid.Column="1" Content="Off" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2"/>
+                            <Button x:Name="btnAspectRatio" Grid.Row="0" Grid.Column="0" Content="Aspect Ratio" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
+                            <Button x:Name="btnAspectRatioOff" Grid.Row="0" Grid.Column="1" Content="Off" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2" Click="GreenButton"/>
                         </Grid>
                     </DockPanel>
                     <ComboBox x:Name="cboAspectRatio" Grid.Row="9" Grid.Column="2" Grid.ColumnSpan="2" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" Foreground="Black"/>
@@ -1070,8 +1097,8 @@
                                 <ColumnDefinition Width="80*"/>
                                 <ColumnDefinition Width="20*"/>
                             </Grid.ColumnDefinitions>
-                            <Button x:Name="btnKillBGM" Grid.Row="0" Grid.Column="0" Content="Kill BGM" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" />
-                            <Button x:Name="btnKillBGMOff" Grid.Row="0" Grid.Column="1" Content="Off" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" />
+                            <Button x:Name="btnKillBGM" Grid.Row="0" Grid.Column="0" Content="Kill BGM" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
+                            <Button x:Name="btnKillBGMOff" Grid.Row="0" Grid.Column="1" Content="Off" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
                         </Grid>
                     </DockPanel>
                     <ComboBox x:Name="cboKillBGM" Grid.Row="10" Grid.Column="2" Grid.ColumnSpan="2" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" Foreground="Black"/>
@@ -1117,9 +1144,9 @@
                             <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Text="*Green buttons do not have an inactive or active state. New Game+ only activates when it is detected." Foreground="White" FontFamily="/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Grid>
                     </DockPanel>
-                    <Button x:Name="btnUltimateBoss" Grid.Row="1" Grid.Column="0" Content="Ultimate Boss" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
+                    <Button x:Name="btnUltimateBoss" Grid.Row="1" Grid.Column="0" Content="Ultimate Boss" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                     <ComboBox x:Name="cboUltimateBoss" Grid.Row="1" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch"/>
-                    <Button x:Name="btnRows" Grid.Row="2" Grid.Column="0" Content="Battle Rows" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2" Click="GenericSwitchButton"/>
+                    <Button x:Name="btnRows" Grid.Row="2" Grid.Column="0" Content="Battle Rows" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2" Click="SwitchButton"/>
                     <DockPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"  Grid.RowSpan="7" HorizontalAlignment="Stretch" Margin="0" >
                         <Grid>
                             <Grid.RowDefinitions>
@@ -1160,37 +1187,37 @@
                             <ComboBox x:Name="cboKongolBoost" Grid.Row="6" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch"/>
                         </Grid>
                     </DockPanel>
-                    <Button x:Name="btnQTB" Grid.Row="1" Grid.Column="3" Content="Quick Turn Battle" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
+                    <Button x:Name="btnQTB" Grid.Row="1" Grid.Column="3" Content="Quick Turn Battle" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                     <DockPanel Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="1" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
                         <Grid Margin="0"  >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="50*"/>
                                 <ColumnDefinition Width="50*"/>
                             </Grid.ColumnDefinitions>
-                            <Button x:Name="btnQTBSelect" Grid.Row="0" Grid.Column="0" Content="QTB Leader" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
+                            <Button x:Name="btnQTBSelect" Grid.Row="0" Grid.Column="0" Content="QTB Leader" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
                             <ComboBox x:Name="cboQTB" Grid.Row="0" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20"/>
                         </Grid>
                     </DockPanel>
-                    <Button x:Name="btnSoloModeEXP" Grid.Row="3" Grid.Column="3" Content="Solo Mode 33% EXP" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
+                    <Button x:Name="btnSoloModeEXP" Grid.Row="3" Grid.Column="3" Content="Solo Mode 33% EXP" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                     <DockPanel Grid.Row="4" Grid.Column="3" Grid.ColumnSpan="1" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
                         <Grid Margin="0"  >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="50*"/>
                                 <ColumnDefinition Width="50*"/>
                             </Grid.ColumnDefinitions>
-                            <Button x:Name="btnSolo" Grid.Row="0" Grid.Column="0" Content="Solo Leader" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
+                            <Button x:Name="btnSolo" Grid.Row="0" Grid.Column="0" Content="Solo Leader" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
                             <ComboBox x:Name="cboSoloLeader" Grid.Row="0" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20"/>
                         </Grid>
                     </DockPanel>
-                    <Button x:Name="btnFlowerStorm" Grid.Row="5" Grid.Column="3" Content="Flower Storm" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
+                    <Button x:Name="btnFlowerStorm" Grid.Row="5" Grid.Column="3" Content="Flower Storm" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
                     <ComboBox x:Name="cboFlowerStorm" Grid.Row="6" Grid.Column="3" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                    <Button x:Name="btnATB" Grid.Row="7" Grid.Column="3" Content="Action Turn Battle" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
-                    <Button x:Name="btnCharmPotion" Grid.Row="8" Grid.Column="3" Content="Auto Charm Potion" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
-                    <Button x:Name="btnDivineRed" Grid.Row="9" Grid.Column="2" Content="Divine Red-Eye" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
-                    <Button x:Name="btnNoDragoon" Grid.Row="10" Grid.Column="0" Content="No Dragoon" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
-                    <Button x:Name="btnElementArrow" Grid.Row="10" Grid.Column="2" Content="Element Arrow" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                    <Button x:Name="btnBlackRoom" Grid.Row="10" Grid.Column="1" Content="Black Room" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
-                    <Button x:Name="btnEarlyAdditions" Grid.Row="11" Grid.Column="0" Content="Early Additions" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
+                    <Button x:Name="btnATB" Grid.Row="7" Grid.Column="3" Content="Action Turn Battle" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <Button x:Name="btnCharmPotion" Grid.Row="8" Grid.Column="3" Content="Auto Charm Potion" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <Button x:Name="btnDivineRed" Grid.Row="9" Grid.Column="2" Content="Divine Red-Eye" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <Button x:Name="btnNoDragoon" Grid.Row="10" Grid.Column="0" Content="No Dragoon" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <Button x:Name="btnElementArrow" Grid.Row="10" Grid.Column="2" Content="Element Arrow" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
+                    <Button x:Name="btnBlackRoom" Grid.Row="10" Grid.Column="1" Content="Black Room" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <Button x:Name="btnEarlyAdditions" Grid.Row="11" Grid.Column="0" Content="Early Additions" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                     <Button x:Name="btnduoMode" Grid.Row="11" Grid.Column="1" Content="Duo Mode" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
                     <ComboBox x:Name="cboElement" Grid.Row="11" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20"/>
                 </Grid>
@@ -1208,9 +1235,9 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 
-                    <Button x:Name="btnCheckDart" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Content="Check Dart" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                    <Button x:Name="btnUnequipDart" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Content="No Dart Mode" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GenericSwitchButton"/>
-                    <Button x:Name="btnAdditionSelect" Grid.Row="2" Grid.Column="0" Content="Equip Addition" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
+                    <Button x:Name="btnCheckDart" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Content="Check Dart" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
+                    <Button x:Name="btnUnequipDart" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Content="No Dart Mode" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <Button x:Name="btnAdditionSelect" Grid.Row="2" Grid.Column="0" Content="Equip Addition" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
                     <ComboBox x:Name="cboAddition" Grid.Row="2" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20"/>
                 </Grid>
             </TabItem>
@@ -1229,9 +1256,9 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.ColumnSpan="2" Text="Hero Compition Shop" Foreground="White" FontWeight="Bold" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <TextBlock Grid.Row="3" Grid.ColumnSpan="2" Text="Ultimate Boss Shop" Foreground="White" FontWeight="Bold" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Button x:Name="btnHeroTicketShop" Grid.Row="1" Grid.Column="1" Content="Buy Ticket" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                    <Button x:Name="btnHeroItemShop" Grid.Row="2" Grid.Column="1" Content="Buy Item" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                    <Button x:Name="btnUltimateShop" Grid.Row="4" Grid.Column="1" Content="Buy Item" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
+                    <Button x:Name="btnHeroTicketShop" Grid.Row="1" Grid.Column="1" Content="Buy Ticket" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
+                    <Button x:Name="btnHeroItemShop" Grid.Row="2" Grid.Column="1" Content="Buy Item" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
+                    <Button x:Name="btnUltimateShop" Grid.Row="4" Grid.Column="1" Content="Buy Item" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
                     <ListBox x:Name="lstTicketShop" Grid.Row="1"/>
                     <ListBox x:Name="lstHeroShop" Grid.Row="2"/>
                     <ListBox x:Name="lstUltimateShop" Grid.Row="4"/>
@@ -1245,504 +1272,6 @@
                     </Grid.RowDefinitions>
                     <ComboBox x:Name="cboHelpTopic" Grid.Row="0" Grid.Column="0" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20"/>
                     <TextBox x:Name="txtHelp" Grid.Row="1" TextWrapping="Wrap" Text="" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" IsEnabled="True"/>
-                </Grid>
-            </TabItem>
-            <TabItem x:Name="tabReader" Header="Reader">
-                <Grid HorizontalAlignment="Stretch" Margin="0" Background="#FFB6B6B6" >
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="5*"/>
-                        <RowDefinition Height="5*"/>
-                        <RowDefinition Height="5*"/>
-                        <RowDefinition Height="5*"/>
-                        <RowDefinition Height="5*"/>
-                        <RowDefinition Height="5*"/>
-                        <RowDefinition Height="5*"/>
-                        <RowDefinition Height="5*"/>
-                        <RowDefinition Height="25*"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="25*"/>
-                        <ColumnDefinition Width="50*"/>
-                        <ColumnDefinition Width="25*"/>
-                    </Grid.ColumnDefinitions>
-                    <Button x:Name="btnReaderMode" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Content="Reader Mode: Off" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                    <DockPanel  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Fonts" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            <ComboBox x:Name="cboFonts" Grid.Column="1" Grid.Row="1" FontSize="20" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="Black" ItemsSource="{Binding Source={x:Static Member=Fonts.SystemFontFamilies}}" xmlns:ComponentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <Label FontFamily="{Binding .}" Content="{Binding Source}" />
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
-                            <wpfx:ColorPicker x:Name="clrpFont" DisplayColorAndName="False" Grid.Column="2"   />
-                                             <!-- SelectedColorChanged="clrpFont_SelectedColorChanged" -->
-                            <wpfx:ColorPicker x:Name="clrpSelected" DisplayColorAndName="False" Grid.Column="3" />
-                        </Grid>
-                    </DockPanel>
-                    <TextBlock Grid.Column="0" Grid.Row="3" Text="Update Interval" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Button x:Name="btnReaderAuto" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Content="Auto Key Press: Off" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                    <TextBlock Grid.Column="0" Grid.Row="5" Text="Battle UI On/Off" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="0" Grid.Row="6" Text="UI Removal Mode" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <ComboBox x:Name="cboRemovalUI" Grid.Column="1" Grid.Row="6" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="Black"/>
-                    <CheckBox x:Name="chkProgress" IsChecked="True" Grid.Column="2" Grid.Row="6" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="Black" Margin="5,2,0,0"/>
-                    <TextBlock Grid.Column="2" Grid.Row="6" Text="Progress Bars" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <DockPanel  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0"  Text="Size" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            <Slider x:Name="sldFontSize" Grid.Column="1" VerticalAlignment="Center" Value="20" Minimum="1" Maximum="256" TickFrequency="1" IsSnapToTickEnabled="True"/>
-                            <TextBlock x:Name="lblFontSize" Grid.Column="2" Text="20" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="3" Text="Label Size" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            <Button x:Name="btnWriteLabels" Grid.Row="0" Grid.Column="3" Content="Label Size" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                            <Slider x:Name="sldLabelSize" Grid.Column="4" VerticalAlignment="Center" Value="1" Minimum="1" Maximum="256" TickFrequency="1" IsSnapToTickEnabled="True"/>
-                            <TextBlock x:Name="lblLabelSize" Grid.Column="5" Text="1" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Grid>
-                    </DockPanel>
-                    <Slider x:Name="sldReaderUpdate" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Value="2000" Minimum="100" Maximum="8000" TickFrequency="1" IsSnapToTickEnabled="True"/>
-                    <TextBlock x:Name="lblReaderUpdate" Grid.Row="3" Grid.Column="3" Text="2000ms" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <DockPanel  Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="20*"/>
-                                <ColumnDefinition Width="20*"/>
-                            </Grid.ColumnDefinitions>
-                            <ComboBox x:Name="cboBUIOn" Grid.Column="0" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="Black"/>
-                            <ComboBox x:Name="cboBUIOff" Grid.Column="1" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="Black"/>
-                        </Grid>
-                    </DockPanel>
-                    <DockPanel  Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Bar Width" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            <Slider x:Name="sldProgressSizeW" Grid.Column="1" VerticalAlignment="Center" Value="200" Minimum="1" Maximum="2000" TickFrequency="1" IsSnapToTickEnabled="True"/>
-                            <TextBlock x:Name="lblProgressSizeW" Grid.Column="2" Text="200" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="3" Text="Bar Height" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            <Slider x:Name="sldProgressSizeH" Grid.Column="4" VerticalAlignment="Center" Value="75" Minimum="1" Maximum="2000" TickFrequency="1" IsSnapToTickEnabled="True"/>
-                            <TextBlock x:Name="lblProgressSizeH" Grid.Column="5" Text="75" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Grid>
-                    </DockPanel>
-
-                    <ProgressBar x:Name="pgrcHP1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Background="#FF000000" Height="300" />
-                    <ProgressBar x:Name="pgrcMP1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Background="#FF000000" Height="300" />
-                    <ProgressBar x:Name="pgrcSP1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Background="#FF000000" Height="300" />
-                    <ProgressBar x:Name="pgrcHP2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Background="#FF000000" Height="300" />
-                    <ProgressBar x:Name="pgrcMP2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Background="#FF000000" Height="300" />
-                    <ProgressBar x:Name="pgrcSP2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Background="#FF000000" Height="300" />
-                    <ProgressBar x:Name="pgrcHP3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Background="#FF000000" Height="300" />
-                    <ProgressBar x:Name="pgrcMP3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Background="#FF000000" Height="300" />
-                    <ProgressBar x:Name="pgrcSP3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Background="#FF000000" Height="300" />
-                    <ProgressBar x:Name="pgrmHP1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Background="#FF000000" Height="300" />
-                    <ProgressBar x:Name="pgrmHP2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Background="#FF000000" Height="300" />
-                    <ProgressBar x:Name="pgrmHP3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Background="#FF000000" Height="300" />
-                    <ProgressBar x:Name="pgrmHP4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Background="#FF000000" Height="300" />
-                    <ProgressBar x:Name="pgrmHP5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Background="#FF000000" Height="300" />
-                    <ProgressBar x:Name="pgrcEATB1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Background="#FF000000" Height="300" />
-                    <ProgressBar x:Name="pgrcEATB2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Background="#FF000000" Height="300" />
-                    <ProgressBar x:Name="pgrcEATB3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Background="#FF000000" Height="300" />
-                    <ProgressBar x:Name="pgrmEATB1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Background="#FF000000" Height="300" />
-                    <ProgressBar x:Name="pgrmEATB2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Background="#FF000000" Height="300" />
-                    <ProgressBar x:Name="pgrmEATB3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Background="#FF000000" Height="300" />
-                    <ProgressBar x:Name="pgrmEATB4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Background="#FF000000" Height="300" />
-                    <ProgressBar x:Name="pgrmEATB5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Background="#FF000000" Height="300" />
-                    <ProgressBar x:Name="pgrcQTB1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Background="#FF000000" Height="300" />
-
-                    <TextBlock x:Name="lblrEX" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="Example" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-
-                    <TextBlock x:Name="lblrcName1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcName2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcName3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmName1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmName2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmName3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmName4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmName5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-
-                    <TextBlock x:Name="lblrcLVL1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcHP1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMHP1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMP1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMMP1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcAT1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMAT1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcDF1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMDF1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcSPD1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcAHIT1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMHIT1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcAAV1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMAV1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcSP1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcGRD1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcDLV1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcDAT1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcDMAT1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcDDF1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcDMDF1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcTRN1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcELMA1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcELMN1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcELMH1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcHLFP1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcHLFM1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcHPH1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMPH1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcSPH1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMPHP1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcSPHP1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcSPHM1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMPHM1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcREV1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcSTS1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcSTSR1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcWSTS1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcWSTSC1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcPATS1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcPDFS1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcPMATS1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcPMDFS1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcPATT1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcPDFT1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcPMATT1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcPMDFT1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcSPDU1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcSPDD1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMSP1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcLVL2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcHP2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMHP2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMP2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMMP2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcAT2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMAT2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcDF2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMDF2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcSPD2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcAHIT2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMHIT2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcAAV2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMAV2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcSP2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcGRD2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcDLV2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcDAT2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcDMAT2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcDDF2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcDMDF2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcTRN2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcELMA2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcELMN2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcELMH2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcHLFP2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcHLFM2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcHPH2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMPH2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcSPH2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMPHP2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcSPHP2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcSPHM2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMPHM2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcREV2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcSTS2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcSTSR2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcWSTS2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcWSTSC2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcPATS2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcPDFS2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcPMATS2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcPMDFS2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcPATT2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcPDFT2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcPMATT2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcPMDFT2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcSPDU2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcSPDD2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMSP2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcLVL3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcHP3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMHP3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMP3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMMP3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcAT3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMAT3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcDF3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMDF3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcSPD3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcAHIT3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMHIT3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcAAV3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMAV3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcSP3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcGRD3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcDLV3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcDAT3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcDMAT3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcDDF3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcDMDF3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcTRN3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcELMA3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcELMN3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcELMH3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcHLFP3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcHLFM3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcHPH3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMPH3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcSPH3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMPHP3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcSPHP3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcSPHM3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMPHM3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcREV3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcSTS3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcSTSR3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcWSTS3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcWSTSC3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcPATS3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcPDFS3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcPMATS3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcPMDFS3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcPATT3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcPDFT3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcPMATT3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcPMDFT3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcSPDU3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcSPDD3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrcMSP3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmHP1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmMHP1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmAT1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmMAT1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmDF1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmMDF1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmSPD1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmAHIT1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmMHIT1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmAAV1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmMAV1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmTRN1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmELM1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmELMR1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmELMN1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmELMH1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmSTSR1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPATS1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPDFS1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPMATS1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPMDFS1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPATT1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPDFT1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPMATT1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPMDFT1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmSPDU1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmSPDD1" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmHP2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmMHP2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmAT2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmMAT2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmDF2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmMDF2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmSPD2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmAHIT2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmMHIT2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmAAV2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmMAV2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmTRN2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmELM2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmELMR2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmELMN2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmELMH2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmSTSR2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPATS2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPDFS2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPMATS2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPMDFS2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPATT2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPDFT2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPMATT2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPMDFT2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmSPDU2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmSPDD2" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmHP3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmMHP3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmAT3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmMAT3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmDF3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmMDF3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmSPD3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmAHIT3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmMHIT3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmAAV3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmMAV3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmTRN3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmELM3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmELMR3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmELMN3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmELMH3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmSTSR3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPATS3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPDFS3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPMATS3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPMDFS3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPATT3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPDFT3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPMATT3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPMDFT3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmSPDU3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmSPDD3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmHP4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmMHP4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmAT4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmMAT4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmDF4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmMDF4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmSPD4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmAHIT4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmMHIT4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmAAV4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmMAV4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmTRN4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmELM4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmELMR4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmELMN4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmELMH4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmSTSR4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPATS4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPDFS4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPMATS4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPMDFS4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPATT4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPDFT4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPMATT4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPMDFT4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmSPDU4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmSPDD4" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmHP5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmMHP5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmAT5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmMAT5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmDF5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmMDF5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmSPD5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmAHIT5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmMHIT5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmAAV5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmMAV5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmTRN5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmELM5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmELMR5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmELMN5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmELMH5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmSTSR5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPATS5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPDFS5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPMATS5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPMDFS5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPATT5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPDFT5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPMATT5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmPMDFT5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmSPDU5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrmSPDD5" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-
-                    <TextBlock x:Name="lblrd1EXP" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrd1Gold" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrd1Drop" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrd1Chance" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrd2EXP" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrd2Gold" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrd2Drop" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrd2Chance" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrd3EXP" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrd3Gold" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrd3Drop" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrd3Chance" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-
-                    <TextBlock x:Name="lblrDartBurn" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lblrHaschelCharge" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text=" " Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-
-                    <TextBlock x:Name="lbllLV" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="LV" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllHP" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="HP" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllMHP" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="MHP" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllMP" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="MP" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllMMP" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="MMP" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllAT" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="AT" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllMAT" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="MAT" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllDF" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="DF" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllMDF" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="MDF" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllSPD" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="SPD" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllAHIT" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="AHIT" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllMHIT" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="MHIT" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllAAV" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="AAV" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllMAV" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="MAV" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllSP" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="SP" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllGRD" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="GRD" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllDLV" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="DLV" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllDAT" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="DAT" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllDMAT" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="DMAT" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllDDF" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="DDF" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllDMDF" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="DMDF" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllDRGB" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="DRGB" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllTRN" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="TRN" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllELMD" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="ELMD" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllRELM" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="RELM" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllELMA" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="ELMA" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllELMN" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="ELMN" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllHLFE" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="HLFE" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllHLFP" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="HLFP" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllHLFM" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="HLFM" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllHPH" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="HPH" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllMPH" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="MPH" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllSPH" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="SPH" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllMPHP" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="MPHP" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllMPHM" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="MPHM" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllSPHP" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="SPHP" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllSPHM" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="SPHM" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllREV" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="REV" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllSTSE" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="STSE" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllSTSR" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="STSR" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllWSTS" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="WSTS" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllWSTSC" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="WSTS%" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllPATS" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="PATS" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllPDFS" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="PDFS" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllPMATS" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="PMATS" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllPMDFS" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="PMDFS" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllPATT" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="PATT" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllPDFT" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="PDFT" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllPMATT" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="PMATT" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllPMDFT" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="PMDFT" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllSPDUT" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="SPDUT" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllSPDDT" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="SPDDT" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllEXP" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="EXP" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllGOLD" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="GOLD" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllITEM" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="ITEM" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllDROP" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="DROP" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllBRN" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="BRN" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllCHR" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="CHR" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllMPHIP" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="MPHIP" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllMPHIM" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="MPHIM" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllSPHIP" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="SPHIP" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="lbllSPHIM" Grid.Row="8" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Text="SPHIM" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Grid>
             </TabItem>
             <TabItem x:Name="tabSettings" Header="Settings">
