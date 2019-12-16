@@ -79,12 +79,12 @@ namespace Dragoon_Modifier {
                 SUBKEY = Registry.CurrentUser.CreateSubKey("Legend of Dragoon\\" + SAVE_SLOT, true);
         }
 
-        public static void WriteOutput(string text) {
+        public static void WriteOutput(object text) {
             Application.Current.Dispatcher.Invoke(() => {
                 if (CONSOLE.LineCount == 1 || CONSOLE.LineCount > 2000) {
-                    CONSOLE.Text = "-----LOGCUT-----\r\n" + text;
+                    CONSOLE.Text = "-----LOGCUT-----\r\n" + text.ToString();
                 } else {
-                    CONSOLE.AppendText("\r\n" + text);
+                    CONSOLE.AppendText("\r\n" + text.ToString());
                 }
                 if (!CONSOLE.IsFocused) {
                     CONSOLE.ScrollToEnd();
@@ -92,13 +92,13 @@ namespace Dragoon_Modifier {
             });
         }
 
-        public static void WriteDebug(string text) {
+        public static void WriteDebug(object text) {
             Application.Current.Dispatcher.Invoke(() => {
                 if (DEBUG_MODE) {
                     if (CONSOLE.LineCount == 1 || CONSOLE.LineCount > 2000) {
-                        CONSOLE.Text = "-----LOGCUT-----\r\n[DEBUG] " + text;
+                        CONSOLE.Text = "-----LOGCUT-----\r\n[DEBUG] " + text.ToString();
                     } else {
-                        CONSOLE.AppendText("\r\n[DEBUG] " + text);
+                        CONSOLE.AppendText("\r\n[DEBUG] " + text.ToString());
                     }
                     if (!CONSOLE.IsFocused) {
                         CONSOLE.ScrollToEnd();
@@ -107,15 +107,15 @@ namespace Dragoon_Modifier {
             });
         }
 
-        public static void WriteGLog(string text) {
+        public static void WriteGLog(object text) {
             Application.Current.Dispatcher.Invoke(() => {
-                GLOG.Text = text;
+                GLOG.Text = text.ToString();
             });
         }
 
-        public static void WritePLog(string text) {
+        public static void WritePLog(object text) {
             Application.Current.Dispatcher.Invoke(() => {
-                PLOG.Text = text;
+                PLOG.Text = text.ToString();
             });
         }
 
@@ -152,5 +152,8 @@ namespace Dragoon_Modifier {
             return "Null";
         }
 
+        public static long GetTime() {
+            return (long) (DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+        }
     }
 }

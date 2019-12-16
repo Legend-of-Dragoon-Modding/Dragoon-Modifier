@@ -13,6 +13,7 @@ using System.Windows.Controls;
 namespace Dragoon_Modifier {
     public partial class MainWindow {
         #region Variables
+        #region Program Variables
         public static Emulator emulator = new Emulator();
         public Thread fieldThread, battleThread, hotkeyThread, otherThread;
         public string preset = "";
@@ -20,6 +21,13 @@ namespace Dragoon_Modifier {
 
         public TextBlock[,] monsterDisplay = new TextBlock[5,6];
         public TextBlock[,] characterDisplay = new TextBlock[3,9];
+#endregion
+
+        #region Script Variables
+        public bool shopChange = false;
+        public bool wroteIcons = false;
+        public bool firstWriteIcons = false;
+        #endregion
         #endregion
 
         #region Startup
@@ -280,10 +288,14 @@ namespace Dragoon_Modifier {
             string currentScript = "";
             int run = 1;
             while (run == 1 && Constants.RUN) {
-                int index = 0;
+
+                if (dmScripts.ContainsKey("btnSaveAnywhere") && dmScripts["btnSaveAnywhere"])
+                    SaveAnywhere();
+                if (dmScripts.ContainsKey("btnShopChanges") && dmScripts["btnShopChanges"])
+                    ShopChanges();
+
                 foreach (SubScript script in lstField.Items) {
-                    index++;
-                    if (script.state == ScriptState.DISABLED && index >= 2)
+                    if (script.state == ScriptState.DISABLED)
                         continue;
                     currentScript = script.ToString();
                     this.Dispatcher.BeginInvoke(new Action(() => {
@@ -301,10 +313,8 @@ namespace Dragoon_Modifier {
             string currentScript = "";
             int run = 1;
             while (run == 1 && Constants.RUN) {
-                int index = 0;
                 foreach (SubScript script in lstBattle.Items) {
-                    index++;
-                    if (script.state == ScriptState.DISABLED && index >= 2)
+                    if (script.state == ScriptState.DISABLED)
                         continue;
                     currentScript = script.ToString();
                     this.Dispatcher.BeginInvoke(new Action(() => {
@@ -322,14 +332,23 @@ namespace Dragoon_Modifier {
             string currentScript = "";
             int run = 1;
             while (run == 1 && Constants.RUN) {
+                Globals.CURRENT_TIME = Constants.GetTime();
                 foreach (SubScript script in lstHotkey.Items) {
-                    if (script.state == ScriptState.DISABLED)
+                    if (script.state == ScriptState.DISABLED || Globals.CURRENT_TIME < (Globals.LAST_HOTKEY + 3))
                         continue;
                     currentScript = script.ToString();
                     this.Dispatcher.BeginInvoke(new Action(() => {
                         run = script.Run(emulator);
                     }), DispatcherPriority.ContextIdle);
                 }
+
+                if (Globals.CURRENT_TIME >= (Globals.LAST_HOTKEY + 3)) {
+                    if (Globals.HOTKEY == (Hotkey.KEY_SQUARE + Hotkey.KEY_CIRCLE)) {
+                        ChangeShop();
+                        Globals.LAST_HOTKEY = Constants.GetTime();
+                    }
+                }
+
                 Thread.Sleep(1000);
             }
         }
@@ -446,6 +465,272 @@ namespace Dragoon_Modifier {
                     lblTurnOrder.Text = "Turn Order: ";
                 }
             } catch (Exception e) { }
+        }
+        #endregion
+
+        #region Save Anywhere
+        public void SaveAnywhere() {
+            if (!Globals.IN_BATTLE) {
+                emulator.WriteShort(Constants.GetAddress("SAVE_ANYWHERE"), 1);
+            }
+        }
+        #endregion
+
+        #region Shop Changes
+        public void ShopChanges() {
+            switch (Globals.MAP) {
+                case 145: // Lohan
+                    if (ReadShop(0x11E0FC) == 229) {
+                        WriteShop(0x11E100, 222);
+                        WriteShop(0x11E102, 30);
+                    } else {
+                        WriteShop(0x11E100, 90);
+                        WriteShop(0x11E102, 7500);
+                    }
+                    WriteShop(0x11E118, 101);
+                    WriteShop(0x11E11A, 3750);
+                    if (shopChange) {
+                        WriteShop(0x11E11C, 133);
+                        WriteShop(0x11E120, 131);
+                    } else {
+                        WriteShop(0x11E11C, 150);
+                        WriteShop(0x11E120, 151);
+                    }
+                    WriteShop(0x11E0FE, 100);
+                    break;
+                case 180: //Kanzas
+                    WriteShop(0x11E0FE, 80);
+                    break;
+                case 267: //I'm not sure what shop this was supposed to be
+                case 214: //Feltz
+                case 287: //Phantom Ship
+                case 309: //Lideria
+                case 479: //Vellweb
+                    WriteShop(0x11E0FE, 80);
+                    WriteShop(0x11E102, 100);
+                    break;
+                case 247: //Donau
+                case 332: //Furni
+                    WriteShop(0x11E0FE, 100);
+                    break;
+                case 349: //Dennigrad
+                case 357: //Dennigrad
+                    WriteShop(0x11E124, 241);
+                    WriteShop(0x11E0FE, 80);
+                    WriteShop(0x11E102, 100);
+                    break;
+                case 384: //Wingly Forest
+                    if (emulator.ReadShort(0x11E0FA) == 30) {
+                        WriteShop(0x11E0FE, 100);
+                        WriteShop(0x11E102, 80);
+                    } else {
+                        WriteShop(0x11E0FE, 600);
+                        WriteShop(0x11E102, 600);
+                    }
+                    break;
+                case 515: //Ulra
+                case 525: //Ulra
+                case 435: //Kashua
+                    WriteShop(0x11E0FE, 100);
+                    WriteShop(0x11E102, 80);
+                    break;
+                case 564: //Rouge
+                    if (ReadShop(0x11E0FA) == 30) {
+                        WriteShop(0x11E0FE, 80);
+                        WriteShop(0x11E102, 100);
+                    } else {
+                        WriteShop(0x11E0FE, 1000);
+                        WriteShop(0x11E102, 1000);
+                    }
+                    break;
+                case 619: //Moon
+                    if (ReadShop(0x11E0FA) == 30) {
+                        WriteShop(0x11E0FE, 80);
+                        WriteShop(0x11E102, 100);
+                    } else {
+                        WriteShop(0x11E0FE, 500);
+                        WriteShop(0x11E102, 500);
+                    }
+                    break;
+                case 530: //Law City
+                    if (ReadShop(0x11E0FC) == 229) {
+                        WriteShop(0x11E0FE, 80);
+                        WriteShop(0x11E102, 100);
+                    } else {
+                        WriteShop(0x11E0FE, 400);
+                        WriteShop(0x11E102, 800);
+                    }
+                    break;
+            }
+        }
+
+        public int ReadShop(int address) {
+            return emulator.ReadShort(address + ShopOffset());
+        }
+
+        public void WriteShop(int address, ushort value) {
+            emulator.WriteShort(address + ShopOffset(), value);
+        }
+        
+        public int ShopOffset() {
+            int offset = 0x0;
+            if (Constants.REGION == Region.JPN) {
+                offset -= 0x4D90;
+            } else if (Constants.REGION == Region.EUR_GER) {
+                offset += 0x120;
+            }
+            return offset;
+        }
+
+        /*public int GetShopItem(int slot) {
+            return emulator.ReadShort(Constants.GetAddress("SHOP") + ((slot - 1) * 0x2));
+        }
+
+        public int GetShopPrice(int slot) {
+            return emulator.ReadShort(Constants.GetAddress("SHOP") + ((slot - 1) * 0x2)) + 0x2;
+        }
+        
+        public void ChangeShopItemPrice(int slot, byte item, ushort price) {
+            emulator.WriteShort(Constants.GetAddress("SHOP") + ((slot - 1) * 0x2), item);
+            emulator.WriteShort(Constants.GetAddress("SHOP") + ((slot - 1) * 0x2) + 0x2, price);
+        }
+        
+        public void ChangeShopItem(int slot, byte item) {
+            emulator.WriteShort(Constants.GetAddress("SHOP") + ((slot - 1) * 0x2), item);
+        }
+        
+        public void ChangeShopPrice(int slot, ushort price) {
+            emulator.WriteShort(Constants.GetAddress("SHOP") + ((slot - 1) * 0x2) + 0x2, price);
+        }*/
+
+        public void ChangeShop() { //SQUARE + CIRCLE
+            if (Globals.BATTLE_VALUE == 0 && Globals.MAP == 145) {
+                shopChange = shopChange ? false : true;
+                Constants.WriteGLog("Changed Lohan shop to state: " + shopChange);
+                Constants.WriteOutput("Changed Lohan shop to state: " + shopChange);
+            }
+        }
+        #endregion
+
+        #region Icon Changes
+        public void IconChanges() {
+            byte menu = emulator.ReadByte(Constants.GetAddress("MENU"));
+            if (menu == 12 || menu == 16 || menu == 19) {
+                WriteIcons();
+                wroteIcons = true;
+            } else {
+                if (menu == 125) {
+                    wroteIcons = false;
+                }
+            }
+
+            if (!firstWriteIcons && !Globals.IN_BATTLE && Globals.BATTLE_VALUE > 0) {
+                WriteIcons();
+                firstWriteIcons = true;
+            } else {
+                if (Globals.IN_BATTLE) {
+                    firstWriteIcons = false;
+                }
+            }
+        }
+
+        public void WriteIcons() {
+            emulator.WriteByte(0x1120DE + IconOffset(), 1);
+            emulator.WriteByte(0x1120FA + IconOffset(), 1);
+            emulator.WriteByte(0x112116 + IconOffset(), 1);
+            emulator.WriteByte(0x112132 + IconOffset(), 1);
+            emulator.WriteByte(0x11214E + IconOffset(), 1);
+            emulator.WriteByte(0x1121F6 + IconOffset(), 56);
+            emulator.WriteByte(0x11222E + IconOffset(), 3);
+            emulator.WriteByte(0x11224A + IconOffset(), 3);
+            emulator.WriteByte(0x112266 + IconOffset(), 3);
+            emulator.WriteByte(0x112282 + IconOffset(), 3);
+            emulator.WriteByte(0x11229E + IconOffset(), 3);
+            emulator.WriteByte(0x1122BA + IconOffset(), 3);
+            emulator.WriteByte(0x1122D6 + IconOffset(), 3);
+            emulator.WriteByte(0x1122F2 + IconOffset(), 4);
+            emulator.WriteByte(0x11230E + IconOffset(), 4);
+            emulator.WriteByte(0x11232A + IconOffset(), 4);
+            emulator.WriteByte(0x112346 + IconOffset(), 4);
+            emulator.WriteByte(0x112362 + IconOffset(), 4);
+            emulator.WriteByte(0x11237E + IconOffset(), 4);
+            emulator.WriteByte(0x11239A + IconOffset(), 4);
+            emulator.WriteByte(0x1123B6 + IconOffset(), 2);
+            emulator.WriteByte(0x1123D2 + IconOffset(), 2);
+            emulator.WriteByte(0x1123EE + IconOffset(), 2);
+            emulator.WriteByte(0x11240A + IconOffset(), 2);
+            emulator.WriteByte(0x112426 + IconOffset(), 2);
+            emulator.WriteByte(0x112442 + IconOffset(), 2);
+            emulator.WriteByte(0x11245E + IconOffset(), 7);
+            emulator.WriteByte(0x11247A + IconOffset(), 7);
+            emulator.WriteByte(0x112496 + IconOffset(), 7);
+            emulator.WriteByte(0x1124B2 + IconOffset(), 7);
+            emulator.WriteByte(0x1124CE + IconOffset(), 7);
+            emulator.WriteByte(0x1124EA + IconOffset(), 7);
+            emulator.WriteByte(0x112506 + IconOffset(), 8);
+            emulator.WriteByte(0x1125E6 + IconOffset(), 11);
+            emulator.WriteByte(0x11263A + IconOffset(), 14);
+            emulator.WriteByte(0x112656 + IconOffset(), 14);
+            emulator.WriteByte(0x112672 + IconOffset(), 14);
+            emulator.WriteByte(0x11268E + IconOffset(), 14);
+            emulator.WriteByte(0x1126C6 + IconOffset(), 9);
+            emulator.WriteByte(0x1126E2 + IconOffset(), 9);
+            emulator.WriteByte(0x11271A + IconOffset(), 12);
+            emulator.WriteByte(0x1127C2 + IconOffset(), 14);
+            emulator.WriteByte(0x1127DE + IconOffset(), 12);
+            emulator.WriteByte(0x11292E + IconOffset(), 15);
+            emulator.WriteByte(0x11294A + IconOffset(), 15);
+            emulator.WriteByte(0x11299E + IconOffset(), 17);
+            emulator.WriteByte(0x112A46 + IconOffset(), 20);
+            emulator.WriteByte(0x112A62 + IconOffset(), 19);
+            emulator.WriteByte(0x112A7E + IconOffset(), 19);
+            emulator.WriteByte(0x112AEE + IconOffset(), 19);
+            emulator.WriteByte(0x112B0A + IconOffset(), 19);
+            emulator.WriteByte(0x112B42 + IconOffset(), 26);
+            emulator.WriteByte(0x112B5E + IconOffset(), 26);
+            emulator.WriteByte(0x112B7A + IconOffset(), 26);
+            emulator.WriteByte(0x112B96 + IconOffset(), 26);
+            emulator.WriteByte(0x112BB2 + IconOffset(), 26);
+            emulator.WriteByte(0x112BCE + IconOffset(), 26);
+            emulator.WriteByte(0x112BEA + IconOffset(), 28);
+            emulator.WriteByte(0x112C06 + IconOffset(), 26);
+            emulator.WriteByte(0x112C22 + IconOffset(), 22);
+            emulator.WriteByte(0x112C3E + IconOffset(), 22);
+            emulator.WriteByte(0x112C5A + IconOffset(), 22);
+            emulator.WriteByte(0x112C76 + IconOffset(), 22);
+            emulator.WriteByte(0x112C92 + IconOffset(), 22);
+            emulator.WriteByte(0x112CAE + IconOffset(), 22);
+            emulator.WriteByte(0x112CCA + IconOffset(), 22);
+            emulator.WriteByte(0x112CE6 + IconOffset(), 29);
+            emulator.WriteByte(0x112D02 + IconOffset(), 29);
+            emulator.WriteByte(0x112D1E + IconOffset(), 29);
+            emulator.WriteByte(0x112D56 + IconOffset(), 24);
+            emulator.WriteByte(0x112D72 + IconOffset(), 30);
+            emulator.WriteByte(0x112DE2 + IconOffset(), 24);
+            emulator.WriteByte(0x112DFE + IconOffset(), 24);
+            emulator.WriteByte(0x112E36 + IconOffset(), 27);
+            emulator.WriteByte(0x112EA6 + IconOffset(), 25);
+            emulator.WriteByte(0x112EC2 + IconOffset(), 25);
+            emulator.WriteByte(0x112EDE + IconOffset(), 25);
+            emulator.WriteByte(0x112EFA + IconOffset(), 25);
+            emulator.WriteByte(0x112F16 + IconOffset(), 25);
+            emulator.WriteByte(0x112F32 + IconOffset(), 25);
+            emulator.WriteByte(0x112F4E + IconOffset(), 25);
+            emulator.WriteByte(0x11304A + IconOffset(), 32);
+            emulator.WriteByte(0x113066 + IconOffset(), 32);
+            emulator.WriteByte(0x113082 + IconOffset(), 32);
+            emulator.WriteByte(0x1130BA + IconOffset(), 22);
+            emulator.WriteByte(0x1130D6 + IconOffset(), 22);
+        }
+
+        int IconOffset() {
+            int offset = 0x0;
+            if (Constants.REGION == Region.JPN) {
+                offset = -0x186C;
+            } else if (Constants.REGION == Region.EUR_GER) {
+                offset = 0x23C;
+            }
+            return offset;
         }
         #endregion
         #endregion
@@ -819,7 +1104,7 @@ namespace Dragoon_Modifier {
         public void GenericSwitchButton(object sender, EventArgs e) {
             Button test = (Button) sender;
             if (!dmScripts.ContainsKey(test.Name)) {
-                dmScripts.Add(test.Name, false);
+                dmScripts.Add(test.Name, true);
             } else {
                 dmScripts[test.Name] = dmScripts[test.Name] ? false : true;
             }
@@ -828,7 +1113,7 @@ namespace Dragoon_Modifier {
         }
 
         public void TurnOnOffButton(ref Button sender) {
-            if (dmScripts[sender.Name]) {
+            if (!dmScripts[sender.Name]) {
                 sender.Background = new SolidColorBrush(Color.FromArgb(255, 255, 168, 168));
             } else {
                 sender.Background = new SolidColorBrush(Color.FromArgb(255, 168, 211, 255));

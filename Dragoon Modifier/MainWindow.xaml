@@ -1771,7 +1771,11 @@
                                 <MenuItem x:Name="miRegion" Header="Region" Background="#FFB6B6B6" Foreground="White">
                                     <MenuItem Header="USA" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" IsChecked="True" Click="miRegion_Click"/>
                                     <MenuItem Header="JPN" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miRegion_Click"/>
-                                    <MenuItem Header="EUR" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miRegion_Click"/>
+                                    <MenuItem Header="EUR-GER" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miRegion_Click" IsEnabled="False"/>
+                                    <MenuItem Header="EUR-FRN" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miRegion_Click" IsEnabled="False"/>
+                                    <MenuItem Header="EUR-ITL" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miRegion_Click" IsEnabled="False"/>
+                                    <MenuItem Header="EUR-SPN" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miRegion_Click" IsEnabled="False"/>
+                                    <MenuItem Header="EUR-ENG" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miRegion_Click" IsEnabled="False"/>
                                 </MenuItem>
                                 <MenuItem x:Name="miSaveSlot" Header="Save Slot" Background="#FFB6B6B6" Foreground="White">
                                     <MenuItem Header="1" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
