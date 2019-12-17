@@ -18,6 +18,7 @@ namespace Dragoon_Modifier {
         public Thread fieldThread, battleThread, hotkeyThread, otherThread;
         public string preset = "";
         public static Dictionary<string, bool> dmScripts = new Dictionary<string, bool>();
+        public static Dictionary<string, int> uiCombo = new Dictionary<string, int>();
 
         public TextBlock[,] monsterDisplay = new TextBlock[5,6];
         public TextBlock[,] characterDisplay = new TextBlock[3,9];
@@ -34,6 +35,7 @@ namespace Dragoon_Modifier {
         public int lastItemUsedDamageCap = 0;
         //Solo Mode
         public bool addSoloPartyMembers = false;
+        public bool alwaysAddSoloPartyMembers = false;
         public bool soloModeOnBattleEntry = false;
         #endregion
         #endregion
@@ -334,8 +336,8 @@ namespace Dragoon_Modifier {
 
                 if (dmScripts.ContainsKey("btnRemoveCaps") && dmScripts["btnRemoveCaps"])
                     RemoveDamageCap();
-                //if (dmScripts.ContainsKey("btnSoloMode") && dmScripts["btnSoloMode"])
-                //    SoloModeBattle();
+                if (dmScripts.ContainsKey("btnSoloMode") && dmScripts["btnSoloMode"])
+                    SoloModeBattle();
 
                 foreach (SubScript script in lstBattle.Items) {
                     if (script.state == ScriptState.DISABLED)
@@ -830,19 +832,43 @@ namespace Dragoon_Modifier {
         public void SoloModeBattle() {
             if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !soloModeOnBattleEntry) {
                 for (int i = 0; i < 3; i++) {
-                    if (i != cboSoloLeader.SelectedIndex) {
-                        emulator.WriteInteger(Globals.CHAR_ADDRESS[i], 0);
-                        emulator.WriteInteger(Globals.CHAR_ADDRESS[i] + 0x8, 0);
-                        emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0x12C, 200);
-                        emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0x45, 25);
-                    } else {
-                        //battle rows
+                    if (Globals.PARTY_SLOT[i] < 9) {
+                        if (i != uiCombo["cboSoloLeader"]) {
+                            emulator.WriteShort(Globals.CHAR_ADDRESS[i], 0);
+                            emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0x8, 0);
+                            emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0x12C, 200);
+                            emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0x45, 25);
+                            //yeet
+                            emulator.WriteInteger(Globals.CHAR_ADDRESS[i] + 0x16D, 255);
+                            emulator.WriteInteger(Globals.CHAR_ADDRESS[i] + 0x171, 255);
+                            emulator.WriteInteger(Globals.CHAR_ADDRESS[i] + 0x175, 255);
+                        } else {
+                            emulator.WriteInteger(Globals.CHAR_ADDRESS[i] + 0x16D, 9);
+                            emulator.WriteInteger(Globals.CHAR_ADDRESS[i] + 0x171, 0);
+                            emulator.WriteInteger(Globals.CHAR_ADDRESS[i] + 0x175, 0);
+                        }
                     }
                 }
                 soloModeOnBattleEntry = true;
             } else {
-                soloModeOnBattleEntry = false;
+                if (!Globals.IN_BATTLE && soloModeOnBattleEntry) {
+                    soloModeOnBattleEntry = false;
+                    if (!alwaysAddSoloPartyMembers)
+                        addSoloPartyMembers = false;
+                }
             }
+        }
+
+        public void AddSoloPartyMembers() {
+            addSoloPartyMembers = true;
+            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x4, Globals.PARTY_SLOT[0]);
+            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x5, 0);
+            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x6, 0);
+            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x7, 0);
+            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x8, Globals.PARTY_SLOT[0]);
+            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x9, 0);
+            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0xA, 0);
+            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0xB, 0);
         }
         #endregion
         #endregion
@@ -1214,14 +1240,18 @@ namespace Dragoon_Modifier {
 
         #region UI
         public void SwitchButton(object sender, EventArgs e) {
-            Button test = (Button) sender;
-            if (!dmScripts.ContainsKey(test.Name)) {
-                dmScripts.Add(test.Name, true);
+            Button btn = (Button) sender;
+            if (!dmScripts.ContainsKey(btn.Name)) {
+                dmScripts.Add(btn.Name, true);
             } else {
-                dmScripts[test.Name] = dmScripts[test.Name] ? false : true;
+                dmScripts[btn.Name] = dmScripts[btn.Name] ? false : true;
             }
 
-            TurnOnOffButton(ref test);
+            if (btn.Name.Equals("btnAddPartyMembersOn")) {
+                alwaysAddSoloPartyMembers = dmScripts[btn.Name] ? true : false;
+            }
+
+            TurnOnOffButton(ref btn);
         }
 
         public void TurnOnOffButton(ref Button sender) {
@@ -1233,7 +1263,19 @@ namespace Dragoon_Modifier {
         }
 
         public void GreenButton(object sender, EventArgs e) {
+            Button btn = (Button) sender;
+            if (btn.Name.Equals("btnAddPartyMembers")) {
+                AddSoloPartyMembers();
+            }
+        }
 
+        public void ComboBox(object sender, EventArgs e) {
+            ComboBox cbo = (ComboBox) sender;
+            if (!uiCombo.ContainsKey(cbo.Name)) {
+                uiCombo.Add(cbo.Name, cbo.SelectedIndex);
+            } else {
+                uiCombo[cbo.Name] = cbo.SelectedIndex;
+            }
         }
         #endregion
 
