@@ -20,11 +20,13 @@ namespace Dragoon_Modifier {
         public static Dictionary<string, bool> dmScripts = new Dictionary<string, bool>();
         public static Dictionary<string, int> uiCombo = new Dictionary<string, int>();
 
-        public TextBlock[,] monsterDisplay = new TextBlock[5,6];
-        public TextBlock[,] characterDisplay = new TextBlock[3,9];
-#endregion
+        public TextBlock[,] monsterDisplay = new TextBlock[5, 6];
+        public TextBlock[,] characterDisplay = new TextBlock[3, 9];
+        #endregion
 
         #region Script Variables
+        //General
+        public string difficultyMode = "Normal";
         //Shop Changes
         public bool shopChange = false;
         public bool wroteIcons = false;
@@ -37,6 +39,11 @@ namespace Dragoon_Modifier {
         public bool addSoloPartyMembers = false;
         public bool alwaysAddSoloPartyMembers = false;
         public bool soloModeOnBattleEntry = false;
+        //Dragoon Changes
+        public ushort[] currentMP = { 0, 0, 0 };
+        public ushort[] previousMP = { 0, 0, 0 };
+        public byte recoveryRateSave = 0;
+        public bool dragoonChangesOnBattleEntry = false;
         #endregion
         #endregion
 
@@ -106,7 +113,7 @@ namespace Dragoon_Modifier {
                     foreach (MenuItem mi in miRegion.Items)
                         mi.IsChecked = miRegion.Items.IndexOf(mi) == (byte) Constants.REGION ? true : false;
                 }
-                
+
                 if (Constants.KEY.GetValue("LoadPreset") != null) {
                     bool load = Constants.KEY.GetValue("LoadPreset").Equals("True");
                     if (Constants.KEY.GetValue("Preset") != null && load) {
@@ -160,33 +167,33 @@ namespace Dragoon_Modifier {
             monsterDisplay[4, 3] = lblEnemy5DEF;
             monsterDisplay[4, 4] = lblEnemy5SPD;
             monsterDisplay[4, 5] = lblEnemy5TRN;
-            characterDisplay[0,0] = lblCharacter1Name;
-            characterDisplay[0,1] = lblCharacter1HMP;
-            characterDisplay[0,2] = lblCharacter1ATK;
-            characterDisplay[0,3] = lblCharacter1DEF;
-            characterDisplay[0,4] = lblCharacter1VHIT;
-            characterDisplay[0,5] = lblCharacter1DATK;
-            characterDisplay[0,6] = lblCharacter1DDEF;
-            characterDisplay[0,7] = lblCharacter1SPD;
-            characterDisplay[0,8] = lblCharacter1TRN;
-            characterDisplay[1,0] = lblCharacter2Name;
-            characterDisplay[1,1] = lblCharacter2HMP;
-            characterDisplay[1,2] = lblCharacter2ATK;
-            characterDisplay[1,3] = lblCharacter2DEF;
-            characterDisplay[1,4] = lblCharacter2VHIT;
-            characterDisplay[1,5] = lblCharacter2DATK;
-            characterDisplay[1,6] = lblCharacter2DDEF;
-            characterDisplay[1,7] = lblCharacter2SPD;
-            characterDisplay[1,8] = lblCharacter2TRN;
-            characterDisplay[2,0] = lblCharacter3Name;
-            characterDisplay[2,1] = lblCharacter3HMP;
-            characterDisplay[2,2] = lblCharacter3ATK;
-            characterDisplay[2,3] = lblCharacter3DEF;
-            characterDisplay[2,4] = lblCharacter3VHIT;
-            characterDisplay[2,5] = lblCharacter3DATK;
-            characterDisplay[2,6] = lblCharacter3DDEF;
-            characterDisplay[2,7] = lblCharacter3SPD;
-            characterDisplay[2,8] = lblCharacter3TRN;
+            characterDisplay[0, 0] = lblCharacter1Name;
+            characterDisplay[0, 1] = lblCharacter1HMP;
+            characterDisplay[0, 2] = lblCharacter1ATK;
+            characterDisplay[0, 3] = lblCharacter1DEF;
+            characterDisplay[0, 4] = lblCharacter1VHIT;
+            characterDisplay[0, 5] = lblCharacter1DATK;
+            characterDisplay[0, 6] = lblCharacter1DDEF;
+            characterDisplay[0, 7] = lblCharacter1SPD;
+            characterDisplay[0, 8] = lblCharacter1TRN;
+            characterDisplay[1, 0] = lblCharacter2Name;
+            characterDisplay[1, 1] = lblCharacter2HMP;
+            characterDisplay[1, 2] = lblCharacter2ATK;
+            characterDisplay[1, 3] = lblCharacter2DEF;
+            characterDisplay[1, 4] = lblCharacter2VHIT;
+            characterDisplay[1, 5] = lblCharacter2DATK;
+            characterDisplay[1, 6] = lblCharacter2DDEF;
+            characterDisplay[1, 7] = lblCharacter2SPD;
+            characterDisplay[1, 8] = lblCharacter2TRN;
+            characterDisplay[2, 0] = lblCharacter3Name;
+            characterDisplay[2, 1] = lblCharacter3HMP;
+            characterDisplay[2, 2] = lblCharacter3ATK;
+            characterDisplay[2, 3] = lblCharacter3DEF;
+            characterDisplay[2, 4] = lblCharacter3VHIT;
+            characterDisplay[2, 5] = lblCharacter3DATK;
+            characterDisplay[2, 6] = lblCharacter3DDEF;
+            characterDisplay[2, 7] = lblCharacter3SPD;
+            characterDisplay[2, 8] = lblCharacter3TRN;
 
 
             cboSoloLeader.Items.Add("Slot 1");
@@ -338,6 +345,8 @@ namespace Dragoon_Modifier {
                     RemoveDamageCap();
                 if (dmScripts.ContainsKey("btnSoloMode") && dmScripts["btnSoloMode"])
                     SoloModeBattle();
+                if (dmScripts.ContainsKey("btnDragoonChanges") && dmScripts["btnDragoonChanges"])
+                    DragoonChanges();
 
                 foreach (SubScript script in lstBattle.Items) {
                     if (script.state == ScriptState.DISABLED)
@@ -423,7 +432,7 @@ namespace Dragoon_Modifier {
                         characterDisplay[i, 2].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x2C) + "\r\n\r\n " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x2E);
                         characterDisplay[i, 3].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x30) + "\r\n\r\n " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x32);
                         characterDisplay[i, 4].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x34) + "/" + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x36) + "\r\n\r\n " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x38) + "/" + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x3A);
-                        characterDisplay[i, 5].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0xA4) + "\r\n\r\n " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0xA8);
+                        characterDisplay[i, 5].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0xA4) + "\r\n\r\n " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0xA6);
                         characterDisplay[i, 6].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0xA8) + "\r\n\r\n " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0xAA);
                         characterDisplay[i, 7].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x2A) + "\r\n\r\n " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x2);
                         characterDisplay[i, 8].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x44);
@@ -598,7 +607,7 @@ namespace Dragoon_Modifier {
         public void WriteShop(int address, ushort value) {
             emulator.WriteShort(address + ShopOffset(), value);
         }
-        
+
         public int ShopOffset() {
             int offset = 0x0;
             if (Constants.REGION == Region.JPN) {
@@ -871,6 +880,489 @@ namespace Dragoon_Modifier {
             emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0xB, 0);
         }
         #endregion
+
+        #region Dragoon Changes
+        public void ChangeDragoonDescription() {
+            if (Constants.REGION == Region.USA) {
+                //Red-Eyed
+                emulator.WriteAOB(0x51858, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 1A 00 16 00 15 00 0F 00 FF A0");
+                if ((dmScripts.ContainsKey("btnDivineRed") && dmScripts["btnDivineRed"]) && Globals.PARTY_SLOT[0] == 0 && (difficultyMode.Equals("Normal") || difficultyMode.Equals("Hard"))) {
+                    emulator.WriteAOB(0x51884, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 16 00 15 00 17 00 15 00 0F 00 FF A0");
+                    emulator.WriteAOB(0x518AC, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 16 00 1A 00 18 00 15 00 0F 00 FF A0");
+                } else {
+                    emulator.WriteAOB(0x51884, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 18 00 19 00 15 00 0F 00 FF A0");
+                    emulator.WriteAOB(0x518AC, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 1C 00 1B 00 1A 00 0F 00 FF A0");
+                }
+                emulator.WriteAOB(0x518D8, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 16 00 15 00 17 00 15 00 0F 00 FF A0");
+                //Divine
+                emulator.WriteAOB(0x519D4, "31 00 32 00 30 00 00 00 16 00 15 00 17 00 15 00 0F 00 FF A0");
+                emulator.WriteAOB(0x51900, "31 00 32 00 30 00 00 00 16 00 1A 00 18 00 15 00 0F 00 FF A0");
+                //Jade
+                emulator.WriteAOB(0x51924, "35 00 41 00 46 00 3C 00 00 00 31 00 32 00 30 00 00 00 19 00 19 00 15 00 0F 00 FF A0");
+                emulator.WriteAOB(0x5194C, "35 00 41 00 46 00 3C 00 00 00 31 00 32 00 30 00 00 00 1E 00 1E 00 15 00 0F 00 FF A0");
+                emulator.WriteAOB(0x519AC, "35 00 41 00 46 00 3C 00 00 00 31 00 32 00 30 00 00 00 16 00 18 00 17 00 15 00 0F 00 FF A0");
+                emulator.WriteAOB(0x51AB4, "35 00 41 00 46 00 3C 00 00 00 31 00 32 00 30 00 00 00 19 00 19 00 15 00 0F 00 FF A0");
+                emulator.WriteAOB(0x51B48, "35 00 41 00 46 00 3C 00 00 00 31 00 32 00 30 00 00 00 19 00 19 00 15 00 0F 00 FF A0");
+                //White-Silver
+                emulator.WriteAOB(0x519F0, "2A 00 41 00 3F 00 40 00 4C 00 00 00 31 00 32 00 30 00 00 00 18 00 18 00 15 00 0F 00 FF A0");
+                emulator.WriteAOB(0x51A84, "2A 00 41 00 3F 00 40 00 4C 00 00 00 31 00 32 00 30 00 00 00 1D 00 1B 00 1A 00 0F 00 FF A0");
+                //Dark
+                emulator.WriteAOB(0x51ADC, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1A 00 1E 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 00 00 30 00 3D 00 3B 00 4E 00 FF A0");
+                emulator.WriteAOB(0x51B14, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 18 00 1E 00 1A 00 0F 00 00 00 10 00 00 00 24 00 3D 00 39 00 4A 00 FF A0");
+                emulator.WriteAOB(0x51BA8, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 16 00 1B 00 1D 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 00 00 FF A0");
+                //Violet
+                emulator.WriteAOB(0x51BD8, "32 00 40 00 4D 00 46 00 3C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 18 00 18 00 15 00 0F 00 FF A0");
+                emulator.WriteAOB(0x51C0C, "32 00 40 00 4D 00 46 00 3C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1B 00 1B 00 15 00 0F 00 FF A0");
+                emulator.WriteAOB(0x51C40, "32 00 40 00 4D 00 46 00 3C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1E 00 1E 00 15 00 0F 00 FF A0");
+                emulator.WriteAOB(0x51C74, "32 00 40 00 4D 00 46 00 3C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 16 00 19 00 1E 00 1A 00 0F 00 FF A0");
+                //Blue-Sea
+                emulator.WriteAOB(0x51CA8, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1A 00 16 00 15 00 0F 00 FF A0");
+                emulator.WriteAOB(0x51D3C, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1A 00 18 00 15 00 0F 00 FF A0");
+                emulator.WriteAOB(0x51D64, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 16 00 19 00 15 00 15 00 0F 00 FF A0");
+                //Golden
+                emulator.WriteAOB(0x51D94, "23 00 39 00 4A 00 4C 00 40 00 00 00 31 00 32 00 30 00 00 00 1B 00 1C 00 1A 00 0F 00 FF A0");
+                emulator.WriteAOB(0x51DBC, "23 00 39 00 4A 00 4C 00 40 00 00 00 31 00 32 00 30 00 00 00 16 00 16 00 17 00 15 00 0F 00 FF A0");
+                emulator.WriteAOB(0x51DE4, "23 00 39 00 4A 00 4C 00 40 00 00 00 31 00 32 00 30 00 00 00 17 00 17 00 17 00 15 00 0F 00 FF A0");
+            }
+
+            if ((dmScripts.ContainsKey("btnDivineRed") && dmScripts["btnDivineRed"]) && Globals.PARTY_SLOT[0] == 0 && (difficultyMode.Equals("Normal") || difficultyMode.Equals("Hard")) && Globals.PARTY_SLOT[0] == 0) {
+                emulator.WriteAOB(Constants.GetAddress("SLOT1_SPELLS"), "01 02 FF FF FF FF FF FF");
+                emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (1 * 0xC), 50); //Explosion MP
+                emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (2 * 0xC), 50); //Final Burst MP
+            }
+
+            for (int i = 0; i < 3; i++) {
+                if (Globals.PARTY_SLOT[i] == 2 || Globals.PARTY_SLOT[i] == 8) {
+                    recoveryRateSave = emulator.ReadByte(Globals.CHAR_ADDRESS[i] + 0x12C);
+                }
+            }
+
+            if (difficultyMode.Equals("Hell")) {
+                emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (7 * 0xC), (uiCombo["cboFlowerStorm"] + 1) * 20); //Lavitz's Blossom Storm MP
+                emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (26 * 0xC), (uiCombo["cboFlowerStorm"] + 1) * 20); //Albert's Rose storm MP
+                emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (11 * 0xC), 20); //Shana's Moon Light MP
+                emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (66 * 0xC), 20); //???'s Moon Light MP
+                emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (25 * 0xC), 30); //Rainbow Breath MP
+                emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (12 * 0xC), 40); //Shana's Gates of Heaven MP
+                emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (67 * 0xC), 40); //???'s Gates of Heaven MP
+            }
+        }
+
+        public void DragoonChanges() {
+            if (Globals.IN_BATTLE && Globals.STATS_CHANGED) {
+                if (!dragoonChangesOnBattleEntry) {
+                    ChangeDragoonDescription();
+                    dragoonChangesOnBattleEntry = true;
+                } else {
+                    for (int i = 0; i < 3; i++) {
+                        int mp = 0;
+                        double multi = 1;
+                        byte dragoonSpecialAttack = emulator.ReadByte(Constants.GetAddress("DRAGOON_SPECIAL_ATTACK"));
+                        byte dragoonSpecialMagic = emulator.ReadByte(Constants.GetAddress("DRAGOON_SPECIAL_MAGIC"));
+
+                        if (Globals.ENCOUNTER_ID == 416 || Globals.ENCOUNTER_ID == 394 || Globals.ENCOUNTER_ID == 443) {
+                            if (emulator.ReadByte(Constants.GetAddress("DRAGON_BLOCK_STAFF")) == 1) {
+                                multi = 8;
+                            } else {
+                                multi = 1;
+                            }
+                        }
+
+                        /*if (ubReverseDBS) {
+                            multi = 10;
+                        }*/
+
+                        /*If(partySlots(i) = 3 And readShort(characterAddresses(i) + &H116) = 162) Then 'Dragon Buster II
+                            multi *= 1.1
+                        End If*/
+
+                        currentMP[i] = emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x4);
+
+                        if (Globals.PARTY_SLOT[i] == 0) { //Dart
+                            if (dragoonSpecialAttack == 0 || dragoonSpecialAttack == 9) {
+                                if (Globals.DRAGOON_SPIRITS >= 254) {
+                                    emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA4, (ushort) (306 * multi));
+                                } else {
+                                    if (dmScripts.ContainsKey("btnDivineRed") && dmScripts["btnDivineRed"]) {
+                                        emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA4, (ushort) (612 * multi));
+                                    } else {
+                                        emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA4, (ushort) (422 * multi));
+                                    }
+                                }
+                            } else {
+                                if (Globals.DRAGOON_SPIRITS >= 254) {
+                                    emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA5, 0);
+                                    emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA4, (ushort) (204 * multi));
+                                } else {
+                                    if (dmScripts.ContainsKey("btnDivineRed") && dmScripts["btnDivineRed"]) {
+                                        emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA4, (ushort) (408 * multi));
+                                    } else {
+                                        emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA4, (ushort) (281 * multi));
+                                    }
+                                }
+                            }
+
+                            if (multi == 1) {
+                                emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA9, 0);
+                                emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xAB, 0);
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA8, (ushort) (180 * multi));
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xAA, (ushort) (180 * multi));
+                            } else {
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA8, (ushort) (180 * multi));
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xAA, (ushort) (180 * multi));
+                            }
+
+                            /*If(customEquippables And soasSiphonSlot > -1 And soasSiphonSlot = i) Then 'Soa's Siphon Ring
+                               multi *= 0.3
+                            End If*/
+
+                            if (currentMP[i] != previousMP[i] && currentMP[i] < previousMP[i]) {
+                                mp = previousMP[i] - currentMP[i];
+                                if (dmScripts.ContainsKey("btnDivineRed") && dmScripts["btnDivineRed"]) {
+                                    if (emulator.ReadByte(Globals.CHAR_ADDRESS[i] + 0x46) == 1) {
+                                        emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (1020 * multi));
+                                    } else {
+                                        emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (510 * multi));
+                                    }
+                                } else {
+                                    if (mp == 10) {
+                                        if (multi == 1) {
+                                            emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA7, 0);
+                                            emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (255 * multi));
+                                        } else {
+                                            emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (255 * multi));
+                                        }
+                                        //addBurnStack(1);
+                                    } else if (mp == 20) {
+                                        emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (340 * multi));
+                                        //addBurnStack(1);
+                                    } else if (mp == 30) {
+                                        if (multi == 1) {
+                                            emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA7, 0);
+                                            emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (255 * multi));
+                                        } else {
+                                            emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (255 * multi));
+                                        }
+                                        //addBurnStack(2);
+                                    } else if (mp == 50) {
+                                        if (multi == 1) {
+                                            emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA7, 0);
+                                            emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (255 * multi));
+                                        } else {
+                                            emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (255 * multi));
+                                        }
+                                    } else if (mp == 80) {
+                                        emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (340 * multi));
+                                        //addBurnStack(3);
+                                    }
+                                }
+                                previousMP[i] = currentMP[i];
+                            } else {
+                                if (currentMP[i] > previousMP[i]) {
+                                    previousMP[i] = currentMP[i];
+                                }
+                            }
+                        } else if (Globals.PARTY_SLOT[i] == 1 || Globals.PARTY_SLOT[i] == 5) { //Lavitz/Albert
+                            /*if (checkHarpoon) {
+                                if (Globals.ENCOUNTER_ID == 416 || Globals.ENCOUNTER_ID == 394 || Globals.ENCOUNTER_ID == 443) {
+                                    if (emulator.ReadByte(Constants.GetAddress("DRAGON_BLOCK_STAFF")) == 1) {
+                                        multi = 24;
+                                    } else {
+                                        multi = 3;
+                                    }
+                                } else {
+                                    multi = 3;
+                                }
+                            } else {*/
+                                if (Globals.ENCOUNTER_ID == 416 || Globals.ENCOUNTER_ID == 394 || Globals.ENCOUNTER_ID == 443) {
+                                    if (emulator.ReadByte(Constants.GetAddress("DRAGON_BLOCK_STAFF")) == 1) {
+                                        multi = 8;
+                                    } else {
+                                        multi = 1;
+                                    }
+                                } else {
+                                    multi = 1;
+                                }
+                            //}
+
+                            if (multi == 1) {
+                                emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA9, 0);
+                                emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xAB, 0);
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA8, (ushort) (180 * multi));
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xAA, (ushort) (180 * multi));
+                            } else {
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA8, (ushort) (180 * multi));
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xAA, (ushort) (180 * multi));
+                            }
+
+                            if (dragoonSpecialAttack == 1 || dragoonSpecialAttack == 5) {
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA4, (ushort) (495 * multi));
+                            } else {
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA4, (ushort) (330 * multi));
+                            }
+
+                            /*If(customEquippables And soasSiphonSlot > -1 And soasSiphonSlot = i) Then 'Soa's Siphon Ring
+                               multi *= 0.3
+                            End If*/
+
+                            if (currentMP[i] != previousMP[i] && currentMP[i] < previousMP[i]) {
+                                mp = previousMP[i] - currentMP[i];
+                                if (mp == 20 || mp == 80) {
+                                    emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (440 * multi));
+                                } else if (mp == 30) {
+                                    emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (330 * multi));
+                                }
+                                if ((emulator.ReadByte(Globals.CHAR_ADDRESS[i] + 0x46) == 7 || emulator.ReadByte(Globals.CHAR_ADDRESS[i] + 0x46) == 26) && difficultyMode.Equals("Hell")) {
+                                    //flowerstorm
+                                }
+                            } else {
+                                if (currentMP[i] > previousMP[i]) {
+                                    previousMP[i] = currentMP[i];
+                                }
+                            }
+                        } else if (Globals.PARTY_SLOT[i] == 2 || Globals.PARTY_SLOT[i] == 8) { //Shana
+                            if (dragoonSpecialAttack == 2 || dragoonSpecialAttack == 8) {
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA4, (ushort) (510 * multi));
+                            } else {
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA4, (ushort) (365 * multi));
+                            }
+
+                            if (multi == 1) {
+                                emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA9, 0);
+                                emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xAB, 0);
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA8, (ushort) (180 * multi));
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xAA, (ushort) (180 * multi));
+                            } else {
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA8, (ushort) (180 * multi));
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xAA, (ushort) (180 * multi));
+                            }
+
+                            /*If(customEquippables And soasSiphonSlot > -1 And soasSiphonSlot = i) Then 'Soa's Siphon Ring
+                               multi *= 0.3
+                            End If*/
+
+                            if (currentMP[i] != previousMP[i] && currentMP[i] < previousMP[i]) {
+                                mp = previousMP[i] - currentMP[i];
+                                if (mp == 20) {
+                                    emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (332 * multi));
+                                    emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0x12C, (ushort) (recoveryRateSave + 20));
+                                } else if (mp == 80) {
+                                    emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (289 * multi));
+                                }
+                                previousMP[i] = currentMP[i];
+                            } else {
+                                if (currentMP[i] > previousMP[i]) {
+                                    previousMP[i] = currentMP[i];
+                                }
+                            }
+                        } else if (Globals.PARTY_SLOT[i] == 3) { //Rose
+                            if (dragoonSpecialAttack == 3) {
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA4, (ushort) (495 * multi));
+                            } else {
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA4, (ushort) (330 * multi));
+                            }
+
+                            if (multi == 1) {
+                                emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA9, 0);
+                                emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xAB, 0);
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA8, (ushort) (180 * multi));
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xAA, (ushort) (180 * multi));
+                            } else {
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA8, (ushort) (180 * multi));
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xAA, (ushort) (180 * multi));
+                            }
+
+                            /*If(customEquippables And soasSiphonSlot > -1 And soasSiphonSlot = i) Then 'Soa's Siphon Ring
+                               multi *= 0.3
+                            End If*/
+
+                            if (currentMP[i] != previousMP[i] && currentMP[i] < previousMP[i]) {
+                                mp = previousMP[i] - currentMP[i];
+                                if (mp == 10) {
+                                    emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (295 * multi));
+                                    for (int x = 0; x < 2; x++) {
+                                        if (Globals.PARTY_SLOT[x] < 9 && emulator.ReadShort(Globals.CHAR_ADDRESS[i]) > 0) {
+                                            emulator.WriteShort(Globals.CHAR_ADDRESS[i], (ushort) Math.Min(emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x8), emulator.ReadShort(Globals.CHAR_ADDRESS[x]) + Math.Round(emulator.ReadShort(Globals.CHAR_ADDRESS[i]) * (emulator.ReadByte(Constants.GetAddress("ROSE_DRAGOON_LEVEL")) * 0.05))));
+                                        }
+                                    }
+                                } else if (mp == 20) {
+                                    emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (395 * multi));
+                                } else if (mp == 25) {
+                                    emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (410 * multi));
+                                    for (int x = 0; x < 2; x++) {
+                                        if (Globals.PARTY_SLOT[x] < 9 && emulator.ReadShort(Globals.CHAR_ADDRESS[i]) > 0) {
+                                            emulator.WriteShort(Globals.CHAR_ADDRESS[i], (ushort) Math.Min(emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x8), emulator.ReadShort(Globals.CHAR_ADDRESS[x]) + Math.Round(emulator.ReadShort(Globals.CHAR_ADDRESS[i]) * (emulator.ReadByte(Constants.GetAddress("ROSE_DRAGOON_LEVEL")) * 0.04))));
+                                        }
+                                    }
+                                } else if (mp == 50) {
+                                    emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (790 * multi));
+                                } else if (mp == 80) {
+                                    emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (420 * multi));
+                                    //lastDamageSlot1 = readShort(&HAC6238)
+                                    //checkdamage
+                                } else if (mp == 100) {
+                                    emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (290 * multi));
+                                    //lastDamageSlot1 = readShort(&HAC6238)
+                                    //checkdamage
+                                }
+                                previousMP[i] = currentMP[i];
+                            } else {
+                                if (currentMP[i] > previousMP[i]) {
+                                    previousMP[i] = currentMP[i];
+                                }
+                            }
+                        } else if (Globals.PARTY_SLOT[i] == 4) { //Haschel
+                            if (dragoonSpecialAttack == 4) {
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA4, (ushort) (422 * multi));
+                            } else {
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA4, (ushort) (281 * multi));
+                            }
+
+                            if (multi == 1) {
+                                emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA9, 0);
+                                emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xAB, 0);
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA8, (ushort) (180 * multi));
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xAA, (ushort) (180 * multi));
+                            } else {
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA8, (ushort) (180 * multi));
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xAA, (ushort) (180 * multi));
+                            }
+
+                            /*If(customEquippables And soasSiphonSlot > -1 And soasSiphonSlot = i) Then 'Soa's Siphon Ring
+                               multi *= 0.3
+                            End If*/
+
+                            /*if (bombTurns > 0 && elementBombElement == 16) {
+                                multi *= 3;
+                            }*/
+
+                            if (currentMP[i] != previousMP[i] && currentMP[i] < previousMP[i]) {
+                                mp = previousMP[i] - currentMP[i];
+                                if (mp == 10 || mp == 20 || mp == 30) {
+                                    emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (330 * multi));
+                                } else if (mp == 80) {
+                                    emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (374 * multi));
+                                }
+                                previousMP[i] = currentMP[i];
+                            } else {
+                                if (currentMP[i] > previousMP[i]) {
+                                    previousMP[i] = currentMP[i];
+                                }
+                            }
+                        } else if (Globals.PARTY_SLOT[i] == 6) { //Meru
+                            if (dragoonSpecialAttack == 6) {
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA4, (ushort) (495 * multi));
+                            } else {
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA4, (ushort) (330 * multi));
+                            }
+
+                            if (multi == 1) {
+                                emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA9, 0);
+                                emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xAB, 0);
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA8, (ushort) (180 * multi));
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xAA, (ushort) (180 * multi));
+                            } else {
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA8, (ushort) (180 * multi));
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xAA, (ushort) (180 * multi));
+                            }
+
+                            /*If(customEquippables And soasSiphonSlot > -1 And soasSiphonSlot = i) Then 'Soa's Siphon Ring
+                               multi *= 0.3
+                            End If*/
+
+                            if (currentMP[i] != previousMP[i] && currentMP[i] < previousMP[i]) {
+                                mp = previousMP[i] - currentMP[i];
+                                if (mp == 10) {
+                                    if (multi == 1) {
+                                        emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA7, 0);
+                                        emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (255 * multi));
+                                    } else {
+                                        emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (255 * multi));
+                                    }
+                                } else if (mp == 30) {
+                                    emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (264 * multi));
+                                } else if (mp == 80) {
+                                    emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (350 * multi));
+                                }
+
+                                //Jeweled Hammer
+                                if (emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x116) == 164) {
+                                    if (mp == 50) {
+                                        if (multi == 1) {
+                                            emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA7, 0);
+                                            emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (255 * multi));
+                                        } else {
+                                            emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (255 * multi));
+                                        }
+                                    } else if (mp == 100) {
+                                        if (emulator.ReadByte(Globals.CHAR_ADDRESS[i] + 0x46) == 25) {
+                                            //trackchp
+                                            //rainbow breath
+                                        } else {
+                                            emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (350 * multi));
+                                        }
+                                    } else if (mp == 150) {
+                                        emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (525 * multi));
+                                    }
+                                }
+                                previousMP[i] = currentMP[i];
+                            } else {
+                                if (currentMP[i] > previousMP[i]) {
+                                    previousMP[i] = currentMP[i];
+                                }
+                            }
+                        } else if (Globals.PARTY_SLOT[i] == 7) {
+                            if (dragoonSpecialAttack == 7) {
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA4, (ushort) (600 * multi));
+                            } else {
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA4, (ushort) (500 * multi));
+                            }
+
+                            if (multi == 1) {
+                                emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA9, 0);
+                                emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xAB, 0);
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA8, (ushort) (130 * multi));
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xAA, (ushort) (130 * multi));
+                            } else {
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA8, (ushort) (130 * multi));
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xAA, (ushort) (130 * multi));
+                            }
+
+                            /*If(customEquippables And soasSiphonSlot > -1 And soasSiphonSlot = i) Then 'Soa's Siphon Ring
+                               multi *= 0.3
+                            End If*/
+
+                            if (currentMP[i] != previousMP[i] && currentMP[i] < previousMP[i]) {
+                                mp = previousMP[i] - currentMP[i];
+                                if (mp == 20) {
+                                    emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (450 * multi));
+                                } else if (mp == 30) {
+                                    emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (560 * multi));
+                                } else if (mp == 80) {
+                                    emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (740 * multi));
+                                }
+                                previousMP[i] = currentMP[i];
+                            } else {
+                                if (currentMP[i] > previousMP[i]) {
+                                    previousMP[i] = currentMP[i];
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                if (dragoonChangesOnBattleEntry) {
+                    recoveryRateSave = 0;
+                    for (int i = 0; i < 3; i++) {
+                        currentMP[i] = 0;
+                        previousMP[i] = 0;
+                    }
+                    dragoonChangesOnBattleEntry = false;
+                }
+            }
+        }
+        #endregion
+
         #endregion
 
         #region Settings
@@ -1013,8 +1505,8 @@ namespace Dragoon_Modifier {
                 miAttach_Click(null, null);
             }
             Constants.ProgramInfo();
-        } 
-        
+        }
+
         private void miRegion_Click(object sender, RoutedEventArgs e) {
             if (!Globals.IN_BATTLE) {
                 foreach (MenuItem mi in miRegion.Items) {

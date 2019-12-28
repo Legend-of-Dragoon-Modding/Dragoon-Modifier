@@ -56,7 +56,7 @@
         </Grid.RowDefinitions>
         <TabControl Grid.Row="0" TabStripPlacement="Top" BorderThickness="0" Margin="0,0,0,0" Grid.RowSpan="2" Background="#FFDADADA" Style="{DynamicResource TabControlStyle}">
             <TabControl.Resources>
-                <Style x:Key="TabControlStyle" TargetType="{x:Type TabControl}">
+                <!--<Style x:Key="TabControlStyle" TargetType="{x:Type TabControl}">
                     <Setter Property="SnapsToDevicePixels" Value="True" />
                     <Setter Property="Template">
                         <Setter.Value>
@@ -81,7 +81,7 @@
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
-                </Style>
+                </Style>-->
                 <Style TargetType="TabItem">
                     <Setter Property="Template">
                         <Setter.Value>

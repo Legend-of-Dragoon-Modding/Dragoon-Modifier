@@ -22,6 +22,13 @@ namespace Dragoon_Modifier {
             writeMemory("0x" + (address + Constants.OFFSET).ToString("x8"), "int", write.ToString(), file = "");
         }
 
+        public void WriteAOB(long address, string aob) {
+            String[] aobArray = aob.Split(' ');
+            for (int i = 0; i < aobArray.Length; i++) {
+                WriteByte(address + i, Convert.ToByte(aobArray[i], 16));
+            }
+        }
+
         public byte ReadByte(long address, string file = "") {
             return (byte) readByte("0x" + (address + Constants.OFFSET).ToString("x8"), file);
         }
