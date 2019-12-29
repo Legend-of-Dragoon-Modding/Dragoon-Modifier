@@ -1991,6 +1991,10 @@ namespace Dragoon_Modifier {
             } else {
                 uiCombo[cbo.Name] = cbo.SelectedIndex;
             }
+
+            if (cbo.Name.Equals("cboKillBGM")) {
+                SetKillBGMState();
+            }
         }
         #endregion
 
