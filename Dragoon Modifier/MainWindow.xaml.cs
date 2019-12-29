@@ -51,6 +51,12 @@ namespace Dragoon_Modifier {
         public bool hpCapBreakOnBattleEntry = false;
         //Aspect Ratio
         public bool aspectRatioOnBattleEntry = false;
+        //Kill BGM
+        public bool killBGMField = false;
+        public bool killBGMBattle = false;
+        public bool killedBGMField = false;
+        public bool killedBGMBattle = false;
+        public bool reKilledBGMField = false;
         #endregion
         #endregion
 
@@ -216,9 +222,14 @@ namespace Dragoon_Modifier {
             cboCamera.Items.Add("Default");
             cboCamera.Items.Add("Advanced");
 
+            cboKillBGM.Items.Add("Field");
+            cboKillBGM.Items.Add("Battle");
+            cboKillBGM.Items.Add("Both");
+
             cboSoloLeader.SelectedIndex = 0;
             cboAspectRatio.SelectedIndex = 0;
             cboCamera.SelectedIndex = 0;
+            cboKillBGM.SelectedIndex = 1;
         }
 
         private void LoadPreset() {
@@ -347,6 +358,8 @@ namespace Dragoon_Modifier {
                     SoloModeField();
                 if (dmScripts.ContainsKey("btnHPCapBreak") && dmScripts["btnHPCapBreak"])
                     HPCapBreakField();
+                if (dmScripts.ContainsKey("btnKillBGM") && dmScripts["btnKillBGM"] && killBGMField)
+                    KillBGMField();
 
                 Thread.Sleep(500);
                 this.Dispatcher.BeginInvoke(new Action(() => {
@@ -378,6 +391,8 @@ namespace Dragoon_Modifier {
                     HPCapBreakBattle();
                 if (dmScripts.ContainsKey("btnAspectRatio") && dmScripts["btnAspectRatio"])
                     ChangeAspectRatio();
+                if (dmScripts.ContainsKey("btnKillBGM") && dmScripts["btnKillBGM"] && killBGMBattle)
+                    KillBGMBattle();
 
                 Thread.Sleep(250);
                 this.Dispatcher.BeginInvoke(new Action(() => {
@@ -1507,6 +1522,66 @@ namespace Dragoon_Modifier {
             }
         }
         #endregion
+
+        #region Kill BGM
+        public void SetKillBGMState() {
+            if (uiCombo["cboKillBGM"] == 0) {
+                killBGMField = true;
+                killedBGMField = false;
+                killBGMBattle = false;
+                killedBGMBattle = false;
+            } else if (uiCombo["cboKillBGM"] == 1) {
+                killBGMField = false;
+                killedBGMField = false;
+                killBGMBattle = true;
+                killedBGMBattle = false;
+            } else if (uiCombo["cboKillBGM"] == 2) {
+                killBGMField = true;
+                killedBGMField = false;
+                killBGMBattle = true;
+                killedBGMBattle = false;
+            }
+        }
+
+        public void KillBGM() {
+            ArrayList bgmScan = emulator.ScanAllAOB("53 53 73 71", 0xA8660, 0x2A865F);
+            foreach (var address in bgmScan) {
+                for (int i = 0; i <= 255; i++) {
+                    emulator.WriteByteU((long) address + i, 0);
+                }
+            }
+        }
+
+        public void KillBGMField() {
+            if (!Globals.IN_BATTLE && !killedBGMField && Globals.BATTLE_VALUE < 9999) {
+                KillBGM();
+                killedBGMField = true;
+                reKilledBGMField = false;
+            } else {
+                if (killedBGMField && Globals.IN_BATTLE) {
+                    killedBGMField = false;
+                    reKilledBGMField = false;
+                } else {
+                    if (!reKilledBGMField && !Globals.IN_BATTLE && Globals.BATTLE_VALUE > 0) {
+                        KillBGM();
+                        reKilledBGMField = true;
+                    }
+                }
+            }
+
+        }
+        public void KillBGMBattle() {
+            if (Globals.IN_BATTLE && !killedBGMBattle && Globals.BATTLE_VALUE > 0) {
+                emulator.WriteShort(Constants.GetAddress("MUSIC_SPEED_BATTLE"), 0);
+                KillBGM();
+                killedBGMBattle = true;
+            } else {
+                if (killedBGMBattle && !Globals.IN_BATTLE) {
+                    killedBGMBattle = false;
+                }
+            }
+        }
+        #endregion
         #endregion
 
         #region Settings
@@ -1886,6 +1961,11 @@ namespace Dragoon_Modifier {
             if (btn.Name.Equals("btnAddPartyMembersOn")) {
                 alwaysAddSoloPartyMembers = dmScripts[btn.Name] ? true : false;
             }
+
+            if (btn.Name.Equals("btnKillBGM")) {
+                SetKillBGMState();
+            }
+
             TurnOnOffButton(ref btn);
         }
 
