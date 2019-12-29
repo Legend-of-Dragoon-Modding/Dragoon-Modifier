@@ -26,7 +26,6 @@ namespace Dragoon_Modifier {
 
         #region Script Variables
         //General
-        public string difficultyMode = "Normal";
         //Shop Changes
         public bool shopChange = false;
         public bool wroteIcons = false;
@@ -66,6 +65,10 @@ namespace Dragoon_Modifier {
         public ushort[] eleBombOldElement = { 0, 0, 0, 0, 0 };
         //No Dragoon Mode
         public bool noDragoonModeOnBattleEntry = false;
+        //Half SP
+        public bool halfSPOnBattleEntry = false;
+        //Addition Changes
+        public bool damageIncreaseOnBattleEntry = false;
         #endregion
         #endregion
 
@@ -420,6 +423,10 @@ namespace Dragoon_Modifier {
                     ElementalBomb();
                 if (dmScripts.ContainsKey("btnNoDragoon") && dmScripts["btnNoDragoon"])
                     NoDragoonMode();
+                if (dmScripts.ContainsKey("btnHalfSP") && dmScripts["btnHalfSP"])
+                    AdditionHalfSPChanges();
+                if (dmScripts.ContainsKey("btnAdditionChanges") && dmScripts["btnAdditionChanges"])
+                    AdditionDamageChanges();
 
                 Thread.Sleep(250);
                 this.Dispatcher.BeginInvoke(new Action(() => {
@@ -613,8 +620,7 @@ namespace Dragoon_Modifier {
         public void ChangeShop() { //SQUARE + CIRCLE
             if (Globals.BATTLE_VALUE == 0 && Globals.MAP == 145) {
                 shopChange = shopChange ? false : true;
-                Constants.WriteGLog("Changed Lohan shop to state: " + shopChange);
-                Constants.WriteOutput("Changed Lohan shop to state: " + shopChange);
+                Constants.WriteGLogOutput("Changed Lohan shop to state: " + shopChange);
             }
         }
         #endregion
@@ -969,6 +975,7 @@ namespace Dragoon_Modifier {
                     emulator.WriteByteU((long) address + i, 0);
                 }
             }
+            Constants.WriteGLogOutput("Killed BGM.");
         }
 
         public void KillBGMField() {
@@ -1050,20 +1057,26 @@ namespace Dragoon_Modifier {
         }
 
         public void AddSoloPartyMembers() {
-            addSoloPartyMembers = true;
-            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x4, Globals.PARTY_SLOT[0]);
-            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x5, 0);
-            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x6, 0);
-            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x7, 0);
-            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x8, Globals.PARTY_SLOT[0]);
-            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x9, 0);
-            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0xA, 0);
-            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0xB, 0);
+            if (dmScripts.ContainsKey("btnSoloMode") && dmScripts["btnSoloMode"]) {
+                addSoloPartyMembers = true;
+                emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x4, Globals.PARTY_SLOT[0]);
+                emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x5, 0);
+                emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x6, 0);
+                emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x7, 0);
+                emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x8, Globals.PARTY_SLOT[0]);
+                emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x9, 0);
+                emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0xA, 0);
+                emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0xB, 0);
+            } else {
+                Constants.WritePLogOutput("Solo Mode must be turned on to add party members.");
+            }
         }
 
         public void SwitchSoloCharacter() {
             if (dmScripts.ContainsKey("btnSoloMode") && dmScripts["btnSoloMode"]) {
                 emulator.WriteByte(Constants.GetAddress("PARTY_SLOT"), uiCombo["cboSwitchChar"]);
+            } else {
+                Constants.WritePLogOutput("Solo Mode must be turned on to switch party members.");
             }
         }
         #endregion
@@ -1132,7 +1145,7 @@ namespace Dragoon_Modifier {
             if (Constants.REGION == Region.USA) {
                 //Red-Eyed
                 emulator.WriteAOB(0x51858, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 1A 00 16 00 15 00 0F 00 FF A0");
-                if ((dmScripts.ContainsKey("btnDivineRed") && dmScripts["btnDivineRed"]) && Globals.PARTY_SLOT[0] == 0 && (difficultyMode.Equals("Normal") || difficultyMode.Equals("Hard"))) {
+                if ((dmScripts.ContainsKey("btnDivineRed") && dmScripts["btnDivineRed"]) && Globals.PARTY_SLOT[0] == 0 && (Globals.DIFFICULTY_MODE.Equals("Normal") || Globals.DIFFICULTY_MODE.Equals("Hard"))) {
                     emulator.WriteAOB(0x51884, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 16 00 15 00 17 00 15 00 0F 00 FF A0");
                     emulator.WriteAOB(0x518AC, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 16 00 1A 00 18 00 15 00 0F 00 FF A0");
                 } else {
@@ -1171,7 +1184,7 @@ namespace Dragoon_Modifier {
                 emulator.WriteAOB(0x51DE4, "23 00 39 00 4A 00 4C 00 40 00 00 00 31 00 32 00 30 00 00 00 17 00 17 00 17 00 15 00 0F 00 FF A0");
             }
 
-            if ((dmScripts.ContainsKey("btnDivineRed") && dmScripts["btnDivineRed"]) && Globals.PARTY_SLOT[0] == 0 && (difficultyMode.Equals("Normal") || difficultyMode.Equals("Hard")) && Globals.PARTY_SLOT[0] == 0) {
+            if ((dmScripts.ContainsKey("btnDivineRed") && dmScripts["btnDivineRed"]) && Globals.PARTY_SLOT[0] == 0 && (Globals.DIFFICULTY_MODE.Equals("Normal") || Globals.DIFFICULTY_MODE.Equals("Hard")) && Globals.PARTY_SLOT[0] == 0) {
                 emulator.WriteAOB(Constants.GetAddress("SLOT1_SPELLS"), "01 02 FF FF FF FF FF FF");
                 emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (1 * 0xC), 50); //Explosion MP
                 emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (2 * 0xC), 50); //Final Burst MP
@@ -1183,7 +1196,7 @@ namespace Dragoon_Modifier {
                 }
             }
 
-            if (difficultyMode.Equals("Hell")) {
+            if (Globals.DIFFICULTY_MODE.Equals("Hell")) {
                 emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (7 * 0xC), (uiCombo["cboFlowerStorm"] + 1) * 20); //Lavitz's Blossom Storm MP
                 emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (26 * 0xC), (uiCombo["cboFlowerStorm"] + 1) * 20); //Albert's Rose storm MP
                 emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (11 * 0xC), 20); //Shana's Moon Light MP
@@ -1358,7 +1371,7 @@ namespace Dragoon_Modifier {
                                 } else if (mp == 30) {
                                     emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0xA6, (ushort) (330 * multi));
                                 }
-                                if ((emulator.ReadByte(Globals.CHAR_ADDRESS[i] + 0x46) == 7 || emulator.ReadByte(Globals.CHAR_ADDRESS[i] + 0x46) == 26) && difficultyMode.Equals("Hell")) {
+                                if ((emulator.ReadByte(Globals.CHAR_ADDRESS[i] + 0x46) == 7 || emulator.ReadByte(Globals.CHAR_ADDRESS[i] + 0x46) == 26) && Globals.DIFFICULTY_MODE.Equals("Hell")) {
                                     //flowerstorm
                                 }
                             } else {
@@ -1771,6 +1784,222 @@ namespace Dragoon_Modifier {
             }
         }
         #endregion
+
+        #region Half SP
+        public void AdditionHalfSPChanges() {
+            if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !halfSPOnBattleEntry) {
+                for (int i = 0; i < 3; i++) {
+                    if (Globals.PARTY_SLOT[i] < 9) {
+                        byte equippedAddition = emulator.ReadByte(Constants.GetAddress("EQUIPPED_ADDITION") + (Globals.PARTY_SLOT[i] * 0x2C));
+                        byte levelOffset = 0;
+
+                        if (Globals.PARTY_SLOT[i] == 0)
+                            levelOffset = equippedAddition;
+                        else if (Globals.PARTY_SLOT[i] == 1 || Globals.PARTY_SLOT[i] == 5)
+                            levelOffset = (byte) (equippedAddition - 8);
+                        else if (Globals.PARTY_SLOT[i] == 3)
+                            levelOffset = (byte) (equippedAddition - 14);
+                        else if (Globals.PARTY_SLOT[i] == 4)
+                            levelOffset = (byte) (equippedAddition - 29);
+                        else if (Globals.PARTY_SLOT[i] == 6)
+                            levelOffset = (byte) (equippedAddition - 23);
+                        else if (Globals.PARTY_SLOT[i] == 7)
+                            levelOffset = (byte) (equippedAddition - 19);
+
+                        byte additionLevel = emulator.ReadByte(Constants.GetAddress("EQUIPPED_ADDITION_LEVEL") + (0x2C * (Globals.PARTY_SLOT[i] + levelOffset)));
+                        byte totalSP = emulator.ReadByte(Constants.GetAddress("EQUIPPED_ADDITION_SP") + (0x2C * Globals.PARTY_SLOT[i]));
+                        ushort spMulti = 65535;
+
+                        if (Globals.PARTY_SLOT[i] == 0) {
+                            if (additionLevel == 5) {
+                                if (equippedAddition == 0) {
+                                    spMulti = 65535 - 50 + 1;
+                                } else if (equippedAddition == 1) {
+                                    spMulti = 0;
+                                } else if (equippedAddition == 2) {
+                                    spMulti = 75;
+                                } else if (equippedAddition == 3) {
+                                    spMulti = 0;
+                                } else if (equippedAddition == 4) {
+                                    spMulti = 75;
+                                } else if (equippedAddition == 5) {
+                                    spMulti = 65535 - 50 + 1;
+                                } else if (equippedAddition == 6) {
+                                    spMulti = 65535 - 20 + 1;
+                                }
+                            } else {
+                                spMulti = 65535 - 50 + 1;
+                            }
+                        } else if (Globals.PARTY_SLOT[i] == 1 || Globals.PARTY_SLOT[i] == 5) {
+                            if (additionLevel == 5) {
+                                if (equippedAddition == 8) {
+                                    spMulti = 65535 - 25 + 1;
+                                } else if (equippedAddition == 9) {
+                                    spMulti = 65535 - 50 + 1;
+                                } else if (equippedAddition == 10) {
+                                    spMulti = 75;
+                                } else if (equippedAddition == 11) {
+                                    spMulti = 65535 - 40 + 1;
+                                } else if (equippedAddition == 12) {
+                                    spMulti = 75;
+                                }
+                            } else {
+                                spMulti = 65535 - 50 + 1;
+                                if (equippedAddition == 11) {
+                                    spMulti = 65535 - 40 + 1;
+                                }
+                            }
+                        } else if (Globals.PARTY_SLOT[i] == 2 || Globals.PARTY_SLOT[i] == 8) {
+                            long spScan = emulator.ScanAOB("23 00 00 00 32 00 00 00 46 00 00 00 64", 0xA8660, 0x2A865F);
+                            emulator.WriteByteU(spScan, 17);
+                            emulator.WriteByteU(spScan + 0x4, 25);
+                            emulator.WriteByteU(spScan + 0x8, 35);
+                            emulator.WriteByteU(spScan + 0xC, 50);
+                            emulator.WriteByteU(spScan + 0x10, 75);
+                        } else if (Globals.PARTY_SLOT[i] == 3) {
+                            if (additionLevel == 5) {
+                                if (equippedAddition == 15) {
+                                    spMulti = 75;
+                                } else {
+                                    spMulti = 65535 - 50 + 1;
+                                }
+                            } else {
+                                spMulti = 65535 - 50 + 1;
+                            }
+                        } else if (Globals.PARTY_SLOT[i] == 4) {
+                            if (additionLevel == 5) {
+                                if (equippedAddition == 29) {
+                                    spMulti = 65535 - 25 + 1;
+                                } else if (equippedAddition == 30) {
+                                    spMulti = 65535 - 40 + 1;
+                                } else if (equippedAddition == 31) {
+                                    spMulti = 0;
+                                } else if (equippedAddition == 32) {
+                                    spMulti = 65535 - 20 + 1;
+                                } else if (equippedAddition == 33) {
+                                    spMulti = 65535 - 30 + 1;
+                                } else if (equippedAddition == 34) {
+                                    spMulti = 50;
+                                }
+                            } else {
+                                spMulti = 65535 - 50 + 1;
+                                if (equippedAddition == 30) {
+                                    spMulti = 65535 - 40 + 1;
+                                } else if (equippedAddition == 32) {
+                                    spMulti = 65535 - 40 + 1;
+                                } else if (equippedAddition == 33) {
+                                    spMulti = 65535 - 30 + 1;
+                                }
+                            }
+                        } else if (Globals.PARTY_SLOT[i] == 6) {
+                            if (additionLevel == 5) {
+                                if (equippedAddition == 23) {
+                                    spMulti = 65535 - 10 + 1;
+                                } else if (equippedAddition == 24) {
+                                    spMulti = 0;
+                                } else if (equippedAddition == 25) {
+                                    spMulti = 70;
+                                } else if (equippedAddition == 26) {
+                                    spMulti = 65535 - 10 + 1;
+                                } else if (equippedAddition == 27) {
+                                    spMulti = 65535 - 50 + 1;
+                                }
+                            } else {
+                                spMulti = 65535 - 50 + 1;
+                                if (equippedAddition == 24) {
+                                    spMulti = 65535 - 45 + 1;
+                                } else if (equippedAddition == 25) {
+                                    spMulti = 65535 - 20 + 1;
+                                } else if (equippedAddition == 26) {
+                                    spMulti = 65535 - 10 + 1;
+                                }
+                            }
+                        } else if (Globals.PARTY_SLOT[i] == 7) {
+                            if (additionLevel == 5) {
+                                if (equippedAddition == 19) {
+                                    spMulti = 65535 - 25 + 1;
+                                } else if (equippedAddition == 20) {
+                                    if (dmScripts.ContainsKey("btnAdditionChanges") && dmScripts["btnAdditionChanges"]) {
+                                        spMulti = 0;
+                                    } else {
+                                        spMulti = 65535 - 40 + 1;
+                                    }
+                                } else if (equippedAddition == 21) {
+                                    if (dmScripts.ContainsKey("btnAdditionChanges") && dmScripts["btnAdditionChanges"]) {
+                                        spMulti = 65535 - 25 + 1;
+                                    } else {
+                                        spMulti = 65535 - 50 + 1;
+                                    }
+                                }
+                            } else {
+                                if (equippedAddition == 19) {
+                                    spMulti = 65535 - 50 + 1;
+                                } else if (equippedAddition == 20) {
+                                    spMulti = 65535 - 40 + 1;
+                                } else if (equippedAddition == 21) {
+                                    if (dmScripts.ContainsKey("btnAdditionChanges") && dmScripts["btnAdditionChanges"]) {
+                                        spMulti = 65535 - 20 + 1;
+                                    } else {
+                                        spMulti = 65535 - 50 + 1;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (spMulti != 65535) {
+                            emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0x112, spMulti);
+                        }
+                    }
+                }
+                halfSPOnBattleEntry = true;
+            } else {
+                if (!Globals.IN_BATTLE && halfSPOnBattleEntry) {
+                    halfSPOnBattleEntry = false;
+                }
+            }
+        }
+        #endregion
+
+        #region Addition Changes
+        public void AdditionDamageChanges() {
+            if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !damageIncreaseOnBattleEntry) {
+                for (int i = 0; i < 3; i++) {
+                    if (Globals.PARTY_SLOT[i] == 1 || Globals.PARTY_SLOT[i] == 5) {
+                        if (emulator.ReadByte(Constants.GetAddress("EQUIPPED_ADDITION") + (0x2C * Globals.PARTY_SLOT[i])) == 12) {
+                            emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0x114, (byte) Math.Ceiling(emulator.ReadByte(Globals.CHAR_ADDRESS[i] + 0x114) * 2.2285));
+                        }
+                    } else if (Globals.PARTY_SLOT[i] == 3) {
+                        if (emulator.ReadByte(Constants.GetAddress("EQUIPPED_ADDITION") + (0x2C * Globals.PARTY_SLOT[i])) == 15) {
+                            emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0x114, (byte) (emulator.ReadByte(Globals.CHAR_ADDRESS[i] + 0x114) + 60));
+                        } else if (emulator.ReadByte(Constants.GetAddress("EQUIPPED_ADDITION") + (0x2C * Globals.PARTY_SLOT[i])) == 16) {
+                            emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0x114, (ushort) Math.Ceiling(emulator.ReadByte(Globals.CHAR_ADDRESS[i] + 0x114) * 1.4));
+                        } else if (emulator.ReadByte(Constants.GetAddress("EQUIPPED_ADDITION") + (0x2C * Globals.PARTY_SLOT[i])) == 17) {
+                            emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0x114, (byte) Math.Ceiling(emulator.ReadByte(Globals.CHAR_ADDRESS[i] + 0x114) * 1.1666));
+                        }
+                    } else if (Globals.PARTY_SLOT[i] == 6) {
+                        if (emulator.ReadByte(Constants.GetAddress("EQUIPPED_ADDITION") + (0x2C * Globals.PARTY_SLOT[i])) == 27) {
+                            emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0x114, (byte) Math.Ceiling(emulator.ReadByte(Globals.CHAR_ADDRESS[i] + 0x114) * 0.75));
+                        }
+                    } else if (Globals.PARTY_SLOT[i] == 7) {
+                        if (emulator.ReadByte(Constants.GetAddress("EQUIPPED_ADDITION") + (0x2C * Globals.PARTY_SLOT[i])) == 19) {
+                            emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0x114, (byte) (emulator.ReadByte(Globals.CHAR_ADDRESS[i] + 0x114) * 2));
+                        } else if (emulator.ReadByte(Constants.GetAddress("EQUIPPED_ADDITION") + (0x2C * Globals.PARTY_SLOT[i])) == 20) {
+                            emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0x112, 80);
+                            emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0x114, (byte) (emulator.ReadByte(Globals.CHAR_ADDRESS[i] + 0x114) * 2));
+                        } else if (emulator.ReadByte(Constants.GetAddress("EQUIPPED_ADDITION") + (0x2C * Globals.PARTY_SLOT[i])) == 21) {
+                            emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0x112, 50);
+                            emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0x114, (ushort) (emulator.ReadByte(Globals.CHAR_ADDRESS[i] + 0x114) * 4));
+                        }
+                    }
+                }
+                damageIncreaseOnBattleEntry = true;
+            } else {
+                if (!Globals.IN_BATTLE && damageIncreaseOnBattleEntry) {
+                    damageIncreaseOnBattleEntry = false;
+                }
+            }
+        }
+        #endregion
         #endregion
         #endregion
 
@@ -2102,6 +2331,11 @@ namespace Dragoon_Modifier {
 
         private void miOpenPreset_Click(object sender, RoutedEventArgs e) {
             miOpenPreset.IsChecked = miOpenPreset.IsChecked ? false : true;
+        }
+
+        private void miChangeMonster_Click(object sender, RoutedEventArgs e) {
+            miChangeMonster.IsChecked = miChangeMonster.IsChecked ? false : true;
+            Globals.MONSTER_CHANGE = miChangeMonster.IsChecked ? true : false;
         }
 
         private void miAuthor_Click(object sender, RoutedEventArgs e) {

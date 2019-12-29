@@ -119,6 +119,20 @@ namespace Dragoon_Modifier {
             });
         }
 
+        public static void WriteGLogOutput(object text) {
+            Application.Current.Dispatcher.Invoke(() => {
+                WriteOutput(text);
+                GLOG.Text = text.ToString();
+            });
+        }
+
+        public static void WritePLogOutput(object text) {
+            Application.Current.Dispatcher.Invoke(() => {
+                WriteOutput(text);
+                PLOG.Text = text.ToString();
+            });
+        }
+
         public static int GetAddress(string text) {
             return ADDRESSES[text][(int) REGION];
         }

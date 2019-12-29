@@ -12,7 +12,7 @@
         Icon="1.ico"
         ShowIconOnTitleBar="True"
         ShowTitleBar="True"
-        Title=" Dragoon Modifier v3.0" Height="700" Width="1000" MinWidth="750" MinHeight="560" WindowStartupLocation="CenterScreen" Background="White">
+        Title=" Dragoon Modifier v3.0" Height="750" Width="1075" MinWidth="750" MinHeight="560" WindowStartupLocation="CenterScreen" Background="White">
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Template">
@@ -1304,6 +1304,7 @@
                                     <MenuItem Header="15" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
                                 </MenuItem>
                                 <MenuItem x:Name="miOpenPreset" Header="Open Preset on Open" Background="#FFB6B6B6" Foreground="White" Click="miOpenPreset_Click"/>
+                                <MenuItem x:Name="miChangeMonster" Header="Use Monster Stat Table" Background="#FFB6B6B6" Foreground="White" Click="miChangeMonster_Click"/>
                             </MenuItem>
                             <MenuItem Header="About" Background="#FFB6B6B6" Foreground="White">
                                 <MenuItem x:Name="miAuthor" Background="#FFB6B6B6" Foreground="White" Header="Author" Click="miAuthor_Click"/>

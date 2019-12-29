@@ -32,6 +32,7 @@ namespace Dragoon_Modifier {
         public static bool MONSTER_CHANGE = false;
         public static bool DROP_CHANGE = false;
         public static string MOD = "US_Base";
+        public static string DIFFICULTY_MODE = "Normal";
 
         public static void SetM_POINT(int mPoint) {
             M_POINT = mPoint;
