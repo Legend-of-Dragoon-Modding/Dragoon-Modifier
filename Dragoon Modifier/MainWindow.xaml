@@ -1060,11 +1060,16 @@
                     <Button x:Name="btnDropChanges" Grid.Row="5" Grid.Column="3" Content="Drop Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                     <Button x:Name="btnHPCapBreak" Grid.Row="6" Grid.Column="2" Content="Break 9999 HP Cap" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                     <Button x:Name="btnSoulEater" Grid.Row="6" Grid.Column="3" Content="No HP Decay Soul Eater" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <Button x:Name="btnSwitchSoloChar" Grid.Row="7" Grid.Column="0" Content="Switch Solo Character" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2" Click="GreenButton"/>
-                    <ComboBox x:Name="cboSwitchChar" Grid.Row="7" Grid.Column="2" Grid.ColumnSpan="2" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="Black" SelectionChanged="ComboBox"/>
-                    <Button x:Name="btnSwitchEXP" Grid.Row="8" Grid.Column="0" Content="Switch EXP" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2" Click="GreenButton"/>
-                    <ComboBox x:Name="cboSwitch1" Grid.Row="8" Grid.Column="2" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" Foreground="Black" SelectionChanged="ComboBox"/>
-                    <ComboBox x:Name="cboSwitch2" Grid.Row="8" Grid.Column="3" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" Foreground="Black" SelectionChanged="ComboBox"/>
+                    <Button x:Name="btnAspectRatio" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Content="Aspect Ratio" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <ComboBox x:Name="cboAspectRatio" Grid.Row="7" Grid.Column="2" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" Foreground="Black" SelectionChanged="ComboBox"/>
+                    <ComboBox x:Name="cboCamera" Grid.Row="7" Grid.Column="3" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" Foreground="Black" SelectionChanged="ComboBox"/>
+                    <Button x:Name="btnKillBGM" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Content="Kill BGM" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <ComboBox x:Name="cboKillBGM" Grid.Row="8" Grid.Column="2" Grid.ColumnSpan="2" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" Foreground="Black" SelectionChanged="ComboBox"/>
+                    <Button x:Name="btnSwitchEXP" Grid.Row="9" Grid.Column="0" Content="Switch EXP" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2" Click="GreenButton"/>
+                    <ComboBox x:Name="cboSwitch1" Grid.Row="9" Grid.Column="2" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" Foreground="Black" SelectionChanged="ComboBox"/>
+                    <ComboBox x:Name="cboSwitch2" Grid.Row="9" Grid.Column="3" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" Foreground="Black" SelectionChanged="ComboBox"/>
+                    <Button x:Name="btnSwitchSoloChar" Grid.Row="10" Grid.Column="0" Content="Switch Solo Character" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2" Click="GreenButton"/>
+                    <ComboBox x:Name="cboSwitchChar" Grid.Row="10" Grid.Column="2" Grid.ColumnSpan="2" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="Black" SelectionChanged="ComboBox"/>
 
                     <DockPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
                         <Grid Margin="0"  >
@@ -1077,31 +1082,6 @@
                         </Grid>
                     </DockPanel>
 
-
-
-                    <DockPanel Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
-                        <Grid Margin="0"  >
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="80*"/>
-                                <ColumnDefinition Width="20*"/>
-                            </Grid.ColumnDefinitions>
-                            <Button x:Name="btnAspectRatio" Grid.Row="0" Grid.Column="0" Content="Aspect Ratio" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
-                            <Button x:Name="btnAspectRatioOff" Grid.Row="0" Grid.Column="1" Content="Off" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2" Click="GreenButton"/>
-                        </Grid>
-                    </DockPanel>
-                    <ComboBox x:Name="cboAspectRatio" Grid.Row="9" Grid.Column="2" Grid.ColumnSpan="2" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" Foreground="Black" SelectionChanged="ComboBox"/>
-
-                    <DockPanel Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
-                        <Grid Margin="0"  >
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="80*"/>
-                                <ColumnDefinition Width="20*"/>
-                            </Grid.ColumnDefinitions>
-                            <Button x:Name="btnKillBGM" Grid.Row="0" Grid.Column="0" Content="Kill BGM" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
-                            <Button x:Name="btnKillBGMOff" Grid.Row="0" Grid.Column="1" Content="Off" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
-                        </Grid>
-                    </DockPanel>
-                    <ComboBox x:Name="cboKillBGM" Grid.Row="10" Grid.Column="2" Grid.ColumnSpan="2" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" Foreground="Black" SelectionChanged="ComboBox"/>
                     <Button x:Name="btnNewGame" Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="4" Content="New Game+" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
                 </Grid>
             </TabItem>

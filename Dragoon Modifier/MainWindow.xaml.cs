@@ -49,6 +49,8 @@ namespace Dragoon_Modifier {
         public byte[] hpChangeSlot = { 255, 255, 255 };
         public ushort[] hpChangeSave = { 0, 0, 0 };
         public bool hpCapBreakOnBattleEntry = false;
+        //Aspect Ratio
+        public bool aspectRatioOnBattleEntry = false;
         #endregion
         #endregion
 
@@ -205,7 +207,18 @@ namespace Dragoon_Modifier {
             cboSoloLeader.Items.Add("Slot 2");
             cboSoloLeader.Items.Add("Slot 3");
 
+            cboAspectRatio.Items.Add("4:3");
+            cboAspectRatio.Items.Add("16:9");
+            cboAspectRatio.Items.Add("16:10");
+            cboAspectRatio.Items.Add("21:9");
+            cboAspectRatio.Items.Add("32:9");
+
+            cboCamera.Items.Add("Default");
+            cboCamera.Items.Add("Advanced");
+
             cboSoloLeader.SelectedIndex = 0;
+            cboAspectRatio.SelectedIndex = 0;
+            cboCamera.SelectedIndex = 0;
         }
 
         private void LoadPreset() {
@@ -363,6 +376,8 @@ namespace Dragoon_Modifier {
                     DragoonChanges();
                 if (dmScripts.ContainsKey("btnHPCapBreak") && dmScripts["btnHPCapBreak"])
                     HPCapBreakBattle();
+                if (dmScripts.ContainsKey("btnAspectRatio") && dmScripts["btnAspectRatio"])
+                    ChangeAspectRatio();
 
                 Thread.Sleep(250);
                 this.Dispatcher.BeginInvoke(new Action(() => {
@@ -1431,7 +1446,7 @@ namespace Dragoon_Modifier {
                         }
                     }
                 }
-                Constants.WriteDebug("Break HP: " + hpChangeSave[0] + "/" + hpChangeCheck[0] + " | " + hpChangeSave[1] + "/" + hpChangeCheck[1] + " | " + hpChangeSave[2] + "/" + hpChangeCheck[2]);
+                //Constants.WriteDebug("Break HP: " + hpChangeSave[0] + "/" + hpChangeCheck[0] + " | " + hpChangeSave[1] + "/" + hpChangeCheck[1] + " | " + hpChangeSave[2] + "/" + hpChangeCheck[2]);
             }
         }
 
@@ -1455,9 +1470,39 @@ namespace Dragoon_Modifier {
                     if (Globals.IN_BATTLE && hpCapBreakOnBattleEntry) {
                         for (int i = 0; i < 3; i++) {
                             hpChangeSave[i] = emulator.ReadShort(Globals.CHAR_ADDRESS[i]);
-                            Constants.WriteDebug("xBreak HP: " + hpChangeSave[0] + "/" + hpChangeCheck[0] + " | " + hpChangeSave[1] + "/" + hpChangeCheck[1] + " | " + hpChangeSave[2] + "/" + hpChangeCheck[2]);
+                            //Constants.WriteDebug("xBreak HP: " + hpChangeSave[0] + "/" + hpChangeCheck[0] + " | " + hpChangeSave[1] + "/" + hpChangeCheck[1] + " | " + hpChangeSave[2] + "/" + hpChangeCheck[2]);
                         }
                     }
+                }
+            }
+        }
+        #endregion
+
+        #region Aspect Ratio
+        public void ChangeAspectRatio() {
+            if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !aspectRatioOnBattleEntry) {
+                ushort aspectRatio = 4096;
+
+                if (uiCombo["cboAspectRatio"] == 0)
+                    aspectRatio = 4096;
+                else if (uiCombo["cboAspectRatio"] == 1)
+                    aspectRatio = 3072;
+                else if (uiCombo["cboAspectRatio"] == 2)
+                    aspectRatio = 3413;
+                else if (uiCombo["cboAspectRatio"] == 3)
+                    aspectRatio = 2340;
+                else if (uiCombo["cboAspectRatio"] == 4)
+                    aspectRatio = 2048;
+
+                emulator.WriteShort(Constants.GetAddress("ASPECT_RATIO"), aspectRatio);
+
+                if (uiCombo["cboCamera"] == 1)
+                    emulator.WriteShort(Constants.GetAddress("ADVANCED_CAMERA"), aspectRatio);
+
+                aspectRatioOnBattleEntry = true;
+            } else {
+                if (!Globals.IN_BATTLE && aspectRatioOnBattleEntry) {
+                    aspectRatioOnBattleEntry = false;
                 }
             }
         }
@@ -1841,7 +1886,6 @@ namespace Dragoon_Modifier {
             if (btn.Name.Equals("btnAddPartyMembersOn")) {
                 alwaysAddSoloPartyMembers = dmScripts[btn.Name] ? true : false;
             }
-
             TurnOnOffButton(ref btn);
         }
 
