@@ -1047,7 +1047,7 @@
                     <Button x:Name="btnSaveAnywhere" Grid.Row="1" Grid.Column="2" Content="Save Anywhere" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                     <Button x:Name="btnEATB" Grid.Row="1" Grid.Column="3" Content="Extra Turn Battle" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                     <Button x:Name="btnNeverGuard" Grid.Row="2" Grid.Column="0" Content="Never Guard" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2" Click="SwitchButton"/>
-                    <Button x:Name="btnElementBomb" Grid.Row="2" Grid.Column="2" Content="Elemental Bomb" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <Button x:Name="btnElementalBomb" Grid.Row="2" Grid.Column="2" Content="Elemental Bomb" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                     <Button x:Name="btnHPNames" Grid.Row="2" Grid.Column="3" Content="Monster HPs as Names" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                     <Button x:Name="btnEnrage" Grid.Row="3" Grid.Column="0"  Content="Enrage" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2" Click="SwitchButton"/>
                     <Button x:Name="btnDragoonChanges"  Grid.Row="3" Grid.Column="2"  Content="Dragoon Changes" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>

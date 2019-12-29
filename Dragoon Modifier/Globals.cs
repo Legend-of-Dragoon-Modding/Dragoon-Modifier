@@ -18,6 +18,7 @@ namespace Dragoon_Modifier {
         public static byte DRAGOON_SPIRITS = 0;
         public static bool IN_BATTLE = false;
         public static bool STATS_CHANGED = false;
+        public static byte EXITING_BATTLE = 0;
         public static int M_POINT = 0;
         public static int C_POINT = 0;
         public static int[] CHAR_ADDRESS = new int[3];

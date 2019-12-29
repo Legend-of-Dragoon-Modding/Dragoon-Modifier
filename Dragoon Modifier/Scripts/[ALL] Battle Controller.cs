@@ -68,6 +68,7 @@ public class BattleController {
             if (Globals.STATS_CHANGED && encounterValue < 9999) {
                 Globals.STATS_CHANGED = false;
                 Globals.IN_BATTLE = false;
+                Globals.EXITING_BATTLE = 2;
                 Constants.WriteOutput("Exiting out of battle.");
             }
         }

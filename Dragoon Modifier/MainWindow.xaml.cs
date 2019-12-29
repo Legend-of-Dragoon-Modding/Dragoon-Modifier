@@ -57,6 +57,13 @@ namespace Dragoon_Modifier {
         public bool killedBGMField = false;
         public bool killedBGMBattle = false;
         public bool reKilledBGMField = false;
+        //Elemental Bomb
+        public byte eleBombTurns = 0;
+        public byte eleBombItemUsed = 0;
+        public byte eleBombSlot = 0;
+        public byte eleBombElement = 0;
+        public bool eleBombChange = false;
+        public ushort[] eleBombOldElement = { 0, 0, 0, 0, 0 };
         #endregion
         #endregion
 
@@ -393,11 +400,16 @@ namespace Dragoon_Modifier {
                     ChangeAspectRatio();
                 if (dmScripts.ContainsKey("btnKillBGM") && dmScripts["btnKillBGM"] && killBGMBattle)
                     KillBGMBattle();
+                if (dmScripts.ContainsKey("btnElementalBomb") && dmScripts["btnElementalBomb"])
+                    ElementalBomb();
 
                 Thread.Sleep(250);
                 this.Dispatcher.BeginInvoke(new Action(() => {
                     BattleUI();
                 }), DispatcherPriority.ContextIdle);
+
+                if (Globals.EXITING_BATTLE > 0)
+                    Globals.EXITING_BATTLE -= 1;
             }
         }
 
@@ -1578,6 +1590,122 @@ namespace Dragoon_Modifier {
             } else {
                 if (killedBGMBattle && !Globals.IN_BATTLE) {
                     killedBGMBattle = false;
+                }
+            }
+        }
+        #endregion
+
+        #region Elemental Bomb
+        public void ElementalBomb() {
+            if (Globals.IN_BATTLE && Globals.STATS_CHANGED && eleBombTurns == 0) {
+                eleBombItemUsed = emulator.ReadByte(Globals.MONS_ADDRESS[0] + 0xABC);
+                if ((eleBombItemUsed >= 241 && eleBombItemUsed <= 248) || eleBombItemUsed == 250) {
+                    ushort player1Action = emulator.ReadShort(Globals.CHAR_ADDRESS[0] - 0xA8);
+                    ushort player2Action = emulator.ReadShort(Globals.CHAR_ADDRESS[1] - 0xA8);
+                    ushort player3Action = emulator.ReadShort(Globals.CHAR_ADDRESS[2] - 0xA8);
+                    if (Globals.PARTY_SLOT[2] < 9) {
+                        if (player1Action == 24 && (player2Action == 16 || player2Action == 18) && (player3Action == 16 || player3Action == 18)) {
+                            eleBombSlot = 0;
+                            eleBombTurns = 5;
+                            eleBombChange = false;
+                        }
+                        if (player2Action == 24 && (player1Action == 16 || player1Action == 18) && (player3Action == 16 || player3Action == 18)) {
+                            eleBombSlot = 1;
+                            eleBombTurns = 5;
+                            eleBombChange = false;
+                        }
+                        if (player3Action == 24 && (player1Action == 16 || player1Action == 18) && (player2Action == 16 || player2Action == 18)) {
+                            eleBombSlot = 2;
+                            eleBombTurns = 5;
+                            eleBombChange = false;
+                        }
+                    } else if (Globals.PARTY_SLOT[1] < 9) {
+                        if (player1Action == 24 && (player2Action == 16 || player2Action == 18)) {
+                            eleBombSlot = 0;
+                            eleBombTurns = 5;
+                            eleBombChange = false;
+                        }
+                        if (player2Action == 24 && (player1Action == 16 || player1Action == 18)) {
+                            eleBombSlot = 1;
+                            eleBombTurns = 5;
+                            eleBombChange = false;
+                        }
+                    } else {
+                        if (player1Action == 24) {
+                            eleBombSlot = 0;
+                            eleBombTurns = 5;
+                            eleBombChange = false;
+                        }
+                    }
+                }
+
+                //Constants.WriteDebug("Item: " + eleBombItemUsed + " | Slot: " + eleBombSlot + " | Turns: " + eleBombTurns + " | Change: " + eleBombChange);
+            } else {
+                //Constants.WriteDebug("Item: " + eleBombItemUsed + " | Slot: " + eleBombSlot + " | Turns: " + eleBombTurns + " | Change: " + eleBombChange + " | Element: " + eleBombElement + " | Action: " + emulator.ReadShort(Globals.CHAR_ADDRESS[eleBombSlot] - 0xA8));
+                if (Globals.IN_BATTLE && Globals.STATS_CHANGED && eleBombSlot >= 0) {
+                    if ((emulator.ReadShort(Globals.CHAR_ADDRESS[eleBombSlot] - 0xA8) == 8 || emulator.ReadShort(Globals.CHAR_ADDRESS[eleBombSlot] - 0xA8) == 10) && !eleBombChange) {
+                        eleBombChange = true;
+                        if (eleBombTurns == 5) {
+                            ushort element = 0;
+
+                            if (eleBombItemUsed == 241)
+                                element = 0;
+                            else if (eleBombItemUsed == 242)
+                                element = 128;
+                            else if (eleBombItemUsed == 243)
+                                element = 1;
+                            else if (eleBombItemUsed == 244)
+                                element = 64;
+                            else if (eleBombItemUsed == 245)
+                                element = 2;
+                            else if (eleBombItemUsed == 246)
+                                element = 32;
+                            else if (eleBombItemUsed == 247)
+                                element = 4;
+                            else if (eleBombItemUsed == 248)
+                                element = 16;
+                            else if (eleBombItemUsed == 250)
+                                element = 8;
+
+                            eleBombElement = (byte) element;
+
+                            for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
+                                eleBombOldElement[i] = emulator.ReadShort(Globals.MONS_ADDRESS[i] + 0x14);
+                                emulator.WriteShort(Globals.MONS_ADDRESS[i] + 0x14, element);
+                                emulator.WriteShort(Globals.MONS_ADDRESS[i] + 0x6A, element);
+                            }
+
+                            eleBombTurns -= 1;
+                        }
+                    } 
+
+                    if (eleBombChange && (emulator.ReadShort(Globals.CHAR_ADDRESS[eleBombSlot] - 0xA8) == 0 || emulator.ReadShort(Globals.CHAR_ADDRESS[eleBombSlot] - 0xA8) == 2)) {
+                        eleBombChange = false;
+                        eleBombTurns -= 1;
+                        if (eleBombTurns <= 0) {
+                            for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
+                                emulator.WriteShort(Globals.MONS_ADDRESS[i] + 0x14, eleBombOldElement[i]);
+                                emulator.WriteShort(Globals.MONS_ADDRESS[i] + 0x6A, eleBombOldElement[i]);
+                            }
+                        }
+                    }
+
+                    if (emulator.ReadShort(Globals.CHAR_ADDRESS[eleBombSlot] - 0xA8) == 192) {
+                        for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
+                            emulator.WriteShort(Globals.MONS_ADDRESS[i] + 0x14, eleBombOldElement[i]);
+                            emulator.WriteShort(Globals.MONS_ADDRESS[i] + 0x6A, eleBombOldElement[i]);
+                        }
+                        eleBombTurns = 0;
+                        eleBombElement = 255;
+                        eleBombSlot = 255;
+                    }
+                } else {
+                    if (Globals.EXITING_BATTLE == 1) {
+                        eleBombTurns = 0;
+                        eleBombElement = 255;
+                        eleBombSlot = 255;
+                        eleBombItemUsed = 255;
+                    }
                 }
             }
         }
