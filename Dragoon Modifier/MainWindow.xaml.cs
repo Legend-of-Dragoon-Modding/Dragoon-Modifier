@@ -64,6 +64,8 @@ namespace Dragoon_Modifier {
         public byte eleBombElement = 0;
         public bool eleBombChange = false;
         public ushort[] eleBombOldElement = { 0, 0, 0, 0, 0 };
+        //No Dragoon Mode
+        public bool noDragoonModeOnBattleEntry = false;
         #endregion
         #endregion
 
@@ -233,10 +235,22 @@ namespace Dragoon_Modifier {
             cboKillBGM.Items.Add("Battle");
             cboKillBGM.Items.Add("Both");
 
+
+            cboSwitchChar.Items.Add("Dart");
+            cboSwitchChar.Items.Add("Lavitz");
+            cboSwitchChar.Items.Add("Shana");
+            cboSwitchChar.Items.Add("Rose");
+            cboSwitchChar.Items.Add("Haschel");
+            cboSwitchChar.Items.Add("Albert");
+            cboSwitchChar.Items.Add("Meru");
+            cboSwitchChar.Items.Add("Kongol");
+            cboSwitchChar.Items.Add("Miranda");
+
             cboSoloLeader.SelectedIndex = 0;
             cboAspectRatio.SelectedIndex = 0;
             cboCamera.SelectedIndex = 0;
             cboKillBGM.SelectedIndex = 1;
+            cboSwitchChar.SelectedIndex = 0;
         }
 
         private void LoadPreset() {
@@ -367,6 +381,8 @@ namespace Dragoon_Modifier {
                     HPCapBreakField();
                 if (dmScripts.ContainsKey("btnKillBGM") && dmScripts["btnKillBGM"] && killBGMField)
                     KillBGMField();
+                if (dmScripts.ContainsKey("btnCharmPotion") && dmScripts["btnCharmPotion"])
+                    AutoCharmPotion();
 
                 Thread.Sleep(500);
                 this.Dispatcher.BeginInvoke(new Action(() => {
@@ -402,6 +418,8 @@ namespace Dragoon_Modifier {
                     KillBGMBattle();
                 if (dmScripts.ContainsKey("btnElementalBomb") && dmScripts["btnElementalBomb"])
                     ElementalBomb();
+                if (dmScripts.ContainsKey("btnNoDragoon") && dmScripts["btnNoDragoon"])
+                    NoDragoonMode();
 
                 Thread.Sleep(250);
                 this.Dispatcher.BeginInvoke(new Action(() => {
@@ -456,103 +474,7 @@ namespace Dragoon_Modifier {
         #endregion
 
         #region Scripts
-        #region Battle Stats Display
-        public void FieldUI() {
-            lblEncounter.Text = "Encounter Value: " + Globals.BATTLE_VALUE;
-            lblEnemyID.Text = "Enemy ID: " + Globals.ENCOUNTER_ID;
-            lblMapID.Text = "Map ID: " + Globals.MAP;
-        }
-
-        public void BattleUI() {
-            if (Globals.IN_BATTLE && Globals.STATS_CHANGED) {
-                Constants.BATTLE_UI = true;
-                for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                    monsterDisplay[i, 0].Text = emulator.ReadName(0xC69D0 + (0x2C * i));
-                    monsterDisplay[i, 1].Text = " " + emulator.ReadShort(Globals.MONS_ADDRESS[i]) + "/" + emulator.ReadShort(Globals.MONS_ADDRESS[i] + 0x8);
-                    monsterDisplay[i, 2].Text = " " + emulator.ReadShort(Globals.MONS_ADDRESS[i] + 0x2C) + "/" + emulator.ReadShort(Globals.MONS_ADDRESS[i] + 0x2E);
-                    monsterDisplay[i, 3].Text = " " + emulator.ReadShort(Globals.MONS_ADDRESS[i] + 0x30) + "/" + emulator.ReadShort(Globals.MONS_ADDRESS[i] + 0x32);
-                    monsterDisplay[i, 4].Text = " " + emulator.ReadShort(Globals.MONS_ADDRESS[i] + 0x2A);
-                    monsterDisplay[i, 5].Text = " " + emulator.ReadShort(Globals.MONS_ADDRESS[i] + 0x44);
-                }
-                for (int i = 0; i < 3; i++) {
-                    if (Globals.PARTY_SLOT[i] < 9) {
-                        characterDisplay[i, 0].Text = Constants.GetCharName(Globals.PARTY_SLOT[i]);
-                        characterDisplay[i, 1].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i]) + "/" + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x8) + "\r\n\r\n " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x4) + "/" + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0xA);
-                        characterDisplay[i, 2].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x2C) + "\r\n\r\n " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x2E);
-                        characterDisplay[i, 3].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x30) + "\r\n\r\n " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x32);
-                        characterDisplay[i, 4].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x34) + "/" + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x36) + "\r\n\r\n " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x38) + "/" + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x3A);
-                        characterDisplay[i, 5].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0xA4) + "\r\n\r\n " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0xA6);
-                        characterDisplay[i, 6].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0xA8) + "\r\n\r\n " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0xAA);
-                        characterDisplay[i, 7].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x2A) + "\r\n\r\n " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x2);
-                        characterDisplay[i, 8].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x44);
-                    }
-                }
-                TurnOrder();
-            } else {
-                if (!Globals.IN_BATTLE && Constants.BATTLE_UI) {
-                    Constants.BATTLE_UI = false;
-                    for (int i = 0; i < 5; i++) {
-                        for (int x = 0; x < 6; x++) {
-                            monsterDisplay[i, x].Text = "";
-                        }
-                    }
-                    for (int i = 0; i < 3; i++) {
-                        for (int x = 0; x < 9; x++) {
-                            characterDisplay[i, x].Text = "";
-                        }
-                    }
-                    lblTurnOrder.Text = "Turn Order: ";
-                }
-            }
-        }
-
-        public void TurnOrder() {
-            try {
-                object[,] battleTurns = new object[9, 3];
-                int lastNumber = 0;
-                object temp1;
-                object temp2;
-                string turnLabel = "";
-                for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                    if (emulator.ReadShort(Globals.M_POINT - (i * 0x388)) > 0) {
-                        battleTurns[lastNumber, 0] = monsterDisplay[i, 0].Text;
-                        battleTurns[lastNumber, 1] = emulator.ReadShort(Globals.M_POINT - (i * 0x388) + 0x44);
-                        lastNumber += 1;
-                    }
-                }
-                for (int i = 0; i < 3; i++) {
-                    if (Globals.PARTY_SLOT[i] < 9) {
-                        if (emulator.ReadShort(Globals.C_POINT - (i * 0x388)) > 0) {
-                            battleTurns[lastNumber, 0] = characterDisplay[i, 0].Text;
-                            battleTurns[lastNumber, 1] = emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x44);
-                            lastNumber += 1;
-                        }
-                    }
-                }
-                for (int i = lastNumber - 1; i >= 0; i--) {
-                    for (int x = 0; x < i; x++) {
-                        if (Convert.ToInt16(battleTurns[x, 1]) < Convert.ToInt16((battleTurns[x + 1, 1]))) {
-                            temp1 = battleTurns[x, 0];
-                            temp2 = battleTurns[x, 1];
-                            battleTurns[x, 0] = battleTurns[x + 1, 0];
-                            battleTurns[x, 1] = battleTurns[x + 1, 1];
-                            battleTurns[x + 1, 0] = temp1;
-                            battleTurns[x + 1, 1] = temp2;
-                        }
-                    }
-                }
-                for (int i = 0; i < lastNumber; i++) {
-                    turnLabel += battleTurns[i, 0] + "»";
-                }
-                if (lastNumber >= 0 && turnLabel.Length > 1) {
-                    lblTurnOrder.Text = "Turn Order: " + turnLabel.Substring(0, turnLabel.Length - 1);
-                } else {
-                    lblTurnOrder.Text = "Turn Order: ";
-                }
-            } catch (Exception e) { }
-        }
-        #endregion
-
+        #region Field
         #region Save Anywhere
         public void SaveAnywhere() {
             if (!Globals.IN_BATTLE) {
@@ -819,6 +741,335 @@ namespace Dragoon_Modifier {
         }
         #endregion
 
+        #region Auto Charm Potion
+        public void AutoCharmPotion() {
+            if ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 3850 && emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) < 9999) && emulator.ReadInteger(Constants.GetAddress("GOLD")) >= 8) {
+                emulator.WriteInteger(Constants.GetAddress("GOLD"), emulator.ReadInteger(Constants.GetAddress("GOLD")) - 8);
+                emulator.WriteShort(Constants.GetAddress("BATTLE_VALUE"), 0);
+            }
+        }
+        #endregion
+        #endregion
+
+        #region Both
+        #region Battle Stats Display
+        public void FieldUI() {
+            lblEncounter.Text = "Encounter Value: " + Globals.BATTLE_VALUE;
+            lblEnemyID.Text = "Enemy ID: " + Globals.ENCOUNTER_ID;
+            lblMapID.Text = "Map ID: " + Globals.MAP;
+        }
+
+        public void BattleUI() {
+            if (Globals.IN_BATTLE && Globals.STATS_CHANGED) {
+                Constants.BATTLE_UI = true;
+                for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
+                    monsterDisplay[i, 0].Text = emulator.ReadName(0xC69D0 + (0x2C * i));
+                    monsterDisplay[i, 1].Text = " " + emulator.ReadShort(Globals.MONS_ADDRESS[i]) + "/" + emulator.ReadShort(Globals.MONS_ADDRESS[i] + 0x8);
+                    monsterDisplay[i, 2].Text = " " + emulator.ReadShort(Globals.MONS_ADDRESS[i] + 0x2C) + "/" + emulator.ReadShort(Globals.MONS_ADDRESS[i] + 0x2E);
+                    monsterDisplay[i, 3].Text = " " + emulator.ReadShort(Globals.MONS_ADDRESS[i] + 0x30) + "/" + emulator.ReadShort(Globals.MONS_ADDRESS[i] + 0x32);
+                    monsterDisplay[i, 4].Text = " " + emulator.ReadShort(Globals.MONS_ADDRESS[i] + 0x2A);
+                    monsterDisplay[i, 5].Text = " " + emulator.ReadShort(Globals.MONS_ADDRESS[i] + 0x44);
+                }
+                for (int i = 0; i < 3; i++) {
+                    if (Globals.PARTY_SLOT[i] < 9) {
+                        characterDisplay[i, 0].Text = Constants.GetCharName(Globals.PARTY_SLOT[i]);
+                        characterDisplay[i, 1].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i]) + "/" + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x8) + "\r\n\r\n " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x4) + "/" + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0xA);
+                        characterDisplay[i, 2].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x2C) + "\r\n\r\n " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x2E);
+                        characterDisplay[i, 3].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x30) + "\r\n\r\n " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x32);
+                        characterDisplay[i, 4].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x34) + "/" + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x36) + "\r\n\r\n " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x38) + "/" + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x3A);
+                        characterDisplay[i, 5].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0xA4) + "\r\n\r\n " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0xA6);
+                        characterDisplay[i, 6].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0xA8) + "\r\n\r\n " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0xAA);
+                        characterDisplay[i, 7].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x2A) + "\r\n\r\n " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x2);
+                        characterDisplay[i, 8].Text = " " + emulator.ReadShort(Globals.CHAR_ADDRESS[i] + 0x44);
+                    }
+                }
+                TurnOrder();
+            } else {
+                if (!Globals.IN_BATTLE && Constants.BATTLE_UI) {
+                    Constants.BATTLE_UI = false;
+                    for (int i = 0; i < 5; i++) {
+                        for (int x = 0; x < 6; x++) {
+                            monsterDisplay[i, x].Text = "";
+                        }
+                    }
+                    for (int i = 0; i < 3; i++) {
+                        for (int x = 0; x < 9; x++) {
+                            characterDisplay[i, x].Text = "";
+                        }
+                    }
+                    lblTurnOrder.Text = "Turn Order: ";
+                }
+            }
+        }
+
+        public void TurnOrder() {
+            try {
+                object[,] battleTurns = new object[9, 3];
+                int lastNumber = 0;
+                object temp1;
+                object temp2;
+                string turnLabel = "";
+                for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
+                    if (emulator.ReadShort(Globals.M_POINT - (i * 0x388)) > 0) {
+                        battleTurns[lastNumber, 0] = monsterDisplay[i, 0].Text;
+                        battleTurns[lastNumber, 1] = emulator.ReadShort(Globals.M_POINT - (i * 0x388) + 0x44);
+                        lastNumber += 1;
+                    }
+                }
+                for (int i = 0; i < 3; i++) {
+                    if (Globals.PARTY_SLOT[i] < 9) {
+                        if (emulator.ReadShort(Globals.C_POINT - (i * 0x388)) > 0) {
+                            battleTurns[lastNumber, 0] = characterDisplay[i, 0].Text;
+                            battleTurns[lastNumber, 1] = emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x44);
+                            lastNumber += 1;
+                        }
+                    }
+                }
+                for (int i = lastNumber - 1; i >= 0; i--) {
+                    for (int x = 0; x < i; x++) {
+                        if (Convert.ToInt16(battleTurns[x, 1]) < Convert.ToInt16((battleTurns[x + 1, 1]))) {
+                            temp1 = battleTurns[x, 0];
+                            temp2 = battleTurns[x, 1];
+                            battleTurns[x, 0] = battleTurns[x + 1, 0];
+                            battleTurns[x, 1] = battleTurns[x + 1, 1];
+                            battleTurns[x + 1, 0] = temp1;
+                            battleTurns[x + 1, 1] = temp2;
+                        }
+                    }
+                }
+                for (int i = 0; i < lastNumber; i++) {
+                    turnLabel += battleTurns[i, 0] + "»";
+                }
+                if (lastNumber >= 0 && turnLabel.Length > 1) {
+                    lblTurnOrder.Text = "Turn Order: " + turnLabel.Substring(0, turnLabel.Length - 1);
+                } else {
+                    lblTurnOrder.Text = "Turn Order: ";
+                }
+            } catch (Exception e) { }
+        }
+        #endregion
+
+        #region HP Cap Break
+        public void HPCapBreakField() {
+            if (!Globals.IN_BATTLE && (Globals.BATTLE_VALUE > 4000 && Globals.BATTLE_VALUE < 9999)) {
+                int hp = Constants.GetAddress("CHAR_MAX_HP_START");
+                int level = Constants.GetAddress("CHAR_LEVEL_START");
+                int helmet = Constants.GetAddress("CHAR_HELMET_START");
+                int acc = Constants.GetAddress("CHAR_ACC_START");
+                byte dragon = 0x5A;
+                byte ring = 0x79;
+                byte healthRing = 0xB2;
+
+                for (int i = 0; i < 3; i++) {
+                    if (Globals.PARTY_SLOT[i] != hpChangeSlot[i]) {
+                        hpChangeCheck[i] = 65535;
+                        hpChangeSlot[i] = Globals.PARTY_SLOT[i];
+                        hpChangeSave[i] = 65535;
+                    }
+                    if (Globals.PARTY_SLOT[i] < 9) {
+                        hpChangeCheck[i] = 1.0;
+                        if (emulator.ReadByte(helmet + (0x2C * hpChangeSlot[i])) == dragon) {
+                            hpChangeCheck[i] += 0.5;
+                        }
+                        if (emulator.ReadByte(acc + (0x2C * hpChangeSlot[i])) == ring) {
+                            hpChangeCheck[i] += 0.5;
+                        }
+                        if (emulator.ReadByte(acc + (0x2C * hpChangeSlot[i])) == healthRing) {
+                            hpChangeCheck[i] += 0.5;
+                        }
+                        if (hpChangeCheck[i] > 1) {
+                            byte tableSlot = 0;
+                            switch (Globals.PARTY_SLOT[i]) {
+                                case 0:
+                                    tableSlot = 1;
+                                    break;
+                                case 1:
+                                case 5:
+                                    tableSlot = 4;
+                                    break;
+                                case 2:
+                                case 8:
+                                    tableSlot = 6;
+                                    break;
+                                case 3:
+                                    tableSlot = 5;
+                                    break;
+                                case 4:
+                                    tableSlot = 2;
+                                    break;
+                                case 6:
+                                    tableSlot = 3;
+                                    break;
+                                case 7:
+                                    tableSlot = 0;
+                                    break;
+                            }
+                            hpChangeCheck[i] = Math.Round(hpChangeCheck[i] * (emulator.ReadShort(Constants.GetAddress("STAT_TABLE_HP_START") + (tableSlot * 0x1E8) + (emulator.ReadByte(Constants.GetAddress("CHAR_LEVEL_START") + (hpChangeSlot[i] * 0x2C)) * 0x8))));
+                        } else {
+                            hpChangeCheck[i] = 65535;
+                        }
+                    }
+                }
+                //Constants.WriteDebug("Break HP: " + hpChangeSave[0] + "/" + hpChangeCheck[0] + " | " + hpChangeSave[1] + "/" + hpChangeCheck[1] + " | " + hpChangeSave[2] + "/" + hpChangeCheck[2]);
+            }
+        }
+
+        public void HPCapBreakBattle() {
+            if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !hpCapBreakOnBattleEntry) {
+                for (int i = 0; i < 3; i++) {
+                    if (Globals.PARTY_SLOT[i] < 9) {
+                        if (hpChangeCheck[i] != 65535) {
+                            emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0x8, (ushort) hpChangeCheck[i]);
+                            if (hpChangeSave[i] != 65535 && emulator.ReadShort(Globals.CHAR_ADDRESS[i]) < hpChangeSave[i]) {
+                                emulator.WriteShort(Globals.CHAR_ADDRESS[i], hpChangeSave[i]);
+                            }
+                        }
+                    }
+                }
+                hpCapBreakOnBattleEntry = true;
+            } else {
+                if (!Globals.IN_BATTLE && hpCapBreakOnBattleEntry) {
+                    hpCapBreakOnBattleEntry = false;
+                } else {
+                    if (Globals.IN_BATTLE && hpCapBreakOnBattleEntry) {
+                        for (int i = 0; i < 3; i++) {
+                            hpChangeSave[i] = emulator.ReadShort(Globals.CHAR_ADDRESS[i]);
+                            //Constants.WriteDebug("xBreak HP: " + hpChangeSave[0] + "/" + hpChangeCheck[0] + " | " + hpChangeSave[1] + "/" + hpChangeCheck[1] + " | " + hpChangeSave[2] + "/" + hpChangeCheck[2]);
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region Kill BGM
+        public void SetKillBGMState() {
+            if (uiCombo["cboKillBGM"] == 0) {
+                killBGMField = true;
+                killedBGMField = false;
+                killBGMBattle = false;
+                killedBGMBattle = false;
+            } else if (uiCombo["cboKillBGM"] == 1) {
+                killBGMField = false;
+                killedBGMField = false;
+                killBGMBattle = true;
+                killedBGMBattle = false;
+            } else if (uiCombo["cboKillBGM"] == 2) {
+                killBGMField = true;
+                killedBGMField = false;
+                killBGMBattle = true;
+                killedBGMBattle = false;
+            }
+        }
+
+        public void KillBGM() {
+            ArrayList bgmScan = emulator.ScanAllAOB("53 53 73 71", 0xA8660, 0x2A865F);
+            foreach (var address in bgmScan) {
+                for (int i = 0; i <= 255; i++) {
+                    emulator.WriteByteU((long) address + i, 0);
+                }
+            }
+        }
+
+        public void KillBGMField() {
+            if (!Globals.IN_BATTLE && !killedBGMField && Globals.BATTLE_VALUE < 9999) {
+                KillBGM();
+                killedBGMField = true;
+                reKilledBGMField = false;
+            } else {
+                if (killedBGMField && Globals.IN_BATTLE) {
+                    killedBGMField = false;
+                    reKilledBGMField = false;
+                } else {
+                    if (!reKilledBGMField && !Globals.IN_BATTLE && Globals.BATTLE_VALUE > 0) {
+                        KillBGM();
+                        reKilledBGMField = true;
+                    }
+                }
+            }
+
+        }
+        public void KillBGMBattle() {
+            if (Globals.IN_BATTLE && !killedBGMBattle && Globals.BATTLE_VALUE > 0) {
+                emulator.WriteShort(Constants.GetAddress("MUSIC_SPEED_BATTLE"), 0);
+                KillBGM();
+                killedBGMBattle = true;
+            } else {
+                if (killedBGMBattle && !Globals.IN_BATTLE) {
+                    killedBGMBattle = false;
+                }
+            }
+        }
+        #endregion
+
+        #region Solo Mode
+        public void SoloModeField() {
+            if (!Globals.IN_BATTLE && !addSoloPartyMembers) {
+                if (emulator.ReadByte(Constants.GetAddress("PARTY_SLOT") + 0x4) != 255 || emulator.ReadByte(Constants.GetAddress("PARTY_SLOT") + 0x8) != 255) {
+                    for (int i = 0; i < 8; i++) {
+                        emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + i + 0x4, 255);
+                    }
+                }
+            }
+        }
+
+        public void SoloModeBattle() {
+            if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !soloModeOnBattleEntry) {
+                for (int i = 0; i < 3; i++) {
+                    if (Globals.PARTY_SLOT[i] < 9) {
+                        if (i != uiCombo["cboSoloLeader"]) {
+                            emulator.WriteShort(Globals.CHAR_ADDRESS[i], 0);
+                            emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0x8, 0);
+                            emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0x12C, 200);
+                            emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0x45, 25);
+                            //yeet
+                            emulator.WriteInteger(Globals.CHAR_ADDRESS[i] + 0x16D, 255);
+                            emulator.WriteInteger(Globals.CHAR_ADDRESS[i] + 0x171, 255);
+                            emulator.WriteInteger(Globals.CHAR_ADDRESS[i] + 0x175, 255);
+                        } else {
+                            emulator.WriteInteger(Globals.CHAR_ADDRESS[i] + 0x16D, 9);
+                            emulator.WriteInteger(Globals.CHAR_ADDRESS[i] + 0x171, 0);
+                            emulator.WriteInteger(Globals.CHAR_ADDRESS[i] + 0x175, 0);
+                        }
+                    }
+                }
+
+                if (dmScripts.ContainsKey("btnSoloModeEXP") && dmScripts["btnSoloModeEXP"]) {
+                    for (int i = 0; i < 5; i++) {
+                        emulator.WriteShort(Constants.GetAddress("MONSTER_REWARDS_EXP") + (i * 0x1A8), (ushort) Math.Round((double) (emulator.ReadShort(Constants.GetAddress("MONSTER_REWARDS_EXP") + (i * 0x1A8)) / 3)));
+                    }
+                }
+                soloModeOnBattleEntry = true;
+            } else {
+                if (!Globals.IN_BATTLE && soloModeOnBattleEntry) {
+                    soloModeOnBattleEntry = false;
+                    if (!alwaysAddSoloPartyMembers)
+                        addSoloPartyMembers = false;
+                }
+            }
+        }
+
+        public void AddSoloPartyMembers() {
+            addSoloPartyMembers = true;
+            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x4, Globals.PARTY_SLOT[0]);
+            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x5, 0);
+            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x6, 0);
+            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x7, 0);
+            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x8, Globals.PARTY_SLOT[0]);
+            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x9, 0);
+            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0xA, 0);
+            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0xB, 0);
+        }
+
+        public void SwitchSoloCharacter() {
+            if (dmScripts.ContainsKey("btnSoloMode") && dmScripts["btnSoloMode"]) {
+                emulator.WriteByte(Constants.GetAddress("PARTY_SLOT"), uiCombo["cboSwitchChar"]);
+            }
+        }
+        #endregion
+        #endregion
+
+        #region Battle
         #region Damage Cap Removal
         public void RemoveDamageCap() {
             if (Globals.IN_BATTLE && Globals.STATS_CHANGED) {
@@ -873,60 +1124,6 @@ namespace Dragoon_Modifier {
                     }
                 }
             }
-        }
-        #endregion
-
-        #region Solo Mode
-        public void SoloModeField() {
-            if (!Globals.IN_BATTLE && !addSoloPartyMembers) {
-                if (emulator.ReadByte(Constants.GetAddress("PARTY_SLOT") + 0x4) != 255 || emulator.ReadByte(Constants.GetAddress("PARTY_SLOT") + 0x8) != 255) {
-                    for (int i = 0; i < 8; i++) {
-                        emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + i + 0x4, 255);
-                    }
-                }
-            }
-        }
-
-        public void SoloModeBattle() {
-            if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !soloModeOnBattleEntry) {
-                for (int i = 0; i < 3; i++) {
-                    if (Globals.PARTY_SLOT[i] < 9) {
-                        if (i != uiCombo["cboSoloLeader"]) {
-                            emulator.WriteShort(Globals.CHAR_ADDRESS[i], 0);
-                            emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0x8, 0);
-                            emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0x12C, 200);
-                            emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0x45, 25);
-                            //yeet
-                            emulator.WriteInteger(Globals.CHAR_ADDRESS[i] + 0x16D, 255);
-                            emulator.WriteInteger(Globals.CHAR_ADDRESS[i] + 0x171, 255);
-                            emulator.WriteInteger(Globals.CHAR_ADDRESS[i] + 0x175, 255);
-                        } else {
-                            emulator.WriteInteger(Globals.CHAR_ADDRESS[i] + 0x16D, 9);
-                            emulator.WriteInteger(Globals.CHAR_ADDRESS[i] + 0x171, 0);
-                            emulator.WriteInteger(Globals.CHAR_ADDRESS[i] + 0x175, 0);
-                        }
-                    }
-                }
-                soloModeOnBattleEntry = true;
-            } else {
-                if (!Globals.IN_BATTLE && soloModeOnBattleEntry) {
-                    soloModeOnBattleEntry = false;
-                    if (!alwaysAddSoloPartyMembers)
-                        addSoloPartyMembers = false;
-                }
-            }
-        }
-
-        public void AddSoloPartyMembers() {
-            addSoloPartyMembers = true;
-            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x4, Globals.PARTY_SLOT[0]);
-            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x5, 0);
-            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x6, 0);
-            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x7, 0);
-            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x8, Globals.PARTY_SLOT[0]);
-            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x9, 0);
-            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0xA, 0);
-            emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0xB, 0);
         }
         #endregion
 
@@ -1281,9 +1478,9 @@ namespace Dragoon_Modifier {
                                multi *= 0.3
                             End If*/
 
-                            /*if (bombTurns > 0 && elementBombElement == 16) {
+                            if (eleBombTurns > 0 && eleBombElement == 16) {
                                 multi *= 3;
-                            }*/
+                            }
 
                             if (currentMP[i] != previousMP[i] && currentMP[i] < previousMP[i]) {
                                 mp = previousMP[i] - currentMP[i];
@@ -1412,99 +1609,6 @@ namespace Dragoon_Modifier {
         }
         #endregion
 
-        #region HP Cap Break
-        public void HPCapBreakField() {
-            if (!Globals.IN_BATTLE && (Globals.BATTLE_VALUE > 4000 && Globals.BATTLE_VALUE < 9999)) {
-                int hp = Constants.GetAddress("CHAR_MAX_HP_START");
-                int level = Constants.GetAddress("CHAR_LEVEL_START");
-                int helmet = Constants.GetAddress("CHAR_HELMET_START");
-                int acc = Constants.GetAddress("CHAR_ACC_START");
-                byte dragon = 0x5A;
-                byte ring = 0x79;
-                byte healthRing = 0xB2;
-
-                for (int i = 0; i < 3; i++) {
-                    if (Globals.PARTY_SLOT[i] != hpChangeSlot[i]) {
-                        hpChangeCheck[i] = 65535;
-                        hpChangeSlot[i] = Globals.PARTY_SLOT[i];
-                        hpChangeSave[i] = 65535;
-                    }
-                    if (Globals.PARTY_SLOT[i] < 9) {
-                        hpChangeCheck[i] = 1.0;
-                        if (emulator.ReadByte(helmet + (0x2C * hpChangeSlot[i])) == dragon) {
-                            hpChangeCheck[i] += 0.5;
-                        }
-                        if (emulator.ReadByte(acc + (0x2C * hpChangeSlot[i])) == ring) {
-                            hpChangeCheck[i] += 0.5;
-                        }
-                        if (emulator.ReadByte(acc + (0x2C * hpChangeSlot[i])) == healthRing) {
-                            hpChangeCheck[i] += 0.5;
-                        }
-                        if (hpChangeCheck[i] > 1) {
-                            byte tableSlot = 0;
-                            switch (Globals.PARTY_SLOT[i]) {
-                                case 0:
-                                    tableSlot = 1;
-                                    break;
-                                case 1:
-                                case 5:
-                                    tableSlot = 4;
-                                    break;
-                                case 2:
-                                case 8:
-                                    tableSlot = 6;
-                                    break;
-                                case 3:
-                                    tableSlot = 5;
-                                    break;
-                                case 4:
-                                    tableSlot = 2;
-                                    break;
-                                case 6:
-                                    tableSlot = 3;
-                                    break;
-                                case 7:
-                                    tableSlot = 0;
-                                    break;
-                            }
-                            hpChangeCheck[i] = Math.Round(hpChangeCheck[i] * (emulator.ReadShort(Constants.GetAddress("STAT_TABLE_HP_START") + (tableSlot * 0x1E8) + (emulator.ReadByte(Constants.GetAddress("CHAR_LEVEL_START") + (hpChangeSlot[i] * 0x2C)) * 0x8))));
-                        } else {
-                            hpChangeCheck[i] = 65535;
-                        }
-                    }
-                }
-                //Constants.WriteDebug("Break HP: " + hpChangeSave[0] + "/" + hpChangeCheck[0] + " | " + hpChangeSave[1] + "/" + hpChangeCheck[1] + " | " + hpChangeSave[2] + "/" + hpChangeCheck[2]);
-            }
-        }
-
-        public void HPCapBreakBattle() {
-            if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !hpCapBreakOnBattleEntry) {
-                for (int i = 0; i < 3; i++) {
-                    if (Globals.PARTY_SLOT[i] < 9) {
-                        if (hpChangeCheck[i] != 65535) {
-                            emulator.WriteShort(Globals.CHAR_ADDRESS[i] + 0x8, (ushort) hpChangeCheck[i]);
-                            if (hpChangeSave[i] != 65535 && emulator.ReadShort(Globals.CHAR_ADDRESS[i]) < hpChangeSave[i]) {
-                                emulator.WriteShort(Globals.CHAR_ADDRESS[i], hpChangeSave[i]);
-                            }
-                        }
-                    }
-                }
-                hpCapBreakOnBattleEntry = true;
-            } else {
-                if (!Globals.IN_BATTLE && hpCapBreakOnBattleEntry) {
-                    hpCapBreakOnBattleEntry = false;
-                } else {
-                    if (Globals.IN_BATTLE && hpCapBreakOnBattleEntry) {
-                        for (int i = 0; i < 3; i++) {
-                            hpChangeSave[i] = emulator.ReadShort(Globals.CHAR_ADDRESS[i]);
-                            //Constants.WriteDebug("xBreak HP: " + hpChangeSave[0] + "/" + hpChangeCheck[0] + " | " + hpChangeSave[1] + "/" + hpChangeCheck[1] + " | " + hpChangeSave[2] + "/" + hpChangeCheck[2]);
-                        }
-                    }
-                }
-            }
-        }
-        #endregion
-
         #region Aspect Ratio
         public void ChangeAspectRatio() {
             if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !aspectRatioOnBattleEntry) {
@@ -1530,66 +1634,6 @@ namespace Dragoon_Modifier {
             } else {
                 if (!Globals.IN_BATTLE && aspectRatioOnBattleEntry) {
                     aspectRatioOnBattleEntry = false;
-                }
-            }
-        }
-        #endregion
-
-        #region Kill BGM
-        public void SetKillBGMState() {
-            if (uiCombo["cboKillBGM"] == 0) {
-                killBGMField = true;
-                killedBGMField = false;
-                killBGMBattle = false;
-                killedBGMBattle = false;
-            } else if (uiCombo["cboKillBGM"] == 1) {
-                killBGMField = false;
-                killedBGMField = false;
-                killBGMBattle = true;
-                killedBGMBattle = false;
-            } else if (uiCombo["cboKillBGM"] == 2) {
-                killBGMField = true;
-                killedBGMField = false;
-                killBGMBattle = true;
-                killedBGMBattle = false;
-            }
-        }
-
-        public void KillBGM() {
-            ArrayList bgmScan = emulator.ScanAllAOB("53 53 73 71", 0xA8660, 0x2A865F);
-            foreach (var address in bgmScan) {
-                for (int i = 0; i <= 255; i++) {
-                    emulator.WriteByteU((long) address + i, 0);
-                }
-            }
-        }
-
-        public void KillBGMField() {
-            if (!Globals.IN_BATTLE && !killedBGMField && Globals.BATTLE_VALUE < 9999) {
-                KillBGM();
-                killedBGMField = true;
-                reKilledBGMField = false;
-            } else {
-                if (killedBGMField && Globals.IN_BATTLE) {
-                    killedBGMField = false;
-                    reKilledBGMField = false;
-                } else {
-                    if (!reKilledBGMField && !Globals.IN_BATTLE && Globals.BATTLE_VALUE > 0) {
-                        KillBGM();
-                        reKilledBGMField = true;
-                    }
-                }
-            }
-
-        }
-        public void KillBGMBattle() {
-            if (Globals.IN_BATTLE && !killedBGMBattle && Globals.BATTLE_VALUE > 0) {
-                emulator.WriteShort(Constants.GetAddress("MUSIC_SPEED_BATTLE"), 0);
-                KillBGM();
-                killedBGMBattle = true;
-            } else {
-                if (killedBGMBattle && !Globals.IN_BATTLE) {
-                    killedBGMBattle = false;
                 }
             }
         }
@@ -1677,7 +1721,7 @@ namespace Dragoon_Modifier {
 
                             eleBombTurns -= 1;
                         }
-                    } 
+                    }
 
                     if (eleBombChange && (emulator.ReadShort(Globals.CHAR_ADDRESS[eleBombSlot] - 0xA8) == 0 || emulator.ReadShort(Globals.CHAR_ADDRESS[eleBombSlot] - 0xA8) == 2)) {
                         eleBombChange = false;
@@ -1709,6 +1753,24 @@ namespace Dragoon_Modifier {
                 }
             }
         }
+        #endregion
+
+        #region No Dragoon
+        public void NoDragoonMode() {
+            if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !soloModeOnBattleEntry) {
+                for (int i = 0; i < 3; i++) {
+                    if (Globals.PARTY_SLOT[i] < 9) {
+                        emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0x7, 0);
+                    }
+                }
+                noDragoonModeOnBattleEntry = true;
+            } else {
+                if (!Globals.IN_BATTLE && noDragoonModeOnBattleEntry) {
+                    noDragoonModeOnBattleEntry = false;
+                }
+            }
+        }
+        #endregion
         #endregion
         #endregion
 
@@ -2109,6 +2171,8 @@ namespace Dragoon_Modifier {
             Button btn = (Button) sender;
             if (btn.Name.Equals("btnAddPartyMembers")) {
                 AddSoloPartyMembers();
+            } else if (btn.Name.Equals("btnSwitchSoloChar")) {
+                SwitchSoloCharacter();
             }
         }
 
