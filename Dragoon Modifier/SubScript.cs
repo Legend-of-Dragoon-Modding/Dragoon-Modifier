@@ -24,8 +24,7 @@ namespace Dragoon_Modifier {
             } catch (Exception ex) {
                 Constants.RUN = false;
                 Constants.WriteGLog("Program stopped.");
-                Constants.WritePLog("SCRIPT ERROR: " + ToString());
-                Constants.WriteOutput("SCRIPT ERROR: " + ToString());
+                Constants.WritePLogOutput("SCRIPT ERROR: " + ToString());
                 Constants.WriteOutput("Fatal Error. Closing all threads.");
                 Constants.WriteDebug(ex.ToString());
                 return 0;
@@ -40,8 +39,7 @@ namespace Dragoon_Modifier {
             } catch (Exception ex) {
                 Constants.RUN = false;
                 Constants.WriteGLog("Program stopped.");
-                Constants.WritePLog("SCRIPT ERROR: " + ToString());
-                Constants.WriteOutput("SCRIPT ERROR: " + ToString());
+                Constants.WritePLogOutput("SCRIPT ERROR: " + ToString());
                 Constants.WriteOutput("Fatal Error. Closing all threads.");
                 Constants.WriteDebug(ex.ToString());
                 return 0;
@@ -56,8 +54,7 @@ namespace Dragoon_Modifier {
             } catch (Exception ex) {
                 Constants.RUN = false;
                 Constants.WriteGLog("Program stopped.");
-                Constants.WritePLog("SCRIPT ERROR: " + ToString());
-                Constants.WriteOutput("SCRIPT ERROR: " + ToString());
+                Constants.WritePLogOutput("SCRIPT ERROR: " + ToString());
                 Constants.WriteOutput("Fatal Error. Closing all threads.");
                 Constants.WriteDebug(ex.ToString());
                 return 0;
@@ -72,8 +69,7 @@ namespace Dragoon_Modifier {
             } catch (Exception ex) {
                 Constants.RUN = false;
                 Constants.WriteGLog("Program stopped.");
-                Constants.WritePLog("SCRIPT ERROR: " + ToString());
-                Constants.WriteOutput("SCRIPT ERROR: " + ToString());
+                Constants.WritePLogOutput("SCRIPT ERROR: " + ToString());
                 Constants.WriteOutput("Fatal Error. Closing all threads.");
                 Constants.WriteDebug(ex.ToString());
                 return 0;
