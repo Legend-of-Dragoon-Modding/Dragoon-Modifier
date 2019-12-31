@@ -48,6 +48,8 @@ namespace Dragoon_Modifier {
         public byte[] hpChangeSlot = { 255, 255, 255 };
         public ushort[] hpChangeSave = { 0, 0, 0 };
         public bool hpCapBreakOnBattleEntry = false;
+        public bool maxHPTableLoaded = false;
+        public ushort[,] maxHPTable = new ushort[9, 60];
         //Aspect Ratio
         public bool aspectRatioOnBattleEntry = false;
         //Kill BGM
@@ -206,7 +208,7 @@ namespace Dragoon_Modifier {
             characterDisplay[2, 6] = lblCharacter3DDEF;
             characterDisplay[2, 7] = lblCharacter3SPD;
             characterDisplay[2, 8] = lblCharacter3TRN;
-            
+
             cboSoloLeader.Items.Add("Slot 1");
             cboSoloLeader.Items.Add("Slot 2");
             cboSoloLeader.Items.Add("Slot 3");
@@ -302,7 +304,7 @@ namespace Dragoon_Modifier {
 
         public void LoadSubKey() {
             if (Constants.SUBKEY.GetValue("Ultimate Boss") == null) {
-                Constants.SUBKEY.SetValue("Ultimate Boss",  0);
+                Constants.SUBKEY.SetValue("Ultimate Boss", 0);
                 ultimateBossCompleted = 0;
             } else {
                 ultimateBossCompleted = (int) Constants.SUBKEY.GetValue("Ultimate Boss");
@@ -440,6 +442,8 @@ namespace Dragoon_Modifier {
                         run = script.Run(emulator);
                     }), DispatcherPriority.ContextIdle);
                 }
+
+                LoadMaxHPTable();
 
                 if (dmScripts.ContainsKey("btnSaveAnywhere") && dmScripts["btnSaveAnywhere"])
                     SaveAnywhere();
@@ -939,7 +943,7 @@ namespace Dragoon_Modifier {
 
         #region HP Cap Break
         public void HPCapBreakField() {
-            if (!Globals.IN_BATTLE && (Globals.BATTLE_VALUE > 4000 && Globals.BATTLE_VALUE < 9999)) {
+            if (!Globals.IN_BATTLE && (Globals.BATTLE_VALUE > 4000 && Globals.BATTLE_VALUE < 9999) && maxHPTableLoaded) {
                 int hp = Constants.GetAddress("CHAR_MAX_HP_START");
                 int level = Constants.GetAddress("CHAR_LEVEL_START");
                 int helmet = Constants.GetAddress("CHAR_HELMET_START");
@@ -966,33 +970,7 @@ namespace Dragoon_Modifier {
                             hpChangeCheck[i] += 0.5;
                         }
                         if (hpChangeCheck[i] > 1) {
-                            byte tableSlot = 0;
-                            switch (Globals.PARTY_SLOT[i]) {
-                                case 0:
-                                    tableSlot = 1;
-                                    break;
-                                case 1:
-                                case 5:
-                                    tableSlot = 4;
-                                    break;
-                                case 2:
-                                case 8:
-                                    tableSlot = 6;
-                                    break;
-                                case 3:
-                                    tableSlot = 5;
-                                    break;
-                                case 4:
-                                    tableSlot = 2;
-                                    break;
-                                case 6:
-                                    tableSlot = 3;
-                                    break;
-                                case 7:
-                                    tableSlot = 0;
-                                    break;
-                            }
-                            hpChangeCheck[i] = Math.Round(hpChangeCheck[i] * (emulator.ReadShort(Constants.GetAddress("STAT_TABLE_HP_START") + (tableSlot * 0x1E8) + (emulator.ReadByte(Constants.GetAddress("CHAR_LEVEL_START") + (hpChangeSlot[i] * 0x2C)) * 0x8))));
+                            hpChangeCheck[i] = hpChangeCheck[i] * maxHPTable[hpChangeSlot[i], emulator.ReadByte(level + (0x2C * hpChangeSlot[i])) - 1];
                         } else {
                             hpChangeCheck[i] = 65535;
                         }
@@ -1019,13 +997,51 @@ namespace Dragoon_Modifier {
                 if (!Globals.IN_BATTLE && hpCapBreakOnBattleEntry) {
                     hpCapBreakOnBattleEntry = false;
                 } else {
-                    if (Globals.IN_BATTLE && hpCapBreakOnBattleEntry) {
+                    if (Globals.IN_BATTLE && Globals.STATS_CHANGED && hpCapBreakOnBattleEntry) {
                         for (int i = 0; i < 3; i++) {
                             hpChangeSave[i] = emulator.ReadShort(Globals.CHAR_ADDRESS[i]);
                             //Constants.WriteDebug("xBreak HP: " + hpChangeSave[0] + "/" + hpChangeCheck[0] + " | " + hpChangeSave[1] + "/" + hpChangeCheck[1] + " | " + hpChangeSave[2] + "/" + hpChangeCheck[2]);
                         }
                     }
                 }
+            }
+        }
+
+        public void LoadMaxHPTable() {
+            if (!maxHPTableLoaded && !Globals.IN_BATTLE && Globals.BATTLE_VALUE < 5130) {
+                byte tableSlot = 0;
+                for (int i = 0; i < 9; i++) {
+                    switch (i) {
+                        case 0:
+                            tableSlot = 1;
+                            break;
+                        case 1:
+                        case 5:
+                            tableSlot = 4;
+                            break;
+                        case 2:
+                        case 8:
+                            tableSlot = 6;
+                            break;
+                        case 3:
+                            tableSlot = 5;
+                            break;
+                        case 4:
+                            tableSlot = 2;
+                            break;
+                        case 6:
+                            tableSlot = 3;
+                            break;
+                        case 7:
+                            tableSlot = 0;
+                            break;
+                    }
+
+                    for (int x = 1; x < 61; x++) {
+                        maxHPTable[i, x - 1] = emulator.ReadShort(Constants.GetAddress("STAT_TABLE_HP_START") + (tableSlot * 0x1E8) + (x * 0x8));
+                    }
+                }
+                maxHPTableLoaded = true;
             }
         }
         #endregion
@@ -1809,7 +1825,7 @@ namespace Dragoon_Modifier {
                         for (int i = 0; i < 3; i++) {
                             long p = Globals.CHAR_ADDRESS[i];
                             if (emulator.ReadShort(p + 0x116) == 159 && Globals.PARTY_SLOT[i] == 0) { //Spirit Eater
-                                if (emulator.ReadShort(p + 0x2) == (emulator.ReadByte(0xB128A7) * 100)) {
+                                if (emulator.ReadShort(p + 0x2) == (emulator.ReadByte(Constants.GetAddress("DART_DRAGOON_LEVEL")) * 100)) {
                                     emulator.WriteShort(p + 0x130, spiritEaterSaveSP);
                                 } else {
                                     if (spiritEaterSaveSP < spiritEaterSP) {
@@ -1826,15 +1842,15 @@ namespace Dragoon_Modifier {
                                     if (emulator.ReadShort(p + 0x2) == 500) {
                                         emulator.WriteAOB(p + 0xC0, "00 00 00 04");
                                         emulator.WriteShort(p + 0x2, 200);
-                                        emulator.WriteByte(0x6E62C + i * 4, 2);
+                                        emulator.WriteByte(Constants.GetAddress("DRAGOON_TURNS") + i * 4, 2);
                                     } else {
                                         emulator.WriteAOB(p + 0xC0, "00 00 00 03");
                                         emulator.WriteShort(p + 0x2, 100);
-                                        emulator.WriteByte(0x6E62C + i * 4, 1);
+                                        emulator.WriteByte(Constants.GetAddress("DRAGOON_TURNS") + i * 4, 1);
                                     }
                                 }
 
-                                if (emulator.ReadByte(0x6E62C + i * 4) == 0) {
+                                if (emulator.ReadByte(Constants.GetAddress("DRAGOON_TURNS") + i * 4) == 0) {
                                     checkHarpoon = false;
                                 }
                             }
@@ -1854,12 +1870,12 @@ namespace Dragoon_Modifier {
                                             }
                                             if (elementArrowTurns == 4) {
                                                 elementArrowTurns = 0;
-                                                if (emulator.ReadInteger(0xBAC5C) >= 100) {
+                                                if (emulator.ReadInteger(Constants.GetAddress("GOLD")) >= 100) {
                                                     for (int x = 0; x < inventorySize; x++) {
                                                         if (emulator.ReadByte(0xBAEB1 + x + EquipChangesInventoryOffset()) == 255) {
                                                             emulator.WriteByte(0xBAEB1 + x + EquipChangesInventoryOffset(), elementArrowItem);
                                                             emulator.WriteByte(0xBADAE + EquipChangesInventoryOffset(), emulator.ReadByte(0xBADAE + EquipChangesInventoryOffset()) + 1);
-                                                            emulator.WriteInteger(0xBAC5C + EquipChangesInventoryOffset(), emulator.ReadInteger(0xBAC5C + EquipChangesInventoryOffset()) - 100);
+                                                            emulator.WriteInteger(Constants.GetAddress("GOLD"), emulator.ReadInteger(Constants.GetAddress("GOLD")) - 100);
                                                             break;
                                                         }
                                                     }
@@ -1872,11 +1888,11 @@ namespace Dragoon_Modifier {
 
                             if (emulator.ReadShort(p + 0x116) == 162 && Globals.PARTY_SLOT[i] == 3) { //Dragon Buster II
                                 if (emulator.ReadByte(p - 0xA8) == 136) {
-                                    if (emulator.ReadShort(0x6E898) != 0) {
-                                        emulator.WriteShort(p, (ushort) Math.Min(emulator.ReadShort(p) + Math.Round(emulator.ReadShort(0x6E898) * 0.02) + 2, emulator.ReadShort(p + 0x8)));
-                                        emulator.WriteShort(0x6E898, 0);
-                                    } else {
-                                        emulator.WriteShort(0x6E898, 0);
+                                    if (emulator.ReadShort(Constants.GetAddress("DAMAGE_SLOT1")) != 0) {
+                                        emulator.WriteShort(p, (ushort) Math.Min(emulator.ReadShort(p) + Math.Round(emulator.ReadShort(Constants.GetAddress("DAMAGE_SLOT1")) * 0.02) + 2, emulator.ReadShort(p + 0x8)));
+                                        emulator.WriteShort(Constants.GetAddress("DAMAGE_SLOT1"), 0);
+                                    /*} else {
+                                        emulator.WriteShort(Constants.GetAddress("DAMAGE_SLOT1"), 0);*/
                                     }
                                 }
                             }
