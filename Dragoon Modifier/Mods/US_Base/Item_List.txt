@@ -58,7 +58,7 @@ Gold DG Armor
 Disciple Vest
 Warrior Dress
 Master's Vest
-Energy Gridle
+Energy Girdle
 Violet DG Armor
 Clothes
 Leather Jacket
@@ -72,7 +72,7 @@ Armor of Yore
 Satori Vest
 Rainbow Dress
 Angel Robe
-Armor of the Legend
+Armor of Legend
 
 Bandana
 Sallet
@@ -92,7 +92,7 @@ Dragon Helm
 Magical Hat
 
 Leather Boots
-Iron Kneepieces
+Iron Kneepiece
 Combat Shoes
 Leather Shoes
 Soft Boots
@@ -144,7 +144,7 @@ Ruby Ring
 Sapphire Pin
 Rainbow Earring
 
-Emerald Ring
+Emerald Earring
 
 Platinum Collar
 Phantom Shield
@@ -214,7 +214,7 @@ Panic Bell
 
 Fatal Blizzard
 Stunning Hammer
-Black Rainbow
+Black Rain
 Poison Needle
 Midnight Terror
 
@@ -254,4 +254,3 @@ Psyche Bomb X
 
 
 None
-
