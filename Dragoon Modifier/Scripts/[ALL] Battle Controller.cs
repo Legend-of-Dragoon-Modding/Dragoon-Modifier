@@ -9,17 +9,21 @@ using Microsoft.CSharp;
 using System.Globalization;
 using System.Reflection;
 
-public class BattleController {
+public class BattleController
+{
     static bool FIRST_RUN = true;
 
-    public static void Run(Emulator emulator) {
-        if (FIRST_RUN == true) {
+    public static void Run(Emulator emulator)
+    {
+        if (FIRST_RUN == true)
+        {
             Globals.DICTIONARY = new LoDDict();
             FIRST_RUN = false;
         }
 
         int encounterValue = emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE"));
-        if (Globals.IN_BATTLE && !Globals.STATS_CHANGED && encounterValue == 41215) {
+        if (Globals.IN_BATTLE && !Globals.STATS_CHANGED && encounterValue == 41215)
+        {
             Constants.WriteOutput("Battle detected. Loading...");
             Globals.UNIQUE_MONSTER_IDS = new List<int>();
             Globals.MONSTER_TABLE = new List<dynamic>();
@@ -28,14 +32,18 @@ public class BattleController {
             Globals.MONSTER_SIZE = emulator.ReadByte(Constants.GetAddress("MONSTER_SIZE"));
             Globals.UNIQUE_MONSTERS = emulator.ReadByte(Constants.GetAddress("UNIQUE_MONSTERS"));
 
-            if (Constants.REGION == Region.USA) {
+            if (Constants.REGION == Region.USA)
+            {
                 Globals.SetM_POINT(0x1A439C + emulator.ReadShort(Constants.GetAddress("M_POINT")));
-            } else {
+            }
+            else
+            {
                 Globals.SetM_POINT(0x1A43B4 + emulator.ReadShort(Constants.GetAddress("M_POINT")));
             }
 
-            Globals.SetC_POINT((int) (emulator.ReadInteger(Constants.GetAddress("C_POINT")) - 0x7F5A8558 - (uint) Constants.OFFSET));
-            for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
+            Globals.SetC_POINT((int)(emulator.ReadInteger(Constants.GetAddress("C_POINT")) - 0x7F5A8558 - (uint)Constants.OFFSET));
+            for (int i = 0; i < Globals.MONSTER_SIZE; i++)
+            {
                 Globals.MONSTER_IDS.Add(emulator.ReadShort(Constants.GetAddress("MONSTER_ID") + GetOffset() + (i * 0x8)));
             }
 
@@ -49,8 +57,10 @@ public class BattleController {
             Constants.WriteDebug("Monster IDs:         " + String.Join(", ", Globals.MONSTER_IDS.ToArray()));
             Constants.WriteDebug("Unique Monster IDs:  " + String.Join(", ", Globals.UNIQUE_MONSTER_IDS.ToArray()));
 
-            if (Constants.REGION == Region.USA) {
-                foreach (int monster in Globals.UNIQUE_MONSTER_IDS) {
+            if (Constants.REGION == Region.USA)
+            {
+                foreach (int monster in Globals.UNIQUE_MONSTER_IDS)
+                {
                     int index = Globals.MONSTER_IDS.IndexOf(monster);
                     Constants.WriteDebug("Monster: " + Globals.DICTIONARY.StatList[monster].Name
                         + "\nA_AV: " + Convert.ToString(Globals.MONSTER_TABLE[index].ReadAddress("A_AV"), 10) + "\t\tM_AV: " + Convert.ToString(Globals.MONSTER_TABLE[index].ReadAddress("M_AV"), 10)
@@ -64,8 +74,11 @@ public class BattleController {
             }
 
             Constants.WriteOutput("Finished loading.");
-        } else {
-            if (Globals.STATS_CHANGED && encounterValue < 9999) {
+        }
+        else
+        {
+            if (Globals.STATS_CHANGED && encounterValue < 9999)
+            {
                 Globals.STATS_CHANGED = false;
                 Globals.IN_BATTLE = false;
                 Globals.EXITING_BATTLE = 2;
@@ -74,28 +87,35 @@ public class BattleController {
         }
     }
 
-    public static int GetOffset() {
+    public static int GetOffset()
+    {
         int[] discOffset = { 0xD80, 0x0, 0x1458, 0x1B0 };
         int[] charOffset = { 0x0, 0x180, -0x180, 0x420, 0x540, 0x180, 0x350, 0x2F0, -0x180 };
         int partyOffset = 0;
-        if (Globals.PARTY_SLOT[0] < 9 && Globals.PARTY_SLOT[1] < 9 && Globals.PARTY_SLOT[2] < 9) {
+        if (Globals.PARTY_SLOT[0] < 9 && Globals.PARTY_SLOT[1] < 9 && Globals.PARTY_SLOT[2] < 9)
+        {
             partyOffset = charOffset[Globals.PARTY_SLOT[1]] + charOffset[Globals.PARTY_SLOT[2]];
         }
         return discOffset[Globals.DISC - 1] - partyOffset;
     }
 
-    public static void LoDDictInIt(Emulator emulator) {
-        for (int monster = 0; monster < Globals.UNIQUE_MONSTERS; monster++) {
-            Globals.UNIQUE_MONSTER_IDS.Add(emulator.ReadShortU(Constants.GetAddress("UNIQUE_SLOT") + (int) Constants.OFFSET + (monster * 0x1A8)));
+    public static void LoDDictInIt(Emulator emulator)
+    {
+        for (int monster = 0; monster < Globals.UNIQUE_MONSTERS; monster++)
+        {
+            Globals.UNIQUE_MONSTER_IDS.Add(emulator.ReadShortU(Constants.GetAddress("UNIQUE_SLOT") + (int)Constants.OFFSET + (monster * 0x1A8)));
         }
-        
-        foreach (int monster in Enumerable.Range(0, Globals.MONSTER_SIZE)) {
+
+        foreach (int monster in Enumerable.Range(0, Globals.MONSTER_SIZE))
+        {
             Globals.MONSTER_TABLE.Add(new MonsterAddress(Globals.M_POINT, monster, Globals.MONSTER_IDS[monster], Globals.UNIQUE_MONSTER_IDS, emulator));
         }
 
-        if (Globals.MONSTER_CHANGE == true) {
+        if (Globals.MONSTER_CHANGE == true)
+        {
             Constants.WriteOutput("Changing stats...");
-            for (int monster = 0; monster < Globals.MONSTER_SIZE; monster++) {
+            for (int monster = 0; monster < Globals.MONSTER_SIZE; monster++)
+            {
                 int ID = Globals.MONSTER_IDS[monster];
                 Globals.MONSTER_TABLE[monster].WriteAddress("HP", Globals.DICTIONARY.StatList[ID].HP);
                 Globals.MONSTER_TABLE[monster].WriteAddress("Max_HP", Globals.DICTIONARY.StatList[ID].HP);
@@ -122,20 +142,23 @@ public class BattleController {
             }
         }
 
-        if (Globals.DROP_CHANGE == true) {
+        if (Globals.DROP_CHANGE == true)
+        {
             Constants.WriteOutput("Changing drops...");
-            for (int monster = 0; monster < Globals.UNIQUE_MONSTERS; monster++) {
+            for (int monster = 0; monster < Globals.UNIQUE_MONSTERS; monster++)
+            {
                 int ID = Globals.UNIQUE_MONSTER_IDS[monster];
-                emulator.WriteShortU(Constants.GetAddress("MONSTER_REWARDS") + (int) Constants.OFFSET + monster * 0x1A8, (ushort) Globals.DICTIONARY.StatList[ID].EXP);
-                emulator.WriteShortU(Constants.GetAddress("MONSTER_REWARDS") + (int) Constants.OFFSET + 0x2 + monster * 0x1A8, (ushort) Globals.DICTIONARY.StatList[ID].Gold);
-                emulator.WriteByteU(Constants.GetAddress("MONSTER_REWARDS") + (int) Constants.OFFSET + 0x4 + monster * 0x1A8, (byte) Globals.DICTIONARY.StatList[ID].Drop_Chance);
-                emulator.WriteByteU(Constants.GetAddress("MONSTER_REWARDS") + (int) Constants.OFFSET + 0x5 + monster * 0x1A8, (byte) Globals.DICTIONARY.StatList[ID].Drop_Item);
-                Constants.WriteDebug(Convert.ToString(ID, 10) + " Drop: " + (int) Globals.DICTIONARY.StatList[ID].Drop_Item);
+                emulator.WriteShortU(Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + monster * 0x1A8, (ushort)Globals.DICTIONARY.StatList[ID].EXP);
+                emulator.WriteShortU(Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + 0x2 + monster * 0x1A8, (ushort)Globals.DICTIONARY.StatList[ID].Gold);
+                emulator.WriteByteU(Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + 0x4 + monster * 0x1A8, (byte)Globals.DICTIONARY.StatList[ID].Drop_Chance);
+                emulator.WriteByteU(Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + 0x5 + monster * 0x1A8, (byte)Globals.DICTIONARY.StatList[ID].Drop_Item);
+                Constants.WriteDebug(Convert.ToString(ID, 10) + " Drop: " + (int)Globals.DICTIONARY.StatList[ID].Drop_Item);
             }
         }
     }
 
-    public class MonsterAddress {
+    public class MonsterAddress
+    {
         int[] hp = { 0, 2 };
         int[] max_hp = { 0, 2 };
         int[] element = { 0, 2 };
@@ -199,7 +222,8 @@ public class BattleController {
         public int[] Drop_Chance { get { return drop_chance; } }
         public int[] Drop_Item { get { return drop_item; } }
 
-        public MonsterAddress(int m_point, int monster, int ID, List<int> monsterUniqueIdList, Emulator emu) {
+        public MonsterAddress(int m_point, int monster, int ID, List<int> monsterUniqueIdList, Emulator emu)
+        {
             emulator = emu;
             hp[0] = m_point - monster * 0x388;
             max_hp[0] = m_point + 0x8 - monster * 0x388;
@@ -227,29 +251,37 @@ public class BattleController {
             stat_res[0] = m_point + 0x1C - monster * 0x388;
             death_res[0] = m_point + 0xC - monster * 0x388;
             unique_index[0] = m_point + 0x264 - monster * 0x388;
-            exp[0] = Constants.GetAddress("MONSTER_REWARDS") + (int) Constants.OFFSET + Globals.UNIQUE_MONSTER_IDS.IndexOf(ID) * 0x1A8;
-            gold[0] = Constants.GetAddress("MONSTER_REWARDS") + (int) Constants.OFFSET + 0x2 + Globals.UNIQUE_MONSTER_IDS.IndexOf(ID) * 0x1A8;
-            drop_chance[0] = Constants.GetAddress("MONSTER_REWARDS") + (int) Constants.OFFSET + 0x4 + Globals.UNIQUE_MONSTER_IDS.IndexOf(ID) * 0x1A8;
-            drop_item[0] = Constants.GetAddress("MONSTER_REWARDS") + (int) Constants.OFFSET + 0x5 + Globals.UNIQUE_MONSTER_IDS.IndexOf(ID) * 0x1A8;
+            exp[0] = Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + Globals.UNIQUE_MONSTER_IDS.IndexOf(ID) * 0x1A8;
+            gold[0] = Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + 0x2 + Globals.UNIQUE_MONSTER_IDS.IndexOf(ID) * 0x1A8;
+            drop_chance[0] = Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + 0x4 + Globals.UNIQUE_MONSTER_IDS.IndexOf(ID) * 0x1A8;
+            drop_item[0] = Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + 0x5 + Globals.UNIQUE_MONSTER_IDS.IndexOf(ID) * 0x1A8;
         }
 
-        public int ReadAddress(string attribute) {
+        public int ReadAddress(string attribute)
+        {
             PropertyInfo property = GetType().GetProperty(attribute);
-            var address = (int[]) property.GetValue(this, null);
-            if (address[1] == 2) {
+            var address = (int[])property.GetValue(this, null);
+            if (address[1] == 2)
+            {
                 return this.emulator.ReadShortU(address[0]);
-            } else {
-                return (int) this.emulator.ReadByteU(address[0]);
+            }
+            else
+            {
+                return (int)this.emulator.ReadByteU(address[0]);
             }
         }
 
-        public void WriteAddress(string attribute, int value) {
+        public void WriteAddress(string attribute, int value)
+        {
             PropertyInfo property = GetType().GetProperty(attribute);
-            var address = (int[]) property.GetValue(this, null);
-            if (address[1] == 2) {
-                this.emulator.WriteShortU(address[0], (ushort) value);
-            } else {
-                this.emulator.WriteByteU(address[0], (byte) value);
+            var address = (int[])property.GetValue(this, null);
+            if (address[1] == 2)
+            {
+                this.emulator.WriteShortU(address[0], (ushort)value);
+            }
+            else
+            {
+                this.emulator.WriteByteU(address[0], (byte)value);
             }
         }
     }
@@ -259,8 +291,10 @@ public class BattleController {
     public static void Click(Emulator emulator) { }
 }
 
-public class LoDDict {
+public class LoDDict
+{
     IDictionary<int, dynamic> statList = new Dictionary<int, dynamic>();
+    List<int[]>[] shopList = new List<int[]>[39];
     IDictionary<int, Dictionary<int, dynamic>> dragoonStats = new Dictionary<int, Dictionary<int, dynamic>>();
     IDictionary<int, string> num2item = new Dictionary<int, string>();
     IDictionary<string, int> item2num = new Dictionary<string, int>();
@@ -290,6 +324,7 @@ public class LoDDict {
     };
 
     public IDictionary<int, dynamic> StatList { get { return statList; } }
+    public List<int[]>[] ShopList { get { return shopList; } }
     public IDictionary<int, string> Num2Item { get { return num2item; } }
     public IDictionary<string, int> Item2Num { get { return item2num; } }
     public IDictionary<int, string> Num2Element { get { return num2element; } }
@@ -298,46 +333,102 @@ public class LoDDict {
 
     public LoDDict() {
         string cwd = AppDomain.CurrentDomain.BaseDirectory;
-        string[] lines = File.ReadAllLines(cwd + "Mods/" + Globals.MOD + "/Item_List.txt");
-        var i = 0;
-        foreach (string row in lines) {
-            if (row != "") {
-                item2num.Add(row, i);
-                num2item.Add(i, row);
-            }
-            i++;
-        }
-        using (var monsterData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Monster_Data.csv")) {
-            bool firstline = true;
-            while (!monsterData.EndOfStream) {
-                var line = monsterData.ReadLine();
-                if (firstline == false) {
-                    var values = line.Split(',').ToArray();
-                    statList.Add(Int32.Parse(values[0]), new StatList(values, element2num, item2num));
-                } else {
-                    firstline = false;
-                }
-            }
-        }
-        using (var dragoon = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Dragoon_Stats.csv")) {
-            bool firstline = true;
-            i = 0;
-            while (!dragoon.EndOfStream) {
-                var line = dragoon.ReadLine();
-                if (firstline == false) {
-                    var values = line.Split(',').ToArray();
-                    Dictionary<int, dynamic> level = new Dictionary<int, dynamic>();
-                    level.Add(1, new DragoonStats(Int32.Parse(values[1]), Int32.Parse(values[2]), Int32.Parse(values[3]), Int32.Parse(values[4])));
-                    level.Add(2, new DragoonStats(Int32.Parse(values[5]), Int32.Parse(values[6]), Int32.Parse(values[7]), Int32.Parse(values[8])));
-                    level.Add(3, new DragoonStats(Int32.Parse(values[9]), Int32.Parse(values[10]), Int32.Parse(values[11]), Int32.Parse(values[12])));
-                    level.Add(4, new DragoonStats(Int32.Parse(values[13]), Int32.Parse(values[14]), Int32.Parse(values[15]), Int32.Parse(values[16])));
-                    level.Add(5, new DragoonStats(Int32.Parse(values[17]), Int32.Parse(values[18]), Int32.Parse(values[19]), Int32.Parse(values[20])));
-                    dragoonStats.Add(i - 1, level);
-                } else {
-                    firstline = false;
+        try {
+            string[] lines = File.ReadAllLines(cwd + "Mods/" + Globals.MOD + "/Item_List.txt");
+            var i = 0;
+            foreach (string row in lines) {
+                if (row != "") {
+                    item2num.Add(row, i);
+                    num2item.Add(i, row);
                 }
                 i++;
             }
+            try {
+                using (var monsterData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Monster_Data.csv")) {
+                    bool firstline = true;
+                    while (!monsterData.EndOfStream) {
+                        var line = monsterData.ReadLine();
+                        if (firstline == false) {
+                            var values = line.Split(',').ToArray();
+                            statList.Add(Int32.Parse(values[0]), new StatList(values, element2num, item2num));
+                        }
+                        else {
+                            firstline = false;
+                        }
+                    }
+                }
+            }
+            catch (FileNotFoundException) {
+                string file = cwd + @"Mods\" + Globals.MOD + @"\Monster_Data.csv";
+                Constants.WriteDebug(file + " not found. Turning off Monster and Drop Changes.");
+                Globals.MONSTER_CHANGE = false;
+                Globals.DROP_CHANGE = false;
+            }
+        }
+        catch (FileNotFoundException) {
+            string file = cwd + @"Mods\" + Globals.MOD + @"\Item_List.txt";
+            Constants.WriteDebug(file + " not found. Turning off Monster and Drop Changes.");
+            Globals.MONSTER_CHANGE = false;
+            Globals.DROP_CHANGE = false;
+        }
+
+        try {
+            using (var dragoon = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Dragoon_Stats.csv")) {
+                bool firstline = true;
+                var i = 0;
+                while (!dragoon.EndOfStream) {
+                    var line = dragoon.ReadLine();
+                    if (firstline == false) {
+                        var values = line.Split(',').ToArray();
+                        Dictionary<int, dynamic> level = new Dictionary<int, dynamic>();
+                        level.Add(1, new DragoonStats(Int32.Parse(values[1]), Int32.Parse(values[2]), Int32.Parse(values[3]), Int32.Parse(values[4])));
+                        level.Add(2, new DragoonStats(Int32.Parse(values[5]), Int32.Parse(values[6]), Int32.Parse(values[7]), Int32.Parse(values[8])));
+                        level.Add(3, new DragoonStats(Int32.Parse(values[9]), Int32.Parse(values[10]), Int32.Parse(values[11]), Int32.Parse(values[12])));
+                        level.Add(4, new DragoonStats(Int32.Parse(values[13]), Int32.Parse(values[14]), Int32.Parse(values[15]), Int32.Parse(values[16])));
+                        level.Add(5, new DragoonStats(Int32.Parse(values[17]), Int32.Parse(values[18]), Int32.Parse(values[19]), Int32.Parse(values[20])));
+                        dragoonStats.Add(i - 1, level);
+                    }
+                    else {
+                        firstline = false;
+                    }
+                    i++;
+                }
+            }
+        }
+        catch (FileNotFoundException) {
+            string file = cwd + @"Mods\" + Globals.MOD + @"\Dragoon_Stats.csv";
+            Constants.WriteDebug(file + " not found. Turning off Dragoon Changes.");
+            Globals.DRAGOON_CHANGE = false;
+        }
+        for (int i = 0; i < shopList.Length; i++) {
+            shopList[i] = new List<int[]>();
+        }
+        try {
+            using (var shop = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Shops.csv")) {
+                var i = 0;
+                while (!shop.EndOfStream) {
+                    var line = shop.ReadLine();
+                    if (i > 1) {
+                        var values = line.Split(',').ToArray();
+                        int z = 0;
+                        foreach (string number in values) {
+                            if (z % 2 == 0 && number != "") {
+                                var array = new int[] {
+                                item2num[number], Int32.Parse(values[z + 1])
+                                };
+                                shopList[z / 2].Add(array);
+                            }
+                            z++;
+                        }
+                    }
+                    i++;
+                }
+            }
+        }
+        catch (FileNotFoundException) {
+            string file = cwd + @"Mods\" + Globals.MOD + @"\Shops.csv";
+            Constants.WriteDebug(file + " not found. Turning off Shop Changes.");
+            Globals.SHOP_CHANGE = false;
         }
     }
 }
