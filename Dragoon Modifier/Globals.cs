@@ -31,6 +31,8 @@ namespace Dragoon_Modifier {
         public static dynamic DICTIONARY = new System.Dynamic.ExpandoObject();
         public static bool MONSTER_CHANGE = false;
         public static bool DROP_CHANGE = false;
+        public static bool DRAGOON_CHANGE = false;
+        public static bool SHOP_CHANGE = false;
         public static string MOD = "US_Base";
         public static string DIFFICULTY_MODE = "Normal";
 
