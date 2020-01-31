@@ -9,21 +9,17 @@ using Microsoft.CSharp;
 using System.Globalization;
 using System.Reflection;
 
-public class BattleController
-{
+public class BattleController {
     static bool FIRST_RUN = true;
 
-    public static void Run(Emulator emulator)
-    {
-        if (FIRST_RUN == true)
-        {
+    public static void Run(Emulator emulator) {
+        if (FIRST_RUN == true) {
             Globals.DICTIONARY = new LoDDict();
             FIRST_RUN = false;
         }
 
         int encounterValue = emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE"));
-        if (Globals.IN_BATTLE && !Globals.STATS_CHANGED && encounterValue == 41215)
-        {
+        if (Globals.IN_BATTLE && !Globals.STATS_CHANGED && encounterValue == 41215) {
             Constants.WriteOutput("Battle detected. Loading...");
             Globals.UNIQUE_MONSTER_IDS = new List<int>();
             Globals.MONSTER_TABLE = new List<dynamic>();
@@ -32,18 +28,15 @@ public class BattleController
             Globals.MONSTER_SIZE = emulator.ReadByte(Constants.GetAddress("MONSTER_SIZE"));
             Globals.UNIQUE_MONSTERS = emulator.ReadByte(Constants.GetAddress("UNIQUE_MONSTERS"));
 
-            if (Constants.REGION == Region.USA)
-            {
+            if (Constants.REGION == Region.USA) {
                 Globals.SetM_POINT(0x1A439C + emulator.ReadShort(Constants.GetAddress("M_POINT")));
             }
-            else
-            {
+            else {
                 Globals.SetM_POINT(0x1A43B4 + emulator.ReadShort(Constants.GetAddress("M_POINT")));
             }
 
             Globals.SetC_POINT((int)(emulator.ReadInteger(Constants.GetAddress("C_POINT")) - 0x7F5A8558 - (uint)Constants.OFFSET));
-            for (int i = 0; i < Globals.MONSTER_SIZE; i++)
-            {
+            for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
                 Globals.MONSTER_IDS.Add(emulator.ReadShort(Constants.GetAddress("MONSTER_ID") + GetOffset() + (i * 0x8)));
             }
 
@@ -57,10 +50,8 @@ public class BattleController
             Constants.WriteDebug("Monster IDs:         " + String.Join(", ", Globals.MONSTER_IDS.ToArray()));
             Constants.WriteDebug("Unique Monster IDs:  " + String.Join(", ", Globals.UNIQUE_MONSTER_IDS.ToArray()));
 
-            if (Constants.REGION == Region.USA)
-            {
-                foreach (int monster in Globals.UNIQUE_MONSTER_IDS)
-                {
+            if (Constants.REGION == Region.USA) {
+                foreach (int monster in Globals.UNIQUE_MONSTER_IDS) {
                     int index = Globals.MONSTER_IDS.IndexOf(monster);
                     Constants.WriteDebug("Monster: " + Globals.DICTIONARY.StatList[monster].Name
                         + "\nA_AV: " + Convert.ToString(Globals.MONSTER_TABLE[index].ReadAddress("A_AV"), 10) + "\t\tM_AV: " + Convert.ToString(Globals.MONSTER_TABLE[index].ReadAddress("M_AV"), 10)
@@ -74,9 +65,7 @@ public class BattleController
             }
 
             Constants.WriteOutput("Finished loading.");
-        }
-        else
-        {
+        } else {
             if (Globals.STATS_CHANGED && encounterValue < 9999)
             {
                 Globals.STATS_CHANGED = false;
@@ -87,35 +76,46 @@ public class BattleController
         }
     }
 
-    public static int GetOffset()
-    {
+    public static int GetOffset() {
         int[] discOffset = { 0xD80, 0x0, 0x1458, 0x1B0 };
         int[] charOffset = { 0x0, 0x180, -0x180, 0x420, 0x540, 0x180, 0x350, 0x2F0, -0x180 };
         int partyOffset = 0;
-        if (Globals.PARTY_SLOT[0] < 9 && Globals.PARTY_SLOT[1] < 9 && Globals.PARTY_SLOT[2] < 9)
-        {
+        if (Globals.PARTY_SLOT[0] < 9 && Globals.PARTY_SLOT[1] < 9 && Globals.PARTY_SLOT[2] < 9) {
             partyOffset = charOffset[Globals.PARTY_SLOT[1]] + charOffset[Globals.PARTY_SLOT[2]];
         }
         return discOffset[Globals.DISC - 1] - partyOffset;
     }
 
-    public static void LoDDictInIt(Emulator emulator)
-    {
-        for (int monster = 0; monster < Globals.UNIQUE_MONSTERS; monster++)
-        {
+    public static void WriteDragoonMagic(double damage, int spell, Emulator emulator) {
+        int[] bases = new int[] { 800, 600, 500, 400, 300, 200, 100, 75, 50 };
+        byte[] base_table = new byte[] { 1, 2, 4, 8, 16, 32, 0, 64, 128 };
+        Nullable<double>[] modulos = new Nullable<double>[9];
+        for (int i = 0; i < 9; i++) {
+            if (damage >= bases[i] && damage <= bases[i] * 2.275) {
+                modulos[i] = (damage - (double) bases[i]) % ((double)bases[i] / 200);
+            } else {
+                modulos[i] = null;
+            }
+            int index = Array.IndexOf(modulos, modulos.Min());
+            double increment = (double)bases[index] / 200;
+            byte multi = (byte) ((damage - bases[index]) / increment);
+            emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x4 + (int)Constants.OFFSET, base_table[index]);
+            emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x5 + (int)Constants.OFFSET, multi);
+        }
+    }
+
+    public static void LoDDictInIt(Emulator emulator) {
+        for (int monster = 0; monster < Globals.UNIQUE_MONSTERS; monster++) {
             Globals.UNIQUE_MONSTER_IDS.Add(emulator.ReadShortU(Constants.GetAddress("UNIQUE_SLOT") + (int)Constants.OFFSET + (monster * 0x1A8)));
         }
 
-        foreach (int monster in Enumerable.Range(0, Globals.MONSTER_SIZE))
-        {
+        foreach (int monster in Enumerable.Range(0, Globals.MONSTER_SIZE)) {
             Globals.MONSTER_TABLE.Add(new MonsterAddress(Globals.M_POINT, monster, Globals.MONSTER_IDS[monster], Globals.UNIQUE_MONSTER_IDS, emulator));
         }
 
-        if (Globals.MONSTER_CHANGE == true)
-        {
+        if (Globals.MONSTER_CHANGE == true) {
             Constants.WriteOutput("Changing stats...");
-            for (int monster = 0; monster < Globals.MONSTER_SIZE; monster++)
-            {
+            for (int monster = 0; monster < Globals.MONSTER_SIZE; monster++) {
                 int ID = Globals.MONSTER_IDS[monster];
                 Globals.MONSTER_TABLE[monster].WriteAddress("HP", Globals.DICTIONARY.StatList[ID].HP);
                 Globals.MONSTER_TABLE[monster].WriteAddress("Max_HP", Globals.DICTIONARY.StatList[ID].HP);
@@ -142,11 +142,9 @@ public class BattleController
             }
         }
 
-        if (Globals.DROP_CHANGE == true)
-        {
+        if (Globals.DROP_CHANGE == true) {
             Constants.WriteOutput("Changing drops...");
-            for (int monster = 0; monster < Globals.UNIQUE_MONSTERS; monster++)
-            {
+            for (int monster = 0; monster < Globals.UNIQUE_MONSTERS; monster++) {
                 int ID = Globals.UNIQUE_MONSTER_IDS[monster];
                 emulator.WriteShortU(Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + monster * 0x1A8, (ushort)Globals.DICTIONARY.StatList[ID].EXP);
                 emulator.WriteShortU(Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + 0x2 + monster * 0x1A8, (ushort)Globals.DICTIONARY.StatList[ID].Gold);
@@ -155,6 +153,12 @@ public class BattleController
                 Constants.WriteDebug(Convert.ToString(ID, 10) + " Drop: " + (int)Globals.DICTIONARY.StatList[ID].Drop_Item);
             }
         }
+        /* Test code for Dragoon Spell Dmg changer
+        if (Globals.DRAGOON_CHANGE == true) {
+            WriteDragoonMagic(510, 0, emulator);
+            Constants.WriteDebug(Convert.ToString(Constants.GetAddress("SPELL_TABLE") + 0x5 + Constants.OFFSET,16).ToUpper());
+        }
+        */
     }
 
     public class MonsterAddress
