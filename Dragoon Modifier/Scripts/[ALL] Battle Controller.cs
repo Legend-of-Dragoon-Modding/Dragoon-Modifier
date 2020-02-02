@@ -33,6 +33,7 @@ public class BattleController {
             } else {
                 Globals.SetM_POINT(0x1A43B4 + emulator.ReadShort(Constants.GetAddress("M_POINT")));
             }
+            Globals.SetC_POINT((int) (emulator.ReadInteger(Constants.GetAddress("C_POINT")) - 0x7F5A8558 - (uint) Constants.OFFSET));
 
             LoDDictInIt(emulator);
             Globals.STATS_CHANGED = true;
@@ -43,21 +44,6 @@ public class BattleController {
             Constants.WriteDebug("Character Point:     " + Convert.ToString(Globals.C_POINT + Constants.OFFSET, 16).ToUpper());
             Constants.WriteDebug("Monster IDs:         " + String.Join(", ", Globals.MONSTER_IDS.ToArray()));
             Constants.WriteDebug("Unique Monster IDs:  " + String.Join(", ", Globals.UNIQUE_MONSTER_IDS.ToArray()));
-
-            if (Constants.REGION == Region.USA) {
-                foreach (int monster in Globals.UNIQUE_MONSTER_IDS) {
-                    int index = Globals.MONSTER_IDS.IndexOf(monster);
-                    Constants.WriteDebug("Monster: " + Globals.DICTIONARY.StatList[monster].Name
-                        + "\nA_AV: " + Convert.ToString(Globals.MONSTER_TABLE[index].ReadAddress("A_AV"), 10) + "\t\tM_AV: " + Convert.ToString(Globals.MONSTER_TABLE[index].ReadAddress("M_AV"), 10)
-                        + "\t\tP_Immune: " + Convert.ToString(Globals.MONSTER_TABLE[index].ReadAddress("P_Immune"), 10) + "\t\tM_Immune: " + Convert.ToString(Globals.MONSTER_TABLE[index].ReadAddress("M_Immune"), 10)
-                        + "\t\tP_Half: " + Convert.ToString(Globals.MONSTER_TABLE[index].ReadAddress("P_Half"), 10) + "\t\tM_Half: " + Convert.ToString(Globals.MONSTER_TABLE[index].ReadAddress("M_Half"), 10)
-                        + "\t\tE_Immune: " + Globals.DICTIONARY.Num2Element[Globals.MONSTER_TABLE[index].ReadAddress("E_Immune")] + "\t\tE_Half: " + Globals.DICTIONARY.Num2Element[Globals.MONSTER_TABLE[index].ReadAddress("E_Half")]
-                        + "\t\tStatus_Resist: " + Convert.ToString(Globals.MONSTER_TABLE[index].ReadAddress("Stat_Res"), 10) + "\t\tDeath_Resist: " + Convert.ToString(Globals.MONSTER_TABLE[index].ReadAddress("Death_Res"), 10)
-                        + "\nEXP: " + Convert.ToString(Globals.MONSTER_TABLE[index].ReadAddress("EXP"), 10) + "\t\tGold: " + Convert.ToString(Globals.MONSTER_TABLE[index].ReadAddress("Gold"), 10)
-                        + "\t\tItem: " + Globals.DICTIONARY.Num2Item[Globals.MONSTER_TABLE[index].ReadAddress("Drop_Item")] + "\t\tDrop Chance: " + Convert.ToString(Globals.MONSTER_TABLE[index].ReadAddress("Drop_Chance"), 10));
-                }
-            }
-
             Constants.WriteOutput("Finished loading.");
         } else {
             if (Globals.STATS_CHANGED && encounterValue < 9999) {
