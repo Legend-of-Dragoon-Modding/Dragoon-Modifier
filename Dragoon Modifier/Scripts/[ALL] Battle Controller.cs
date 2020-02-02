@@ -705,7 +705,6 @@ public class LoDDict {
             Constants.WriteDebug(file + " not found. Turning off Dragoon Changes.");
             Globals.DRAGOON_CHANGE = false;
         }
-        Console.WriteLine("Length: " + shopList.Length);
         for (int i = 0; i < shopList.Length; i++) {
             shopList[i] = new List<int[]>();
         }
@@ -718,7 +717,6 @@ public class LoDDict {
                         var values = line.Split(',').ToArray();
                         int z = 0;
                         foreach (string number in values) {
-                            Console.WriteLine("i: " + i + " / z: " + z + " / num: " + number);
                             if (z % 2 == 0 && number != "") {
                                 var array = new int[] {
                                 item2num[number], Int32.Parse(values[z + 1])
