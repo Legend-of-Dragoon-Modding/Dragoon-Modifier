@@ -73,13 +73,17 @@ public class BattleController {
             if (damage >= bases[i] && damage <= bases[i] * 2.275) {
                 modulos[i] = (damage - (double) bases[i]) % ((double) bases[i] / 200);
             } else {
-                modulos[i] = null;
+                if (damage < bases[i]) {
+                    modulos[i] = (double) bases[i] - damage;
+                } else {
+                    modulos[i] = damage - (double)bases[i] * 2.275;
+                }
             }
             int index = Array.IndexOf(modulos, modulos.Min());
             double increment = (double) bases[index] / 200;
             byte multi = (byte) ((damage - bases[index]) / increment);
-            emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x4 + (int) Constants.OFFSET, base_table[index]);
-            emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x5 + (int) Constants.OFFSET, multi);
+            emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x4 + (int) Constants.OFFSET + spell * 0xC, base_table[index]);
+            emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x5 + (int) Constants.OFFSET + spell * 0xC, multi);
         }
     }
 
@@ -145,10 +149,11 @@ public class BattleController {
         if (Globals.DRAGOON_CHANGE == true) {
             for (int character = 0; character < 3; character++) {
                 if (Globals.PARTY_SLOT[character] < 9) {
-                    Globals.CHARACTER_TABLE[character].Write("DATK", Globals.DICTIONARY.DragoonStats[Globals.PARTY_SLOT[character]][1].DATK);
-                    Globals.CHARACTER_TABLE[character].Write("DMAT", Globals.DICTIONARY.DragoonStats[Globals.PARTY_SLOT[character]][1].DMAT);
-                    Globals.CHARACTER_TABLE[character].Write("DDEF", Globals.DICTIONARY.DragoonStats[Globals.PARTY_SLOT[character]][1].DDEF);
-                    Globals.CHARACTER_TABLE[character].Write("DMDEF", Globals.DICTIONARY.DragoonStats[Globals.PARTY_SLOT[character]][1].DMDEF);
+                    int dlv = Globals.CHARACTER_TABLE[character].Read("DLV");
+                    Globals.CHARACTER_TABLE[character].Write("DATK", Globals.DICTIONARY.DragoonStats[Globals.PARTY_SLOT[character]][dlv].DATK);
+                    Globals.CHARACTER_TABLE[character].Write("DMAT", Globals.DICTIONARY.DragoonStats[Globals.PARTY_SLOT[character]][dlv].DMAT);
+                    Globals.CHARACTER_TABLE[character].Write("DDEF", Globals.DICTIONARY.DragoonStats[Globals.PARTY_SLOT[character]][dlv].DDEF);
+                    Globals.CHARACTER_TABLE[character].Write("DMDEF", Globals.DICTIONARY.DragoonStats[Globals.PARTY_SLOT[character]][dlv].DMDEF);
                 }
             }
         }
