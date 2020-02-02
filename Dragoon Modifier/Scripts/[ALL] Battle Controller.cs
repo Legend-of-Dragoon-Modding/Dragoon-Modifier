@@ -150,10 +150,10 @@ public class BattleController {
             for (int character = 0; character < 3; character++) {
                 if (Globals.PARTY_SLOT[character] < 9) {
                     int dlv = Globals.CHARACTER_TABLE[character].Read("DLV");
-                    Globals.CHARACTER_TABLE[character].Write("DATK", Globals.DICTIONARY.DragoonStats[Globals.PARTY_SLOT[character]][dlv].DATK);
+                    Globals.CHARACTER_TABLE[character].Write("DAT", Globals.DICTIONARY.DragoonStats[Globals.PARTY_SLOT[character]][dlv].DAT);
                     Globals.CHARACTER_TABLE[character].Write("DMAT", Globals.DICTIONARY.DragoonStats[Globals.PARTY_SLOT[character]][dlv].DMAT);
-                    Globals.CHARACTER_TABLE[character].Write("DDEF", Globals.DICTIONARY.DragoonStats[Globals.PARTY_SLOT[character]][dlv].DDEF);
-                    Globals.CHARACTER_TABLE[character].Write("DMDEF", Globals.DICTIONARY.DragoonStats[Globals.PARTY_SLOT[character]][dlv].DMDEF);
+                    Globals.CHARACTER_TABLE[character].Write("DDF", Globals.DICTIONARY.DragoonStats[Globals.PARTY_SLOT[character]][dlv].DDF);
+                    Globals.CHARACTER_TABLE[character].Write("DMDF", Globals.DICTIONARY.DragoonStats[Globals.PARTY_SLOT[character]][dlv].DMDF);
                 }
             }
         }
@@ -802,20 +802,20 @@ public class StatList {
 }
 
 public class DragoonStats {
-    int datk = 0;
+    int dat = 0;
     int dmat = 0;
-    int ddef = 0;
-    int dmdef = 0;
+    int ddf = 0;
+    int dmdf = 0;
 
-    public int DATK { get { return datk; } }
+    public int DAT { get { return dat; } }
     public int DMAT { get { return dmat; } }
-    public int DDEF { get { return ddef; } }
-    public int DMDEF { get { return dmdef; } }
+    public int DDF { get { return ddf; } }
+    public int DMDF { get { return dmdf; } }
 
-    public DragoonStats(int ndatk, int ndmat, int nddef, int ndmdef) {
-        datk = ndatk;
+    public DragoonStats(int ndat, int ndmat, int nddf, int ndmdf) {
+        dat = ndat;
         dmat = ndmat;
-        ddef = nddef;
-        dmdef = ndmdef;
+        ddf = nddf;
+        dmdf = ndmdf;
     }
 }
