@@ -96,7 +96,7 @@ M_ID,M_name,Element,HP,AT,MAT,DF,MDF,Speed,A_AV,M_AV,P_Immune,M_Immune,P_Half,M_
 312,Virage(Arm),Non-Elemental,300,37,30,100,100,50,0,0,0,0,0,0,None,None,225,144,0,0,None,0,Complete Virage(Arm)
 83,Crafty Thief,Dark,200,30,27,100,80,80,5,0,0,0,0,0,None,None,99,0,50,18,Pellet,8,Crafty Thief
 82,Gangster,Earth,280,36,32,120,100,70,0,0,0,0,0,0,None,None,99,0,60,12,Bandit's Ring,2,Gangster
-79,Berserker,Dark,400,40,32,30,50,60,0,0,0,0,0,0,None,None,111,0,55,15,Energy Gridle,2,Berserker
+79,Berserker,Dark,400,40,32,30,50,60,0,0,0,0,0,0,None,None,111,0,55,15,Energy Girdle,2,Berserker
 109,Piggy,Earth,160,25,39,140,60,60,0,0,0,0,0,0,None,None,99,0,40,21,Sachet,2,Piggy
 300,Mappi,Dark,1200,37,32,110,100,65,0,0,0,0,0,0,None,None,255,128,0,0,Diamond Claw,25,Mappi II
 301,Gehrich,Earth,2000,42,32,120,100,50,0,0,0,0,0,0,None,None,255,128,5000,200,Soul Headband,25,Gehrich

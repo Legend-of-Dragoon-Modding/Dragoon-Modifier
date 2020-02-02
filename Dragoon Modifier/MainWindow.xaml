@@ -921,9 +921,9 @@
                                         <ColumnDefinition Width="35*"/>
                                         <ColumnDefinition Width="5*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Button x:Name="btnNormal" Grid.Column="0" Content="Normal Mode" Background="#FFA8D3FF" FontFamily="/#Segoe WP Black" FontSize="20" Foreground="White"/>
-                                    <Button x:Name="btnHard" Grid.Column="1" Content="Hard Mode" Background="#00000000" FontFamily="/#Segoe WP Black" FontSize="20" Foreground="White"/>
-                                    <Button x:Name="btnHell" Grid.Column="2" Content="Hell Mode" Background="#00000000" FontFamily="/#Segoe WP Black" FontSize="20" Foreground="White"/>
+                                    <Button x:Name="btnNormal" Grid.Column="0" Content="Normal Mode" Background="#FFA8D3FF" FontFamily="/#Segoe WP Black" FontSize="20" Foreground="White" Click="DifficultyButton"/>
+                                    <Button x:Name="btnHard" Grid.Column="1" Content="Hard Mode" Background="#00000000" FontFamily="/#Segoe WP Black" FontSize="20" Foreground="White" Click="DifficultyButton"/>
+                                    <Button x:Name="btnHell" Grid.Column="2" Content="Hell Mode" Background="#00000000" FontFamily="/#Segoe WP Black" FontSize="20" Foreground="White" Click="DifficultyButton"/>
                                     <Button x:Name="btnEnrageBoss" Grid.Column="3" Content="+" Background="#00000000" FontFamily="/#Segoe WP Black" FontSize="20" Foreground="White"/>
                                 </Grid>
                             </DockPanel>
@@ -1205,20 +1205,26 @@
             <TabItem x:Name="tabEnhancements3" Header="Enhancements III">
                 <Grid Background="#FFB6B6B6">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="50*"/>
-                        <RowDefinition Height="50*"/>
-                        <RowDefinition Height="50*"/>
-                        <RowDefinition Height="350*"/>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 
-                    <Button x:Name="btnCheckDart" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Content="Check Dart" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
-                    <Button x:Name="btnUnequipDart" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Content="No Dart Mode" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <Button x:Name="btnAdditionSelect" Grid.Row="2" Grid.Column="0" Content="Equip Addition" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
-                    <ComboBox x:Name="cboAddition" Grid.Row="2" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
+                    <Button x:Name="btnNoDart" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Content="No Dart Mode" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <Button x:Name="btnDamageTracker" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Content="Damage Tracker" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                 </Grid>
             </TabItem>
             <TabItem x:Name="tabShop" Header="Shop">

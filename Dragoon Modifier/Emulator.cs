@@ -146,7 +146,7 @@ namespace Dragoon_Modifier {
             } else if (character == 11) {
                 return "(";
             } else if (character == 12) {
-                return ") {";
+                return ")";
             } else if (character == 13) {
                 return "—";
             } else if (character == 14) {

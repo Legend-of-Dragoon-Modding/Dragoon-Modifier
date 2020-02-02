@@ -19,18 +19,21 @@ namespace Dragoon_Modifier {
         public static bool IN_BATTLE = false;
         public static bool STATS_CHANGED = false;
         public static byte EXITING_BATTLE = 0;
-        public static int M_POINT = 0;
-        public static int C_POINT = 0;
-        public static int[] CHAR_ADDRESS = new int[3];
-        public static int[] MONS_ADDRESS = new int[5];
+        public static long M_POINT = 0;
+        public static long C_POINT = 0;
+        public static long[] CHAR_ADDRESS = new long[3];
+        public static long[] MONS_ADDRESS = new long[5];
         public static byte MONSTER_SIZE = 0;
         public static byte UNIQUE_MONSTERS = 0;
         public static List<int> MONSTER_IDS = new List<int>();
         public static List<int> UNIQUE_MONSTER_IDS = new List<int>();
         public static List<dynamic> MONSTER_TABLE = new List<dynamic>();
+        public static List<dynamic> CHARACTER_TABLE = new List<dynamic>();
         public static dynamic DICTIONARY = new System.Dynamic.ExpandoObject();
         public static bool MONSTER_CHANGE = false;
         public static bool DROP_CHANGE = false;
+        public static bool DRAGOON_CHANGE = false;
+        public static bool SHOP_CHANGE = false;
         public static string MOD = "US_Base";
         public static string DIFFICULTY_MODE = "Normal";
 

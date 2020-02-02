@@ -49,11 +49,8 @@ namespace Dragoon_Modifier {
             }
 
             KEY = Registry.CurrentUser.OpenSubKey("Legend of Dragoon", true);
-            SUBKEY = Registry.CurrentUser.OpenSubKey("Legend of Dragoon\\" + SAVE_SLOT, true);
             if (KEY == null) 
                 KEY = Registry.CurrentUser.CreateSubKey("Legend of Dragoon", true);
-            if (SUBKEY == null)
-                SUBKEY = Registry.CurrentUser.CreateSubKey("Legend of Dragoon\\" + SAVE_SLOT, true);
         }
 
         public static bool LoadPreset(string name) {
@@ -74,7 +71,7 @@ namespace Dragoon_Modifier {
 
         public static void SetSubKey(int slot) {
             SAVE_SLOT = slot;
-            SUBKEY = Registry.CurrentUser.OpenSubKey("Legend of Dragoon\\" + SAVE_SLOT);
+            SUBKEY = Registry.CurrentUser.OpenSubKey("Legend of Dragoon\\" + SAVE_SLOT, true);
             if (SUBKEY == null)
                 SUBKEY = Registry.CurrentUser.CreateSubKey("Legend of Dragoon\\" + SAVE_SLOT, true);
         }
