@@ -156,13 +156,15 @@ public class BattleController {
                     Globals.CHARACTER_TABLE[character].Write("DMDF", Globals.DICTIONARY.DragoonStats[Globals.PARTY_SLOT[character]][dlv].DMDF);
                 }
             }
+            int i = 0;
+            foreach (dynamic Spell in Globals.DRAGOON_SPELLS) {
+                WriteDragoonMagic(Spell.Damage, i, emulator);
+                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x6 + Constants.OFFSET + i * 0xC, Spell.Accuracy);
+                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x7 + Constants.OFFSET + i * 0xC, Spell.MP);
+                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x9 + Constants.OFFSET + i * 0xC, Spell.Element);
+                i++;
+            }
         }
-        /* Test code for Dragoon Spell Dmg changer
-        if (Globals.DRAGOON_CHANGE == true) {
-            WriteDragoonMagic(510, 0, emulator);
-            Constants.WriteDebug(Convert.ToString(Constants.GetAddress("SPELL_TABLE") + 0x5 + Constants.OFFSET,16).ToUpper());
-        }
-        */
     }
 
     public class MonsterAddress {
@@ -725,6 +727,23 @@ public class LoDDict {
             Constants.WriteDebug(file + " not found. Turning off Shop Changes.");
             Globals.SHOP_CHANGE = false;
         }
+        try {
+            using (var shop = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Dragoon_Spells.csv")) {
+                var i = 0;
+                while (!shop.EndOfStream) {
+                    var line = shop.ReadLine();
+                    if (i > 0) {
+                        var values = line.Split(',').ToArray();
+                        Globals.DRAGOON_SPELLS.Add(new DragoonSpells(values, element2num));
+                    }
+                    i++;
+                }
+            }
+        } catch (FileNotFoundException) {
+            string file = cwd + @"Mods\" + Globals.MOD + @"\Dragoon_Spells.csv";
+            Constants.WriteDebug(file + " not found. Turning off Dragoon Changes.");
+            Globals.DRAGOON_CHANGE = false;
+        }
     }
 }
 
@@ -817,5 +836,24 @@ public class DragoonStats {
         dmat = ndmat;
         ddf = nddf;
         dmdf = ndmdf;
+    }
+}
+
+public class DragoonSpells {
+    double damage = 100;
+    byte accuracy = 100;
+    byte mp = 10;
+    byte element = 128;
+
+    public double Damage { get { return damage; } }
+    public byte Accuracy { get { return accuracy; } }
+    public byte MP { get { return mp; } }
+    public byte Element { get { return element; } }
+
+    public DragoonSpells(string[] values, IDictionary<string, int> Element2Num) {
+        damage = Convert.ToDouble(values[1]);
+        accuracy = (byte) Convert.ToInt32(values[2]);
+        mp = (byte) Convert.ToInt32(values[3]);
+        element = (byte) Element2Num[values[4]];
     }
 }
