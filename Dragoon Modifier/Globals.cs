@@ -32,6 +32,7 @@ namespace Dragoon_Modifier {
         public static List<dynamic> DRAGOON_SPELLS = new List<dynamic>();
         public static dynamic DICTIONARY = new System.Dynamic.ExpandoObject();
         public static bool MONSTER_CHANGE = false;
+        public static bool ULTIMATE = false;
         public static bool DROP_CHANGE = false;
         public static bool DRAGOON_CHANGE = false;
         public static bool SHOP_CHANGE = false;

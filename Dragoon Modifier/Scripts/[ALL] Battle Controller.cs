@@ -107,43 +107,83 @@ public class BattleController {
                 Globals.CHARACTER_TABLE.Add(new CharAddress(Globals.C_POINT + Constants.OFFSET, character, emulator));
             }
         }
-        if (Globals.MONSTER_CHANGE == true) {
-            Constants.WriteOutput("Changing stats...");
-            for (int monster = 0; monster < Globals.MONSTER_SIZE; monster++) {
-                int ID = Globals.MONSTER_IDS[monster];
-                Globals.MONSTER_TABLE[monster].Write("HP", Globals.DICTIONARY.StatList[ID].HP);
-                Globals.MONSTER_TABLE[monster].Write("Max_HP", Globals.DICTIONARY.StatList[ID].HP);
-                Globals.MONSTER_TABLE[monster].Write("ATK", Globals.DICTIONARY.StatList[ID].ATK);
-                Globals.MONSTER_TABLE[monster].Write("OG_ATK", Globals.DICTIONARY.StatList[ID].ATK);
-                Globals.MONSTER_TABLE[monster].Write("MAT", Globals.DICTIONARY.StatList[ID].MAT);
-                Globals.MONSTER_TABLE[monster].Write("OG_MAT", Globals.DICTIONARY.StatList[ID].MAT);
-                Globals.MONSTER_TABLE[monster].Write("DEF", Globals.DICTIONARY.StatList[ID].DEF);
-                Globals.MONSTER_TABLE[monster].Write("OG_DEF", Globals.DICTIONARY.StatList[ID].DEF);
-                Globals.MONSTER_TABLE[monster].Write("MDEF", Globals.DICTIONARY.StatList[ID].MDEF);
-                Globals.MONSTER_TABLE[monster].Write("OG_MDEF", Globals.DICTIONARY.StatList[ID].MDEF);
-                Globals.MONSTER_TABLE[monster].Write("SPD", Globals.DICTIONARY.StatList[ID].SPD);
-                Globals.MONSTER_TABLE[monster].Write("OG_SPD", Globals.DICTIONARY.StatList[ID].SPD);
-                Globals.MONSTER_TABLE[monster].Write("A_AV", Globals.DICTIONARY.StatList[ID].A_AV);
-                Globals.MONSTER_TABLE[monster].Write("M_AV", Globals.DICTIONARY.StatList[ID].M_AV);
-                Globals.MONSTER_TABLE[monster].Write("P_Immune", Globals.DICTIONARY.StatList[ID].P_Immune);
-                Globals.MONSTER_TABLE[monster].Write("M_Immune", Globals.DICTIONARY.StatList[ID].M_Immune);
-                Globals.MONSTER_TABLE[monster].Write("P_Half", Globals.DICTIONARY.StatList[ID].P_Half);
-                Globals.MONSTER_TABLE[monster].Write("M_Half", Globals.DICTIONARY.StatList[ID].M_Half);
-                Globals.MONSTER_TABLE[monster].Write("E_Immune", Globals.DICTIONARY.StatList[ID].E_Immune);
-                Globals.MONSTER_TABLE[monster].Write("E_Half", Globals.DICTIONARY.StatList[ID].E_Half);
-                Globals.MONSTER_TABLE[monster].Write("Stat_Res", Globals.DICTIONARY.StatList[ID].Stat_Res);
-                Globals.MONSTER_TABLE[monster].Write("Death_Res", Globals.DICTIONARY.StatList[ID].Death_Res);
+        if (Globals.ULTIMATE == false) {
+            if (Globals.MONSTER_CHANGE == true) {
+                Constants.WriteOutput("Changing stats...");
+                for (int monster = 0; monster < Globals.MONSTER_SIZE; monster++) {
+                    int ID = Globals.MONSTER_IDS[monster];
+                    Globals.MONSTER_TABLE[monster].Write("HP", Globals.DICTIONARY.StatList[ID].HP);
+                    Globals.MONSTER_TABLE[monster].Write("Max_HP", Globals.DICTIONARY.StatList[ID].HP);
+                    Globals.MONSTER_TABLE[monster].Write("ATK", Globals.DICTIONARY.StatList[ID].ATK);
+                    Globals.MONSTER_TABLE[monster].Write("OG_ATK", Globals.DICTIONARY.StatList[ID].ATK);
+                    Globals.MONSTER_TABLE[monster].Write("MAT", Globals.DICTIONARY.StatList[ID].MAT);
+                    Globals.MONSTER_TABLE[monster].Write("OG_MAT", Globals.DICTIONARY.StatList[ID].MAT);
+                    Globals.MONSTER_TABLE[monster].Write("DEF", Globals.DICTIONARY.StatList[ID].DEF);
+                    Globals.MONSTER_TABLE[monster].Write("OG_DEF", Globals.DICTIONARY.StatList[ID].DEF);
+                    Globals.MONSTER_TABLE[monster].Write("MDEF", Globals.DICTIONARY.StatList[ID].MDEF);
+                    Globals.MONSTER_TABLE[monster].Write("OG_MDEF", Globals.DICTIONARY.StatList[ID].MDEF);
+                    Globals.MONSTER_TABLE[monster].Write("SPD", Globals.DICTIONARY.StatList[ID].SPD);
+                    Globals.MONSTER_TABLE[monster].Write("OG_SPD", Globals.DICTIONARY.StatList[ID].SPD);
+                    Globals.MONSTER_TABLE[monster].Write("A_AV", Globals.DICTIONARY.StatList[ID].A_AV);
+                    Globals.MONSTER_TABLE[monster].Write("M_AV", Globals.DICTIONARY.StatList[ID].M_AV);
+                    Globals.MONSTER_TABLE[monster].Write("P_Immune", Globals.DICTIONARY.StatList[ID].P_Immune);
+                    Globals.MONSTER_TABLE[monster].Write("M_Immune", Globals.DICTIONARY.StatList[ID].M_Immune);
+                    Globals.MONSTER_TABLE[monster].Write("P_Half", Globals.DICTIONARY.StatList[ID].P_Half);
+                    Globals.MONSTER_TABLE[monster].Write("M_Half", Globals.DICTIONARY.StatList[ID].M_Half);
+                    Globals.MONSTER_TABLE[monster].Write("E_Immune", Globals.DICTIONARY.StatList[ID].E_Immune);
+                    Globals.MONSTER_TABLE[monster].Write("E_Half", Globals.DICTIONARY.StatList[ID].E_Half);
+                    Globals.MONSTER_TABLE[monster].Write("Stat_Res", Globals.DICTIONARY.StatList[ID].Stat_Res);
+                    Globals.MONSTER_TABLE[monster].Write("Death_Res", Globals.DICTIONARY.StatList[ID].Death_Res);
+                }
             }
-        }
-        if (Globals.DROP_CHANGE == true) {
-            Constants.WriteOutput("Changing drops...");
-            for (int monster = 0; monster < Globals.UNIQUE_MONSTERS; monster++) {
-                int ID = Globals.UNIQUE_MONSTER_IDS[monster];
-                emulator.WriteShortU(Constants.GetAddress("MONSTER_REWARDS") + (int) Constants.OFFSET + monster * 0x1A8, (ushort) Globals.DICTIONARY.StatList[ID].EXP);
-                emulator.WriteShortU(Constants.GetAddress("MONSTER_REWARDS") + (int) Constants.OFFSET + 0x2 + monster * 0x1A8, (ushort) Globals.DICTIONARY.StatList[ID].Gold);
-                emulator.WriteByteU(Constants.GetAddress("MONSTER_REWARDS") + (int) Constants.OFFSET + 0x4 + monster * 0x1A8, (byte) Globals.DICTIONARY.StatList[ID].Drop_Chance);
-                emulator.WriteByteU(Constants.GetAddress("MONSTER_REWARDS") + (int) Constants.OFFSET + 0x5 + monster * 0x1A8, (byte) Globals.DICTIONARY.StatList[ID].Drop_Item);
-                Constants.WriteDebug(Convert.ToString(ID, 10) + " Drop: " + (int) Globals.DICTIONARY.StatList[ID].Drop_Item);
+            if (Globals.DROP_CHANGE == true) {
+                Constants.WriteOutput("Changing drops...");
+                for (int monster = 0; monster < Globals.UNIQUE_MONSTERS; monster++) {
+                    int ID = Globals.UNIQUE_MONSTER_IDS[monster];
+                    emulator.WriteShortU(Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + monster * 0x1A8, (ushort)Globals.DICTIONARY.StatList[ID].EXP);
+                    emulator.WriteShortU(Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + 0x2 + monster * 0x1A8, (ushort)Globals.DICTIONARY.StatList[ID].Gold);
+                    emulator.WriteByteU(Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + 0x4 + monster * 0x1A8, (byte)Globals.DICTIONARY.StatList[ID].Drop_Chance);
+                    emulator.WriteByteU(Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + 0x5 + monster * 0x1A8, (byte)Globals.DICTIONARY.StatList[ID].Drop_Item);
+                }
+            }
+        } else {
+            if (Globals.MONSTER_CHANGE == true) {
+                Constants.WriteOutput("Changing stats...");
+                for (int monster = 0; monster < Globals.MONSTER_SIZE; monster++) {
+                    int ID = Globals.MONSTER_IDS[monster];
+                    Globals.MONSTER_TABLE[monster].Write("HP", Globals.DICTIONARY.UltimateStatList[ID].HP);
+                    Globals.MONSTER_TABLE[monster].Write("Max_HP", Globals.DICTIONARY.UltimateStatList[ID].HP);
+                    Globals.MONSTER_TABLE[monster].Write("ATK", Globals.DICTIONARY.UltimateStatList[ID].ATK);
+                    Globals.MONSTER_TABLE[monster].Write("OG_ATK", Globals.DICTIONARY.UltimateStatList[ID].ATK);
+                    Globals.MONSTER_TABLE[monster].Write("MAT", Globals.DICTIONARY.UltimateStatList[ID].MAT);
+                    Globals.MONSTER_TABLE[monster].Write("OG_MAT", Globals.DICTIONARY.UltimateStatList[ID].MAT);
+                    Globals.MONSTER_TABLE[monster].Write("DEF", Globals.DICTIONARY.UltimateStatList[ID].DEF);
+                    Globals.MONSTER_TABLE[monster].Write("OG_DEF", Globals.DICTIONARY.UltimateStatList[ID].DEF);
+                    Globals.MONSTER_TABLE[monster].Write("MDEF", Globals.DICTIONARY.UltimateStatList[ID].MDEF);
+                    Globals.MONSTER_TABLE[monster].Write("OG_MDEF", Globals.DICTIONARY.UltimateStatList[ID].MDEF);
+                    Globals.MONSTER_TABLE[monster].Write("SPD", Globals.DICTIONARY.UltimateStatList[ID].SPD);
+                    Globals.MONSTER_TABLE[monster].Write("OG_SPD", Globals.DICTIONARY.UltimateStatList[ID].SPD);
+                    Globals.MONSTER_TABLE[monster].Write("A_AV", Globals.DICTIONARY.UltimateStatList[ID].A_AV);
+                    Globals.MONSTER_TABLE[monster].Write("M_AV", Globals.DICTIONARY.UltimateStatList[ID].M_AV);
+                    Globals.MONSTER_TABLE[monster].Write("P_Immune", Globals.DICTIONARY.UltimateStatList[ID].P_Immune);
+                    Globals.MONSTER_TABLE[monster].Write("M_Immune", Globals.DICTIONARY.UltimateStatList[ID].M_Immune);
+                    Globals.MONSTER_TABLE[monster].Write("P_Half", Globals.DICTIONARY.UltimateStatList[ID].P_Half);
+                    Globals.MONSTER_TABLE[monster].Write("M_Half", Globals.DICTIONARY.UltimateStatList[ID].M_Half);
+                    Globals.MONSTER_TABLE[monster].Write("E_Immune", Globals.DICTIONARY.UltimateStatList[ID].E_Immune);
+                    Globals.MONSTER_TABLE[monster].Write("E_Half", Globals.DICTIONARY.UltimateStatList[ID].E_Half);
+                    Globals.MONSTER_TABLE[monster].Write("Stat_Res", Globals.DICTIONARY.UltimateStatList[ID].Stat_Res);
+                    Globals.MONSTER_TABLE[monster].Write("Death_Res", Globals.DICTIONARY.UltimateStatList[ID].Death_Res);
+                }
+            }
+            if (Globals.DROP_CHANGE == true) {
+                Constants.WriteOutput("Changing drops...");
+                for (int monster = 0; monster < Globals.UNIQUE_MONSTERS; monster++) {
+                    int ID = Globals.UNIQUE_MONSTER_IDS[monster];
+                    emulator.WriteShortU(Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + monster * 0x1A8, (ushort)Globals.DICTIONARY.UltimateStatList[ID].EXP);
+                    emulator.WriteShortU(Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + 0x2 + monster * 0x1A8, (ushort)Globals.DICTIONARY.UltimateStatList[ID].Gold);
+                    emulator.WriteByteU(Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + 0x4 + monster * 0x1A8, (byte)Globals.DICTIONARY.UltimateStatList[ID].Drop_Chance);
+                    emulator.WriteByteU(Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + 0x5 + monster * 0x1A8, (byte)Globals.DICTIONARY.UltimateStatList[ID].Drop_Item);
+                }
             }
         }
         if (Globals.DRAGOON_CHANGE == true) {
@@ -164,6 +204,11 @@ public class BattleController {
                 emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x9 + Constants.OFFSET + i * 0xC, Spell.Element);
                 i++;
             }
+        }
+    if (Globals.DICTIONARY.MonsterScript.Contains(Globals.ENCOUNTER_ID)) {
+            /*
+            monsterScript = new Thread(MonsterScript);
+            */
         }
     }
 
@@ -599,7 +644,9 @@ public class BattleController {
 
 public class LoDDict {
     IDictionary<int, dynamic> statList = new Dictionary<int, dynamic>();
+    IDictionary<int, dynamic> ultimateStatList = new Dictionary<int, dynamic>();
     List<int[]>[] shopList = new List<int[]>[39];
+    List<int> monsterScript = new List<int>();
     IDictionary<int, Dictionary<int, dynamic>> dragoonStats = new Dictionary<int, Dictionary<int, dynamic>>();
     IDictionary<int, string> num2item = new Dictionary<int, string>();
     IDictionary<string, int> item2num = new Dictionary<string, int>();
@@ -627,7 +674,9 @@ public class LoDDict {
     };
 
     public IDictionary<int, dynamic> StatList { get { return statList; } }
+    public IDictionary<int, dynamic> UltimateStatList { get { return ultimateStatList; } }
     public List<int[]>[] ShopList { get { return shopList; } }
+    public List<int> MonsterScript { get { return monsterScript; } }
     public IDictionary<int, string> Num2Item { get { return num2item; } }
     public IDictionary<string, int> Item2Num { get { return item2num; } }
     public IDictionary<int, string> Num2Element { get { return num2element; } }
@@ -665,13 +714,40 @@ public class LoDDict {
                 Globals.MONSTER_CHANGE = false;
                 Globals.DROP_CHANGE = false;
             }
+            try {
+                using (var monsterData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Ultimate_Data.csv")) {
+                    bool firstline = true;
+                    while (!monsterData.EndOfStream) {
+                        var line = monsterData.ReadLine();
+                        if (firstline == false) {
+                            var values = line.Split(',').ToArray();
+                            ultimateStatList.Add(Int32.Parse(values[0]), new StatList(values, element2num, item2num));
+                        } else {
+                            firstline = false;
+                        }
+                    }
+                }
+            } catch (FileNotFoundException) {
+                string file = cwd + @"Mods\" + Globals.MOD + @"\Ultimate_Data.csv";
+                Constants.WriteDebug(file + " not found.");
+            }
         } catch (FileNotFoundException) {
             string file = cwd + @"Mods\" + Globals.MOD + @"\Item_List.txt";
             Constants.WriteDebug(file + " not found. Turning off Monster and Drop Changes.");
             Globals.MONSTER_CHANGE = false;
             Globals.DROP_CHANGE = false;
         }
-
+        try {
+            string[] lines = File.ReadAllLines(cwd + @"Mods\" + Globals.MOD + @"\Monster_Script.txt");
+            foreach (string row in lines) {
+                if (row != "") {
+                    monsterScript.Add(Int32.Parse(row));
+                }
+            }
+        } catch (FileNotFoundException) {
+            string file = cwd + @"Mods\" + Globals.MOD + @"\Monster_Script.txt";
+            Constants.WriteDebug(file + " not found.");
+        }
         try {
             using (var dragoon = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Dragoon_Stats.csv")) {
                 bool firstline = true;
