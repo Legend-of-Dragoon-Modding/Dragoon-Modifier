@@ -65,26 +65,38 @@ public class BattleController {
         return discOffset[Globals.DISC - 1] - partyOffset;
     }
 
-    public static void WriteDragoonMagic(double damage, int spell, Emulator emulator) {
-        int[] bases = new int[] { 800, 600, 500, 400, 300, 200, 100, 75, 50 };
-        byte[] base_table = new byte[] { 1, 2, 4, 8, 16, 32, 0, 64, 128 };
-        Nullable<double>[] modulos = new Nullable<double>[9];
-        for (int i = 0; i < 9; i++) {
-            if (damage >= bases[i] && damage <= bases[i] * 2.275) {
-                modulos[i] = (damage - (double) bases[i]) % ((double) bases[i] / 200);
-            } else {
-                if (damage < bases[i]) {
-                    modulos[i] = (double) bases[i] - damage;
+    public static void WriteDragoonMagic(bool percentage, double damage, int spell, Emulator emulator) {
+        if (percentage == true) {
+            emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x4 + (int)Constants.OFFSET + spell * 0xC, 0);
+            emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x5 + (int)Constants.OFFSET + spell * 0xC, (byte)Convert.ToInt32(damage));
+            int intValue = (int)emulator.ReadByteU(Constants.GetAddress("SPELL_TABLE") + 0x2 + (int)Constants.OFFSET + spell * 0xC);
+            intValue |= 1 << 2;
+            emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x2 + (int)Constants.OFFSET + spell * 0xC, (byte)intValue);
+
+        } else {
+            int[] bases = new int[] { 800, 600, 500, 400, 300, 200, 100, 75, 50 };
+            byte[] base_table = new byte[] { 1, 2, 4, 8, 16, 32, 0, 64, 128 };
+            Nullable<double>[] modulos = new Nullable<double>[9];
+            for (int i = 0; i < 9; i++) {
+                if (damage >= bases[i] && damage <= bases[i] * 2.275) {
+                    modulos[i] = (damage - (double)bases[i]) % ((double)bases[i] / 200);
                 } else {
-                    modulos[i] = damage - (double)bases[i] * 2.275;
+                    if (damage < bases[i]) {
+                        modulos[i] = (double)bases[i] - damage;
+                    } else {
+                        modulos[i] = damage - (double)bases[i] * 2.275;
+                    }
                 }
+                int index = Array.IndexOf(modulos, modulos.Min());
+                double increment = (double)bases[index] / 200;
+                byte multi = (byte)((damage - bases[index]) / increment);
+                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x4 + (int)Constants.OFFSET + spell * 0xC, base_table[index]);
+                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x5 + (int)Constants.OFFSET + spell * 0xC, multi);
+                int intValue = (int) emulator.ReadByteU(Constants.GetAddress("SPELL_TABLE") + 0x2 + (int)Constants.OFFSET + spell * 0xC);
+                intValue &= ~(1 << 2);
+                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x2 + (int)Constants.OFFSET + spell * 0xC, (byte) intValue);
             }
-            int index = Array.IndexOf(modulos, modulos.Min());
-            double increment = (double) bases[index] / 200;
-            byte multi = (byte) ((damage - bases[index]) / increment);
-            emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x4 + (int) Constants.OFFSET + spell * 0xC, base_table[index]);
-            emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x5 + (int) Constants.OFFSET + spell * 0xC, multi);
-        }
+        } 
     }
 
     public static void LoDDictInIt(Emulator emulator) {
@@ -198,7 +210,7 @@ public class BattleController {
             }
             int i = 0;
             foreach (dynamic Spell in Globals.DRAGOON_SPELLS) {
-                WriteDragoonMagic(Spell.Damage, i, emulator);
+                WriteDragoonMagic(Spell.Percentage, Spell.Damage, i, emulator);
                 emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x6 + Constants.OFFSET + i * 0xC, Spell.Accuracy);
                 emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x7 + Constants.OFFSET + i * 0xC, Spell.MP);
                 emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x9 + Constants.OFFSET + i * 0xC, Spell.Element);
@@ -916,20 +928,32 @@ public class DragoonStats {
 }
 
 public class DragoonSpells {
+    bool percentage = false;
     double damage = 100;
     byte accuracy = 100;
     byte mp = 10;
     byte element = 128;
-
+    IDictionary<string, bool> perc = new Dictionary<string, bool> {
+        { "yes", true},
+        { "no", false },
+        { "true", true },
+        { "false", false },
+        { "1", true },
+        { "0", false },
+        { "", false}
+    };
+    
+    public bool Percentage { get { return percentage; } }
     public double Damage { get { return damage; } }
     public byte Accuracy { get { return accuracy; } }
     public byte MP { get { return mp; } }
     public byte Element { get { return element; } }
 
     public DragoonSpells(string[] values, IDictionary<string, int> Element2Num) {
-        damage = Convert.ToDouble(values[1]);
-        accuracy = (byte) Convert.ToInt32(values[2]);
-        mp = (byte) Convert.ToInt32(values[3]);
-        element = (byte) Element2Num[values[4]];
+        percentage = perc[values[1].ToLower()];
+        damage = Convert.ToDouble(values[2]);
+        accuracy = (byte) Convert.ToInt32(values[3]);
+        mp = (byte) Convert.ToInt32(values[4]);
+        element = (byte) Element2Num[values[5]];
     }
 }
