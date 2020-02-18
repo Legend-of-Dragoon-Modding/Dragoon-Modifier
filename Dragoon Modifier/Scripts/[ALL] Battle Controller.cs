@@ -674,15 +674,15 @@ public class LoDDict {
         {128, "Fire" }
     };
     IDictionary<string, int> element2num = new Dictionary<string, int>() {
-        {"None", 0 },
-        {"Water", 1 },
-        {"Earth", 2 },
-        {"Dark", 4 },
-        {"Non-Elemental", 8 },
-        {"Thunder", 16 },
-        {"Light", 32 },
-        {"Wind", 64 },
-        {"Fire", 128 }
+        {"none", 0 },
+        {"water", 1 },
+        {"earth", 2 },
+        {"dark", 4 },
+        {"non-elemental", 8 },
+        {"thunder", 16 },
+        {"light", 32 },
+        {"wind", 64 },
+        {"fire", 128 }
     };
 
     public IDictionary<int, dynamic> StatList { get { return statList; } }
@@ -702,7 +702,7 @@ public class LoDDict {
             var i = 0;
             foreach (string row in lines) {
                 if (row != "") {
-                    item2num.Add(row, i);
+                    item2num.Add(row.ToLower(), i);
                     num2item.Add(i, row);
                 }
                 i++;
@@ -790,24 +790,29 @@ public class LoDDict {
             shopList[i] = new List<int[]>();
         }
         try {
+            int key = 0;
             using (var shop = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Shops.csv")) {
-                var i = 0;
+                var row = 0;
                 while (!shop.EndOfStream) {
                     var line = shop.ReadLine();
-                    if (i > 1) {
+                    if (row > 1) {
                         var values = line.Split(',').ToArray();
-                        int z = 0;
+                        int column = 0;
                         foreach (string number in values) {
-                            if (z % 2 == 0 && number != "") {
-                                var array = new int[] {
-                                item2num[number], Int32.Parse(values[z + 1])
-                                };
-                                shopList[z / 2].Add(array);
+                            if (column % 2 == 0 && number != "") {
+                                if (item2num.TryGetValue(number.ToLower(), out key)) {
+                                    var array = new int[] {
+                                    item2num[number.ToLower()], Int32.Parse(values[column + 1])
+                                    };
+                                    shopList[column / 2].Add(array);
+                                } else {
+                                    Constants.WriteDebug("Incorrect item " + number + " in ShopList at Row: " + row + " Column: " + column);
+                                }
                             }
-                            z++;
+                            column++;
                         }
                     }
-                    i++;
+                    row++;
                 }
             }
         } catch (FileNotFoundException) {
@@ -884,7 +889,12 @@ public class StatList {
 
     public StatList(string[] monster, IDictionary<string, int> element2num, IDictionary<string, int> item2num) {
         name = monster[1];
-        element = element2num[monster[2]];
+        int key = 0;
+        if (element2num.TryGetValue(monster[2].ToLower(), out key)) {
+            element = element2num[monster[2].ToLower()];
+        } else {
+            Constants.WriteDebug(monster[2] + " not found as element for " + monster[1] + " (ID " + monster[0] + ")");
+        }
         hp = Int32.Parse(monster[3]);
         at = Int32.Parse(monster[4]);
         mat = Int32.Parse(monster[5]);
@@ -897,13 +907,25 @@ public class StatList {
         m_immune = Int32.Parse(monster[12]);
         p_half = Int32.Parse(monster[13]);
         m_half = Int32.Parse(monster[14]);
-        e_immune = element2num[monster[15]];
-        e_half = element2num[monster[16]];
+        if (element2num.TryGetValue(monster[15].ToLower(), out key)) {
+            e_immune = element2num[monster[15].ToLower()];
+        } else {
+            Constants.WriteDebug(monster[15] + " not found as e_immune for " + monster[1] + " (ID " + monster[0] + ")");
+        }
+        if (element2num.TryGetValue(monster[16].ToLower(), out key)) {
+            e_half = element2num[monster[16].ToLower()];
+        } else {
+            Constants.WriteDebug(monster[16] + " not found as e_half for " + monster[1] + " (ID " + monster[0] + ")");
+        }
         stat_res = Int32.Parse(monster[17]);
         death_res = Int32.Parse(monster[18]);
         exp = Int32.Parse(monster[19]);
         gold = Int32.Parse(monster[20]);
-        drop_item = item2num[monster[21]];
+        if (item2num.TryGetValue(monster[21].ToLower(), out key)) {
+            drop_item = item2num[monster[21].ToLower()];
+        } else {
+            Constants.WriteDebug(monster[21] + " not found in Item List as drop for " + monster[1] + " (ID " + monster[0] + ")");
+        }
         drop_chance = Int32.Parse(monster[22]);
     }
 }
@@ -954,6 +976,6 @@ public class DragoonSpells {
         damage = Convert.ToDouble(values[2]);
         accuracy = (byte) Convert.ToInt32(values[3]);
         mp = (byte) Convert.ToInt32(values[4]);
-        element = (byte) Element2Num[values[5]];
+        element = (byte) Element2Num[values[5].ToLower()];
     }
 }
