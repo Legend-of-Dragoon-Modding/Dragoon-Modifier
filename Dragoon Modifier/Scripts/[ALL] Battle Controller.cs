@@ -65,40 +65,6 @@ public class BattleController {
         return discOffset[Globals.DISC - 1] - partyOffset;
     }
 
-    public static void WriteDragoonMagic(bool percentage, double damage, int spell, Emulator emulator) {
-        if (percentage == true) {
-            emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x4 + (int)Constants.OFFSET + spell * 0xC, 0);
-            emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x5 + (int)Constants.OFFSET + spell * 0xC, (byte)Convert.ToInt32(damage));
-            int intValue = (int)emulator.ReadByteU(Constants.GetAddress("SPELL_TABLE") + 0x2 + (int)Constants.OFFSET + spell * 0xC);
-            intValue |= 1 << 2;
-            emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x2 + (int)Constants.OFFSET + spell * 0xC, (byte)intValue);
-
-        } else {
-            int[] bases = new int[] { 800, 600, 500, 400, 300, 200, 100, 75, 50 };
-            byte[] base_table = new byte[] { 1, 2, 4, 8, 16, 32, 0, 64, 128 };
-            Nullable<double>[] modulos = new Nullable<double>[9];
-            for (int i = 0; i < 9; i++) {
-                if (damage >= bases[i] && damage <= bases[i] * 2.275) {
-                    modulos[i] = (damage - (double)bases[i]) % ((double)bases[i] / 200);
-                } else {
-                    if (damage < bases[i]) {
-                        modulos[i] = (double)bases[i] - damage;
-                    } else {
-                        modulos[i] = damage - (double)bases[i] * 2.275;
-                    }
-                }
-                int index = Array.IndexOf(modulos, modulos.Min());
-                double increment = (double)bases[index] / 200;
-                byte multi = (byte)((damage - bases[index]) / increment);
-                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x4 + (int)Constants.OFFSET + spell * 0xC, base_table[index]);
-                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x5 + (int)Constants.OFFSET + spell * 0xC, multi);
-                int intValue = (int) emulator.ReadByteU(Constants.GetAddress("SPELL_TABLE") + 0x2 + (int)Constants.OFFSET + spell * 0xC);
-                intValue &= ~(1 << 2);
-                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x2 + (int)Constants.OFFSET + spell * 0xC, (byte) intValue);
-            }
-        } 
-    }
-
     public static void LoDDictInIt(Emulator emulator) {
         Globals.UNIQUE_MONSTER_IDS = new List<int>();
         Globals.MONSTER_IDS = new List<int>();
@@ -210,7 +176,15 @@ public class BattleController {
             }
             int i = 0;
             foreach (dynamic Spell in Globals.DRAGOON_SPELLS) {
-                WriteDragoonMagic(Spell.Percentage, Spell.Damage, i, emulator);
+                int intValue = (int)emulator.ReadByteU(Constants.GetAddress("SPELL_TABLE") + 0x2 + (int)Constants.OFFSET + i * 0xC);
+                if (Spell.Percentage == true) {
+                    intValue |= 1 << 2; 
+                } else {
+                    intValue &= ~(1 << 2);
+                }
+                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x2 + (int)Constants.OFFSET + i * 0xC, (byte)intValue);
+                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x4 + (int)Constants.OFFSET + i * 0xC, Spell.DMG_Base);
+                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x5 + (int)Constants.OFFSET + i * 0xC, Spell.Multi);
                 emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x6 + Constants.OFFSET + i * 0xC, Spell.Accuracy);
                 emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x7 + Constants.OFFSET + i * 0xC, Spell.MP);
                 emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x9 + Constants.OFFSET + i * 0xC, Spell.Element);
@@ -802,7 +776,7 @@ public class LoDDict {
                             if (column % 2 == 0 && number != "") {
                                 if (item2num.TryGetValue(number.ToLower(), out key)) {
                                     var array = new int[] {
-                                    item2num[number.ToLower()], Int32.Parse(values[column + 1])
+                                    key, Int32.Parse(values[column + 1])
                                     };
                                     shopList[column / 2].Add(array);
                                 } else {
@@ -843,12 +817,12 @@ public class LoDDict {
 public class StatList {
     string name = "Monster";
     int element = 128;
-    int hp = 0;
-    int at = 0;
-    int mat = 0;
-    int df = 0;
-    int mdf = 0;
-    int spd = 0;
+    int hp = 1;
+    int at = 1;
+    int mat = 1;
+    int df = 1;
+    int mdf = 1;
+    int spd = 1;
     int a_av = 0;
     int m_av = 0;
     int p_immune = 0;
@@ -891,7 +865,7 @@ public class StatList {
         name = monster[1];
         int key = 0;
         if (element2num.TryGetValue(monster[2].ToLower(), out key)) {
-            element = element2num[monster[2].ToLower()];
+            element = key;
         } else {
             Constants.WriteDebug(monster[2] + " not found as element for " + monster[1] + " (ID " + monster[0] + ")");
         }
@@ -908,12 +882,12 @@ public class StatList {
         p_half = Int32.Parse(monster[13]);
         m_half = Int32.Parse(monster[14]);
         if (element2num.TryGetValue(monster[15].ToLower(), out key)) {
-            e_immune = element2num[monster[15].ToLower()];
+            e_immune = key;
         } else {
             Constants.WriteDebug(monster[15] + " not found as e_immune for " + monster[1] + " (ID " + monster[0] + ")");
         }
         if (element2num.TryGetValue(monster[16].ToLower(), out key)) {
-            e_half = element2num[monster[16].ToLower()];
+            e_half = key;
         } else {
             Constants.WriteDebug(monster[16] + " not found as e_half for " + monster[1] + " (ID " + monster[0] + ")");
         }
@@ -922,7 +896,7 @@ public class StatList {
         exp = Int32.Parse(monster[19]);
         gold = Int32.Parse(monster[20]);
         if (item2num.TryGetValue(monster[21].ToLower(), out key)) {
-            drop_item = item2num[monster[21].ToLower()];
+            drop_item = key;
         } else {
             Constants.WriteDebug(monster[21] + " not found in Item List as drop for " + monster[1] + " (ID " + monster[0] + ")");
         }
@@ -951,7 +925,8 @@ public class DragoonStats {
 
 public class DragoonSpells {
     bool percentage = false;
-    double damage = 100;
+    byte dmg_base = 0;
+    byte multi = 0;
     byte accuracy = 100;
     byte mp = 10;
     byte element = 128;
@@ -966,14 +941,50 @@ public class DragoonSpells {
     };
     
     public bool Percentage { get { return percentage; } }
-    public double Damage { get { return damage; } }
+    public byte DMG_Base { get { return dmg_base; } }
+    public byte Multi { get { return multi; } }
     public byte Accuracy { get { return accuracy; } }
     public byte MP { get { return mp; } }
     public byte Element { get { return element; } }
 
     public DragoonSpells(string[] values, IDictionary<string, int> Element2Num) {
-        percentage = perc[values[1].ToLower()];
-        damage = Convert.ToDouble(values[2]);
+        bool key = new bool();
+        if (perc.TryGetValue(values[1].ToLower(), out key)) {
+            percentage = key;
+        } else {
+            Constants.WriteDebug("Incorrect percentage swith " + values[1] + " for spell " + values[0]);
+        }
+        double damage = Convert.ToDouble(values[2]);
+        if (percentage == true) {
+            dmg_base = 0;
+            multi = (byte) Math.Round(damage);
+        } else {
+            double[] bases = new double[] { 800, 600, 500, 400, 300, 200, 100, 75, 50 };
+            byte[] base_table = new byte[] { 1, 2, 4, 8, 16, 32, 0, 64, 128};
+            double[] nearest_list = new double[9];
+            byte[] multi_list = new byte[9];
+            for (int i = 0; i < 9; i++) {
+                if (damage < bases[i]) {
+                    nearest_list[i] = bases[i] - damage;
+                    multi_list[i] = 0;
+                } else if (damage > (bases[i] * 2.275)) {
+                    nearest_list[i] = damage - bases[i] * 2.275;
+                    multi_list[i] = 255;
+                } else {
+                    double mod = (damage - bases[i]) % (bases[i] / 200);
+                    if (mod < (bases[i] / 400)) {
+                        nearest_list[i] = mod;
+                        multi_list[i] = (byte)Math.Round((damage - bases[i]) / (bases[i] / 200));
+                    } else {
+                        nearest_list[i] = (bases[i] / 200) - mod;
+                        multi_list[i] = (byte)Math.Round((damage - bases[i]) / (bases[i] / 200) + 1);
+                    }
+                }
+            }
+            int index = Array.IndexOf(nearest_list, nearest_list.Min());
+            dmg_base = base_table[index];
+            multi = multi_list[index];
+        }
         accuracy = (byte) Convert.ToInt32(values[3]);
         mp = (byte) Convert.ToInt32(values[4]);
         element = (byte) Element2Num[values[5].ToLower()];
