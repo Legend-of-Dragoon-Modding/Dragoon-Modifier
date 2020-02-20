@@ -196,6 +196,7 @@ namespace Dragoon_Modifier {
                 Constants.Init();
                 InitUI();
                 LoadKey();
+                Globals.DICTIONARY = new LoDDict();
 
                 if (Constants.EMULATOR != 255) {
                     SetupEmulator();
@@ -558,6 +559,371 @@ namespace Dragoon_Modifier {
                         lbl.Foreground = Brushes.Black;
                     }
                 } catch (Exception e) { }
+            }
+        }
+        #endregion
+
+        #region LoDDict
+        public class LoDDict {
+            IDictionary<int, dynamic> statList = new Dictionary<int, dynamic>();
+            IDictionary<int, dynamic> ultimateStatList = new Dictionary<int, dynamic>();
+            List<int[]>[] shopList = new List<int[]>[39];
+            List<int> monsterScript = new List<int>();
+            IDictionary<int, Dictionary<int, dynamic>> dragoonStats = new Dictionary<int, Dictionary<int, dynamic>>();
+            IDictionary<int, string> num2item = new Dictionary<int, string>();
+            IDictionary<string, int> item2num = new Dictionary<string, int>();
+            IDictionary<int, string> num2element = new Dictionary<int, string>() {
+        {0, "None" },
+        {1, "Water" },
+        {2, "Earth" },
+        {4, "Dark" },
+        {8, "Non-Elemental" },
+        {16, "Thunder" },
+        {32, "Light" },
+        {64, "Wind" },
+        {128, "Fire" }
+    };
+            IDictionary<string, int> element2num = new Dictionary<string, int>() {
+        {"none", 0 },
+        {"water", 1 },
+        {"earth", 2 },
+        {"dark", 4 },
+        {"non-elemental", 8 },
+        {"thunder", 16 },
+        {"light", 32 },
+        {"wind", 64 },
+        {"fire", 128 }
+    };
+
+            public IDictionary<int, dynamic> StatList { get { return statList; } }
+            public IDictionary<int, dynamic> UltimateStatList { get { return ultimateStatList; } }
+            public List<int[]>[] ShopList { get { return shopList; } }
+            public List<int> MonsterScript { get { return monsterScript; } }
+            public IDictionary<int, string> Num2Item { get { return num2item; } }
+            public IDictionary<string, int> Item2Num { get { return item2num; } }
+            public IDictionary<int, string> Num2Element { get { return num2element; } }
+            public IDictionary<string, int> Element2Num { get { return element2num; } }
+            public IDictionary<int, Dictionary<int, dynamic>> DragoonStats { get { return dragoonStats; } }
+
+            public LoDDict() {
+                string cwd = AppDomain.CurrentDomain.BaseDirectory;
+                try {
+                    string[] lines = File.ReadAllLines(cwd + "Mods/" + Globals.MOD + "/Item_List.txt");
+                    var i = 0;
+                    foreach (string row in lines) {
+                        if (row != "") {
+                            item2num.Add(row.ToLower(), i);
+                            num2item.Add(i, row);
+                        }
+                        i++;
+                    }
+                    try {
+                        using (var monsterData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Monster_Data.csv")) {
+                            bool firstline = true;
+                            while (!monsterData.EndOfStream) {
+                                var line = monsterData.ReadLine();
+                                if (firstline == false) {
+                                    var values = line.Split(',').ToArray();
+                                    statList.Add(Int32.Parse(values[0]), new StatList(values, element2num, item2num));
+                                } else {
+                                    firstline = false;
+                                }
+                            }
+                        }
+                    } catch (FileNotFoundException) {
+                        string file = cwd + @"Mods\" + Globals.MOD + @"\Monster_Data.csv";
+                        Constants.WriteDebug(file + " not found. Turning off Monster and Drop Changes.");
+                        Globals.MONSTER_CHANGE = false;
+                        Globals.DROP_CHANGE = false;
+                    }
+                    try {
+                        using (var monsterData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Ultimate_Data.csv")) {
+                            bool firstline = true;
+                            while (!monsterData.EndOfStream) {
+                                var line = monsterData.ReadLine();
+                                if (firstline == false) {
+                                    var values = line.Split(',').ToArray();
+                                    ultimateStatList.Add(Int32.Parse(values[0]), new StatList(values, element2num, item2num));
+                                } else {
+                                    firstline = false;
+                                }
+                            }
+                        }
+                    } catch (FileNotFoundException) {
+                        string file = cwd + @"Mods\" + Globals.MOD + @"\Ultimate_Data.csv";
+                        Constants.WriteDebug(file + " not found.");
+                    }
+                } catch (FileNotFoundException) {
+                    string file = cwd + @"Mods\" + Globals.MOD + @"\Item_List.txt";
+                    Constants.WriteDebug(file + " not found. Turning off Monster and Drop Changes.");
+                    Globals.MONSTER_CHANGE = false;
+                    Globals.DROP_CHANGE = false;
+                }
+                try {
+                    string[] lines = File.ReadAllLines(cwd + @"Mods\" + Globals.MOD + @"\Monster_Script.txt");
+                    foreach (string row in lines) {
+                        if (row != "") {
+                            monsterScript.Add(Int32.Parse(row));
+                        }
+                    }
+                } catch (FileNotFoundException) {
+                    string file = cwd + @"Mods\" + Globals.MOD + @"\Monster_Script.txt";
+                    Constants.WriteDebug(file + " not found.");
+                }
+                try {
+                    using (var dragoon = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Dragoon_Stats.csv")) {
+                        bool firstline = true;
+                        var i = 0;
+                        while (!dragoon.EndOfStream) {
+                            var line = dragoon.ReadLine();
+                            if (firstline == false) {
+                                var values = line.Split(',').ToArray();
+                                Dictionary<int, dynamic> level = new Dictionary<int, dynamic>();
+                                level.Add(1, new DragoonStats(Int32.Parse(values[1]), Int32.Parse(values[2]), Int32.Parse(values[3]), Int32.Parse(values[4])));
+                                level.Add(2, new DragoonStats(Int32.Parse(values[5]), Int32.Parse(values[6]), Int32.Parse(values[7]), Int32.Parse(values[8])));
+                                level.Add(3, new DragoonStats(Int32.Parse(values[9]), Int32.Parse(values[10]), Int32.Parse(values[11]), Int32.Parse(values[12])));
+                                level.Add(4, new DragoonStats(Int32.Parse(values[13]), Int32.Parse(values[14]), Int32.Parse(values[15]), Int32.Parse(values[16])));
+                                level.Add(5, new DragoonStats(Int32.Parse(values[17]), Int32.Parse(values[18]), Int32.Parse(values[19]), Int32.Parse(values[20])));
+                                dragoonStats.Add(i - 1, level);
+                            } else {
+                                firstline = false;
+                            }
+                            i++;
+                        }
+                    }
+                } catch (FileNotFoundException) {
+                    string file = cwd + @"Mods\" + Globals.MOD + @"\Dragoon_Stats.csv";
+                    Constants.WriteDebug(file + " not found. Turning off Dragoon Changes.");
+                    Globals.DRAGOON_CHANGE = false;
+                }
+                for (int i = 0; i < shopList.Length; i++) {
+                    shopList[i] = new List<int[]>();
+                }
+                try {
+                    int key = 0;
+                    using (var shop = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Shops.csv")) {
+                        var row = 0;
+                        while (!shop.EndOfStream) {
+                            var line = shop.ReadLine();
+                            if (row > 1) {
+                                var values = line.Split(',').ToArray();
+                                int column = 0;
+                                foreach (string number in values) {
+                                    if (column % 2 == 0 && number != "") {
+                                        if (item2num.TryGetValue(number.ToLower(), out key)) {
+                                            var array = new int[] {
+                                    key, Int32.Parse(values[column + 1])
+                                    };
+                                            shopList[column / 2].Add(array);
+                                        } else {
+                                            Constants.WriteDebug("Incorrect item " + number + " in ShopList at Row: " + row + " Column: " + column);
+                                        }
+                                    }
+                                    column++;
+                                }
+                            }
+                            row++;
+                        }
+                    }
+                } catch (FileNotFoundException) {
+                    string file = cwd + @"Mods\" + Globals.MOD + @"\Shops.csv";
+                    Constants.WriteDebug(file + " not found. Turning off Shop Changes.");
+                    Globals.SHOP_CHANGE = false;
+                }
+                try {
+                    using (var shop = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Dragoon_Spells.csv")) {
+                        var i = 0;
+                        while (!shop.EndOfStream) {
+                            var line = shop.ReadLine();
+                            if (i > 0) {
+                                var values = line.Split(',').ToArray();
+                                Globals.DRAGOON_SPELLS.Add(new DragoonSpells(values, element2num));
+                            }
+                            i++;
+                        }
+                    }
+                } catch (FileNotFoundException) {
+                    string file = cwd + @"Mods\" + Globals.MOD + @"\Dragoon_Spells.csv";
+                    Constants.WriteDebug(file + " not found. Turning off Dragoon Changes.");
+                    Globals.DRAGOON_CHANGE = false;
+                }
+            }
+        }
+
+        public class StatList {
+            string name = "Monster";
+            int element = 128;
+            int hp = 1;
+            int at = 1;
+            int mat = 1;
+            int df = 1;
+            int mdf = 1;
+            int spd = 1;
+            int a_av = 0;
+            int m_av = 0;
+            int p_immune = 0;
+            int m_immune = 0;
+            int p_half = 0;
+            int m_half = 0;
+            int e_immune = 0;
+            int e_half = 0;
+            int stat_res = 0;
+            int death_res = 0;
+            int exp = 0;
+            int gold = 0;
+            int drop_item = 255;
+            int drop_chance = 0;
+
+            public string Name { get { return name; } }
+            public int Element { get { return element; } }
+            public int HP { get { return hp; } }
+            public int AT { get { return at; } }
+            public int MAT { get { return mat; } }
+            public int DF { get { return df; } }
+            public int MDF { get { return mdf; } }
+            public int SPD { get { return spd; } }
+            public int A_AV { get { return a_av; } }
+            public int M_AV { get { return m_av; } }
+            public int P_Immune { get { return p_immune; } }
+            public int M_Immune { get { return m_immune; } }
+            public int P_Half { get { return p_half; } }
+            public int M_Half { get { return m_half; } }
+            public int E_Immune { get { return e_immune; } }
+            public int E_Half { get { return e_half; } }
+            public int Stat_Res { get { return stat_res; } }
+            public int Death_Res { get { return death_res; } }
+            public int EXP { get { return exp; } }
+            public int Gold { get { return gold; } }
+            public int Drop_Item { get { return drop_item; } }
+            public int Drop_Chance { get { return drop_chance; } }
+
+            public StatList(string[] monster, IDictionary<string, int> element2num, IDictionary<string, int> item2num) {
+                name = monster[1];
+                int key = 0;
+                if (element2num.TryGetValue(monster[2].ToLower(), out key)) {
+                    element = key;
+                } else {
+                    Constants.WriteDebug(monster[2] + " not found as element for " + monster[1] + " (ID " + monster[0] + ")");
+                }
+                hp = Int32.Parse(monster[3]);
+                at = Int32.Parse(monster[4]);
+                mat = Int32.Parse(monster[5]);
+                df = Int32.Parse(monster[6]);
+                mdf = Int32.Parse(monster[7]);
+                spd = Int32.Parse(monster[8]);
+                a_av = Int32.Parse(monster[9]);
+                m_av = Int32.Parse(monster[10]);
+                p_immune = Int32.Parse(monster[11]);
+                m_immune = Int32.Parse(monster[12]);
+                p_half = Int32.Parse(monster[13]);
+                m_half = Int32.Parse(monster[14]);
+                if (element2num.TryGetValue(monster[15].ToLower(), out key)) {
+                    e_immune = key;
+                } else {
+                    Constants.WriteDebug(monster[15] + " not found as e_immune for " + monster[1] + " (ID " + monster[0] + ")");
+                }
+                if (element2num.TryGetValue(monster[16].ToLower(), out key)) {
+                    e_half = key;
+                } else {
+                    Constants.WriteDebug(monster[16] + " not found as e_half for " + monster[1] + " (ID " + monster[0] + ")");
+                }
+                stat_res = Int32.Parse(monster[17]);
+                death_res = Int32.Parse(monster[18]);
+                exp = Int32.Parse(monster[19]);
+                gold = Int32.Parse(monster[20]);
+                if (item2num.TryGetValue(monster[21].ToLower(), out key)) {
+                    drop_item = key;
+                } else {
+                    Constants.WriteDebug(monster[21] + " not found in Item List as drop for " + monster[1] + " (ID " + monster[0] + ")");
+                }
+                drop_chance = Int32.Parse(monster[22]);
+            }
+        }
+
+        public class DragoonStats {
+            int dat = 0;
+            int dmat = 0;
+            int ddf = 0;
+            int dmdf = 0;
+
+            public int DAT { get { return dat; } }
+            public int DMAT { get { return dmat; } }
+            public int DDF { get { return ddf; } }
+            public int DMDF { get { return dmdf; } }
+
+            public DragoonStats(int ndat, int ndmat, int nddf, int ndmdf) {
+                dat = ndat;
+                dmat = ndmat;
+                ddf = nddf;
+                dmdf = ndmdf;
+            }
+        }
+
+        public class DragoonSpells {
+            bool percentage = false;
+            byte dmg_base = 0;
+            byte multi = 0;
+            byte accuracy = 100;
+            byte mp = 10;
+            byte element = 128;
+            IDictionary<string, bool> perc = new Dictionary<string, bool> {
+        { "yes", true},
+        { "no", false },
+        { "true", true },
+        { "false", false },
+        { "1", true },
+        { "0", false },
+        { "", false}
+    };
+
+            public bool Percentage { get { return percentage; } }
+            public byte DMG_Base { get { return dmg_base; } }
+            public byte Multi { get { return multi; } }
+            public byte Accuracy { get { return accuracy; } }
+            public byte MP { get { return mp; } }
+            public byte Element { get { return element; } }
+
+            public DragoonSpells(string[] values, IDictionary<string, int> Element2Num) {
+                bool key = new bool();
+                if (perc.TryGetValue(values[1].ToLower(), out key)) {
+                    percentage = key;
+                } else {
+                    Constants.WriteDebug("Incorrect percentage swith " + values[1] + " for spell " + values[0]);
+                }
+                double damage = Convert.ToDouble(values[2]);
+                if (percentage == true) {
+                    dmg_base = 0;
+                    multi = (byte)Math.Round(damage);
+                } else {
+                    double[] bases = new double[] { 800, 600, 500, 400, 300, 200, 100, 75, 50 };
+                    byte[] base_table = new byte[] { 1, 2, 4, 8, 16, 32, 0, 64, 128 };
+                    double[] nearest_list = new double[9];
+                    byte[] multi_list = new byte[9];
+                    for (int i = 0; i < 9; i++) {
+                        if (damage < bases[i]) {
+                            nearest_list[i] = bases[i] - damage;
+                            multi_list[i] = 0;
+                        } else if (damage > (bases[i] * 2.275)) {
+                            nearest_list[i] = damage - bases[i] * 2.275;
+                            multi_list[i] = 255;
+                        } else {
+                            double mod = (damage - bases[i]) % (bases[i] / 200);
+                            if (mod < (bases[i] / 400)) {
+                                nearest_list[i] = mod;
+                                multi_list[i] = (byte)Math.Round((damage - bases[i]) / (bases[i] / 200));
+                            } else {
+                                nearest_list[i] = (bases[i] / 200) - mod;
+                                multi_list[i] = (byte)Math.Round((damage - bases[i]) / (bases[i] / 200) + 1);
+                            }
+                        }
+                    }
+                    int index = Array.IndexOf(nearest_list, nearest_list.Min());
+                    dmg_base = base_table[index];
+                    multi = multi_list[index];
+                }
+                accuracy = (byte)Convert.ToInt32(values[3]);
+                mp = (byte)Convert.ToInt32(values[4]);
+                element = (byte)Element2Num[values[5].ToLower()];
             }
         }
         #endregion
