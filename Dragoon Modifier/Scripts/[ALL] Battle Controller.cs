@@ -44,8 +44,34 @@ public class BattleController {
                 Globals.IN_BATTLE = false;
                 Globals.EXITING_BATTLE = 2;
                 Constants.WriteOutput("Exiting out of battle.");
+                if (Globals.ITEM_CHANGE == true) {
+                    emulator.WriteAOB(0x117E10, "00 00 FF A0");
+                    int start = -2146337264;
+                    int offset = 4;
+                    for (int i = 0; i < 255; i++) {
+                        if (Globals.Itemz[i] == "") {
+                            emulator.WriteInteger(0x11972C + i * 4, start);
+                        } else {
+                            emulator.WriteInteger(0x11972C + i * 4, start + offset);
+                            emulator.WriteAOB(0x117E10 + offset, TextEncode(Globals.Itemz[i], emulator));
+                            offset += (Globals.Itemz[i].Length + 2) * 2;
+                        }
+                    }
+                }
             }
         }
+    }
+
+    public static string TextEncode(string text, Emulator emulator) {
+        char[] char_array = text.ToCharArray();
+        byte[] byte_array = new byte[text.Length];
+        for (int i = 0; i < text.Length; i++) {
+            byte_array[i] = emulator.GetCharacterByChar(char_array[i]);
+        }
+        string hex = BitConverter.ToString(byte_array).Replace("-", " 00 ");
+        hex += " 00 FF A0";
+        Constants.WriteDebug(hex);
+        return hex;
     }
 
     public static int GetOffset() {

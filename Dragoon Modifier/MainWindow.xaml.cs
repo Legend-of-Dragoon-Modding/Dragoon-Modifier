@@ -611,6 +611,7 @@ namespace Dragoon_Modifier {
                     string[] lines = File.ReadAllLines(cwd + "Mods/" + Globals.MOD + "/Item_List.txt");
                     var i = 0;
                     foreach (string row in lines) {
+                        Globals.Itemz.Add(row);
                         if (row != "") {
                             item2num.Add(row.ToLower(), i);
                             num2item.Add(i, row);
