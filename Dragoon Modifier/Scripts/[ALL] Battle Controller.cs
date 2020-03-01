@@ -51,25 +51,13 @@ public class BattleController {
                     foreach (dynamic item in Globals.DICTIONARY.ItemList) {
                         emulator.WriteInteger(0xB6F3B0 - 0xA579A0 + i * 4, item.DescriptionPointer);
                         emulator.WriteInteger(0x11972C + i * 4, item.NamePointer);
+                        emulator.WriteByteU((long)(0xB69991 - 0xA579A0 + i * 28 + 13) + Constants.OFFSET, item.Icon);
                         i++;
                     }
                 }
             }
         }
     }
-
-    public static string TextEncode(string text, Emulator emulator) {
-        char[] char_array = text.ToCharArray();
-        byte[] byte_array = new byte[text.Length];
-        for (int i = 0; i < text.Length; i++) {
-            byte_array[i] = emulator.GetCharacterByChar(char_array[i]);
-        }
-        string hex = BitConverter.ToString(byte_array).Replace("-", " 00 ");
-        hex += " 00 FF A0";
-        Constants.WriteDebug(hex);
-        return hex;
-    }
-
     public static int GetOffset() {
         int[] discOffset = { 0xD80, 0x0, 0x1458, 0x1B0 };
         int[] charOffset = { 0x0, 0x180, -0x180, 0x420, 0x540, 0x180, 0x350, 0x2F0, -0x180 };

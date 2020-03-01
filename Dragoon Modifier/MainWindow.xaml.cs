@@ -805,6 +805,43 @@ namespace Dragoon_Modifier {
             string encodedDescription = "00 00 FF A0";
             int descriptionPointer = 0;
             int namePointer = 0;
+            byte icon = 0;
+            Dictionary<string, byte> iconDict = new Dictionary<string, byte>() {
+                { "sword", 0 },
+                { "axe", 1 },
+                { "hammer", 2 },
+                { "spear", 3 },
+                { "bow", 4 },
+                { "mace", 5 },
+                { "knuckle", 6 },
+                { "boxing glove", 7 },
+                { "clothes", 8 },
+                { "robe", 9 },
+                { "armor", 10 },
+                { "breastplate", 11 },
+                { "red dress", 12 },
+                { "loincloth", 13 },
+                { "warrior dress", 14 },
+                { "crown", 15 },
+                { "hairband", 16 },
+                { "bandana", 16 },
+                { "hat", 17 },
+                { "helm", 18 },
+                { "shoes", 19 },
+                { "kneepiece", 20 },
+                { "boots", 21 },
+                { "bracelet", 22 },
+                { "ring", 23 },
+                { "amulet", 24 },
+                { "stone", 25 },
+                { "jewelery", 26 },
+                { "pin", 27 },
+                { "bell", 28 },
+                { "bag", 29 },
+                { "cloak", 30 },
+                { "scarf", 30 },
+                { "horn", 32 },
+            };
 
             public int ID { get { return id; } }
             public string Name { get { return name; } }
@@ -813,16 +850,21 @@ namespace Dragoon_Modifier {
             public string EncodedDescription { get { return encodedDescription; } }
             public int DescriptionPointer { get; set; }
             public int NamePointer { get; set; }
+            public byte Icon { get { return icon; } }
 
             public ItemList(int index, string[] values) {
+                byte key = 0;
                 id = index;
                 name = values[0];
                 if (name != "") {
                     encodedName = StringEncode(values[0]);
                 }
-                description = values[1];
+                description = values[2];
                 if (description != "") {
-                    encodedDescription = StringEncode(values[1]);
+                    encodedDescription = StringEncode(values[2]);
+                }
+                if (iconDict.TryGetValue(values[1].ToLower(), out key)) {
+                    icon = key;
                 }
             }
         }
@@ -1098,8 +1140,7 @@ namespace Dragoon_Modifier {
                 {'y', "51 00" },
                 {'z', "52 00" },
                 {'[', "53 00" },
-                {']', "54 00" },
-                {'\n', "FF A0" }
+                {']', "54 00" }
             };
             List<string> encoded = new List<string>();
             string[] parts = Regex.Split(text, @"(<[\s\S]+?>)").Where(l => l != string.Empty).ToArray();

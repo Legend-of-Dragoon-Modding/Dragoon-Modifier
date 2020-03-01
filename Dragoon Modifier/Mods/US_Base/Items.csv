@@ -1,257 +1,257 @@
-Item Name;Description
-Broad Sword; 
-Bastard Sword; 
-Heat Blade;Fire-based attack.
-Falchion; 
-Mind Crush;20% chance of<LINE>confusing enemy.
-Fairy Sword;Attacks generate<LINE>50% more SP.
-Claymore; 
-Soul Eater;Powerful, but<LINE>HP decays<LINE>each turn.
-Axe; 
-Tomahawk; 
-Battle Axe; 
-Great Axe;20% chance of<LINE>stunning enemy.
-Indora's Axe;10% chance to<LINE>instantly kill<LINE>enemy.
-Rapier; 
-Shadow Cutter;Dark-based attack.
-Dancing Dagger; 
-Flamberge;10% chance of<LINE>stunning enemy.
-Gladius;10% chance to<LINE>instantly kill<LINE>enemy.
-Dragon Buster; 
-Demon Stilleto;20% chance of<LINE>frightening enemy.
-Spear; 
-Lance; 
-Glaive; 
-Spear of Terror;20% chance of<LINE>frightening enemy.
-Partisan; 
-Halberd; 
-Twister Glaive;Wind-based attack.
-Short Bow; 
-Sparkle Arrow;Light-based attack.
-Long Bow; 
-Bemusing Arrow;20% chance of<LINE>confusing enemy.
-Virulent Arrow;20% chance of<LINE>poisoning enemy.
-Detonate Arrow;Hits all enemies.
-Arrow of Force;Attacks generate<LINE>50% more SP.
-Mace; 
-Morning Star; 
-War Hammer; 
-Heavy Mace;20% chance of<LINE>stunning enemy.
-Basher; 
-Pretty Hammer;Weak, but<LINE>generates twice<LINE>as much SP.
-Iron Knuckle; 
-Beast Fang;20% chance of<LINE>stunning enemy.
-Diamond Claw; 
-Thunder Fist;Thunder-based<LINE>attack.
-Destroyer Mace;Power increases<LINE>inversely to HP.
-Brass Knuckle;10% chance to<LINE>instantly kill<LINE>enemy.
-Leather Armor; 
-Scale Armor; 
-Chain Mail; 
-Plate Mail; 
-Saint Armor;Gain 20 SP when<LINE>attacked<LINE>physically.
-Red DG Armor;Nullifies damage<LINE>from fire-based<LINE>attacks.
-Jade DG Armor;Nullifies damage<LINE>from wind-based<LINE>attacks.
-Lion Fur; 
-Breast Plate; 
-Giganto Armor;Gain 20 SP when<LINE>attacked<LINE>physically.
-Gold DG Armor;Nullifies damage<LINE>from earth-based<LINE>attacks.
-Disciple Vest; 
-Warrior Dress; 
-Master's Vest;Gain 20 SP when<LINE>attacked<LINE>physically.
-Energy Girdle;Attacks generate<LINE>50% more SP.
-Violet DG Armor;Nullifies damage<LINE>from thunder-based<LINE>attacks.
-Clothes; 
-Leather Jacket; 
-Silver Vest; 
-Sparkle Dress;Gain 20 SP when<LINE>attacked<LINE>physically.
-Robe;Gain 20 SP when<LINE>magically attacked.
-Silver DG Armor;Nullifies damage<LINE>from light-based<LINE>attacks.
-Dark DG Armor;Nullifies damage<LINE>attacks.
-Blue DG Armor;Nullifies damage<LINE>based attack.
-Armor of Yore;Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.
-Satori Vest;Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.
-Rainbow Dress;Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.
-Angel Robe;40% chance of<LINE>reviving from<LINE>death.
-Armor of Legend;Greatly reduces<LINE>damage from<LINE>physical attacks.
-; 
-Bandana; 
-Sallet;Increases hit<LINE>chance of physical<LINE>attacks by 10%.
-Armlet; 
-Knight Helm;Gain 20 SP when<LINE>magically attacked.
-Giganto Helm;Gain 20 SP when<LINE>magically attacked.
-Soul Headband;Gain 20 SP when<LINE>magically attacked.
-Felt Hat; 
-Cape; 
-Tiara;Increases hit<LINE>chance of magical<LINE>attacks by 10%.
-Jeweled Crown;Gain 20 SP when<LINE>magically attacked.
-Rose's Hair Band;Grants immunity<LINE>to instant death.
-; 
-Phoenix Plume;Avoids bewitchment,<LINE>confusion, fear,<LINE>and dispiriting.
-Legend Casque;Greatly reduces<LINE>damage from<LINE>magical attacks.
-Dragon Helm;Raises maximum<LINE>HP 50%.
-Magical Hat;Raises maximum<LINE>MP 50%.
-; 
-Leather Boots; 
-Iron Kneepiece; 
-Combat Shoes;Increases escape<LINE>chance from physical<LINE>attacks by 5%.
-Leather Shoes; 
-Soft Boots; 
-Stardust Boots;Increases escape<LINE>chance from magical<LINE>attacks by 5%.
-Magical Greaves;Increases escape<LINE>chance from phys./<LINE>mag. attacks by 5%.
-Dancer's Boots;Raises speed<LINE>by 20.
-Bandit's Shoes;Raises speed<LINE>by 20.
-; 
-Poison Guard;Grants immunity<LINE>to poison.
-Active Ring;Grants immunity<LINE>to dispiriting.
-Protector;Grants immunity<LINE>to arm blocking.
-Panic Guard;Grants immunity<LINE>to confusion.
-Stun Guard;Grants immunity<LINE>to being stunned.
-Bravery Amulet;Grants immunity<LINE>to fear.
-Magic Ego Bell;Grants immunity<LINE>to bewitchment.
-Destone Amulet;Grants immunity<LINE>to petrification.
-Power Wrist;Raises physical<LINE>attack by 10.
-Knight Shield;Raises physical<LINE>defense by 10.
-Magical Ring;Raises magical<LINE>attack by 30.
-Spiritual Ring;Raises magical<LINE>defense by 30.
-Attack Badge;Raises physical<LINE>& magical<LINE>attack by 20.
-Guard Badge;Raises physical<LINE>& magical<LINE>defense by 20.
-Giganto Ring;Raises physical<LINE>attack & defense<LINE>by 20.
-Elude Cloak;Increases escape<LINE>chance from phys.<LINE>attacks by 20%.
-Spirit Cloak;Increases escape<LINE>chance from magical<LINE>attacks by 20%.
-Sage's Cloak;Increases escape<LINE>chance from phys./<LINE>mag. attacks by 20%
-Physical Ring;Raises maximum<LINE>HP 50%.
-Amulet;Doubles<LINE>maximum MP.
-Wargod's Sash;Attacks generate<LINE>50% more SP.
-Spirit Ring;Recovers 20 SP<LINE>each turn.
-Therapy Ring;Recovers 10% HP<LINE>each turn.
-Mage Ring;Recovers 10% MP<LINE>each turn.
-Wargod's Amulet;Increases hit rate<LINE>for mag./phys.<LINE>attacks by 20%.
-Talisman;Grants immunity<LINE>to instant death.
-; 
-Holy Ankh;40% chance of<LINE>reviving from<LINE>death.
-Dancer's Ring;Raises speed<LINE>by 20.
-; 
-Bandit's Ring;Raises speed<LINE>by 20.
-Red-Eye Stone;Halves damage<LINE>from fire-based<LINE>attacks.
-Jade Stone;Halves damage<LINE>from wind-based<LINE>attacks.
-Silver Stone;Halves damage<LINE>from light-based<LINE>attacks.
-Darkness Stone;Halves damage<LINE>from dark-based<LINE>attacks.
-Blue Sea Stone;Halves damage<LINE>from water-based<LINE>attacks.
-Violet Stone;Halves damage<LINE>from thunder-based<LINE>attacks.
-Golden Stone;Halves damage<LINE>from earth-based<LINE>attacks.
-; 
-Ruby Ring;Gain 20 SP when<LINE>damaged magically.
-Sapphire Pin;Gain 10% MP when<LINE>damaged magically.
-Rainbow Earring;Avoids all<LINE>abnormal status<LINE>ailments.
-; 
-Emerald Earring;Gain 20 SP when<LINE>damaged physically.
-; 
-Platinum Collar;Gain 10% MP when<LINE>damaged physically.
-Phantom Shield;Halves damage<LINE>from all attacks.
-Dragon Shield;Halves physical<LINE>damage.
-Angel Scarf;Halves magical<LINE>damage.
-Bracelet; 
-Fake Power Wrist;Raises physical<LINE>attack by 5.
-Fake Shield;Raises physical<LINE>defense by 5.
-; 
-Wargod Calling;Automatic Addition:<LINE>Half Damage and SP.
-Ultimate Wargod;Automatic Addition:<LINE>Full Damage and SP.
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-Detonate Rock;Detonates and<LINE>attacks all.
-Spark Net;Thunder-based,<LINE>single-target<LINE>(multi).
-Burn Out;Fire-based,<LINE>single-target<LINE>(multi).
-; 
-Pellet;Earth-based,<LINE>single-target<LINE>(multi).
-Spear Frost;Water-based,<LINE>single-target<LINE>(multi).
-Spinning Gale;Wind-based,<LINE>single-target<LINE>(multi).
-Attack Ball;Generates a random<LINE>attack item.
-Trans Light;Light-based,<LINE>single-target<LINE>(multi).
-Dark Mist;Dark-based,<LINE>single-target<LINE>(multi).
-Healing Potion;Recovers half of<LINE>maximum HP.
-Depetrifier;Dissolves<LINE>petrification.
-Mind Purifier;Dispels confusion,<LINE>bewitchment, fear,<LINE>and dispiriting.
-Body Purifier;Nullifies poison,<LINE>stunning, and<LINE>arm blocking.
-Thunderbolt;Thunder-based,<LINE>targets all<LINE>(multi).
-Meteor Fall;Earth-based,<LINE>targets all<LINE>(multi).
-Gushing Magma;Fire-based,<LINE>targets all<LINE>(multi).
-Dancing Ray;Light-based,<LINE>targets all<LINE>(multi).
-Spirit Potion;Recovers 100 pts.<LINE>of SP.
-Panic Bell;Confuses minor<LINE>enemies.
-; 
-Fatal Blizzard;Water-based,<LINE>targets all<LINE>(multi).
-Stunning Hammer;Stuns minor<LINE>enemies.
-Black Rain;Dark-based,<LINE>targets all<LINE>(multi).
-Poison Needle;Poisons minor<LINE>enemies.
-Midnight Terror;Frightens minor<LINE>enemies.
-; 
-Rave Twister;Wind-based<LINE>targets all<LINE>(multi).
-Total Vanishing;Destroys<LINE>minor enemies.
-Angel's Prayer;Revives and<LINE>recovers half<LINE>of maximum HP.
-Charm Potion;Reduces encounter<LINE>risk.
-Pandemonium;Minor enemies only<LINE>attack target for<LINE>3 turns (repeat).
-Recovery Ball;Generates a random<LINE>recovery item.
-; 
-Magic Shield;Nullifies magical<LINE>attacks for 3 turns<LINE>(repeat).
-Material Shield;Nullifies physical<LINE>attacks for 3 turns<LINE>(repeat).
-Sun Rhapsody;Completely<LINE>recovers MP.
-Smoke Ball;Guaranteed escape<LINE>from minor enemies<LINE>(repeat).
-Healing Fog;Completely<LINE>recovers HP.
-Magic Sig Stone;Blocks enemy's<LINE>move for 3 turns<LINE>(repeat).
-Healing Rain;Completely<LINE>recovers HP<LINE>for all.
-Moon Serenade;Completely<LINE>recovers MP<LINE>for all.
-Power Up;Increases strength<LINE>for 3 turns<LINE>(repeat).
-Power Down;Weakens enemy<LINE>for 3 turns<LINE>(repeat).
-Speed Up;Doubles speed<LINE>for 3 turns<LINE>(repeat).
-Speed Down;Halves speed<LINE>for 3 turns<LINE>(repeat).
-; 
-Sachet;Gives off a<LINE>subtle, pleasant<LINE>aroma.
-Psyche Bomb;Non-elemental-<LINE>based, targets all<LINE>(multi).
-Burning Wave;Powerful fire-<LINE>based attack,<LINE>targets all.
-Frozen Jet;Powerful water-<LINE>based attack,<LINE>targets all.
-Down Burst;Powerful wind-<LINE>based attack,<LINE>targets all.
-Gravity Grabber;Powerful earth-<LINE>based attack,<LINE>targets all.
-Spectral Flash;Powerful light-<LINE>based attack,<LINE>targets all.
-Night Raid;Powerful dark-<LINE>based attack,<LINE>targets all.
-Flash Hall;Powerful thunder-<LINE>based attack,<LINE>targets all.
-Healing Breeze;Recovers half of<LINE>maximum HP for all.
-Psyche Bomb X;Non-elemental-<LINE>based, targets all<LINE>(multi)(repeat).
-; 
-; 
-; 
-; 
-None;
+Item Name;Icon;Description
+Broad Sword;Sword; 
+Bastard Sword;Sword; 
+Heat Blade;Sword;Fire-based attack.
+Falchion;Sword; 
+Mind Crush;Sword;20% chance of<LINE>confusing enemy.
+Fairy Sword;Sword;Attacks generate<LINE>50% more SP.
+Claymore;Sword; 
+Soul Eater;Sword;Powerful, but<LINE>HP decays<LINE>each turn.
+Axe;Axe; 
+Tomahawk;Axe; 
+Battle Axe;Axe; 
+Great Axe;Axe;20% chance of<LINE>stunning enemy.
+Indora's Axe;Axe;10% chance to<LINE>instantly kill<LINE>enemy.
+Rapier;Sword; 
+Shadow Cutter;Sword;Dark-based attack.
+Dancing Dagger;Sword; 
+Flamberge;Sword;10% chance of<LINE>stunning enemy.
+Gladius;Sword;10% chance to<LINE>instantly kill<LINE>enemy.
+Dragon Buster;Sword; 
+Demon Stilleto;Sword;20% chance of<LINE>frightening enemy.
+Spear;Spear; 
+Lance;Spear; 
+Glaive;Spear; 
+Spear of Terror;Spear;20% chance of<LINE>frightening enemy.
+Partisan;Spear; 
+Halberd;Spear; 
+Twister Glaive;Spear;Wind-based attack.
+Short Bow;Bow; 
+Sparkle Arrow;Bow;Light-based attack.
+Long Bow;Bow; 
+Bemusing Arrow;Bow;20% chance of<LINE>confusing enemy.
+Virulent Arrow;Bow;20% chance of<LINE>poisoning enemy.
+Detonate Arrow;Bow;Hits all enemies.
+Arrow of Force;Bow;Attacks generate<LINE>50% more SP.
+Mace;Mace; 
+Morning Star;Hammer; 
+War Hammer;Hammer; 
+Heavy Mace;Hammer;20% chance of<LINE>stunning enemy.
+Basher;Hammer; 
+Pretty Hammer;Hammer;Weak, but<LINE>generates twice<LINE>as much SP.
+Iron Knuckle;Knuckle; 
+Beast Fang;Knuckle;20% chance of<LINE>stunning enemy.
+Diamond Claw;Knuckle; 
+Thunder Fist;Knuckle;Thunder-based<LINE>attack.
+Destroyer Mace;Knuckle;Power increases<LINE>inversely to HP.
+Brass Knuckle;Knuckle;10% chance to<LINE>instantly kill<LINE>enemy.
+Leather Armor;Clothes; 
+Scale Armor;Armor; 
+Chain Mail;Armor; 
+Plate Mail;Armor; 
+Saint Armor;Armor;Gain 20 SP when<LINE>attacked<LINE>physically.
+Red DG Armor;Armor;Nullifies damage<LINE>from fire-based<LINE>attacks.
+Jade DG Armor;Armor;Nullifies damage<LINE>from wind-based<LINE>attacks.
+Lion Fur;Loincloth; 
+Breast Plate;Breastplate; 
+Giganto Armor;Armor;Gain 20 SP when<LINE>attacked<LINE>physically.
+Gold DG Armor;Armor;Nullifies damage<LINE>from earth-based<LINE>attacks.
+Disciple Vest;Warrior Dress; 
+Warrior Dress;Warrior Dress; 
+Master's Vest;Warrior Dress;Gain 20 SP when<LINE>attacked<LINE>physically.
+Energy Girdle;Warrior Dress;Attacks generate<LINE>50% more SP.
+Violet DG Armor;Warrior Dress;Nullifies damage<LINE>from thunder-based<LINE>attacks.
+Clothes;Robe; 
+Leather Jacket;Robe; 
+Silver Vest;Robe; 
+Sparkle Dress;Robe;Gain 20 SP when<LINE>attacked<LINE>physically.
+Robe;Robe;Gain 20 SP when<LINE>magically attacked.
+Silver DG Armor;Armor;Nullifies damage<LINE>from light-based<LINE>attacks.
+Dark DG Armor;Armor;Nullifies damage<LINE>attacks.
+Blue DG Armor;Armor;Nullifies damage<LINE>based attack.
+Armor of Yore;Armor;Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.
+Satori Vest;Warrior Dress;Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.
+Rainbow Dress;Robe;Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.
+Angel Robe;Robe;40% chance of<LINE>reviving from<LINE>death.
+Armor of Legend;Armor;Greatly reduces<LINE>damage from<LINE>physical attacks.
+;; 
+Bandana;Bandana; 
+Sallet;Helm;Increases hit<LINE>chance of physical<LINE>attacks by 10%.
+Armlet;Helm; 
+Knight Helm;Helm;Gain 20 SP when<LINE>magically attacked.
+Giganto Helm;Helm;Gain 20 SP when<LINE>magically attacked.
+Soul Headband;Bandana;Gain 20 SP when<LINE>magically attacked.
+Felt Hat;Hat; 
+Cape;Hat; 
+Tiara;Crown;Increases hit<LINE>chance of magical<LINE>attacks by 10%.
+Jeweled Crown;Crown;Gain 20 SP when<LINE>magically attacked.
+Rose's Hair Band;Bandana;Grants immunity<LINE>to instant death.
+;; 
+Phoenix Plume;Helm;Avoids bewitchment,<LINE>confusion, fear,<LINE>and dispiriting.
+Legend Casque;Helm;Greatly reduces<LINE>damage from<LINE>magical attacks.
+Dragon Helm;Helm;Raises maximum<LINE>HP 50%.
+Magical Hat;Hat;Raises maximum<LINE>MP 50%.
+;; 
+Leather Boots;Boots; 
+Iron Kneepiece;Kneepiece; 
+Combat Shoes;Shoes;Increases escape<LINE>chance from physical<LINE>attacks by 5%.
+Leather Shoes;Shoes; 
+Soft Boots;Boots; 
+Stardust Boots;Boots;Increases escape<LINE>chance from magical<LINE>attacks by 5%.
+Magical Greaves;Boots;Increases escape<LINE>chance from phys./<LINE>mag. attacks by 5%.
+Dancer's Boots;Boots;Raises speed<LINE>by 20.
+Bandit's Shoes;Shoes;Raises speed<LINE>by 20.
+;; 
+Poison Guard;Ring;Grants immunity<LINE>to poison.
+Active Ring;Ring;Grants immunity<LINE>to dispiriting.
+Protector;Ring;Grants immunity<LINE>to arm blocking.
+Panic Guard;Ring;Grants immunity<LINE>to confusion.
+Stun Guard;Ring;Grants immunity<LINE>to being stunned.
+Bravery Amulet;Ring;Grants immunity<LINE>to fear.
+Magic Ego Bell;Bell;Grants immunity<LINE>to bewitchment.
+Destone Amulet;Amulet;Grants immunity<LINE>to petrification.
+Power Wrist;Ring;Raises physical<LINE>attack by 10.
+Knight Shield;Ring;Raises physical<LINE>defense by 10.
+Magical Ring;Ring;Raises magical<LINE>attack by 30.
+Spiritual Ring;Ring;Raises magical<LINE>defense by 30.
+Attack Badge;Ring;Raises physical<LINE>& magical<LINE>attack by 20.
+Guard Badge;Ring;Raises physical<LINE>& magical<LINE>defense by 20.
+Giganto Ring;Ring;Raises physical<LINE>attack & defense<LINE>by 20.
+Elude Cloak;Cloak;Increases escape<LINE>chance from phys.<LINE>attacks by 20%.
+Spirit Cloak;Cloak;Increases escape<LINE>chance from magical<LINE>attacks by 20%.
+Sage's Cloak;Cloak;Increases escape<LINE>chance from phys./<LINE>mag. attacks by 20%
+Physical Ring;Ring;Raises maximum<LINE>HP 50%.
+Amulet;Amulet;Doubles<LINE>maximum MP.
+Wargod's Sash;Ring;Attacks generate<LINE>50% more SP.
+Spirit Ring;Ring;Recovers 20 SP<LINE>each turn.
+Therapy Ring;Ring;Recovers 10% HP<LINE>each turn.
+Mage Ring;Ring;Recovers 10% MP<LINE>each turn.
+Wargod's Amulet;Amulet;Increases hit rate<LINE>for mag./phys.<LINE>attacks by 20%.
+Talisman;Amulet;Grants immunity<LINE>to instant death.
+;; 
+Holy Ankh;Ring;40% chance of<LINE>reviving from<LINE>death.
+Dancer's Ring;Ring;Raises speed<LINE>by 20.
+;; 
+Bandit's Ring;Ring;Raises speed<LINE>by 20.
+Red-Eye Stone;Stone;Halves damage<LINE>from fire-based<LINE>attacks.
+Jade Stone;Stone;Halves damage<LINE>from wind-based<LINE>attacks.
+Silver Stone;Stone;Halves damage<LINE>from light-based<LINE>attacks.
+Darkness Stone;Stone;Halves damage<LINE>from dark-based<LINE>attacks.
+Blue Sea Stone;Stone;Halves damage<LINE>from water-based<LINE>attacks.
+Violet Stone;Stone;Halves damage<LINE>from thunder-based<LINE>attacks.
+Golden Stone;Stone;Halves damage<LINE>from earth-based<LINE>attacks.
+;; 
+Ruby Ring;Ring;Gain 20 SP when<LINE>damaged magically.
+Sapphire Pin;Pin;Gain 10% MP when<LINE>damaged magically.
+Rainbow Earring;Ring;Avoids all<LINE>abnormal status<LINE>ailments.
+;; 
+Emerald Earring;Ring;Gain 20 SP when<LINE>damaged physically.
+;; 
+Platinum Collar;Ring;Gain 10% MP when<LINE>damaged physically.
+Phantom Shield;Ring;Halves damage<LINE>from all attacks.
+Dragon Shield;Ring;Halves physical<LINE>damage.
+Angel Scarf;Scarf;Halves magical<LINE>damage.
+Bracelet;Bracelet; 
+Fake Power Wrist;Ring;Raises physical<LINE>attack by 5.
+Fake Shield;Ring;Raises physical<LINE>defense by 5.
+;; 
+Wargod Calling;Ring;Automatic Addition:<LINE>Half Damage and SP.
+Ultimate Wargod;Ring;Automatic Addition:<LINE>Full Damage and SP.
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+;; 
+Detonate Rock;;Detonates and<LINE>attacks all.
+Spark Net;;Thunder-based,<LINE>single-target<LINE>(multi).
+Burn Out;;Fire-based,<LINE>single-target<LINE>(multi).
+;; 
+Pellet;;Earth-based,<LINE>single-target<LINE>(multi).
+Spear Frost;;Water-based,<LINE>single-target<LINE>(multi).
+Spinning Gale;;Wind-based,<LINE>single-target<LINE>(multi).
+Attack Ball;;Generates a random<LINE>attack item.
+Trans Light;;Light-based,<LINE>single-target<LINE>(multi).
+Dark Mist;;Dark-based,<LINE>single-target<LINE>(multi).
+Healing Potion;;Recovers half of<LINE>maximum HP.
+Depetrifier;;Dissolves<LINE>petrification.
+Mind Purifier;;Dispels confusion,<LINE>bewitchment, fear,<LINE>and dispiriting.
+Body Purifier;;Nullifies poison,<LINE>stunning, and<LINE>arm blocking.
+Thunderbolt;;Thunder-based,<LINE>targets all<LINE>(multi).
+Meteor Fall;;Earth-based,<LINE>targets all<LINE>(multi).
+Gushing Magma;;Fire-based,<LINE>targets all<LINE>(multi).
+Dancing Ray;;Light-based,<LINE>targets all<LINE>(multi).
+Spirit Potion;;Recovers 100 pts.<LINE>of SP.
+Panic Bell;;Confuses minor<LINE>enemies.
+;; 
+Fatal Blizzard;;Water-based,<LINE>targets all<LINE>(multi).
+Stunning Hammer;;Stuns minor<LINE>enemies.
+Black Rain;;Dark-based,<LINE>targets all<LINE>(multi).
+Poison Needle;;Poisons minor<LINE>enemies.
+Midnight Terror;;Frightens minor<LINE>enemies.
+;; 
+Rave Twister;;Wind-based<LINE>targets all<LINE>(multi).
+Total Vanishing;;Destroys<LINE>minor enemies.
+Angel's Prayer;;Revives and<LINE>recovers half<LINE>of maximum HP.
+Charm Potion;;Reduces encounter<LINE>risk.
+Pandemonium;;Minor enemies only<LINE>attack target for<LINE>3 turns (repeat).
+Recovery Ball;;Generates a random<LINE>recovery item.
+;; 
+Magic Shield;;Nullifies magical<LINE>attacks for 3 turns<LINE>(repeat).
+Material Shield;;Nullifies physical<LINE>attacks for 3 turns<LINE>(repeat).
+Sun Rhapsody;;Completely<LINE>recovers MP.
+Smoke Ball;;Guaranteed escape<LINE>from minor enemies<LINE>(repeat).
+Healing Fog;;Completely<LINE>recovers HP.
+Magic Sig Stone;;Blocks enemy's<LINE>move for 3 turns<LINE>(repeat).
+Healing Rain;;Completely<LINE>recovers HP<LINE>for all.
+Moon Serenade;;Completely<LINE>recovers MP<LINE>for all.
+Power Up;;Increases strength<LINE>for 3 turns<LINE>(repeat).
+Power Down;;Weakens enemy<LINE>for 3 turns<LINE>(repeat).
+Speed Up;;Doubles speed<LINE>for 3 turns<LINE>(repeat).
+Speed Down;;Halves speed<LINE>for 3 turns<LINE>(repeat).
+;; 
+Sachet;;Gives off a<LINE>subtle, pleasant<LINE>aroma.
+Psyche Bomb;;Non-elemental-<LINE>based, targets all<LINE>(multi).
+Burning Wave;;Powerful fire-<LINE>based attack,<LINE>targets all.
+Frozen Jet;;Powerful water-<LINE>based attack,<LINE>targets all.
+Down Burst;;Powerful wind-<LINE>based attack,<LINE>targets all.
+Gravity Grabber;;Powerful earth-<LINE>based attack,<LINE>targets all.
+Spectral Flash;;Powerful light-<LINE>based attack,<LINE>targets all.
+Night Raid;;Powerful dark-<LINE>based attack,<LINE>targets all.
+Flash Hall;;Powerful thunder-<LINE>based attack,<LINE>targets all.
+Healing Breeze;;Recovers half of<LINE>maximum HP for all.
+Psyche Bomb X;;Non-elemental-<LINE>based, targets all<LINE>(multi)(repeat).
+;; 
+;; 
+;; 
+;; 
+None;;
