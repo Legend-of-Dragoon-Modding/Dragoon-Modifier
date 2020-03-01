@@ -45,17 +45,13 @@ public class BattleController {
                 Globals.EXITING_BATTLE = 2;
                 Constants.WriteOutput("Exiting out of battle.");
                 if (Globals.ITEM_CHANGE == true) {
-                    emulator.WriteAOB(0x117E10, "00 00 FF A0");
-                    int start = -2146337264;
-                    int offset = 4;
-                    for (int i = 0; i < 255; i++) {
-                        if (Globals.Itemz[i] == "") {
-                            emulator.WriteInteger(0x11972C + i * 4, start);
-                        } else {
-                            emulator.WriteInteger(0x11972C + i * 4, start + offset);
-                            emulator.WriteAOB(0x117E10 + offset, TextEncode(Globals.Itemz[i], emulator));
-                            offset += (Globals.Itemz[i].Length + 2) * 2;
-                        }
+                    emulator.WriteAOB(0xB6BF14 - 0xA579A0, String.Join(" ", Globals.DICTIONARY.DescriptionList));
+                    emulator.WriteAOB(0x117E10, String.Join(" ", Globals.DICTIONARY.NameList));
+                    int i = 0;
+                    foreach (dynamic item in Globals.DICTIONARY.ItemList) {
+                        emulator.WriteInteger(0xB6F3B0 - 0xA579A0 + i * 4, item.DescriptionPointer);
+                        emulator.WriteInteger(0x11972C + i * 4, item.NamePointer);
+                        i++;
                     }
                 }
             }

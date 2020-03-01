@@ -30,7 +30,6 @@ namespace Dragoon_Modifier {
         public static List<dynamic> MONSTER_TABLE = new List<dynamic>();
         public static List<dynamic> CHARACTER_TABLE = new List<dynamic>();
         public static List<dynamic> DRAGOON_SPELLS = new List<dynamic>();
-        public static List<string> Itemz = new List<string>();
         public static dynamic DICTIONARY = new System.Dynamic.ExpandoObject();
         public static bool MONSTER_CHANGE = false;
         public static bool ULTIMATE = false;

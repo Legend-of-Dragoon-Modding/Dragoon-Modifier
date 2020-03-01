@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Collections;
 using System.Windows.Controls;
+using System.Text.RegularExpressions;
 
 namespace Dragoon_Modifier {
     public partial class MainWindow {
@@ -565,6 +566,9 @@ namespace Dragoon_Modifier {
 
         #region LoDDict
         public class LoDDict {
+            List<dynamic> itemList = new List<dynamic>();
+            List<string> descriptionList = new List<string>();
+            List<string> nameList = new List<string>();
             IDictionary<int, dynamic> statList = new Dictionary<int, dynamic>();
             IDictionary<int, dynamic> ultimateStatList = new Dictionary<int, dynamic>();
             List<int[]>[] shopList = new List<int[]>[39];
@@ -584,17 +588,20 @@ namespace Dragoon_Modifier {
         {128, "Fire" }
     };
             IDictionary<string, int> element2num = new Dictionary<string, int>() {
-        {"none", 0 },
-        {"water", 1 },
-        {"earth", 2 },
-        {"dark", 4 },
-        {"non-elemental", 8 },
-        {"thunder", 16 },
-        {"light", 32 },
-        {"wind", 64 },
-        {"fire", 128 }
-    };
+                {"none", 0 },
+                {"water", 1 },
+                {"earth", 2 },
+                {"dark", 4 },
+                {"non-elemental", 8 },
+                {"thunder", 16 },
+                {"light", 32 },
+                {"wind", 64 },
+                {"fire", 128 }
+            };
 
+            public List<dynamic> ItemList { get { return itemList; } }
+            public List<string> DescriptionList { get { return descriptionList; } }
+            public List<string> NameList { get { return nameList; } }
             public IDictionary<int, dynamic> StatList { get { return statList; } }
             public IDictionary<int, dynamic> UltimateStatList { get { return ultimateStatList; } }
             public List<int[]>[] ShopList { get { return shopList; } }
@@ -607,11 +614,50 @@ namespace Dragoon_Modifier {
 
             public LoDDict() {
                 string cwd = AppDomain.CurrentDomain.BaseDirectory;
+                using (var itemData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Items.csv")) {
+                    bool firstline = true;
+                    int i = 0;
+                    while (!itemData.EndOfStream) {
+                        var line = itemData.ReadLine();
+                        if (firstline == false) {
+                            var values = line.Split(';').ToArray();
+                            itemList.Add(new ItemList(i, values));
+                            i++;
+                        } else {
+                            firstline = false;
+                        }
+                    }
+                }
+                int offset = 0;
+                int start = -2146351756;
+                List<dynamic> sortedList = itemList.OrderByDescending(o => o.Description.Length).ToList();
+                foreach (dynamic item in sortedList) {
+                    if (descriptionList.Any(l => l.Contains(item.EncodedDescription)) == true) {
+                        int index = sortedList.IndexOf(sortedList.Find(x => x.EncodedDescription.Contains(item.EncodedDescription)));
+                        item.DescriptionPointer = sortedList[index].DescriptionPointer + (sortedList[index].Description.Length - item.Description.Length) * 2;
+                    } else {
+                        descriptionList.Add(item.EncodedDescription);
+                        item.DescriptionPointer = start + offset;
+                        offset += (item.EncodedDescription.Replace(" ","").Length / 2);
+                    }
+                }
+                offset = 0;
+                start = -2146337264;
+                sortedList = itemList.OrderByDescending(o => o.Name.Length).ToList();
+                foreach (dynamic item in sortedList) {
+                    if (nameList.Any(l => l.Contains(item.EncodedName)) == true) {
+                        int index = sortedList.IndexOf(sortedList.Find(x => x.EncodedName.Contains(item.EncodedName)));
+                        item.NamePointer = sortedList[index].NamePointer + (sortedList[index].Name.Length - item.Name.Length) * 2;
+                    } else {
+                        nameList.Add(item.EncodedName);
+                        item.NamePointer = start + offset;
+                        offset += (item.EncodedName.Replace(" ", "").Length / 2);
+                    }
+                }          
                 try {
                     string[] lines = File.ReadAllLines(cwd + "Mods/" + Globals.MOD + "/Item_List.txt");
                     var i = 0;
                     foreach (string row in lines) {
-                        Globals.Itemz.Add(row);
                         if (row != "") {
                             item2num.Add(row.ToLower(), i);
                             num2item.Add(i, row);
@@ -751,6 +797,36 @@ namespace Dragoon_Modifier {
             }
         }
 
+        public class ItemList {
+            int id = 0;
+            string name = "";
+            string description = "";
+            string encodedName = "00 00 FF A0";
+            string encodedDescription = "00 00 FF A0";
+            int descriptionPointer = 0;
+            int namePointer = 0;
+
+            public int ID { get { return id; } }
+            public string Name { get { return name; } }
+            public string Description { get { return description; } }
+            public string EncodedName { get { return encodedName; } }
+            public string EncodedDescription { get { return encodedDescription; } }
+            public int DescriptionPointer { get; set; }
+            public int NamePointer { get; set; }
+
+            public ItemList(int index, string[] values) {
+                id = index;
+                name = values[0];
+                if (name != "") {
+                    encodedName = StringEncode(values[0]);
+                }
+                description = values[1];
+                if (description != "") {
+                    encodedDescription = StringEncode(values[1]);
+                }
+            }
+        }
+
         public class StatList {
             string name = "Monster";
             int element = 128;
@@ -868,14 +944,14 @@ namespace Dragoon_Modifier {
             byte mp = 10;
             byte element = 128;
             IDictionary<string, bool> perc = new Dictionary<string, bool> {
-        { "yes", true},
-        { "no", false },
-        { "true", true },
-        { "false", false },
-        { "1", true },
-        { "0", false },
-        { "", false}
-    };
+                { "yes", true},
+                { "no", false },
+                { "true", true },
+                { "false", false },
+                { "1", true },
+                { "0", false },
+                { "", false}
+            };
 
             public bool Percentage { get { return percentage; } }
             public byte DMG_Base { get { return dmg_base; } }
@@ -926,6 +1002,119 @@ namespace Dragoon_Modifier {
                 mp = (byte)Convert.ToInt32(values[4]);
                 element = (byte)Element2Num[values[5].ToLower()];
             }
+        }
+
+        public static string StringEncode(string text) {
+            IDictionary<string, string> codeDict = new Dictionary<string, string>() {
+                {"<END>", "FF A0" },
+                {"<LINE>", "FF A1" },
+                {"<GOLD>", "00 A8" },
+                {"<WHITE>", "00 A7" },
+                {"<RED>", "05 A7" },
+                {"<YELLOW>", "08 A7" }
+            };
+            IDictionary<char, string> symbolDict = new Dictionary<char, string>() {
+                {' ', "00 00" },
+                {',', "01 00" },
+                {'.', "02 00" },
+                {'·', "03 00" },
+                {':', "04 00" },
+                {'?', "05 00" },
+                {'!', "06 00" },
+                {'_', "07 00" },
+                {'/', "08 00" },
+                {'\'', "09 00" },
+                {'"', "0A 00" },
+                {'(', "0B 00" },
+                {')', "0C 00" },
+                {'-', "0D 00" },
+                {'`', "0E 00" },
+                {'%', "0F 00" },
+                {'&', "10 00" },
+                {'*', "11 00" },
+                {'@', "12 00" },
+                {'+', "13 00" },
+                {'~', "14 00" },
+                {'0', "15 00" },
+                {'1', "16 00" },
+                {'2', "17 00" },
+                {'3', "18 00" },
+                {'4', "19 00" },
+                {'5', "1A 00" },
+                {'6', "1B 00" },
+                {'7', "1C 00" },
+                {'8', "1D 00" },
+                {'9', "1E 00" },
+                {'A', "1F 00" },
+                {'B', "20 00" },
+                {'C', "21 00" },
+                {'D', "22 00" },
+                {'E', "23 00" },
+                {'F', "24 00" },
+                {'G', "25 00" },
+                {'H', "26 00" },
+                {'I', "27 00" },
+                {'J', "28 00" },
+                {'K', "29 00" },
+                {'L', "2A 00" },
+                {'M', "2B 00" },
+                {'N', "2C 00" },
+                {'O', "2D 00" },
+                {'P', "2E 00" },
+                {'Q', "2F 00" },
+                {'R', "30 00" },
+                {'S', "31 00" },
+                {'T', "32 00" },
+                {'U', "33 00" },
+                {'V', "34 00" },
+                {'W', "35 00" },
+                {'X', "36 00" },
+                {'Y', "37 00" },
+                {'Z', "38 00" },
+                {'a', "39 00" },
+                {'b', "3A 00" },
+                {'c', "3B 00" },
+                {'d', "3C 00" },
+                {'e', "3D 00" },
+                {'f', "3E 00" },
+                {'g', "3F 00" },
+                {'h', "40 00" },
+                {'i', "41 00" },
+                {'j', "42 00" },
+                {'k', "43 00" },
+                {'l', "44 00" },
+                {'m', "45 00" },
+                {'n', "46 00" },
+                {'o', "47 00" },
+                {'p', "48 00" },
+                {'q', "49 00" },
+                {'r', "4A 00" },
+                {'s', "4B 00" },
+                {'t', "4C 00" },
+                {'u', "4D 00" },
+                {'v', "4E 00" },
+                {'w', "4F 00" },
+                {'x', "50 00" },
+                {'y', "51 00" },
+                {'z', "52 00" },
+                {'[', "53 00" },
+                {']', "54 00" },
+                {'\n', "FF A0" }
+            };
+            List<string> encoded = new List<string>();
+            string[] parts = Regex.Split(text, @"(<[\s\S]+?>)").Where(l => l != string.Empty).ToArray();
+            foreach (string segment in parts) {
+                if (segment.StartsWith("<")) {
+                    encoded.Add(codeDict[segment]);
+                } else {
+                    List<string> temp = new List<string>();
+                    foreach (char letter in segment.ToCharArray()) {
+                        temp.Add(symbolDict[letter]);
+                    }
+                    encoded.Add(String.Join(" ", temp.ToArray()));
+                }
+            }
+            return String.Join(" ", encoded.ToArray()) + " FF A0";
         }
         #endregion
 
