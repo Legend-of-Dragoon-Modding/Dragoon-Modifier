@@ -613,56 +613,51 @@ namespace Dragoon_Modifier {
             public IDictionary<int, Dictionary<int, dynamic>> DragoonStats { get { return dragoonStats; } }
 
             public LoDDict() {
-                string cwd = AppDomain.CurrentDomain.BaseDirectory;
-                using (var itemData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Items.csv")) {
-                    bool firstline = true;
-                    int i = 0;
-                    while (!itemData.EndOfStream) {
-                        var line = itemData.ReadLine();
-                        if (firstline == false) {
-                            var values = line.Split(';').ToArray();
-                            itemList.Add(new ItemList(i, values));
-                            i++;
-                        } else {
-                            firstline = false;
-                        }
-                    }
-                }
-                int offset = 0;
-                int start = -2146351756;
-                List<dynamic> sortedList = itemList.OrderByDescending(o => o.Description.Length).ToList();
-                foreach (dynamic item in sortedList) {
-                    if (descriptionList.Any(l => l.Contains(item.EncodedDescription)) == true) {
-                        int index = sortedList.IndexOf(sortedList.Find(x => x.EncodedDescription.Contains(item.EncodedDescription)));
-                        item.DescriptionPointer = sortedList[index].DescriptionPointer + (sortedList[index].Description.Length - item.Description.Length) * 2;
-                    } else {
-                        descriptionList.Add(item.EncodedDescription);
-                        item.DescriptionPointer = start + offset;
-                        offset += (item.EncodedDescription.Replace(" ","").Length / 2);
-                    }
-                }
-                offset = 0;
-                start = -2146337264;
-                sortedList = itemList.OrderByDescending(o => o.Name.Length).ToList();
-                foreach (dynamic item in sortedList) {
-                    if (nameList.Any(l => l.Contains(item.EncodedName)) == true) {
-                        int index = sortedList.IndexOf(sortedList.Find(x => x.EncodedName.Contains(item.EncodedName)));
-                        item.NamePointer = sortedList[index].NamePointer + (sortedList[index].Name.Length - item.Name.Length) * 2;
-                    } else {
-                        nameList.Add(item.EncodedName);
-                        item.NamePointer = start + offset;
-                        offset += (item.EncodedName.Replace(" ", "").Length / 2);
-                    }
-                }          
+                string cwd = AppDomain.CurrentDomain.BaseDirectory;       
                 try {
-                    string[] lines = File.ReadAllLines(cwd + "Mods/" + Globals.MOD + "/Item_List.txt");
-                    var i = 0;
-                    foreach (string row in lines) {
-                        if (row != "") {
-                            item2num.Add(row.ToLower(), i);
-                            num2item.Add(i, row);
+                    using (var itemData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Items.csv")) {
+                        bool firstline = true;
+                        int i = 0;
+                        while (!itemData.EndOfStream) {
+                            var line = itemData.ReadLine();
+                            if (firstline == false) {
+                                var values = line.Split(';').ToArray();
+                                itemList.Add(new ItemList(i, values));
+                                if (values[0] != "") {
+                                    item2num.Add(values[0].ToLower(), i);
+                                    num2item.Add(i, values[0]);
+                                }
+                                i++;
+                            } else {
+                                firstline = false;
+                            }
                         }
-                        i++;
+                    }
+                    int offset = 0;
+                    int start = -2146351756;
+                    List<dynamic> sortedList = itemList.OrderByDescending(o => o.Description.Length).ToList();
+                    foreach (dynamic item in sortedList) {
+                        if (descriptionList.Any(l => l.Contains(item.EncodedDescription)) == true) {
+                            int index = sortedList.IndexOf(sortedList.Find(x => x.EncodedDescription.Contains(item.EncodedDescription)));
+                            item.DescriptionPointer = sortedList[index].DescriptionPointer + (sortedList[index].Description.Length - item.Description.Length) * 2;
+                        } else {
+                            descriptionList.Add(item.EncodedDescription);
+                            item.DescriptionPointer = start + offset;
+                            offset += (item.EncodedDescription.Replace(" ", "").Length / 2);
+                        }
+                    }
+                    offset = 0;
+                    start = -2146337264;
+                    sortedList = itemList.OrderByDescending(o => o.Name.Length).ToList();
+                    foreach (dynamic item in sortedList) {
+                        if (nameList.Any(l => l.Contains(item.EncodedName)) == true) {
+                            int index = sortedList.IndexOf(sortedList.Find(x => x.EncodedName.Contains(item.EncodedName)));
+                            item.NamePointer = sortedList[index].NamePointer + (sortedList[index].Name.Length - item.Name.Length) * 2;
+                        } else {
+                            nameList.Add(item.EncodedName);
+                            item.NamePointer = start + offset;
+                            offset += (item.EncodedName.Replace(" ", "").Length / 2);
+                        }
                     }
                     try {
                         using (var monsterData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Monster_Data.csv")) {
@@ -670,7 +665,7 @@ namespace Dragoon_Modifier {
                             while (!monsterData.EndOfStream) {
                                 var line = monsterData.ReadLine();
                                 if (firstline == false) {
-                                    var values = line.Split(',').ToArray();
+                                    var values = line.Split(';').ToArray();
                                     statList.Add(Int32.Parse(values[0]), new StatList(values, element2num, item2num));
                                 } else {
                                     firstline = false;
@@ -701,7 +696,7 @@ namespace Dragoon_Modifier {
                         Constants.WriteDebug(file + " not found.");
                     }
                 } catch (FileNotFoundException) {
-                    string file = cwd + @"Mods\" + Globals.MOD + @"\Item_List.txt";
+                    string file = cwd + @"Mods\" + Globals.MOD + @"\Items.csv";
                     Constants.WriteDebug(file + " not found. Turning off Monster and Drop Changes.");
                     Globals.MONSTER_CHANGE = false;
                     Globals.DROP_CHANGE = false;
@@ -806,6 +801,8 @@ namespace Dragoon_Modifier {
             int descriptionPointer = 0;
             int namePointer = 0;
             byte icon = 0;
+            byte equips = 0;
+            byte type = 0;
             Dictionary<string, byte> iconDict = new Dictionary<string, byte>() {
                 { "sword", 0 },
                 { "axe", 1 },
@@ -841,6 +838,34 @@ namespace Dragoon_Modifier {
                 { "cloak", 30 },
                 { "scarf", 30 },
                 { "horn", 32 },
+                {"none", 64 },
+                {"", 64 }
+            };
+            Dictionary<string, byte> charDict = new Dictionary<string, byte>() {
+                {"meru", 1 },
+                {"shana", 2 },
+                {"miranda", 2 },
+                {"???", 2 },
+                {"rose", 4 },
+                {"haschel", 16 },
+                {"kongol", 32 },
+                {"lavitz", 64 },
+                {"albert", 64 },
+                {"dart", 128 },
+                {"female", 7 },
+                {"male", 240 },
+                {"all", 247 },
+                {"none", 0 },
+                {"", 0 }
+            };
+            Dictionary<string, byte> typeDict = new Dictionary<string, byte>() {
+                {"weapon", 128 },
+                {"armor", 32 },
+                {"helm", 64 },
+                {"boots", 16 },
+                {"accessory", 8 },
+                {"none", 0},
+                {"", 0 }
             };
 
             public int ID { get { return id; } }
@@ -851,21 +876,38 @@ namespace Dragoon_Modifier {
             public int DescriptionPointer { get; set; }
             public int NamePointer { get; set; }
             public byte Icon { get { return icon; } }
+            public byte Equips { get { return equips; } }
+            public byte Type { get { return type; } }
 
             public ItemList(int index, string[] values) {
                 byte key = 0;
                 id = index;
                 name = values[0];
                 if (name != "") {
-                    encodedName = StringEncode(values[0]);
+                    encodedName = StringEncode(name);
                 }
-                description = values[2];
-                if (description != "") {
-                    encodedDescription = StringEncode(values[2]);
+                if (typeDict.TryGetValue(values[1].ToLower(), out key)) {
+                    type = key;
+                } else {
+                    Constants.WriteDebug(values[1] + " not found as equipment type for item: " + name);
                 }
-                if (iconDict.TryGetValue(values[1].ToLower(), out key)) {
+                foreach (string substring in values[2].Replace(" ", "").Split(',')) {
+                    if (charDict.TryGetValue(substring.ToLower(), out key)) {
+                        equips |= key;
+                    } else {
+                        Constants.WriteDebug(substring + " not found as character for item: " + name);
+                    }
+                }
+                if (iconDict.TryGetValue(values[3].ToLower(), out key)) {
                     icon = key;
+                } else {
+                    Constants.WriteDebug(values[3] + " not found as icon for item: " + name);
                 }
+                description = values[4];
+                if (description != "") {
+                    encodedDescription = StringEncode(description);
+                }
+                
             }
         }
 
@@ -936,15 +978,19 @@ namespace Dragoon_Modifier {
                 m_immune = Int32.Parse(monster[12]);
                 p_half = Int32.Parse(monster[13]);
                 m_half = Int32.Parse(monster[14]);
-                if (element2num.TryGetValue(monster[15].ToLower(), out key)) {
-                    e_immune = key;
-                } else {
-                    Constants.WriteDebug(monster[15] + " not found as e_immune for " + monster[1] + " (ID " + monster[0] + ")");
+                foreach (string substring in monster[15].Replace(" ", "").Split(',')) {
+                    if (element2num.TryGetValue(substring.ToLower(), out key)) {
+                        e_immune |= key;
+                    } else {
+                        Constants.WriteDebug(substring + " not found as e_immune for " + monster[1] + " (ID " + monster[0] + ")");
+                    }
                 }
-                if (element2num.TryGetValue(monster[16].ToLower(), out key)) {
-                    e_half = key;
-                } else {
-                    Constants.WriteDebug(monster[16] + " not found as e_half for " + monster[1] + " (ID " + monster[0] + ")");
+                foreach (string substring in monster[16].Replace(" ", "").Split(',')) {
+                    if (element2num.TryGetValue(substring.ToLower(), out key)) {
+                        e_half |= key;
+                    } else {
+                        Constants.WriteDebug(substring + " not found as e_half for " + monster[1] + " (ID " + monster[0] + ")");
+                    }
                 }
                 stat_res = Int32.Parse(monster[17]);
                 death_res = Int32.Parse(monster[18]);

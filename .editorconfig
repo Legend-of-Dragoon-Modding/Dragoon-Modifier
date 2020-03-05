@@ -1,0 +1,4 @@
+﻿[*.{cs,vb}]
+
+# IDE0054: Použít složené přiřazení
+dotnet_style_prefer_compound_assignment = true:suggestion

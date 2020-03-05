@@ -49,10 +49,22 @@ public class BattleController {
                     emulator.WriteAOB(0x117E10, String.Join(" ", Globals.DICTIONARY.NameList));
                     int i = 0;
                     foreach (dynamic item in Globals.DICTIONARY.ItemList) {
+                        if (i < 194) {
+                            emulator.WriteByteU((long)(0x111FF1 + i * 28) + Constants.OFFSET, item.Type);
+                            emulator.WriteByteU((long)(0x111FF1 + i * 28 + 2) + Constants.OFFSET, item.Equips);
+                            emulator.WriteByteU((long)(0x111FF1 + i * 28 + 13) + Constants.OFFSET, item.Icon);
+                        }
                         emulator.WriteInteger(0xB6F3B0 - 0xA579A0 + i * 4, item.DescriptionPointer);
                         emulator.WriteInteger(0x11972C + i * 4, item.NamePointer);
-                        emulator.WriteByteU((long)(0xB69991 - 0xA579A0 + i * 28 + 13) + Constants.OFFSET, item.Icon);
                         i++;
+                    }
+                }
+                if (Globals.DRAGOON_CHANGE == true) {
+                    for (int character; character < 8; character++) {
+                        for (int level; level < 5; level++) {
+                            // transfrom table, albert, kongol, dart, haschel, meru, miranda, lavitz, rose, shana
+                            // Dart 0xB6954C
+                        }
                     }
                 }
             }

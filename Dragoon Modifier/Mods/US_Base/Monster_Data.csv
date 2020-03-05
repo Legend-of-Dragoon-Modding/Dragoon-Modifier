@@ -1,230 +1,230 @@
-M_ID,M_name,Element,HP,AT,MAT,DF,MDF,Speed,A_AV,M_AV,P_Immune,M_Immune,P_Half,M_Half,E_Immune,E_Half,Status_Resist,Death_Resist,EXP,Gold,Drop,Drop_Chance,M_extra_name
-257,Knight of Sandora,Fire,4,2,2,40,50,40,0,0,0,0,0,0,None,None,255,0,2,3,Healing Potion,100,Knight of Sandora(Seles)
-256,Commander,Dark,14,2,4,40,40,40,0,0,0,0,0,0,None,None,255,128,20,20,Burn Out,100,Commander I
-21,Assassin Cock,Wind,3,2,2,100,120,45,0,0,0,0,0,0,None,None,99,0,5,6,Healing Potion,10,Assassin Cock
-38,Trent,Earth,5,2,2,160,40,30,0,0,0,0,0,0,None,None,99,0,4,9,Pellet,10,Trent
-8,Goblin,Fire,4,2,1,120,120,40,0,0,0,0,0,0,None,None,99,0,4,6,Detonate Rock,10,Goblin
-24,Berserk Mouse,Dark,2,1,1,80,120,45,0,0,0,0,0,0,None,None,107,0,3,3,Healing Potion,10,Berserk Mouse
-134,Hellena Warden,Fire,9,3,3,100,100,50,0,0,0,0,0,0,None,None,99,0,6,9,None,0,Hellena Warden I
-261,Fruegel,Earth,90,5,3,100,80,50,0,0,0,0,0,0,None,None,255,144,300,50,Knight Shield,100,Fruegel I
-259,Hellena Warden,Fire,12,3,3,100,100,50,0,0,0,0,0,0,None,None,255,0,0,0,Healing Potion,100,Hellena Warden(F)
-260,Senior Warden,Fire,20,4,8,100,100,50,0,0,0,0,0,0,None,None,255,128,0,0,Healing Potion,100,Senior Warden(F)
-27,Vampire Kiwi,Dark,13,4,6,80,120,70,0,0,0,0,0,0,None,None,99,0,8,9,Healing Potion,8,Vampire Kiwi
-45,Mole,Earth,16,6,5,160,80,50,0,0,0,0,0,0,None,None,99,16,11,9,Angel's Prayer,8,Mole
-59,Crescent Bee,Wind,9,5,5,100,100,60,20,0,0,0,0,0,None,None,99,0,10,6,Spinning Gale,8,Crescent Bee
-0,Mantis,Earth,20,7,5,150,75,50,0,0,0,0,0,0,None,None,99,0,12,6,Pellet,8,Mantis
-46,Screaming Bat,Dark,12,5,9,80,120,70,20,0,0,0,0,0,None,None,99,0,8,6,Healing Potion,8,Screaming Bat
-104,Slime,Earth,20,6,5,80,60,50,0,0,0,0,0,0,None,None,99,0,11,6,Body Purifier,10,Slime I
-148,Slime,Earth,20,6,5,80,60,50,0,0,0,0,0,0,None,None,99,0,11,6,Body Purifier,10,Slime II
-64,Ugly Balloon,Wind,35,6,6,70,200,60,0,0,0,0,0,0,None,None,99,0,10,9,Poison Guard,2,Ugly Balloon
-94,Orc,Dark,24,7,5,120,40,60,0,0,0,0,0,0,None,None,99,0,10,6,Dark Mist,10,Orc
-13,Evil Spider,Earth,30,8,6,80,60,60,0,0,0,0,0,0,None,None,99,0,12,12,Angel's Prayer,8,Evil Spider
-332,Urobolus,Earth,280,8,8,80,60,50,0,0,0,0,0,0,None,None,255,144,400,50,Wargod's Amulet,100,Urobolus
-130,Sandora Soldier,Fire,40,8,8,100,100,50,0,0,0,0,0,0,None,None,99,0,25,30,Healing Potion,50,Sandora Soldier(Hoax)
-258,Sandora Elite,Dark,280,10,11,80,120,60,0,0,0,0,0,0,None,None,255,128,200,50,Healing Breeze,100,Sandora Elite I
-273,Sandora Elite,Dark,280,10,11,80,120,60,0,0,0,0,0,0,None,None,255,128,0,0,None,0,Sandora Elite I(Clone)
-265,Kongol,Earth,256,10,10,100,50,60,0,0,0,0,0,0,None,None,255,144,300,50,Power Wrist,100,Kongol I
-4,Sea Dragon,Fire,33,8,11,80,120,70,20,0,0,0,0,0,None,None,99,0,14,9,Burn Out,10,Sea Dragon
-68,Crocodile,Water,32,10,9,160,50,50,0,0,0,0,0,0,None,None,99,0,17,6,Pellet,10,Crocodile
-28,Myconido,Earth,30,6,13,80,180,80,20,0,0,0,0,0,None,None,277,0,11,8,Body Purifier,10,Myconido
-22,Merman,Water,45,9,11,100,80,60,0,0,0,0,0,0,None,None,107,0,15,12,Spear,20,Merman
-131,Sandora Soldier,Fire,51,9,9,100,100,60,0,0,0,0,0,0,None,None,99,0,14,9,Healing Potion,8,Sandora Soldier(F)
-132,Sandora Soldier,Water,64,8,11,80,120,70,0,0,0,0,0,0,None,None,99,0,11,12,Sun Rhapsody,10,Sandora Soldier(W)
-135,Commander,Dark,128,11,9,120,80,70,0,0,0,0,0,0,None,None,99,128,17,9,Attack Ball,100,Commander II
-74,Magma Fish,Fire,25,9,11,80,120,80,20,0,0,0,0,0,None,None,99,0,10,6,Healing Potion,10,Magma Fish I
-157,Magma Fish,Fire,24,8,11,80,120,80,20,0,0,0,0,0,None,None,99,0,10,6,Healing Potion,10,Magma Fish II
-100,Red Hot,Fire,40,9,9,100,100,60,0,0,0,0,0,0,None,None,99,0,14,6,Mind Purifier,8,Red Hot I
-146,Red Hot,Fire,40,9,9,100,100,60,0,0,0,0,0,0,None,None,99,0,14,6,Mind Purifier,8,Red Hot II
-92,Salamander,Fire,42,11,10,140,60,50,0,0,0,0,0,0,None,None,99,0,17,9,Sun Rhapsody,8,Salamander
-33,Fire Spirit,Fire,26,8,13,100,160,60,20,20,0,0,0,0,Fire,None,255,0,13,12,Spirit Cloak,10,Fire Spirit I
-150,Fire Spirit,Fire,26,9,13,100,160,60,20,20,0,0,0,0,Fire,None,255,0,13,12,Spirit Cloak,2,Fire Spirit II
-308,Virage(Head),Non-Elemental,360,16,17,80,120,50,0,0,0,0,0,0,None,None,255,144,600,100,Healing Potion,100,Wounded Virage(Head)
-309,Virage(Body),Non-Elemental,240,16,9,100,100,50,0,0,0,0,0,0,None,None,255,144,0,0,Healing Potion,100,Wounded Virage(Body)
-310,Virage(Arm),Non-Elemental,48,14,9,100,100,50,0,0,0,0,0,0,None,None,255,144,0,0,Mind Purifier,100,Wounded Virage(Arm)
-333,Fire Bird,Fire,640,13,16,80,80,45,0,0,0,0,0,0,None,None,255,144,800,100,Red-Eye Stone,100,Fire Bird
-334,Fire Ball,Fire,8,12,12,80,100,45,0,0,0,0,0,0,None,None,255,144,0,0,None,0,Fire Ball
-90,Mandrake,Water,96,10,14,60,120,60,0,0,0,0,0,0,None,None,99,0,15,9,Sun Rhapsody,8,Mandrake
-35,Run Fast,Thunder,64,12,12,100,80,60,0,0,0,0,0,0,None,None,99,0,16,12,Body Purifier,10,Run Fast
-19,Lizard Man,Earth,40,14,12,160,40,50,0,0,0,0,0,0,None,None,99,0,18,15,Beast Fang,2,Lizard Man
-88,Man Eating Bud,Dark,128,13,12,100,100,80,0,0,0,0,0,0,None,None,99,16,20,24,Angel's Prayer,8,Man Eating Bud
-115,Tricky Bat,Wind,32,8,15,80,120,70,20,0,0,0,0,0,None,None,99,0,12,6,Mind Purifier,8,Tricky Bat
-275,Feyrbrand,Wind,480,18,12,100,80,50,0,0,0,0,0,0,None,None,255,144,0,0,Down Burst,100,Feyrbrand
-287,Greham,Wind,350,13,15,120,100,60,0,0,0,0,0,0,None,None,255,144,1200,100,Plate Mail,30,Greham
-66,Crystal Golem,Light,160,19,18,120,160,80,0,0,0,0,0,0,None,None,255,144,22,27,Sapphire Pin,2,Crystal Golem
-107,Plague Rat,Earth,64,12,16,60,120,80,10,0,0,0,0,0,None,None,227,0,14,6,Body Purifier,8,Plague Rat
-15,Strong Man,Earth,80,18,13,120,80,60,0,0,0,0,0,0,None,None,99,0,18,9,Fake Power Wrist,2,Strong Man
-58,Gargoyle,Dark,100,16,16,80,160,70,0,0,0,0,0,0,None,None,99,0,17,15,Dark Mist,8,Gargoyle
-55,Living Statue,Earth,51,14,13,160,80,50,0,0,0,0,0,0,None,None,255,0,20,12,Detonate Rock,8,Living Statue
-325,Drake the Bandit,Wind,1200,20,17,80,80,70,0,0,0,0,0,0,None,None,255,144,1500,100,Bandit's Ring,30,Drake the Bandit
-326,Wire,Non-Elemental,120,13,13,120,80,50,0,0,0,0,0,0,None,None,255,144,0,0,None,0,Wire
-327,Bomb,Non-Elemental,64,30,30,150,50,70,0,0,0,0,0,0,None,None,255,144,0,0,None,0,Bomb
-288,Shirley,Light,640,15,15,80,120,50,0,0,0,0,0,0,None,None,255,144,0,0,Silver Stone,100,Shirley
-289,Shana,Light,120,15,15,80,120,55,0,0,0,0,0,0,None,None,255,144,0,0,None,0,Shirley(Shana)
-290,Albert,Wind,120,17,15,100,100,45,0,0,0,0,0,0,None,None,255,144,0,0,None,0,Shirley(Albert)
-302,Gorgaga,Non-Elemental,160,16,16,100,80,50,0,0,0,0,0,0,None,None,255,128,0,0,None,0,Gorgaga
-303,Serfius,Fire,200,20,20,100,100,50,0,0,0,0,0,0,None,None,255,128,0,0,None,0,Serfius
-304,Danton,Earth,240,23,8,120,80,45,0,0,0,0,0,0,None,None,255,144,0,0,None,0,Danton
-305,Atlow,Dark,266,16,16,80,100,55,0,0,0,0,0,0,None,None,255,128,0,0,None,0,Atlow
-269,Lloyd,Non-Elemental,399,20,20,100,100,50,0,0,0,0,0,0,None,None,255,128,0,0,None,0,Lloyd(Arena)
-129,Hellena Warden,Fire,120,17,16,100,100,50,0,0,0,0,0,0,None,None,99,0,20,15,Morning Star,2,Hellena Warden II
-133,Senior Warden,Fire,150,20,16,130,80,60,0,0,0,0,0,0,None,None,99,0,24,21,Spear,2,Senior Warden
-329,Jiango,Earth,1280,23,18,160,80,50,0,0,0,0,0,0,None,None,255,144,2000,100,Sachet,100,Jiango
-105,Fowl Fighter,Fire,100,16,19,80,120,60,10,0,0,0,0,0,None,None,99,0,16,9,Mind Purifier,8,Fowl Fighter
-262,Fruegel,Earth,1000,25,19,100,80,50,0,0,0,0,0,0,None,None,255,144,2000,200,Gravity Grabber,100,Fruegel II
-263,Rodriguez,Wind,400,21,21,100,100,70,10,0,0,0,0,0,None,None,255,16,0,0,None,0,Rodriguez
-264,Guftas,Dark,500,23,17,120,60,50,0,0,0,0,0,0,None,None,255,16,0,0,None,0,Guftas
-103,Knight of Sandora,Fire,180,21,21,100,100,50,0,0,0,0,0,0,None,None,99,0,24,15,Healing Potion,20,Knight of Sandora(Black Castle)
-17,Hell Hound,Fire,150,18,29,80,160,60,5,0,0,0,0,0,None,None,99,0,20,9,Burn Out,8,Hell Hound
-102,Sandora Elite,Dark,380,28,25,100,120,80,10,0,0,0,0,0,None,None,255,128,30,30,Gushing Magma,8,Sandora Elite II
-266,Kongol,Earth,1000,32,21,140,80,50,0,0,0,0,0,0,None,None,255,144,2000,200,Wargod Calling,30,Kongol II
-267,Doel,Thunder,600,30,30,100,100,55,0,0,0,0,0,0,None,None,255,128,3000,200,None,0,Doel
-268,Dragoon Doel,Thunder,1800,32,34,120,100,55,0,0,0,0,0,0,None,None,255,128,0,0,None,0,Dragoon Doel
-69,Frilled Lizard,Earth,128,23,27,100,120,80,5,0,0,0,0,0,None,None,99,0,36,21,Healing Potion,8,Frilled Lizard
-1,Scissorhands,Earth,80,30,23,200,50,60,0,0,0,0,0,0,None,None,99,0,40,18,Meteor Fall,8,Scissorhands
-99,Arrow Shooter,Earth,168,33,33,100,100,60,0,0,0,0,0,0,None,None,99,0,32,24,Bemusing Arrow,2,Arrow Shooter
-108,Stinger,Earth,64,25,27,70,120,70,20,0,0,0,0,0,None,None,227,0,38,12,Body Purifier,8,Stinger
-26,Earth Shaker,Earth,200,33,27,140,60,50,0,0,0,0,0,0,None,None,99,16,48,15,Stunning Hammer,8,Earth Shaker
-299,Mappi,Dark,640,30,27,110,100,70,0,0,0,0,0,0,None,None,255,128,2000,150,Total Vanishing,100,Mappi I
-274,Crafty Thief,Dark,320,28,27,100,80,70,5,0,0,0,0,0,None,None,255,128,0,0,Pellet,8,Crafty Thief(Mappi)
-52,Erupting Chick,Wind,120,20,22,80,30,80,20,0,0,0,0,0,None,None,99,0,32,15,Mind Purifier,8,Erupting Chick
-29,Roc,Wind,208,27,27,100,30,60,0,0,0,0,0,0,None,None,99,16,44,24,Down Burst,8,Roc
-16,Dragonfly,Thunder,296,32,31,120,150,80,0,0,0,0,0,0,None,None,99,0,48,21,Angel's Prayer,8,Dragonfly
-14,Spider Urchin,Thunder,100,30,27,180,100,60,0,0,0,0,0,0,None,None,99,0,40,18,Poison Needle,8,Spider Urchin
-106,Killer Bird,Dark,140,23,27,80,120,80,0,0,0,0,0,0,None,None,99,0,36,12,Panic Bell,8,Killer Bird
-311,Virage(Head),Non-Elemental,1600,30,30,100,100,50,0,0,0,0,0,0,None,None,255,144,4500,200,Moon Serenade,100,Complete Virage(Head)
-313,Virage(Body),Non-Elemental,600,37,30,100,100,50,0,0,0,0,0,0,None,None,255,144,0,0,None,0,Complete Virage(Body)
-312,Virage(Arm),Non-Elemental,300,37,30,100,100,50,0,0,0,0,0,0,None,None,225,144,0,0,None,0,Complete Virage(Arm)
-83,Crafty Thief,Dark,200,30,27,100,80,80,5,0,0,0,0,0,None,None,99,0,50,18,Pellet,8,Crafty Thief
-82,Gangster,Earth,280,36,32,120,100,70,0,0,0,0,0,0,None,None,99,0,60,12,Bandit's Ring,2,Gangster
-79,Berserker,Dark,400,40,32,30,50,60,0,0,0,0,0,0,None,None,111,0,55,15,Energy Girdle,2,Berserker
-109,Piggy,Earth,160,25,39,140,60,60,0,0,0,0,0,0,None,None,99,0,40,21,Sachet,2,Piggy
-300,Mappi,Dark,1200,37,32,110,100,65,0,0,0,0,0,0,None,None,255,128,0,0,Diamond Claw,25,Mappi II
-301,Gehrich,Earth,2000,42,32,120,100,50,0,0,0,0,0,0,None,None,255,128,5000,200,Soul Headband,25,Gehrich
-293,Lenus,Water,3500,44,62,100,160,50,0,0,0,0,0,0,None,None,255,144,6000,200,None,0,Lenus I
-86,Will-O'-Wisp,Fire,160,30,42,80,180,80,20,0,0,0,0,0,None,None,99,0,48,12,None,0,Will-O'-Wisp I
-154,Will-O'-Wisp,Fire,160,30,42,80,180,80,20,0,0,0,0,0,None,None,99,0,48,12,None,0,Will-O'-Wisp II
-18,Death,Dark,200,50,35,120,60,50,0,0,0,0,0,0,None,None,127,144,66,30,Total Vanishing,8,Death
-85,Skeleton,Dark,200,35,35,100,100,60,0,0,0,0,0,0,None,None,99,16,60,21,Broad Sword,2,Skeleton
-70,Magician Bogy,Dark,800,35,40,80,160,70,0,0,0,0,0,0,None,None,99,16,72,24,Magical Hat,2,Magician Bogy
-340,Ghost Commander,Dark,1700,53,53,100,100,60,0,0,0,0,0,0,None,None,255,144,6000,200,Night Raid,100,Ghost Commander
-341,Ghost Knight,Dark,300,44,44,80,80,60,0,0,0,0,0,0,None,None,255,144,0,0,None,0,Ghost Knight
-23,Glare,Water,320,33,47,80,120,70,10,0,0,0,0,0,None,None,99,0,70,18,Mind Purifier,8,Glare
-76,Screw Shell,Water,160,40,47,200,50,60,0,0,0,0,0,0,None,None,99,0,63,24,Healing Potion,8,Screw Shell
-91,Mermaid,Water,400,44,58,80,140,60,0,0,0,0,0,0,None,None,99,0,77,33,Spirit Potion,8,Mermaid
-110,Sea Piranha,Water,280,35,44,60,100,80,20,0,0,0,0,0,None,None,99,0,56,15,Spear Frost,8,Sea Piranha
-12,Flabby Troll,Earth,560,52,33,60,60,50,0,0,0,0,0,0,None,None,99,16,84,30,Knight Shield,2,Flabby Troll
-294,Lenus,Water,3000,44,60,100,180,55,0,0,0,0,0,0,None,None,255,128,0,0,Jeweled Crown,50,Lenus II
-279,Regole,Water,3000,59,37,120,80,45,0,0,0,0,0,0,None,None,255,144,7000,250,Frozen Jet,100,Regole
-53,Flying Rat,Wind,260,38,54,80,120,60,20,0,0,0,0,0,None,None,99,0,64,24,Angel's Prayer,8,Flying Rat
-73,Forest Runner,Wind,360,45,44,80,120,80,10,0,0,0,0,0,None,None,99,0,88,30,Recovery Ball,8,Forest Runner
-51,Wounded Bear,Earth,560,62,44,140,40,60,0,0,0,0,0,0,None,None,107,16,96,60,Attack Ball,8,Wounded Bear
-95,Dark Elf,Dark,450,42,44,70,180,70,0,0,0,0,0,0,None,None,99,0,80,36,Depetrifier,8,Dark Elf
-117,Moss Dresser,Earth,300,48,44,120,80,50,0,0,0,0,0,0,None,None,99,0,72,18,Healing Fog,8,Moss Dresser
-343,Kamuy,Non-Elemental,4000,65,65,100,150,70,0,0,0,0,0,0,None,None,255,144,8000,0,Darkness Stone,100,Kamuy
-339,Kamuy's Tree,Non-Elemental,0,0,0,50,50,50,0,0,0,0,0,0,None,None,255,144,0,0,None,0,Kamuy Dummy
-44,Puck,Earth,304,47,47,100,120,60,0,0,0,0,0,0,None,None,99,0,90,36,Dancer's Ring,2,Puck
-43,Fairy,Light,320,43,57,80,150,70,10,10,0,0,0,0,None,None,99,0,81,24,Sun Rhapsody,8,Fairy
-30,Gnome,Earth,256,53,47,160,70,50,0,0,0,0,0,0,Earth,None,255,0,108,42,Healing Potion,8,Gnome
-2,Spinninghead,Non-Elemental,384,40,57,80,160,60,0,0,0,0,0,0,None,None,255,128,99,30,Mind Purifier,8,Spinninghead
-111,Toad Stool,Earth,128,40,57,80,120,80,20,0,0,0,0,0,None,None,227,0,72,18,Body Purifier,8,Toad Stool
-316,S Virage(Head),Non-Elemental,10400,70,110,100,100,50,0,0,0,0,0,0,None,None,255,144,4000,200,Healing Rain,100,WS Virage(Head)
-317,S Virage(Body),Non-Elemental,10400,70,110,100,100,50,0,0,0,0,0,0,None,None,255,144,0,0,None,0,WS Virage(Body)
-318,S Virage(Arm),Non-Elemental,5200,80,110,100,100,50,0,0,0,0,0,0,None,None,255,144,0,0,None,0,WS Virage(Arm)
-335,Grand Jewel,Earth,4500,41,58,100,160,70,0,0,0,0,0,0,None,None,255,144,9000,300,Spectral Flash,100,Grand Jewel
-96,Baby Dragon,Thunder,240,50,50,140,80,60,0,0,0,0,0,0,None,None,99,0,100,27,Mind Purifier,8,Baby Dragon
-6,Beastie Dragon,Wind,336,66,42,130,90,50,0,0,0,0,0,0,None,None,99,16,110,33,Total Vanishing,8,Beastie Dragon
-112,Mega Sea Dragon,Fire,176,42,65,120,120,70,10,0,0,0,0,0,None,None,99,0,80,21,Gushing Magma,8,Mega Sea Dragon
-113,Deadly Spider,Earth,328,60,42,100,60,50,0,0,0,0,0,0,None,None,227,0,90,39,Body Purifier,8,Deadly Spider
-37,Wyvern,Wind,544,72,61,160,100,80,20,0,0,0,0,0,None,None,99,0,120,45,Down Burst,8,Wyvern
-283,Divine Dragon,Non-Elemental,5000,60,53,160,60,60,0,0,0,0,0,0,None,None,255,144,10000,300,Dragon Shield,20,Divine Dragon
-284,Divine Cannon,Non-Elemental,2000,51,60,160,60,50,0,0,0,0,0,0,None,None,255,144,0,0,Gravity Grabber,100,Divine Cannon
-285,Divine Ball,Non-Elemental,2000,51,53,160,60,50,0,0,0,0,0,0,None,None,255,144,0,0,Flash Hall,100,Divine Ball
-32,Freeze Knight,Water,360,56,68,120,160,50,0,0,0,0,0,0,Water,None,255,16,110,27,Fatal Blizzard,8,Freeze Knight
-48,Mammoth,Earth,1280,75,56,80,60,50,0,0,0,0,0,0,None,None,99,144,132,45,Stunning Hammer,8,Mammoth
-114,Icicle Ball,Water,160,68,48,160,100,60,0,0,0,0,0,0,None,None,99,0,121,21,Spirit Potion,8,Icicle Ball
-5,Land Skater,Water,312,51,56,100,120,60,10,0,0,0,0,0,None,None,99,0,88,33,Spear Frost,8,Land Skater
-67,Rocky Turtle,Earth,560,53,56,200,80,50,0,0,0,0,0,0,None,None,99,16,99,39,Guard Badge,2,Rocky Turtle
-347,Snow Cannon,Water,400,70,70,100,80,50,0,0,0,0,0,0,None,None,255,144,0,0,None,0,Snow Cannon
-346,Windigo,Water,10000,80,80,100,120,50,0,0,0,0,0,0,None,None,255,144,11000,250,Brass Knuckle,100,Windigo
-348,Heart,Water,3,68,68,60,60,50,0,0,0,0,0,0,None,None,255,147,0,0,None,0,Heart
-270,Lloyd,Non-Elemental,6000,80,65,100,150,65,0,0,0,0,0,0,None,None,255,144,12000,300,None,0,Lloyd II
-277,Lloyd Dome,Non-Elemental,0,0,0,50,50,50,0,0,0,0,0,0,None,None,255,144,0,0,None,0,Lloyd Dome
-49,Metal Fang,Thunder,656,74,105,80,120,70,5,0,0,0,0,0,None,None,99,0,135,42,Beast Fang,2,Metal Fang
-25,Dragon Soldier,Earth,488,122,86,160,100,50,0,0,0,0,0,0,None,None,99,0,180,60,Knight Shield,2,Dragon Soldier
-11,Basilisk,Earth,656,86,86,100,100,50,0,0,0,0,0,0,None,None,0,0,0,0,None,0,Basilisk
-56,Madman,Earth,1040,86,74,100,80,60,0,0,0,0,0,0,None,None,99,0,165,24,Body Purifier,8,Madman I
-144,Madman,Earth,1040,86,74,100,80,60,0,0,0,0,0,0,None,None,99,0,165,24,Body Purifier,8,Madman II
-345,Faust,Non-Elemental,25600,125,125,50,200,50,0,20,0,0,0,0,None,None,255,144,0,0,None,0,Faust Copy
-344,Faust,Non-Elemental,25600,125,125,50,200,50,0,20,0,0,0,0,None,None,255,144,20000,10000,Phantom Shield,100,Faust
-342,Mazo,Non-Elemental,800,101,101,50,200,50,0,0,0,0,0,0,None,None,255,144,0,0,None,0,Dummy Faust
-57,Wildman,Thunder,720,65,58,100,60,50,0,0,0,0,0,0,None,None,99,0,120,36,Giganto Ring,2,Wildman
-31,Bowling,Non-Elemental,400,70,50,160,80,60,0,0,0,0,0,0,None,None,255,0,132,42,Attack Ball,8,Bowling
-50,Windy Weasel,Wind,320,50,70,80,100,70,20,0,0,0,0,0,None,None,99,0,96,21,Rave Twister,8,Windy Weasel
-20,White Ape,Earth,500,81,58,120,80,50,0,0,0,0,0,0,None,None,99,0,144,51,Healing Potion,8,White Ape
-116,Mr. Bone,Dark,450,58,58,120,120,60,0,0,0,0,0,0,None,None,99,0,108,30,Bastard Sword,2,Mr. Bone
-349,Polter Helm,Dark,2400,71,71,100,160,50,0,0,0,0,0,0,None,None,255,144,6000,200,None,0,Polter Helm
-350,Polter Armor,Dark,4000,71,116,160,140,50,0,0,0,0,0,0,None,None,255,144,0,0,Smoke Ball,100,Polter Armor
-351,Polter Sword,Dark,3200,134,71,120,120,100,0,0,0,0,0,0,None,None,255,144,0,0,Soul Eater,100,Polter Sword
-39,Spring Hitter,Non-Elemental,400,64,60,150,80,70,0,0,0,0,0,0,None,None,255,0,117,21,Healing Fog,8,Spring Hitter
-47,Succubus,Dark,440,60,60,100,150,60,0,0,0,0,0,0,None,None,99,0,130,42,Platinum Collar,2,Succubus
-65,Maximum Volt,Thunder,560,85,74,160,60,60,0,0,0,0,0,0,Thunder,None,255,0,156,51,Flash Hall,8,Maximum Volt
-63,Witch,Light,360,51,85,80,200,60,0,5,0,0,0,0,None,None,99,0,104,36,Angel's Prayer,8,Witch
-41,Terminator,Non-Elemental,432,71,51,120,80,80,0,0,0,0,0,0,None,None,255,0,143,30,Total Vanishing,8,Terminator
-295,Damia,Water,9000,116,116,100,200,60,0,0,0,0,0,0,None,None,255,128,6000,300,Blue Sea Stone,100,Damia
-296,Syuveil,Wind,10000,152,98,150,120,50,10,0,0,0,0,0,None,None,255,128,6000,300,Jade Stone,100,Syuveil
-297,Belzac,Earth,16000,178,71,200,80,50,0,0,0,0,0,0,None,None,255,128,6000,300,Golden Stone,100,Belzac
-298,Kanzas,Thunder,12000,134,107,120,150,70,10,0,0,0,0,0,None,None,255,128,6000,300,Violet Stone,200,Kanzas
-89,Cactus,Earth,320,67,67,150,150,60,0,0,0,0,0,0,None,None,99,0,126,36,Recovery Ball,15,Cactus
-3,Sandworm,Earth,1440,80,63,80,80,50,0,0,0,0,0,0,None,None,99,16,168,51,Spirit Potion,8,Sandworm
-61,Spiky Beetle,Earth,480,70,63,160,120,60,0,0,0,0,0,0,None,None,99,0,140,42,Attack Ball,8,Spiky Beetle
-36,Canbria Dayfly,Wind,520,58,76,100,140,70,10,0,0,0,0,0,None,None,227,0,112,30,Body Purifier,8,Canbria Dayfly
-75,Scud Shark,Water,400,65,65,130,120,60,0,0,0,0,0,0,None,None,99,16,150,39,Body Purifier,8,Scud Shark
-60,Jelly,Water,640,60,79,80,250,70,0,0,0,0,0,0,None,None,99,0,120,24,Healing Fog,10,Jelly
-72,Stern Fish,Water,856,79,65,160,100,80,0,0,0,0,0,0,None,None,99,16,165,54,Frozen Jet,8,Stern Fish
-9,Minotaur,Earth,960,90,65,160,100,50,0,0,0,0,0,0,None,None,107,16,180,48,Heavy Mace,2,Minotaur
-121,Aqua King,Water,640,67,65,120,160,70,0,0,0,0,0,0,None,None,99,0,135,30,Angel's Prayer,8,Aqua King
-365,Last Kraken,Water,10000,98,80,140,200,50,0,0,0,0,0,0,None,None,255,144,12000,300,Pretty Hammer,100,Last Kraken
-366,Cleone,Water,1360,65,71,60,160,60,0,0,0,0,0,0,None,None,255,144,0,0,None,0,Cleone
-80,Professor,Wind,799,58,83,100,180,70,10,0,0,0,0,0,None,None,99,0,176,54,Sage's Cloak,2,Professor
-40,Guillotine,Dark,621,65,83,150,120,60,0,0,0,0,0,0,None,None,255,0,160,39,Healing Breeze,8,Guillotine
-97,Harpy,Wind,600,76,71,120,160,60,0,0,0,0,0,0,None,None,0,0,0,0,None,0,Harpy
-122,Sky Chaser,Wind,680,67,67,100,100,60,20,0,0,0,0,0,None,None,99,16,128,30,Body Purifier,8,Sky Chaser
-118,Death Purger,Dark,532,83,58,120,100,50,10,0,0,0,0,0,None,None,127,128,144,24,Total Vanishing,8,Death Purger
-360,Vector,Dark,4000,89,67,100,100,50,0,0,0,0,0,0,None,None,255,144,12000,300,None,0,Vector
-361,Selebus,Dark,3000,71,95,120,180,60,10,0,0,0,0,0,None,None,255,144,0,0,None,0,Kubila
-362,Kubila,Dark,3500,80,75,140,140,55,0,0,0,0,0,0,None,None,255,144,0,0,None,0,Selebus
-84,Undead,Dark,568,75,72,100,60,70,0,0,0,0,0,0,None,None,127,0,153,39,Mind Purifier,8,Undead
-78,Loner Knight,Dark,720,83,72,140,140,60,0,0,0,0,0,0,None,None,255,0,187,48,Soul Eater,2,Loner Knight
-10,Hyper Skeleton,Dark,960,95,72,180,80,60,0,0,0,0,0,0,None,None,255,144,204,54,Spear of Terror,2,Hyper Skeleton
-101,Specter,Dark,266,67,107,100,250,75,50,0,0,0,0,0,None,None,99,0,170,30,Midnight Terror,8,Specter II
-152,Specter,Dark,266,72,107,100,250,75,50,0,0,0,0,0,None,None,99,0,170,30,Midnight Terror,8,Specter II
-125,Human Hunter,Non-Elemental,355,90,72,160,100,70,0,0,0,0,0,0,None,None,255,0,136,24,Recovery Ball,8,Human Hunter
-352,Dragon Spirit,Non-Elemental,16000,107,116,160,100,60,0,0,0,0,0,0,None,None,255,144,8000,400,Flash Hall,100,Divine Dragon Spirit
-383,Dragon Spirit Dummy,Non-Elemental,16000,107,116,160,100,60,0,0,0,0,0,0,None,None,255,144,0,0,None,0,Divine Dragon Spirit Dummy
-353,Dragon Spirit,Water,12000,98,71,80,120,60,0,5,0,0,0,0,None,None,255,144,6000,300,Frozen Jet,100,Regole Spirit
-384,Dragon Spirit Dummy,Water,12000,98,71,80,120,60,0,0,0,0,0,0,None,None,255,140,0,0,None,0,Regole Spirit Dummy
-354,Dragon Spirit,Wind,8000,89,71,100,80,60,0,0,0,0,0,0,None,None,255,144,4000,200,Down Burst,100,Feyrbrand Spirit
-385,Dragon Spirit Dummy,Wind,8000,89,71,100,80,60,0,0,0,0,0,0,None,None,255,144,0,0,None,0,Feyrbrand Spirit Dummy
-363,Zackwell,Dark,8000,125,88,140,170,60,0,0,0,0,0,0,None,None,255,144,0,0,Healing Rain,100,
-364,Lavitz's Spirit,Wind,5000,88,88,120,80,50,0,0,0,0,0,0,None,None,255,144,12000,300,Halberd,50,Lavitz's Spirit
-77,Potbelly,Earth,560,76,91,120,100,60,0,0,0,0,0,0,None,None,99,0,144,24,Healing Breeze,8,Potbelly
-62,Slug,Earth,1200,89,80,100,100,60,0,0,0,0,0,0,None,None,99,0,180,33,Mind Purifier,10,Slug
-98,Cute Cat,Thunder,640,71,91,140,180,70,5,5,0,0,0,0,None,None,99,0,162,51,Dancer's Boots,2,Cute Cat
-7,Manticore,Dark,960,80,91,150,160,50,0,0,0,0,0,0,None,None,99,16,216,60,Depetrifier,8,Manticore
-126,Mountain Ape,Earth,1000,95,64,120,60,50,0,0,0,0,0,0,None,None,99,0,198,42,Angel's Prayer,10,Mountain Ape
-93,Unicorn,Light,1280,76,108,140,160,60,0,0,0,0,0,0,None,None,99,0,380,51,Healing Rain,2,Unicorn
-34,Mad Skull,Thunder,799,107,93,250,100,65,0,0,0,0,0,0,None,None,255,128,400,51,Flash Hall,8,Mad Skull
-128,Swift Dragon,Fire,888,66,76,120,120,80,0,0,0,0,0,0,None,None,99,0,228,24,Burning Wave,8,Swift Dragon
-120,Trap Plant,Water,1680,80,76,100,180,60,0,0,0,0,0,0,None,None,99,16,304,42,Frozen Jet,8,Trap Plant
-81,Psyche Druid,Light,2000,53,108,100,160,60,0,5,0,0,0,0,None,None,255,128,638,84,Spectral Flash,8,Psyche Druid
-71,Triceratops,Earth,3200,134,53,160,100,80,0,0,0,0,0,0,None,None,99,144,2000,120,Gravity Grabber,8,Triceratops
-127,Roulette Face,Dark,2400,71,93,120,200,60,0,0,0,0,0,0,None,None,255,128,360,42,Night Raid,8,Roulette Face
-123,Air Combat,Wind,1080,93,76,160,120,50,5,0,0,0,0,0,None,None,99,0,456,33,Down Burst,8,Air Combat
-87,Cursed Jar,Non-Elemental,4,0,0,100,100,200,0,0,0,1,0,0,None,None,255,134,300,0,Night Raid,100,Cursed Jar
-124,Treasure Jar,Non-Elemental,5,0,0,100,100,200,0,0,1,0,0,0,None,None,255,137,0,0,Ruby Ring,100,Treasure Jar
-139,Lucky Jar,Non-Elemental,6,0,0,100,100,200,0,0,1,1,0,0,None,None,127,140,1000,0,Moon Serenade,100,Lucky Jar
-42,00PARTS,Non-Elemental,4,0,0,100,100,150,50,50,0,0,0,0,None,None,255,131,0,600,Spirit Potion,100,00PARTS
-138,Yellow Bird,Earth,4,0,0,100,100,120,50,20,0,0,0,0,None,None,255,131,0,300,Elude Cloak,10,Yellow Bird
-136,Blue Bird,Water,5,0,0,100,100,120,50,0,0,1,0,0,None,None,255,134,1000,0,None,0,Blue Bird
-137,Red Bird,Fire,5,0,0,100,100,120,0,50,1,0,0,0,None,None,255,137,0,1000,Phoenix Plume,100,Red Bird
-54,Rainbow Bird,Non-Elemental,4,0,0,100,100,120,0,0,1,1,0,0,None,None,251,140,3000,0,Rainbow Dress,10,Rainbow Bird
+M_ID;M_name;Element;HP;AT;MAT;DF;MDF;Speed;A_AV;M_AV;P_Immune;M_Immune;P_Half;M_Half;E_Immune;E_Half;Status_Resist;Death_Resist;EXP;Gold;Drop;Drop_Chance;M_extra_name
+257;Knight of Sandora;Fire;4;2;2;40;50;40;0;0;0;0;0;0;None;None;255;0;2;3;Healing Potion;100;Knight of Sandora(Seles)
+256;Commander;Dark;14;2;4;40;40;40;0;0;0;0;0;0;None;None;255;128;20;20;Burn Out;100;Commander I
+21;Assassin Cock;Wind;3;2;2;100;120;45;0;0;0;0;0;0;None;None;99;0;5;6;Healing Potion;10;Assassin Cock
+38;Trent;Earth;5;2;2;160;40;30;0;0;0;0;0;0;None;None;99;0;4;9;Pellet;10;Trent
+8;Goblin;Fire;4;2;1;120;120;40;0;0;0;0;0;0;None;None;99;0;4;6;Detonate Rock;10;Goblin
+24;Berserk Mouse;Dark;2;1;1;80;120;45;0;0;0;0;0;0;None;None;107;0;3;3;Healing Potion;10;Berserk Mouse
+134;Hellena Warden;Fire;9;3;3;100;100;50;0;0;0;0;0;0;None;None;99;0;6;9;None;0;Hellena Warden I
+261;Fruegel;Earth;90;5;3;100;80;50;0;0;0;0;0;0;None;None;255;144;300;50;Knight Shield;100;Fruegel I
+259;Hellena Warden;Fire;12;3;3;100;100;50;0;0;0;0;0;0;None;None;255;0;0;0;Healing Potion;100;Hellena Warden(F)
+260;Senior Warden;Fire;20;4;8;100;100;50;0;0;0;0;0;0;None;None;255;128;0;0;Healing Potion;100;Senior Warden(F)
+27;Vampire Kiwi;Dark;13;4;6;80;120;70;0;0;0;0;0;0;None;None;99;0;8;9;Healing Potion;8;Vampire Kiwi
+45;Mole;Earth;16;6;5;160;80;50;0;0;0;0;0;0;None;None;99;16;11;9;Angel's Prayer;8;Mole
+59;Crescent Bee;Wind;9;5;5;100;100;60;20;0;0;0;0;0;None;None;99;0;10;6;Spinning Gale;8;Crescent Bee
+0;Mantis;Earth;20;7;5;150;75;50;0;0;0;0;0;0;None;None;99;0;12;6;Pellet;8;Mantis
+46;Screaming Bat;Dark;12;5;9;80;120;70;20;0;0;0;0;0;None;None;99;0;8;6;Healing Potion;8;Screaming Bat
+104;Slime;Earth;20;6;5;80;60;50;0;0;0;0;0;0;None;None;99;0;11;6;Body Purifier;10;Slime I
+148;Slime;Earth;20;6;5;80;60;50;0;0;0;0;0;0;None;None;99;0;11;6;Body Purifier;10;Slime II
+64;Ugly Balloon;Wind;35;6;6;70;200;60;0;0;0;0;0;0;None;None;99;0;10;9;Poison Guard;2;Ugly Balloon
+94;Orc;Dark;24;7;5;120;40;60;0;0;0;0;0;0;None;None;99;0;10;6;Dark Mist;10;Orc
+13;Evil Spider;Earth;30;8;6;80;60;60;0;0;0;0;0;0;None;None;99;0;12;12;Angel's Prayer;8;Evil Spider
+332;Urobolus;Earth;280;8;8;80;60;50;0;0;0;0;0;0;None;None;255;144;400;50;Wargod's Amulet;100;Urobolus
+130;Sandora Soldier;Fire;40;8;8;100;100;50;0;0;0;0;0;0;None;None;99;0;25;30;Healing Potion;50;Sandora Soldier(Hoax)
+258;Sandora Elite;Dark;280;10;11;80;120;60;0;0;0;0;0;0;None;None;255;128;200;50;Healing Breeze;100;Sandora Elite I
+273;Sandora Elite;Dark;280;10;11;80;120;60;0;0;0;0;0;0;None;None;255;128;0;0;None;0;Sandora Elite I(Clone)
+265;Kongol;Earth;256;10;10;100;50;60;0;0;0;0;0;0;None;None;255;144;300;50;Power Wrist;100;Kongol I
+4;Sea Dragon;Fire;33;8;11;80;120;70;20;0;0;0;0;0;None;None;99;0;14;9;Burn Out;10;Sea Dragon
+68;Crocodile;Water;32;10;9;160;50;50;0;0;0;0;0;0;None;None;99;0;17;6;Pellet;10;Crocodile
+28;Myconido;Earth;30;6;13;80;180;80;20;0;0;0;0;0;None;None;277;0;11;8;Body Purifier;10;Myconido
+22;Merman;Water;45;9;11;100;80;60;0;0;0;0;0;0;None;None;107;0;15;12;Spear;20;Merman
+131;Sandora Soldier;Fire;51;9;9;100;100;60;0;0;0;0;0;0;None;None;99;0;14;9;Healing Potion;8;Sandora Soldier(F)
+132;Sandora Soldier;Water;64;8;11;80;120;70;0;0;0;0;0;0;None;None;99;0;11;12;Sun Rhapsody;10;Sandora Soldier(W)
+135;Commander;Dark;128;11;9;120;80;70;0;0;0;0;0;0;None;None;99;128;17;9;Attack Ball;100;Commander II
+74;Magma Fish;Fire;25;9;11;80;120;80;20;0;0;0;0;0;None;None;99;0;10;6;Healing Potion;10;Magma Fish I
+157;Magma Fish;Fire;24;8;11;80;120;80;20;0;0;0;0;0;None;None;99;0;10;6;Healing Potion;10;Magma Fish II
+100;Red Hot;Fire;40;9;9;100;100;60;0;0;0;0;0;0;None;None;99;0;14;6;Mind Purifier;8;Red Hot I
+146;Red Hot;Fire;40;9;9;100;100;60;0;0;0;0;0;0;None;None;99;0;14;6;Mind Purifier;8;Red Hot II
+92;Salamander;Fire;42;11;10;140;60;50;0;0;0;0;0;0;None;None;99;0;17;9;Sun Rhapsody;8;Salamander
+33;Fire Spirit;Fire;26;8;13;100;160;60;20;20;0;0;0;0;Fire;None;255;0;13;12;Spirit Cloak;10;Fire Spirit I
+150;Fire Spirit;Fire;26;9;13;100;160;60;20;20;0;0;0;0;Fire;None;255;0;13;12;Spirit Cloak;2;Fire Spirit II
+308;Virage(Head);Non-Elemental;360;16;17;80;120;50;0;0;0;0;0;0;None;None;255;144;600;100;Healing Potion;100;Wounded Virage(Head)
+309;Virage(Body);Non-Elemental;240;16;9;100;100;50;0;0;0;0;0;0;None;None;255;144;0;0;Healing Potion;100;Wounded Virage(Body)
+310;Virage(Arm);Non-Elemental;48;14;9;100;100;50;0;0;0;0;0;0;None;None;255;144;0;0;Mind Purifier;100;Wounded Virage(Arm)
+333;Fire Bird;Fire;640;13;16;80;80;45;0;0;0;0;0;0;None;None;255;144;800;100;Red-Eye Stone;100;Fire Bird
+334;Fire Ball;Fire;8;12;12;80;100;45;0;0;0;0;0;0;None;None;255;144;0;0;None;0;Fire Ball
+90;Mandrake;Water;96;10;14;60;120;60;0;0;0;0;0;0;None;None;99;0;15;9;Sun Rhapsody;8;Mandrake
+35;Run Fast;Thunder;64;12;12;100;80;60;0;0;0;0;0;0;None;None;99;0;16;12;Body Purifier;10;Run Fast
+19;Lizard Man;Earth;40;14;12;160;40;50;0;0;0;0;0;0;None;None;99;0;18;15;Beast Fang;2;Lizard Man
+88;Man Eating Bud;Dark;128;13;12;100;100;80;0;0;0;0;0;0;None;None;99;16;20;24;Angel's Prayer;8;Man Eating Bud
+115;Tricky Bat;Wind;32;8;15;80;120;70;20;0;0;0;0;0;None;None;99;0;12;6;Mind Purifier;8;Tricky Bat
+275;Feyrbrand;Wind;480;18;12;100;80;50;0;0;0;0;0;0;None;None;255;144;0;0;Down Burst;100;Feyrbrand
+287;Greham;Wind;350;13;15;120;100;60;0;0;0;0;0;0;None;None;255;144;1200;100;Plate Mail;30;Greham
+66;Crystal Golem;Light;160;19;18;120;160;80;0;0;0;0;0;0;None;None;255;144;22;27;Sapphire Pin;2;Crystal Golem
+107;Plague Rat;Earth;64;12;16;60;120;80;10;0;0;0;0;0;None;None;227;0;14;6;Body Purifier;8;Plague Rat
+15;Strong Man;Earth;80;18;13;120;80;60;0;0;0;0;0;0;None;None;99;0;18;9;Fake Power Wrist;2;Strong Man
+58;Gargoyle;Dark;100;16;16;80;160;70;0;0;0;0;0;0;None;None;99;0;17;15;Dark Mist;8;Gargoyle
+55;Living Statue;Earth;51;14;13;160;80;50;0;0;0;0;0;0;None;None;255;0;20;12;Detonate Rock;8;Living Statue
+325;Drake the Bandit;Wind;1200;20;17;80;80;70;0;0;0;0;0;0;None;None;255;144;1500;100;Bandit's Ring;30;Drake the Bandit
+326;Wire;Non-Elemental;120;13;13;120;80;50;0;0;0;0;0;0;None;None;255;144;0;0;None;0;Wire
+327;Bomb;Non-Elemental;64;30;30;150;50;70;0;0;0;0;0;0;None;None;255;144;0;0;None;0;Bomb
+288;Shirley;Light;640;15;15;80;120;50;0;0;0;0;0;0;None;None;255;144;0;0;Silver Stone;100;Shirley
+289;Shana;Light;120;15;15;80;120;55;0;0;0;0;0;0;None;None;255;144;0;0;None;0;Shirley(Shana)
+290;Albert;Wind;120;17;15;100;100;45;0;0;0;0;0;0;None;None;255;144;0;0;None;0;Shirley(Albert)
+302;Gorgaga;Non-Elemental;160;16;16;100;80;50;0;0;0;0;0;0;None;None;255;128;0;0;None;0;Gorgaga
+303;Serfius;Fire;200;20;20;100;100;50;0;0;0;0;0;0;None;None;255;128;0;0;None;0;Serfius
+304;Danton;Earth;240;23;8;120;80;45;0;0;0;0;0;0;None;None;255;144;0;0;None;0;Danton
+305;Atlow;Dark;266;16;16;80;100;55;0;0;0;0;0;0;None;None;255;128;0;0;None;0;Atlow
+269;Lloyd;Non-Elemental;399;20;20;100;100;50;0;0;0;0;0;0;None;None;255;128;0;0;None;0;Lloyd(Arena)
+129;Hellena Warden;Fire;120;17;16;100;100;50;0;0;0;0;0;0;None;None;99;0;20;15;Morning Star;2;Hellena Warden II
+133;Senior Warden;Fire;150;20;16;130;80;60;0;0;0;0;0;0;None;None;99;0;24;21;Spear;2;Senior Warden
+329;Jiango;Earth;1280;23;18;160;80;50;0;0;0;0;0;0;None;None;255;144;2000;100;Sachet;100;Jiango
+105;Fowl Fighter;Fire;100;16;19;80;120;60;10;0;0;0;0;0;None;None;99;0;16;9;Mind Purifier;8;Fowl Fighter
+262;Fruegel;Earth;1000;25;19;100;80;50;0;0;0;0;0;0;None;None;255;144;2000;200;Gravity Grabber;100;Fruegel II
+263;Rodriguez;Wind;400;21;21;100;100;70;10;0;0;0;0;0;None;None;255;16;0;0;None;0;Rodriguez
+264;Guftas;Dark;500;23;17;120;60;50;0;0;0;0;0;0;None;None;255;16;0;0;None;0;Guftas
+103;Knight of Sandora;Fire;180;21;21;100;100;50;0;0;0;0;0;0;None;None;99;0;24;15;Healing Potion;20;Knight of Sandora(Black Castle)
+17;Hell Hound;Fire;150;18;29;80;160;60;5;0;0;0;0;0;None;None;99;0;20;9;Burn Out;8;Hell Hound
+102;Sandora Elite;Dark;380;28;25;100;120;80;10;0;0;0;0;0;None;None;255;128;30;30;Gushing Magma;8;Sandora Elite II
+266;Kongol;Earth;1000;32;21;140;80;50;0;0;0;0;0;0;None;None;255;144;2000;200;Wargod Calling;30;Kongol II
+267;Doel;Thunder;600;30;30;100;100;55;0;0;0;0;0;0;None;None;255;128;3000;200;None;0;Doel
+268;Dragoon Doel;Thunder;1800;32;34;120;100;55;0;0;0;0;0;0;None;None;255;128;0;0;None;0;Dragoon Doel
+69;Frilled Lizard;Earth;128;23;27;100;120;80;5;0;0;0;0;0;None;None;99;0;36;21;Healing Potion;8;Frilled Lizard
+1;Scissorhands;Earth;80;30;23;200;50;60;0;0;0;0;0;0;None;None;99;0;40;18;Meteor Fall;8;Scissorhands
+99;Arrow Shooter;Earth;168;33;33;100;100;60;0;0;0;0;0;0;None;None;99;0;32;24;Bemusing Arrow;2;Arrow Shooter
+108;Stinger;Earth;64;25;27;70;120;70;20;0;0;0;0;0;None;None;227;0;38;12;Body Purifier;8;Stinger
+26;Earth Shaker;Earth;200;33;27;140;60;50;0;0;0;0;0;0;None;None;99;16;48;15;Stunning Hammer;8;Earth Shaker
+299;Mappi;Dark;640;30;27;110;100;70;0;0;0;0;0;0;None;None;255;128;2000;150;Total Vanishing;100;Mappi I
+274;Crafty Thief;Dark;320;28;27;100;80;70;5;0;0;0;0;0;None;None;255;128;0;0;Pellet;8;Crafty Thief(Mappi)
+52;Erupting Chick;Wind;120;20;22;80;30;80;20;0;0;0;0;0;None;None;99;0;32;15;Mind Purifier;8;Erupting Chick
+29;Roc;Wind;208;27;27;100;30;60;0;0;0;0;0;0;None;None;99;16;44;24;Down Burst;8;Roc
+16;Dragonfly;Thunder;296;32;31;120;150;80;0;0;0;0;0;0;None;None;99;0;48;21;Angel's Prayer;8;Dragonfly
+14;Spider Urchin;Thunder;100;30;27;180;100;60;0;0;0;0;0;0;None;None;99;0;40;18;Poison Needle;8;Spider Urchin
+106;Killer Bird;Dark;140;23;27;80;120;80;0;0;0;0;0;0;None;None;99;0;36;12;Panic Bell;8;Killer Bird
+311;Virage(Head);Non-Elemental;1600;30;30;100;100;50;0;0;0;0;0;0;None;None;255;144;4500;200;Moon Serenade;100;Complete Virage(Head)
+313;Virage(Body);Non-Elemental;600;37;30;100;100;50;0;0;0;0;0;0;None;None;255;144;0;0;None;0;Complete Virage(Body)
+312;Virage(Arm);Non-Elemental;300;37;30;100;100;50;0;0;0;0;0;0;None;None;225;144;0;0;None;0;Complete Virage(Arm)
+83;Crafty Thief;Dark;200;30;27;100;80;80;5;0;0;0;0;0;None;None;99;0;50;18;Pellet;8;Crafty Thief
+82;Gangster;Earth;280;36;32;120;100;70;0;0;0;0;0;0;None;None;99;0;60;12;Bandit's Ring;2;Gangster
+79;Berserker;Dark;400;40;32;30;50;60;0;0;0;0;0;0;None;None;111;0;55;15;Energy Girdle;2;Berserker
+109;Piggy;Earth;160;25;39;140;60;60;0;0;0;0;0;0;None;None;99;0;40;21;Sachet;2;Piggy
+300;Mappi;Dark;1200;37;32;110;100;65;0;0;0;0;0;0;None;None;255;128;0;0;Diamond Claw;25;Mappi II
+301;Gehrich;Earth;2000;42;32;120;100;50;0;0;0;0;0;0;None;None;255;128;5000;200;Soul Headband;25;Gehrich
+293;Lenus;Water;3500;44;62;100;160;50;0;0;0;0;0;0;None;None;255;144;6000;200;None;0;Lenus I
+86;Will-O'-Wisp;Fire;160;30;42;80;180;80;20;0;0;0;0;0;None;None;99;0;48;12;None;0;Will-O'-Wisp I
+154;Will-O'-Wisp;Fire;160;30;42;80;180;80;20;0;0;0;0;0;None;None;99;0;48;12;None;0;Will-O'-Wisp II
+18;Death;Dark;200;50;35;120;60;50;0;0;0;0;0;0;None;None;127;144;66;30;Total Vanishing;8;Death
+85;Skeleton;Dark;200;35;35;100;100;60;0;0;0;0;0;0;None;None;99;16;60;21;Broad Sword;2;Skeleton
+70;Magician Bogy;Dark;800;35;40;80;160;70;0;0;0;0;0;0;None;None;99;16;72;24;Magical Hat;2;Magician Bogy
+340;Ghost Commander;Dark;1700;53;53;100;100;60;0;0;0;0;0;0;None;None;255;144;6000;200;Night Raid;100;Ghost Commander
+341;Ghost Knight;Dark;300;44;44;80;80;60;0;0;0;0;0;0;None;None;255;144;0;0;None;0;Ghost Knight
+23;Glare;Water;320;33;47;80;120;70;10;0;0;0;0;0;None;None;99;0;70;18;Mind Purifier;8;Glare
+76;Screw Shell;Water;160;40;47;200;50;60;0;0;0;0;0;0;None;None;99;0;63;24;Healing Potion;8;Screw Shell
+91;Mermaid;Water;400;44;58;80;140;60;0;0;0;0;0;0;None;None;99;0;77;33;Spirit Potion;8;Mermaid
+110;Sea Piranha;Water;280;35;44;60;100;80;20;0;0;0;0;0;None;None;99;0;56;15;Spear Frost;8;Sea Piranha
+12;Flabby Troll;Earth;560;52;33;60;60;50;0;0;0;0;0;0;None;None;99;16;84;30;Knight Shield;2;Flabby Troll
+294;Lenus;Water;3000;44;60;100;180;55;0;0;0;0;0;0;None;None;255;128;0;0;Jeweled Crown;50;Lenus II
+279;Regole;Water;3000;59;37;120;80;45;0;0;0;0;0;0;None;None;255;144;7000;250;Frozen Jet;100;Regole
+53;Flying Rat;Wind;260;38;54;80;120;60;20;0;0;0;0;0;None;None;99;0;64;24;Angel's Prayer;8;Flying Rat
+73;Forest Runner;Wind;360;45;44;80;120;80;10;0;0;0;0;0;None;None;99;0;88;30;Recovery Ball;8;Forest Runner
+51;Wounded Bear;Earth;560;62;44;140;40;60;0;0;0;0;0;0;None;None;107;16;96;60;Attack Ball;8;Wounded Bear
+95;Dark Elf;Dark;450;42;44;70;180;70;0;0;0;0;0;0;None;None;99;0;80;36;Depetrifier;8;Dark Elf
+117;Moss Dresser;Earth;300;48;44;120;80;50;0;0;0;0;0;0;None;None;99;0;72;18;Healing Fog;8;Moss Dresser
+343;Kamuy;Non-Elemental;4000;65;65;100;150;70;0;0;0;0;0;0;None;None;255;144;8000;0;Darkness Stone;100;Kamuy
+339;Kamuy's Tree;Non-Elemental;0;0;0;50;50;50;0;0;0;0;0;0;None;None;255;144;0;0;None;0;Kamuy Dummy
+44;Puck;Earth;304;47;47;100;120;60;0;0;0;0;0;0;None;None;99;0;90;36;Dancer's Ring;2;Puck
+43;Fairy;Light;320;43;57;80;150;70;10;10;0;0;0;0;None;None;99;0;81;24;Sun Rhapsody;8;Fairy
+30;Gnome;Earth;256;53;47;160;70;50;0;0;0;0;0;0;Earth;None;255;0;108;42;Healing Potion;8;Gnome
+2;Spinninghead;Non-Elemental;384;40;57;80;160;60;0;0;0;0;0;0;None;None;255;128;99;30;Mind Purifier;8;Spinninghead
+111;Toad Stool;Earth;128;40;57;80;120;80;20;0;0;0;0;0;None;None;227;0;72;18;Body Purifier;8;Toad Stool
+316;S Virage(Head);Non-Elemental;10400;70;110;100;100;50;0;0;0;0;0;0;None;None;255;144;4000;200;Healing Rain;100;WS Virage(Head)
+317;S Virage(Body);Non-Elemental;10400;70;110;100;100;50;0;0;0;0;0;0;None;None;255;144;0;0;None;0;WS Virage(Body)
+318;S Virage(Arm);Non-Elemental;5200;80;110;100;100;50;0;0;0;0;0;0;None;None;255;144;0;0;None;0;WS Virage(Arm)
+335;Grand Jewel;Earth;4500;41;58;100;160;70;0;0;0;0;0;0;None;None;255;144;9000;300;Spectral Flash;100;Grand Jewel
+96;Baby Dragon;Thunder;240;50;50;140;80;60;0;0;0;0;0;0;None;None;99;0;100;27;Mind Purifier;8;Baby Dragon
+6;Beastie Dragon;Wind;336;66;42;130;90;50;0;0;0;0;0;0;None;None;99;16;110;33;Total Vanishing;8;Beastie Dragon
+112;Mega Sea Dragon;Fire;176;42;65;120;120;70;10;0;0;0;0;0;None;None;99;0;80;21;Gushing Magma;8;Mega Sea Dragon
+113;Deadly Spider;Earth;328;60;42;100;60;50;0;0;0;0;0;0;None;None;227;0;90;39;Body Purifier;8;Deadly Spider
+37;Wyvern;Wind;544;72;61;160;100;80;20;0;0;0;0;0;None;None;99;0;120;45;Down Burst;8;Wyvern
+283;Divine Dragon;Non-Elemental;5000;60;53;160;60;60;0;0;0;0;0;0;None;None;255;144;10000;300;Dragon Shield;20;Divine Dragon
+284;Divine Cannon;Non-Elemental;2000;51;60;160;60;50;0;0;0;0;0;0;None;None;255;144;0;0;Gravity Grabber;100;Divine Cannon
+285;Divine Ball;Non-Elemental;2000;51;53;160;60;50;0;0;0;0;0;0;None;None;255;144;0;0;Flash Hall;100;Divine Ball
+32;Freeze Knight;Water;360;56;68;120;160;50;0;0;0;0;0;0;Water;None;255;16;110;27;Fatal Blizzard;8;Freeze Knight
+48;Mammoth;Earth;1280;75;56;80;60;50;0;0;0;0;0;0;None;None;99;144;132;45;Stunning Hammer;8;Mammoth
+114;Icicle Ball;Water;160;68;48;160;100;60;0;0;0;0;0;0;None;None;99;0;121;21;Spirit Potion;8;Icicle Ball
+5;Land Skater;Water;312;51;56;100;120;60;10;0;0;0;0;0;None;None;99;0;88;33;Spear Frost;8;Land Skater
+67;Rocky Turtle;Earth;560;53;56;200;80;50;0;0;0;0;0;0;None;None;99;16;99;39;Guard Badge;2;Rocky Turtle
+347;Snow Cannon;Water;400;70;70;100;80;50;0;0;0;0;0;0;None;None;255;144;0;0;None;0;Snow Cannon
+346;Windigo;Water;10000;80;80;100;120;50;0;0;0;0;0;0;None;None;255;144;11000;250;Brass Knuckle;100;Windigo
+348;Heart;Water;3;68;68;60;60;50;0;0;0;0;0;0;None;None;255;147;0;0;None;0;Heart
+270;Lloyd;Non-Elemental;6000;80;65;100;150;65;0;0;0;0;0;0;None;None;255;144;12000;300;None;0;Lloyd II
+277;Lloyd Dome;Non-Elemental;0;0;0;50;50;50;0;0;0;0;0;0;None;None;255;144;0;0;None;0;Lloyd Dome
+49;Metal Fang;Thunder;656;74;105;80;120;70;5;0;0;0;0;0;None;None;99;0;135;42;Beast Fang;2;Metal Fang
+25;Dragon Soldier;Earth;488;122;86;160;100;50;0;0;0;0;0;0;None;None;99;0;180;60;Knight Shield;2;Dragon Soldier
+11;Basilisk;Earth;656;86;86;100;100;50;0;0;0;0;0;0;None;None;0;0;0;0;None;0;Basilisk
+56;Madman;Earth;1040;86;74;100;80;60;0;0;0;0;0;0;None;None;99;0;165;24;Body Purifier;8;Madman I
+144;Madman;Earth;1040;86;74;100;80;60;0;0;0;0;0;0;None;None;99;0;165;24;Body Purifier;8;Madman II
+345;Faust;Non-Elemental;25600;125;125;50;200;50;0;20;0;0;0;0;None;None;255;144;0;0;None;0;Faust Copy
+344;Faust;Non-Elemental;25600;125;125;50;200;50;0;20;0;0;0;0;None;None;255;144;20000;10000;Phantom Shield;100;Faust
+342;Mazo;Non-Elemental;800;101;101;50;200;50;0;0;0;0;0;0;None;None;255;144;0;0;None;0;Dummy Faust
+57;Wildman;Thunder;720;65;58;100;60;50;0;0;0;0;0;0;None;None;99;0;120;36;Giganto Ring;2;Wildman
+31;Bowling;Non-Elemental;400;70;50;160;80;60;0;0;0;0;0;0;None;None;255;0;132;42;Attack Ball;8;Bowling
+50;Windy Weasel;Wind;320;50;70;80;100;70;20;0;0;0;0;0;None;None;99;0;96;21;Rave Twister;8;Windy Weasel
+20;White Ape;Earth;500;81;58;120;80;50;0;0;0;0;0;0;None;None;99;0;144;51;Healing Potion;8;White Ape
+116;Mr. Bone;Dark;450;58;58;120;120;60;0;0;0;0;0;0;None;None;99;0;108;30;Bastard Sword;2;Mr. Bone
+349;Polter Helm;Dark;2400;71;71;100;160;50;0;0;0;0;0;0;None;None;255;144;6000;200;None;0;Polter Helm
+350;Polter Armor;Dark;4000;71;116;160;140;50;0;0;0;0;0;0;None;None;255;144;0;0;Smoke Ball;100;Polter Armor
+351;Polter Sword;Dark;3200;134;71;120;120;100;0;0;0;0;0;0;None;None;255;144;0;0;Soul Eater;100;Polter Sword
+39;Spring Hitter;Non-Elemental;400;64;60;150;80;70;0;0;0;0;0;0;None;None;255;0;117;21;Healing Fog;8;Spring Hitter
+47;Succubus;Dark;440;60;60;100;150;60;0;0;0;0;0;0;None;None;99;0;130;42;Platinum Collar;2;Succubus
+65;Maximum Volt;Thunder;560;85;74;160;60;60;0;0;0;0;0;0;Thunder;None;255;0;156;51;Flash Hall;8;Maximum Volt
+63;Witch;Light;360;51;85;80;200;60;0;5;0;0;0;0;None;None;99;0;104;36;Angel's Prayer;8;Witch
+41;Terminator;Non-Elemental;432;71;51;120;80;80;0;0;0;0;0;0;None;None;255;0;143;30;Total Vanishing;8;Terminator
+295;Damia;Water;9000;116;116;100;200;60;0;0;0;0;0;0;None;None;255;128;6000;300;Blue Sea Stone;100;Damia
+296;Syuveil;Wind;10000;152;98;150;120;50;10;0;0;0;0;0;None;None;255;128;6000;300;Jade Stone;100;Syuveil
+297;Belzac;Earth;16000;178;71;200;80;50;0;0;0;0;0;0;None;None;255;128;6000;300;Golden Stone;100;Belzac
+298;Kanzas;Thunder;12000;134;107;120;150;70;10;0;0;0;0;0;None;None;255;128;6000;300;Violet Stone;200;Kanzas
+89;Cactus;Earth;320;67;67;150;150;60;0;0;0;0;0;0;None;None;99;0;126;36;Recovery Ball;15;Cactus
+3;Sandworm;Earth;1440;80;63;80;80;50;0;0;0;0;0;0;None;None;99;16;168;51;Spirit Potion;8;Sandworm
+61;Spiky Beetle;Earth;480;70;63;160;120;60;0;0;0;0;0;0;None;None;99;0;140;42;Attack Ball;8;Spiky Beetle
+36;Canbria Dayfly;Wind;520;58;76;100;140;70;10;0;0;0;0;0;None;None;227;0;112;30;Body Purifier;8;Canbria Dayfly
+75;Scud Shark;Water;400;65;65;130;120;60;0;0;0;0;0;0;None;None;99;16;150;39;Body Purifier;8;Scud Shark
+60;Jelly;Water;640;60;79;80;250;70;0;0;0;0;0;0;None;None;99;0;120;24;Healing Fog;10;Jelly
+72;Stern Fish;Water;856;79;65;160;100;80;0;0;0;0;0;0;None;None;99;16;165;54;Frozen Jet;8;Stern Fish
+9;Minotaur;Earth;960;90;65;160;100;50;0;0;0;0;0;0;None;None;107;16;180;48;Heavy Mace;2;Minotaur
+121;Aqua King;Water;640;67;65;120;160;70;0;0;0;0;0;0;None;None;99;0;135;30;Angel's Prayer;8;Aqua King
+365;Last Kraken;Water;10000;98;80;140;200;50;0;0;0;0;0;0;None;None;255;144;12000;300;Pretty Hammer;100;Last Kraken
+366;Cleone;Water;1360;65;71;60;160;60;0;0;0;0;0;0;None;None;255;144;0;0;None;0;Cleone
+80;Professor;Wind;799;58;83;100;180;70;10;0;0;0;0;0;None;None;99;0;176;54;Sage's Cloak;2;Professor
+40;Guillotine;Dark;621;65;83;150;120;60;0;0;0;0;0;0;None;None;255;0;160;39;Healing Breeze;8;Guillotine
+97;Harpy;Wind;600;76;71;120;160;60;0;0;0;0;0;0;None;None;0;0;0;0;None;0;Harpy
+122;Sky Chaser;Wind;680;67;67;100;100;60;20;0;0;0;0;0;None;None;99;16;128;30;Body Purifier;8;Sky Chaser
+118;Death Purger;Dark;532;83;58;120;100;50;10;0;0;0;0;0;None;None;127;128;144;24;Total Vanishing;8;Death Purger
+360;Vector;Dark;4000;89;67;100;100;50;0;0;0;0;0;0;None;None;255;144;12000;300;None;0;Vector
+361;Selebus;Dark;3000;71;95;120;180;60;10;0;0;0;0;0;None;None;255;144;0;0;None;0;Kubila
+362;Kubila;Dark;3500;80;75;140;140;55;0;0;0;0;0;0;None;None;255;144;0;0;None;0;Selebus
+84;Undead;Dark;568;75;72;100;60;70;0;0;0;0;0;0;None;None;127;0;153;39;Mind Purifier;8;Undead
+78;Loner Knight;Dark;720;83;72;140;140;60;0;0;0;0;0;0;None;None;255;0;187;48;Soul Eater;2;Loner Knight
+10;Hyper Skeleton;Dark;960;95;72;180;80;60;0;0;0;0;0;0;None;None;255;144;204;54;Spear of Terror;2;Hyper Skeleton
+101;Specter;Dark;266;67;107;100;250;75;50;0;0;0;0;0;None;None;99;0;170;30;Midnight Terror;8;Specter II
+152;Specter;Dark;266;72;107;100;250;75;50;0;0;0;0;0;None;None;99;0;170;30;Midnight Terror;8;Specter II
+125;Human Hunter;Non-Elemental;355;90;72;160;100;70;0;0;0;0;0;0;None;None;255;0;136;24;Recovery Ball;8;Human Hunter
+352;Dragon Spirit;Non-Elemental;16000;107;116;160;100;60;0;0;0;0;0;0;None;None;255;144;8000;400;Flash Hall;100;Divine Dragon Spirit
+383;Dragon Spirit Dummy;Non-Elemental;16000;107;116;160;100;60;0;0;0;0;0;0;None;None;255;144;0;0;None;0;Divine Dragon Spirit Dummy
+353;Dragon Spirit;Water;12000;98;71;80;120;60;0;5;0;0;0;0;None;None;255;144;6000;300;Frozen Jet;100;Regole Spirit
+384;Dragon Spirit Dummy;Water;12000;98;71;80;120;60;0;0;0;0;0;0;None;None;255;140;0;0;None;0;Regole Spirit Dummy
+354;Dragon Spirit;Wind;8000;89;71;100;80;60;0;0;0;0;0;0;None;None;255;144;4000;200;Down Burst;100;Feyrbrand Spirit
+385;Dragon Spirit Dummy;Wind;8000;89;71;100;80;60;0;0;0;0;0;0;None;None;255;144;0;0;None;0;Feyrbrand Spirit Dummy
+363;Zackwell;Dark;8000;125;88;140;170;60;0;0;0;0;0;0;None;None;255;144;0;0;Healing Rain;100;
+364;Lavitz's Spirit;Wind;5000;88;88;120;80;50;0;0;0;0;0;0;None;None;255;144;12000;300;Halberd;50;Lavitz's Spirit
+77;Potbelly;Earth;560;76;91;120;100;60;0;0;0;0;0;0;None;None;99;0;144;24;Healing Breeze;8;Potbelly
+62;Slug;Earth;1200;89;80;100;100;60;0;0;0;0;0;0;None;None;99;0;180;33;Mind Purifier;10;Slug
+98;Cute Cat;Thunder;640;71;91;140;180;70;5;5;0;0;0;0;None;None;99;0;162;51;Dancer's Boots;2;Cute Cat
+7;Manticore;Dark;960;80;91;150;160;50;0;0;0;0;0;0;None;None;99;16;216;60;Depetrifier;8;Manticore
+126;Mountain Ape;Earth;1000;95;64;120;60;50;0;0;0;0;0;0;None;None;99;0;198;42;Angel's Prayer;10;Mountain Ape
+93;Unicorn;Light;1280;76;108;140;160;60;0;0;0;0;0;0;None;None;99;0;380;51;Healing Rain;2;Unicorn
+34;Mad Skull;Thunder;799;107;93;250;100;65;0;0;0;0;0;0;None;None;255;128;400;51;Flash Hall;8;Mad Skull
+128;Swift Dragon;Fire;888;66;76;120;120;80;0;0;0;0;0;0;None;None;99;0;228;24;Burning Wave;8;Swift Dragon
+120;Trap Plant;Water;1680;80;76;100;180;60;0;0;0;0;0;0;None;None;99;16;304;42;Frozen Jet;8;Trap Plant
+81;Psyche Druid;Light;2000;53;108;100;160;60;0;5;0;0;0;0;None;None;255;128;638;84;Spectral Flash;8;Psyche Druid
+71;Triceratops;Earth;3200;134;53;160;100;80;0;0;0;0;0;0;None;None;99;144;2000;120;Gravity Grabber;8;Triceratops
+127;Roulette Face;Dark;2400;71;93;120;200;60;0;0;0;0;0;0;None;None;255;128;360;42;Night Raid;8;Roulette Face
+123;Air Combat;Wind;1080;93;76;160;120;50;5;0;0;0;0;0;None;None;99;0;456;33;Down Burst;8;Air Combat
+87;Cursed Jar;Non-Elemental;4;0;0;100;100;200;0;0;0;1;0;0;None;None;255;134;300;0;Night Raid;100;Cursed Jar
+124;Treasure Jar;Non-Elemental;5;0;0;100;100;200;0;0;1;0;0;0;None;None;255;137;0;0;Ruby Ring;100;Treasure Jar
+139;Lucky Jar;Non-Elemental;6;0;0;100;100;200;0;0;1;1;0;0;None;None;127;140;1000;0;Moon Serenade;100;Lucky Jar
+42;00PARTS;Non-Elemental;4;0;0;100;100;150;50;50;0;0;0;0;None;None;255;131;0;600;Spirit Potion;100;00PARTS
+138;Yellow Bird;Earth;4;0;0;100;100;120;50;20;0;0;0;0;None;None;255;131;0;300;Elude Cloak;10;Yellow Bird
+136;Blue Bird;Water;5;0;0;100;100;120;50;0;0;1;0;0;None;None;255;134;1000;0;None;0;Blue Bird
+137;Red Bird;Fire;5;0;0;100;100;120;0;50;1;0;0;0;None;None;255;137;0;1000;Phoenix Plume;100;Red Bird
+54;Rainbow Bird;Non-Elemental;4;0;0;100;100;120;0;0;1;1;0;0;None;None;251;140;3000;0;Rainbow Dress;10;Rainbow Bird
