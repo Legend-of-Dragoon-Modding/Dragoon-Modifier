@@ -59,6 +59,7 @@ public class BattleController {
                         i++;
                     }
                 }
+                /*
                 if (Globals.DRAGOON_CHANGE == true) {
                     for (int character; character < 8; character++) {
                         for (int level; level < 5; level++) {
@@ -67,6 +68,7 @@ public class BattleController {
                         }
                     }
                 }
+                */
             }
         }
     }
