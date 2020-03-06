@@ -45,30 +45,51 @@ public class BattleController {
                 Globals.EXITING_BATTLE = 2;
                 Constants.WriteOutput("Exiting out of battle.");
                 if (Globals.ITEM_CHANGE == true) {
-                    emulator.WriteAOB(0xB6BF14 - 0xA579A0, String.Join(" ", Globals.DICTIONARY.DescriptionList));
+                    Constants.WriteOutput("Changing Item table...");
+                    emulator.WriteAOB(0x114574, String.Join(" ", Globals.DICTIONARY.DescriptionList));
                     emulator.WriteAOB(0x117E10, String.Join(" ", Globals.DICTIONARY.NameList));
                     int i = 0;
                     foreach (dynamic item in Globals.DICTIONARY.ItemList) {
                         if (i < 194) {
-                            emulator.WriteByteU((long)(0x111FF1 + i * 28) + Constants.OFFSET, item.Type);
-                            emulator.WriteByteU((long)(0x111FF1 + i * 28 + 2) + Constants.OFFSET, item.Equips);
-                            emulator.WriteByteU((long)(0x111FF1 + i * 28 + 13) + Constants.OFFSET, item.Icon);
+                            emulator.WriteByteU((long)(0x111FF1 + i * 0x1C) + Constants.OFFSET, item.Type);
+                            emulator.WriteByteU((long)(0x111FF1 + i * 0x1C + 0x2) + Constants.OFFSET, item.Equips);
+                            emulator.WriteByteU((long)(0x111FF1 + i * 0x1C + 0x3) + Constants.OFFSET, item.Element);
+                            emulator.WriteByteU((long)(0x111FF1 + i * 0x1C + 0x1A) + Constants.OFFSET, item.Status);
+                            emulator.WriteByteU((long)(0x111FF1 + i * 0x1C + 0x17) + Constants.OFFSET, item.Status_Chance);
+                            emulator.WriteByteU((long)(0x111FF1 + i * 0x1C + 0x9) + Constants.OFFSET, item.AT);
+                            emulator.WriteByteU((long)(0x111FF1 + i * 0x1C + 0x10) + Constants.OFFSET, item.MAT);
+                            emulator.WriteByteU((long)(0x111FF1 + i * 0x1C + 0x11) + Constants.OFFSET, item.DF);
+                            emulator.WriteByteU((long)(0x111FF1 + i * 0x1C + 0x12) + Constants.OFFSET, item.MDF);
+                            emulator.WriteByteU((long)(0x111FF1 + i * 0x1C + 0xE) + Constants.OFFSET, item.SPD);
+                            emulator.WriteByteU((long)(0x111FF1 + i * 0x1C + 0x13) + Constants.OFFSET, item.A_Hit);
+                            emulator.WriteByteU((long)(0x111FF1 + i * 0x1C + 0x14) + Constants.OFFSET, item.M_Hit);
+                            emulator.WriteByteU((long)(0x111FF1 + i * 0x1C + 0x15) + Constants.OFFSET, item.A_AV);
+                            emulator.WriteByteU((long)(0x111FF1 + i * 0x1C + 0x16) + Constants.OFFSET, item.M_AV);
+                            emulator.WriteByteU((long)(0x111FF1 + i * 0x1C + 0x5) + Constants.OFFSET, item.E_Half);
+                            emulator.WriteByteU((long)(0x111FF1 + i * 0x1C + 0x6) + Constants.OFFSET, item.E_Immune);
+                            emulator.WriteByteU((long)(0x111FF1 + i * 0x1C + 0x7) + Constants.OFFSET, item.Stat_Res);
+                            emulator.WriteByteU((long)(0x111FF1 + i * 0x1C + 0xD) + Constants.OFFSET, item.Icon);
                         }
-                        emulator.WriteInteger(0xB6F3B0 - 0xA579A0 + i * 4, item.DescriptionPointer);
-                        emulator.WriteInteger(0x11972C + i * 4, item.NamePointer);
+                        emulator.WriteInteger(0x117A10 + i * 0x4, item.DescriptionPointer);
+                        emulator.WriteInteger(0x11972C + i * 0x4, item.NamePointer);
                         i++;
                     }
                 }
-                /*
+                
                 if (Globals.DRAGOON_CHANGE == true) {
-                    for (int character; character < 8; character++) {
-                        for (int level; level < 5; level++) {
-                            // transfrom table, albert, kongol, dart, haschel, meru, miranda, lavitz, rose, shana
-                            // Dart 0xB6954C
+                    Constants.WriteOutput("Changing Dragoon Stat table...");
+                    Thread.Sleep(1000);
+                    int[] charReorder = new int[] { 5, 7, 0, 4, 6, 8, 1, 3, 2 };
+                    for (int character = 0; character < 8; character++) {
+                        int reorderedChar = charReorder[character];
+                        for (int level = 1; level < 6; level++) {
+                            emulator.WriteByte((long)(0x111B4C + character * 0x30 + level * 0x8 + 0x4), Globals.DICTIONARY.DragoonStats[reorderedChar][level].DAT);
+                            emulator.WriteByte((long)(0x111B4C + character * 0x30 + level * 0x8 + 0x5), Globals.DICTIONARY.DragoonStats[reorderedChar][level].DMAT);
+                            emulator.WriteByte((long)(0x111B4C + character * 0x30 + level * 0x8 + 0x6), Globals.DICTIONARY.DragoonStats[reorderedChar][level].DDF);
+                            emulator.WriteByte((long)(0x111B4C + character * 0x30 + level * 0x8 + 0x7), Globals.DICTIONARY.DragoonStats[reorderedChar][level].DMDF);
                         }
                     }
                 }
-                */
             }
         }
     }
@@ -183,10 +204,12 @@ public class BattleController {
             for (int character = 0; character < 3; character++) {
                 if (Globals.PARTY_SLOT[character] < 9) {
                     int dlv = Globals.CHARACTER_TABLE[character].Read("DLV");
-                    Globals.CHARACTER_TABLE[character].Write("DAT", Globals.DICTIONARY.DragoonStats[Globals.PARTY_SLOT[character]][dlv].DAT);
-                    Globals.CHARACTER_TABLE[character].Write("DMAT", Globals.DICTIONARY.DragoonStats[Globals.PARTY_SLOT[character]][dlv].DMAT);
-                    Globals.CHARACTER_TABLE[character].Write("DDF", Globals.DICTIONARY.DragoonStats[Globals.PARTY_SLOT[character]][dlv].DDF);
-                    Globals.CHARACTER_TABLE[character].Write("DMDF", Globals.DICTIONARY.DragoonStats[Globals.PARTY_SLOT[character]][dlv].DMDF);
+                    if (dlv != 0) {
+                        Globals.CHARACTER_TABLE[character].Write("DAT", Globals.DICTIONARY.DragoonStats[Globals.PARTY_SLOT[character]][dlv].DAT);
+                        Globals.CHARACTER_TABLE[character].Write("DMAT", Globals.DICTIONARY.DragoonStats[Globals.PARTY_SLOT[character]][dlv].DMAT);
+                        Globals.CHARACTER_TABLE[character].Write("DDF", Globals.DICTIONARY.DragoonStats[Globals.PARTY_SLOT[character]][dlv].DDF);
+                        Globals.CHARACTER_TABLE[character].Write("DMDF", Globals.DICTIONARY.DragoonStats[Globals.PARTY_SLOT[character]][dlv].DMDF);
+                    }     
                 }
             }
             int i = 0;

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Collections;
 using System.Windows.Controls;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace Dragoon_Modifier {
     public partial class MainWindow {
@@ -572,6 +573,7 @@ namespace Dragoon_Modifier {
             IDictionary<int, dynamic> statList = new Dictionary<int, dynamic>();
             IDictionary<int, dynamic> ultimateStatList = new Dictionary<int, dynamic>();
             List<int[]>[] shopList = new List<int[]>[39];
+            dynamic[][] characterStats = new dynamic[9][];
             List<int> monsterScript = new List<int>();
             IDictionary<int, Dictionary<int, dynamic>> dragoonStats = new Dictionary<int, Dictionary<int, dynamic>>();
             IDictionary<int, string> num2item = new Dictionary<int, string>();
@@ -588,6 +590,7 @@ namespace Dragoon_Modifier {
         {128, "Fire" }
     };
             IDictionary<string, int> element2num = new Dictionary<string, int>() {
+                {"", 0 },
                 {"none", 0 },
                 {"water", 1 },
                 {"earth", 2 },
@@ -598,6 +601,25 @@ namespace Dragoon_Modifier {
                 {"wind", 64 },
                 {"fire", 128 }
             };
+            IDictionary<string, int> status2num = new Dictionary<string, int>() {
+                {"none", 0 },
+                {"petrification", 1 },
+                {"pe", 1 },
+                {"bewitchment", 2 },
+                {"be", 2 },
+                {"confusion", 4 },
+                {"cn", 4 },
+                {"fear", 8 },
+                {"fe", 8 },
+                {"stun", 16 },
+                {"st", 16 },
+                {"armblocking", 32 },
+                {"ab", 32 },
+                {"dispirit", 64 },
+                {"ds", 64 },
+                {"poison", 128 },
+                {"po", 128 }
+            };
 
             public List<dynamic> ItemList { get { return itemList; } }
             public List<string> DescriptionList { get { return descriptionList; } }
@@ -605,11 +627,13 @@ namespace Dragoon_Modifier {
             public IDictionary<int, dynamic> StatList { get { return statList; } }
             public IDictionary<int, dynamic> UltimateStatList { get { return ultimateStatList; } }
             public List<int[]>[] ShopList { get { return shopList; } }
+            public dynamic[][] CharacterStats { get { return characterStats; } }
             public List<int> MonsterScript { get { return monsterScript; } }
             public IDictionary<int, string> Num2Item { get { return num2item; } }
             public IDictionary<string, int> Item2Num { get { return item2num; } }
             public IDictionary<int, string> Num2Element { get { return num2element; } }
             public IDictionary<string, int> Element2Num { get { return element2num; } }
+            public IDictionary<string, int> Status2Num { get { return status2num; } }
             public IDictionary<int, Dictionary<int, dynamic>> DragoonStats { get { return dragoonStats; } }
 
             public LoDDict() {
@@ -659,6 +683,34 @@ namespace Dragoon_Modifier {
                             offset += (item.EncodedName.Replace(" ", "").Length / 2);
                         }
                     }
+                    for (int i = 0; i < characterStats.Length; i++) {
+                        characterStats[i] = new dynamic[61];
+                    }
+                    try { 
+                        using (var characterData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Character_Stats.csv")) {
+                            var i = 0;
+                            while (!characterData.EndOfStream) {
+                                var line = characterData.ReadLine();
+                                if (i > 1) {
+                                    var values = line.Split(';').ToArray();
+                                    int level = int.Parse(values[0]);
+                                    characterStats[0][level] = new CharacterStats(values[1], values[2], values[3], values[4], values[5], values[6]);
+                                    characterStats[1][level] = new CharacterStats(values[7], values[8], values[9], values[10], values[11], values[12]);
+                                    characterStats[2][level] = new CharacterStats(values[13], values[14], values[15], values[16], values[17], values[18]);
+                                    characterStats[3][level] = new CharacterStats(values[19], values[20], values[21], values[22], values[23], values[24]);
+                                    characterStats[4][level] = new CharacterStats(values[25], values[26], values[27], values[28], values[29], values[30]);
+                                    characterStats[5][level] = new CharacterStats(values[7], values[8], values[9], values[10], values[11], values[12]);
+                                    characterStats[6][level] = new CharacterStats(values[31], values[32], values[33], values[34], values[35], values[36]);
+                                    characterStats[7][level] = new CharacterStats(values[37], values[38], values[39], values[40], values[41], values[42]);
+                                    characterStats[8][level] = new CharacterStats(values[13], values[14], values[15], values[16], values[17], values[18]);
+                                }
+                                i++;
+                            }
+                        }
+                    } catch (FileNotFoundException) {
+                        string file = cwd + @"Mods\" + Globals.MOD + @"\Character_Stats.csv";
+                        Constants.WriteDebug(file + " not found. Turning off Stat and Equip Changes.");
+                    }
                     try {
                         using (var monsterData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Monster_Data.csv")) {
                             bool firstline = true;
@@ -684,7 +736,7 @@ namespace Dragoon_Modifier {
                             while (!monsterData.EndOfStream) {
                                 var line = monsterData.ReadLine();
                                 if (firstline == false) {
-                                    var values = line.Split(',').ToArray();
+                                    var values = line.Split(';').ToArray();
                                     ultimateStatList.Add(Int32.Parse(values[0]), new StatList(values, element2num, item2num));
                                 } else {
                                     firstline = false;
@@ -719,18 +771,18 @@ namespace Dragoon_Modifier {
                         while (!dragoon.EndOfStream) {
                             var line = dragoon.ReadLine();
                             if (firstline == false) {
-                                var values = line.Split(',').ToArray();
+                                var values = line.Split(';').ToArray();
                                 Dictionary<int, dynamic> level = new Dictionary<int, dynamic>();
                                 level.Add(1, new DragoonStats(Int32.Parse(values[1]), Int32.Parse(values[2]), Int32.Parse(values[3]), Int32.Parse(values[4])));
                                 level.Add(2, new DragoonStats(Int32.Parse(values[5]), Int32.Parse(values[6]), Int32.Parse(values[7]), Int32.Parse(values[8])));
                                 level.Add(3, new DragoonStats(Int32.Parse(values[9]), Int32.Parse(values[10]), Int32.Parse(values[11]), Int32.Parse(values[12])));
                                 level.Add(4, new DragoonStats(Int32.Parse(values[13]), Int32.Parse(values[14]), Int32.Parse(values[15]), Int32.Parse(values[16])));
                                 level.Add(5, new DragoonStats(Int32.Parse(values[17]), Int32.Parse(values[18]), Int32.Parse(values[19]), Int32.Parse(values[20])));
-                                dragoonStats.Add(i - 1, level);
+                                dragoonStats.Add(i, level);
+                                i++;
                             } else {
                                 firstline = false;
                             }
-                            i++;
                         }
                     }
                 } catch (FileNotFoundException) {
@@ -748,7 +800,7 @@ namespace Dragoon_Modifier {
                         while (!shop.EndOfStream) {
                             var line = shop.ReadLine();
                             if (row > 1) {
-                                var values = line.Split(',').ToArray();
+                                var values = line.Split(';').ToArray();
                                 int column = 0;
                                 foreach (string number in values) {
                                     if (column % 2 == 0 && number != "") {
@@ -778,7 +830,7 @@ namespace Dragoon_Modifier {
                         while (!shop.EndOfStream) {
                             var line = shop.ReadLine();
                             if (i > 0) {
-                                var values = line.Split(',').ToArray();
+                                var values = line.Split(';').ToArray();
                                 Globals.DRAGOON_SPELLS.Add(new DragoonSpells(values, element2num));
                             }
                             i++;
@@ -803,6 +855,24 @@ namespace Dragoon_Modifier {
             byte icon = 0;
             byte equips = 0;
             byte type = 0;
+            byte element = 0;
+            byte status = 0;
+            byte status_chance = 0;
+            byte at = 0;
+            byte mat = 0;
+            byte df = 0;
+            byte mdf = 0;
+            byte spd = 0;
+            byte a_hit = 0;
+            byte m_hit = 0;
+            byte a_av = 0;
+            byte m_av = 0;
+            byte e_half = 0;
+            byte e_immune = 0;
+            byte stat_res = 0;
+            byte special1 = 0;
+            byte special2 = 0;
+            byte special_ammount = 0;
             Dictionary<string, byte> iconDict = new Dictionary<string, byte>() {
                 { "sword", 0 },
                 { "axe", 1 },
@@ -867,6 +937,40 @@ namespace Dragoon_Modifier {
                 {"none", 0},
                 {"", 0 }
             };
+            Dictionary<string, byte> element2num = new Dictionary<string, byte>() {
+                {"", 0 },
+                {"none", 0 },
+                {"water", 1 },
+                {"earth", 2 },
+                {"dark", 4 },
+                {"non-elemental", 8 },
+                {"thunder", 16 },
+                {"light", 32 },
+                {"wind", 64 },
+                {"fire", 128 }
+            };
+            Dictionary<string, byte> status2num = new Dictionary<string, byte>() {
+                {"", 0 },
+                {"none", 0 },
+                {"death", 0 },
+                {"petrification", 1 },
+                {"pe", 1 },
+                {"bewitchment", 2 },
+                {"be", 2 },
+                {"confusion", 4 },
+                {"cn", 4 },
+                {"fear", 8 },
+                {"fe", 8 },
+                {"stun", 16 },
+                {"st", 16 },
+                {"armblocking", 32 },
+                {"ab", 32 },
+                {"dispirit", 64 },
+                {"ds", 64 },
+                {"poison", 128 },
+                {"po", 128 },
+                {"all", 255 }
+            };
 
             public int ID { get { return id; } }
             public string Name { get { return name; } }
@@ -878,6 +982,24 @@ namespace Dragoon_Modifier {
             public byte Icon { get { return icon; } }
             public byte Equips { get { return equips; } }
             public byte Type { get { return type; } }
+            public byte Element { get { return element; } }
+            public byte Status { get { return status; } }
+            public byte Status_Chance { get { return status_chance; } }
+            public byte AT { get { return at; } }
+            public byte MAT { get { return mat; } }
+            public byte DF { get { return df; } }
+            public byte MDF { get { return mdf; } }
+            public byte SPD { get { return spd; } }
+            public byte A_Hit { get { return a_hit; } }
+            public byte M_Hit { get { return m_hit; } }
+            public byte A_AV { get { return a_av; } }
+            public byte M_AV { get { return m_av; } }
+            public byte E_Half { get { return e_half; } }
+            public byte E_Immune { get { return e_immune; } }
+            public byte Stat_Res { get { return stat_res; } }
+            public byte Special1 { get { return special1; } }
+            public byte Special2 { get { return special2; } }
+            public byte Special_Ammount { get { return special_ammount; } }
 
             public ItemList(int index, string[] values) {
                 byte key = 0;
@@ -903,11 +1025,98 @@ namespace Dragoon_Modifier {
                 } else {
                     Constants.WriteDebug(values[3] + " not found as icon for item: " + name);
                 }
-                description = values[4];
+                if (element2num.TryGetValue(values[4].ToLower(), out key)) {
+                    element = key;
+                } else {
+                    Constants.WriteDebug(values[4] + " not found as element for item: " + name);
+                }
+                if (status2num.TryGetValue(values[5].ToLower(), out key)) {
+                    status = key;
+                } else {
+                    Constants.WriteDebug(values[5] + " not found as Status for item: " + name);
+                }
+                if (Byte.TryParse(values[6], NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+                    status_chance = key;
+                } else if (values[6] != "") {
+                    Constants.WriteDebug(values[6] + " not found as Status Chance for item: " + name);
+                }
+                if (Byte.TryParse(values[7], NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+                    at = key;
+                } else if (values[7] != "") {
+                    Constants.WriteDebug(values[7] + " not found as AT for item: " + name);
+                }
+                if (Byte.TryParse(values[8], NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+                    mat = key;
+                } else if (values[8] != "") {
+                    Constants.WriteDebug(values[8] + " not found as MAT for item: " + name);
+                }
+                if (Byte.TryParse(values[9], NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+                    df = key;
+                } else if (values[9] != "") {
+                    Constants.WriteDebug(values[9] + " not found as DF for item: " + name);
+                }
+                if (Byte.TryParse(values[10], NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+                    mdf = key;
+                } else if (values[10] != "") {
+                    Constants.WriteDebug(values[10] + " not found as MDF for item: " + name);
+                }
+                if (Byte.TryParse(values[11], NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+                    spd = key;
+                } else if (values[11] != "") {
+                    Constants.WriteDebug(values[11] + " not found as SPD for item: " + name);
+                }
+                if (Byte.TryParse(values[12], NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+                    a_hit = key;
+                } else if (values[12] != "") {
+                    Constants.WriteDebug(values[12] + " not found as A_Hit for item: " + name);
+                }
+                if (Byte.TryParse(values[13], NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+                    m_hit = key;
+                } else if (values[13] != "") {
+                    Constants.WriteDebug(values[13] + " not found as M_Hit for item: " + name);
+                }
+                if (Byte.TryParse(values[14], NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+                    a_av = key;
+                } else if (values[14] != "") {
+                    Constants.WriteDebug(values[14] + " not found as A_AV for item: " + name);
+                }
+                if (Byte.TryParse(values[15], NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+                    m_av = key;
+                } else if (values[15] != "") {
+                    Constants.WriteDebug(values[15] + " not found as M_AV for item: " + name);
+                }
+                foreach (string substring in values[16].Replace(" ", "").Split(',')) {
+                    if (element2num.TryGetValue(substring.ToLower(), out key)) {
+                        e_half |= key;
+                    } else {
+                        Constants.WriteDebug(substring + " not found as E_Half for item:" + name);
+                    }
+                }
+                foreach (string substring in values[17].Replace(" ", "").Split(',')) {
+                    if (element2num.TryGetValue(substring.ToLower(), out key)) {
+                        e_immune |= key;
+                    } else {
+                        Constants.WriteDebug(substring + " not found as E_Immune for item:" + name);
+                    }
+                }
+                foreach (string substring in values[18].Replace(" ", "").Split(',')) {
+                    if (status2num.TryGetValue(substring.ToLower(), out key)) {
+                        stat_res |= key;
+                    } else {
+                        Constants.WriteDebug(substring + " not found as Status_Resist for item:" + name);
+                    }
+                }
+                // special 1
+                // special 2
+                if (Byte.TryParse(values[21], NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+                    special_ammount = key;
+                } else if (values[21] != "") {
+                    Constants.WriteDebug(values[21] + " not found as Special_Ammount for item: " + name);
+                }
+                description = values[22];
                 if (description != "") {
                     encodedDescription = StringEncode(description);
                 }
-                
             }
         }
 
@@ -1089,6 +1298,31 @@ namespace Dragoon_Modifier {
                 accuracy = (byte)Convert.ToInt32(values[3]);
                 mp = (byte)Convert.ToInt32(values[4]);
                 element = (byte)Element2Num[values[5].ToLower()];
+            }
+        }
+
+        public class CharacterStats {
+            short max_hp = 1;
+            byte spd = 1;
+            byte at = 1;
+            byte mat = 1;
+            byte df = 1;
+            byte mdf = 1;
+
+            public short Max_HP { get { return max_hp; } }
+            public byte SPD { get { return spd; } }
+            public byte AT { get { return at; } }
+            public byte MAT { get { return mat; } }
+            public byte DF { get { return df; } }
+            public byte MDF { get { return mdf; } }
+            
+            public CharacterStats(string nmax_hp, string nspd, string nat, string nmat, string ndf, string nmdf) {
+                max_hp = Int16.Parse(nmax_hp);
+                spd = Convert.ToByte(nspd, 10);
+                at = Convert.ToByte(nat, 10);
+                mat = Convert.ToByte(nmat, 10);
+                df = Convert.ToByte(ndf, 10);
+                mdf = Convert.ToByte(nmdf, 10);
             }
         }
 
