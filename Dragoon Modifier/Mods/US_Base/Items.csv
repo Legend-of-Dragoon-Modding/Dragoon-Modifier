@@ -56,23 +56,23 @@ Lion Fur;Armor;Kongol;Loincloth;;;;;;46;20;;;;;;;;;;;;
 Breast Plate;Armor;Kongol;Breastplate;;;;;;59;14;;;;;;;;;;;; 
 Giganto Armor;Armor;Kongol;Armor;;;;;;75;20;;;;;;;;;;;;Gain 20 SP when<LINE>attacked<LINE>physically.
 Gold DG Armor;Armor;Kongol;Armor;;;;;;88;23;;;;;;;Earth;;;;;Nullifies damage<LINE>from earth-based<LINE>attacks.
-Disciple Vest;Armor;Haschel;Warrior Dress;;;;;;13;8;;;;;;;;;;;; 
-Warrior Dress;Armor;Haschel;Warrior Dress;;;;;;25;23;;;;;;;;;;;; 
-Master's Vest;Armor;Haschel;Warrior Dress;;;;;;30;29;;;;;;;;;;;;Gain 20 SP when<LINE>attacked<LINE>physically.
-Energy Girdle;Armor;Haschel;Warrior Dress;;;;;;37;26;;;;;;;;;;;;Attacks generate<LINE>50% more SP.
-Violet DG Armor;Armor;Haschel;Warrior Dress;;;;;;45;40;;;;;;;Thunder;;;;;Nullifies damage<LINE>from thunder-based<LINE>attacks.
-Clothes;Armor;Female;Robe;;;;;;4;5;;;;;;;;;;;; 
-Leather Jacket;Armor;Shana, Rose;Robe;;;;;;7;12;;;;;;;;;;;; 
-Silver Vest;Armor;Female;Robe;;;;;;13;17;;;;;;;;;;;; 
-Sparkle Dress;Armor;Female;Robe;;;;;;19;45;;;;;;;;;;;;Gain 20 SP when<LINE>attacked<LINE>physically.
-Robe;Armor;Female;Robe;;;;;;25;35;;;;;;;;;;;;Gain 20 SP when<LINE>magically attacked.
-Silver DG Armor;Armor;Shana;Armor;;;;;;27;80;;;;;;;Light;;;;;Nullifies damage<LINE>from light-based<LINE>attacks.
-Dark DG Armor;Armor;Rose;Armor;;;;;;41;42;;;;;;;;;;;;Nullifies damage<LINE>attacks.
-Blue DG Armor;Armor;Meru;Armor;;;;;;30;54;;;;;;;Water;;;;;Nullifies damage<LINE>from water-based<LINE>attacks.
+Disciple Vest;Armor;Haschel;Warrior Dress;;;;;;13;8;;;;10;;;;;;;; 
+Warrior Dress;Armor;Haschel;Warrior Dress;;;;;;25;23;;;;20;;;;;;;; 
+Master's Vest;Armor;Haschel;Warrior Dress;;;;;;30;29;;;;10;;;;;;;;Gain 20 SP when<LINE>attacked<LINE>physically.
+Energy Girdle;Armor;Haschel;Warrior Dress;;;;;;37;26;;;;10;;;;;;;;Attacks generate<LINE>50% more SP.
+Violet DG Armor;Armor;Haschel;Warrior Dress;;;;;;45;40;;;;10;10;;Thunder;;;;;Nullifies damage<LINE>from thunder-based<LINE>attacks.
+Clothes;Armor;Female;Robe;;;;;;4;5;;;;5;5;;;;;;; 
+Leather Jacket;Armor;Shana, Rose;Robe;;;;;;7;12;;;;5;5;;;;;;; 
+Silver Vest;Armor;Female;Robe;;;;;;13;17;;;;10;5;;;;;;; 
+Sparkle Dress;Armor;Female;Robe;;;;;;19;45;;;;5;5;;;;;;;Gain 20 SP when<LINE>attacked<LINE>physically.
+Robe;Armor;Female;Robe;;;;;;25;35;;;;5;5;;;;;;;Gain 20 SP when<LINE>magically attacked.
+Silver DG Armor;Armor;Shana;Armor;;;;;;27;80;;;;5;5;;Light;;;;;Nullifies damage<LINE>from light-based<LINE>attacks.
+Dark DG Armor;Armor;Rose;Armor;;;;;;41;42;;;;5;5;;;;;;;Nullifies damage<LINE>attacks.
+Blue DG Armor;Armor;Meru;Armor;;;;;;30;54;;;;5;5;;Water;;;;;Nullifies damage<LINE>from water-based<LINE>attacks.
 Armor of Yore;Armor;Dart, Lavitz;Armor;;;;;;35;35;;;;;;;;Poison, Stun, Arm Blocking;;;;Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.
-Satori Vest;Armor;Haschel;Warrior Dress;;;;;;40;31;;;;;;;;Poison, Stun, Arm Blocking;;;;Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.
-Rainbow Dress;Armor;Female;Robe;;;;;;32;55;;;;;;;;Poison, Stun, Arm Blocking;;;;Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.
-Angel Robe;Armor;Shana, Meru;Robe;;;;;;;;;;;;;;;;;;;40% chance of<LINE>reviving from<LINE>death.
+Satori Vest;Armor;Haschel;Warrior Dress;;;;;;40;31;;;;10;;;;Poison, Stun, Arm Blocking;;;;Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.
+Rainbow Dress;Armor;Female;Robe;;;;;;32;55;;;;5;5;;;Poison, Stun, Arm Blocking;;;;Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.
+Angel Robe;Armor;Shana, Meru;Robe;;;;;;;;;;;5;5;;;;;;;40% chance of<LINE>reviving from<LINE>death.
 Armor of Legend;Armor;All;Armor;;;;;;127;;;;;50;;;;;;;;Greatly reduces<LINE>damage from<LINE>physical attacks.
 ;;;;;;;;;;;;;;;;;;;;;; 
 Bandana;Helm;Male;Bandana;;;;;3;;;;;;;;;;;;;; 

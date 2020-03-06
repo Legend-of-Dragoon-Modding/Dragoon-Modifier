@@ -30,11 +30,13 @@ namespace Dragoon_Modifier {
         public static List<dynamic> MONSTER_TABLE = new List<dynamic>();
         public static List<dynamic> CHARACTER_TABLE = new List<dynamic>();
         public static List<dynamic> DRAGOON_SPELLS = new List<dynamic>();
+        public static dynamic[] CURRENT_STATS = new dynamic[9];
         public static dynamic DICTIONARY = new System.Dynamic.ExpandoObject();
         public static bool MONSTER_CHANGE = false;
         public static bool ULTIMATE = false;
         public static bool DROP_CHANGE = false;
-        public static bool ITEM_CHANGE = false;
+        public static bool ITEM_CHANGE = true;
+        public static bool CHARACTER_CHANGE = false;
         public static bool DRAGOON_CHANGE = false;
         public static bool SHOP_CHANGE = false;
         public static string MOD = "US_Base";

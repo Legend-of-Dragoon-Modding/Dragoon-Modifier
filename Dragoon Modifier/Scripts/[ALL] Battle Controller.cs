@@ -17,7 +17,7 @@ public class BattleController {
             Globals.UNIQUE_MONSTER_IDS = new List<int>();
             Globals.MONSTER_TABLE = new List<dynamic>();
             Globals.MONSTER_IDS = new List<int>();
-            Thread.Sleep(3000);
+            Thread.Sleep(2000);
             Globals.MONSTER_SIZE = emulator.ReadByte(Constants.GetAddress("MONSTER_SIZE"));
             Globals.UNIQUE_MONSTERS = emulator.ReadByte(Constants.GetAddress("UNIQUE_MONSTERS"));
 
@@ -75,10 +75,8 @@ public class BattleController {
                         i++;
                     }
                 }
-                
                 if (Globals.DRAGOON_CHANGE == true) {
                     Constants.WriteOutput("Changing Dragoon Stat table...");
-                    Thread.Sleep(1000);
                     int[] charReorder = new int[] { 5, 7, 0, 4, 6, 8, 1, 3, 2 };
                     for (int character = 0; character < 8; character++) {
                         int reorderedChar = charReorder[character];
@@ -87,6 +85,23 @@ public class BattleController {
                             emulator.WriteByte((long)(0x111B4C + character * 0x30 + level * 0x8 + 0x5), Globals.DICTIONARY.DragoonStats[reorderedChar][level].DMAT);
                             emulator.WriteByte((long)(0x111B4C + character * 0x30 + level * 0x8 + 0x6), Globals.DICTIONARY.DragoonStats[reorderedChar][level].DDF);
                             emulator.WriteByte((long)(0x111B4C + character * 0x30 + level * 0x8 + 0x7), Globals.DICTIONARY.DragoonStats[reorderedChar][level].DMDF);
+                        }
+                    }
+                }
+                if (Globals.CHARACTER_CHANGE == true) {
+                    Constants.WriteOutput("Changing Character Stat table...");
+                    int[] charReorder = new int[] {7, 0, 4, 6, 1, 3, 2 };
+                    for (int character = 0; character < 7; character++) {
+                        int reorderedChar = charReorder[character];
+                        for (int level = 0; level < 61; level++) {
+                            if (level > 0) {
+                                emulator.WriteShortU(0x110DF4 + Constants.OFFSET + level * 8 + character * 0x1E8, (ushort)(Globals.DICTIONARY.CharacterStats[reorderedChar][level].Max_HP));
+                                emulator.WriteByte(0x110DF4 + level * 8 + character * 0x1E8 + 0x3, Globals.DICTIONARY.CharacterStats[reorderedChar][level].SPD);
+                                emulator.WriteByte(0x110DF4 + level * 8 + character * 0x1E8 + 0x4, Globals.DICTIONARY.CharacterStats[reorderedChar][level].AT);
+                                emulator.WriteByte(0x110DF4 + level * 8 + character * 0x1E8 + 0x5, Globals.DICTIONARY.CharacterStats[reorderedChar][level].MAT);
+                                emulator.WriteByte(0x110DF4 + level * 8 + character * 0x1E8 + 0x6, Globals.DICTIONARY.CharacterStats[reorderedChar][level].DF);
+                                emulator.WriteByte(0x110DF4 + level * 8 + character * 0x1E8 + 0x7, Globals.DICTIONARY.CharacterStats[reorderedChar][level].MDF);
+                            }
                         }
                     }
                 }
@@ -123,8 +138,27 @@ public class BattleController {
                 Globals.CHARACTER_TABLE.Add(new CharAddress(Globals.C_POINT + Constants.OFFSET, character, emulator));
             }
         }
+        if (Globals.ITEM_CHANGE | Globals.CHARACTER_CHANGE == true) {
+            Constants.WriteOutput("Changing Character/Item stats...");
+            for (int character = 0; character < 9; character++) {
+                Globals.CURRENT_STATS[character] = new CurrentStats(character, emulator);
+            }
+            for (int character = 0; character < 3; character++) {
+                int charid = Globals.PARTY_SLOT[character];
+                if (charid < 9) {
+                    Globals.CHARACTER_TABLE[character].Write("HP", Globals.CURRENT_STATS[charid].HP);
+                    Globals.CHARACTER_TABLE[character].Write("MP", Globals.CURRENT_STATS[charid].MP);
+                    Globals.CHARACTER_TABLE[character].Write("AT", Globals.CURRENT_STATS[charid].AT);
+                    Globals.CHARACTER_TABLE[character].Write("MAT", Globals.CURRENT_STATS[charid].MAT);
+                    Globals.CHARACTER_TABLE[character].Write("DF", Globals.CURRENT_STATS[charid].DF);
+                    Globals.CHARACTER_TABLE[character].Write("MDF", Globals.CURRENT_STATS[charid].MDF);
+                    Globals.CHARACTER_TABLE[character].Write("SPD", Globals.CURRENT_STATS[charid].SPD);
+                    Globals.CHARACTER_TABLE[character].Write("Stat_Res", Globals.CURRENT_STATS[charid].Stat_Res);
+                }
+            }
+        }
         if (Globals.MONSTER_CHANGE == true) {
-            Constants.WriteOutput("Changing stats...");
+            Constants.WriteOutput("Changing Monster stats...");
             if (Globals.ULTIMATE == false) {
                 for (int monster = 0; monster < Globals.MONSTER_SIZE; monster++) {
                     int ID = Globals.MONSTER_IDS[monster];
@@ -658,6 +692,60 @@ public class BattleController {
             } else {
                 this.emulator.WriteByteU(address[0], Convert.ToByte(value));
             }
+        }
+    }
+
+    public class CurrentStats {
+        byte level = 1;
+        byte weapon = 255;
+        byte armor = 255;
+        byte helm = 255;
+        byte boots = 255;
+        byte accessory = 255;
+        ushort hp = 1;
+        ushort max_hp = 1;
+        ushort mp = 1;
+        ushort max_mp = 1;
+        ushort at = 1;
+        ushort mat = 1;
+        ushort df = 1;
+        ushort mdf = 1;
+        ushort spd = 1;
+        byte stat_res = 0;
+
+        public ushort HP { get { return hp; } }
+        public ushort Max_HP { get { return max_hp; } }
+        public ushort MP { get { return mp; } }
+        public ushort Max_MP { get { return max_mp; } }
+        public ushort AT { get { return at; } }
+        public ushort MAT { get { return mat; } }
+        public ushort DF { get { return df; } }
+        public ushort MDF { get { return mdf; } }
+        public ushort SPD { get { return spd; } }
+        public byte Stat_Res { get { return stat_res; } }
+
+        public CurrentStats(int character, Emulator emulator) {
+            level = emulator.ReadByteU(0xBAEF4 + Constants.OFFSET + character * 0x2C + 0x12);
+            weapon = emulator.ReadByteU(0xBAEF4 + Constants.OFFSET + character * 0x2C + 0x14);
+            armor = emulator.ReadByteU(0xBAEF4 + Constants.OFFSET + character * 0x2C + 0x15);
+            helm = emulator.ReadByteU(0xBAEF4 + Constants.OFFSET + character * 0x2C + 0x16);
+            boots = emulator.ReadByteU(0xBAEF4 + Constants.OFFSET + character * 0x2C + 0x17);
+            accessory = emulator.ReadByteU(0xBAEF4 + Constants.OFFSET + character * 0x2C + 0x12);
+            hp = emulator.ReadShortU(0xBAEF4 + Constants.OFFSET + character * 0x2C + 0x8);
+            max_hp = (ushort)Globals.DICTIONARY.CharacterStats[character][level].Max_HP; // + multi
+            mp = emulator.ReadShortU(0xBAEF4 + Constants.OFFSET + character * 0x2C + 0xA);
+            at = (ushort)(Globals.DICTIONARY.CharacterStats[character][level].AT + Globals.DICTIONARY.ItemList[weapon].AT + Globals.DICTIONARY.ItemList[armor].AT
+                + Globals.DICTIONARY.ItemList[helm].AT + Globals.DICTIONARY.ItemList[boots].AT + Globals.DICTIONARY.ItemList[accessory].AT);
+            mat = (ushort)(Globals.DICTIONARY.CharacterStats[character][level].MAT + Globals.DICTIONARY.ItemList[weapon].MAT + Globals.DICTIONARY.ItemList[armor].MAT
+                + Globals.DICTIONARY.ItemList[helm].MAT + Globals.DICTIONARY.ItemList[boots].MAT + Globals.DICTIONARY.ItemList[accessory].MAT);
+            df = (ushort)(Globals.DICTIONARY.CharacterStats[character][level].DF + Globals.DICTIONARY.ItemList[weapon].DF + Globals.DICTIONARY.ItemList[armor].DF
+                + Globals.DICTIONARY.ItemList[helm].DF + Globals.DICTIONARY.ItemList[boots].DF + Globals.DICTIONARY.ItemList[accessory].DF);
+            mdf = (ushort)(Globals.DICTIONARY.CharacterStats[character][level].MDF + Globals.DICTIONARY.ItemList[weapon].MDF + Globals.DICTIONARY.ItemList[armor].MDF
+                + Globals.DICTIONARY.ItemList[helm].MDF + Globals.DICTIONARY.ItemList[boots].MDF + Globals.DICTIONARY.ItemList[accessory].MDF);
+            spd = (ushort)(Globals.DICTIONARY.CharacterStats[character][level].SPD + Globals.DICTIONARY.ItemList[weapon].SPD + Globals.DICTIONARY.ItemList[armor].SPD
+                + Globals.DICTIONARY.ItemList[helm].SPD + Globals.DICTIONARY.ItemList[boots].SPD + Globals.DICTIONARY.ItemList[accessory].SPD);
+            stat_res |= Globals.DICTIONARY.ItemList[weapon].Stat_Res | Globals.DICTIONARY.ItemList[armor].Stat_Res | Globals.DICTIONARY.ItemList[helm].Stat_Res
+                | Globals.DICTIONARY.ItemList[boots].Stat_Res | Globals.DICTIONARY.ItemList[accessory].Stat_Res;
         }
     }
 
