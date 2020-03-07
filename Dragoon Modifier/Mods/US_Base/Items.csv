@@ -4,9 +4,9 @@ Bastard Sword;Weapon;Dart;Sword;;;;7;;;;;;;;;;;;;;;
 Heat Blade;Weapon;Dart;Sword;Fire;;;18;;;;;;;;;;;;;;;Fire-based attack.
 Falchion;Weapon;Dart;Sword;;;;26;;;;;;;;;;;;;;; 
 Mind Crush;Weapon;Dart;Sword;;Confusion;20;34;;;;;;;;;;;;;;;20% chance of<LINE>confusing enemy.
-Fairy Sword;Weapon;Dart;Sword;;;;39;;;;;;;;;;;;;;;Attacks generate<LINE>50% more SP.
+Fairy Sword;Weapon;Dart;Sword;;;;39;;;;;;;;;;;;sp_multi;;50;Attacks generate<LINE>50% more SP.
 Claymore;Weapon;Dart;Sword;;;;44;;;;;;;;;;;;;;; 
-Soul Eater;Weapon;Dart;Sword;;;;75;;;;;;;;;;;;;;;Powerful, but<LINE>HP decays<LINE>each turn.
+Soul Eater;Weapon;Dart;Sword;;;;75;;;;;;;;;;;;;hp_regen;-10;Powerful, but<LINE>HP decays<LINE>each turn.
 Axe;Weapon;Kongol;Axe;;;;45;;;;;;;;;;;;;;; 
 Tomahawk;Weapon;Kongol;Axe;;;;59;;;;;;;;;;;;;;; 
 Battle Axe;Weapon;Kongol;Axe;;;;67;;;;;;;;;;;;;;; 
@@ -32,13 +32,13 @@ Long Bow;Weapon;Shana;Bow;;;;18;;;;;30;;;;;;;;;;
 Bemusing Arrow;Weapon;Shana;Bow;;Confusion;20;24;;;;;20;;;;;;;;;;20% chance of<LINE>confusing enemy.
 Virulent Arrow;Weapon;Shana;Bow;;Poison;20;30;;;;;20;;;;;;;;;;20% chance of<LINE>poisoning enemy.
 Detonate Arrow;Weapon;Shana;Bow;;;;40;;;;;20;;;;;;;;;;Hits all enemies.
-Arrow of Force;Weapon;Shana;Bow;;;;50;;;;;20;;;;;;;;;;Attacks generate<LINE>50% more SP.
+Arrow of Force;Weapon;Shana;Bow;;;;50;;;;;20;;;;;;;sp_multi;;50;Attacks generate<LINE>50% more SP.
 Mace;Weapon;Meru;Mace;;;;15;;;;;;;;;;;;;;; 
 Morning Star;Weapon;Meru;Hammer;;;;20;;;;;;;;;;;;;;; 
 War Hammer;Weapon;Meru;Hammer;;;;25;;;;;;;;;;;;;;; 
 Heavy Mace;Weapon;Meru;Hammer;;Stun;20;30;;;;;;;;;;;;;;;20% chance of<LINE>stunning enemy.
 Basher;Weapon;Meru;Hammer;;;;40;;;;;;;;;;;;;;; 
-Pretty Hammer;Weapon;Meru;Hammer;;;;15;;;;;;;;;;;;;;;Weak, but<LINE>generates twice<LINE>as much SP.
+Pretty Hammer;Weapon;Meru;Hammer;;;;15;;;;;;;;;;;;sp_multi;;100;Weak, but<LINE>generates twice<LINE>as much SP.
 Iron Knuckle;Weapon;Haschel;Knuckle;;;;20;;;;;;;;;;;;;;; 
 Beast Fang;Weapon;Haschel;Knuckle;;;;31;;;;;;;;;;;;;;;20% chance of<LINE>stunning enemy.
 Diamond Claw;Weapon;Haschel;Knuckle;;;;37;;;;;;;;;;;;;;; 
@@ -143,7 +143,7 @@ Golden Stone;Accessory;All;Stone;;;;;;;;;;;;;Earth;;;;;;Halves damage<LINE>from 
 ;;;;;;;;;;;;;;;;;;;;;; 
 Ruby Ring;Accessory;All;Ring;;;;;;;;;;;;;;;;;;;Gain 20 SP when<LINE>damaged magically.
 Sapphire Pin;Accessory;All;Pin;;;;;;;;;;;;;;;;;;;Gain 10% MP when<LINE>damaged magically.
-Rainbow Earring;Accessory;All;Ring;;;;;;;;;;;;;;;;All;;;Avoids all<LINE>abnormal status<LINE>ailments.
+Rainbow Earring;Accessory;All;Ring;;;;;;;;;;;;;;;All;;;;Avoids all<LINE>abnormal status<LINE>ailments.
 ;;;;;;;;;;;;;;;;;;;;;; 
 Emerald Earring;Accessory;All;Ring;;;;;;;;;;;;;;;;;;;Gain 20 SP when<LINE>damaged physically.
 ;;;;;;;;;;;;;;;;;;;;;; 

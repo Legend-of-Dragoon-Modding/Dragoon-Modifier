@@ -147,13 +147,35 @@ public class BattleController {
                 int charid = Globals.PARTY_SLOT[character];
                 if (charid < 9) {
                     Globals.CHARACTER_TABLE[character].Write("HP", Globals.CURRENT_STATS[charid].HP);
-                    Globals.CHARACTER_TABLE[character].Write("MP", Globals.CURRENT_STATS[charid].MP);
+                    Globals.CHARACTER_TABLE[character].Write("Max_HP", Globals.CURRENT_STATS[charid].Max_HP);
                     Globals.CHARACTER_TABLE[character].Write("AT", Globals.CURRENT_STATS[charid].AT);
+                    Globals.CHARACTER_TABLE[character].Write("OG_AT", Globals.CURRENT_STATS[charid].AT);
                     Globals.CHARACTER_TABLE[character].Write("MAT", Globals.CURRENT_STATS[charid].MAT);
+                    Globals.CHARACTER_TABLE[character].Write("OG_MAT", Globals.CURRENT_STATS[charid].MAT);
                     Globals.CHARACTER_TABLE[character].Write("DF", Globals.CURRENT_STATS[charid].DF);
+                    Globals.CHARACTER_TABLE[character].Write("OG_DF", Globals.CURRENT_STATS[charid].DF);
                     Globals.CHARACTER_TABLE[character].Write("MDF", Globals.CURRENT_STATS[charid].MDF);
+                    Globals.CHARACTER_TABLE[character].Write("OG_MDF", Globals.CURRENT_STATS[charid].MDF);
                     Globals.CHARACTER_TABLE[character].Write("SPD", Globals.CURRENT_STATS[charid].SPD);
-                    Globals.CHARACTER_TABLE[character].Write("Stat_Res", Globals.CURRENT_STATS[charid].Stat_Res);
+                    Globals.CHARACTER_TABLE[character].Write("OG_SPD", Globals.CURRENT_STATS[charid].SPD);
+                    if (Globals.ITEM_CHANGE == true) {
+                        Globals.CHARACTER_TABLE[character].Write("MP", Globals.CURRENT_STATS[charid].MP);
+                        Globals.CHARACTER_TABLE[character].Write("Stat_Res", Globals.CURRENT_STATS[charid].Stat_Res);
+                        Globals.CHARACTER_TABLE[character].Write("E_Half", Globals.CURRENT_STATS[charid].E_Half);
+                        Globals.CHARACTER_TABLE[character].Write("E_Immune", Globals.CURRENT_STATS[charid].E_Immune);
+                        Globals.CHARACTER_TABLE[character].Write("A_AV", Globals.CURRENT_STATS[charid].A_AV);
+                        Globals.CHARACTER_TABLE[character].Write("M_AV", Globals.CURRENT_STATS[charid].M_AV);
+                        Globals.CHARACTER_TABLE[character].Write("A_HIT", Globals.CURRENT_STATS[charid].A_Hit);
+                        Globals.CHARACTER_TABLE[character].Write("M_HIT", Globals.CURRENT_STATS[charid].M_Hit);
+                        Globals.CHARACTER_TABLE[character].Write("P_Half", Globals.CURRENT_STATS[charid].P_Half);
+                        Globals.CHARACTER_TABLE[character].Write("M_Half", Globals.CURRENT_STATS[charid].M_Half);
+                        Globals.CHARACTER_TABLE[character].Write("On_Hit_Status", Globals.CURRENT_STATS[charid].Status);
+                        Globals.CHARACTER_TABLE[character].Write("On_Hit_Status_Chance", Globals.CURRENT_STATS[charid].Status_Chance);
+                        Globals.CHARACTER_TABLE[character].Write("Revive", Globals.CURRENT_STATS[charid].Revive);
+                        Globals.CHARACTER_TABLE[character].Write("SP_Regen", Globals.CURRENT_STATS[charid].SP_Regen);
+                        Globals.CHARACTER_TABLE[character].Write("MP_Regen", Globals.CURRENT_STATS[charid].MP_Regen);
+                        Globals.CHARACTER_TABLE[character].Write("HP_Regen", Globals.CURRENT_STATS[charid].HP_Regen);
+                    }
                 }
             }
         }
@@ -430,6 +452,8 @@ public class BattleController {
         long[] m_half = { 0, 1 };
         long[] e_immune = { 0, 1 };
         long[] e_half = { 0, 1 };
+        long[] on_hit_status = { 0, 1 };
+        long[] on_hit_status_chance = { 0, 1 };
         long[] stat_res = { 0, 1 };
         long[] death_res = { 0, 1 };
         long[] sp_p_hit = { 0, 1 };
@@ -520,6 +544,8 @@ public class BattleController {
         public long[] M_Half { get { return m_half; } }
         public long[] E_Immune { get { return e_immune; } }
         public long[] E_Half { get { return e_half; } }
+        public long[] On_Hit_Status { get { return on_hit_status; } }
+        public long[] On_Hit_Status_Chance { get { return on_hit_status_chance; } }
         public long[] Stat_Res { get { return stat_res; } }
         public long[] Death_Res { get { return death_res; } }
         public long[] SP_P_Hit { get { return sp_p_hit; } }
@@ -645,6 +671,8 @@ public class BattleController {
             m_half[0] = c_point + 0x10E - character * 0x388;
             e_immune[0] = c_point + 0x1A - character * 0x388;
             e_half[0] = c_point + 0x18 - character * 0x388;
+            on_hit_status[0] = c_point + 0x42 - character * 0x388;
+            on_hit_status_chance[0] = c_point + 0x3C - character * 0x388;
             stat_res[0] = c_point + 0x1C - character * 0x388;
             death_res[0] = c_point + 0xC - character * 0x388;
             add_sp_multi[0] = c_point + 0x112 - character * 0x388;
@@ -697,21 +725,35 @@ public class BattleController {
 
     public class CurrentStats {
         byte level = 1;
-        byte weapon = 255;
-        byte armor = 255;
-        byte helm = 255;
-        byte boots = 255;
-        byte accessory = 255;
+        dynamic weapon = new System.Dynamic.ExpandoObject();
+        dynamic armor = new System.Dynamic.ExpandoObject();
+        dynamic helm = new System.Dynamic.ExpandoObject();
+        dynamic boots = new System.Dynamic.ExpandoObject();
+        dynamic accessory = new System.Dynamic.ExpandoObject();
         ushort hp = 1;
         ushort max_hp = 1;
-        ushort mp = 1;
-        ushort max_mp = 1;
+        ushort mp = 0;
+        ushort max_mp = 0;
         ushort at = 1;
         ushort mat = 1;
         ushort df = 1;
         ushort mdf = 1;
         ushort spd = 1;
+        byte a_av = 0;
+        byte m_av = 0;
+        byte a_hit = 100;
+        byte m_hit = 100;
         byte stat_res = 0;
+        byte e_half = 0;
+        byte e_immune = 0;
+        byte p_half = 0;
+        byte m_half = 0;
+        byte status = 0;
+        byte status_chance = 0;
+        byte revive = 0;
+        byte sp_regen = 0;
+        byte mp_regen = 0;
+        byte hp_regen = 0;
 
         public ushort HP { get { return hp; } }
         public ushort Max_HP { get { return max_hp; } }
@@ -722,30 +764,57 @@ public class BattleController {
         public ushort DF { get { return df; } }
         public ushort MDF { get { return mdf; } }
         public ushort SPD { get { return spd; } }
+        public byte A_AV { get { return a_av; } }
+        public byte M_AV { get { return m_av; } }
+        public byte A_Hit { get { return a_hit; } }
+        public byte M_Hit { get { return m_hit; } }
         public byte Stat_Res { get { return stat_res; } }
+        public byte E_Half { get { return e_half; } }
+        public byte E_Immune { get { return e_immune; } }
+        public byte P_Half { get { return p_half; } }
+        public byte M_Half { get { return m_half; } }
+        public byte Status { get { return status; } }
+        public byte Status_Chance { get { return status_chance; } }
+        public byte Revive { get { return revive; } }
+        public byte SP_Regen { get { return sp_regen; } }
+        public byte MP_Regen { get { return mp_regen; } }
+        public byte HP_Regen { get { return hp_regen; } }
 
         public CurrentStats(int character, Emulator emulator) {
             level = emulator.ReadByteU(0xBAEF4 + Constants.OFFSET + character * 0x2C + 0x12);
-            weapon = emulator.ReadByteU(0xBAEF4 + Constants.OFFSET + character * 0x2C + 0x14);
-            armor = emulator.ReadByteU(0xBAEF4 + Constants.OFFSET + character * 0x2C + 0x15);
-            helm = emulator.ReadByteU(0xBAEF4 + Constants.OFFSET + character * 0x2C + 0x16);
-            boots = emulator.ReadByteU(0xBAEF4 + Constants.OFFSET + character * 0x2C + 0x17);
-            accessory = emulator.ReadByteU(0xBAEF4 + Constants.OFFSET + character * 0x2C + 0x12);
+            weapon = Globals.DICTIONARY.ItemList[emulator.ReadByteU(0xBAEF4 + Constants.OFFSET + character * 0x2C + 0x14)];
+            armor = Globals.DICTIONARY.ItemList[emulator.ReadByteU(0xBAEF4 + Constants.OFFSET + character * 0x2C + 0x15)];
+            helm = Globals.DICTIONARY.ItemList[emulator.ReadByteU(0xBAEF4 + Constants.OFFSET + character * 0x2C + 0x16)];
+            boots = Globals.DICTIONARY.ItemList[emulator.ReadByteU(0xBAEF4 + Constants.OFFSET + character * 0x2C + 0x17)];
+            accessory = Globals.DICTIONARY.ItemList[emulator.ReadByteU(0xBAEF4 + Constants.OFFSET + character * 0x2C + 0x12)];
             hp = emulator.ReadShortU(0xBAEF4 + Constants.OFFSET + character * 0x2C + 0x8);
-            max_hp = (ushort)Globals.DICTIONARY.CharacterStats[character][level].Max_HP; // + multi
+            max_hp = (ushort)(Globals.DICTIONARY.CharacterStats[character][level].Max_HP * (1 + ((weapon.Special2 & 2) >> 1) * (float)(weapon.Special_Ammount) / 100 + ((armor.Special2 & 2) >> 1) * (float)(armor.Special_Ammount) / 100
+                + ((helm.Special2 & 2) >> 1) * (float)(helm.Special_Ammount) / 100 + ((boots.Special2 & 2) >> 1) * (float)(boots.Special_Ammount) / 100 + ((accessory.Special2 & 2) >> 1) * (float)(accessory.Special_Ammount) / 100));
             mp = emulator.ReadShortU(0xBAEF4 + Constants.OFFSET + character * 0x2C + 0xA);
-            at = (ushort)(Globals.DICTIONARY.CharacterStats[character][level].AT + Globals.DICTIONARY.ItemList[weapon].AT + Globals.DICTIONARY.ItemList[armor].AT
-                + Globals.DICTIONARY.ItemList[helm].AT + Globals.DICTIONARY.ItemList[boots].AT + Globals.DICTIONARY.ItemList[accessory].AT);
-            mat = (ushort)(Globals.DICTIONARY.CharacterStats[character][level].MAT + Globals.DICTIONARY.ItemList[weapon].MAT + Globals.DICTIONARY.ItemList[armor].MAT
-                + Globals.DICTIONARY.ItemList[helm].MAT + Globals.DICTIONARY.ItemList[boots].MAT + Globals.DICTIONARY.ItemList[accessory].MAT);
-            df = (ushort)(Globals.DICTIONARY.CharacterStats[character][level].DF + Globals.DICTIONARY.ItemList[weapon].DF + Globals.DICTIONARY.ItemList[armor].DF
-                + Globals.DICTIONARY.ItemList[helm].DF + Globals.DICTIONARY.ItemList[boots].DF + Globals.DICTIONARY.ItemList[accessory].DF);
-            mdf = (ushort)(Globals.DICTIONARY.CharacterStats[character][level].MDF + Globals.DICTIONARY.ItemList[weapon].MDF + Globals.DICTIONARY.ItemList[armor].MDF
-                + Globals.DICTIONARY.ItemList[helm].MDF + Globals.DICTIONARY.ItemList[boots].MDF + Globals.DICTIONARY.ItemList[accessory].MDF);
-            spd = (ushort)(Globals.DICTIONARY.CharacterStats[character][level].SPD + Globals.DICTIONARY.ItemList[weapon].SPD + Globals.DICTIONARY.ItemList[armor].SPD
-                + Globals.DICTIONARY.ItemList[helm].SPD + Globals.DICTIONARY.ItemList[boots].SPD + Globals.DICTIONARY.ItemList[accessory].SPD);
-            stat_res |= Globals.DICTIONARY.ItemList[weapon].Stat_Res | Globals.DICTIONARY.ItemList[armor].Stat_Res | Globals.DICTIONARY.ItemList[helm].Stat_Res
-                | Globals.DICTIONARY.ItemList[boots].Stat_Res | Globals.DICTIONARY.ItemList[accessory].Stat_Res;
+            at = (ushort)(Globals.DICTIONARY.CharacterStats[character][level].AT + weapon.AT + armor.AT + helm.AT + boots.AT + accessory.AT);
+            mat = (ushort)(Globals.DICTIONARY.CharacterStats[character][level].MAT + weapon.MAT + armor.MAT + helm.MAT + boots.MAT + accessory.MAT);
+            df = (ushort)(Globals.DICTIONARY.CharacterStats[character][level].DF + weapon.DF + armor.DF + helm.DF + boots.DF + accessory.DF);
+            mdf = (ushort)(Globals.DICTIONARY.CharacterStats[character][level].MDF + weapon.MDF + armor.MDF + helm.MDF + boots.MDF + accessory.MDF);
+            spd = (ushort)(Globals.DICTIONARY.CharacterStats[character][level].SPD + weapon.SPD + armor.SPD + helm.SPD + boots.SPD + accessory.SPD);
+            stat_res |= weapon.Stat_Res | armor.Stat_Res | helm.Stat_Res | boots.Stat_Res | accessory.Stat_Res;
+            e_half |= weapon.E_Half | armor.E_Half | helm.E_Half | boots.E_Half | accessory.E_Half;
+            e_immune |= weapon.E_Immune | armor.E_Immune | helm.E_Immune | boots.E_Immune | accessory.E_Immune;
+            a_av = (byte)(weapon.A_AV + armor.A_AV + helm.A_AV + boots.A_AV + accessory.A_AV);
+            m_av = (byte)(weapon.M_AV + armor.M_AV + helm.M_AV + boots.M_AV + accessory.M_AV);
+            a_hit += (byte)(weapon.A_Hit + armor.A_Hit + helm.A_Hit + boots.A_Hit + accessory.A_Hit);
+            m_hit += (byte)(weapon.M_Hit + armor.M_Hit + helm.M_Hit + boots.M_Hit + accessory.M_Hit);
+            p_half |= ((weapon.Special1 & 0x20) | (armor.Special1 & 0x20) | (helm.Special1 & 0x20) | (boots.Special1 & 0x20) | (accessory.Special1 & 0x20)) >> 5;
+            m_half |= ((weapon.Special2 & 0x4) | (armor.Special2 & 0x4) | (helm.Special2 & 0x4) | (boots.Special2 & 0x4) | (accessory.Special2 & 0x4)) >> 2;
+            status = weapon.Status;
+            status_chance = weapon.Status_Chance;
+            revive = (byte)(((weapon.Special2 & 0x8) >> 3) * weapon.Special_Ammount + ((armor.Special2 & 0x8) >> 3) * armor.Special_Ammount + ((helm.Special2 & 0x8) >> 3) * helm.Special_Ammount
+                + ((boots.Special2 & 0x8) >> 3) * boots.Special_Ammount + ((accessory.Special2 & 0x8) >> 3) * accessory.Special_Ammount);
+            sp_regen = (byte)(((weapon.Special2 & 0x10) >> 4) * weapon.Special_Ammount + ((armor.Special2 & 0x10) >> 4) * armor.Special_Ammount + ((helm.Special2 & 0x10) >> 4) * helm.Special_Ammount
+                + ((boots.Special2 & 0x10) >> 4) * boots.Special_Ammount + ((accessory.Special2 & 0x10) >> 4) * accessory.Special_Ammount);
+            mp_regen = (byte)(((weapon.Special2 & 0x20) >> 5) * weapon.Special_Ammount + ((armor.Special2 & 0x20) >> 5) * armor.Special_Ammount + ((helm.Special2 & 0x20) >> 5) * helm.Special_Ammount
+                + ((boots.Special2 & 0x20) >> 5) * boots.Special_Ammount + ((accessory.Special2 & 0x20) >> 5) * accessory.Special_Ammount);
+            hp_regen = (byte)(((weapon.Special2 & 0x40) >> 6) * weapon.Special_Ammount + ((armor.Special2 & 0x40) >> 6) * armor.Special_Ammount + ((helm.Special2 & 0x40) >> 6) * helm.Special_Ammount
+                + ((boots.Special2 & 0x40) >> 6) * boots.Special_Ammount + ((accessory.Special2 & 0x40) >> 6) * accessory.Special_Ammount);
         }
     }
 

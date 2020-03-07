@@ -872,7 +872,7 @@ namespace Dragoon_Modifier {
             byte stat_res = 0;
             byte special1 = 0;
             byte special2 = 0;
-            byte special_ammount = 0;
+            short special_ammount = 0;
             Dictionary<string, byte> iconDict = new Dictionary<string, byte>() {
                 { "sword", 0 },
                 { "axe", 1 },
@@ -971,6 +971,27 @@ namespace Dragoon_Modifier {
                 {"po", 128 },
                 {"all", 255 }
             };
+            Dictionary<string, byte> special12num = new Dictionary<string, byte>() {
+                {"", 0 },
+                {"none", 0 },
+                {"mp_m_hit", 1 },
+                {"sp_m_hit", 2 },
+                {"mp_p_hit", 4 },
+                {"sp_p_hit", 8 },
+                {"sp_multi", 16 },
+                {"p_half", 32 }
+            };
+            Dictionary<string, byte> special22num = new Dictionary<string, byte>() {
+                {"", 0 },
+                {"none", 0 },
+                {"mp_multi", 1 },
+                {"hp_multi", 2 },
+                {"m_half", 4 },
+                {"revive", 8 },
+                {"sp_regen", 16 },
+                {"mp_regen", 32 },
+                {"hp_regen", 64 }
+            };
 
             public int ID { get { return id; } }
             public string Name { get { return name; } }
@@ -999,10 +1020,11 @@ namespace Dragoon_Modifier {
             public byte Stat_Res { get { return stat_res; } }
             public byte Special1 { get { return special1; } }
             public byte Special2 { get { return special2; } }
-            public byte Special_Ammount { get { return special_ammount; } }
+            public short Special_Ammount { get { return special_ammount; } }
 
             public ItemList(int index, string[] values) {
                 byte key = 0;
+                short key2 = 0;
                 id = index;
                 name = values[0];
                 if (name != "") {
@@ -1106,10 +1128,22 @@ namespace Dragoon_Modifier {
                         Constants.WriteDebug(substring + " not found as Status_Resist for item:" + name);
                     }
                 }
-                // special 1
-                // special 2
-                if (Byte.TryParse(values[21], NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
-                    special_ammount = key;
+                foreach (string substring in values[19].Replace(" ", "").Split(',')) {
+                    if (special12num.TryGetValue(substring.ToLower(), out key)) {
+                        special1 |= key;
+                    } else {
+                        Constants.WriteDebug(substring + " not found as Special1 for item:" + name);
+                    }
+                }
+                foreach (string substring in values[20].Replace(" ", "").Split(',')) {
+                    if (special22num.TryGetValue(substring.ToLower(), out key)) {
+                        special2 |= key;
+                    } else {
+                        Constants.WriteDebug(substring + " not found as Special2 for item:" + name);
+                    }
+                }
+                if (Int16.TryParse(values[21], NumberStyles.AllowLeadingSign, null as IFormatProvider, out key2)) {
+                    special_ammount = key2;
                 } else if (values[21] != "") {
                     Constants.WriteDebug(values[21] + " not found as Special_Ammount for item: " + name);
                 }
