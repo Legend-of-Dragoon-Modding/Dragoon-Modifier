@@ -766,6 +766,7 @@ public class BattleController {
         byte sp_p_hit = 0;
         byte sp_multi = 0;
         byte element = 0;
+        byte death_res = 0;
 
         public ushort HP { get { return hp; } }
         public ushort Max_HP { get { return max_hp; } }
@@ -797,6 +798,7 @@ public class BattleController {
         public byte MP_P_Hit { get { return mp_p_hit; } }
         public byte SP_Multi { get { return sp_multi; } }
         public byte Element { get { return element; } }
+        public byte Death_Res { get { return death_res; } }
 
         public CurrentStats(int character, Emulator emulator) {
             level = emulator.ReadByteU(0xBAEF4 + Constants.OFFSET + character * 0x2C + 0x12);
@@ -804,7 +806,7 @@ public class BattleController {
             armor = Globals.DICTIONARY.ItemList[emulator.ReadByteU(0xBAEF4 + Constants.OFFSET + character * 0x2C + 0x15)];
             helm = Globals.DICTIONARY.ItemList[emulator.ReadByteU(0xBAEF4 + Constants.OFFSET + character * 0x2C + 0x16)];
             boots = Globals.DICTIONARY.ItemList[emulator.ReadByteU(0xBAEF4 + Constants.OFFSET + character * 0x2C + 0x17)];
-            accessory = Globals.DICTIONARY.ItemList[emulator.ReadByteU(0xBAEF4 + Constants.OFFSET + character * 0x2C + 0x12)];
+            accessory = Globals.DICTIONARY.ItemList[emulator.ReadByteU(0xBAEF4 + Constants.OFFSET + character * 0x2C + 0x18)];
             hp = emulator.ReadShortU(0xBAEF4 + Constants.OFFSET + character * 0x2C + 0x8);
             max_hp = (ushort)(Globals.DICTIONARY.CharacterStats[character][level].Max_HP * (1 + ((weapon.Special2 & 2) >> 1) * (float)(weapon.Special_Ammount) / 100 + ((armor.Special2 & 2) >> 1) * (float)(armor.Special_Ammount) / 100
                 + ((helm.Special2 & 2) >> 1) * (float)(helm.Special_Ammount) / 100 + ((boots.Special2 & 2) >> 1) * (float)(boots.Special_Ammount) / 100 + ((accessory.Special2 & 2) >> 1) * (float)(accessory.Special_Ammount) / 100));
@@ -844,6 +846,7 @@ public class BattleController {
                 + ((boots.Special1 & 0x8) >> 3) * boots.Special_Ammount + ((accessory.Special1 & 0x8) >> 3) * accessory.Special_Ammount);
             sp_multi = (byte)(((weapon.Special1 & 0x10) >> 4) * weapon.Special_Ammount + ((armor.Special1 & 0x10) >> 4) * armor.Special_Ammount + ((helm.Special1 & 0x10) >> 4) * helm.Special_Ammount
                 + ((boots.Special1 & 0x4) >> 4) * boots.Special_Ammount + ((accessory.Special1 & 0x10) >> 4) * accessory.Special_Ammount);
+            death_res |= weapon.Death_Res | armor.Death_Res | helm.Death_Res | boots.Death_Res | accessory.Death_Res;
         }
     }
 

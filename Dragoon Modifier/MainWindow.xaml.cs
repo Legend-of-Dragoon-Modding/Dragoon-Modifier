@@ -873,6 +873,8 @@ namespace Dragoon_Modifier {
             byte special1 = 0;
             byte special2 = 0;
             short special_ammount = 0;
+            byte death_res = 0;
+
             Dictionary<string, byte> iconDict = new Dictionary<string, byte>() {
                 { "sword", 0 },
                 { "axe", 1 },
@@ -992,6 +994,13 @@ namespace Dragoon_Modifier {
                 {"mp_regen", 32 },
                 {"hp_regen", 64 }
             };
+            Dictionary<string, byte> death2num = new Dictionary<string, byte>() {
+                {"", 0 },
+                {"none", 0 },
+                {"attack_all", 8 },
+                {"death_chance", 64 },
+                {"death_res", 128 }
+            };
 
             public int ID { get { return id; } }
             public string Name { get { return name; } }
@@ -1021,6 +1030,7 @@ namespace Dragoon_Modifier {
             public byte Special1 { get { return special1; } }
             public byte Special2 { get { return special2; } }
             public short Special_Ammount { get { return special_ammount; } }
+            public byte Death_Res { get { return death_res; } }
 
             public ItemList(int index, string[] values) {
                 byte key = 0;
@@ -1147,7 +1157,14 @@ namespace Dragoon_Modifier {
                 } else if (values[21] != "") {
                     Constants.WriteDebug(values[21] + " not found as Special_Ammount for item: " + name);
                 }
-                description = values[22];
+                foreach (string substring in values[22].Replace(" ", "").Split(',')) {
+                    if (death2num.TryGetValue(substring.ToLower(), out key)) {
+                        death_res |= key;
+                    } else {
+                        Constants.WriteDebug(substring + " not found as Death_Res for item:" + name);
+                    }
+                }
+                description = values[23];
                 if (description != "") {
                     encodedDescription = StringEncode(description);
                 }
