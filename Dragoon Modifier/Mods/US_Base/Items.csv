@@ -49,48 +49,48 @@ Leather Armor;Armor;Dart, Lavitz;Clothes;;;;;;2;2;;;;;;;;;;;;
 Scale Armor;Armor;Dart, Lavitz;Armor;;;;;;8;8;;;;;;;;;;;; 
 Chain Mail;Armor;Dart, Lavitz;Armor;;;;;;20;24;;;;;;;;;;;; 
 Plate Mail;Armor;Dart, Lavitz;Armor;;;;;;27;20;;;;;;;;;;;; 
-Saint Armor;Armor;Dart, Lavitz;Armor;;;;;;34;34;;;;;;;;;;;;Gain 20 SP when<LINE>attacked<LINE>physically.
+Saint Armor;Armor;Dart, Lavitz;Armor;;;;;;34;34;;;;;;;;;sp_p_hit;;20;Gain 20 SP when<LINE>attacked<LINE>physically.
 Red DG Armor;Armor;Dart;Armor;;;;;;41;40;;;;;;;Fire;;;;;Nullifies damage<LINE>from fire-based<LINE>attacks.
 Jade DG Armor;Armor;Lavitz;Armor;;;;;;54;27;;;;;;;Wind;;;;;Nullifies damage<LINE>from wind-based<LINE>attacks.
 Lion Fur;Armor;Kongol;Loincloth;;;;;;46;20;;;;;;;;;;;; 
 Breast Plate;Armor;Kongol;Breastplate;;;;;;59;14;;;;;;;;;;;; 
-Giganto Armor;Armor;Kongol;Armor;;;;;;75;20;;;;;;;;;;;;Gain 20 SP when<LINE>attacked<LINE>physically.
+Giganto Armor;Armor;Kongol;Armor;;;;;;75;20;;;;;;;;;sp_p_hit;;20;Gain 20 SP when<LINE>attacked<LINE>physically.
 Gold DG Armor;Armor;Kongol;Armor;;;;;;88;23;;;;;;;Earth;;;;;Nullifies damage<LINE>from earth-based<LINE>attacks.
 Disciple Vest;Armor;Haschel;Warrior Dress;;;;;;13;8;;;;10;;;;;;;; 
 Warrior Dress;Armor;Haschel;Warrior Dress;;;;;;25;23;;;;20;;;;;;;; 
-Master's Vest;Armor;Haschel;Warrior Dress;;;;;;30;29;;;;10;;;;;;;;Gain 20 SP when<LINE>attacked<LINE>physically.
-Energy Girdle;Armor;Haschel;Warrior Dress;;;;;;37;26;;;;10;;;;;;;;Attacks generate<LINE>50% more SP.
+Master's Vest;Armor;Haschel;Warrior Dress;;;;;;30;29;;;;10;;;;;sp_p_hit;;20;Gain 20 SP when<LINE>attacked<LINE>physically.
+Energy Girdle;Armor;Haschel;Warrior Dress;;;;;;37;26;;;;10;;;;;sp_multi;;50;Attacks generate<LINE>50% more SP.
 Violet DG Armor;Armor;Haschel;Warrior Dress;;;;;;45;40;;;;10;10;;Thunder;;;;;Nullifies damage<LINE>from thunder-based<LINE>attacks.
 Clothes;Armor;Female;Robe;;;;;;4;5;;;;5;5;;;;;;; 
 Leather Jacket;Armor;Shana, Rose;Robe;;;;;;7;12;;;;5;5;;;;;;; 
 Silver Vest;Armor;Female;Robe;;;;;;13;17;;;;10;5;;;;;;; 
-Sparkle Dress;Armor;Female;Robe;;;;;;19;45;;;;5;5;;;;;;;Gain 20 SP when<LINE>attacked<LINE>physically.
-Robe;Armor;Female;Robe;;;;;;25;35;;;;5;5;;;;;;;Gain 20 SP when<LINE>magically attacked.
+Sparkle Dress;Armor;Female;Robe;;;;;;19;45;;;;5;5;;;;sp_p_hit;;20;Gain 20 SP when<LINE>attacked<LINE>physically.
+Robe;Armor;Female;Robe;;;;;;25;35;;;;5;5;;;;sp_m_hit;;20;Gain 20 SP when<LINE>magically attacked.
 Silver DG Armor;Armor;Shana;Armor;;;;;;27;80;;;;5;5;;Light;;;;;Nullifies damage<LINE>from light-based<LINE>attacks.
 Dark DG Armor;Armor;Rose;Armor;;;;;;41;42;;;;5;5;;;;;;;Nullifies damage<LINE>attacks.
 Blue DG Armor;Armor;Meru;Armor;;;;;;30;54;;;;5;5;;Water;;;;;Nullifies damage<LINE>from water-based<LINE>attacks.
 Armor of Yore;Armor;Dart, Lavitz;Armor;;;;;;35;35;;;;;;;;Poison, Stun, Arm Blocking;;;;Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.
 Satori Vest;Armor;Haschel;Warrior Dress;;;;;;40;31;;;;10;;;;Poison, Stun, Arm Blocking;;;;Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.
 Rainbow Dress;Armor;Female;Robe;;;;;;32;55;;;;5;5;;;Poison, Stun, Arm Blocking;;;;Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.
-Angel Robe;Armor;Shana, Meru;Robe;;;;;;;;;;;5;5;;;;;;;40% chance of<LINE>reviving from<LINE>death.
+Angel Robe;Armor;Shana, Meru;Robe;;;;;;;;;;;5;5;;;;;revive;40;40% chance of<LINE>reviving from<LINE>death.
 Armor of Legend;Armor;All;Armor;;;;;;127;;;;;50;;;;;;;;Greatly reduces<LINE>damage from<LINE>physical attacks.
 ;;;;;;;;;;;;;;;;;;;;;; 
 Bandana;Helm;Male;Bandana;;;;;3;;;;;;;;;;;;;; 
 Sallet;Helm;Male;Helm;;;;;8;;;;;;;;;;;;;;Increases hit<LINE>chance of physical<LINE>attacks by 10%.
 Armlet;Helm;Male;Helm;;;;;23;;7;;;;;;;;;;;; 
-Knight Helm;Helm;Male;Helm;;;;;37;5;;;;;;;;;;;;;Gain 20 SP when<LINE>magically attacked.
-Giganto Helm;Helm;Kongol;Helm;;;;;14;10;5;;;;;;;;;;;;Gain 20 SP when<LINE>magically attacked.
-Soul Headband;Helm;Haschel;Bandana;;;;;25;5;5;;;;;;;;;;;;Gain 20 SP when<LINE>magically attacked.
+Knight Helm;Helm;Male;Helm;;;;;37;5;;;;;;;;;;sp_m_hit;;20;Gain 20 SP when<LINE>magically attacked.
+Giganto Helm;Helm;Kongol;Helm;;;;;14;10;5;;;;;;;;;sp_m_hit;;20;Gain 20 SP when<LINE>magically attacked.
+Soul Headband;Helm;Haschel;Bandana;;;;;25;5;5;;;;;;;;;sp_m_hit;;20;Gain 20 SP when<LINE>magically attacked.
 Felt Hat;Helm;Female;Hat;;;;;5;;;;;;;;;;;;;; 
 Cape;Helm;Female;Hat;;;;;17;;;;;;;;;;;;;; 
 Tiara;Helm;Female;Crown;;;;;24;;5;;;;;;;;;;;;Increases hit<LINE>chance of magical<LINE>attacks by 10%.
-Jeweled Crown;Helm;Shana, Meru;Crown;;;;;24;;5;;;;;;;;;;;;Gain 20 SP when<LINE>magically attacked.
+Jeweled Crown;Helm;Shana, Meru;Crown;;;;;24;;5;;;;;;;;;sp_m_hit;;20;Gain 20 SP when<LINE>magically attacked.
 Rose's Hair Band;Helm;Rose;Bandana;;;;;29;5;;;;;;;;;;;;;Grants immunity<LINE>to instant death.
 ;;;;;;;;;;;;;;;;;;;;;; 
 Phoenix Plume;Helm;All;Helm;;;;;30;0;10;;;;;;;;Bewitchment, Confusion, Fear, Dispirit;;;;Avoids bewitchment,<LINE>confusion, fear,<LINE>and dispiriting.
 Legend Casque;Helm;All;Helm;;;;;50;;127;;;;;50;;;;;;;Greatly reduces<LINE>damage from<LINE>magical attacks.
-Dragon Helm;Helm;All;Helm;;;;;50;12;;;;;;;;;;;;;Raises maximum<LINE>HP 50%.
-Magical Hat;Helm;All;Hat;;;;;50;;10;;;;;;;;;;;;Raises maximum<LINE>MP 50%.
+Dragon Helm;Helm;All;Helm;;;;;50;12;;;;;;;;;;;hp_multi;50;Raises maximum<LINE>HP 50%.
+Magical Hat;Helm;All;Hat;;;;;50;;10;;;;;;;;;;mp_multi;50;Raises maximum<LINE>MP 50%.
 ;;;;;;;;;;;;;;;;;;;;;; 
 Leather Boots;Boots;Male;Boots;;;;;;;;;;;;;;;;;;; 
 Iron Kneepiece;Boots;Male;Kneepiece;;;;;;5;;;;;;;;;;;;; 
@@ -120,7 +120,7 @@ Giganto Ring;Accessory;All;Ring;;;;20;;20;;;;;;;;;;;;;Raises physical<LINE>attac
 Elude Cloak;Accessory;All;Cloak;;;;;;;;;;;20;;;;;;;;Increases escape<LINE>chance from phys.<LINE>attacks by 20%.
 Spirit Cloak;Accessory;All;Cloak;;;;;;;;;;;;20;;;;;;;Increases escape<LINE>chance from magical<LINE>attacks by 20%.
 Sage's Cloak;Accessory;All;Cloak;;;;;;;;;;;20;20;;;;;;;Increases escape<LINE>chance from phys./<LINE>mag. attacks by 20%
-Physical Ring;Accessory;All;Ring;;;;;;;;;;;;;;;;;;;Raises maximum<LINE>HP 50%.
+Physical Ring;Accessory;All;Ring;;;;;;;;;;;;;;;;;hp_multi;50;Raises maximum<LINE>HP 50%.
 Amulet;Accessory;All;Amulet;;;;;;;;;;;;;;;;;;;Doubles<LINE>maximum MP.
 Wargod's Sash;Accessory;All;Ring;;;;;;;;;;;;;;;;;;;Attacks generate<LINE>50% more SP.
 Spirit Ring;Accessory;All;Ring;;;;;;;;;;;;;;;;;;;Recovers 20 SP<LINE>each turn.
@@ -129,7 +129,7 @@ Mage Ring;Accessory;All;Ring;;;;;;;;;;;;;;;;;;;Recovers 10% MP<LINE>each turn.
 Wargod's Amulet;Accessory;All;Amulet;;;;;;;;;20;20;;;;;;;;;Increases hit rate<LINE>for mag./phys.<LINE>attacks by 20%.
 Talisman;Accessory;All;Amulet;;;;;;;;;;;;;;;;;;;Grants immunity<LINE>to instant death.
 ;;;;;;;;;;;;;;;;;;;;;; 
-Holy Ankh;Accessory;All;Ring;;;;;;;;;;;;;;;;;;;40% chance of<LINE>reviving from<LINE>death.
+Holy Ankh;Accessory;All;Ring;;;;;;;;;;;;;;;;;revive;40;40% chance of<LINE>reviving from<LINE>death.
 Dancer's Ring;Accessory;All;Ring;;;;;;;;20;;;;;;;;;;;Raises speed<LINE>by 20.
 ;;;;;;;;;;;;;;;;;;;;;; 
 Bandit's Ring;Accessory;All;Ring;;;;;;;;20;;;;;;;;;;;Raises speed<LINE>by 20.
@@ -141,13 +141,13 @@ Blue Sea Stone;Accessory;All;Stone;;;;;;;;;;;;;Water;;;;;;Halves damage<LINE>fro
 Violet Stone;Accessory;All;Stone;;;;;;;;;;;;;Thunder;;;;;;Halves damage<LINE>from thunder-based<LINE>attacks.
 Golden Stone;Accessory;All;Stone;;;;;;;;;;;;;Earth;;;;;;Halves damage<LINE>from earth-based<LINE>attacks.
 ;;;;;;;;;;;;;;;;;;;;;; 
-Ruby Ring;Accessory;All;Ring;;;;;;;;;;;;;;;;;;;Gain 20 SP when<LINE>damaged magically.
-Sapphire Pin;Accessory;All;Pin;;;;;;;;;;;;;;;;;;;Gain 10% MP when<LINE>damaged magically.
+Ruby Ring;Accessory;All;Ring;;;;;;;;;;;;;;;;sp_m_hit;;20;Gain 20 SP when<LINE>damaged magically.
+Sapphire Pin;Accessory;All;Pin;;;;;;;;;;;;;;;;mp_m_hit;;10;Gain 10% MP when<LINE>damaged magically.
 Rainbow Earring;Accessory;All;Ring;;;;;;;;;;;;;;;All;;;;Avoids all<LINE>abnormal status<LINE>ailments.
 ;;;;;;;;;;;;;;;;;;;;;; 
-Emerald Earring;Accessory;All;Ring;;;;;;;;;;;;;;;;;;;Gain 20 SP when<LINE>damaged physically.
+Emerald Earring;Accessory;All;Ring;;;;;;;;;;;;;;;;sp_p_hit;;20;Gain 20 SP when<LINE>damaged physically.
 ;;;;;;;;;;;;;;;;;;;;;; 
-Platinum Collar;Accessory;All;Ring;;;;;;;;;;;;;;;;;;;Gain 10% MP when<LINE>damaged physically.
+Platinum Collar;Accessory;All;Ring;;;;;;;;;;;;;;;;mp_p_hit;;10;Gain 10% MP when<LINE>damaged physically.
 Phantom Shield;Accessory;All;Ring;;;;;;;;;;;;;;;;;;;Halves damage<LINE>from all attacks.
 Dragon Shield;Accessory;All;Ring;;;;;;;;;;;;;;;;;;;Halves physical<LINE>damage.
 Angel Scarf;Accessory;All;Scarf;;;;;;;;;;;;;;;;;;;Halves magical<LINE>damage.

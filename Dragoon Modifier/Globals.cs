@@ -35,7 +35,7 @@ namespace Dragoon_Modifier {
         public static bool MONSTER_CHANGE = false;
         public static bool ULTIMATE = false;
         public static bool DROP_CHANGE = false;
-        public static bool ITEM_CHANGE = true;
+        public static bool ITEM_CHANGE = false;
         public static bool CHARACTER_CHANGE = false;
         public static bool DRAGOON_CHANGE = false;
         public static bool SHOP_CHANGE = false;

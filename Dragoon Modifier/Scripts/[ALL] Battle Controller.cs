@@ -175,6 +175,12 @@ public class BattleController {
                         Globals.CHARACTER_TABLE[character].Write("SP_Regen", Globals.CURRENT_STATS[charid].SP_Regen);
                         Globals.CHARACTER_TABLE[character].Write("MP_Regen", Globals.CURRENT_STATS[charid].MP_Regen);
                         Globals.CHARACTER_TABLE[character].Write("HP_Regen", Globals.CURRENT_STATS[charid].HP_Regen);
+                        Globals.CHARACTER_TABLE[character].Write("Display_Element", Globals.CURRENT_STATS[charid].Element);
+                        Globals.CHARACTER_TABLE[character].Write("MP_M_Hit", Globals.CURRENT_STATS[charid].MP_M_Hit);
+                        Globals.CHARACTER_TABLE[character].Write("SP_M_Hit", Globals.CURRENT_STATS[charid].SP_M_Hit);
+                        Globals.CHARACTER_TABLE[character].Write("MP_P_Hit", Globals.CURRENT_STATS[charid].MP_P_Hit);
+                        Globals.CHARACTER_TABLE[character].Write("SP_P_Hit", Globals.CURRENT_STATS[charid].SP_P_Hit);
+                        Globals.CHARACTER_TABLE[character].Write("SP_Multi", Globals.CURRENT_STATS[charid].SP_Multi);
                     }
                 }
             }
@@ -754,6 +760,12 @@ public class BattleController {
         byte sp_regen = 0;
         byte mp_regen = 0;
         byte hp_regen = 0;
+        byte mp_m_hit = 0;
+        byte sp_m_hit = 0;
+        byte mp_p_hit = 0;
+        byte sp_p_hit = 0;
+        byte sp_multi = 0;
+        byte element = 0;
 
         public ushort HP { get { return hp; } }
         public ushort Max_HP { get { return max_hp; } }
@@ -779,6 +791,12 @@ public class BattleController {
         public byte SP_Regen { get { return sp_regen; } }
         public byte MP_Regen { get { return mp_regen; } }
         public byte HP_Regen { get { return hp_regen; } }
+        public byte SP_M_Hit { get { return sp_m_hit; } }
+        public byte MP_M_Hit { get { return mp_m_hit; } }
+        public byte SP_P_Hit { get { return sp_p_hit; } }
+        public byte MP_P_Hit { get { return mp_p_hit; } }
+        public byte SP_Multi { get { return sp_multi; } }
+        public byte Element { get { return element; } }
 
         public CurrentStats(int character, Emulator emulator) {
             level = emulator.ReadByteU(0xBAEF4 + Constants.OFFSET + character * 0x2C + 0x12);
@@ -807,6 +825,7 @@ public class BattleController {
             m_half |= ((weapon.Special2 & 0x4) | (armor.Special2 & 0x4) | (helm.Special2 & 0x4) | (boots.Special2 & 0x4) | (accessory.Special2 & 0x4)) >> 2;
             status = weapon.Status;
             status_chance = weapon.Status_Chance;
+            element = weapon.Element;
             revive = (byte)(((weapon.Special2 & 0x8) >> 3) * weapon.Special_Ammount + ((armor.Special2 & 0x8) >> 3) * armor.Special_Ammount + ((helm.Special2 & 0x8) >> 3) * helm.Special_Ammount
                 + ((boots.Special2 & 0x8) >> 3) * boots.Special_Ammount + ((accessory.Special2 & 0x8) >> 3) * accessory.Special_Ammount);
             sp_regen = (byte)(((weapon.Special2 & 0x10) >> 4) * weapon.Special_Ammount + ((armor.Special2 & 0x10) >> 4) * armor.Special_Ammount + ((helm.Special2 & 0x10) >> 4) * helm.Special_Ammount
@@ -815,6 +834,16 @@ public class BattleController {
                 + ((boots.Special2 & 0x20) >> 5) * boots.Special_Ammount + ((accessory.Special2 & 0x20) >> 5) * accessory.Special_Ammount);
             hp_regen = (byte)(((weapon.Special2 & 0x40) >> 6) * weapon.Special_Ammount + ((armor.Special2 & 0x40) >> 6) * armor.Special_Ammount + ((helm.Special2 & 0x40) >> 6) * helm.Special_Ammount
                 + ((boots.Special2 & 0x40) >> 6) * boots.Special_Ammount + ((accessory.Special2 & 0x40) >> 6) * accessory.Special_Ammount);
+            mp_m_hit = (byte)((weapon.Special1 & 0x1) * weapon.Special_Ammount + (armor.Special1 & 0x1) * armor.Special_Ammount + (helm.Special1 & 0x1) * helm.Special_Ammount
+                + (boots.Special1 & 0x1) * boots.Special_Ammount + (accessory.Special1 & 0x1) * accessory.Special_Ammount);
+            sp_m_hit = (byte)(((weapon.Special1 & 0x2) >> 1) * weapon.Special_Ammount + ((armor.Special1 & 0x2) >> 1) * armor.Special_Ammount + ((helm.Special1 & 0x2) >> 1) * helm.Special_Ammount
+                + ((boots.Special1 & 0x2) >> 1) * boots.Special_Ammount + ((accessory.Special1 & 0x2) >> 1) * accessory.Special_Ammount);
+            mp_p_hit = (byte)(((weapon.Special1 & 0x4) >> 2) * weapon.Special_Ammount + ((armor.Special1 & 0x4) >> 2) * armor.Special_Ammount + ((helm.Special1 & 0x4) >> 2) * helm.Special_Ammount
+                + ((boots.Special1 & 0x4) >> 2) * boots.Special_Ammount + ((accessory.Special1 & 0x4) >> 2) * accessory.Special_Ammount);
+            sp_p_hit = (byte)(((weapon.Special1 & 0x8) >> 3) * weapon.Special_Ammount + ((armor.Special1 & 0x8) >> 3) * armor.Special_Ammount + ((helm.Special1 & 0x8) >> 3) * helm.Special_Ammount
+                + ((boots.Special1 & 0x8) >> 3) * boots.Special_Ammount + ((accessory.Special1 & 0x8) >> 3) * accessory.Special_Ammount);
+            sp_multi = (byte)(((weapon.Special1 & 0x10) >> 4) * weapon.Special_Ammount + ((armor.Special1 & 0x10) >> 4) * armor.Special_Ammount + ((helm.Special1 & 0x10) >> 4) * helm.Special_Ammount
+                + ((boots.Special1 & 0x4) >> 4) * boots.Special_Ammount + ((accessory.Special1 & 0x10) >> 4) * accessory.Special_Ammount);
         }
     }
 
