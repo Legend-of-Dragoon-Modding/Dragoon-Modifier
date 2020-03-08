@@ -46,8 +46,16 @@ public class BattleController {
                 Constants.WriteOutput("Exiting out of battle.");
                 if (Globals.ITEM_CHANGE == true) {
                     Constants.WriteOutput("Changing Item table...");
-                    emulator.WriteAOB(Constants.GetAddress("ITEM_DESC"), String.Join(" ", Globals.DICTIONARY.DescriptionList));
-                    emulator.WriteAOB(Constants.GetAddress("ITEM_NAME"), String.Join(" ", Globals.DICTIONARY.NameList));
+                    if (String.Join("", Globals.DICTIONARY.NameList).Replace(" ", "").Length / 2 < 6423) {
+                        emulator.WriteAOB(Constants.GetAddress("ITEM_NAME"), String.Join(" ", Globals.DICTIONARY.NameList));
+                    } else {
+                        Constants.WriteDebug("Item name character limit exceded! " + Convert.ToString(String.Join("", Globals.DICTIONARY.NameList).Replace(" ", "").Length / 4, 10) + " / 3211 characters.");
+                    }
+                    if (String.Join("", Globals.DICTIONARY.DescriptionList).Replace(" ", "").Length / 2 < 13465) {
+                        emulator.WriteAOB(Constants.GetAddress("ITEM_DESC"), String.Join(" ", Globals.DICTIONARY.DescriptionList));
+                    } else {
+                        Constants.WriteDebug("Item description character limit exceded! " + Convert.ToString(String.Join("", Globals.DICTIONARY.DescriptionList).Replace(" ", "").Length / 4, 10) + " / 6732 characters.");
+                    }
                     int i = 0;
                     foreach (dynamic item in Globals.DICTIONARY.ItemList) {
                         if (i < 194) {

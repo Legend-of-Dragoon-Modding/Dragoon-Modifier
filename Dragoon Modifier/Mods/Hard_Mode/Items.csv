@@ -163,17 +163,17 @@ Fake Legend Casque;Helm;All;Helm;;;;;;;30;;;;;;;;;;;;;May greatly reduce<LINE>da
 Lloyd's Boots;Boots;All;Boots;;;;;;;;15;;;15;15;;;;;;;;Raises speed by 15<LINE>and evasion by 15%.
 Winged Shoes;Boots;All;Shoes;;;;;;;;25;;;;;;;;;;;;Raises speed by 25.
 Spirit Eater;Weapon;Dart;Sword;;;;75;50;;;;;;;;;;;;;;;Increases MAT,<LINE>but SP decays<LINE>each turn.
-Harpoon;Weapon;Lavitz;Spear;;;;;;;;;;;;;;;;;;;;
-Elemental Arrow;Weapon;Shana;Bow;;;;;;;;;;;;;;;;;;;;Changes element<LINE>every few turns.
-Sabre;Weapon;Rose;Sword;;;;;;;;;;;;;;;;;;;;
-Dragon Buster II;Weapon;Rose;Sword;;;;;;;;;;;;;;;;;;;;Absorbs damage and enhances<LINE>Dragoon magic.
-Battery Glove;Weapon;Haschel;Boxing Glove;;;;;;;;;;;;;;;;;;;;Charges with<LINE>attacks. Unleashes<LINE>at full charge.
-Jeweled Hammer;Weapon;Meru;Hammer;;;;;;;;;;;;;;;;;;;;
-Giant Axe;Weapon;Kongol;Axe;;;;110;20;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;Will randomly activate<LINE>guard.
-;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;
+Harpoon;Weapon;Lavitz;Spear;;;;100;;;;;;;;;;;;;;;;Enhances Dragoon,<LINE>but reduces SPD<LINE>and SP for 3 turns.
+Elemental Arrow;Weapon;Shana;Bow;;;;50;50;;;;;;;;;;;;;;;Changes element<LINE>every few turns.
+Sabre;Weapon;Rose;Sword;;;;70;;;;;;;;;;;;;;;;
+Dragon Buster II;Weapon;Rose;Sword;;;;130;;;;;;;;;;;;;;;;Absorbs damage<LINE>and enhances<LINE>Dragoon magic.
+Battery Glove;Weapon;Haschel;Boxing Glove;;;;80;20;;;;;;;;;;;;;;;Charges with<LINE>attacks. Unleashes<LINE>at full charge.
+Jeweled Hammer;Weapon;Meru;Hammer;;;;40;40;;;;;;;;;;;;;;;Enhances Dragoon<LINE>magic, but stops MP<LINE>gain for 5 turns.
+Giant Axe;Weapon;Kongol;Axe;;;;110;20;;;;;;;;;;;;;;;Will randomly<LINE>activate guard<LINE>after attack.
+Soa's Light;Weapon;All;Sword;;;;200;140;;;;;;;;;;;;sp_regen;100;;Reduces defense and<LINE>SP gain of allies.<LINE>Recovers large SP.
+Soa's Helm;Helm;All;Helm;;;;;;;200;;;;;;;;;;mp_regen;20;;Reduces attack<LINE>of allies. Recovers<LINE>large MP each turn.
+Soa's Armor;Armor;All;Armor;;;;;;200;;;;;;;;;;;hp_regen;20;;Reduces magic<LINE>of allies. Recovers<LINE>large HP each turn.
+Soa's Greaves;Boots;All;Kneepiece;;;;;;;;40;;;20;20;;;;;;;;Raises speed by 40,<LINE>but reduces speed<LINE>of allies.
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;
