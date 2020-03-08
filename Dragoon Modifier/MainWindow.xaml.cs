@@ -575,7 +575,7 @@ namespace Dragoon_Modifier {
             List<int[]>[] shopList = new List<int[]>[39];
             dynamic[][] characterStats = new dynamic[9][];
             List<int> monsterScript = new List<int>();
-            IDictionary<int, Dictionary<int, dynamic>> dragoonStats = new Dictionary<int, Dictionary<int, dynamic>>();
+            dynamic[][] dragoonStats = new dynamic[9][];
             IDictionary<int, string> num2item = new Dictionary<int, string>();
             IDictionary<string, int> item2num = new Dictionary<string, int>();
             IDictionary<int, string> num2element = new Dictionary<int, string>() {
@@ -634,7 +634,7 @@ namespace Dragoon_Modifier {
             public IDictionary<int, string> Num2Element { get { return num2element; } }
             public IDictionary<string, int> Element2Num { get { return element2num; } }
             public IDictionary<string, int> Status2Num { get { return status2num; } }
-            public IDictionary<int, Dictionary<int, dynamic>> DragoonStats { get { return dragoonStats; } }
+            public dynamic[][] DragoonStats { get { return dragoonStats; } }
 
             public LoDDict() {
                 string cwd = AppDomain.CurrentDomain.BaseDirectory;       
@@ -772,13 +772,14 @@ namespace Dragoon_Modifier {
                             var line = dragoon.ReadLine();
                             if (firstline == false) {
                                 var values = line.Split(';').ToArray();
-                                Dictionary<int, dynamic> level = new Dictionary<int, dynamic>();
-                                level.Add(1, new DragoonStats(Int32.Parse(values[1]), Int32.Parse(values[2]), Int32.Parse(values[3]), Int32.Parse(values[4])));
-                                level.Add(2, new DragoonStats(Int32.Parse(values[5]), Int32.Parse(values[6]), Int32.Parse(values[7]), Int32.Parse(values[8])));
-                                level.Add(3, new DragoonStats(Int32.Parse(values[9]), Int32.Parse(values[10]), Int32.Parse(values[11]), Int32.Parse(values[12])));
-                                level.Add(4, new DragoonStats(Int32.Parse(values[13]), Int32.Parse(values[14]), Int32.Parse(values[15]), Int32.Parse(values[16])));
-                                level.Add(5, new DragoonStats(Int32.Parse(values[17]), Int32.Parse(values[18]), Int32.Parse(values[19]), Int32.Parse(values[20])));
-                                dragoonStats.Add(i, level);
+                                dragoonStats[i] = new dynamic[] {
+                                    new DragoonStats("0", "0", "0", "0", "0"),
+                                    new DragoonStats(values[1], values[2], values[3], values[4], values[5]),
+                                    new DragoonStats(values[6], values[7], values[8], values[9], values[10]),
+                                    new DragoonStats(values[11], values[12], values[13], values[14], values[15]),
+                                    new DragoonStats(values[16], values[17], values[18], values[19], values[20]),
+                                    new DragoonStats(values[21], values[22], values[23], values[24], values[25])
+                                };
                                 i++;
                             } else {
                                 firstline = false;
@@ -1266,21 +1267,45 @@ namespace Dragoon_Modifier {
         }
 
         public class DragoonStats {
-            int dat = 0;
-            int dmat = 0;
-            int ddf = 0;
-            int dmdf = 0;
+            byte dat = 0;
+            byte dmat = 0;
+            byte ddf = 0;
+            byte dmdf = 0;
+            byte mp = 0;
 
-            public int DAT { get { return dat; } }
-            public int DMAT { get { return dmat; } }
-            public int DDF { get { return ddf; } }
-            public int DMDF { get { return dmdf; } }
+            public byte DAT { get { return dat; } }
+            public byte DMAT { get { return dmat; } }
+            public byte DDF { get { return ddf; } }
+            public byte DMDF { get { return dmdf; } }
+            public byte MP { get { return mp; } }
 
-            public DragoonStats(int ndat, int ndmat, int nddf, int ndmdf) {
-                dat = ndat;
-                dmat = ndmat;
-                ddf = nddf;
-                dmdf = ndmdf;
+            public DragoonStats(string ndat, string ndmat, string nddf, string ndmdf, string nmp) {
+                byte key = 0;
+                if (Byte.TryParse(ndat, NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+                    dat = key;
+                } else if (ndat != "") {
+                    Constants.WriteDebug(ndat + " not found as D-AT");
+                }
+                if (Byte.TryParse(ndmat, NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+                    dmat = key;
+                } else if (ndmat != "") {
+                    Constants.WriteDebug(ndmat + " not found as D-MAT");
+                }
+                if (Byte.TryParse(nddf, NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+                    ddf = key;
+                } else if (nddf != "") {
+                    Constants.WriteDebug(nddf + " not found as D-DF");
+                }
+                if (Byte.TryParse(ndmdf, NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+                    dmdf = key;
+                } else if (ndmdf != "") {
+                    Constants.WriteDebug(ndmdf + " not found as D-MDF");
+                }
+                if (Byte.TryParse(nmp, NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+                    mp = key;
+                } else if (nmp != "") {
+                    Constants.WriteDebug(ndmdf + " not found as MP");
+                }
             }
         }
 
