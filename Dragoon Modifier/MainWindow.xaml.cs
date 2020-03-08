@@ -998,6 +998,7 @@ namespace Dragoon_Modifier {
             Dictionary<string, byte> death2num = new Dictionary<string, byte>() {
                 {"", 0 },
                 {"none", 0 },
+                {"dragon_buster", 4 },
                 {"attack_all", 8 },
                 {"death_chance", 64 },
                 {"death_res", 128 }

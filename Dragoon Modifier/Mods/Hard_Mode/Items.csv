@@ -7,8 +7,8 @@ Mind Crush;Weapon;Dart;Sword;;Confusion;20;34;;;;;;;;;;;;;;;;20% chance of<LINE>
 Fairy Sword;Weapon;Dart;Sword;;;;39;;;;;;;;;;;;sp_multi;;50;;Attacks generate<LINE>50% more SP.
 Claymore;Weapon;Dart;Sword;;;;44;;;;;;;;;;;;;;;; 
 Soul Eater;Weapon;Dart;Sword;;;;75;;;;;;;;;;;;;hp_regen;-10;;Powerful, but<LINE>HP decays<LINE>each turn.
-Axe;Weapon;Kongol;Axe;;;;45;;;;;;;;;;;;;;;; 
-Tomahawk;Weapon;Kongol;Axe;;;;59;;;;;;;;;;;;;;;; 
+Axe;Weapon;Kongol;Axe;;;;45;;;;;;;;;;;;;;;;
+Tomahawk;Weapon;Kongol;Axe;Earth;;;59;;;;;;;;;;;;;;;;Earth-based attack.
 Battle Axe;Weapon;Kongol;Axe;;;;67;;;;;;;;;;;;;;;; 
 Great Axe;Weapon;Kongol;Axe;;Stun;20;79;;;;;;;;;;;;;;;;20% chance of<LINE>stunning enemy.
 Indora's Axe;Weapon;Kongol;Axe;;Death;10;88;;;;;;;;;;;;;;;death_chance;10% chance to<LINE>instantly kill<LINE>enemy.
@@ -74,7 +74,7 @@ Satori Vest;Armor;Haschel;Warrior Dress;;;;;;40;31;;;;10;;;;Poison, Stun, Arm Bl
 Rainbow Dress;Armor;Female;Robe;;;;;;32;55;;;;5;5;;;Poison, Stun, Arm Blocking;;;;;Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.
 Angel Robe;Armor;Shana, Meru;Robe;;;;;;;;;;;5;5;;;;;revive;40;;40% chance of<LINE>reviving from<LINE>death.
 Armor of Legend;Armor;All;Armor;;;;;;127;;;;;50;;;;;;;;;Greatly reduces<LINE>damage from<LINE>physical attacks.
-;;;;;;;;;;;;;;;;;;;;;;; 
+;;;;;;;;;;;;;;;;;;;;;;;
 Bandana;Helm;Male;Bandana;;;;;3;;;;;;;;;;;;;;; 
 Sallet;Helm;Male;Helm;;;;;8;;;;;;;;;;;;;;;Increases hit<LINE>chance of physical<LINE>attacks by 10%.
 Armlet;Helm;Male;Helm;;;;;23;;7;;;;;;;;;;;;; 
@@ -91,7 +91,7 @@ Phoenix Plume;Helm;All;Helm;;;;;30;0;10;;;;;;;;Bewitchment, Confusion, Fear, Dis
 Legend Casque;Helm;All;Helm;;;;;50;;127;;;;;50;;;;;;;;Greatly reduces<LINE>damage from<LINE>magical attacks.
 Dragon Helm;Helm;All;Helm;;;;;50;12;;;;;;;;;;;hp_multi;50;;Raises maximum<LINE>HP 50%.
 Magical Hat;Helm;All;Hat;;;;;50;;10;;;;;;;;;;mp_multi;50;;Raises maximum<LINE>MP 50%.
-;;;;;;;;;;;;;;;;;;;;;;; 
+;;;;;;;;;;;;;;;;;;;;;;;
 Leather Boots;Boots;Male;Boots;;;;;;;;;;;;;;;;;;;; 
 Iron Kneepiece;Boots;Male;Kneepiece;;;;;;5;;;;;;;;;;;;;; 
 Combat Shoes;Boots;Male;Shoes;;;;;;5;;;;;5;;;;;;;;;Increases escape<LINE>chance from physicalattacks by 5%.
@@ -101,7 +101,7 @@ Stardust Boots;Boots;Female;Boots;;;;;;5;;;;;;5;;;;;;;;Increases escape<LINE>cha
 Magical Greaves;Boots;All;Kneepiece;;;;;;;;10;;;5;5;;;;;;;;Increases escape<LINE>chance from phys./<LINE>mag. attacks by 5%.
 Dancer's Boots;Boots;Female;Boots;;;;;;;;20;;;;;;;;;;;;Raises speed<LINE>by 20.
 Bandit's Shoes;Boots;Male;Shoes;;;;;;;;20;;;;;;;;;;;;Raises speed<LINE>by 20.
-;;;;;;;;;;;;;;;;;;;;;;; 
+;;;;;;;;;;;;;;;;;;;;;;;
 Poison Guard;Accessory;All;Ring;;;;;;;;;;;;;;;Poison;;;;;Grants immunity<LINE>to poison.
 Active Ring;Accessory;All;Ring;;;;;;;;;;;;;;;Dispirit;;;;;Grants immunity<LINE>to dispiriting.
 Protector;Accessory;All;Ring;;;;;;;;;;;;;;;Arm Blocking;;;;;Grants immunity<LINE>to arm blocking.
@@ -158,19 +158,19 @@ Fake Shield;Accessory;All;Ring;;;;;;5;;;;;;;;;;;;;;Raises physical<LINE>defense 
 Wargod Calling;Accessory;All;Ring;;;;;;;;;;;;;;;;;;;;Automatic Addition:<LINE>Half Damage and SP.
 Ultimate Wargod;Accessory;All;Ring;;;;;;;;;;;;;;;;;;;;Automatic Addition:<LINE>Full Damage and SP.
 ;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;
+Fake Legend Armor;Armor;All;Armor;;;;;;30;;;;;;;;;;;;;;May greatly reduce<LINE>damage from<LINE>physical attacks.
+Fake Legend Casque;Helm;All;Helm;;;;;;;30;;;;;;;;;;;;;May greatly reduce<LINE>damage from<LINE>magical attacks.
+Lloyd's Boots;Boots;All;Boots;;;;;;;;15;;;15;15;;;;;;;;Raises speed by 15<LINE>and evasion by 15%.
+Winged Shoes;Boots;All;Shoes;;;;;;;;25;;;;;;;;;;;;Raises speed by 25.
+Spirit Eater;Weapon;Dart;Sword;;;;75;50;;;;;;;;;;;;;;;Increases MAT,<LINE>but SP decays<LINE>each turn.
+Harpoon;Weapon;Lavitz;Spear;;;;;;;;;;;;;;;;;;;;
+Elemental Arrow;Weapon;Shana;Bow;;;;;;;;;;;;;;;;;;;;Changes element<LINE>every few turns.
+Sabre;Weapon;Rose;Sword;;;;;;;;;;;;;;;;;;;;
+Dragon Buster II;Weapon;Rose;Sword;;;;;;;;;;;;;;;;;;;;Absorbs damage and enhances<LINE>Dragoon magic.
+Battery Glove;Weapon;Haschel;Boxing Glove;;;;;;;;;;;;;;;;;;;;Charges with<LINE>attacks. Unleashes<LINE>at full charge.
+Jeweled Hammer;Weapon;Meru;Hammer;;;;;;;;;;;;;;;;;;;;
+Giant Axe;Weapon;Kongol;Axe;;;;110;20;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;Will randomly activate<LINE>guard.
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;
