@@ -1271,13 +1271,13 @@ namespace Dragoon_Modifier {
             byte dmat = 0;
             byte ddf = 0;
             byte dmdf = 0;
-            byte mp = 0;
+            ushort mp = 0;
 
             public byte DAT { get { return dat; } }
             public byte DMAT { get { return dmat; } }
             public byte DDF { get { return ddf; } }
             public byte DMDF { get { return dmdf; } }
-            public byte MP { get { return mp; } }
+            public ushort MP { get { return mp; } }
 
             public DragoonStats(string ndat, string ndmat, string nddf, string ndmdf, string nmp) {
                 byte key = 0;
@@ -1301,8 +1301,8 @@ namespace Dragoon_Modifier {
                 } else if (ndmdf != "") {
                     Constants.WriteDebug(ndmdf + " not found as D-MDF");
                 }
-                if (Byte.TryParse(nmp, NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
-                    mp = key;
+                if (UInt16.TryParse(nmp, NumberStyles.AllowLeadingSign, null as IFormatProvider, out ushort shortkey)) {
+                    mp = shortkey;
                 } else if (nmp != "") {
                     Constants.WriteDebug(ndmdf + " not found as MP");
                 }

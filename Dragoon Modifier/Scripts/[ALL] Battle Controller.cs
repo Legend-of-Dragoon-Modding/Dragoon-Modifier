@@ -81,6 +81,7 @@ public class BattleController {
                     for (int character = 0; character < 8; character++) {
                         int reorderedChar = charReorder[character];
                         for (int level = 1; level < 6; level++) {
+                            emulator.WriteShort((long)(Constants.GetAddress("DRAGOON_TABLE") + character * 0x30 + level * 0x8), Globals.DICTIONARY.DragoonStats[reorderedChar][level].MP);
                             emulator.WriteByte((long)(Constants.GetAddress("DRAGOON_TABLE") + character * 0x30 + level * 0x8 + 0x4), Globals.DICTIONARY.DragoonStats[reorderedChar][level].DAT);
                             emulator.WriteByte((long)(Constants.GetAddress("DRAGOON_TABLE") + character * 0x30 + level * 0x8 + 0x5), Globals.DICTIONARY.DragoonStats[reorderedChar][level].DMAT);
                             emulator.WriteByte((long)(Constants.GetAddress("DRAGOON_TABLE") + character * 0x30 + level * 0x8 + 0x6), Globals.DICTIONARY.DragoonStats[reorderedChar][level].DDF);
@@ -296,6 +297,20 @@ public class BattleController {
                 emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x7 + Constants.OFFSET + i * 0xC, Spell.MP);
                 emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x9 + Constants.OFFSET + i * 0xC, Spell.Element);
                 i++;
+            }
+            for (int z = 0; z < 3; z++) { // Miranda Hotfix
+                int intValue = (int)emulator.ReadByteU(Constants.GetAddress("SPELL_TABLE") + 0x2 + (int)Constants.OFFSET + (z + 65) * 0xC);
+                if (Globals.DRAGOON_SPELLS[z + 10].Percentage == true) {
+                    intValue |= 1 << 2;
+                } else {
+                    intValue &= ~(1 << 2);
+                }
+                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x2 + (int)Constants.OFFSET + (z + 65) * 0xC, (byte)intValue);
+                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x4 + (int)Constants.OFFSET + (z + 65) * 0xC, Globals.DRAGOON_SPELLS[z + 10].DMG_Base);
+                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x5 + (int)Constants.OFFSET + (z + 65) * 0xC, Globals.DRAGOON_SPELLS[z + 10].Multi);
+                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x6 + Constants.OFFSET + (z + 65) * 0xC, Globals.DRAGOON_SPELLS[z + 10].Accuracy);
+                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x7 + Constants.OFFSET + (z + 65) * 0xC, Globals.DRAGOON_SPELLS[z + 10].MP);
+                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x9 + Constants.OFFSET + (z + 65) * 0xC, Globals.DRAGOON_SPELLS[z + 10].Element);
             }
         }
     if (Globals.DICTIONARY.MonsterScript.Contains(Globals.ENCOUNTER_ID)) {
