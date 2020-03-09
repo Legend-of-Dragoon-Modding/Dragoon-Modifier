@@ -788,9 +788,9 @@ public class BattleController {
         byte status = 0;
         byte status_chance = 0;
         byte revive = 0;
-        byte sp_regen = 0;
-        byte mp_regen = 0;
-        byte hp_regen = 0;
+        ushort sp_regen = 0;
+        ushort mp_regen = 0;
+        ushort hp_regen = 0;
         byte mp_m_hit = 0;
         byte sp_m_hit = 0;
         byte mp_p_hit = 0;
@@ -820,9 +820,9 @@ public class BattleController {
         public byte Status { get { return status; } }
         public byte Status_Chance { get { return status_chance; } }
         public byte Revive { get { return revive; } }
-        public byte SP_Regen { get { return sp_regen; } }
-        public byte MP_Regen { get { return mp_regen; } }
-        public byte HP_Regen { get { return hp_regen; } }
+        public ushort SP_Regen { get { return sp_regen; } }
+        public ushort MP_Regen { get { return mp_regen; } }
+        public ushort HP_Regen { get { return hp_regen; } }
         public byte SP_M_Hit { get { return sp_m_hit; } }
         public byte MP_M_Hit { get { return mp_m_hit; } }
         public byte SP_P_Hit { get { return sp_p_hit; } }
@@ -869,11 +869,11 @@ public class BattleController {
             element = weapon.Element;
             revive = (byte)(((weapon.Special2 & 0x8) >> 3) * weapon.Special_Ammount + ((armor.Special2 & 0x8) >> 3) * armor.Special_Ammount + ((helm.Special2 & 0x8) >> 3) * helm.Special_Ammount
                 + ((boots.Special2 & 0x8) >> 3) * boots.Special_Ammount + ((accessory.Special2 & 0x8) >> 3) * accessory.Special_Ammount);
-            sp_regen = (byte)(((weapon.Special2 & 0x10) >> 4) * weapon.Special_Ammount + ((armor.Special2 & 0x10) >> 4) * armor.Special_Ammount + ((helm.Special2 & 0x10) >> 4) * helm.Special_Ammount
+            sp_regen = (ushort)(((weapon.Special2 & 0x10) >> 4) * weapon.Special_Ammount + ((armor.Special2 & 0x10) >> 4) * armor.Special_Ammount + ((helm.Special2 & 0x10) >> 4) * helm.Special_Ammount
                 + ((boots.Special2 & 0x10) >> 4) * boots.Special_Ammount + ((accessory.Special2 & 0x10) >> 4) * accessory.Special_Ammount);
-            mp_regen = (byte)(((weapon.Special2 & 0x20) >> 5) * weapon.Special_Ammount + ((armor.Special2 & 0x20) >> 5) * armor.Special_Ammount + ((helm.Special2 & 0x20) >> 5) * helm.Special_Ammount
+            mp_regen = (ushort)(((weapon.Special2 & 0x20) >> 5) * weapon.Special_Ammount + ((armor.Special2 & 0x20) >> 5) * armor.Special_Ammount + ((helm.Special2 & 0x20) >> 5) * helm.Special_Ammount
                 + ((boots.Special2 & 0x20) >> 5) * boots.Special_Ammount + ((accessory.Special2 & 0x20) >> 5) * accessory.Special_Ammount);
-            hp_regen = (byte)(((weapon.Special2 & 0x40) >> 6) * weapon.Special_Ammount + ((armor.Special2 & 0x40) >> 6) * armor.Special_Ammount + ((helm.Special2 & 0x40) >> 6) * helm.Special_Ammount
+            hp_regen = (ushort)(((weapon.Special2 & 0x40) >> 6) * weapon.Special_Ammount + ((armor.Special2 & 0x40) >> 6) * armor.Special_Ammount + ((helm.Special2 & 0x40) >> 6) * helm.Special_Ammount
                 + ((boots.Special2 & 0x40) >> 6) * boots.Special_Ammount + ((accessory.Special2 & 0x40) >> 6) * accessory.Special_Ammount);
             mp_m_hit = (byte)((weapon.Special1 & 0x1) * weapon.Special_Ammount + (armor.Special1 & 0x1) * armor.Special_Ammount + (helm.Special1 & 0x1) * helm.Special_Ammount
                 + (boots.Special1 & 0x1) * boots.Special_Ammount + (accessory.Special1 & 0x1) * accessory.Special_Ammount);
