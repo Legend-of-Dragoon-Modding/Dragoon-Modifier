@@ -78,8 +78,8 @@ public class BattleController {
                             emulator.WriteByteU((long)(Constants.GetAddress("ITEM_TABLE") + i * 0x1C + 0x7) + Constants.OFFSET, item.Stat_Res);
                             emulator.WriteByteU((long)(Constants.GetAddress("ITEM_TABLE") + i * 0x1C + 0xD) + Constants.OFFSET, item.Icon);
                         }
-                        emulator.WriteInteger(Constants.GetAddress("ITEM_DESC_PTR") + i * 0x4, item.DescriptionPointer);
-                        emulator.WriteInteger(Constants.GetAddress("ITEM_NAME_PTR") + i * 0x4, item.NamePointer);
+                        emulator.WriteInteger(Constants.GetAddress("ITEM_DESC_PTR") + i * 0x4, (int)item.DescriptionPointer);
+                        emulator.WriteInteger(Constants.GetAddress("ITEM_NAME_PTR") + i * 0x4, (int)item.NamePointer);
                         i++;
                     }
                 }

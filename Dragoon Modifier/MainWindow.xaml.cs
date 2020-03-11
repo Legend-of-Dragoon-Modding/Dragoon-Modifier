@@ -657,8 +657,8 @@ namespace Dragoon_Modifier {
                             }
                         }
                     }
-                    int offset = 0;
-                    int start = -2146351756;
+                    long offset = 0x0;
+                    long start = 0x80000000 | Constants.GetAddress("ITEM_DESC");
                     List<dynamic> sortedList = itemList.OrderByDescending(o => o.Description.Length).ToList();
                     foreach (dynamic item in sortedList) {
                         if (descriptionList.Any(l => l.Contains(item.EncodedDescription)) == true) {
@@ -671,7 +671,7 @@ namespace Dragoon_Modifier {
                         }
                     }
                     offset = 0;
-                    start = -2146337264;
+                    start = 0x80000000 | Constants.GetAddress("ITEM_NAME");
                     sortedList = itemList.OrderByDescending(o => o.Name.Length).ToList();
                     foreach (dynamic item in sortedList) {
                         if (nameList.Any(l => l.Contains(item.EncodedName)) == true) {
@@ -679,7 +679,7 @@ namespace Dragoon_Modifier {
                             item.NamePointer = sortedList[index].NamePointer + (sortedList[index].Name.Length - item.Name.Length) * 2;
                         } else {
                             nameList.Add(item.EncodedName);
-                            item.NamePointer = start + offset;
+                            item.NamePointer = start + (int)offset;
                             offset += (item.EncodedName.Replace(" ", "").Length / 2);
                         }
                     }
@@ -851,8 +851,8 @@ namespace Dragoon_Modifier {
             string description = "";
             string encodedName = "00 00 FF A0";
             string encodedDescription = "00 00 FF A0";
-            int descriptionPointer = 0;
-            int namePointer = 0;
+            long descriptionPointer = 0;
+            long namePointer = 0;
             byte icon = 0;
             byte equips = 0;
             byte type = 0;
@@ -1009,8 +1009,8 @@ namespace Dragoon_Modifier {
             public string Description { get { return description; } }
             public string EncodedName { get { return encodedName; } }
             public string EncodedDescription { get { return encodedDescription; } }
-            public int DescriptionPointer { get; set; }
-            public int NamePointer { get; set; }
+            public long DescriptionPointer { get; set; }
+            public long NamePointer { get; set; }
             public byte Icon { get { return icon; } }
             public byte Equips { get { return equips; } }
             public byte Type { get { return type; } }
