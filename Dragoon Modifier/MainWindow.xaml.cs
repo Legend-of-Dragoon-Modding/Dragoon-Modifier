@@ -574,21 +574,22 @@ namespace Dragoon_Modifier {
             IDictionary<int, dynamic> ultimateStatList = new Dictionary<int, dynamic>();
             List<int[]>[] shopList = new List<int[]>[39];
             dynamic[][] characterStats = new dynamic[9][];
+            dynamic[,,] additionData = new dynamic[9, 8, 8];
             List<int> monsterScript = new List<int>();
             dynamic[][] dragoonStats = new dynamic[9][];
             IDictionary<int, string> num2item = new Dictionary<int, string>();
             IDictionary<string, int> item2num = new Dictionary<string, int>();
             IDictionary<int, string> num2element = new Dictionary<int, string>() {
-        {0, "None" },
-        {1, "Water" },
-        {2, "Earth" },
-        {4, "Dark" },
-        {8, "Non-Elemental" },
-        {16, "Thunder" },
-        {32, "Light" },
-        {64, "Wind" },
-        {128, "Fire" }
-    };
+                {0, "None" },
+                {1, "Water" },
+                {2, "Earth" },
+                {4, "Dark" },
+                {8, "Non-Elemental" },
+                {16, "Thunder" },
+                {32, "Light" },
+                {64, "Wind" },
+                {128, "Fire" }
+            };
             IDictionary<string, int> element2num = new Dictionary<string, int>() {
                 {"", 0 },
                 {"none", 0 },
@@ -628,6 +629,7 @@ namespace Dragoon_Modifier {
             public IDictionary<int, dynamic> UltimateStatList { get { return ultimateStatList; } }
             public List<int[]>[] ShopList { get { return shopList; } }
             public dynamic[][] CharacterStats { get { return characterStats; } }
+            public dynamic[, ,] AdditionData { get { return additionData; } }
             public List<int> MonsterScript { get { return monsterScript; } }
             public IDictionary<int, string> Num2Item { get { return num2item; } }
             public IDictionary<string, int> Item2Num { get { return item2num; } }
@@ -841,6 +843,28 @@ namespace Dragoon_Modifier {
                     string file = cwd + @"Mods\" + Globals.MOD + @"\Dragoon_Spells.csv";
                     Constants.WriteDebug(file + " not found. Turning off Dragoon Changes.");
                     Globals.DRAGOON_CHANGE = false;
+                }
+                using (var addition = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Additions.csv")) {
+                    var i = 0;
+                    bool firstline = true;
+                    while (!addition.EndOfStream) {
+                        var line = addition.ReadLine();
+                        if (firstline == false) {
+                            var values = line.Split(';').ToArray();
+                            additionData[0, i / 8, i % 8] = new AdditionData(values.Skip(1).Take(26).ToArray());
+                            additionData[1, i / 8, i % 8] = new AdditionData(values.Skip(28).Take(53).ToArray());
+                            additionData[2, i / 8, i % 8] = new AdditionData(values.Skip(55).Take(80).ToArray());
+                            additionData[3, i / 8, i % 8] = new AdditionData(values.Skip(82).Take(107).ToArray());
+                            additionData[4, i / 8, i % 8] = new AdditionData(values.Skip(109).Take(134).ToArray());
+                            additionData[5, i / 8, i % 8] = new AdditionData(values.Skip(136).Take(161).ToArray());
+                            additionData[6, i / 8, i % 8] = new AdditionData(values.Skip(163).Take(188).ToArray());
+                            additionData[7, i / 8, i % 8] = new AdditionData(values.Skip(190).Take(215).ToArray());
+                            additionData[8, i / 8, i % 8] = new AdditionData(values.Skip(217).Take(242).ToArray());
+                            i++;
+                        } else {
+                            firstline = false;
+                        }
+                    }
                 }
             }
         }
@@ -1400,6 +1424,197 @@ namespace Dragoon_Modifier {
                 mat = Convert.ToByte(nmat, 10);
                 df = Convert.ToByte(ndf, 10);
                 mdf = Convert.ToByte(nmdf, 10);
+            }
+        }
+
+        public class AdditionData {
+            short uu1 = 0;
+            short next_hit = 0;
+            short blue_time = 0;
+            short gray_time = 0;
+            short dmg = 0;
+            short sp = 0;
+            short id = 0;
+            byte final_hit = 0;
+            byte uu2 = 0;
+            byte uu3 = 0;
+            byte uu4 = 0;
+            byte uu5 = 0;
+            byte uu6 = 0;
+            byte uu7 = 0;
+            byte uu8 = 0;
+            byte uu9 = 0;
+            byte uu10 = 0;
+            short vertical_distance = 0;
+            byte uu11 = 0;
+            byte uu12 = 0;
+            byte uu13 = 0;
+            byte uu14 = 0;
+            byte start_time = 0;
+            byte uu15 = 0;
+            short add_dmg_multi = 0;
+            short add_sp_multi = 0;
+
+            public short UU1 { get { return uu1; } }
+            public short Next_Hit { get { return next_hit; } }
+            public short Blue_Time { get { return blue_time; } }
+            public short Gray_Time { get { return gray_time; } }
+            public short DMG { get { return dmg; } }
+            public short SP { get { return sp; } }
+            public short ID { get { return id; } }
+            public byte Final_Hit { get { return final_hit; } }
+            public byte UU2 { get { return uu2; } }
+            public byte UU3 { get { return uu3; } }
+            public byte UU4 { get { return uu4; } }
+            public byte UU5 { get { return uu5; } }
+            public byte UU6 { get { return uu6; } }
+            public byte UU7 { get { return uu7; } }
+            public byte UU8 { get { return uu8; } }
+            public byte UU9 { get { return uu9; } }
+            public byte UU10 { get { return uu10; } }
+            public short Vertical_Distance { get { return vertical_distance; } }
+            public byte UU11 { get { return uu11; } }
+            public byte UU12 { get { return uu12; } }
+            public byte UU13 { get { return uu13; } }
+            public byte UU14 { get { return uu14; } }
+            public byte Start_Time { get { return start_time; } }
+            public byte UU15 { get { return uu15; } }
+            public short ADD_DMG_Multi { get { return add_dmg_multi; } }
+            public short ADD_SP_Multi { get { return add_sp_multi; } }
+
+            public AdditionData(string[] values) {
+                short skey = 0;
+                byte bkey = 0;
+                if (Int16.TryParse(values[0], NumberStyles.AllowLeadingSign, null as IFormatProvider, out skey)) {
+                    uu1 = skey;
+                } else {
+                    Constants.WriteDebug(values[0] + " not found as UU1");
+                }
+                if (Int16.TryParse(values[1], NumberStyles.AllowLeadingSign, null as IFormatProvider, out skey)) {
+                    next_hit = skey;
+                } else {
+                    Constants.WriteDebug(values[1] + " not found as Next Hit");
+                }
+                if (Int16.TryParse(values[2], NumberStyles.AllowLeadingSign, null as IFormatProvider, out skey)) {
+                    blue_time = skey;
+                } else {
+                    Constants.WriteDebug(values[2] + " not found as Blue Time");
+                }
+                if (Int16.TryParse(values[3], NumberStyles.AllowLeadingSign, null as IFormatProvider, out skey)) {
+                    gray_time = skey;
+                } else {
+                    Constants.WriteDebug(values[3] + " not found as Gray Time");
+                }
+                if (Int16.TryParse(values[4], NumberStyles.AllowLeadingSign, null as IFormatProvider, out skey)) {
+                    dmg = skey;
+                } else {
+                    Constants.WriteDebug(values[4] + " not found as DMG");
+                }
+                if (Int16.TryParse(values[5], NumberStyles.AllowLeadingSign, null as IFormatProvider, out skey)) {
+                    sp = skey;
+                } else {
+                    Constants.WriteDebug(values[5] + " not found as DMG");
+                }
+                if (Int16.TryParse(values[6], NumberStyles.AllowLeadingSign, null as IFormatProvider, out skey)) {
+                    id = skey;
+                } else {
+                    Constants.WriteDebug(values[6] + " not found as ID");
+                }
+                if (Byte.TryParse(values[7], NumberStyles.AllowLeadingSign, null as IFormatProvider, out bkey)) {
+                    final_hit = bkey;
+                } else {
+                    Constants.WriteDebug(values[7] + " not found as Final Hit");
+                }
+                if (Byte.TryParse(values[8], NumberStyles.AllowLeadingSign, null as IFormatProvider, out bkey)) {
+                    uu2 = bkey;
+                } else {
+                    Constants.WriteDebug(values[8] + " not found as UU2");
+                }
+                if (Byte.TryParse(values[9], NumberStyles.AllowLeadingSign, null as IFormatProvider, out bkey)) {
+                    uu3 = bkey;
+                } else {
+                    Constants.WriteDebug(values[9] + " not found as UU3");
+                }
+                if (Byte.TryParse(values[10], NumberStyles.AllowLeadingSign, null as IFormatProvider, out bkey)) {
+                    uu4 = bkey;
+                } else {
+                    Constants.WriteDebug(values[10] + " not found as UU4");
+                }
+                if (Byte.TryParse(values[11], NumberStyles.AllowLeadingSign, null as IFormatProvider, out bkey)) {
+                    uu5 = bkey;
+                } else {
+                    Constants.WriteDebug(values[11] + " not found as UU5");
+                }
+                if (Byte.TryParse(values[12], NumberStyles.AllowLeadingSign, null as IFormatProvider, out bkey)) {
+                    uu6 = bkey;
+                } else {
+                    Constants.WriteDebug(values[12] + " not found as UU6");
+                }
+                if (Byte.TryParse(values[13], NumberStyles.AllowLeadingSign, null as IFormatProvider, out bkey)) {
+                    uu7 = bkey;
+                } else {
+                    Constants.WriteDebug(values[13] + " not found as UU7");
+                }
+                if (Byte.TryParse(values[14], NumberStyles.AllowLeadingSign, null as IFormatProvider, out bkey)) {
+                    uu8 = bkey;
+                } else {
+                    Constants.WriteDebug(values[14] + " not found as UU8");
+                }
+                if (Byte.TryParse(values[15], NumberStyles.AllowLeadingSign, null as IFormatProvider, out bkey)) {
+                    uu9 = bkey;
+                } else {
+                    Constants.WriteDebug(values[15] + " not found as UU9");
+                }
+                if (Byte.TryParse(values[16], NumberStyles.AllowLeadingSign, null as IFormatProvider, out bkey)) {
+                    uu10 = bkey;
+                } else {
+                    Constants.WriteDebug(values[16] + " not found as UU10");
+                }
+                if (Int16.TryParse(values[17], NumberStyles.AllowLeadingSign, null as IFormatProvider, out skey)) {
+                    vertical_distance = skey;
+                } else {
+                    Constants.WriteDebug(values[17] + " not found as Vertical Distance");
+                }
+                if (Byte.TryParse(values[18], NumberStyles.AllowLeadingSign, null as IFormatProvider, out bkey)) {
+                    uu11 = bkey;
+                } else {
+                    Constants.WriteDebug(values[18] + " not found as UU11");
+                }
+                if (Byte.TryParse(values[19], NumberStyles.AllowLeadingSign, null as IFormatProvider, out bkey)) {
+                    uu12 = bkey;
+                } else {
+                    Constants.WriteDebug(values[19] + " not found as UU12");
+                }
+                if (Byte.TryParse(values[20], NumberStyles.AllowLeadingSign, null as IFormatProvider, out bkey)) {
+                    uu13 = bkey;
+                } else {
+                    Constants.WriteDebug(values[20] + " not found as UU13");
+                }
+                if (Byte.TryParse(values[21], NumberStyles.AllowLeadingSign, null as IFormatProvider, out bkey)) {
+                    uu14 = bkey;
+                } else {
+                    Constants.WriteDebug(values[21] + " not found as UU14");
+                }
+                if (Byte.TryParse(values[22], NumberStyles.AllowLeadingSign, null as IFormatProvider, out bkey)) {
+                    start_time = bkey;
+                } else {
+                    Constants.WriteDebug(values[22] + " not found as Start Time");
+                }
+                if (Byte.TryParse(values[23], NumberStyles.AllowLeadingSign, null as IFormatProvider, out bkey)) {
+                    uu15 = bkey;
+                } else {
+                    Constants.WriteDebug(values[23] + " not found as UU15");
+                }
+                if (Int16.TryParse(values[24], NumberStyles.AllowLeadingSign, null as IFormatProvider, out skey)) {
+                    add_dmg_multi = skey;
+                } else {
+                    Constants.WriteDebug(values[24] + " not found as ADD_DMG_Multi");
+                }
+                if (Int16.TryParse(values[25], NumberStyles.AllowLeadingSign, null as IFormatProvider, out skey)) {
+                    add_sp_multi = skey;
+                } else {
+                    Constants.WriteDebug(values[25] + " not found as ADD_SP_Multi");
+                }
             }
         }
 

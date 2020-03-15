@@ -38,7 +38,9 @@ namespace Dragoon_Modifier {
         public static bool ITEM_CHANGE = false;
         public static bool CHARACTER_CHANGE = false;
         public static bool DRAGOON_CHANGE = false;
+        public static bool ADDITION_CHANGE = false;
         public static bool SHOP_CHANGE = false;
+        public static Nullable<int> NO_DART = null;
         public static string MOD = "US_Base";
         public static string DIFFICULTY_MODE = "Normal";
 

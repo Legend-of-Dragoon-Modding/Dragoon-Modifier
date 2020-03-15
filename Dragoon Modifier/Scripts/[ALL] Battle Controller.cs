@@ -114,6 +114,9 @@ public class BattleController {
                         }
                     }
                 }
+                if (Globals.PARTY_SLOT[0] != 0) {
+                    emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET, 0);
+                }
             }
         }
     }
@@ -147,13 +150,18 @@ public class BattleController {
                 Globals.CHARACTER_TABLE.Add(new CharAddress(Globals.C_POINT + Constants.OFFSET, character, emulator));
             }
         }
-        if (Globals.ITEM_CHANGE | Globals.CHARACTER_CHANGE == true) {
+        if ((Globals.ITEM_CHANGE | Globals.CHARACTER_CHANGE == true) || (Globals.NO_DART != null)) {
             Constants.WriteOutput("Changing Character/Item stats...");
             for (int character = 0; character < 9; character++) {
                 Globals.CURRENT_STATS[character] = new CurrentStats(character, emulator);
             }
             for (int character = 0; character < 3; character++) {
-                int charid = Globals.PARTY_SLOT[character];
+                int charid = 0;
+                if (Globals.NO_DART != null & character == 0) {
+                    charid = (int)Globals.NO_DART;
+                } else {
+                    charid = Globals.PARTY_SLOT[character];
+                }
                 if (charid < 9) {
                     Globals.CHARACTER_TABLE[character].Write("HP", Globals.CURRENT_STATS[charid].HP);
                     Globals.CHARACTER_TABLE[character].Write("Max_HP", Globals.CURRENT_STATS[charid].Max_HP);
@@ -167,7 +175,7 @@ public class BattleController {
                     Globals.CHARACTER_TABLE[character].Write("OG_MDF", Globals.CURRENT_STATS[charid].MDF);
                     Globals.CHARACTER_TABLE[character].Write("SPD", Globals.CURRENT_STATS[charid].SPD);
                     Globals.CHARACTER_TABLE[character].Write("OG_SPD", Globals.CURRENT_STATS[charid].SPD);
-                    if (Globals.ITEM_CHANGE == true) {
+                    if ((Globals.ITEM_CHANGE == true) || (Globals.NO_DART != null)) {
                         Globals.CHARACTER_TABLE[character].Write("MP", Globals.CURRENT_STATS[charid].MP);
                         Globals.CHARACTER_TABLE[character].Write("Max_MP", Globals.CURRENT_STATS[charid].Max_MP);
                         Globals.CHARACTER_TABLE[character].Write("Stat_Res", Globals.CURRENT_STATS[charid].Stat_Res);
@@ -275,6 +283,9 @@ public class BattleController {
             Constants.WriteOutput("Changing dragoon stats and magic...");
             for (int character = 0; character < 3; character++) {
                 int slot = Globals.PARTY_SLOT[character];
+                if (Globals.NO_DART != null) {
+                    slot = (int)Globals.NO_DART;
+                }
                 if (slot < 9) {
                     int dlv = Globals.CHARACTER_TABLE[character].Read("DLV");
                     if (dlv != 0) {
@@ -321,10 +332,273 @@ public class BattleController {
                 emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x9 + Constants.OFFSET + (z + 65) * 0xC, Globals.DRAGOON_SPELLS[z + 10].Element);
             }
         }
-    if (Globals.DICTIONARY.MonsterScript.Contains(Globals.ENCOUNTER_ID)) {
-            /*
-            monsterScript = new Thread(MonsterScript);
-            */
+        if (Globals.ADDITION_CHANGE == true) {
+            Dictionary<int, int> additionnum = new Dictionary<int, int> {
+                {0, 0 },
+                {1, 2 },
+                {2, 2 },
+                {3, 3 },
+                {4, 4 },
+                {5, 5 },
+                {6, 6 },
+                {8, 0 },
+                {9, 1 },
+                {10, 2 },
+                {11, 3 },
+                {12, 4 },
+                {14, 0 },
+                {15, 1 },
+                {16, 2 },
+                {17, 3 },
+                {29, 0 },
+                {30, 1 },
+                {31, 2 },
+                {32, 3 },
+                {33, 4 },
+                {34, 5 },
+                {23, 0 },
+                {24, 1 },
+                {25, 2 },
+                {26, 3 },
+                {27, 4 },
+                {19, 0 },
+                {20, 1 },
+                {21, 2 }
+            };
+            for (int character = 0; character < 3; character++) {
+                int slot = Globals.PARTY_SLOT[character];
+                if (Globals.NO_DART != null) {
+                    slot = (int)Globals.NO_DART;
+                }
+                if (slot < 9) {
+                    int addition = emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + (slot * 0x2C) + 0x19);
+                    for (int hit = 0; hit < 8; hit++) {
+                        emulator.WriteShort(Constants.GetAddress("ADDITION") + GetOffset() + character * 0x100 + hit * 0x20, (ushort)Globals.DICTIONARY.AdditionData[slot, additionnum[addition], hit].UU1);
+                        emulator.WriteShort(Constants.GetAddress("ADDITION") + GetOffset() + character * 0x100 + hit * 0x20 + 0x2, (ushort)Globals.DICTIONARY.AdditionData[slot, additionnum[addition], hit].Next_Hit);
+                        emulator.WriteShort(Constants.GetAddress("ADDITION") + GetOffset() + character * 0x100 + hit * 0x20 + 0x4, (ushort)Globals.DICTIONARY.AdditionData[slot, additionnum[addition], hit].Blue_Time);
+                        emulator.WriteShort(Constants.GetAddress("ADDITION") + GetOffset() + character * 0x100 + hit * 0x20 + 0x6, (ushort)Globals.DICTIONARY.AdditionData[slot, additionnum[addition], hit].Gray_Time);
+                        emulator.WriteShort(Constants.GetAddress("ADDITION") + GetOffset() + character * 0x100 + hit * 0x20 + 0x8, (ushort)Globals.DICTIONARY.AdditionData[slot, additionnum[addition], hit].DMG);
+                        emulator.WriteShort(Constants.GetAddress("ADDITION") + GetOffset() + character * 0x100 + hit * 0x20 + 0xA, (ushort)Globals.DICTIONARY.AdditionData[slot, additionnum[addition], hit].SP);
+                        emulator.WriteShort(Constants.GetAddress("ADDITION") + GetOffset() + character * 0x100 + hit * 0x20 + 0xC, (ushort)Globals.DICTIONARY.AdditionData[slot, additionnum[addition], hit].ID);
+                        emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + character * 0x100 + hit * 0x20 + 0xE, Globals.DICTIONARY.AdditionData[slot, additionnum[addition], hit].Final_Hit);
+                        emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + character * 0x100 + hit * 0x20 + 0xF, Globals.DICTIONARY.AdditionData[slot, additionnum[addition], hit].UU2);
+                        emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + character * 0x100 + hit * 0x20 + 0x10, Globals.DICTIONARY.AdditionData[slot, additionnum[addition], hit].UU3);
+                        emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + character * 0x100 + hit * 0x20 + 0x11, Globals.DICTIONARY.AdditionData[slot, additionnum[addition], hit].UU4);
+                        emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + character * 0x100 + hit * 0x20 + 0x12, Globals.DICTIONARY.AdditionData[slot, additionnum[addition], hit].UU5);
+                        emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + character * 0x100 + hit * 0x20 + 0x13, Globals.DICTIONARY.AdditionData[slot, additionnum[addition], hit].UU6);
+                        emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + character * 0x100 + hit * 0x20 + 0x14, Globals.DICTIONARY.AdditionData[slot, additionnum[addition], hit].UU7);
+                        emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + character * 0x100 + hit * 0x20 + 0x15, Globals.DICTIONARY.AdditionData[slot, additionnum[addition], hit].UU8);
+                        emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + character * 0x100 + hit * 0x20 + 0x16, Globals.DICTIONARY.AdditionData[slot, additionnum[addition], hit].UU9);
+                        emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + character * 0x100 + hit * 0x20 + 0x17, Globals.DICTIONARY.AdditionData[slot, additionnum[addition], hit].UU10);
+                        emulator.WriteShort(Constants.GetAddress("ADDITION") + GetOffset() + character * 0x100 + hit * 0x20 + 0x18, (ushort)Globals.DICTIONARY.AdditionData[slot, additionnum[addition], hit].Vertical_Distance);
+                        emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + character * 0x100 + hit * 0x20 + 0x1A, Globals.DICTIONARY.AdditionData[slot, additionnum[addition], hit].UU11);
+                        emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + character * 0x100 + hit * 0x20 + 0x1B, Globals.DICTIONARY.AdditionData[slot, additionnum[addition], hit].UU12);
+                        emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + character * 0x100 + hit * 0x20 + 0x1C, Globals.DICTIONARY.AdditionData[slot, additionnum[addition], hit].UU13);
+                        emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + character * 0x100 + hit * 0x20 + 0x1D, Globals.DICTIONARY.AdditionData[slot, additionnum[addition], hit].UU14);
+                        emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + character * 0x100 + hit * 0x20 + 0x1E, Globals.DICTIONARY.AdditionData[slot, additionnum[addition], hit].Start_Time);
+                        emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + character * 0x100 + hit * 0x20 + 0x1F, Globals.DICTIONARY.AdditionData[slot, additionnum[addition], hit].UU15);
+                    }
+                    int addition_level = emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + (slot * 0x2C) + 0x1A + additionnum[addition]);
+                    Globals.CHARACTER_TABLE[character].Write("ADD_DMG_Multi", Globals.DICTIONARY.AdditionData[slot, additionnum[addition], addition_level].ADD_DMG_Multi);
+                    Globals.CHARACTER_TABLE[character].Write("ADD_SP_Multi", Globals.DICTIONARY.AdditionData[slot, additionnum[addition], addition_level].ADD_SP_Multi);
+                }
+            }
+        }
+        if (Globals.NO_DART != null) {
+            Dictionary<int, byte> charelement = new Dictionary<int, byte> {
+                {0, 128 },
+                {1, 64 },
+                {2, 32 },
+                {3, 4 },
+                {4, 16 },
+                {5, 64 },
+                {6, 1 },
+                {7, 2 },
+                {8, 32 }
+            };
+            while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[0].Read("Turn") == 0)) {
+                Thread.Sleep(50);
+            }
+            int current_turn = Globals.CHARACTER_TABLE[0].Read("Turn");
+            int character = (int)Globals.NO_DART;
+            int dlv = Globals.CURRENT_STATS[character].DLV;
+            Constants.WriteDebug(current_turn);
+            Globals.CHARACTER_TABLE[0].Write("Turn", 800);
+            Globals.CHARACTER_TABLE[0].Write("SP", 100);
+            emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET, (byte)character);
+            emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET + 0x234E, (byte)character); // Secondary ID
+            Globals.CHARACTER_TABLE[0].Write("Image", (byte)Globals.NO_DART);
+            Globals.CHARACTER_TABLE[0].Write("A_HIT", 0);
+            Globals.CHARACTER_TABLE[0].Write("LV", Globals.CURRENT_STATS[character].LV);
+            Globals.CHARACTER_TABLE[0].Write("DLV", Globals.CURRENT_STATS[character].DLV);
+            Globals.CHARACTER_TABLE[0].Write("HP_Regen", 0);
+            Globals.CHARACTER_TABLE[0].Write("SP_Regen", 0);
+            Globals.CHARACTER_TABLE[0].Write("MP_Regen", 0);
+            Globals.CHARACTER_TABLE[0].Write("Element", charelement[character]);
+            if (Globals.DRAGOON_CHANGE == false) {
+                Globals.CHARACTER_TABLE[0].Write("DAT", Globals.DICTIONARY.DragoonStats[character][dlv].DAT);
+                Globals.CHARACTER_TABLE[0].Write("DMAT", Globals.DICTIONARY.DragoonStats[character][dlv].DMAT);
+                Globals.CHARACTER_TABLE[0].Write("DDF", Globals.DICTIONARY.DragoonStats[character][dlv].DDF);
+                Globals.CHARACTER_TABLE[0].Write("DMDF", Globals.DICTIONARY.DragoonStats[character][dlv].DMDF);
+                if (Globals.ITEM_CHANGE == false) {
+                    Globals.CHARACTER_TABLE[0].Write("MP", Globals.CURRENT_STATS[character].MP);
+                    Globals.CHARACTER_TABLE[0].Write("Max_MP", Globals.CURRENT_STATS[character].Max_MP);
+                }
+            }
+            if (Globals.ADDITION_CHANGE == false) {
+                Dictionary<int, int> additionnum = new Dictionary<int, int> {
+                {0, 0 },
+                {1, 2 },
+                {2, 2 },
+                {3, 3 },
+                {4, 4 },
+                {5, 5 },
+                {6, 6 },
+                {8, 0 },
+                {9, 1 },
+                {10, 2 },
+                {11, 3 },
+                {12, 4 },
+                {14, 0 },
+                {15, 1 },
+                {16, 2 },
+                {17, 3 },
+                {29, 0 },
+                {30, 1 },
+                {31, 2 },
+                {32, 3 },
+                {33, 4 },
+                {34, 5 },
+                {23, 0 },
+                {24, 1 },
+                {25, 2 },
+                {26, 3 },
+                {27, 4 },
+                {19, 0 },
+                {20, 1 },
+                {21, 2 }
+            };
+                int addition = emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + (character * 0x2C) + 0x19);
+                for (int hit = 0; hit < 8; hit++) {
+                    emulator.WriteShort(Constants.GetAddress("ADDITION") + GetOffset() + hit * 0x20, (ushort)Globals.DICTIONARY.AdditionData[character, additionnum[addition], hit].UU1);
+                    emulator.WriteShort(Constants.GetAddress("ADDITION") + GetOffset() + hit * 0x20 + 0x2, (ushort)Globals.DICTIONARY.AdditionData[character, additionnum[addition], hit].Next_Hit);
+                    emulator.WriteShort(Constants.GetAddress("ADDITION") + GetOffset() + hit * 0x20 + 0x4, (ushort)Globals.DICTIONARY.AdditionData[character, additionnum[addition], hit].Blue_Time);
+                    emulator.WriteShort(Constants.GetAddress("ADDITION") + GetOffset() + hit * 0x20 + 0x6, (ushort)Globals.DICTIONARY.AdditionData[character, additionnum[addition], hit].Gray_Time);
+                    emulator.WriteShort(Constants.GetAddress("ADDITION") + GetOffset() + hit * 0x20 + 0x8, (ushort)Globals.DICTIONARY.AdditionData[character, additionnum[addition], hit].DMG);
+                    emulator.WriteShort(Constants.GetAddress("ADDITION") + GetOffset() + hit * 0x20 + 0xA, (ushort)Globals.DICTIONARY.AdditionData[character, additionnum[addition], hit].SP);
+                    emulator.WriteShort(Constants.GetAddress("ADDITION") + GetOffset() + hit * 0x20 + 0xC, (ushort)Globals.DICTIONARY.AdditionData[character, additionnum[addition], hit].ID);
+                    emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + hit * 0x20 + 0xE, Globals.DICTIONARY.AdditionData[character, additionnum[addition], hit].Final_Hit);
+                    emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + hit * 0x20 + 0xF, Globals.DICTIONARY.AdditionData[character, additionnum[addition], hit].UU2);
+                    emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + hit * 0x20 + 0x10, Globals.DICTIONARY.AdditionData[character, additionnum[addition], hit].UU3);
+                    emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + hit * 0x20 + 0x11, Globals.DICTIONARY.AdditionData[character, additionnum[addition], hit].UU4);
+                    emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + hit * 0x20 + 0x12, Globals.DICTIONARY.AdditionData[character, additionnum[addition], hit].UU5);
+                    emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + hit * 0x20 + 0x13, Globals.DICTIONARY.AdditionData[character, additionnum[addition], hit].UU6);
+                    emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + hit * 0x20 + 0x14, Globals.DICTIONARY.AdditionData[character, additionnum[addition], hit].UU7);
+                    emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + hit * 0x20 + 0x15, Globals.DICTIONARY.AdditionData[character, additionnum[addition], hit].UU8);
+                    emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + hit * 0x20 + 0x16, Globals.DICTIONARY.AdditionData[character, additionnum[addition], hit].UU9);
+                    emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + hit * 0x20 + 0x17, Globals.DICTIONARY.AdditionData[character, additionnum[addition], hit].UU10);
+                    emulator.WriteShort(Constants.GetAddress("ADDITION") + GetOffset() + hit * 0x20 + 0x18, (ushort)Globals.DICTIONARY.AdditionData[character, additionnum[addition], hit].Vertical_Distance);
+                    emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + hit * 0x20 + 0x1A, Globals.DICTIONARY.AdditionData[character, additionnum[addition], hit].UU11);
+                    emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + hit * 0x20 + 0x1B, Globals.DICTIONARY.AdditionData[character, additionnum[addition], hit].UU12);
+                    emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + hit * 0x20 + 0x1C, Globals.DICTIONARY.AdditionData[character, additionnum[addition], hit].UU13);
+                    emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + hit * 0x20 + 0x1D, Globals.DICTIONARY.AdditionData[character, additionnum[addition], hit].UU14);
+                    emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + hit * 0x20 + 0x1E, Globals.DICTIONARY.AdditionData[character, additionnum[addition], hit].Start_Time);
+                    emulator.WriteByte(Constants.GetAddress("ADDITION") + GetOffset() + hit * 0x20 + 0x1F, Globals.DICTIONARY.AdditionData[character, additionnum[addition], hit].UU15);
+                }
+                int addition_level = emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + (character * 0x2C) + 0x1A + additionnum[addition]);
+                Globals.CHARACTER_TABLE[0].Write("ADD_DMG_Multi", Globals.DICTIONARY.AdditionData[character, additionnum[addition], addition_level].ADD_DMG_Multi);
+                Globals.CHARACTER_TABLE[0].Write("ADD_SP_Multi", Globals.DICTIONARY.AdditionData[character, additionnum[addition], addition_level].ADD_SP_Multi);
+            }
+            emulator.WriteByteU(0xB1E300, (byte)character); // Magic
+            Dictionary<int, byte> dmagic5 = new Dictionary<int, byte> {
+                    {0, 3 },
+                    {1, 8 },
+                    {2, 13 },
+                    {3, 19 },
+                    {4, 23 },
+                    {5, 8 },
+                    {6, 28 },
+                    {7, 32 },
+                    {8, 13 }
+                };
+            Dictionary<int, byte> dmagic3 = new Dictionary<int, byte> {
+                    {0, 2 },
+                    {1, 6 },
+                    {2, 12 },
+                    {3, 18 },
+                    {4, 22 },
+                    {5, 17 },
+                    {6, 27 },
+                    {7, 255 },
+                    {8, 67 }
+                };
+            Dictionary<int, byte> dmagic2 = new Dictionary<int, byte> {
+                    {0, 1 },
+                    {1, 7 },
+                    {2, 10 },
+                    {3, 16 },
+                    {4, 21 },
+                    {5, 26 },
+                    {6, 25 },
+                    {7, 31 },
+                    {8, 65 }
+                };
+            Dictionary<int, byte> dmagic1 = new Dictionary<int, byte> {
+                    {0, 0 },
+                    {1, 5 },
+                    {2, 11 },
+                    {3, 15 },
+                    {4, 20 },
+                    {5, 14 },
+                    {6, 24 },
+                    {7, 30 },
+                    {8, 66 }
+                };
+            if (dlv == 5) {
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 4, dmagic5[character]);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 3, dmagic3[character]);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 2, dmagic2[character]);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 1, dmagic1[character]);
+            } else if (dlv > 2) {
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 4, 0xFF);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 3, dmagic3[character]);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 2, dmagic2[character]);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 1, dmagic1[character]);
+            } else if (dlv > 1) { 
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 4, 0xFF);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 3, 0xFF);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 2, dmagic2[character]);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 1, dmagic1[character]);
+            } else if (dlv > 0) {
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 4, 0xFF);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 3, 0xFF);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 2, 0xFF);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 1, dmagic1[character]);
+            } else {
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 4, 0xFF);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 3, 0xFF);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 2, 0xFF);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 1, 0xFF);
+            }
+            while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[0].Read("Action") != 8)) {
+                Thread.Sleep(50);
+            }
+            Constants.WriteDebug("TURN");
+            Globals.CHARACTER_TABLE[0].Write("Turn", current_turn);
+            Thread.Sleep(250);
+            Globals.CHARACTER_TABLE[0].Write("Menu", 16);
+            while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[0].Read("Menu") != 96)) {
+                Thread.Sleep(50);
+            }
+            Globals.CHARACTER_TABLE[0].Write("Menu", 32);
+            while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[0].Read("Action") != 0)) {
+                Thread.Sleep(50);
+            }
+            Globals.CHARACTER_TABLE[0].Write("A_HIT", Globals.CURRENT_STATS[character].A_Hit);
+            Globals.CHARACTER_TABLE[0].Write("SP", Globals.CURRENT_STATS[character].SP);
+            Globals.CHARACTER_TABLE[0].Write("HP_Regen", Globals.CURRENT_STATS[character].HP_Regen);
+            Globals.CHARACTER_TABLE[0].Write("MP_Regen", Globals.CURRENT_STATS[character].MP_Regen);
+            Globals.CHARACTER_TABLE[0].Write("SP_Regen", Globals.CURRENT_STATS[character].SP_Regen);
         }
     }
 
@@ -458,6 +732,7 @@ public class BattleController {
 
     public class CharAddress {
         long[] action = { 0, 1 };
+        long[] menu = { 0, 1 };
         long[] lv = { 0, 1 };
         long[] dlv = { 0, 1 };
         long[] hp = { 0, 2 };
@@ -550,6 +825,7 @@ public class BattleController {
         public Emulator emulator = null;
 
         public long[] Action { get { return action; } }
+        public long[] Menu { get { return menu; } }
         public long[] LV { get { return lv; } }
         public long[] DLV { get { return dlv; } }
         public long[] HP { get { return hp; } }
@@ -644,6 +920,7 @@ public class BattleController {
             emulator = emu;
             special_effect[0] = Constants.GetAddress("UNIQUE_MONSTERS") + (character + Globals.MONSTER_SIZE) * 0x20;
             action[0] = c_point - 0xA8 - character * 0x388;
+            menu[0] = c_point - 0xA4 - character * 0x388;
             lv[0] = c_point - 0x04 - character * 0x388;
             dlv[0] = c_point - 0x02 - character * 0x388;
             hp[0] = c_point - character * 0x388;
@@ -760,7 +1037,7 @@ public class BattleController {
     }
 
     public class CurrentStats {
-        byte level = 1;
+        byte lv = 1;
         byte dlv = 0;
         dynamic weapon = new System.Dynamic.ExpandoObject();
         dynamic armor = new System.Dynamic.ExpandoObject();
@@ -771,6 +1048,7 @@ public class BattleController {
         ushort max_hp = 1;
         ushort mp = 0;
         ushort max_mp = 0;
+        ushort sp = 0;
         ushort at = 1;
         ushort mat = 1;
         ushort df = 1;
@@ -799,10 +1077,13 @@ public class BattleController {
         byte element = 0;
         byte death_res = 0;
 
+        public byte LV { get { return lv; } }
+        public byte DLV { get { return dlv; } }
         public ushort HP { get { return hp; } }
         public ushort Max_HP { get { return max_hp; } }
         public ushort MP { get { return mp; } }
         public ushort Max_MP { get { return max_mp; } }
+        public ushort SP { get { return sp; } }
         public ushort AT { get { return at; } }
         public ushort MAT { get { return mat; } }
         public ushort DF { get { return df; } }
@@ -832,15 +1113,15 @@ public class BattleController {
         public byte Death_Res { get { return death_res; } }
 
         public CurrentStats(int character, Emulator emulator) {
-            level = emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + character * 0x2C + 0x12);
-            dlv = emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + character * 0x2C + 0x13);
+            lv = emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + (character * 0x2C) + 0x12);
+            dlv = emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + (character * 0x2C) + 0x13);
             weapon = Globals.DICTIONARY.ItemList[emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + character * 0x2C + 0x14)];
             armor = Globals.DICTIONARY.ItemList[emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + character * 0x2C + 0x15)];
             helm = Globals.DICTIONARY.ItemList[emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + character * 0x2C + 0x16)];
             boots = Globals.DICTIONARY.ItemList[emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + character * 0x2C + 0x17)];
             accessory = Globals.DICTIONARY.ItemList[emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + character * 0x2C + 0x18)];
             hp = emulator.ReadShortU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + character * 0x2C + 0x8);
-            max_hp = (ushort)(Globals.DICTIONARY.CharacterStats[character][level].Max_HP * (1 + ((weapon.Special2 & 2) >> 1) * (float)(weapon.Special_Ammount) / 100 + ((armor.Special2 & 2) >> 1) * (float)(armor.Special_Ammount) / 100
+            max_hp = (ushort)(Globals.DICTIONARY.CharacterStats[character][lv].Max_HP * (1 + ((weapon.Special2 & 2) >> 1) * (float)(weapon.Special_Ammount) / 100 + ((armor.Special2 & 2) >> 1) * (float)(armor.Special_Ammount) / 100
                 + ((helm.Special2 & 2) >> 1) * (float)(helm.Special_Ammount) / 100 + ((boots.Special2 & 2) >> 1) * (float)(boots.Special_Ammount) / 100 + ((accessory.Special2 & 2) >> 1) * (float)(accessory.Special_Ammount) / 100));
             mp = emulator.ReadShortU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + character * 0x2C + 0xA);
             if (Globals.DRAGOON_CHANGE == true) {
@@ -850,11 +1131,12 @@ public class BattleController {
                 max_mp = (ushort)(dlv * 20 * (1 + (weapon.Special2 & 1) * (float)(weapon.Special_Ammount) / 100 + (armor.Special2 & 1) * (float)(armor.Special_Ammount) / 100
                      + (helm.Special2 & 1) * (float)(helm.Special_Ammount) / 100 + (boots.Special2 & 1) * (float)(boots.Special_Ammount) / 100 + (accessory.Special2 & 1) * (float)(accessory.Special_Ammount) / 100));
             }
-            at = (ushort)(Globals.DICTIONARY.CharacterStats[character][level].AT + weapon.AT + armor.AT + helm.AT + boots.AT + accessory.AT);
-            mat = (ushort)(Globals.DICTIONARY.CharacterStats[character][level].MAT + weapon.MAT + armor.MAT + helm.MAT + boots.MAT + accessory.MAT);
-            df = (ushort)(Globals.DICTIONARY.CharacterStats[character][level].DF + weapon.DF + armor.DF + helm.DF + boots.DF + accessory.DF);
-            mdf = (ushort)(Globals.DICTIONARY.CharacterStats[character][level].MDF + weapon.MDF + armor.MDF + helm.MDF + boots.MDF + accessory.MDF);
-            spd = (ushort)(Globals.DICTIONARY.CharacterStats[character][level].SPD + weapon.SPD + armor.SPD + helm.SPD + boots.SPD + accessory.SPD);
+            sp = emulator.ReadShortU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + character * 0x2C + 0xC);
+            at = (ushort)(Globals.DICTIONARY.CharacterStats[character][lv].AT + weapon.AT + armor.AT + helm.AT + boots.AT + accessory.AT);
+            mat = (ushort)(Globals.DICTIONARY.CharacterStats[character][lv].MAT + weapon.MAT + armor.MAT + helm.MAT + boots.MAT + accessory.MAT);
+            df = (ushort)(Globals.DICTIONARY.CharacterStats[character][lv].DF + weapon.DF + armor.DF + helm.DF + boots.DF + accessory.DF);
+            mdf = (ushort)(Globals.DICTIONARY.CharacterStats[character][lv].MDF + weapon.MDF + armor.MDF + helm.MDF + boots.MDF + accessory.MDF);
+            spd = (ushort)(Globals.DICTIONARY.CharacterStats[character][lv].SPD + weapon.SPD + armor.SPD + helm.SPD + boots.SPD + accessory.SPD);
             stat_res |= weapon.Stat_Res | armor.Stat_Res | helm.Stat_Res | boots.Stat_Res | accessory.Stat_Res;
             e_half |= weapon.E_Half | armor.E_Half | helm.E_Half | boots.E_Half | accessory.E_Half;
             e_immune |= weapon.E_Immune | armor.E_Immune | helm.E_Immune | boots.E_Immune | accessory.E_Immune;
