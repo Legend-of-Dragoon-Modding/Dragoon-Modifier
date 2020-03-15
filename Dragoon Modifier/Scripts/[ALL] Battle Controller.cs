@@ -264,18 +264,18 @@ public class BattleController {
             if (Globals.ULTIMATE == false) {
                 for (int monster = 0; monster < Globals.UNIQUE_MONSTERS; monster++) {
                     int ID = Globals.UNIQUE_MONSTER_IDS[monster];
-                    emulator.WriteShortU(Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + monster * 0x1A8, (ushort)Globals.DICTIONARY.StatList[ID].EXP);
-                    emulator.WriteShortU(Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + 0x2 + monster * 0x1A8, (ushort)Globals.DICTIONARY.StatList[ID].Gold);
-                    emulator.WriteByteU(Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + 0x4 + monster * 0x1A8, (byte)Globals.DICTIONARY.StatList[ID].Drop_Chance);
-                    emulator.WriteByteU(Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + 0x5 + monster * 0x1A8, (byte)Globals.DICTIONARY.StatList[ID].Drop_Item);
+                    emulator.WriteShortU(Constants.GetAddress("MONSTER_REWARDS") + Constants.OFFSET + monster * 0x1A8, (ushort)Globals.DICTIONARY.StatList[ID].EXP);
+                    emulator.WriteShortU(Constants.GetAddress("MONSTER_REWARDS") + Constants.OFFSET + 0x2 + monster * 0x1A8, (ushort)Globals.DICTIONARY.StatList[ID].Gold);
+                    emulator.WriteByteU(Constants.GetAddress("MONSTER_REWARDS") + Constants.OFFSET + 0x4 + monster * 0x1A8, (byte)Globals.DICTIONARY.StatList[ID].Drop_Chance);
+                    emulator.WriteByteU(Constants.GetAddress("MONSTER_REWARDS") + Constants.OFFSET + 0x5 + monster * 0x1A8, (byte)Globals.DICTIONARY.StatList[ID].Drop_Item);
                 }
             } else {
                 for (int monster = 0; monster < Globals.UNIQUE_MONSTERS; monster++) {
                     int ID = Globals.UNIQUE_MONSTER_IDS[monster];
-                    emulator.WriteShortU(Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + monster * 0x1A8, (ushort)Globals.DICTIONARY.UltimateStatList[ID].EXP);
-                    emulator.WriteShortU(Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + 0x2 + monster * 0x1A8, (ushort)Globals.DICTIONARY.UltimateStatList[ID].Gold);
-                    emulator.WriteByteU(Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + 0x4 + monster * 0x1A8, (byte)Globals.DICTIONARY.UltimateStatList[ID].Drop_Chance);
-                    emulator.WriteByteU(Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + 0x5 + monster * 0x1A8, (byte)Globals.DICTIONARY.UltimateStatList[ID].Drop_Item);
+                    emulator.WriteShortU(Constants.GetAddress("MONSTER_REWARDS") + Constants.OFFSET + monster * 0x1A8, (ushort)Globals.DICTIONARY.UltimateStatList[ID].EXP);
+                    emulator.WriteShortU(Constants.GetAddress("MONSTER_REWARDS") + Constants.OFFSET + 0x2 + monster * 0x1A8, (ushort)Globals.DICTIONARY.UltimateStatList[ID].Gold);
+                    emulator.WriteByteU(Constants.GetAddress("MONSTER_REWARDS") + Constants.OFFSET + 0x4 + monster * 0x1A8, (byte)Globals.DICTIONARY.UltimateStatList[ID].Drop_Chance);
+                    emulator.WriteByteU(Constants.GetAddress("MONSTER_REWARDS") + Constants.OFFSET + 0x5 + monster * 0x1A8, (byte)Globals.DICTIONARY.UltimateStatList[ID].Drop_Item);
                 }
             }
         }
@@ -309,9 +309,9 @@ public class BattleController {
                 } else {
                     intValue &= ~(1 << 2);
                 }
-                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x2 + (int)Constants.OFFSET + i * 0xC, (byte)intValue);
-                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x4 + (int)Constants.OFFSET + i * 0xC, Spell.DMG_Base);
-                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x5 + (int)Constants.OFFSET + i * 0xC, Spell.Multi);
+                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x2 + Constants.OFFSET + i * 0xC, (byte)intValue);
+                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x4 + Constants.OFFSET + i * 0xC, Spell.DMG_Base);
+                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x5 + Constants.OFFSET + i * 0xC, Spell.Multi);
                 emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x6 + Constants.OFFSET + i * 0xC, Spell.Accuracy);
                 emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x7 + Constants.OFFSET + i * 0xC, Spell.MP);
                 emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x9 + Constants.OFFSET + i * 0xC, Spell.Element);
@@ -324,9 +324,9 @@ public class BattleController {
                 } else {
                     intValue &= ~(1 << 2);
                 }
-                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x2 + (int)Constants.OFFSET + (z + 65) * 0xC, (byte)intValue);
-                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x4 + (int)Constants.OFFSET + (z + 65) * 0xC, Globals.DRAGOON_SPELLS[z + 10].DMG_Base);
-                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x5 + (int)Constants.OFFSET + (z + 65) * 0xC, Globals.DRAGOON_SPELLS[z + 10].Multi);
+                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x2 + Constants.OFFSET + (z + 65) * 0xC, (byte)intValue);
+                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x4 + Constants.OFFSET + (z + 65) * 0xC, Globals.DRAGOON_SPELLS[z + 10].DMG_Base);
+                emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x5 + Constants.OFFSET + (z + 65) * 0xC, Globals.DRAGOON_SPELLS[z + 10].Multi);
                 emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x6 + Constants.OFFSET + (z + 65) * 0xC, Globals.DRAGOON_SPELLS[z + 10].Accuracy);
                 emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x7 + Constants.OFFSET + (z + 65) * 0xC, Globals.DRAGOON_SPELLS[z + 10].MP);
                 emulator.WriteByteU(Constants.GetAddress("SPELL_TABLE") + 0x9 + Constants.OFFSET + (z + 65) * 0xC, Globals.DRAGOON_SPELLS[z + 10].Element);
@@ -509,7 +509,7 @@ public class BattleController {
                 Globals.CHARACTER_TABLE[0].Write("ADD_DMG_Multi", Globals.DICTIONARY.AdditionData[character, additionnum[addition], addition_level].ADD_DMG_Multi);
                 Globals.CHARACTER_TABLE[0].Write("ADD_SP_Multi", Globals.DICTIONARY.AdditionData[character, additionnum[addition], addition_level].ADD_SP_Multi);
             }
-            emulator.WriteByteU(0xB1E300, (byte)character); // Magic
+            emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET, (byte)character); // Magic
             Dictionary<int, byte> dmagic5 = new Dictionary<int, byte> {
                     {0, 3 },
                     {1, 8 },
