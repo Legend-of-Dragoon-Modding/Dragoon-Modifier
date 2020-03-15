@@ -363,7 +363,8 @@ public class BattleController {
                 {27, 4 },
                 {19, 0 },
                 {20, 1 },
-                {21, 2 }
+                {21, 2 },
+                {255, 0 }
             };
             for (int character = 0; character < 3; character++) {
                 int slot = Globals.PARTY_SLOT[character];
@@ -422,13 +423,12 @@ public class BattleController {
             int current_turn = Globals.CHARACTER_TABLE[0].Read("Turn");
             int character = (int)Globals.NO_DART;
             int dlv = Globals.CURRENT_STATS[character].DLV;
-            Constants.WriteDebug(current_turn);
             Globals.CHARACTER_TABLE[0].Write("Turn", 800);
             Globals.CHARACTER_TABLE[0].Write("SP", 100);
             emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET, (byte)character);
             emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET + 0x234E, (byte)character); // Secondary ID
             Globals.CHARACTER_TABLE[0].Write("Image", (byte)Globals.NO_DART);
-            Globals.CHARACTER_TABLE[0].Write("A_HIT", 0);
+            Globals.CHARACTER_TABLE[0].Write("A_HIT", Globals.CURRENT_STATS[character].A_Hit);
             Globals.CHARACTER_TABLE[0].Write("LV", Globals.CURRENT_STATS[character].LV);
             Globals.CHARACTER_TABLE[0].Write("DLV", Globals.CURRENT_STATS[character].DLV);
             Globals.CHARACTER_TABLE[0].Write("HP_Regen", 0);
@@ -447,37 +447,38 @@ public class BattleController {
             }
             if (Globals.ADDITION_CHANGE == false) {
                 Dictionary<int, int> additionnum = new Dictionary<int, int> {
-                {0, 0 },
-                {1, 2 },
-                {2, 2 },
-                {3, 3 },
-                {4, 4 },
-                {5, 5 },
-                {6, 6 },
-                {8, 0 },
-                {9, 1 },
-                {10, 2 },
-                {11, 3 },
-                {12, 4 },
-                {14, 0 },
-                {15, 1 },
-                {16, 2 },
-                {17, 3 },
-                {29, 0 },
-                {30, 1 },
-                {31, 2 },
-                {32, 3 },
-                {33, 4 },
-                {34, 5 },
-                {23, 0 },
-                {24, 1 },
-                {25, 2 },
-                {26, 3 },
-                {27, 4 },
-                {19, 0 },
-                {20, 1 },
-                {21, 2 }
-            };
+                    {0, 0 },
+                    {1, 2 },
+                    {2, 2 },
+                    {3, 3 },
+                    {4, 4 },
+                    {5, 5 },
+                    {6, 6 },
+                    {8, 0 },
+                    {9, 1 },
+                    {10, 2 },
+                    {11, 3 },
+                    {12, 4 },
+                    {14, 0 },
+                    {15, 1 },
+                    {16, 2 },
+                    {17, 3 },
+                    {29, 0 },
+                    {30, 1 },
+                    {31, 2 },
+                    {32, 3 },
+                    {33, 4 },
+                    {34, 5 },
+                    {23, 0 },
+                    {24, 1 },
+                    {25, 2 },
+                    {26, 3 },
+                    {27, 4 },
+                    {19, 0 },
+                    {20, 1 },
+                    {21, 2 },
+                    {255, 0 }
+                };
                 int addition = emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + (character * 0x2C) + 0x19);
                 for (int hit = 0; hit < 8; hit++) {
                     emulator.WriteShort(Constants.GetAddress("ADDITION") + GetOffset() + hit * 0x20, (ushort)Globals.DICTIONARY.AdditionData[character, additionnum[addition], hit].UU1);
@@ -590,11 +591,10 @@ public class BattleController {
             while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[0].Read("Menu") != 96)) {
                 Thread.Sleep(50);
             }
-            Globals.CHARACTER_TABLE[0].Write("Menu", 32);
+            Globals.CHARACTER_TABLE[0].Write("Menu", 16);
             while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[0].Read("Action") != 0)) {
                 Thread.Sleep(50);
             }
-            Globals.CHARACTER_TABLE[0].Write("A_HIT", Globals.CURRENT_STATS[character].A_Hit);
             Globals.CHARACTER_TABLE[0].Write("SP", Globals.CURRENT_STATS[character].SP);
             Globals.CHARACTER_TABLE[0].Write("HP_Regen", Globals.CURRENT_STATS[character].HP_Regen);
             Globals.CHARACTER_TABLE[0].Write("MP_Regen", Globals.CURRENT_STATS[character].MP_Regen);
