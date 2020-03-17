@@ -641,13 +641,13 @@ namespace Dragoon_Modifier {
             public LoDDict() {
                 string cwd = AppDomain.CurrentDomain.BaseDirectory;       
                 try {
-                    using (var itemData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Items.csv")) {
+                    using (var itemData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Items.tsv")) {
                         bool firstline = true;
                         int i = 0;
                         while (!itemData.EndOfStream) {
                             var line = itemData.ReadLine();
                             if (firstline == false) {
-                                var values = line.Split(';').ToArray();
+                                var values = line.Split('\t').ToArray();
                                 itemList.Add(new ItemList(i, values));
                                 if (values[0] != "") {
                                     item2num.Add(values[0].ToLower(), i);
@@ -689,12 +689,12 @@ namespace Dragoon_Modifier {
                         characterStats[i] = new dynamic[61];
                     }
                     try { 
-                        using (var characterData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Character_Stats.csv")) {
+                        using (var characterData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Character_Stats.tsv")) {
                             var i = 0;
                             while (!characterData.EndOfStream) {
                                 var line = characterData.ReadLine();
                                 if (i > 1) {
-                                    var values = line.Split(';').ToArray();
+                                    var values = line.Split('\t').ToArray();
                                     int level = int.Parse(values[0]);
                                     characterStats[0][level] = new CharacterStats(values[1], values[2], values[3], values[4], values[5], values[6]);
                                     characterStats[1][level] = new CharacterStats(values[7], values[8], values[9], values[10], values[11], values[12]);
@@ -710,16 +710,16 @@ namespace Dragoon_Modifier {
                             }
                         }
                     } catch (FileNotFoundException) {
-                        string file = cwd + @"Mods\" + Globals.MOD + @"\Character_Stats.csv";
+                        string file = cwd + @"Mods\" + Globals.MOD + @"\Character_Stats.tsv";
                         Constants.WriteDebug(file + " not found. Turning off Stat and Equip Changes.");
                     }
                     try {
-                        using (var monsterData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Monster_Data.csv")) {
+                        using (var monsterData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Monster_Data.tsv")) {
                             bool firstline = true;
                             while (!monsterData.EndOfStream) {
                                 var line = monsterData.ReadLine();
                                 if (firstline == false) {
-                                    var values = line.Split(';').ToArray();
+                                    var values = line.Split('\t').ToArray();
                                     statList.Add(Int32.Parse(values[0]), new StatList(values, element2num, item2num));
                                 } else {
                                     firstline = false;
@@ -727,18 +727,18 @@ namespace Dragoon_Modifier {
                             }
                         }
                     } catch (FileNotFoundException) {
-                        string file = cwd + @"Mods\" + Globals.MOD + @"\Monster_Data.csv";
+                        string file = cwd + @"Mods\" + Globals.MOD + @"\Monster_Data.tsv";
                         Constants.WriteDebug(file + " not found. Turning off Monster and Drop Changes.");
                         Globals.MONSTER_CHANGE = false;
                         Globals.DROP_CHANGE = false;
                     }
                     try {
-                        using (var monsterData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Ultimate_Data.csv")) {
+                        using (var monsterData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Ultimate_Data.tsv")) {
                             bool firstline = true;
                             while (!monsterData.EndOfStream) {
                                 var line = monsterData.ReadLine();
                                 if (firstline == false) {
-                                    var values = line.Split(';').ToArray();
+                                    var values = line.Split('\t').ToArray();
                                     ultimateStatList.Add(Int32.Parse(values[0]), new StatList(values, element2num, item2num));
                                 } else {
                                     firstline = false;
@@ -746,11 +746,11 @@ namespace Dragoon_Modifier {
                             }
                         }
                     } catch (FileNotFoundException) {
-                        string file = cwd + @"Mods\" + Globals.MOD + @"\Ultimate_Data.csv";
+                        string file = cwd + @"Mods\" + Globals.MOD + @"\Ultimate_Data.tsv";
                         Constants.WriteDebug(file + " not found.");
                     }
                 } catch (FileNotFoundException) {
-                    string file = cwd + @"Mods\" + Globals.MOD + @"\Items.csv";
+                    string file = cwd + @"Mods\" + Globals.MOD + @"\Items.tsv";
                     Constants.WriteDebug(file + " not found. Turning off Monster and Drop Changes.");
                     Globals.MONSTER_CHANGE = false;
                     Globals.DROP_CHANGE = false;
@@ -767,13 +767,13 @@ namespace Dragoon_Modifier {
                     Constants.WriteDebug(file + " not found.");
                 }
                 try {
-                    using (var dragoon = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Dragoon_Stats.csv")) {
+                    using (var dragoon = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Dragoon_Stats.tsv")) {
                         bool firstline = true;
                         var i = 0;
                         while (!dragoon.EndOfStream) {
                             var line = dragoon.ReadLine();
                             if (firstline == false) {
-                                var values = line.Split(';').ToArray();
+                                var values = line.Split('\t').ToArray();
                                 dragoonStats[i] = new dynamic[] {
                                     new DragoonStats("0", "0", "0", "0", "0"),
                                     new DragoonStats(values[1], values[2], values[3], values[4], values[5]),
@@ -789,7 +789,7 @@ namespace Dragoon_Modifier {
                         }
                     }
                 } catch (FileNotFoundException) {
-                    string file = cwd + @"Mods\" + Globals.MOD + @"\Dragoon_Stats.csv";
+                    string file = cwd + @"Mods\" + Globals.MOD + @"\Dragoon_Stats.tsv";
                     Constants.WriteDebug(file + " not found. Turning off Dragoon Changes.");
                     Globals.DRAGOON_CHANGE = false;
                 }
@@ -798,12 +798,12 @@ namespace Dragoon_Modifier {
                 }
                 try {
                     int key = 0;
-                    using (var shop = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Shops.csv")) {
+                    using (var shop = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Shops.tsv")) {
                         var row = 0;
                         while (!shop.EndOfStream) {
                             var line = shop.ReadLine();
                             if (row > 1) {
-                                var values = line.Split(';').ToArray();
+                                var values = line.Split('\t').ToArray();
                                 int column = 0;
                                 foreach (string number in values) {
                                     if (column % 2 == 0 && number != "") {
@@ -823,34 +823,34 @@ namespace Dragoon_Modifier {
                         }
                     }
                 } catch (FileNotFoundException) {
-                    string file = cwd + @"Mods\" + Globals.MOD + @"\Shops.csv";
+                    string file = cwd + @"Mods\" + Globals.MOD + @"\Shops.tsv";
                     Constants.WriteDebug(file + " not found. Turning off Shop Changes.");
                     Globals.SHOP_CHANGE = false;
                 }
                 try {
-                    using (var shop = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Dragoon_Spells.csv")) {
+                    using (var shop = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Dragoon_Spells.tsv")) {
                         var i = 0;
                         while (!shop.EndOfStream) {
                             var line = shop.ReadLine();
                             if (i > 0) {
-                                var values = line.Split(';').ToArray();
+                                var values = line.Split('\t').ToArray();
                                 Globals.DRAGOON_SPELLS.Add(new DragoonSpells(values, element2num));
                             }
                             i++;
                         }
                     }
                 } catch (FileNotFoundException) {
-                    string file = cwd + @"Mods\" + Globals.MOD + @"\Dragoon_Spells.csv";
+                    string file = cwd + @"Mods\" + Globals.MOD + @"\Dragoon_Spells.tsv";
                     Constants.WriteDebug(file + " not found. Turning off Dragoon Changes.");
                     Globals.DRAGOON_CHANGE = false;
                 }
-                using (var addition = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Additions.csv")) {
+                using (var addition = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Additions.tsv")) {
                     var i = 0;
                     bool firstline = true;
                     while (!addition.EndOfStream) {
                         var line = addition.ReadLine();
                         if (firstline == false) {
-                            var values = line.Split(';').ToArray();
+                            var values = line.Split('\t').ToArray();
                             additionData[0, i / 8, i % 8] = new AdditionData(values.Skip(1).Take(26).ToArray());
                             additionData[1, i / 8, i % 8] = new AdditionData(values.Skip(28).Take(53).ToArray());
                             additionData[2, i / 8, i % 8] = new AdditionData(values.Skip(55).Take(80).ToArray());
