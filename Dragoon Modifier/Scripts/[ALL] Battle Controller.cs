@@ -602,18 +602,24 @@ public class BattleController {
             } else {
                 for (int monster = 0; monster < Globals.MONSTER_SIZE; monster++) {
                     int ID = Globals.MONSTER_IDS[monster];
-                    Globals.MONSTER_TABLE[monster].Write("HP", Globals.DICTIONARY.UltimateStatList[ID].HP);
-                    Globals.MONSTER_TABLE[monster].Write("Max_HP", Globals.DICTIONARY.UltimateStatList[ID].HP);
-                    Globals.MONSTER_TABLE[monster].Write("ATK", Globals.DICTIONARY.UltimateStatList[ID].ATK);
-                    Globals.MONSTER_TABLE[monster].Write("OG_ATK", Globals.DICTIONARY.UltimateStatList[ID].ATK);
-                    Globals.MONSTER_TABLE[monster].Write("MAT", Globals.DICTIONARY.UltimateStatList[ID].MAT);
-                    Globals.MONSTER_TABLE[monster].Write("OG_MAT", Globals.DICTIONARY.UltimateStatList[ID].MAT);
-                    Globals.MONSTER_TABLE[monster].Write("DEF", Globals.DICTIONARY.UltimateStatList[ID].DEF);
-                    Globals.MONSTER_TABLE[monster].Write("OG_DEF", Globals.DICTIONARY.UltimateStatList[ID].DEF);
-                    Globals.MONSTER_TABLE[monster].Write("MDEF", Globals.DICTIONARY.UltimateStatList[ID].MDEF);
-                    Globals.MONSTER_TABLE[monster].Write("OG_MDEF", Globals.DICTIONARY.UltimateStatList[ID].MDEF);
-                    Globals.MONSTER_TABLE[monster].Write("SPD", Globals.DICTIONARY.UltimateStatList[ID].SPD);
-                    Globals.MONSTER_TABLE[monster].Write("OG_SPD", Globals.DICTIONARY.UltimateStatList[ID].SPD);
+                    double HP = Globals.DICTIONARY.StatList[ID].HP * Globals.HP_MULTI;
+                    double resup = 1;
+                    if (HP > 65535) {
+                        resup = HP / 65535;
+                        HP = 65535;
+                    }
+                    Globals.MONSTER_TABLE[monster].Write("HP", (short)Math.Round(HP));
+                    Globals.MONSTER_TABLE[monster].Write("Max_HP", (short)Math.Round(HP));
+                    Globals.MONSTER_TABLE[monster].Write("AT", (short)Math.Round(Globals.UltimateStatList[ID].AT * Globals.AT_MULTI));
+                    Globals.MONSTER_TABLE[monster].Write("OG_AT", (short)Math.Round(Globals.UltimateStatList[ID].AT * Globals.AT_MULTI));
+                    Globals.MONSTER_TABLE[monster].Write("MAT", (short)Math.Round(Globals.UltimateStatList[ID].MAT * Globals.MAT_MULTI));
+                    Globals.MONSTER_TABLE[monster].Write("OG_MAT", (short)Math.Round(Globals.UltimateStatList[ID].MAT * Globals.MAT_MULTI));
+                    Globals.MONSTER_TABLE[monster].Write("DF", (short)Math.Round(Globals.DICTIONARY.UltimateStatList[ID].DF * Globals.DF_MULTI * resup));
+                    Globals.MONSTER_TABLE[monster].Write("OG_DF", (short)Math.Round(Globals.DICTIONARY.UltimateStatList[ID].DF * Globals.DF_MULTI * resup));
+                    Globals.MONSTER_TABLE[monster].Write("MDF", (short)Math.Round(Globals.DICTIONARY.UltimateStatList[ID].MDF * Globals.MDF_MULTI * resup));
+                    Globals.MONSTER_TABLE[monster].Write("OG_MDF", (short)Math.Round(Globals.DICTIONARY.UltimateStatList[ID].MDF * Globals.MDF_MULTI * resup));
+                    Globals.MONSTER_TABLE[monster].Write("SPD", (short)Math.Round(Globals.DICTIONARY.UltimateStatList[ID].SPD * Globals.SPD_MULTI));
+                    Globals.MONSTER_TABLE[monster].Write("OG_SPD", (short)Math.Round(Globals.DICTIONARY.UltimateStatList[ID].SPD * Globals.SPD_MULTI));
                     Globals.MONSTER_TABLE[monster].Write("A_AV", Globals.DICTIONARY.UltimateStatList[ID].A_AV);
                     Globals.MONSTER_TABLE[monster].Write("M_AV", Globals.DICTIONARY.UltimateStatList[ID].M_AV);
                     Globals.MONSTER_TABLE[monster].Write("P_Immune", Globals.DICTIONARY.UltimateStatList[ID].P_Immune);
