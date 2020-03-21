@@ -12,6 +12,12 @@ using System.Reflection;
 public class BattleController {
     public static void Run(Emulator emulator) {
         int encounterValue = emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE"));
+        if (emulator.ReadByteU(0x9A7E6 + Constants.OFFSET) == 152) {
+            if (Globals.PARTY_SLOT[0] != 0) {
+                Globals.NO_DART = Globals.PARTY_SLOT[0];
+                emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET, 0);
+            }
+        }
         if (Globals.IN_BATTLE && !Globals.STATS_CHANGED && encounterValue == 41215) {
             Constants.WriteOutput("Battle detected. Loading...");
             Globals.UNIQUE_MONSTER_IDS = new List<int>();
@@ -38,6 +44,7 @@ public class BattleController {
             Constants.WriteDebug("Monster IDs:         " + String.Join(", ", Globals.MONSTER_IDS.ToArray()));
             Constants.WriteDebug("Unique Monster IDs:  " + String.Join(", ", Globals.UNIQUE_MONSTER_IDS.ToArray()));
             Constants.WriteOutput("Finished loading.");
+            Constants.WriteDebug(Globals.HP_MULTI);
         } else {
             if (Globals.STATS_CHANGED && encounterValue < 9999) {
                 Globals.STATS_CHANGED = false;
@@ -113,9 +120,6 @@ public class BattleController {
                             }
                         }
                     }
-                }
-                if (Globals.PARTY_SLOT[0] != 0) {
-                    emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET, 0);
                 }
             }
         }
@@ -566,18 +570,24 @@ public class BattleController {
             if (Globals.ULTIMATE == false) {
                 for (int monster = 0; monster < Globals.MONSTER_SIZE; monster++) {
                     int ID = Globals.MONSTER_IDS[monster];
-                    Globals.MONSTER_TABLE[monster].Write("HP", Globals.DICTIONARY.StatList[ID].HP);
-                    Globals.MONSTER_TABLE[monster].Write("Max_HP", Globals.DICTIONARY.StatList[ID].HP);
-                    Globals.MONSTER_TABLE[monster].Write("AT", Globals.DICTIONARY.StatList[ID].AT);
-                    Globals.MONSTER_TABLE[monster].Write("OG_AT", Globals.DICTIONARY.StatList[ID].AT);
-                    Globals.MONSTER_TABLE[monster].Write("MAT", Globals.DICTIONARY.StatList[ID].MAT);
-                    Globals.MONSTER_TABLE[monster].Write("OG_MAT", Globals.DICTIONARY.StatList[ID].MAT);
-                    Globals.MONSTER_TABLE[monster].Write("DF", Globals.DICTIONARY.StatList[ID].DF);
-                    Globals.MONSTER_TABLE[monster].Write("OG_DF", Globals.DICTIONARY.StatList[ID].DF);
-                    Globals.MONSTER_TABLE[monster].Write("MDF", Globals.DICTIONARY.StatList[ID].MDF);
-                    Globals.MONSTER_TABLE[monster].Write("OG_MDF", Globals.DICTIONARY.StatList[ID].MDF);
-                    Globals.MONSTER_TABLE[monster].Write("SPD", Globals.DICTIONARY.StatList[ID].SPD);
-                    Globals.MONSTER_TABLE[monster].Write("OG_SPD", Globals.DICTIONARY.StatList[ID].SPD);
+                    double HP = Globals.DICTIONARY.StatList[ID].HP * Globals.HP_MULTI;
+                    double resup = 1;
+                    if (HP > 65535) {
+                        resup = HP / 65535;
+                        HP = 65535;
+                    }
+                    Globals.MONSTER_TABLE[monster].Write("HP", (short)Math.Round(HP));
+                    Globals.MONSTER_TABLE[monster].Write("Max_HP", (short)Math.Round(HP));
+                    Globals.MONSTER_TABLE[monster].Write("AT", (short)Math.Round(Globals.DICTIONARY.StatList[ID].AT * Globals.AT_MULTI));
+                    Globals.MONSTER_TABLE[monster].Write("OG_AT", (short)Math.Round(Globals.DICTIONARY.StatList[ID].AT * Globals.AT_MULTI));
+                    Globals.MONSTER_TABLE[monster].Write("MAT", (short)Math.Round(Globals.DICTIONARY.StatList[ID].MAT * Globals.MAT_MULTI));
+                    Globals.MONSTER_TABLE[monster].Write("OG_MAT", (short)Math.Round(Globals.DICTIONARY.StatList[ID].MAT * Globals.MAT_MULTI));
+                    Globals.MONSTER_TABLE[monster].Write("DF", (short)Math.Round(Globals.DICTIONARY.StatList[ID].DF * Globals.DF_MULTI * resup));
+                    Globals.MONSTER_TABLE[monster].Write("OG_DF", (short)Math.Round(Globals.DICTIONARY.StatList[ID].DF * Globals.DF_MULTI * resup));
+                    Globals.MONSTER_TABLE[monster].Write("MDF", (short)Math.Round(Globals.DICTIONARY.StatList[ID].MDF * Globals.MDF_MULTI * resup));
+                    Globals.MONSTER_TABLE[monster].Write("OG_MDF", (short)Math.Round(Globals.DICTIONARY.StatList[ID].MDF * Globals.MDF_MULTI * resup));
+                    Globals.MONSTER_TABLE[monster].Write("SPD", (short)Math.Round(Globals.DICTIONARY.StatList[ID].SPD * Globals.SPD_MULTI));
+                    Globals.MONSTER_TABLE[monster].Write("OG_SPD", (short)Math.Round(Globals.DICTIONARY.StatList[ID].SPD * Globals.SPD_MULTI));
                     Globals.MONSTER_TABLE[monster].Write("A_AV", Globals.DICTIONARY.StatList[ID].A_AV);
                     Globals.MONSTER_TABLE[monster].Write("M_AV", Globals.DICTIONARY.StatList[ID].M_AV);
                     Globals.MONSTER_TABLE[monster].Write("P_Immune", Globals.DICTIONARY.StatList[ID].P_Immune);

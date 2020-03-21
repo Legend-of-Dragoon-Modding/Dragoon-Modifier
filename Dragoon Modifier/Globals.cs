@@ -43,6 +43,12 @@ namespace Dragoon_Modifier {
         public static Nullable<int> NO_DART = null;
         public static string MOD = "US_Base";
         public static string DIFFICULTY_MODE = "Normal";
+        public static double HP_MULTI = 1;
+        public static double AT_MULTI = 1;
+        public static double MAT_MULTI = 1;
+        public static double DF_MULTI = 1;
+        public static double MDF_MULTI = 1;
+        public static double SPD_MULTI = 1;
 
         public static void SetM_POINT(int mPoint) {
             M_POINT = mPoint;

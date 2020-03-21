@@ -6499,10 +6499,28 @@ namespace Dragoon_Modifier {
 
         }
 
-        #endregion
+        private void Slider_ValueChanged(object sender,
+            RoutedPropertyChangedEventArgs<double> e) {
+            var slider = sender as Slider;
+            if (sender == sldHP) {
+                Globals.HP_MULTI = slider.Value;
+            } else if (sender == sldATK) {
+                Globals.AT_MULTI = slider.Value;
+            } else if (sender == sldDEF) {
+                Globals.DF_MULTI = slider.Value;
+            } else if (sender == sldMAT) {
+                Globals.MAT_MULTI = slider.Value;
+            } else if (sender == sldMDF) {
+                Globals.MDF_MULTI = slider.Value;
+            } else if (sender == sldSPD) {
+                Globals.SPD_MULTI = slider.Value;
+            }
+        }
 
-        #region On Close
-        private void Window_Closed(object sender, EventArgs e) {
+            #endregion
+
+            #region On Close
+            private void Window_Closed(object sender, EventArgs e) {
             CloseEmulator();
         }
 
