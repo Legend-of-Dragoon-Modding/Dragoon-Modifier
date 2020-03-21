@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Globalization;
+using System.Linq;
 
 public class Shop_Changer {
     static bool SHOP_CHANGED = true;
