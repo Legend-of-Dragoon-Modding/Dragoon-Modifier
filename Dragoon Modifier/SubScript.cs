@@ -1,25 +1,40 @@
 ﻿using CSScriptLibrary;
 using System;
 using System.IO;
+using System.Reflection;
 
 namespace Dragoon_Modifier {
     class SubScript {
         string file;
         public ScriptState state = ScriptState.DISABLED;
+        Assembly script;
+        MethodDelegate run;
+        MethodDelegate open;
+        MethodDelegate close;
+        MethodDelegate click;
 
-        public SubScript(string file) {
+        public SubScript(string file, Emulator emulator) {
             this.file = Path.GetFullPath(file);
+            script = CSScript.LoadFile(file, null, true);
+            run = script.GetStaticMethod("*.Run", emulator);
+            open = script.GetStaticMethod("*.Open", emulator);
+            close = script.GetStaticMethod("*.Close", emulator);
+            click = script.GetStaticMethod("*.Click", emulator);
         }
 
-        public SubScript(string file, ScriptState state) {
+        public SubScript(string file, ScriptState state, Emulator emulator) {
             this.file = Path.GetFullPath(file);
             this.state = state;
+            script = CSScript.LoadFile(file, null, true);
+            run = script.GetStaticMethod("*.Run", emulator);
+            open = script.GetStaticMethod("*.Open", emulator);
+            close = script.GetStaticMethod("*.Close", emulator);
+            click = script.GetStaticMethod("*.Click", emulator);
         }
 
         public int Run(Emulator emulator) {
             try {
-                var script = CSScript.LoadFile(file, null, true).GetStaticMethod("*.Run", emulator);
-                script(emulator);
+                run(emulator);
                 return 1;
             } catch (Exception ex) {
                 Constants.RUN = false;
@@ -33,8 +48,7 @@ namespace Dragoon_Modifier {
 
         public int Open(Emulator emulator) {
             try {
-                var script = CSScript.LoadFile(file, null, true).GetStaticMethod("*.Open", emulator);
-                script(emulator);
+                open(emulator);
                 return 1;
             } catch (Exception ex) {
                 Constants.RUN = false;
@@ -48,8 +62,7 @@ namespace Dragoon_Modifier {
 
         public int Close(Emulator emulator) {
             try {
-                var script = CSScript.LoadFile(file, null, true).GetStaticMethod("*.Close", emulator);
-                script(emulator);
+                close(emulator);
                 return 1;
             } catch (Exception ex) {
                 Constants.RUN = false;
@@ -63,8 +76,7 @@ namespace Dragoon_Modifier {
 
         public int Click(Emulator emulator) {
             try {
-                var script = CSScript.LoadFile(file, null, true).GetStaticMethod("*.Click", emulator);
-                script(emulator);
+                click(emulator);
                 return 1;
             } catch (Exception ex) {
                 Constants.RUN = false;

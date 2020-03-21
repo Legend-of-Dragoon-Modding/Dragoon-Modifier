@@ -181,20 +181,6 @@ namespace Dragoon_Modifier {
                 hotkeyThread = new Thread(HotkeysController);
                 otherThread = new Thread(OtherController);
 
-                //Is this laziness visualized?
-                lstField.Items.Add(new SubScript(Directory.GetFiles("Scripts")[2], ScriptState.LOCKED));
-                lstBattle.Items.Add(new SubScript(Directory.GetFiles("Scripts")[1], ScriptState.LOCKED));
-                lstHotkey.Items.Add(new SubScript(Directory.GetFiles("Scripts")[3], ScriptState.LOCKED));
-
-                foreach (string file in Directory.GetFiles("Scripts\\Field", "*.cs", SearchOption.AllDirectories).OrderBy(f => f))
-                    lstField.Items.Add(new SubScript(file));
-                foreach (string file in Directory.GetFiles("Scripts\\Battle", "*.cs", SearchOption.AllDirectories).OrderBy(f => f))
-                    lstBattle.Items.Add(new SubScript(file));
-                foreach (string file in Directory.GetFiles("Scripts\\Hotkeys", "*.cs", SearchOption.AllDirectories).OrderBy(f => f))
-                    lstHotkey.Items.Add(new SubScript(file));
-                foreach (string file in Directory.GetFiles("Scripts\\Other", "*.cs", SearchOption.AllDirectories).OrderBy(f => f))
-                    lstOther.Items.Add(new SubScript(file));
-
                 Constants.Init();
                 InitUI();
                 LoadKey();
@@ -205,6 +191,8 @@ namespace Dragoon_Modifier {
                 } else {
                     Constants.WriteOutput("Please pick an emulator to use in the settings menu.");
                 }
+
+                SetupScripts();
             } catch (Exception ex) {
                 MessageBox.Show("Error loading Scripts folder.");
                 MessageBox.Show(ex.ToString());
@@ -6082,7 +6070,7 @@ namespace Dragoon_Modifier {
                     battleThread.Start();
                     hotkeyThread.Start();
                     otherThread.Start();
-                    Constants.WriteOutput("Program opened.");
+                    Constants.WriteOutput("Attached to " + Constants.EMULATOR_NAME + ".");
                 } else {
                     Constants.WriteOutput("Program failed to open. Please open " + Constants.EMULATOR_NAME + " then press attach.");
                 }
@@ -6197,6 +6185,29 @@ namespace Dragoon_Modifier {
                 miAttach_Click(null, null);
             }
             Constants.ProgramInfo();
+        }
+
+        public void SetupScripts() {
+            try {
+                lstField.Items.Add(new SubScript(Directory.GetFiles("Scripts", "[ALL] Field Controller*")[0], ScriptState.LOCKED, emulator));
+                lstBattle.Items.Add(new SubScript(Directory.GetFiles("Scripts", "[ALL] Battle Controller*")[0], ScriptState.LOCKED, emulator));
+                lstHotkey.Items.Add(new SubScript(Directory.GetFiles("Scripts", "[ALL] Hotkey Controller*")[0], ScriptState.LOCKED, emulator));
+
+                foreach (string file in Directory.GetFiles("Scripts\\Field", "*.cs", SearchOption.AllDirectories).OrderBy(f => f))
+                    lstField.Items.Add(new SubScript(file, emulator));
+                foreach (string file in Directory.GetFiles("Scripts\\Battle", "*.cs", SearchOption.AllDirectories).OrderBy(f => f))
+                    lstBattle.Items.Add(new SubScript(file, emulator));
+                foreach (string file in Directory.GetFiles("Scripts\\Hotkeys", "*.cs", SearchOption.AllDirectories).OrderBy(f => f))
+                    lstHotkey.Items.Add(new SubScript(file, emulator));
+                foreach (string file in Directory.GetFiles("Scripts\\Other", "*.cs", SearchOption.AllDirectories).OrderBy(f => f))
+                    lstOther.Items.Add(new SubScript(file, emulator));
+            } catch (Exception ex) {
+                Constants.RUN = false;
+                Constants.WriteGLog("Program stopped.");
+                Constants.WritePLogOutput("Error loading scripts.");
+                Constants.WriteOutput("Fatal Error. Closing all threads.");
+                Constants.WriteOutput(ex.ToString());
+            }
         }
 
         private void miRegion_Click(object sender, RoutedEventArgs e) {
