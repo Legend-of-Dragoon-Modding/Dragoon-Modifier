@@ -1243,7 +1243,8 @@
                                     <MenuItem Header="14" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
                                     <MenuItem Header="15" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
                                 </MenuItem>
-                                <MenuItem x:Name="miOpenPreset" Header="Open Preset on Open" Background="#FFB6B6B6" Foreground="White" Click="miOpenPreset_Click"/> >
+                                <MenuItem x:Name="miOpenPreset" Header="Open Preset on Open" Background="#FFB6B6B6" Foreground="White" Click="miOpenPreset_Click"/>
+                                <MenuItem x:Name="miModOptions" Header="Mod Options" Background="#FFB6B6B6" Foreground="White" Click="miModOptions_Click"/>
                             </MenuItem>
                             <MenuItem Header="About" Background="#FFB6B6B6" Foreground="White">
                                 <MenuItem x:Name="miAuthor" Background="#FFB6B6B6" Foreground="White" Header="Author" Click="miAuthor_Click"/>

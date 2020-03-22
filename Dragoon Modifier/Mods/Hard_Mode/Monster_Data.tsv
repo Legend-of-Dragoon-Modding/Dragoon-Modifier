@@ -1,7 +1,7 @@
-M+AF8-ID	M+AF8-name	Element	HP	AT	MAT	DF	MDF	Speed	A+AF8-AV	M+AF8-AV	P+AF8-Immune	M+AF8-Immune	P+AF8-Half	M+AF8-Half	E+AF8-Immune	E+AF8-Half	Status+AF8-Resist	Death+AF8-Resist	EXP	Gold	Drop	Drop+AF8-Chance	M+AF8-extra+AF8-name
+M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-Half	E-Immune	E-Half	Status-Resist	Death-Resist	EXP	Gold	Drop	Drop-Chance	M-extra-name
 0	Mantis	Earth	20	7	5	150	75	50	0	0	0	0	0	0	None	None	99	0	12	6	Pellet	8	Mantis
 1	Scissorhands	Earth	80	30	23	200	50	60	0	0	0	0	0	0	None	None	99	0	40	18	Meteor Fall	8	Scissorhands
-2	Spinninghead	Non+AC0-Elemental	384	40	57	80	160	60	0	0	0	0	0	0	None	None	255	128	99	30	Mind Purifier	8	Spinninghead
+2	Spinninghead	Non-Elemental	384	40	57	80	160	60	0	0	0	0	0	0	None	None	255	128	99	30	Mind Purifier	8	Spinninghead
 3	Sandworm	Earth	1440	80	63	80	80	50	0	0	0	0	0	0	None	None	99	16	168	51	Spirit Potion	8	Sandworm
 4	Sea Dragon	Fire	33	8	11	80	120	70	20	0	0	0	0	0	None	None	99	0	14	9	Burn Out	10	Sea Dragon
 5	Land Skater	Water	312	51	56	100	120	60	10	0	0	0	0	0	None	None	99	0	88	33	Spear Frost	8	Land Skater
@@ -30,7 +30,7 @@ M+AF8-ID	M+AF8-name	Element	HP	AT	MAT	DF	MDF	Speed	A+AF8-AV	M+AF8-AV	P+AF8-Immun
 28	Myconido	Earth	30	6	13	80	180	80	20	0	0	0	0	0	None	None	227	0	11	8	Body Purifier	10	Myconido
 29	Roc	Wind	208	27	27	100	30	60	0	0	0	0	0	0	None	None	99	16	44	24	Down Burst	8	Roc
 30	Gnome	Earth	256	53	47	160	70	50	0	0	0	0	0	0	Earth	None	255	0	108	42	Healing Potion	8	Gnome
-31	Bowling	Non+AC0-Elemental	400	70	50	160	80	60	0	0	0	0	0	0	None	None	255	0	132	42	Attack Ball	8	Bowling
+31	Bowling	Non-Elemental	400	70	50	160	80	60	0	0	0	0	0	0	None	None	255	0	132	42	Attack Ball	8	Bowling
 32	Freeze Knight	Water	360	56	68	120	160	50	0	0	0	0	0	0	Water	None	255	16	110	27	Fatal Blizzard	8	Freeze Knight
 33	Fire Spirit	Fire	26	8	13	100	160	60	20	20	0	0	0	0	Fire	None	255	0	13	12	Spirit Cloak	10	Fire Spirit I
 34	Mad Skull	Thunder	799	107	93	250	100	65	0	0	0	0	0	0	None	None	255	128	400	51	Flash Hall	8	Mad Skull
@@ -38,10 +38,10 @@ M+AF8-ID	M+AF8-name	Element	HP	AT	MAT	DF	MDF	Speed	A+AF8-AV	M+AF8-AV	P+AF8-Immun
 36	Canbria Dayfly	Wind	520	58	76	100	140	70	10	0	0	0	0	0	None	None	227	0	112	30	Body Purifier	8	Canbria Dayfly
 37	Wyvern	Wind	544	72	61	160	100	80	20	0	0	0	0	0	None	None	99	0	120	45	Down Burst	8	Wyvern
 38	Trent	Earth	5	2	2	160	40	30	0	0	0	0	0	0	None	None	99	0	4	9	Pellet	10	Trent
-39	Spring Hitter	Non+AC0-Elemental	400	64	60	150	80	70	0	0	0	0	0	0	None	None	255	0	117	21	Healing Fog	8	Spring Hitter
+39	Spring Hitter	Non-Elemental	400	64	60	150	80	70	0	0	0	0	0	0	None	None	255	0	117	21	Healing Fog	8	Spring Hitter
 40	Guillotine	Dark	621	65	83	150	120	60	0	0	0	0	0	0	None	None	255	0	160	39	Healing Breeze	8	Guillotine
-41	Terminator	Non+AC0-Elemental	432	71	51	120	80	80	0	0	0	0	0	0	None	None	255	0	143	30	Total Vanishing	8	Terminator
-42	OOPARTS	Non+AC0-Elemental	4	0	0	100	100	150	50	50	0	0	0	0	None	None	255	131	0	600	Spirit Potion	100	OOPARTS
+41	Terminator	Non-Elemental	432	71	51	120	80	80	0	0	0	0	0	0	None	None	255	0	143	30	Total Vanishing	8	Terminator
+42	OOPARTS	Non-Elemental	4	0	0	100	100	150	50	50	0	0	0	0	None	None	255	131	0	600	Spirit Potion	100	OOPARTS
 43	Fairy	Light	320	43	57	80	150	70	10	10	0	0	0	0	None	None	99	0	81	24	Sun Rhapsody	8	Fairy
 44	Puck	Earth	304	47	47	100	120	60	0	0	0	0	0	0	None	None	99	0	90	36	Dancer's Ring	2	Puck
 45	Mole	Earth	16	6	5	160	80	50	0	0	0	0	0	0	None	None	99	16	11	9	Angel's Prayer	8	Mole
@@ -53,7 +53,7 @@ M+AF8-ID	M+AF8-name	Element	HP	AT	MAT	DF	MDF	Speed	A+AF8-AV	M+AF8-AV	P+AF8-Immun
 51	Wounded Bear	Earth	560	62	44	140	40	60	0	0	0	0	0	0	None	None	107	16	96	60	Attack Ball	8	Wounded Bear
 52	Erupting Chick	Wind	120	20	22	80	30	80	20	0	0	0	0	0	None	None	99	0	32	15	Mind Purifier	8	Erupting Chick
 53	Flying Rat	Wind	260	38	54	80	120	60	20	0	0	0	0	0	None	None	99	0	64	24	Angel's Prayer	8	Flying Rat
-54	Rainbow Bird	Non+AC0-Elemental	4	0	0	100	100	120	0	0	1	1	0	0	None	None	251	140	3000	0	Rainbow Dress	10	Rainbow Bird
+54	Rainbow Bird	Non-Elemental	4	0	0	100	100	120	0	0	1	1	0	0	None	None	251	140	3000	0	Rainbow Dress	10	Rainbow Bird
 55	Living Statue	Earth	51	14	13	160	80	50	0	0	0	0	0	0	None	None	255	0	20	12	Detonate Rock	8	Living Statue
 56	Madman	Earth	1040	86	74	100	80	60	0	0	0	0	0	0	None	None	99	0	165	24	Body Purifier	8	Madman I
 57	Wildman	Thunder	720	65	58	100	60	50	0	0	0	0	0	0	None	None	99	0	120	36	Giganto Ring	2	Wildman
@@ -85,8 +85,8 @@ M+AF8-ID	M+AF8-name	Element	HP	AT	MAT	DF	MDF	Speed	A+AF8-AV	M+AF8-AV	P+AF8-Immun
 83	Crafty Thief	Dark	200	30	27	100	80	80	5	0	0	0	0	0	None	None	99	0	50	18	Pellet	8	Crafty Thief
 84	Undead	Dark	568	75	72	100	60	70	0	64	0	0	0	0	None	None	127	0	153	39	Mind Purifier	8	Undead
 85	Skeleton	Dark	200	35	35	100	100	60	0	0	0	0	0	0	None	None	99	16	60	21	Broad Sword	2	Skeleton
-86	Will+AC0-O'+AC0-Wisp	Fire	160	30	42	80	180	80	20	0	0	0	0	0	None	None	99	0	48	12	None	0	Will+AC0-O'+AC0-Wisp I
-87	Cursed Jar	Non+AC0-Elemental	4	0	0	100	100	200	0	0	0	1	0	0	None	None	255	134	300	0	Night Raid	100	Cursed Jar
+86	Will-O'-Wisp	Fire	160	30	42	80	180	80	20	0	0	0	0	0	None	None	99	0	48	12	None	0	Will-O'-Wisp I
+87	Cursed Jar	Non-Elemental	4	0	0	100	100	200	0	0	0	1	0	0	None	None	255	134	300	0	Night Raid	100	Cursed Jar
 88	Man Eating Bud	Dark	128	13	12	100	100	80	0	0	0	0	0	0	None	None	99	16	20	24	Angel's Prayer	8	Man Eating Bud
 89	Cactus	Earth	320	67	67	150	150	60	0	0	0	0	0	0	None	None	99	0	126	36	Recovery Ball	15	Cactus
 90	Mandrake	Water	96	10	14	60	120	60	0	0	0	0	0	0	None	None	99	0	15	9	Sun Rhapsody	8	Mandrake
@@ -123,8 +123,8 @@ M+AF8-ID	M+AF8-name	Element	HP	AT	MAT	DF	MDF	Speed	A+AF8-AV	M+AF8-AV	P+AF8-Immun
 121	Aqua King	Water	640	67	65	120	160	70	0	0	0	0	0	0	None	None	99	0	135	30	Angel's Prayer	8	Aqua King
 122	Sky Chaser	Wind	680	67	67	100	100	60	20	0	0	0	0	0	None	None	99	16	128	30	Body Purifier	8	Sky Chaser
 123	Air Combat	Wind	1080	93	76	160	120	50	5	0	0	0	0	0	None	None	99	0	456	33	Down Burst	8	Air Combat
-124	Treasure Jar	Non+AC0-Elemental	5	0	0	100	100	200	0	0	1	0	0	0	None	None	255	137	0	0	Ruby Ring	100	Treasure Jar
-125	Human Hunter	Non+AC0-Elemental	355	90	72	160	100	70	0	0	0	0	0	0	None	None	255	0	136	24	Recovery Ball	8	Human Hunter
+124	Treasure Jar	Non-Elemental	5	0	0	100	100	200	0	0	1	0	0	0	None	None	255	137	0	0	Ruby Ring	100	Treasure Jar
+125	Human Hunter	Non-Elemental	355	90	72	160	100	70	0	0	0	0	0	0	None	None	255	0	136	24	Recovery Ball	8	Human Hunter
 126	Mountain Ape	Earth	1000	95	64	120	60	50	0	0	0	0	0	0	None	None	99	0	198	42	Angel's Prayer	10	Mountain Ape
 127	Roulette Face	Dark	2400	71	93	120	200	60	0	0	0	0	0	0	None	None	255	128	360	42	Night Raid	8	Roulette Face
 128	Swift Dragon	Fire	888	66	76	120	120	80	0	0	0	0	0	0	None	None	99	0	228	24	Burning Wave	8	Swift Dragon
@@ -138,7 +138,7 @@ M+AF8-ID	M+AF8-name	Element	HP	AT	MAT	DF	MDF	Speed	A+AF8-AV	M+AF8-AV	P+AF8-Immun
 136	Blue Bird	Water	5	0	0	100	100	120	50	0	0	1	0	0	None	None	255	134	1000	0	None	0	Blue Bird
 137	Red Bird	Fire	5	0	0	100	100	120	0	50	1	0	0	0	None	None	255	137	0	1000	Phoenix Plume	100	Red Bird
 138	Yellow Bird	Earth	4	0	0	100	100	120	50	20	0	0	0	0	None	None	255	131	0	300	Elude Cloak	10	Yellow Bird
-139	Lucky Jar	Non+AC0-Elemental	6	0	0	100	100	200	0	0	1	1	0	0	None	None	127	140	1000	300	Moon Serenade	100	Lucky Jar
+139	Lucky Jar	Non-Elemental	6	0	0	100	100	200	0	0	1	1	0	0	None	None	127	140	1000	300	Moon Serenade	100	Lucky Jar
 143	 	None	0	0	0	0	0	0	0	0	0	0	0	0	None	None	99	0	0	0	Broad Sword	0	 
 144	Madman	Earth	1040	86	74	100	80	60	0	0	0	0	0	0	None	None	99	0	165	24	Body Purifier	8	Madman II
 145	Madman	Earth	1040	86	74	100	80	60	0	0	0	0	0	0	None	None	99	0	165	24	Body Purifier	8	Madman (Unused)
@@ -150,9 +150,9 @@ M+AF8-ID	M+AF8-name	Element	HP	AT	MAT	DF	MDF	Speed	A+AF8-AV	M+AF8-AV	P+AF8-Immun
 151	Fire Spirit	Fire	26	9	13	100	160	60	20	20	0	0	0	0	Fire	None	255	0	13	12	Spirit Cloak	2	Fire Spirit (Unused)
 152	Specter	Dark	266	72	107	100	250	75	50	0	0	0	0	0	None	None	99	0	170	30	Midnight Terror	8	Specter II
 153	Specter	Dark	266	72	107	100	250	75	50	0	0	0	0	0	None	None	99	0	170	30	Midnight Terror	8	Specter (Unused)
-154	Will+AC0-O'+AC0-Wisp	Fire	160	30	42	80	180	80	20	0	0	0	0	0	None	None	99	0	48	12	None	0	Will+AC0-O'+AC0-Wisp II
-155	Will+AC0-O'+AC0-Wisp	Fire	160	30	42	80	180	80	20	0	0	0	0	0	None	None	99	0	48	12	None	0	Will+AC0-O'+AC0-Wisp (Unused)
-156	 	Fire	160	30	42	80	180	80	20	0	0	0	0	0	None	None	99	0	0	0	Broad Sword	0	Will+AC0-O'+AC0-Wisp (Unused)
+154	Will-O'-Wisp	Fire	160	30	42	80	180	80	20	0	0	0	0	0	None	None	99	0	48	12	None	0	Will-O'-Wisp II
+155	Will-O'-Wisp	Fire	160	30	42	80	180	80	20	0	0	0	0	0	None	None	99	0	48	12	None	0	Will-O'-Wisp (Unused)
+156	 	Fire	160	30	42	80	180	80	20	0	0	0	0	0	None	None	99	0	0	0	Broad Sword	0	Will-O'-Wisp (Unused)
 157	Magma Fish	Fire	24	8	11	80	120	80	20	0	0	0	0	0	None	None	99	0	10	6	Healing Potion	10	Magma Fish II
 158	Magma Fish	Fire	24	8	11	80	120	80	20	0	0	0	0	0	None	None	99	0	10	6	Healing Potion	10	Magma Fish (Unused)
 159	 	Fire	24	8	11	80	120	80	20	0	0	0	0	0	None	None	99	0	0	0	Broad Sword	0	Magma Fish (Unused)
@@ -174,8 +174,8 @@ M+AF8-ID	M+AF8-name	Element	HP	AT	MAT	DF	MDF	Speed	A+AF8-AV	M+AF8-AV	P+AF8-Immun
 266	Kongol	Earth	1000	32	21	140	80	50	0	0	0	0	0	0	None	None	255	144	2000	200	Wargod Calling	30	Kongol II
 267	Emperor Doel	Thunder	600	30	30	100	100	55	0	0	0	0	0	0	None	None	255	128	3000	200	None	0	Emperor Doel
 268	Dragoon Doel	Thunder	1800	32	34	120	100	55	0	0	0	0	0	0	None	None	255	128	0	0	None	0	Dragoon Doel
-269	Lloyd	Non+AC0-Elemental	399	20	20	100	100	50	0	0	0	0	0	0	None	None	255	128	0	0	None	0	Lloyd (Arena)
-270	Lloyd	Non+AC0-Elemental	6000	80	65	100	150	65	0	0	0	0	0	0	None	None	255	144	12000	300	None	0	Lloyd II
+269	Lloyd	Non-Elemental	399	20	20	100	100	50	0	0	0	0	0	0	None	None	255	128	0	0	None	0	Lloyd (Arena)
+270	Lloyd	Non-Elemental	6000	80	65	100	150	65	0	0	0	0	0	0	None	None	255	144	12000	300	None	0	Lloyd II
 271	Missing	None	0	0	0	50	50	50	0	0	0	0	0	0	None	None	255	128	0	0	None	0	Missing
 272	Missing	None	0	0	0	50	50	50	0	0	0	0	0	0	None	None	255	128	0	0	None	0	Missing
 273	Sandora Elite	Dark	280	10	11	80	120	60	0	0	0	0	0	0	None	None	255	128	0	0	None	0	Sandora Elite I (Clone)
@@ -184,9 +184,9 @@ M+AF8-ID	M+AF8-name	Element	HP	AT	MAT	DF	MDF	Speed	A+AF8-AV	M+AF8-AV	P+AF8-Immun
 277	Dummy Lloyd	None	0	0	0	50	50	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Dummy Lloyd
 279	Regole	Water	3000	59	37	120	80	45	0	0	0	0	0	0	None	None	255	144	7000	250	Frozen Jet	100	Regole
 280	Tentacle	None	0	0	0	50	50	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Tentacle
-283	Divine Dragon	Non+AC0-Elemental	5000	60	53	160	60	60	0	0	0	0	0	0	None	None	255	144	10000	300	Dragon Shield	20	Divine Dragon
-284	Divine Cannon	Non+AC0-Elemental	2000	51	60	160	60	50	0	0	0	0	0	0	None	None	255	144	0	0	Gravity Grabber	100	Divine Cannon
-285	Divine Ball	Non+AC0-Elemental	2000	51	53	160	60	50	0	0	0	0	0	0	None	None	255	144	0	0	Flash Hall	100	Divine Ball
+283	Divine Dragon	Non-Elemental	5000	60	53	160	60	60	0	0	0	0	0	0	None	None	255	144	10000	300	Dragon Shield	20	Divine Dragon
+284	Divine Cannon	Non-Elemental	2000	51	60	160	60	50	0	0	0	0	0	0	None	None	255	144	0	0	Gravity Grabber	100	Divine Cannon
+285	Divine Ball	Non-Elemental	2000	51	53	160	60	50	0	0	0	0	0	0	None	None	255	144	0	0	Flash Hall	100	Divine Ball
 287	Greham	Wind	350	13	15	120	100	60	0	0	0	0	0	0	None	None	255	144	1200	100	Plate Mail	30	Greham
 288	Shirley	Light	640	15	15	80	120	50	0	0	0	0	0	0	None	None	255	144	0	0	Silver Stone	100	Shirley
 289	Shana	Light	120	15	15	80	120	55	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Shirley (Shana)
@@ -200,47 +200,47 @@ M+AF8-ID	M+AF8-name	Element	HP	AT	MAT	DF	MDF	Speed	A+AF8-AV	M+AF8-AV	P+AF8-Immun
 299	Mappi	Dark	640	30	27	110	100	70	0	0	0	0	0	0	None	None	255	128	2000	150	Total Vanishing	100	Mappi I
 300	Mappi	Dark	1200	37	32	110	100	65	0	0	0	0	0	0	None	None	255	128	0	0	Diamond Claw	25	Mappi II
 301	Gehrich	Earth	2000	42	32	120	100	50	0	0	0	0	0	0	None	None	255	128	5000	200	Soul Headband	25	Gehrich
-302	Gorgaga	Non+AC0-Elemental	160	16	16	100	80	50	0	0	0	0	0	0	None	None	255	128	0	0	None	0	Gorgaga
+302	Gorgaga	Non-Elemental	160	16	16	100	80	50	0	0	0	0	0	0	None	None	255	128	0	0	None	0	Gorgaga
 303	Serfius	Fire	200	20	20	100	100	50	0	0	0	0	0	0	None	None	255	128	0	0	None	0	Serfius
 304	Danton	Earth	240	23	8	120	80	45	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Danton
 305	Atlow	Dark	266	16	16	80	100	55	0	0	0	0	0	0	None	None	255	128	0	0	None	0	Atlow
-308	Virage(head)	Non+AC0-Elemental	360	16	17	80	120	50	0	0	0	0	0	0	None	None	255	144	600	100	Healing Potion	100	Wounded Virage (Head)
-309	Virage(body)	Non+AC0-Elemental	240	16	9	100	100	50	0	0	0	0	0	0	None	None	255	144	0	0	Healing Potion	100	Wounded Virage (Body)
-310	Virage(arm)	Non+AC0-Elemental	48	14	9	100	100	50	0	0	0	0	0	0	None	None	255	144	0	0	Mind Purifier	100	Wounded Virage (Arm)
-311	Virage(head)	Non+AC0-Elemental	1600	30	30	100	100	50	0	0	0	0	0	0	None	None	255	144	4500	200	Moon Serenade	100	Complete Virage (Head)
-312	Virage(arm)	Non+AC0-Elemental	300	37	30	100	100	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Complete Virage (Arm)
-313	Virage(body)	Non+AC0-Elemental	600	37	30	100	100	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Complete Virage (Body)
-316	S Virage(head)	Non+AC0-Elemental	10400	70	110	100	100	50	0	0	0	0	0	0	None	None	255	144	4000	200	Healing Rain	100	WS Virage (Head)
-317	S Virage(body)	Non+AC0-Elemental	10400	70	110	100	100	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	WS Virage (Body)
-318	S Virage(arm)	Non+AC0-Elemental	5200	80	110	100	100	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	WS Virage (Arm)
-320	S Virage(head)	Non+AC0-Elemental	10000	110	75	100	100	50	0	0	0	0	0	0	None	None	255	144	15000	300	None	0	S Virage(head)
-321	S Virage(arm)	Non+AC0-Elemental	3000	90	75	140	120	60	0	0	0	0	0	0	None	None	255	144	0	0	None	0	S Virage(arm)
-322	S Virage(body)	Non+AC0-Elemental	15000	90	75	180	120	40	0	0	0	0	0	0	None	None	255	144	0	0	None	0	S Virage(body)
+308	Virage(head)	Non-Elemental	360	16	17	80	120	50	0	0	0	0	0	0	None	None	255	144	600	100	Healing Potion	100	Wounded Virage (Head)
+309	Virage(body)	Non-Elemental	240	16	9	100	100	50	0	0	0	0	0	0	None	None	255	144	0	0	Healing Potion	100	Wounded Virage (Body)
+310	Virage(arm)	Non-Elemental	48	14	9	100	100	50	0	0	0	0	0	0	None	None	255	144	0	0	Mind Purifier	100	Wounded Virage (Arm)
+311	Virage(head)	Non-Elemental	1600	30	30	100	100	50	0	0	0	0	0	0	None	None	255	144	4500	200	Moon Serenade	100	Complete Virage (Head)
+312	Virage(arm)	Non-Elemental	300	37	30	100	100	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Complete Virage (Arm)
+313	Virage(body)	Non-Elemental	600	37	30	100	100	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Complete Virage (Body)
+316	S Virage(head)	Non-Elemental	10400	70	110	100	100	50	0	0	0	0	0	0	None	None	255	144	4000	200	Healing Rain	100	WS Virage (Head)
+317	S Virage(body)	Non-Elemental	10400	70	110	100	100	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	WS Virage (Body)
+318	S Virage(arm)	Non-Elemental	5200	80	110	100	100	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	WS Virage (Arm)
+320	S Virage(head)	Non-Elemental	10000	110	75	100	100	50	0	0	0	0	0	0	None	None	255	144	15000	300	None	0	S Virage(head)
+321	S Virage(arm)	Non-Elemental	3000	90	75	140	120	60	0	0	0	0	0	0	None	None	255	144	0	0	None	0	S Virage(arm)
+322	S Virage(body)	Non-Elemental	15000	90	75	180	120	40	0	0	0	0	0	0	None	None	255	144	0	0	None	0	S Virage(body)
 325	Drake the Bandit	Wind	1200	20	17	80	80	70	0	0	0	0	0	0	None	None	255	144	1500	100	Bandit's Ring	30	Drake the Bandit
-326	Wire	Non+AC0-Elemental	120	13	13	120	80	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Wire
-327	Bursting Ball	Non+AC0-Elemental	64	30	30	150	50	70	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Bursting Ball
+326	Wire	Non-Elemental	120	13	13	120	80	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Wire
+327	Bursting Ball	Non-Elemental	64	30	30	150	50	70	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Bursting Ball
 329	Jiango	Earth	1280	23	18	160	80	50	0	0	0	0	0	0	None	None	255	144	2000	100	Sachet	100	Jiango
 332	Urobolus	Earth	280	8	8	80	60	50	0	0	0	0	0	0	None	None	255	144	400	50	Wargod's Amulet	100	Urobolus
-333	Fire Bird	Fire	640	13	16	80	80	45	0	0	0	0	0	0	None	None	255	144	800	100	Red+AC0-Eye Stone	100	Fire Bird
+333	Fire Bird	Fire	640	13	16	80	80	45	0	0	0	0	0	0	None	None	255	144	800	100	Red-Eye Stone	100	Fire Bird
 334	Volcano Ball	Fire	8	12	12	80	100	45	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Volcano Ball
 335	Grand Jewel	Earth	4500	41	58	100	160	70	0	0	0	0	0	0	None	None	255	144	9000	300	Spectral Flash	100	Grand Jewel
-336	Virage(head)	Non+AC0-Elemental	0	0	0	100	100	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Virage(head)
-337	Virage(body)	Non+AC0-Elemental	0	0	0	100	100	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Virage(body)
-338	Virage(arm)	Non+AC0-Elemental	0	0	0	100	100	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Virage(arm)
+336	Virage(head)	Non-Elemental	0	0	0	100	100	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Virage(head)
+337	Virage(body)	Non-Elemental	0	0	0	100	100	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Virage(body)
+338	Virage(arm)	Non-Elemental	0	0	0	100	100	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Virage(arm)
 339	Kamuy's tree	None	0	0	0	50	50	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Kamuy's tree
 340	Ghost Commander	Dark	1700	53	53	100	100	60	0	0	0	0	0	0	None	None	255	144	6000	200	Night Raid	100	Ghost Commander
 341	Ghost Knight	Dark	300	44	44	80	80	60	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Ghost Knight
-342	Mazo	Non+AC0-Elemental	800	101	101	50	200	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Mazo
-343	Kamuy	Non+AC0-Elemental	4000	65	65	100	150	70	0	0	0	0	0	0	None	None	255	144	8000	0	Darkness Stone	100	Kamuy
-344	Magician Faust	Non+AC0-Elemental	25600	125	125	50	200	50	0	20	0	0	0	0	None	None	255	144	20000	10000	Phantom Shield	100	Magician Faust
-345	Magician Faust	Non+AC0-Elemental	25600	125	125	50	200	50	0	20	0	0	0	0	None	None	255	144	0	0	None	0	Magician Faust
+342	Mazo	Non-Elemental	800	101	101	50	200	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Mazo
+343	Kamuy	Non-Elemental	4000	65	65	100	150	70	0	0	0	0	0	0	None	None	255	144	8000	0	Darkness Stone	100	Kamuy
+344	Magician Faust	Non-Elemental	25600	125	125	50	200	50	0	20	0	0	0	0	None	None	255	144	20000	10000	Phantom Shield	100	Magician Faust
+345	Magician Faust	Non-Elemental	25600	125	125	50	200	50	0	20	0	0	0	0	None	None	255	144	0	0	None	0	Magician Faust
 346	Windigo	Water	10000	80	80	100	120	50	0	0	0	0	0	0	None	None	255	144	11000	250	Brass Knuckle	100	Windigo
 347	Snow Cannon	Water	400	70	70	100	80	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Snow Cannon
 348	Heart	Water	3	68	68	60	60	50	0	0	0	0	0	0	None	None	255	147	0	0	None	0	Heart
 349	Polter Helm	Dark	2400	71	71	100	160	50	0	0	0	0	0	0	None	None	255	144	6000	200	None	0	Polter Helm
 350	Polter Armor	Dark	4000	71	116	160	140	50	0	0	0	0	0	0	None	None	255	144	0	0	Smoke Ball	100	Polter Armor
 351	Polter Sword	Dark	3200	134	71	120	120	100	0	0	0	0	0	0	None	None	255	144	0	0	Soul Eater	100	Polter Sword
-352	Divine Dragoon Ghost	Non+AC0-Elemental	16000	107	116	160	100	60	0	0	0	0	0	0	None	None	255	144	8000	400	Flash Hall	100	Divine Dragon Spirit
+352	Divine Dragoon Ghost	Non-Elemental	16000	107	116	160	100	60	0	0	0	0	0	0	None	None	255	144	8000	400	Flash Hall	100	Divine Dragon Spirit
 353	Ghost Regole	Water	12000	98	71	80	120	60	0	5	0	0	0	0	None	None	255	144	6000	300	Frozen Jet	100	Regole Spirit
 354	GhostFB	Wind	8000	89	71	100	80	60	0	0	0	0	0	0	None	None	255	144	4000	200	Down Burst	100	Feyrbrand Spirit
 355	Missing	None	0	0	0	0	0	50	0	0	0	0	0	0	None	None	255	128	0	0	None	0	Missing
@@ -254,10 +254,10 @@ M+AF8-ID	M+AF8-name	Element	HP	AT	MAT	DF	MDF	Speed	A+AF8-AV	M+AF8-AV	P+AF8-Immun
 365	Last Kraken	Water	10000	98	80	140	200	50	0	0	0	0	0	0	None	None	255	144	12000	300	Pretty Hammer	100	Last Kraken
 366	Cleone	Water	1360	65	71	60	160	60	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Cleone
 367	 	None	0	0	0	50	50	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	 
-368	Caterpillar	Non+AC0-Elemental	6000	110	92	120	120	70	0	0	0	0	0	0	None	None	255	144	13000	300	Healing Rain	100	Caterpillar
-369	Pupa	Non+AC0-Elemental	2500	92	92	160	160	60	0	0	0	0	0	0	None	None	255	144	0	0	Moon Serenade	100	Pupa
-370	Imago	Non+AC0-Elemental	12000	100	134	120	160	70	0	0	0	0	0	0	None	None	255	144	0	0	Sun Rhapsody	100	Imago
-371	Death Rose	Non+AC0-Elemental	2400	44	44	80	140	50	0	0	0	0	0	0	None	None	255	144	6000	0	None	0	Death Rose
+368	Caterpillar	Non-Elemental	6000	110	92	120	120	70	0	0	0	0	0	0	None	None	255	144	13000	300	Healing Rain	100	Caterpillar
+369	Pupa	Non-Elemental	2500	92	92	160	160	60	0	0	0	0	0	0	None	None	255	144	0	0	Moon Serenade	100	Pupa
+370	Imago	Non-Elemental	12000	100	134	120	160	70	0	0	0	0	0	0	None	None	255	144	0	0	Sun Rhapsody	100	Imago
+371	Death Rose	Non-Elemental	2400	44	44	80	140	50	0	0	0	0	0	0	None	None	255	144	6000	0	None	0	Death Rose
 372	 	None	0	0	0	50	50	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	 
 373	Claire	Thunder	3200	76	76	100	100	55	0	0	0	0	0	0	None	None	255	144	6000	0	None	0	Claire
 374	Claire	Thunder	3200	76	76	100	100	55	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Claire
@@ -269,13 +269,13 @@ M+AF8-ID	M+AF8-name	Element	HP	AT	MAT	DF	MDF	Speed	A+AF8-AV	M+AF8-AV	P+AF8-Immun
 380	Michael (core)	Dark	1280	109	109	100	100	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Michael (core)
 381	Dark Doel	Thunder	1500	60	70	120	120	50	0	0	0	0	0	0	None	None	255	144	6000	0	None	0	Dark Doel
 382	Archangel	Light	3000	53	76	80	160	50	5	5	0	0	0	0	None	None	255	144	6000	0	None	0	Archangel
-383	Dragon Spirit	Non+AC0-Elemental	16000	107	116	160	100	60	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Divine Dragon Spirit Dummy
+383	Dragon Spirit	Non-Elemental	16000	107	116	160	100	60	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Divine Dragon Spirit Dummy
 384	Dragon Spirit	Water	12000	98	71	80	120	60	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Regole Spirit Dummy
 385	Dragon Spirit	Wind	8000	89	71	100	80	60	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Feyrbrand Spirit Dummy
 386	Missing	None	0	0	0	50	50	50	0	0	0	0	0	0	None	None	255	128	0	0	None	0	Missing
 387	Zieg Feld	Fire	12000	152	110	120	150	70	0	0	0	0	0	0	None	None	255	144	20000	400	None	0	Zieg Feld
-388	Melbu Frahma	Non+AC0-Elemental	42000	107	80	200	250	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Melbu Frahma (Body)
-389	Melbu Frahma	Non+AC0-Elemental	1600	107	80	180	200	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Melbu Frahma (Summons)
+388	Melbu Frahma	Non-Elemental	42000	107	80	200	250	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Melbu Frahma (Body)
+389	Melbu Frahma	Non-Elemental	1600	107	80	180	200	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Melbu Frahma (Summons)
 390	Melbu Frahma	None	1600	107	80	250	250	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Melbu Frahma (Unused)
 391	Melbu Frahma	None	1600	107	80	250	250	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Melbu Frahma (Unused)
 392	Melbu Frahma	None	1600	107	80	250	250	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Melbu Frahma (Unused)
