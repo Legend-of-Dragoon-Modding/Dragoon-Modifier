@@ -44,7 +44,6 @@ public class BattleController {
             Constants.WriteDebug("Monster IDs:         " + String.Join(", ", Globals.MONSTER_IDS.ToArray()));
             Constants.WriteDebug("Unique Monster IDs:  " + String.Join(", ", Globals.UNIQUE_MONSTER_IDS.ToArray()));
             Constants.WriteOutput("Finished loading.");
-            Constants.WriteDebug(Globals.HP_MULTI);
         } else {
             if (Globals.STATS_CHANGED && encounterValue < 9999) {
                 Globals.STATS_CHANGED = false;
@@ -554,7 +553,11 @@ public class BattleController {
             Globals.UNIQUE_MONSTER_IDS.Add(emulator.ReadShortU(Constants.GetAddress("UNIQUE_SLOT") + (int) Constants.OFFSET + (monster * 0x1A8)));
         }
         for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-            Globals.MONSTER_IDS.Add(emulator.ReadShort(Constants.GetAddress("MONSTER_ID") + GetOffset() + (i * 0x8)));
+            if (Globals.ENCOUNTER_ID == 443) {
+                Globals.MONSTER_IDS.Add(emulator.ReadShort(Constants.GetAddress("MONSTER_ID") + GetOffset() - 0x6298 + (i * 0x8)));
+            } else {
+                Globals.MONSTER_IDS.Add(emulator.ReadShort(Constants.GetAddress("MONSTER_ID") + GetOffset() + (i * 0x8)));
+            }
         }
         for (int monster = 0; monster < Globals.MONSTER_SIZE; monster++) {
             Globals.MONSTER_TABLE.Add(new MonsterAddress(Globals.M_POINT + Constants.OFFSET, monster, Globals.MONSTER_IDS[monster], Globals.UNIQUE_MONSTER_IDS, emulator));

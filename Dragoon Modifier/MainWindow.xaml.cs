@@ -193,6 +193,10 @@ namespace Dragoon_Modifier {
                 }
 
                 SetupScripts();
+                if (miOpenPreset.IsChecked) {
+                    Constants.LoadPreset(preset);
+                    LoadPreset();
+                }
             } catch (Exception ex) {
                 MessageBox.Show("Error loading Scripts folder.");
                 MessageBox.Show(ex.ToString());
@@ -401,8 +405,6 @@ namespace Dragoon_Modifier {
                 bool load = Constants.KEY.GetValue("LoadPreset").Equals("True");
                 if (Constants.KEY.GetValue("Preset") != null && load) {
                     preset = (string) Constants.KEY.GetValue("Preset");
-                    Constants.LoadPreset(preset);
-                    LoadPreset();
                 }
                 miOpenPreset.IsChecked = load;
             }
@@ -510,6 +512,10 @@ namespace Dragoon_Modifier {
                     continue;
                 s.state = ScriptState.DISABLED;
             }
+            ScriptDisplay(lstField);
+            ScriptDisplay(lstBattle);
+            ScriptDisplay(lstHotkey);
+            ScriptDisplay(lstOther);
         }
 
         public void OpenScript(ListView lst) {
@@ -617,7 +623,7 @@ namespace Dragoon_Modifier {
             public IDictionary<int, dynamic> UltimateStatList { get { return ultimateStatList; } }
             public List<int[]>[] ShopList { get { return shopList; } }
             public dynamic[][] CharacterStats { get { return characterStats; } }
-            public dynamic[, ,] AdditionData { get { return additionData; } }
+            public dynamic[,,] AdditionData { get { return additionData; } }
             public List<int> MonsterScript { get { return monsterScript; } }
             public IDictionary<int, string> Num2Item { get { return num2item; } }
             public IDictionary<string, int> Item2Num { get { return item2num; } }
@@ -627,7 +633,7 @@ namespace Dragoon_Modifier {
             public dynamic[][] DragoonStats { get { return dragoonStats; } }
 
             public LoDDict() {
-                string cwd = AppDomain.CurrentDomain.BaseDirectory;       
+                string cwd = AppDomain.CurrentDomain.BaseDirectory;
                 try {
                     using (var itemData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Items.tsv")) {
                         bool firstline = true;
@@ -669,14 +675,14 @@ namespace Dragoon_Modifier {
                             item.NamePointer = sortedList[index].NamePointer + (sortedList[index].Name.Length - item.Name.Length) * 2;
                         } else {
                             nameList.Add(item.EncodedName);
-                            item.NamePointer = start + (int)offset;
+                            item.NamePointer = start + (int) offset;
                             offset += (item.EncodedName.Replace(" ", "").Length / 2);
                         }
                     }
                     for (int i = 0; i < characterStats.Length; i++) {
                         characterStats[i] = new dynamic[61];
                     }
-                    try { 
+                    try {
                         using (var characterData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Character_Stats.tsv")) {
                             var i = 0;
                             while (!characterData.EndOfStream) {
@@ -1356,7 +1362,7 @@ namespace Dragoon_Modifier {
                 double damage = Convert.ToDouble(values[2]);
                 if (percentage == true) {
                     dmg_base = 0;
-                    multi = (byte)Math.Round(damage);
+                    multi = (byte) Math.Round(damage);
                 } else {
                     double[] bases = new double[] { 800, 600, 500, 400, 300, 200, 100, 75, 50 };
                     byte[] base_table = new byte[] { 1, 2, 4, 8, 16, 32, 0, 64, 128 };
@@ -1373,10 +1379,10 @@ namespace Dragoon_Modifier {
                             double mod = (damage - bases[i]) % (bases[i] / 200);
                             if (mod < (bases[i] / 400)) {
                                 nearest_list[i] = mod;
-                                multi_list[i] = (byte)Math.Round((damage - bases[i]) / (bases[i] / 200));
+                                multi_list[i] = (byte) Math.Round((damage - bases[i]) / (bases[i] / 200));
                             } else {
                                 nearest_list[i] = (bases[i] / 200) - mod;
-                                multi_list[i] = (byte)Math.Round((damage - bases[i]) / (bases[i] / 200) + 1);
+                                multi_list[i] = (byte) Math.Round((damage - bases[i]) / (bases[i] / 200) + 1);
                             }
                         }
                     }
@@ -1384,9 +1390,9 @@ namespace Dragoon_Modifier {
                     dmg_base = base_table[index];
                     multi = multi_list[index];
                 }
-                accuracy = (byte)Convert.ToInt32(values[3]);
-                mp = (byte)Convert.ToInt32(values[4]);
-                element = (byte)Element2Num[values[5].ToLower()];
+                accuracy = (byte) Convert.ToInt32(values[3]);
+                mp = (byte) Convert.ToInt32(values[4]);
+                element = (byte) Element2Num[values[5].ToLower()];
             }
         }
 
@@ -1404,7 +1410,7 @@ namespace Dragoon_Modifier {
             public byte MAT { get { return mat; } }
             public byte DF { get { return df; } }
             public byte MDF { get { return mdf; } }
-            
+
             public CharacterStats(string nmax_hp, string nspd, string nat, string nmat, string ndf, string nmdf) {
                 max_hp = Int16.Parse(nmax_hp);
                 spd = Convert.ToByte(nspd, 10);
@@ -1900,7 +1906,7 @@ namespace Dragoon_Modifier {
                         run = script.Run(emulator);
                     }), DispatcherPriority.ContextIdle);
                 }
-                
+
                 if (Globals.CURRENT_TIME >= (Globals.LAST_HOTKEY + 2)) {
                     if (!Globals.IN_BATTLE) { //Field
                         if (Globals.HOTKEY == (Hotkey.KEY_SQUARE + Hotkey.KEY_CIRCLE)) { //Change Lohan Shop
@@ -4603,7 +4609,7 @@ namespace Dragoon_Modifier {
                                 }
                             }
 
-                            if ((i + 1) == Globals.MONSTER_SIZE) 
+                            if ((i + 1) == Globals.MONSTER_SIZE)
                                 ubCheckDamageCycle--;
                         } else {
                             ubCheckedDamage = false;
@@ -4624,7 +4630,7 @@ namespace Dragoon_Modifier {
                 ubCheckedDamage = true;
             }
 
-            Constants.WriteDebug("HP[0]: " + ultimateHP[0] + "/" + Globals.MONSTER_TABLE[0].Read("HP") + " | P ATK: " + partyAttacking + "/" + ubCheckDamageCycle + " | CHK DMG: " + ubCheckedDamage + " | HP CHG: " + ubHPChanged +  " | SET: " + ubUltimateHPSet + " | ACT: " + Globals.CHARACTER_TABLE[0].Read("Action") + "/" + Globals.CHARACTER_TABLE[1].Read("Action") + "/" + Globals.CHARACTER_TABLE[2].Read("Action"));
+            Constants.WriteDebug("HP[0]: " + ultimateHP[0] + "/" + Globals.MONSTER_TABLE[0].Read("HP") + " | P ATK: " + partyAttacking + "/" + ubCheckDamageCycle + " | CHK DMG: " + ubCheckedDamage + " | HP CHG: " + ubHPChanged + " | SET: " + ubUltimateHPSet + " | ACT: " + Globals.CHARACTER_TABLE[0].Read("Action") + "/" + Globals.CHARACTER_TABLE[1].Read("Action") + "/" + Globals.CHARACTER_TABLE[2].Read("Action"));
 
             /*if (!partyAttacking && ubCheckDamageCycle > 0 && ubHPChanged) {
                 if (dmScripts.ContainsKey("btnDamageTracker") && dmScripts["btnDamageTracker"]) {
@@ -4684,7 +4690,7 @@ namespace Dragoon_Modifier {
                         Globals.CHARACTER_TABLE[i].Write("MP", mpAmount > 0 ? mpAmount : 0);
                     }
                 }
-                Thread.Sleep(2000); 
+                Thread.Sleep(2000);
                 Globals.MONSTER_TABLE[monsterSlot].Write("Attack_Move", 255);
             }
         }
@@ -4708,7 +4714,7 @@ namespace Dragoon_Modifier {
         public void HealthSteal(int monsterSlot, byte attack) {
             if (Globals.MONSTER_TABLE[monsterSlot].Read("Attack_Move") == attack) {
                 if (ubHealthStealSave) {
-                    ushort dmg  = emulator.ReadShort(Constants.GetAddress("DAMAGE_SLOT1"));
+                    ushort dmg = emulator.ReadShort(Constants.GetAddress("DAMAGE_SLOT1"));
                     if (dmg != 65534 && dmg != ubHealthStealDamage) {
                         ubHealthStealDamage = dmg;
                         ultimateHP[monsterSlot] += dmg;
@@ -4754,7 +4760,7 @@ namespace Dragoon_Modifier {
                         if (action == 8 || action == 10 || action == 24 || action == 26 || action == 136 || action == 138) {
                             partyAttacking = true;
                         }
-                    } 
+                    }
                 }
 
                 if (!partyAttacking) {
@@ -6012,23 +6018,23 @@ namespace Dragoon_Modifier {
                         }
 
                         //if (partyAttacking || ubCheckDamageCycle > 0) {
-                            for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                                if (ultimateHP[i] > 0) {
-                                    if (ultimateHP[i] < dmgTrkHP[i]) {
-                                        dmgTrkChr[dmgTrkSlot] += dmgTrkHP[i] - ultimateHP[i];
-                                        dmgTrkHP[i] = ultimateHP[i];
-                                    } else if (ultimateHP[i] > dmgTrkHP[i]) {
-                                        dmgTrkHP[i] = ultimateHP[i];
-                                    }
-                                } else {
-                                    if (Globals.MONSTER_TABLE[i].Read("HP") < dmgTrkHP[i]) {
-                                        dmgTrkChr[dmgTrkSlot] += dmgTrkHP[i] - Globals.MONSTER_TABLE[i].Read("HP");
-                                        dmgTrkHP[i] = Globals.MONSTER_TABLE[i].Read("HP");
-                                    } else if (Globals.MONSTER_TABLE[i].Read("HP") > dmgTrkHP[i]) {
-                                        dmgTrkHP[i] = Globals.MONSTER_TABLE[i].Read("HP");
-                                    }
+                        for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
+                            if (ultimateHP[i] > 0) {
+                                if (ultimateHP[i] < dmgTrkHP[i]) {
+                                    dmgTrkChr[dmgTrkSlot] += dmgTrkHP[i] - ultimateHP[i];
+                                    dmgTrkHP[i] = ultimateHP[i];
+                                } else if (ultimateHP[i] > dmgTrkHP[i]) {
+                                    dmgTrkHP[i] = ultimateHP[i];
+                                }
+                            } else {
+                                if (Globals.MONSTER_TABLE[i].Read("HP") < dmgTrkHP[i]) {
+                                    dmgTrkChr[dmgTrkSlot] += dmgTrkHP[i] - Globals.MONSTER_TABLE[i].Read("HP");
+                                    dmgTrkHP[i] = Globals.MONSTER_TABLE[i].Read("HP");
+                                } else if (Globals.MONSTER_TABLE[i].Read("HP") > dmgTrkHP[i]) {
+                                    dmgTrkHP[i] = Globals.MONSTER_TABLE[i].Read("HP");
                                 }
                             }
+                        }
                         //}
 
                         Constants.WritePLog("Damage Track: " + dmgTrkChr[0] + " / " + dmgTrkChr[1] + " / " + dmgTrkChr[2]);
@@ -6406,22 +6412,17 @@ namespace Dragoon_Modifier {
             miOpenPreset.IsChecked = miOpenPreset.IsChecked ? false : true;
         }
 
-        private void miChangeMonster_Click(object sender, RoutedEventArgs e) {
-            miChangeMonster.IsChecked = miChangeMonster.IsChecked ? false : true;
-            Globals.MONSTER_CHANGE = miChangeMonster.IsChecked ? true : false;
-        }
-
         private void miAuthor_Click(object sender, RoutedEventArgs e) {
             Constants.WriteOutput("-------------");
             Constants.WriteOutput("Author: Zychronix");
             Constants.WriteOutput("https://legendofdragoonhardmode.wordpress.com/");
+            Constants.WriteOutput("Author: Illeprih");
         }
 
         private void miCredits_Click(object sender, RoutedEventArgs e) {
             Constants.WriteOutput("-------------");
-            Constants.WriteOutput("Program Base: Zychronix");
-            Constants.WriteOutput("Monster Base Address: Illeprih");
-            Constants.WriteOutput("Memory Functions: erfg12 - memory.dll");
+            Constants.WriteOutput("Program Base: Zychronix & Illeprih");
+            Constants.WriteOutput("Memory Functions: erfg12 - memory.dll - https://github.com/erfg12/memory.dll");
             Constants.WriteOutput("Scripting Engine: CS-Script - https://github.com/oleg-shilo/cs-script/graphs/contributors");
         }
 
@@ -6528,10 +6529,10 @@ namespace Dragoon_Modifier {
             }
         }
 
-            #endregion
+        #endregion
 
-            #region On Close
-            private void Window_Closed(object sender, EventArgs e) {
+        #region On Close
+        private void Window_Closed(object sender, EventArgs e) {
             CloseEmulator();
         }
 
