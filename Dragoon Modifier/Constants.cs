@@ -55,16 +55,43 @@ namespace Dragoon_Modifier {
 
         public static bool LoadPreset(string name) {
             try {
+                bool config = false;
                 using (StreamReader reader = File.OpenText("Presets\\" + name + ".csv")) {
                     string line;
                     while ((line = reader.ReadLine()) != null) {
                         string[] values = line.Split(',');
-                        PRESET_SCRIPTS.Add(values[0], Convert.ToByte(values[1]));
+                        if (values[0].Equals("Config")) {
+                            config = true;
+                            byte value = Convert.ToByte(values[1]);
+                            if ((value & (1 << 0)) != 0)
+                                Globals.MONSTER_CHANGE = true;
+                            if ((value & (1 << 1)) != 0)
+                                Globals.DROP_CHANGE = true;
+                            if ((value & (1 << 2)) != 0)
+                                Globals.ITEM_CHANGE = true;
+                            if ((value & (1 << 3)) != 0)
+                                Globals.CHARACTER_CHANGE = true;
+                            if ((value & (1 << 4)) != 0)
+                                Globals.ADDITION_CHANGE = true;
+                            if ((value & (1 << 5)) != 0)
+                                Globals.DRAGOON_CHANGE = true;
+                            if ((value & (1 << 6)) != 0)
+                                Globals.DRAGOON_ADDITION_CHANGE = true;
+                            if ((value & (1 << 7)) != 0)
+                                Globals.SHOP_CHANGE = true;
+                        } else {
+                            if (config) {
+                                Globals.MOD = values[0];
+                            } else {
+                                PRESET_SCRIPTS.Add(values[0], Convert.ToByte(values[1]));
+                            }
+                        }
                     }
                 }
                 return true;
             } catch (Exception e) {
                 WriteOutput("Error loading preset.");
+                WriteOutput(e.ToString());
                 return false;
             }
         }

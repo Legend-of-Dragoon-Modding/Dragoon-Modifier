@@ -480,6 +480,8 @@ namespace Dragoon_Modifier {
                 ScriptDisplay(lstOther);
                 ChangeTitle(preset);
                 Constants.WriteOutput("Preset '" + preset + "' loaded.");
+                Constants.WriteOutput("Preset folder: " + Globals.MOD);
+                Globals.DICTIONARY = new LoDDict();
             } catch (Exception e) {
                 Constants.WriteOutput("Failed to load preset. Script not found: '" + current + "'.");
                 DisableScripts();
@@ -635,140 +637,141 @@ namespace Dragoon_Modifier {
             public LoDDict() {
                 string cwd = AppDomain.CurrentDomain.BaseDirectory;
                 try {
-                    using (var itemData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Items.tsv")) {
-                        bool firstline = true;
-                        int i = 0;
-                        while (!itemData.EndOfStream) {
-                            var line = itemData.ReadLine();
-                            if (firstline == false) {
-                                var values = line.Split('\t').ToArray();
-                                itemList.Add(new ItemList(i, values));
-                                if (values[0] != "") {
-                                    item2num.Add(values[0].ToLower(), i);
-                                    num2item.Add(i, values[0]);
-                                }
-                                i++;
-                            } else {
-                                firstline = false;
-                            }
-                        }
-                    }
-                    long offset = 0x0;
-                    long start = 0x80000000 | Constants.GetAddress("ITEM_DESC");
-                    List<dynamic> sortedList = itemList.OrderByDescending(o => o.Description.Length).ToList();
-                    foreach (dynamic item in sortedList) {
-                        if (descriptionList.Any(l => l.Contains(item.EncodedDescription)) == true) {
-                            int index = sortedList.IndexOf(sortedList.Find(x => x.EncodedDescription.Contains(item.EncodedDescription)));
-                            item.DescriptionPointer = sortedList[index].DescriptionPointer + (sortedList[index].Description.Length - item.Description.Length) * 2;
-                        } else {
-                            descriptionList.Add(item.EncodedDescription);
-                            item.DescriptionPointer = start + offset;
-                            offset += (item.EncodedDescription.Replace(" ", "").Length / 2);
-                        }
-                    }
-                    offset = 0;
-                    start = 0x80000000 | Constants.GetAddress("ITEM_NAME");
-                    sortedList = itemList.OrderByDescending(o => o.Name.Length).ToList();
-                    foreach (dynamic item in sortedList) {
-                        if (nameList.Any(l => l.Contains(item.EncodedName)) == true) {
-                            int index = sortedList.IndexOf(sortedList.Find(x => x.EncodedName.Contains(item.EncodedName)));
-                            item.NamePointer = sortedList[index].NamePointer + (sortedList[index].Name.Length - item.Name.Length) * 2;
-                        } else {
-                            nameList.Add(item.EncodedName);
-                            item.NamePointer = start + (int) offset;
-                            offset += (item.EncodedName.Replace(" ", "").Length / 2);
-                        }
-                    }
-                    for (int i = 0; i < characterStats.Length; i++) {
-                        characterStats[i] = new dynamic[61];
-                    }
                     try {
-                        using (var characterData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Character_Stats.tsv")) {
-                            var i = 0;
-                            while (!characterData.EndOfStream) {
-                                var line = characterData.ReadLine();
-                                if (i > 1) {
-                                    var values = line.Split('\t').ToArray();
-                                    int level = int.Parse(values[0]);
-                                    characterStats[0][level] = new CharacterStats(values[1], values[2], values[3], values[4], values[5], values[6]);
-                                    characterStats[1][level] = new CharacterStats(values[7], values[8], values[9], values[10], values[11], values[12]);
-                                    characterStats[2][level] = new CharacterStats(values[13], values[14], values[15], values[16], values[17], values[18]);
-                                    characterStats[3][level] = new CharacterStats(values[19], values[20], values[21], values[22], values[23], values[24]);
-                                    characterStats[4][level] = new CharacterStats(values[25], values[26], values[27], values[28], values[29], values[30]);
-                                    characterStats[5][level] = new CharacterStats(values[7], values[8], values[9], values[10], values[11], values[12]);
-                                    characterStats[6][level] = new CharacterStats(values[31], values[32], values[33], values[34], values[35], values[36]);
-                                    characterStats[7][level] = new CharacterStats(values[37], values[38], values[39], values[40], values[41], values[42]);
-                                    characterStats[8][level] = new CharacterStats(values[13], values[14], values[15], values[16], values[17], values[18]);
-                                }
-                                i++;
-                            }
-                        }
-                    } catch (FileNotFoundException) {
-                        string file = cwd + @"Mods\" + Globals.MOD + @"\Character_Stats.tsv";
-                        Constants.WriteDebug(file + " not found. Turning off Stat and Equip Changes.");
-                    }
-                    try {
-                        using (var monsterData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Monster_Data.tsv")) {
+                        using (var itemData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Items.tsv")) {
                             bool firstline = true;
-                            while (!monsterData.EndOfStream) {
-                                var line = monsterData.ReadLine();
+                            int i = 0;
+                            while (!itemData.EndOfStream) {
+                                var line = itemData.ReadLine();
                                 if (firstline == false) {
                                     var values = line.Split('\t').ToArray();
-                                    statList.Add(Int32.Parse(values[0]), new StatList(values, element2num, item2num));
+                                    itemList.Add(new ItemList(i, values));
+                                    if (values[0] != "") {
+                                        item2num.Add(values[0].ToLower(), i);
+                                        num2item.Add(i, values[0]);
+                                    }
+                                    i++;
                                 } else {
                                     firstline = false;
                                 }
                             }
                         }
+                        long offset = 0x0;
+                        long start = 0x80000000 | Constants.GetAddress("ITEM_DESC");
+                        List<dynamic> sortedList = itemList.OrderByDescending(o => o.Description.Length).ToList();
+                        foreach (dynamic item in sortedList) {
+                            if (descriptionList.Any(l => l.Contains(item.EncodedDescription)) == true) {
+                                int index = sortedList.IndexOf(sortedList.Find(x => x.EncodedDescription.Contains(item.EncodedDescription)));
+                                item.DescriptionPointer = sortedList[index].DescriptionPointer + (sortedList[index].Description.Length - item.Description.Length) * 2;
+                            } else {
+                                descriptionList.Add(item.EncodedDescription);
+                                item.DescriptionPointer = start + offset;
+                                offset += (item.EncodedDescription.Replace(" ", "").Length / 2);
+                            }
+                        }
+                        offset = 0;
+                        start = 0x80000000 | Constants.GetAddress("ITEM_NAME");
+                        sortedList = itemList.OrderByDescending(o => o.Name.Length).ToList();
+                        foreach (dynamic item in sortedList) {
+                            if (nameList.Any(l => l.Contains(item.EncodedName)) == true) {
+                                int index = sortedList.IndexOf(sortedList.Find(x => x.EncodedName.Contains(item.EncodedName)));
+                                item.NamePointer = sortedList[index].NamePointer + (sortedList[index].Name.Length - item.Name.Length) * 2;
+                            } else {
+                                nameList.Add(item.EncodedName);
+                                item.NamePointer = start + (int) offset;
+                                offset += (item.EncodedName.Replace(" ", "").Length / 2);
+                            }
+                        }
+                        for (int i = 0; i < characterStats.Length; i++) {
+                            characterStats[i] = new dynamic[61];
+                        }
+                        try {
+                            using (var characterData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Character_Stats.tsv")) {
+                                var i = 0;
+                                while (!characterData.EndOfStream) {
+                                    var line = characterData.ReadLine();
+                                    if (i > 1) {
+                                        var values = line.Split('\t').ToArray();
+                                        int level = int.Parse(values[0]);
+                                        characterStats[0][level] = new CharacterStats(values[1], values[2], values[3], values[4], values[5], values[6]);
+                                        characterStats[1][level] = new CharacterStats(values[7], values[8], values[9], values[10], values[11], values[12]);
+                                        characterStats[2][level] = new CharacterStats(values[13], values[14], values[15], values[16], values[17], values[18]);
+                                        characterStats[3][level] = new CharacterStats(values[19], values[20], values[21], values[22], values[23], values[24]);
+                                        characterStats[4][level] = new CharacterStats(values[25], values[26], values[27], values[28], values[29], values[30]);
+                                        characterStats[5][level] = new CharacterStats(values[7], values[8], values[9], values[10], values[11], values[12]);
+                                        characterStats[6][level] = new CharacterStats(values[31], values[32], values[33], values[34], values[35], values[36]);
+                                        characterStats[7][level] = new CharacterStats(values[37], values[38], values[39], values[40], values[41], values[42]);
+                                        characterStats[8][level] = new CharacterStats(values[13], values[14], values[15], values[16], values[17], values[18]);
+                                    }
+                                    i++;
+                                }
+                            }
+                        } catch (FileNotFoundException) {
+                            string file = cwd + @"Mods\" + Globals.MOD + @"\Character_Stats.tsv";
+                            Constants.WriteDebug(file + " not found. Turning off Stat and Equip Changes.");
+                        }
+                        try {
+                            using (var monsterData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Monster_Data.tsv")) {
+                                bool firstline = true;
+                                while (!monsterData.EndOfStream) {
+                                    var line = monsterData.ReadLine();
+                                    if (firstline == false) {
+                                        var values = line.Split('\t').ToArray();
+                                        statList.Add(Int32.Parse(values[0]), new StatList(values, element2num, item2num));
+                                    } else {
+                                        firstline = false;
+                                    }
+                                }
+                            }
+                        } catch (FileNotFoundException) {
+                            string file = cwd + @"Mods\" + Globals.MOD + @"\Monster_Data.tsv";
+                            Constants.WriteDebug(file + " not found. Turning off Monster and Drop Changes.");
+                            Globals.MONSTER_CHANGE = false;
+                            Globals.DROP_CHANGE = false;
+                        }
+                        try {
+                            using (var monsterData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Ultimate_Data.tsv")) {
+                                bool firstline = true;
+                                while (!monsterData.EndOfStream) {
+                                    var line = monsterData.ReadLine();
+                                    if (firstline == false) {
+                                        var values = line.Split('\t').ToArray();
+                                        ultimateStatList.Add(Int32.Parse(values[0]), new StatList(values, element2num, item2num));
+                                    } else {
+                                        firstline = false;
+                                    }
+                                }
+                            }
+                        } catch (FileNotFoundException) {
+                            string file = cwd + @"Mods\" + Globals.MOD + @"\Ultimate_Data.tsv";
+                            Constants.WriteDebug(file + " not found.");
+                        }
                     } catch (FileNotFoundException) {
-                        string file = cwd + @"Mods\" + Globals.MOD + @"\Monster_Data.tsv";
+                        string file = cwd + @"Mods\" + Globals.MOD + @"\Items.tsv";
                         Constants.WriteDebug(file + " not found. Turning off Monster and Drop Changes.");
                         Globals.MONSTER_CHANGE = false;
                         Globals.DROP_CHANGE = false;
                     }
                     try {
-                        using (var monsterData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Ultimate_Data.tsv")) {
-                            bool firstline = true;
-                            while (!monsterData.EndOfStream) {
-                                var line = monsterData.ReadLine();
-                                if (firstline == false) {
-                                    var values = line.Split('\t').ToArray();
-                                    ultimateStatList.Add(Int32.Parse(values[0]), new StatList(values, element2num, item2num));
-                                } else {
-                                    firstline = false;
-                                }
+                        string[] lines = File.ReadAllLines(cwd + @"Mods\" + Globals.MOD + @"\Monster_Script.txt");
+                        foreach (string row in lines) {
+                            if (row != "") {
+                                monsterScript.Add(Int32.Parse(row));
                             }
                         }
                     } catch (FileNotFoundException) {
-                        string file = cwd + @"Mods\" + Globals.MOD + @"\Ultimate_Data.tsv";
+                        string file = cwd + @"Mods\" + Globals.MOD + @"\Monster_Script.txt";
                         Constants.WriteDebug(file + " not found.");
                     }
-                } catch (FileNotFoundException) {
-                    string file = cwd + @"Mods\" + Globals.MOD + @"\Items.tsv";
-                    Constants.WriteDebug(file + " not found. Turning off Monster and Drop Changes.");
-                    Globals.MONSTER_CHANGE = false;
-                    Globals.DROP_CHANGE = false;
-                }
-                try {
-                    string[] lines = File.ReadAllLines(cwd + @"Mods\" + Globals.MOD + @"\Monster_Script.txt");
-                    foreach (string row in lines) {
-                        if (row != "") {
-                            monsterScript.Add(Int32.Parse(row));
-                        }
-                    }
-                } catch (FileNotFoundException) {
-                    string file = cwd + @"Mods\" + Globals.MOD + @"\Monster_Script.txt";
-                    Constants.WriteDebug(file + " not found.");
-                }
-                try {
-                    using (var dragoon = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Dragoon_Stats.tsv")) {
-                        bool firstline = true;
-                        var i = 0;
-                        while (!dragoon.EndOfStream) {
-                            var line = dragoon.ReadLine();
-                            if (firstline == false) {
-                                var values = line.Split('\t').ToArray();
-                                dragoonStats[i] = new dynamic[] {
+                    try {
+                        using (var dragoon = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Dragoon_Stats.tsv")) {
+                            bool firstline = true;
+                            var i = 0;
+                            while (!dragoon.EndOfStream) {
+                                var line = dragoon.ReadLine();
+                                if (firstline == false) {
+                                    var values = line.Split('\t').ToArray();
+                                    dragoonStats[i] = new dynamic[] {
                                     new DragoonStats("0", "0", "0", "0", "0"),
                                     new DragoonStats(values[1], values[2], values[3], values[4], values[5]),
                                     new DragoonStats(values[6], values[7], values[8], values[9], values[10]),
@@ -776,88 +779,101 @@ namespace Dragoon_Modifier {
                                     new DragoonStats(values[16], values[17], values[18], values[19], values[20]),
                                     new DragoonStats(values[21], values[22], values[23], values[24], values[25])
                                 };
+                                    i++;
+                                } else {
+                                    firstline = false;
+                                }
+                            }
+                        }
+                    } catch (FileNotFoundException) {
+                        string file = cwd + @"Mods\" + Globals.MOD + @"\Dragoon_Stats.tsv";
+                        Constants.WriteDebug(file + " not found. Turning off Dragoon Changes.");
+                        Globals.DRAGOON_CHANGE = false;
+                    }
+                    for (int i = 0; i < shopList.Length; i++) {
+                        shopList[i] = new List<int[]>();
+                    }
+                    try {
+                        int key = 0;
+                        using (var shop = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Shops.tsv")) {
+                            var row = 0;
+                            while (!shop.EndOfStream) {
+                                var line = shop.ReadLine();
+                                if (row > 1) {
+                                    var values = line.Split('\t').ToArray();
+                                    int column = 0;
+                                    foreach (string number in values) {
+                                        if (column % 2 == 0 && number != "") {
+                                            if (item2num.TryGetValue(number.ToLower(), out key)) {
+                                                var array = new int[] {
+                                    key, Int32.Parse(values[column + 1])
+                                    };
+                                                shopList[column / 2].Add(array);
+                                            } else {
+                                                Constants.WriteDebug("Incorrect item " + number + " in ShopList at Row: " + row + " Column: " + column);
+                                            }
+                                        }
+                                        column++;
+                                    }
+                                }
+                                row++;
+                            }
+                        }
+                    } catch (FileNotFoundException) {
+                        string file = cwd + @"Mods\" + Globals.MOD + @"\Shops.tsv";
+                        Constants.WriteDebug(file + " not found. Turning off Shop Changes.");
+                        Globals.SHOP_CHANGE = false;
+                    }
+                    try {
+                        using (var shop = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Dragoon_Spells.tsv")) {
+                            var i = 0;
+                            while (!shop.EndOfStream) {
+                                var line = shop.ReadLine();
+                                if (i > 0) {
+                                    var values = line.Split('\t').ToArray();
+                                    Globals.DRAGOON_SPELLS.Add(new DragoonSpells(values, element2num));
+                                }
+                                i++;
+                            }
+                        }
+                    } catch (FileNotFoundException) {
+                        string file = cwd + @"Mods\" + Globals.MOD + @"\Dragoon_Spells.tsv";
+                        Constants.WriteDebug(file + " not found. Turning off Dragoon Changes.");
+                        Globals.DRAGOON_CHANGE = false;
+                    }
+                    using (var addition = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Additions.tsv")) {
+                        var i = 0;
+                        bool firstline = true;
+                        while (!addition.EndOfStream) {
+                            var line = addition.ReadLine();
+                            if (firstline == false) {
+                                var values = line.Split('\t').ToArray();
+                                additionData[0, i / 8, i % 8] = new AdditionData(values.Skip(1).Take(26).ToArray());
+                                additionData[1, i / 8, i % 8] = new AdditionData(values.Skip(28).Take(53).ToArray());
+                                additionData[2, i / 8, i % 8] = new AdditionData(values.Skip(55).Take(80).ToArray());
+                                additionData[3, i / 8, i % 8] = new AdditionData(values.Skip(82).Take(107).ToArray());
+                                additionData[4, i / 8, i % 8] = new AdditionData(values.Skip(109).Take(134).ToArray());
+                                additionData[5, i / 8, i % 8] = new AdditionData(values.Skip(136).Take(161).ToArray());
+                                additionData[6, i / 8, i % 8] = new AdditionData(values.Skip(163).Take(188).ToArray());
+                                additionData[7, i / 8, i % 8] = new AdditionData(values.Skip(190).Take(215).ToArray());
+                                additionData[8, i / 8, i % 8] = new AdditionData(values.Skip(217).Take(242).ToArray());
                                 i++;
                             } else {
                                 firstline = false;
                             }
                         }
                     }
-                } catch (FileNotFoundException) {
-                    string file = cwd + @"Mods\" + Globals.MOD + @"\Dragoon_Stats.tsv";
-                    Constants.WriteDebug(file + " not found. Turning off Dragoon Changes.");
-                    Globals.DRAGOON_CHANGE = false;
-                }
-                for (int i = 0; i < shopList.Length; i++) {
-                    shopList[i] = new List<int[]>();
-                }
-                try {
-                    int key = 0;
-                    using (var shop = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Shops.tsv")) {
-                        var row = 0;
-                        while (!shop.EndOfStream) {
-                            var line = shop.ReadLine();
-                            if (row > 1) {
-                                var values = line.Split('\t').ToArray();
-                                int column = 0;
-                                foreach (string number in values) {
-                                    if (column % 2 == 0 && number != "") {
-                                        if (item2num.TryGetValue(number.ToLower(), out key)) {
-                                            var array = new int[] {
-                                    key, Int32.Parse(values[column + 1])
-                                    };
-                                            shopList[column / 2].Add(array);
-                                        } else {
-                                            Constants.WriteDebug("Incorrect item " + number + " in ShopList at Row: " + row + " Column: " + column);
-                                        }
-                                    }
-                                    column++;
-                                }
-                            }
-                            row++;
-                        }
-                    }
-                } catch (FileNotFoundException) {
-                    string file = cwd + @"Mods\" + Globals.MOD + @"\Shops.tsv";
-                    Constants.WriteDebug(file + " not found. Turning off Shop Changes.");
-                    Globals.SHOP_CHANGE = false;
-                }
-                try {
-                    using (var shop = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Dragoon_Spells.tsv")) {
-                        var i = 0;
-                        while (!shop.EndOfStream) {
-                            var line = shop.ReadLine();
-                            if (i > 0) {
-                                var values = line.Split('\t').ToArray();
-                                Globals.DRAGOON_SPELLS.Add(new DragoonSpells(values, element2num));
-                            }
-                            i++;
-                        }
-                    }
-                } catch (FileNotFoundException) {
-                    string file = cwd + @"Mods\" + Globals.MOD + @"\Dragoon_Spells.tsv";
-                    Constants.WriteDebug(file + " not found. Turning off Dragoon Changes.");
-                    Globals.DRAGOON_CHANGE = false;
-                }
-                using (var addition = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Additions.tsv")) {
-                    var i = 0;
-                    bool firstline = true;
-                    while (!addition.EndOfStream) {
-                        var line = addition.ReadLine();
-                        if (firstline == false) {
-                            var values = line.Split('\t').ToArray();
-                            additionData[0, i / 8, i % 8] = new AdditionData(values.Skip(1).Take(26).ToArray());
-                            additionData[1, i / 8, i % 8] = new AdditionData(values.Skip(28).Take(53).ToArray());
-                            additionData[2, i / 8, i % 8] = new AdditionData(values.Skip(55).Take(80).ToArray());
-                            additionData[3, i / 8, i % 8] = new AdditionData(values.Skip(82).Take(107).ToArray());
-                            additionData[4, i / 8, i % 8] = new AdditionData(values.Skip(109).Take(134).ToArray());
-                            additionData[5, i / 8, i % 8] = new AdditionData(values.Skip(136).Take(161).ToArray());
-                            additionData[6, i / 8, i % 8] = new AdditionData(values.Skip(163).Take(188).ToArray());
-                            additionData[7, i / 8, i % 8] = new AdditionData(values.Skip(190).Take(215).ToArray());
-                            additionData[8, i / 8, i % 8] = new AdditionData(values.Skip(217).Take(242).ToArray());
-                            i++;
-                        } else {
-                            firstline = false;
-                        }
+                } catch (DirectoryNotFoundException ex) {
+                    if (!Globals.MOD.Equals("US_Base")) {
+                        Constants.WriteOutput("Trying to reinitalize with US_Base...");
+                        Globals.MOD = "US_Base";
+                        Globals.DICTIONARY = new LoDDict();
+                    } else {
+                        Constants.RUN = false;
+                        Constants.WriteGLog("Program stopped.");
+                        Constants.WritePLogOutput("LOD Dictionary fatal error, US_BASE not found.");
+                        Constants.WriteOutput("Fatal Error. Closing all threads.");
+                        Constants.WriteDebug(ex.ToString());
                     }
                 }
             }
@@ -6347,7 +6363,6 @@ namespace Dragoon_Modifier {
                 if (Constants.LoadPreset(txt.Text)) {
                     ChangeTitle(txt.Text);
                     DisableScripts();
-                    Constants.LoadPreset(preset);
                     LoadPreset();
                 }
             } else {
@@ -6395,7 +6410,28 @@ namespace Dragoon_Modifier {
                         using (StreamWriter presetFile = new StreamWriter("Presets\\" + txt.Text + ".csv")) {
                             foreach (string line in text)
                                 presetFile.WriteLine(line.Substring(0, line.Length - 3) + ",1");
+
+                            byte config = 0;
+                            if (Globals.MONSTER_CHANGE)
+                                config |= 1 << 0;
+                            if (Globals.DROP_CHANGE)
+                                config |= 1 << 1;
+                            if (Globals.ITEM_CHANGE)
+                                config |= 1 << 2;
+                            if (Globals.CHARACTER_CHANGE)
+                                config |= 1 << 3;
+                            if (Globals.ADDITION_CHANGE)
+                                config |= 1 << 4;
+                            if (Globals.DRAGOON_CHANGE)
+                                config |= 1 << 5;
+                            if (Globals.DRAGOON_ADDITION_CHANGE)
+                                config |= 1 << 6;
+                            if (Globals.SHOP_CHANGE)
+                                config |= 1 << 7;
+                            presetFile.WriteLine("Config," + config);
+                            presetFile.WriteLine(Globals.MOD + ",0");
                         }
+
                         Constants.WriteOutput("Saved preset '" + txt.Text + "'.");
                     } catch (Exception ex) {
                         Constants.WriteOutput("Error writing file.");
@@ -6410,6 +6446,86 @@ namespace Dragoon_Modifier {
 
         private void miOpenPreset_Click(object sender, RoutedEventArgs e) {
             miOpenPreset.IsChecked = miOpenPreset.IsChecked ? false : true;
+        }
+
+        private void miModOptions_Click(object sender, RoutedEventArgs e) {
+            if (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) {
+                Constants.WriteOutput("You can't change Mod Options while using a preset.");
+            } else {
+                InputWindow openModWindow = new InputWindow("Mod Options");
+                TextBox txt = new TextBox();
+                CheckBox monster = new CheckBox();
+                CheckBox drop = new CheckBox();
+                CheckBox item = new CheckBox();
+                CheckBox character = new CheckBox();
+                CheckBox addition = new CheckBox();
+                CheckBox dragoon = new CheckBox();
+                CheckBox dragoonAddition = new CheckBox();
+                CheckBox shop = new CheckBox();
+
+                monster.Content = "Monster";
+                if (Globals.MONSTER_CHANGE)
+                    monster.IsChecked = true;
+
+                drop.Content = "Drop";
+                if (Globals.DROP_CHANGE)
+                    drop.IsChecked = true;
+
+                item.Content = "Item";
+                if (Globals.ITEM_CHANGE)
+                    item.IsChecked = true;
+
+                character.Content = "Character";
+                if (Globals.CHARACTER_CHANGE)
+                    character.IsChecked = true;
+
+                addition.Content = "Addition";
+                if (Globals.ADDITION_CHANGE)
+                    addition.IsChecked = true;
+
+                dragoon.Content = "Dragoon Stats";
+                if (Globals.DRAGOON_CHANGE)
+                    dragoon.IsChecked = true;
+
+                dragoonAddition.Content = "Dragoon Additions";
+                if (Globals.DRAGOON_ADDITION_CHANGE)
+                    dragoonAddition.IsChecked = true;
+
+                shop.Content = "Shop";
+                if (Globals.SHOP_CHANGE)
+                    shop.IsChecked = true;
+
+                openModWindow.AddObject(txt);
+                openModWindow.AddTextBlock("Enter a mod folder, blank will keep the current.");
+                openModWindow.AddObject(shop);
+                openModWindow.AddObject(dragoonAddition);
+                openModWindow.AddObject(dragoon);
+                openModWindow.AddObject(addition);
+                openModWindow.AddObject(character);
+                openModWindow.AddObject(item);
+                openModWindow.AddObject(drop);
+                openModWindow.AddObject(monster);
+                openModWindow.AddTextBlock("Please select the mods you want to turn on or off.");
+                openModWindow.ShowDialog();
+
+                Globals.MONSTER_CHANGE = (bool) monster.IsChecked;
+                Globals.DROP_CHANGE = (bool) drop.IsChecked;
+                Globals.ITEM_CHANGE = (bool) item.IsChecked;
+                Globals.CHARACTER_CHANGE = (bool) character.IsChecked;
+                Globals.ADDITION_CHANGE = (bool) addition.IsChecked;
+                Globals.DRAGOON_CHANGE = (bool) dragoon.IsChecked;
+                Globals.DRAGOON_ADDITION_CHANGE = (bool) dragoonAddition.IsChecked;
+                Globals.SHOP_CHANGE = (bool) shop.IsChecked;
+
+                if (!txt.Text.Equals("")) {
+                    Globals.MOD = txt.Text;
+                    Globals.DICTIONARY = new LoDDict();
+                    Constants.WriteOutput("LOD Dictionary updated.");
+                }
+
+                Constants.WritePLogOutput("Mod directory: " + Globals.MOD);
+            }
+            
         }
 
         private void miAuthor_Click(object sender, RoutedEventArgs e) {
@@ -6508,7 +6624,31 @@ namespace Dragoon_Modifier {
         }
 
         public void DifficultyButton(object sender, EventArgs e) {
+            Button btn = (Button) sender;
 
+            if (btn == btnNormal) {
+                btn.Background = new SolidColorBrush(Color.FromArgb(255, 168, 211, 255));
+                btnHard.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                btnHell.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                Globals.DIFFICULTY_MODE = "Normal";
+                Globals.MOD = "US_Base";
+            } else if (btn == btnHard) {
+                btn.Background = new SolidColorBrush(Color.FromArgb(255, 168, 211, 255));
+                btnNormal.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                btnHell.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                Globals.DIFFICULTY_MODE = "Hard";
+                Globals.MOD = "Hard_Mode";
+            } else if (btn == btnHell) {
+                btn.Background = new SolidColorBrush(Color.FromArgb(255, 168, 211, 255));
+                btnNormal.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                btnHard.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                Globals.DIFFICULTY_MODE = "Hell";
+                Globals.MOD = "Hell_Mode";
+            }
+
+            Globals.DICTIONARY = new LoDDict();
+            Constants.WriteOutput("LOD Dictionary updated.");
+            Constants.WritePLogOutput("Mod directory switched to: " + Globals.MOD);
         }
 
         private void Slider_ValueChanged(object sender,
