@@ -318,7 +318,7 @@ public class BattleController {
                 }
             }
         }
-        if (Globals.PARTY_SLOT[0] != 1) {
+        if (Globals.PARTY_SLOT[0] != 0) {
             Globals.CHARACTER_TABLE[0].Write("Unique_Index", 0);
             Globals.CHARACTER_TABLE[0].Write("HP_Regen", 0);
             Globals.CHARACTER_TABLE[0].Write("SP_Regen", 0);
@@ -328,19 +328,19 @@ public class BattleController {
             }
             int current_turn = Globals.CHARACTER_TABLE[0].Read("Turn");
             Globals.CHARACTER_TABLE[0].Write("Turn", 800);
-            emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET + 0x234E, Globals.PARTY_SLOT[0]);
             Globals.CHARACTER_TABLE[0].Write("SP", 100);
-            Globals.CHARACTER_TABLE[0].Write("Color_Map", 1);
             while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[0].Read("Action") != 8)) {
                 Thread.Sleep(50);
             }
-            Globals.CHARACTER_TABLE[0].Write("Unique_Index", Globals.UNIQUE_MONSTERS);
-            Globals.CHARACTER_TABLE[0].Write("Turn", current_turn);
             Thread.Sleep(250);
             Globals.CHARACTER_TABLE[0].Write("Menu", 16);
+            emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET + 0x234E, Globals.PARTY_SLOT[0]);
+            Globals.CHARACTER_TABLE[0].Write("Unique_Index", Globals.UNIQUE_MONSTERS);
+            Globals.CHARACTER_TABLE[0].Write("Color_Map", 1);
             while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[0].Read("Menu") != 96)) {
                 Thread.Sleep(50);
             }
+            Globals.CHARACTER_TABLE[0].Write("Turn", current_turn);
             Globals.CHARACTER_TABLE[0].Write("Menu", 16);
             while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[0].Read("Action") != 9)) {
                 Thread.Sleep(50);
