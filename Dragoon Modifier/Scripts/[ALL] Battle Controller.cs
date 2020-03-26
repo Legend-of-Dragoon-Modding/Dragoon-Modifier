@@ -94,31 +94,33 @@ public class BattleController {
                 }
                 if (Globals.DRAGOON_CHANGE == true) {
                     Constants.WriteOutput("Changing Dragoon Stat table...");
+                    long address = Constants.GetAddress("DRAGOON_TABLE");
                     int[] charReorder = new int[] { 5, 7, 0, 4, 6, 8, 1, 3, 2 };
                     for (int character = 0; character < 8; character++) {
                         int reorderedChar = charReorder[character];
                         for (int level = 1; level < 6; level++) {
-                            emulator.WriteShort((long)(Constants.GetAddress("DRAGOON_TABLE") + character * 0x30 + level * 0x8), Globals.DICTIONARY.DragoonStats[reorderedChar][level].MP);
-                            emulator.WriteByte((long)(Constants.GetAddress("DRAGOON_TABLE") + character * 0x30 + level * 0x8 + 0x4), Globals.DICTIONARY.DragoonStats[reorderedChar][level].DAT);
-                            emulator.WriteByte((long)(Constants.GetAddress("DRAGOON_TABLE") + character * 0x30 + level * 0x8 + 0x5), Globals.DICTIONARY.DragoonStats[reorderedChar][level].DMAT);
-                            emulator.WriteByte((long)(Constants.GetAddress("DRAGOON_TABLE") + character * 0x30 + level * 0x8 + 0x6), Globals.DICTIONARY.DragoonStats[reorderedChar][level].DDF);
-                            emulator.WriteByte((long)(Constants.GetAddress("DRAGOON_TABLE") + character * 0x30 + level * 0x8 + 0x7), Globals.DICTIONARY.DragoonStats[reorderedChar][level].DMDF);
+                            emulator.WriteShort(address + character * 0x30 + level * 0x8, Globals.DICTIONARY.DragoonStats[reorderedChar][level].MP);
+                            emulator.WriteByte(address + character * 0x30 + level * 0x8 + 0x4, Globals.DICTIONARY.DragoonStats[reorderedChar][level].DAT);
+                            emulator.WriteByte(address + character * 0x30 + level * 0x8 + 0x5, Globals.DICTIONARY.DragoonStats[reorderedChar][level].DMAT);
+                            emulator.WriteByte(address + character * 0x30 + level * 0x8 + 0x6, Globals.DICTIONARY.DragoonStats[reorderedChar][level].DDF);
+                            emulator.WriteByte(address + character * 0x30 + level * 0x8 + 0x7, Globals.DICTIONARY.DragoonStats[reorderedChar][level].DMDF);
                         }
                     }
                 }
                 if (Globals.CHARACTER_CHANGE == true) {
                     Constants.WriteOutput("Changing Character Stat table...");
+                    long address = Constants.GetAddress("CHAR_STAT_TABLE");
                     int[] charReorder = new int[] { 7, 0, 4, 6, 1, 3, 2 };
                     for (int character = 0; character < 7; character++) {
                         int reorderedChar = charReorder[character];
                         for (int level = 0; level < 61; level++) {
                             if (level > 0) {
-                                emulator.WriteShortU(Constants.GetAddress("CHAR_STAT_TABLE") + Constants.OFFSET + level * 8 + character * 0x1E8, (ushort)(Globals.DICTIONARY.CharacterStats[reorderedChar][level].Max_HP));
-                                emulator.WriteByte(Constants.GetAddress("CHAR_STAT_TABLE") + level * 8 + character * 0x1E8 + 0x3, Globals.DICTIONARY.CharacterStats[reorderedChar][level].SPD);
-                                emulator.WriteByte(Constants.GetAddress("CHAR_STAT_TABLE") + level * 8 + character * 0x1E8 + 0x4, Globals.DICTIONARY.CharacterStats[reorderedChar][level].AT);
-                                emulator.WriteByte(Constants.GetAddress("CHAR_STAT_TABLE") + level * 8 + character * 0x1E8 + 0x5, Globals.DICTIONARY.CharacterStats[reorderedChar][level].MAT);
-                                emulator.WriteByte(Constants.GetAddress("CHAR_STAT_TABLE") + level * 8 + character * 0x1E8 + 0x6, Globals.DICTIONARY.CharacterStats[reorderedChar][level].DF);
-                                emulator.WriteByte(Constants.GetAddress("CHAR_STAT_TABLE") + level * 8 + character * 0x1E8 + 0x7, Globals.DICTIONARY.CharacterStats[reorderedChar][level].MDF);
+                                emulator.WriteShortU(address + Constants.OFFSET + level * 8 + character * 0x1E8, (ushort)(Globals.DICTIONARY.CharacterStats[reorderedChar][level].Max_HP));
+                                emulator.WriteByte(address + level * 8 + character * 0x1E8 + 0x3, Globals.DICTIONARY.CharacterStats[reorderedChar][level].SPD);
+                                emulator.WriteByte(address + level * 8 + character * 0x1E8 + 0x4, Globals.DICTIONARY.CharacterStats[reorderedChar][level].AT);
+                                emulator.WriteByte(address + level * 8 + character * 0x1E8 + 0x5, Globals.DICTIONARY.CharacterStats[reorderedChar][level].MAT);
+                                emulator.WriteByte(address + level * 8 + character * 0x1E8 + 0x6, Globals.DICTIONARY.CharacterStats[reorderedChar][level].DF);
+                                emulator.WriteByte(address + level * 8 + character * 0x1E8 + 0x7, Globals.DICTIONARY.CharacterStats[reorderedChar][level].MDF);
                             }
                         }
                     }
