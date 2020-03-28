@@ -875,6 +875,12 @@ namespace Dragoon_Modifier {
                         Constants.WriteOutput("Fatal Error. Closing all threads.");
                         Constants.WriteDebug(ex.ToString());
                     }
+                } catch (Exception ex) {
+                    Constants.RUN = false;
+                    Constants.WriteGLog("Program stopped.");
+                    Constants.WritePLogOutput("LOD Dictionary fatal error.");
+                    Constants.WriteOutput("Fatal Error. Closing all threads.");
+                    Constants.WriteDebug(ex.ToString());
                 }
             }
         }
@@ -2088,7 +2094,16 @@ namespace Dragoon_Modifier {
                         run = script.Run(emulator);
                     }), DispatcherPriority.ContextIdle);
                 }
+
                 Thread.Sleep(1000);
+
+                this.Dispatcher.BeginInvoke(new Action(() => {
+                    if (Globals.NO_DART != null || Globals.HASCHEL) {
+                        if (btnNoDart.Background.ToString() == "#FFFFA8A8") {
+                            btnNoDart.Background = new SolidColorBrush(Color.FromArgb(255, 168, 211, 255));
+                        }
+                    }
+                }), DispatcherPriority.ContextIdle);
             }
         }
         #endregion
@@ -6584,7 +6599,14 @@ namespace Dragoon_Modifier {
                 UltimateBossFieldSet();
             }
 
-            TurnOnOffButton(ref btn);
+            if (!btn.Name.Equals("btnNoDart")) {
+                TurnOnOffButton(ref btn);
+            } else {
+                Globals.NO_DART = null;
+                Globals.HASCHEL = false;
+                emulator.WriteByte(Constants.GetAddress("PARTY_SLOT"), 0);
+                btn.Background = new SolidColorBrush(Color.FromArgb(255, 255, 168, 168));
+            }
         }
 
         public void TurnOnOffButton(ref Button sender) {
