@@ -2104,7 +2104,7 @@ namespace Dragoon_Modifier {
                 Thread.Sleep(1000);
 
                 this.Dispatcher.BeginInvoke(new Action(() => {
-                    if (Globals.NO_DART != null || Globals.HASCHEL) {
+                    if (Globals.NO_DART != null || Globals.HASCHEL != 0) {
                         if (btnNoDart.Background.ToString() == "#FFFFA8A8") {
                             btnNoDart.Background = new SolidColorBrush(Color.FromArgb(255, 168, 211, 255));
                         }
@@ -6615,7 +6615,7 @@ namespace Dragoon_Modifier {
                 TurnOnOffButton(ref btn);
             } else {
                 Globals.NO_DART = null;
-                Globals.HASCHEL = false;
+                Globals.HASCHEL = 0;
                 emulator.WriteByte(Constants.GetAddress("PARTY_SLOT"), 0);
                 btn.Background = new SolidColorBrush(Color.FromArgb(255, 255, 168, 168));
             }

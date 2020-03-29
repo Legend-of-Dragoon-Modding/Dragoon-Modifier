@@ -50,7 +50,7 @@ namespace Dragoon_Modifier {
         public static double DF_MULTI = 1;
         public static double MDF_MULTI = 1;
         public static double SPD_MULTI = 1;
-        public static bool HASCHEL = false;
+        public static int HASCHEL = 0;
 
         public static void SetM_POINT(int mPoint) {
             M_POINT = mPoint;
