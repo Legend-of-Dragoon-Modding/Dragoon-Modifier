@@ -6468,7 +6468,7 @@ namespace Dragoon_Modifier {
                 Constants.WriteOutput("You can't change Mod Options while using a preset.");
             } else {
                 InputWindow openModWindow = new InputWindow("Mod Options");
-                TextBox txt = new TextBox();
+                ComboBox mod = new ComboBox();
                 CheckBox monster = new CheckBox();
                 CheckBox drop = new CheckBox();
                 CheckBox item = new CheckBox();
@@ -6510,8 +6510,15 @@ namespace Dragoon_Modifier {
                 if (Globals.SHOP_CHANGE)
                     shop.IsChecked = true;
 
-                openModWindow.AddObject(txt);
-                openModWindow.AddTextBlock("Enter a mod folder, blank will keep the current.");
+                string[] dirs = Directory.GetDirectories(AppDomain.CurrentDomain.BaseDirectory + "Mods\\");
+                foreach (string dir in dirs) {
+                    mod.Items.Add(new DirectoryInfo(dir).Name);
+                }
+
+                mod.SelectedValue = Globals.MOD;
+
+                openModWindow.AddObject(mod);
+                openModWindow.AddTextBlock("Database");
                 openModWindow.AddObject(shop);
                 openModWindow.AddObject(dragoonAddition);
                 openModWindow.AddObject(dragoon);
@@ -6523,24 +6530,23 @@ namespace Dragoon_Modifier {
                 openModWindow.AddTextBlock("Please select the mods you want to turn on or off.");
                 openModWindow.ShowDialog();
 
-                Globals.MONSTER_CHANGE = (bool) monster.IsChecked;
-                Globals.DROP_CHANGE = (bool) drop.IsChecked;
-                Globals.ITEM_CHANGE = (bool) item.IsChecked;
-                Globals.CHARACTER_CHANGE = (bool) character.IsChecked;
-                Globals.ADDITION_CHANGE = (bool) addition.IsChecked;
-                Globals.DRAGOON_CHANGE = (bool) dragoon.IsChecked;
-                Globals.DRAGOON_ADDITION_CHANGE = (bool) dragoonAddition.IsChecked;
-                Globals.SHOP_CHANGE = (bool) shop.IsChecked;
+                Globals.MONSTER_CHANGE = (bool)monster.IsChecked;
+                Globals.DROP_CHANGE = (bool)drop.IsChecked;
+                Globals.ITEM_CHANGE = (bool)item.IsChecked;
+                Globals.CHARACTER_CHANGE = (bool)character.IsChecked;
+                Globals.ADDITION_CHANGE = (bool)addition.IsChecked;
+                Globals.DRAGOON_CHANGE = (bool)dragoon.IsChecked;
+                Globals.DRAGOON_ADDITION_CHANGE = (bool)dragoonAddition.IsChecked;
+                Globals.SHOP_CHANGE = (bool)shop.IsChecked;
 
-                if (!txt.Text.Equals("")) {
-                    Globals.MOD = txt.Text;
+                if (Globals.MOD != (string)mod.SelectedValue) {
+                    Globals.MOD = (string)mod.SelectedValue;
                     Globals.DICTIONARY = new LoDDict();
-                    Constants.WriteOutput("LOD Dictionary updated.");
+                    Constants.WriteOutput("Changing Mod");
                 }
 
                 Constants.WritePLogOutput("Mod directory: " + Globals.MOD);
             }
-            
         }
 
         private void miAuthor_Click(object sender, RoutedEventArgs e) {

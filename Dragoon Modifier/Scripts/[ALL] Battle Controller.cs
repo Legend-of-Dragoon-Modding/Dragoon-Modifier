@@ -13,12 +13,24 @@ public class BattleController {
     public static void Run(Emulator emulator) {
         int encounterValue = emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE"));
         if (emulator.ReadByteU(0x9A7E6 + Constants.OFFSET) == 152) {
-            if (Globals.PARTY_SLOT[0] != 0 && Globals.PARTY_SLOT[1] < 9 && Globals.PARTY_SLOT[2] < 9 && Globals.HASCHEL == false) {
-                Globals.NO_DART = Globals.PARTY_SLOT[0];    
-                emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET, 0);
-            }
-            if (Globals.HASCHEL == true && Globals.PARTY_SLOT[0] != 4 && Globals.PARTY_SLOT[1] < 9 && Globals.PARTY_SLOT[2] < 9) {
-                emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET, 4);
+            if (Globals.HASCHEL == true) {
+                if (Globals.PARTY_SLOT[0] != 4 && Globals.PARTY_SLOT[2] == 4) {
+                    emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET, 4);
+                }
+                if (Globals.PARTY_SLOT[2] != 4) {
+                    emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET, 0);
+                    Globals.HASCHEL = false;
+                    Globals.NO_DART = null;
+                }
+            } else {
+                if (Globals.PARTY_SLOT[0] != 0 && Globals.PARTY_SLOT[1] < 9 && Globals.PARTY_SLOT[2] < 9) {
+                    if (Globals.PARTY_SLOT[0] != 4) {
+                        Globals.NO_DART = Globals.PARTY_SLOT[0];
+                    } else {
+                        Globals.NO_DART = null;
+                    }
+                    emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET, 0);
+                }
             }
         }
         if (Globals.IN_BATTLE && !Globals.STATS_CHANGED && encounterValue == 41215) {
