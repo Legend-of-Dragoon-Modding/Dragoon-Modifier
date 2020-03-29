@@ -841,27 +841,33 @@ namespace Dragoon_Modifier {
                         Constants.WriteDebug(file + " not found. Turning off Dragoon Changes.");
                         Globals.DRAGOON_CHANGE = false;
                     }
-                    using (var addition = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Additions.tsv")) {
-                        var i = 0;
-                        bool firstline = true;
-                        while (!addition.EndOfStream) {
-                            var line = addition.ReadLine();
-                            if (firstline == false) {
-                                var values = line.Split('\t').ToArray();
-                                additionData[0, i / 8, i % 8] = new AdditionData(values.Skip(1).Take(26).ToArray());
-                                additionData[1, i / 8, i % 8] = new AdditionData(values.Skip(28).Take(53).ToArray());
-                                additionData[2, i / 8, i % 8] = new AdditionData(values.Skip(55).Take(80).ToArray());
-                                additionData[3, i / 8, i % 8] = new AdditionData(values.Skip(82).Take(107).ToArray());
-                                additionData[4, i / 8, i % 8] = new AdditionData(values.Skip(109).Take(134).ToArray());
-                                additionData[5, i / 8, i % 8] = new AdditionData(values.Skip(136).Take(161).ToArray());
-                                additionData[6, i / 8, i % 8] = new AdditionData(values.Skip(163).Take(188).ToArray());
-                                additionData[7, i / 8, i % 8] = new AdditionData(values.Skip(190).Take(215).ToArray());
-                                additionData[8, i / 8, i % 8] = new AdditionData(values.Skip(217).Take(242).ToArray());
-                                i++;
-                            } else {
-                                firstline = false;
+                    try {
+                        using (var addition = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Additions.tsv")) {
+                            var i = 0;
+                            bool firstline = true;
+                            while (!addition.EndOfStream) {
+                                var line = addition.ReadLine();
+                                if (firstline == false) {
+                                    var values = line.Split('\t').ToArray();
+                                    additionData[0, i / 8, i % 8] = new AdditionData(values.Skip(1).Take(26).ToArray());
+                                    additionData[1, i / 8, i % 8] = new AdditionData(values.Skip(28).Take(53).ToArray());
+                                    additionData[2, i / 8, i % 8] = new AdditionData(values.Skip(55).Take(80).ToArray());
+                                    additionData[3, i / 8, i % 8] = new AdditionData(values.Skip(82).Take(107).ToArray());
+                                    additionData[4, i / 8, i % 8] = new AdditionData(values.Skip(109).Take(134).ToArray());
+                                    additionData[5, i / 8, i % 8] = new AdditionData(values.Skip(136).Take(161).ToArray());
+                                    additionData[6, i / 8, i % 8] = new AdditionData(values.Skip(163).Take(188).ToArray());
+                                    additionData[7, i / 8, i % 8] = new AdditionData(values.Skip(190).Take(215).ToArray());
+                                    additionData[8, i / 8, i % 8] = new AdditionData(values.Skip(217).Take(242).ToArray());
+                                    i++;
+                                } else {
+                                    firstline = false;
+                                }
                             }
                         }
+                    } catch (FileNotFoundException) {
+                        string file = cwd + @"Mods\" + Globals.MOD + @"\Additions.tsv";
+                        Constants.WriteDebug(file + " not found. Turning off Addition Changes.");
+                        Globals.ADDITION_CHANGE = false;
                     }
                 } catch (DirectoryNotFoundException ex) {
                     if (!Globals.MOD.Equals("US_Base")) {
