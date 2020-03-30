@@ -56,32 +56,37 @@
         </Grid.RowDefinitions>
         <TabControl Grid.Row="0" TabStripPlacement="Top" BorderThickness="0" Margin="0,0,0,0" Grid.RowSpan="2" Background="#FFDADADA" Style="{DynamicResource TabControlStyle}">
             <TabControl.Resources>
-                <Style x:Key="TabControlStyle" TargetType="{x:Type TabControl}">
-                    <Setter Property="SnapsToDevicePixels" Value="True" />
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type TabControl}">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="*" />
-                                    </Grid.RowDefinitions>
+                <mc:AlternateContent>
+                    <mc:Choice Requires="d"/>
+                    <mc:Fallback>
+                        <Style x:Key="TabControlStyle" TargetType="{x:Type TabControl}">
+                            <Setter Property="SnapsToDevicePixels" Value="True" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type TabControl}">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="*" />
+                                            </Grid.RowDefinitions>
 
-                                    <Border>
-                                        <local:UniformTabPanel x:Name="HeaderPanel" />
-                                    </Border>
+                                            <Border>
+                                                <local:UniformTabPanel x:Name="HeaderPanel" />
+                                            </Border>
 
-                                    <Border x:Name="Border" Grid.Row="1"
+                                            <Border x:Name="Border" Grid.Row="1"
                                     BorderThickness="{TemplateBinding BorderThickness}"
                                     Background="{TemplateBinding Background}"
                                     BorderBrush="{TemplateBinding BorderBrush}">
-                                        <ContentPresenter x:Name="PART_SelectedContentHost" ContentSource="SelectedContent" />
-                                    </Border>
-                                </Grid>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
+                                                <ContentPresenter x:Name="PART_SelectedContentHost" ContentSource="SelectedContent" />
+                                            </Border>
+                                        </Grid>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </mc:Fallback>
+                </mc:AlternateContent>
                 <Style TargetType="TabItem">
                     <Setter Property="Template">
                         <Setter.Value>
