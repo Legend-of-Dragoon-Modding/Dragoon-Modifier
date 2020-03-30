@@ -17,20 +17,20 @@ public class BattleController {
             if (Globals.PARTY_SLOT[0] != 0 && Globals.PARTY_SLOT[1] < 9 && Globals.PARTY_SLOT[2] < 9) {
                 if (Globals.PARTY_SLOT[0] != 4) {
                     if (Globals.PARTY_SLOT[1] == 4) {
-                        Globals.NO_DART = Globals.PARTY_SLOT[2];
-                        emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET + 0x8, Globals.PARTY_SLOT[0]);
-                        Globals.HASCHEL = 1;
+                        Globals.NO_DART = Globals.PARTY_SLOT[0];
+                        emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET, Globals.PARTY_SLOT[2]);
+                        Globals.HASCHEL = 0;
                     } else if (Globals.PARTY_SLOT[2] == 4) {
-                        Globals.NO_DART = Globals.PARTY_SLOT[1];
-                        emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET + 0x4, Globals.PARTY_SLOT[0]);
-                        Globals.HASCHEL = 2;
+                        Globals.NO_DART = Globals.PARTY_SLOT[0];
+                        emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET, Globals.PARTY_SLOT[1]);
+                        Globals.HASCHEL = 0;
                     } else {
                         Globals.NO_DART = Globals.PARTY_SLOT[0];
                         emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET, 0);
                     }
                 } else {
-                    Globals.NO_DART = Globals.PARTY_SLOT[2];
-                    emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET + 0x8, 4);
+                    Globals.NO_DART = Globals.PARTY_SLOT[1];
+                    emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET + 0x4, Globals.PARTY_SLOT[2]);
                     Globals.HASCHEL = 1;
                 }
                 
@@ -192,11 +192,7 @@ public class BattleController {
                     };
             for (int slot = 0; slot < 3; slot++) {
                 int character = Globals.PARTY_SLOT[slot];
-                if (slot == 0 && Globals.NO_DART != null && Globals.HASCHEL == 0) {
-                    character = (int)Globals.NO_DART;
-                } else if (slot == 2 && Globals.NO_DART != null && Globals.HASCHEL == 1) {
-                    character = (int)Globals.NO_DART;
-                } else if (slot == 1 && Globals.NO_DART != null && Globals.HASCHEL == 2) {
+                if (slot == Globals.HASCHEL && Globals.NO_DART != null) {
                     character = (int)Globals.NO_DART;
                 }
                 if (character < 9) {
@@ -237,11 +233,7 @@ public class BattleController {
             Constants.WriteOutput("Changing Dragoon Stats...");
             for (int slot = 0; slot < 3; slot++) {
                 int character = Globals.PARTY_SLOT[slot];
-                if (slot == 0 && Globals.NO_DART != null && Globals.HASCHEL == 0) {
-                    character = (int)Globals.NO_DART;
-                } else if (slot == 2 && Globals.NO_DART != null && Globals.HASCHEL == 1) {
-                    character = (int)Globals.NO_DART;
-                } else if (slot == 1 && Globals.NO_DART != null && Globals.HASCHEL == 2) {
+                if (slot == Globals.HASCHEL && Globals.NO_DART != null) {
                     character = (int)Globals.NO_DART;
                 }
                 if (character < 9) {
@@ -293,11 +285,7 @@ public class BattleController {
             Constants.WriteDebug("Changing Character Stats...");
             for (int slot = 0; slot < 3; slot++) {
                 int character = Globals.PARTY_SLOT[slot];
-                if (slot == 0 && Globals.NO_DART != null && Globals.HASCHEL == 0) {
-                    character = (int)Globals.NO_DART;
-                } else if (slot == 2 && Globals.NO_DART != null && Globals.HASCHEL == 1) {
-                    character = (int)Globals.NO_DART;
-                } else if (slot == 1 && Globals.NO_DART != null && Globals.HASCHEL == 2) {
+                if (slot == Globals.HASCHEL && Globals.NO_DART != null) {
                     character = (int)Globals.NO_DART;
                 }
                 if (character < 9) {
@@ -342,697 +330,264 @@ public class BattleController {
             }
         }
         if (Globals.NO_DART != null) {
-            if (Globals.HASCHEL == 0) {
-                while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[0].Read("Turn") == 0)) {
-                    Thread.Sleep(50);
-                }
-                int current_turn = Globals.CHARACTER_TABLE[0].Read("Turn");
-                Globals.CHARACTER_TABLE[0].Write("Turn", 800);
-                int character = (int)Globals.NO_DART;
-                emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET, (byte)character);
-                emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET + 0x234E, (byte)character); // Secondary ID
-                Globals.CHARACTER_TABLE[0].Write("Image", (byte)Globals.NO_DART);
-                Dictionary<int, byte> charelement = new Dictionary<int, byte> {
-                {0, 128 },
-                {1, 64 },
-                {2, 32 },
-                {3, 4 },
-                {4, 16 },
-                {5, 64 },
-                {6, 1 },
-                {7, 2 },
-                {8, 32 }
-            };
-                Globals.CHARACTER_TABLE[0].Write("Element", charelement[character]);
-                Globals.CHARACTER_TABLE[0].Write("LV", Globals.CURRENT_STATS[character].LV);
-                Globals.CHARACTER_TABLE[0].Write("DLV", Globals.CURRENT_STATS[character].DLV);
-                Globals.CHARACTER_TABLE[0].Write("SP", 100);
-                Globals.CHARACTER_TABLE[0].Write("HP_Regen", 0);
-                Globals.CHARACTER_TABLE[0].Write("SP_Regen", 0);
-                Globals.CHARACTER_TABLE[0].Write("MP_Regen", 0);
-                int dlv = Globals.CURRENT_STATS[character].DLV;
-                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET, (byte)character); // Magic
-                Dictionary<int, byte> dmagic5 = new Dictionary<int, byte> {
-                    {0, 3 },
-                    {1, 8 },
-                    {2, 13 },
-                    {3, 19 },
-                    {4, 23 },
-                    {5, 8 },
-                    {6, 28 },
-                    {7, 32 },
-                    {8, 13 }
-                };
-                Dictionary<int, byte> dmagic3 = new Dictionary<int, byte> {
-                    {0, 2 },
-                    {1, 6 },
-                    {2, 12 },
-                    {3, 18 },
-                    {4, 22 },
-                    {5, 17 },
-                    {6, 27 },
-                    {7, 255 },
-                    {8, 67 }
-                };
-                Dictionary<int, byte> dmagic2 = new Dictionary<int, byte> {
-                    {0, 1 },
-                    {1, 7 },
-                    {2, 10 },
-                    {3, 16 },
-                    {4, 21 },
-                    {5, 26 },
-                    {6, 25 },
-                    {7, 31 },
-                    {8, 65 }
-                };
-                Dictionary<int, byte> dmagic1 = new Dictionary<int, byte> {
-                    {0, 0 },
-                    {1, 5 },
-                    {2, 11 },
-                    {3, 15 },
-                    {4, 20 },
-                    {5, 14 },
-                    {6, 24 },
-                    {7, 30 },
-                    {8, 66 }
-                };
-                if (dlv == 5) {
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 4, dmagic5[character]);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 3, dmagic3[character]);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 2, dmagic2[character]);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 1, dmagic1[character]);
-                } else if (dlv > 2) {
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 4, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 3, dmagic3[character]);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 2, dmagic2[character]);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 1, dmagic1[character]);
-                } else if (dlv > 1) {
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 4, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 3, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 2, dmagic2[character]);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 1, dmagic1[character]);
-                } else if (dlv > 0) {
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 4, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 3, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 2, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 1, dmagic1[character]);
-                } else {
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 4, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 3, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 2, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 1, 0xFF);
-                }
-
-                if (Globals.ADDITION_CHANGE == false) {
-                    Dictionary<int, int> additionnum = new Dictionary<int, int> {
-                        {0, 0 },
-                        {1, 2 },
-                        {2, 2 },
-                        {3, 3 },
-                        {4, 4 },
-                        {5, 5 },
-                        {6, 6 },
-                        {8, 0 },
-                        {9, 1 },
-                        {10, 2 },
-                        {11, 3 },
-                        {12, 4 },
-                        {14, 0 },
-                        {15, 1 },
-                        {16, 2 },
-                        {17, 3 },
-                        {29, 0 },
-                        {30, 1 },
-                        {31, 2 },
-                        {32, 3 },
-                        {33, 4 },
-                        {34, 5 },
-                        {23, 0 },
-                        {24, 1 },
-                        {25, 2 },
-                        {26, 3 },
-                        {27, 4 },
-                        {19, 0 },
-                        {20, 1 },
-                        {21, 2 },
-                        {255, 0 }
-                    };
-                    int addition = additionnum[emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + (character * 0x2C) + 0x19)];
-                    long address = Constants.GetAddress("ADDITION") + GetOffset(emulator);
-                    for (int hit = 0; hit < 8; hit++) {
-                        emulator.WriteShort(address + (hit * 0x20), (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].UU1);
-                        emulator.WriteShort(address + (hit * 0x20) + 0x2, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].Next_Hit);
-                        emulator.WriteShort(address + (hit * 0x20) + 0x4, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].Blue_Time);
-                        emulator.WriteShort(address + (hit * 0x20) + 0x6, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].Gray_Time);
-                        emulator.WriteShort(address + (hit * 0x20) + 0x8, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].DMG);
-                        emulator.WriteShort(address + (hit * 0x20) + 0xA, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].SP);
-                        emulator.WriteShort(address + (hit * 0x20) + 0xC, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].ID);
-                        emulator.WriteByte(address + (hit * 0x20) + 0xE, Globals.DICTIONARY.AdditionData[character, addition, hit].Final_Hit);
-                        emulator.WriteByte(address + (hit * 0x20) + 0xF, Globals.DICTIONARY.AdditionData[character, addition, hit].UU2);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x10, Globals.DICTIONARY.AdditionData[character, addition, hit].UU3);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x11, Globals.DICTIONARY.AdditionData[character, addition, hit].UU4);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x12, Globals.DICTIONARY.AdditionData[character, addition, hit].UU5);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x13, Globals.DICTIONARY.AdditionData[character, addition, hit].UU6);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x14, Globals.DICTIONARY.AdditionData[character, addition, hit].UU7);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x15, Globals.DICTIONARY.AdditionData[character, addition, hit].UU8);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x16, Globals.DICTIONARY.AdditionData[character, addition, hit].UU9);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x17, Globals.DICTIONARY.AdditionData[character, addition, hit].UU10);
-                        emulator.WriteShort(address + (hit * 0x20) + 0x18, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].Vertical_Distance);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x1A, Globals.DICTIONARY.AdditionData[character, addition, hit].UU11);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x1B, Globals.DICTIONARY.AdditionData[character, addition, hit].UU12);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x1C, Globals.DICTIONARY.AdditionData[character, addition, hit].UU13);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x1D, Globals.DICTIONARY.AdditionData[character, addition, hit].UU14);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x1E, Globals.DICTIONARY.AdditionData[character, addition, hit].Start_Time);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x1F, Globals.DICTIONARY.AdditionData[character, addition, hit].UU15);
-                    }
-                    int addition_level = emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + (character * 0x2C) + 0x1A + addition);
-                    Globals.CHARACTER_TABLE[0].Write("ADD_DMG_Multi", Globals.DICTIONARY.AdditionData[character, addition, addition_level].ADD_DMG_Multi);
-                    Globals.CHARACTER_TABLE[0].Write("ADD_SP_Multi", Globals.DICTIONARY.AdditionData[character, addition, addition_level].ADD_SP_Multi);
-                }
-                if (Globals.DRAGOON_CHANGE == false) {
-                    Globals.CHARACTER_TABLE[0].Write("DAT", Globals.DICTIONARY.DragoonStats[character][dlv].DAT);
-                    Globals.CHARACTER_TABLE[0].Write("DMAT", Globals.DICTIONARY.DragoonStats[character][dlv].DMAT);
-                    Globals.CHARACTER_TABLE[0].Write("DDF", Globals.DICTIONARY.DragoonStats[character][dlv].DDF);
-                    Globals.CHARACTER_TABLE[0].Write("DMDF", Globals.DICTIONARY.DragoonStats[character][dlv].DMDF);
-                }
-                if ((Globals.ITEM_CHANGE == false) || (Globals.CHARACTER_CHANGE == false)) {
-                    Globals.CHARACTER_TABLE[0].Write("HP", Globals.CURRENT_STATS[character].HP);
-                    Globals.CHARACTER_TABLE[0].Write("Max_HP", Globals.CURRENT_STATS[character].Max_HP);
-                    Globals.CHARACTER_TABLE[0].Write("AT", Globals.CURRENT_STATS[character].AT);
-                    Globals.CHARACTER_TABLE[0].Write("OG_AT", Globals.CURRENT_STATS[character].AT);
-                    Globals.CHARACTER_TABLE[0].Write("MAT", Globals.CURRENT_STATS[character].MAT);
-                    Globals.CHARACTER_TABLE[0].Write("OG_MAT", Globals.CURRENT_STATS[character].MAT);
-                    Globals.CHARACTER_TABLE[0].Write("DF", Globals.CURRENT_STATS[character].DF);
-                    Globals.CHARACTER_TABLE[0].Write("OG_DF", Globals.CURRENT_STATS[character].DF);
-                    Globals.CHARACTER_TABLE[0].Write("MDF", Globals.CURRENT_STATS[character].MDF);
-                    Globals.CHARACTER_TABLE[0].Write("OG_MDF", Globals.CURRENT_STATS[character].MDF);
-                    Globals.CHARACTER_TABLE[0].Write("SPD", Globals.CURRENT_STATS[character].SPD);
-                    Globals.CHARACTER_TABLE[0].Write("OG_SPD", Globals.CURRENT_STATS[character].SPD);
-                    if (Globals.ITEM_CHANGE == false) {
-                        Globals.CHARACTER_TABLE[0].Write("MP", Globals.CURRENT_STATS[character].MP);
-                        Globals.CHARACTER_TABLE[0].Write("Max_MP", Globals.CURRENT_STATS[character].Max_MP);
-                        Globals.CHARACTER_TABLE[0].Write("Stat_Res", Globals.CURRENT_STATS[character].Stat_Res);
-                        Globals.CHARACTER_TABLE[0].Write("E_Half", Globals.CURRENT_STATS[character].E_Half);
-                        Globals.CHARACTER_TABLE[0].Write("E_Immune", Globals.CURRENT_STATS[character].E_Immune);
-                        Globals.CHARACTER_TABLE[0].Write("A_AV", Globals.CURRENT_STATS[character].A_AV);
-                        Globals.CHARACTER_TABLE[0].Write("M_AV", Globals.CURRENT_STATS[character].M_AV);
-                        Globals.CHARACTER_TABLE[0].Write("A_HIT", Globals.CURRENT_STATS[character].A_Hit);
-                        Globals.CHARACTER_TABLE[0].Write("M_HIT", Globals.CURRENT_STATS[character].M_Hit);
-                        Globals.CHARACTER_TABLE[0].Write("P_Half", Globals.CURRENT_STATS[character].P_Half);
-                        Globals.CHARACTER_TABLE[0].Write("M_Half", Globals.CURRENT_STATS[character].M_Half);
-                        Globals.CHARACTER_TABLE[0].Write("On_Hit_Status", Globals.CURRENT_STATS[character].Status);
-                        Globals.CHARACTER_TABLE[0].Write("On_Hit_Status_Chance", Globals.CURRENT_STATS[character].Status_Chance);
-                        Globals.CHARACTER_TABLE[0].Write("Revive", Globals.CURRENT_STATS[character].Revive);
-                        Globals.CHARACTER_TABLE[0].Write("SP_Regen", Globals.CURRENT_STATS[character].SP_Regen);
-                        Globals.CHARACTER_TABLE[0].Write("MP_Regen", Globals.CURRENT_STATS[character].MP_Regen);
-                        Globals.CHARACTER_TABLE[0].Write("HP_Regen", Globals.CURRENT_STATS[character].HP_Regen);
-                        Globals.CHARACTER_TABLE[0].Write("Display_Element", Globals.CURRENT_STATS[character].Element);
-                        Globals.CHARACTER_TABLE[0].Write("MP_M_Hit", Globals.CURRENT_STATS[character].MP_M_Hit);
-                        Globals.CHARACTER_TABLE[0].Write("SP_M_Hit", Globals.CURRENT_STATS[character].SP_M_Hit);
-                        Globals.CHARACTER_TABLE[0].Write("MP_P_Hit", Globals.CURRENT_STATS[character].MP_P_Hit);
-                        Globals.CHARACTER_TABLE[0].Write("SP_P_Hit", Globals.CURRENT_STATS[character].SP_P_Hit);
-                        Globals.CHARACTER_TABLE[0].Write("SP_Multi", Globals.CURRENT_STATS[character].SP_Multi);
-                    }
-                }
-
-                while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[0].Read("Action") != 8)) {
-                    Thread.Sleep(50);
-                }
-                Globals.CHARACTER_TABLE[0].Write("Turn", current_turn);
-                Thread.Sleep(250);
-                Globals.CHARACTER_TABLE[0].Write("Menu", 16);
-                while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[0].Read("Menu") != 96)) {
-                    Thread.Sleep(50);
-                }
-                Globals.CHARACTER_TABLE[0].Write("Menu", 16);
-                while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[0].Read("Action") != 9)) {
-                    Thread.Sleep(50);
-                }
-                Globals.CHARACTER_TABLE[0].Write("SP", Globals.CURRENT_STATS[character].SP);
-                Globals.CHARACTER_TABLE[0].Write("HP_Regen", Globals.CURRENT_STATS[character].HP_Regen);
-                Globals.CHARACTER_TABLE[0].Write("MP_Regen", Globals.CURRENT_STATS[character].MP_Regen);
-                Globals.CHARACTER_TABLE[0].Write("SP_Regen", Globals.CURRENT_STATS[character].SP_Regen);
-            } else if (Globals.HASCHEL == 1) {
-                while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[0].Read("Turn") == 0)) {
-                    Thread.Sleep(50);
-                }
-                int current_turn = Globals.CHARACTER_TABLE[2].Read("Turn");
-                Globals.CHARACTER_TABLE[2].Write("Turn", 800);
-                int character = (int)Globals.NO_DART;
-                emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET + 0x8, (byte)character);
-                emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET + 0x234E, (byte)character); // Secondary ID
-                Globals.CHARACTER_TABLE[2].Write("Image", (byte)Globals.NO_DART);
-                Dictionary<int, byte> charelement = new Dictionary<int, byte> {
-                {0, 128 },
-                {1, 64 },
-                {2, 32 },
-                {3, 4 },
-                {4, 16 },
-                {5, 64 },
-                {6, 1 },
-                {7, 2 },
-                {8, 32 }
-            };
-                Globals.CHARACTER_TABLE[2].Write("Element", charelement[character]);
-                Globals.CHARACTER_TABLE[2].Write("LV", Globals.CURRENT_STATS[character].LV);
-                Globals.CHARACTER_TABLE[2].Write("DLV", Globals.CURRENT_STATS[character].DLV);
-                Globals.CHARACTER_TABLE[2].Write("SP", 100);
-                Globals.CHARACTER_TABLE[2].Write("HP_Regen", 0);
-                Globals.CHARACTER_TABLE[2].Write("SP_Regen", 0);
-                Globals.CHARACTER_TABLE[2].Write("MP_Regen", 0);
-                int dlv = Globals.CURRENT_STATS[character].DLV;
-                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET, (byte)character); // Magic
-                Dictionary<int, byte> dmagic5 = new Dictionary<int, byte> {
-                    {0, 3 },
-                    {1, 8 },
-                    {2, 13 },
-                    {3, 19 },
-                    {4, 23 },
-                    {5, 8 },
-                    {6, 28 },
-                    {7, 32 },
-                    {8, 13 }
-                };
-                Dictionary<int, byte> dmagic3 = new Dictionary<int, byte> {
-                    {0, 2 },
-                    {1, 6 },
-                    {2, 12 },
-                    {3, 18 },
-                    {4, 22 },
-                    {5, 17 },
-                    {6, 27 },
-                    {7, 255 },
-                    {8, 67 }
-                };
-                Dictionary<int, byte> dmagic2 = new Dictionary<int, byte> {
-                    {0, 1 },
-                    {1, 7 },
-                    {2, 10 },
-                    {3, 16 },
-                    {4, 21 },
-                    {5, 26 },
-                    {6, 25 },
-                    {7, 31 },
-                    {8, 65 }
-                };
-                Dictionary<int, byte> dmagic1 = new Dictionary<int, byte> {
-                    {0, 0 },
-                    {1, 5 },
-                    {2, 11 },
-                    {3, 15 },
-                    {4, 20 },
-                    {5, 14 },
-                    {6, 24 },
-                    {7, 30 },
-                    {8, 66 }
-                };
-                if (dlv == 5) {
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 4, dmagic5[character]);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 3, dmagic3[character]);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 2, dmagic2[character]);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 1, dmagic1[character]);
-                } else if (dlv > 2) {
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 4, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 3, dmagic3[character]);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 2, dmagic2[character]);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 1, dmagic1[character]);
-                } else if (dlv > 1) {
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 4, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 3, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 2, dmagic2[character]);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 1, dmagic1[character]);
-                } else if (dlv > 0) {
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 4, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 3, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 2, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 1, dmagic1[character]);
-                } else {
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 4, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 3, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 2, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 1, 0xFF);
-                }
-
-                if (Globals.ADDITION_CHANGE == false) {
-                    Dictionary<int, int> additionnum = new Dictionary<int, int> {
-                        {0, 0 },
-                        {1, 2 },
-                        {2, 2 },
-                        {3, 3 },
-                        {4, 4 },
-                        {5, 5 },
-                        {6, 6 },
-                        {8, 0 },
-                        {9, 1 },
-                        {10, 2 },
-                        {11, 3 },
-                        {12, 4 },
-                        {14, 0 },
-                        {15, 1 },
-                        {16, 2 },
-                        {17, 3 },
-                        {29, 0 },
-                        {30, 1 },
-                        {31, 2 },
-                        {32, 3 },
-                        {33, 4 },
-                        {34, 5 },
-                        {23, 0 },
-                        {24, 1 },
-                        {25, 2 },
-                        {26, 3 },
-                        {27, 4 },
-                        {19, 0 },
-                        {20, 1 },
-                        {21, 2 },
-                        {255, 0 }
-                    };
-                    int addition = additionnum[emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + (character * 0x2C) + 0x19)];
-                    long address = Constants.GetAddress("ADDITION") + GetOffset(emulator) + 0x200;
-                    for (int hit = 0; hit < 8; hit++) {
-                        emulator.WriteShort(address + (hit * 0x20), (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].UU1);
-                        emulator.WriteShort(address + (hit * 0x20) + 0x2, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].Next_Hit);
-                        emulator.WriteShort(address + (hit * 0x20) + 0x4, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].Blue_Time);
-                        emulator.WriteShort(address + (hit * 0x20) + 0x6, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].Gray_Time);
-                        emulator.WriteShort(address + (hit * 0x20) + 0x8, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].DMG);
-                        emulator.WriteShort(address + (hit * 0x20) + 0xA, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].SP);
-                        emulator.WriteShort(address + (hit * 0x20) + 0xC, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].ID);
-                        emulator.WriteByte(address + (hit * 0x20) + 0xE, Globals.DICTIONARY.AdditionData[character, addition, hit].Final_Hit);
-                        emulator.WriteByte(address + (hit * 0x20) + 0xF, Globals.DICTIONARY.AdditionData[character, addition, hit].UU2);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x10, Globals.DICTIONARY.AdditionData[character, addition, hit].UU3);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x11, Globals.DICTIONARY.AdditionData[character, addition, hit].UU4);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x12, Globals.DICTIONARY.AdditionData[character, addition, hit].UU5);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x13, Globals.DICTIONARY.AdditionData[character, addition, hit].UU6);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x14, Globals.DICTIONARY.AdditionData[character, addition, hit].UU7);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x15, Globals.DICTIONARY.AdditionData[character, addition, hit].UU8);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x16, Globals.DICTIONARY.AdditionData[character, addition, hit].UU9);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x17, Globals.DICTIONARY.AdditionData[character, addition, hit].UU10);
-                        emulator.WriteShort(address + (hit * 0x20) + 0x18, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].Vertical_Distance);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x1A, Globals.DICTIONARY.AdditionData[character, addition, hit].UU11);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x1B, Globals.DICTIONARY.AdditionData[character, addition, hit].UU12);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x1C, Globals.DICTIONARY.AdditionData[character, addition, hit].UU13);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x1D, Globals.DICTIONARY.AdditionData[character, addition, hit].UU14);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x1E, Globals.DICTIONARY.AdditionData[character, addition, hit].Start_Time);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x1F, Globals.DICTIONARY.AdditionData[character, addition, hit].UU15);
-                    }
-                    int addition_level = emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + (character * 0x2C) + 0x1A + addition);
-                    Globals.CHARACTER_TABLE[2].Write("ADD_DMG_Multi", Globals.DICTIONARY.AdditionData[character, addition, addition_level].ADD_DMG_Multi);
-                    Globals.CHARACTER_TABLE[2].Write("ADD_SP_Multi", Globals.DICTIONARY.AdditionData[character, addition, addition_level].ADD_SP_Multi);
-                }
-                if (Globals.DRAGOON_CHANGE == false) {
-                    Globals.CHARACTER_TABLE[2].Write("DAT", Globals.DICTIONARY.DragoonStats[character][dlv].DAT);
-                    Globals.CHARACTER_TABLE[2].Write("DMAT", Globals.DICTIONARY.DragoonStats[character][dlv].DMAT);
-                    Globals.CHARACTER_TABLE[2].Write("DDF", Globals.DICTIONARY.DragoonStats[character][dlv].DDF);
-                    Globals.CHARACTER_TABLE[2].Write("DMDF", Globals.DICTIONARY.DragoonStats[character][dlv].DMDF);
-                }
-                if ((Globals.ITEM_CHANGE == false) || (Globals.CHARACTER_CHANGE == false)) {
-                    Globals.CHARACTER_TABLE[2].Write("HP", Globals.CURRENT_STATS[character].HP);
-                    Globals.CHARACTER_TABLE[2].Write("Max_HP", Globals.CURRENT_STATS[character].Max_HP);
-                    Globals.CHARACTER_TABLE[2].Write("AT", Globals.CURRENT_STATS[character].AT);
-                    Globals.CHARACTER_TABLE[2].Write("OG_AT", Globals.CURRENT_STATS[character].AT);
-                    Globals.CHARACTER_TABLE[2].Write("MAT", Globals.CURRENT_STATS[character].MAT);
-                    Globals.CHARACTER_TABLE[2].Write("OG_MAT", Globals.CURRENT_STATS[character].MAT);
-                    Globals.CHARACTER_TABLE[2].Write("DF", Globals.CURRENT_STATS[character].DF);
-                    Globals.CHARACTER_TABLE[2].Write("OG_DF", Globals.CURRENT_STATS[character].DF);
-                    Globals.CHARACTER_TABLE[2].Write("MDF", Globals.CURRENT_STATS[character].MDF);
-                    Globals.CHARACTER_TABLE[2].Write("OG_MDF", Globals.CURRENT_STATS[character].MDF);
-                    Globals.CHARACTER_TABLE[2].Write("SPD", Globals.CURRENT_STATS[character].SPD);
-                    Globals.CHARACTER_TABLE[2].Write("OG_SPD", Globals.CURRENT_STATS[character].SPD);
-                    if (Globals.ITEM_CHANGE == false) {
-                        Globals.CHARACTER_TABLE[2].Write("MP", Globals.CURRENT_STATS[character].MP);
-                        Globals.CHARACTER_TABLE[2].Write("Max_MP", Globals.CURRENT_STATS[character].Max_MP);
-                        Globals.CHARACTER_TABLE[2].Write("Stat_Res", Globals.CURRENT_STATS[character].Stat_Res);
-                        Globals.CHARACTER_TABLE[2].Write("E_Half", Globals.CURRENT_STATS[character].E_Half);
-                        Globals.CHARACTER_TABLE[2].Write("E_Immune", Globals.CURRENT_STATS[character].E_Immune);
-                        Globals.CHARACTER_TABLE[2].Write("A_AV", Globals.CURRENT_STATS[character].A_AV);
-                        Globals.CHARACTER_TABLE[2].Write("M_AV", Globals.CURRENT_STATS[character].M_AV);
-                        Globals.CHARACTER_TABLE[2].Write("A_HIT", Globals.CURRENT_STATS[character].A_Hit);
-                        Globals.CHARACTER_TABLE[2].Write("M_HIT", Globals.CURRENT_STATS[character].M_Hit);
-                        Globals.CHARACTER_TABLE[2].Write("P_Half", Globals.CURRENT_STATS[character].P_Half);
-                        Globals.CHARACTER_TABLE[2].Write("M_Half", Globals.CURRENT_STATS[character].M_Half);
-                        Globals.CHARACTER_TABLE[2].Write("On_Hit_Status", Globals.CURRENT_STATS[character].Status);
-                        Globals.CHARACTER_TABLE[2].Write("On_Hit_Status_Chance", Globals.CURRENT_STATS[character].Status_Chance);
-                        Globals.CHARACTER_TABLE[2].Write("Revive", Globals.CURRENT_STATS[character].Revive);
-                        Globals.CHARACTER_TABLE[2].Write("SP_Regen", Globals.CURRENT_STATS[character].SP_Regen);
-                        Globals.CHARACTER_TABLE[2].Write("MP_Regen", Globals.CURRENT_STATS[character].MP_Regen);
-                        Globals.CHARACTER_TABLE[2].Write("HP_Regen", Globals.CURRENT_STATS[character].HP_Regen);
-                        Globals.CHARACTER_TABLE[2].Write("Display_Element", Globals.CURRENT_STATS[character].Element);
-                        Globals.CHARACTER_TABLE[2].Write("MP_M_Hit", Globals.CURRENT_STATS[character].MP_M_Hit);
-                        Globals.CHARACTER_TABLE[2].Write("SP_M_Hit", Globals.CURRENT_STATS[character].SP_M_Hit);
-                        Globals.CHARACTER_TABLE[2].Write("MP_P_Hit", Globals.CURRENT_STATS[character].MP_P_Hit);
-                        Globals.CHARACTER_TABLE[2].Write("SP_P_Hit", Globals.CURRENT_STATS[character].SP_P_Hit);
-                        Globals.CHARACTER_TABLE[2].Write("SP_Multi", Globals.CURRENT_STATS[character].SP_Multi);
-                    }
-                }
-
-                while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[2].Read("Action") != 8)) {
-                    Thread.Sleep(50);
-                }
-                Globals.CHARACTER_TABLE[2].Write("Turn", current_turn);
-                Thread.Sleep(250);
-                Globals.CHARACTER_TABLE[2].Write("Menu", 16);
-                while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[2].Read("Menu") != 96)) {
-                    Thread.Sleep(50);
-                }
-                Globals.CHARACTER_TABLE[2].Write("Menu", 16);
-                while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[2].Read("Action") != 9)) {
-                    Thread.Sleep(50);
-                }
-                Globals.CHARACTER_TABLE[2].Write("SP", Globals.CURRENT_STATS[character].SP);
-                Globals.CHARACTER_TABLE[2].Write("HP_Regen", Globals.CURRENT_STATS[character].HP_Regen);
-                Globals.CHARACTER_TABLE[2].Write("MP_Regen", Globals.CURRENT_STATS[character].MP_Regen);
-                Globals.CHARACTER_TABLE[2].Write("SP_Regen", Globals.CURRENT_STATS[character].SP_Regen);
-            } else {
-                while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[0].Read("Turn") == 0)) {
-                    Thread.Sleep(50);
-                }
-                int current_turn = Globals.CHARACTER_TABLE[1].Read("Turn");
-                Globals.CHARACTER_TABLE[1].Write("Turn", 800);
-                int character = (int)Globals.NO_DART;
-                emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET + 0x4, (byte)character);
-                emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET + 0x234E, (byte)character); // Secondary ID
-                Globals.CHARACTER_TABLE[1].Write("Image", (byte)Globals.NO_DART);
-                Dictionary<int, byte> charelement = new Dictionary<int, byte> {
-                {0, 128 },
-                {1, 64 },
-                {2, 32 },
-                {3, 4 },
-                {4, 16 },
-                {5, 64 },
-                {6, 1 },
-                {7, 2 },
-                {8, 32 }
-            };
-                Globals.CHARACTER_TABLE[1].Write("Element", charelement[character]);
-                Globals.CHARACTER_TABLE[1].Write("LV", Globals.CURRENT_STATS[character].LV);
-                Globals.CHARACTER_TABLE[1].Write("DLV", Globals.CURRENT_STATS[character].DLV);
-                Globals.CHARACTER_TABLE[1].Write("SP", 100);
-                Globals.CHARACTER_TABLE[1].Write("HP_Regen", 0);
-                Globals.CHARACTER_TABLE[1].Write("SP_Regen", 0);
-                Globals.CHARACTER_TABLE[1].Write("MP_Regen", 0);
-                int dlv = Globals.CURRENT_STATS[character].DLV;
-                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET, (byte)character); // Magic
-                Dictionary<int, byte> dmagic5 = new Dictionary<int, byte> {
-                    {0, 3 },
-                    {1, 8 },
-                    {2, 13 },
-                    {3, 19 },
-                    {4, 23 },
-                    {5, 8 },
-                    {6, 28 },
-                    {7, 32 },
-                    {8, 13 }
-                };
-                Dictionary<int, byte> dmagic3 = new Dictionary<int, byte> {
-                    {0, 2 },
-                    {1, 6 },
-                    {2, 12 },
-                    {3, 18 },
-                    {4, 22 },
-                    {5, 17 },
-                    {6, 27 },
-                    {7, 255 },
-                    {8, 67 }
-                };
-                Dictionary<int, byte> dmagic2 = new Dictionary<int, byte> {
-                    {0, 1 },
-                    {1, 7 },
-                    {2, 10 },
-                    {3, 16 },
-                    {4, 21 },
-                    {5, 26 },
-                    {6, 25 },
-                    {7, 31 },
-                    {8, 65 }
-                };
-                Dictionary<int, byte> dmagic1 = new Dictionary<int, byte> {
-                    {0, 0 },
-                    {1, 5 },
-                    {2, 11 },
-                    {3, 15 },
-                    {4, 20 },
-                    {5, 14 },
-                    {6, 24 },
-                    {7, 30 },
-                    {8, 66 }
-                };
-                if (dlv == 5) {
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 4, dmagic5[character]);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 3, dmagic3[character]);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 2, dmagic2[character]);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 1, dmagic1[character]);
-                } else if (dlv > 2) {
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 4, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 3, dmagic3[character]);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 2, dmagic2[character]);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 1, dmagic1[character]);
-                } else if (dlv > 1) {
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 4, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 3, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 2, dmagic2[character]);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 1, dmagic1[character]);
-                } else if (dlv > 0) {
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 4, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 3, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 2, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 1, dmagic1[character]);
-                } else {
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 4, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 3, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 2, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 1, 0xFF);
-                }
-
-                if (Globals.ADDITION_CHANGE == false) {
-                    Dictionary<int, int> additionnum = new Dictionary<int, int> {
-                        {0, 0 },
-                        {1, 2 },
-                        {2, 2 },
-                        {3, 3 },
-                        {4, 4 },
-                        {5, 5 },
-                        {6, 6 },
-                        {8, 0 },
-                        {9, 1 },
-                        {10, 2 },
-                        {11, 3 },
-                        {12, 4 },
-                        {14, 0 },
-                        {15, 1 },
-                        {16, 2 },
-                        {17, 3 },
-                        {29, 0 },
-                        {30, 1 },
-                        {31, 2 },
-                        {32, 3 },
-                        {33, 4 },
-                        {34, 5 },
-                        {23, 0 },
-                        {24, 1 },
-                        {25, 2 },
-                        {26, 3 },
-                        {27, 4 },
-                        {19, 0 },
-                        {20, 1 },
-                        {21, 2 },
-                        {255, 0 }
-                    };
-                    int addition = additionnum[emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + (character * 0x2C) + 0x19)];
-                    long address = Constants.GetAddress("ADDITION") + GetOffset(emulator) + 0x100;
-                    for (int hit = 0; hit < 8; hit++) {
-                        emulator.WriteShort(address + (hit * 0x20), (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].UU1);
-                        emulator.WriteShort(address + (hit * 0x20) + 0x2, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].Next_Hit);
-                        emulator.WriteShort(address + (hit * 0x20) + 0x4, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].Blue_Time);
-                        emulator.WriteShort(address + (hit * 0x20) + 0x6, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].Gray_Time);
-                        emulator.WriteShort(address + (hit * 0x20) + 0x8, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].DMG);
-                        emulator.WriteShort(address + (hit * 0x20) + 0xA, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].SP);
-                        emulator.WriteShort(address + (hit * 0x20) + 0xC, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].ID);
-                        emulator.WriteByte(address + (hit * 0x20) + 0xE, Globals.DICTIONARY.AdditionData[character, addition, hit].Final_Hit);
-                        emulator.WriteByte(address + (hit * 0x20) + 0xF, Globals.DICTIONARY.AdditionData[character, addition, hit].UU2);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x10, Globals.DICTIONARY.AdditionData[character, addition, hit].UU3);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x11, Globals.DICTIONARY.AdditionData[character, addition, hit].UU4);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x12, Globals.DICTIONARY.AdditionData[character, addition, hit].UU5);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x13, Globals.DICTIONARY.AdditionData[character, addition, hit].UU6);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x14, Globals.DICTIONARY.AdditionData[character, addition, hit].UU7);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x15, Globals.DICTIONARY.AdditionData[character, addition, hit].UU8);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x16, Globals.DICTIONARY.AdditionData[character, addition, hit].UU9);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x17, Globals.DICTIONARY.AdditionData[character, addition, hit].UU10);
-                        emulator.WriteShort(address + (hit * 0x20) + 0x18, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].Vertical_Distance);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x1A, Globals.DICTIONARY.AdditionData[character, addition, hit].UU11);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x1B, Globals.DICTIONARY.AdditionData[character, addition, hit].UU12);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x1C, Globals.DICTIONARY.AdditionData[character, addition, hit].UU13);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x1D, Globals.DICTIONARY.AdditionData[character, addition, hit].UU14);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x1E, Globals.DICTIONARY.AdditionData[character, addition, hit].Start_Time);
-                        emulator.WriteByte(address + (hit * 0x20) + 0x1F, Globals.DICTIONARY.AdditionData[character, addition, hit].UU15);
-                    }
-                    int addition_level = emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + (character * 0x2C) + 0x1A + addition);
-                    Globals.CHARACTER_TABLE[1].Write("ADD_DMG_Multi", Globals.DICTIONARY.AdditionData[character, addition, addition_level].ADD_DMG_Multi);
-                    Globals.CHARACTER_TABLE[1].Write("ADD_SP_Multi", Globals.DICTIONARY.AdditionData[character, addition, addition_level].ADD_SP_Multi);
-                }
-                if (Globals.DRAGOON_CHANGE == false) {
-                    Globals.CHARACTER_TABLE[1].Write("DAT", Globals.DICTIONARY.DragoonStats[character][dlv].DAT);
-                    Globals.CHARACTER_TABLE[1].Write("DMAT", Globals.DICTIONARY.DragoonStats[character][dlv].DMAT);
-                    Globals.CHARACTER_TABLE[1].Write("DDF", Globals.DICTIONARY.DragoonStats[character][dlv].DDF);
-                    Globals.CHARACTER_TABLE[1].Write("DMDF", Globals.DICTIONARY.DragoonStats[character][dlv].DMDF);
-                }
-                if ((Globals.ITEM_CHANGE == false) || (Globals.CHARACTER_CHANGE == false)) {
-                    Globals.CHARACTER_TABLE[1].Write("HP", Globals.CURRENT_STATS[character].HP);
-                    Globals.CHARACTER_TABLE[1].Write("Max_HP", Globals.CURRENT_STATS[character].Max_HP);
-                    Globals.CHARACTER_TABLE[1].Write("AT", Globals.CURRENT_STATS[character].AT);
-                    Globals.CHARACTER_TABLE[1].Write("OG_AT", Globals.CURRENT_STATS[character].AT);
-                    Globals.CHARACTER_TABLE[1].Write("MAT", Globals.CURRENT_STATS[character].MAT);
-                    Globals.CHARACTER_TABLE[1].Write("OG_MAT", Globals.CURRENT_STATS[character].MAT);
-                    Globals.CHARACTER_TABLE[1].Write("DF", Globals.CURRENT_STATS[character].DF);
-                    Globals.CHARACTER_TABLE[1].Write("OG_DF", Globals.CURRENT_STATS[character].DF);
-                    Globals.CHARACTER_TABLE[1].Write("MDF", Globals.CURRENT_STATS[character].MDF);
-                    Globals.CHARACTER_TABLE[1].Write("OG_MDF", Globals.CURRENT_STATS[character].MDF);
-                    Globals.CHARACTER_TABLE[1].Write("SPD", Globals.CURRENT_STATS[character].SPD);
-                    Globals.CHARACTER_TABLE[1].Write("OG_SPD", Globals.CURRENT_STATS[character].SPD);
-                    if (Globals.ITEM_CHANGE == false) {
-                        Globals.CHARACTER_TABLE[1].Write("MP", Globals.CURRENT_STATS[character].MP);
-                        Globals.CHARACTER_TABLE[1].Write("Max_MP", Globals.CURRENT_STATS[character].Max_MP);
-                        Globals.CHARACTER_TABLE[1].Write("Stat_Res", Globals.CURRENT_STATS[character].Stat_Res);
-                        Globals.CHARACTER_TABLE[1].Write("E_Half", Globals.CURRENT_STATS[character].E_Half);
-                        Globals.CHARACTER_TABLE[1].Write("E_Immune", Globals.CURRENT_STATS[character].E_Immune);
-                        Globals.CHARACTER_TABLE[1].Write("A_AV", Globals.CURRENT_STATS[character].A_AV);
-                        Globals.CHARACTER_TABLE[1].Write("M_AV", Globals.CURRENT_STATS[character].M_AV);
-                        Globals.CHARACTER_TABLE[1].Write("A_HIT", Globals.CURRENT_STATS[character].A_Hit);
-                        Globals.CHARACTER_TABLE[1].Write("M_HIT", Globals.CURRENT_STATS[character].M_Hit);
-                        Globals.CHARACTER_TABLE[1].Write("P_Half", Globals.CURRENT_STATS[character].P_Half);
-                        Globals.CHARACTER_TABLE[1].Write("M_Half", Globals.CURRENT_STATS[character].M_Half);
-                        Globals.CHARACTER_TABLE[1].Write("On_Hit_Status", Globals.CURRENT_STATS[character].Status);
-                        Globals.CHARACTER_TABLE[1].Write("On_Hit_Status_Chance", Globals.CURRENT_STATS[character].Status_Chance);
-                        Globals.CHARACTER_TABLE[1].Write("Revive", Globals.CURRENT_STATS[character].Revive);
-                        Globals.CHARACTER_TABLE[1].Write("SP_Regen", Globals.CURRENT_STATS[character].SP_Regen);
-                        Globals.CHARACTER_TABLE[1].Write("MP_Regen", Globals.CURRENT_STATS[character].MP_Regen);
-                        Globals.CHARACTER_TABLE[1].Write("HP_Regen", Globals.CURRENT_STATS[character].HP_Regen);
-                        Globals.CHARACTER_TABLE[1].Write("Display_Element", Globals.CURRENT_STATS[character].Element);
-                        Globals.CHARACTER_TABLE[1].Write("MP_M_Hit", Globals.CURRENT_STATS[character].MP_M_Hit);
-                        Globals.CHARACTER_TABLE[1].Write("SP_M_Hit", Globals.CURRENT_STATS[character].SP_M_Hit);
-                        Globals.CHARACTER_TABLE[1].Write("MP_P_Hit", Globals.CURRENT_STATS[character].MP_P_Hit);
-                        Globals.CHARACTER_TABLE[1].Write("SP_P_Hit", Globals.CURRENT_STATS[character].SP_P_Hit);
-                        Globals.CHARACTER_TABLE[1].Write("SP_Multi", Globals.CURRENT_STATS[character].SP_Multi);
-                    }
-                }
-
-                while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[1].Read("Action") != 8)) {
-                    Thread.Sleep(50);
-                }
-                Globals.CHARACTER_TABLE[1].Write("Turn", current_turn);
-                Thread.Sleep(250);
-                Globals.CHARACTER_TABLE[1].Write("Menu", 16);
-                while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[1].Read("Menu") != 96)) {
-                    Thread.Sleep(50);
-                }
-                Globals.CHARACTER_TABLE[1].Write("Menu", 16);
-                while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[1].Read("Action") != 9)) {
-                    Thread.Sleep(50);
-                }
-                Globals.CHARACTER_TABLE[1].Write("SP", Globals.CURRENT_STATS[character].SP);
-                Globals.CHARACTER_TABLE[1].Write("HP_Regen", Globals.CURRENT_STATS[character].HP_Regen);
-                Globals.CHARACTER_TABLE[1].Write("MP_Regen", Globals.CURRENT_STATS[character].MP_Regen);
-                Globals.CHARACTER_TABLE[1].Write("SP_Regen", Globals.CURRENT_STATS[character].SP_Regen);
+            while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[0].Read("Turn") == 0)) {
+                Thread.Sleep(50);
             }
+            int current_turn = Globals.CHARACTER_TABLE[Globals.HASCHEL].Read("Turn");
+            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Turn", 800);
+            int character = (int)Globals.NO_DART;
+            emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET + Globals.HASCHEL * 0x4, (byte)character);
+            emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET + 0x234E, (byte)character); // Secondary ID
+            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Image", (byte)Globals.NO_DART);
+            Dictionary<int, byte> charelement = new Dictionary<int, byte> {
+            {0, 128 },
+            {1, 64 },
+            {2, 32 },
+            {3, 4 },
+            {4, 16 },
+            {5, 64 },
+            {6, 1 },
+            {7, 2 },
+            {8, 32 }
+        };
+            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Element", charelement[character]);
+            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("LV", Globals.CURRENT_STATS[character].LV);
+            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("DLV", Globals.CURRENT_STATS[character].DLV);
+            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("SP", 100);
+            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("HP_Regen", 0);
+            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("SP_Regen", 0);
+            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("MP_Regen", 0);
+            int dlv = Globals.CURRENT_STATS[character].DLV;
+            emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET, (byte)character); // Magic
+            Dictionary<int, byte> dmagic5 = new Dictionary<int, byte> {
+                {0, 3 },
+                {1, 8 },
+                {2, 13 },
+                {3, 19 },
+                {4, 23 },
+                {5, 8 },
+                {6, 28 },
+                {7, 32 },
+                {8, 13 }
+            };
+            Dictionary<int, byte> dmagic3 = new Dictionary<int, byte> {
+                {0, 2 },
+                {1, 6 },
+                {2, 12 },
+                {3, 18 },
+                {4, 22 },
+                {5, 17 },
+                {6, 27 },
+                {7, 255 },
+                {8, 67 }
+            };
+            Dictionary<int, byte> dmagic2 = new Dictionary<int, byte> {
+                {0, 1 },
+                {1, 7 },
+                {2, 10 },
+                {3, 16 },
+                {4, 21 },
+                {5, 26 },
+                {6, 25 },
+                {7, 31 },
+                {8, 65 }
+            };
+            Dictionary<int, byte> dmagic1 = new Dictionary<int, byte> {
+                {0, 0 },
+                {1, 5 },
+                {2, 11 },
+                {3, 15 },
+                {4, 20 },
+                {5, 14 },
+                {6, 24 },
+                {7, 30 },
+                {8, 66 }
+            };
+            if (dlv == 5) {
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 4, dmagic5[character]);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 3, dmagic3[character]);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 2, dmagic2[character]);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 1, dmagic1[character]);
+            } else if (dlv > 2) {
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 4, 0xFF);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 3, dmagic3[character]);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 2, dmagic2[character]);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 1, dmagic1[character]);
+            } else if (dlv > 1) {
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 4, 0xFF);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 3, 0xFF);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 2, dmagic2[character]);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 1, dmagic1[character]);
+            } else if (dlv > 0) {
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 4, 0xFF);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 3, 0xFF);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 2, 0xFF);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 1, dmagic1[character]);
+            } else {
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 4, 0xFF);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 3, 0xFF);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 2, 0xFF);
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 1, 0xFF);
+            }
+            if (Globals.PARTY_SLOT[0] == 4) {
+                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x12, 4); // Magic
+                if (Globals.CURRENT_STATS[4].DLV == 5) {
+                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x16, dmagic5[4]);
+                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x15, dmagic3[4]);
+                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x14, dmagic2[4]);
+                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x13, dmagic1[4]);
+                } else if (Globals.CURRENT_STATS[4].DLV > 2) {
+                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x16, 0xFF);
+                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x15, dmagic3[4]);
+                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x14, dmagic2[4]);
+                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x13, dmagic1[4]);
+                } else if (Globals.CURRENT_STATS[4].DLV > 1) {
+                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x16, 0xFF);
+                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x15, 0xFF);
+                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x14, dmagic2[4]);
+                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x13, dmagic1[4]);
+                } else if (Globals.CURRENT_STATS[4].DLV > 0) {
+                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x16, 0xFF);
+                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x15, 0xFF);
+                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x14, 0xFF);
+                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x13, dmagic1[4]);
+                } else {
+                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x16, 0xFF);
+                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x15, 0xFF);
+                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x14, 0xFF);
+                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x13, 0xFF);
+                }
+            }
+
+            if (Globals.ADDITION_CHANGE == false) {
+                Dictionary<int, int> additionnum = new Dictionary<int, int> {
+                    {0, 0 },
+                    {1, 2 },
+                    {2, 2 },
+                    {3, 3 },
+                    {4, 4 },
+                    {5, 5 },
+                    {6, 6 },
+                    {8, 0 },
+                    {9, 1 },
+                    {10, 2 },
+                    {11, 3 },
+                    {12, 4 },
+                    {14, 0 },
+                    {15, 1 },
+                    {16, 2 },
+                    {17, 3 },
+                    {29, 0 },
+                    {30, 1 },
+                    {31, 2 },
+                    {32, 3 },
+                    {33, 4 },
+                    {34, 5 },
+                    {23, 0 },
+                    {24, 1 },
+                    {25, 2 },
+                    {26, 3 },
+                    {27, 4 },
+                    {19, 0 },
+                    {20, 1 },
+                    {21, 2 },
+                    {255, 0 }
+                };
+                int addition = additionnum[emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + (character * 0x2C) + 0x19)];
+                long address = Constants.GetAddress("ADDITION") + GetOffset(emulator) + Globals.HASCHEL * 0x100;
+                for (int hit = 0; hit < 8; hit++) {
+                    emulator.WriteShort(address + (hit * 0x20), (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].UU1);
+                    emulator.WriteShort(address + (hit * 0x20) + 0x2, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].Next_Hit);
+                    emulator.WriteShort(address + (hit * 0x20) + 0x4, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].Blue_Time);
+                    emulator.WriteShort(address + (hit * 0x20) + 0x6, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].Gray_Time);
+                    emulator.WriteShort(address + (hit * 0x20) + 0x8, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].DMG);
+                    emulator.WriteShort(address + (hit * 0x20) + 0xA, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].SP);
+                    emulator.WriteShort(address + (hit * 0x20) + 0xC, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].ID);
+                    emulator.WriteByte(address + (hit * 0x20) + 0xE, Globals.DICTIONARY.AdditionData[character, addition, hit].Final_Hit);
+                    emulator.WriteByte(address + (hit * 0x20) + 0xF, Globals.DICTIONARY.AdditionData[character, addition, hit].UU2);
+                    emulator.WriteByte(address + (hit * 0x20) + 0x10, Globals.DICTIONARY.AdditionData[character, addition, hit].UU3);
+                    emulator.WriteByte(address + (hit * 0x20) + 0x11, Globals.DICTIONARY.AdditionData[character, addition, hit].UU4);
+                    emulator.WriteByte(address + (hit * 0x20) + 0x12, Globals.DICTIONARY.AdditionData[character, addition, hit].UU5);
+                    emulator.WriteByte(address + (hit * 0x20) + 0x13, Globals.DICTIONARY.AdditionData[character, addition, hit].UU6);
+                    emulator.WriteByte(address + (hit * 0x20) + 0x14, Globals.DICTIONARY.AdditionData[character, addition, hit].UU7);
+                    emulator.WriteByte(address + (hit * 0x20) + 0x15, Globals.DICTIONARY.AdditionData[character, addition, hit].UU8);
+                    emulator.WriteByte(address + (hit * 0x20) + 0x16, Globals.DICTIONARY.AdditionData[character, addition, hit].UU9);
+                    emulator.WriteByte(address + (hit * 0x20) + 0x17, Globals.DICTIONARY.AdditionData[character, addition, hit].UU10);
+                    emulator.WriteShort(address + (hit * 0x20) + 0x18, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].Vertical_Distance);
+                    emulator.WriteByte(address + (hit * 0x20) + 0x1A, Globals.DICTIONARY.AdditionData[character, addition, hit].UU11);
+                    emulator.WriteByte(address + (hit * 0x20) + 0x1B, Globals.DICTIONARY.AdditionData[character, addition, hit].UU12);
+                    emulator.WriteByte(address + (hit * 0x20) + 0x1C, Globals.DICTIONARY.AdditionData[character, addition, hit].UU13);
+                    emulator.WriteByte(address + (hit * 0x20) + 0x1D, Globals.DICTIONARY.AdditionData[character, addition, hit].UU14);
+                    emulator.WriteByte(address + (hit * 0x20) + 0x1E, Globals.DICTIONARY.AdditionData[character, addition, hit].Start_Time);
+                    emulator.WriteByte(address + (hit * 0x20) + 0x1F, Globals.DICTIONARY.AdditionData[character, addition, hit].UU15);
+                }
+                int addition_level = emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + (character * 0x2C) + 0x1A + addition);
+                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("ADD_DMG_Multi", Globals.DICTIONARY.AdditionData[character, addition, addition_level].ADD_DMG_Multi);
+                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("ADD_SP_Multi", Globals.DICTIONARY.AdditionData[character, addition, addition_level].ADD_SP_Multi);
+            }
+            if (Globals.DRAGOON_CHANGE == false) {
+                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("DAT", Globals.DICTIONARY.DragoonStats[character][dlv].DAT);
+                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("DMAT", Globals.DICTIONARY.DragoonStats[character][dlv].DMAT);
+                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("DDF", Globals.DICTIONARY.DragoonStats[character][dlv].DDF);
+                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("DMDF", Globals.DICTIONARY.DragoonStats[character][dlv].DMDF);
+            }
+            if ((Globals.ITEM_CHANGE == false) || (Globals.CHARACTER_CHANGE == false)) {
+                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("HP", Globals.CURRENT_STATS[character].HP);
+                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Max_HP", Globals.CURRENT_STATS[character].Max_HP);
+                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("AT", Globals.CURRENT_STATS[character].AT);
+                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("OG_AT", Globals.CURRENT_STATS[character].AT);
+                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("MAT", Globals.CURRENT_STATS[character].MAT);
+                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("OG_MAT", Globals.CURRENT_STATS[character].MAT);
+                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("DF", Globals.CURRENT_STATS[character].DF);
+                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("OG_DF", Globals.CURRENT_STATS[character].DF);
+                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("MDF", Globals.CURRENT_STATS[character].MDF);
+                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("OG_MDF", Globals.CURRENT_STATS[character].MDF);
+                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("SPD", Globals.CURRENT_STATS[character].SPD);
+                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("OG_SPD", Globals.CURRENT_STATS[character].SPD);
+                if (Globals.ITEM_CHANGE == false) {
+                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("MP", Globals.CURRENT_STATS[character].MP);
+                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Max_MP", Globals.CURRENT_STATS[character].Max_MP);
+                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Stat_Res", Globals.CURRENT_STATS[character].Stat_Res);
+                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("E_Half", Globals.CURRENT_STATS[character].E_Half);
+                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("E_Immune", Globals.CURRENT_STATS[character].E_Immune);
+                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("A_AV", Globals.CURRENT_STATS[character].A_AV);
+                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("M_AV", Globals.CURRENT_STATS[character].M_AV);
+                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("A_HIT", Globals.CURRENT_STATS[character].A_Hit);
+                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("M_HIT", Globals.CURRENT_STATS[character].M_Hit);
+                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("P_Half", Globals.CURRENT_STATS[character].P_Half);
+                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("M_Half", Globals.CURRENT_STATS[character].M_Half);
+                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("On_Hit_Status", Globals.CURRENT_STATS[character].Status);
+                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("On_Hit_Status_Chance", Globals.CURRENT_STATS[character].Status_Chance);
+                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Revive", Globals.CURRENT_STATS[character].Revive);
+                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("SP_Regen", Globals.CURRENT_STATS[character].SP_Regen);
+                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("MP_Regen", Globals.CURRENT_STATS[character].MP_Regen);
+                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("HP_Regen", Globals.CURRENT_STATS[character].HP_Regen);
+                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Display_Element", Globals.CURRENT_STATS[character].Element);
+                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("MP_M_Hit", Globals.CURRENT_STATS[character].MP_M_Hit);
+                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("SP_M_Hit", Globals.CURRENT_STATS[character].SP_M_Hit);
+                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("MP_P_Hit", Globals.CURRENT_STATS[character].MP_P_Hit);
+                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("SP_P_Hit", Globals.CURRENT_STATS[character].SP_P_Hit);
+                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("SP_Multi", Globals.CURRENT_STATS[character].SP_Multi);
+                }
+            }
+
+            while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[Globals.HASCHEL].Read("Action") != 8)) {
+                Thread.Sleep(50);
+            }
+            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Turn", current_turn);
+            Thread.Sleep(250);
+            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Menu", 16);
+            while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[Globals.HASCHEL].Read("Menu") != 96)) {
+                Thread.Sleep(50);
+            }
+            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Menu", 16);
+            while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[Globals.HASCHEL].Read("Action") != 9)) {
+                Thread.Sleep(50);
+            }
+            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("SP", Globals.CURRENT_STATS[character].SP);
+            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("HP_Regen", Globals.CURRENT_STATS[character].HP_Regen);
+            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("MP_Regen", Globals.CURRENT_STATS[character].MP_Regen);
+            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("SP_Regen", Globals.CURRENT_STATS[character].SP_Regen);
         }
     }
 
