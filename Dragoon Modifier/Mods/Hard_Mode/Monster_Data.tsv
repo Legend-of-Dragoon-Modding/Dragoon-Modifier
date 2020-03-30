@@ -171,7 +171,7 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 263	Rodriguez	Wind	1000	28	28	120	120	70	10	0	0	0	0	0	None	None	255	16	0	0	None	0	Rodriguez
 264	Guftas	Dark	1250	30	24	140	80	50	0	0	0	0	0	0	None	None	255	16	0	0	None	0	Guftas
 265	Kongol	Earth	640	14	13	120	70	60	0	0	0	0	0	0	None	None	255	144	300	50	Power Wrist	100	Kongol I
-266	Kongol	Earth	3000	39	28	160	100	50	0	0	0	0	0	0	None	None	255	144	2000	200	Wargod Calling	30	Kongol II
+266	Kongol	Earth	3000	39	28	160	100	50	0	0	0	0	0	0	None	None	255	144	2000	200	Wargod Calling	100	Kongol II
 267	Emperor Doel	Thunder	1800	38	38	120	120	55	0	0	0	0	0	0	None	None	255	128	3000	200	None	0	Emperor Doel
 268	Dragoon Doel	Thunder	5400	38	38	140	120	55	0	0	0	0	0	0	None	None	255	128	0	0	None	0	Dragoon Doel
 269	Lloyd	Non-Elemental	399	20	20	100	100	50	0	0	0	0	0	0	None	None	255	128	0	0	None	0	Lloyd (Arena)
@@ -179,27 +179,27 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 271	Missing	None	0	0	0	50	50	50	0	0	0	0	0	0	None	None	255	128	0	0	None	0	Missing
 272	Missing	None	0	0	0	50	50	50	0	0	0	0	0	0	None	None	255	128	0	0	None	0	Missing
 273	Sandora Elite	Dark	700	14	14	100	140	60	0	0	0	0	0	0	None	None	255	128	0	0	None	0	Sandora Elite I (Clone)
-274	Crafty Thief	Dark	960	46	45	140	120	70	5	0	0	0	0	0	None	None	255	128	0	0	Pellet	8	Crafty Thief (Mappi)
+274	Crafty Thief	Dark	960	46	45	140	120	70	5	0	0	0	0	0	None	None	255	128	0	0	Pellet	100	Crafty Thief (Mappi)
 275	Feyrbrand	Wind	1200	25	19	120	100	50	0	0	0	0	0	0	None	None	255	144	0	0	Down Burst	100	Feyrbrand
 277	Dummy Lloyd	None	0	0	0	50	50	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Dummy Lloyd
 279	Regole	Water	9000	81	59	160	120	45	0	0	0	0	0	0	None	None	255	144	7000	250	Frozen Jet	100	Regole
 280	Tentacle	None	0	0	0	50	50	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Tentacle
-283	Divine Dragon	Non-Elemental	18500	85	78	200	100	60	0	0	0	0	0	0	None	None	255	144	10000	300	Dragon Shield	20	Divine Dragon
+283	Divine Dragon	Non-Elemental	18500	85	78	200	100	60	0	0	0	0	0	0	None	None	255	144	10000	300	Dragon Shield	100	Divine Dragon
 284	Divine Cannon	Non-Elemental	65535	76	85	0	0	50	0	0	0	0	0	0	None	None	255	144	0	0	Gravity Grabber	100	Divine Cannon
 285	Divine Ball	Non-Elemental	65535	76	78	0	0	50	0	0	0	0	0	0	None	None	255	144	0	0	Flash Hall	100	Divine Ball
-287	Greham	Wind	875	20	22	140	120	60	0	0	0	0	0	0	None	None	255	144	1200	100	Plate Mail	30	Greham
+287	Greham	Wind	875	20	22	140	120	60	0	0	0	0	0	0	None	None	255	144	1200	100	Plate Mail	100	Greham
 288	Shirley	Light	640	15	15	80	120	50	0	0	0	0	0	0	None	None	255	144	0	0	Silver Stone	100	Shirley
 289	Shana	Light	120	15	15	80	120	55	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Shirley (Shana)
 290	Albert	Wind	120	17	15	100	100	45	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Shirley (Albert)
 293	Lenus	Water	10500	57	72	140	200	50	0	0	0	0	0	0	None	None	255	144	6000	200	None	0	Lenus I
-294	Lenus	Water	9000	66	82	140	220	55	0	0	0	0	0	0	None	None	255	128	0	0	Jeweled Crown	50	Lenus II
+294	Lenus	Water	9000	66	82	140	220	55	0	0	0	0	0	0	None	None	255	128	0	0	Jeweled Crown	100	Lenus II
 295	Damia	Water	45000	326	326	160	260	60	0	0	0	0	0	0	None	None	255	128	6000	300	Blue Sea Stone	100	Damia
 296	Syuveil	Wind	50000	382	308	210	180	50	10	0	0	0	0	0	None	None	255	128	6000	300	Jade Stone	100	Syuveil
 297	Belzac	Earth	40000	388	321	320	200	50	0	0	0	0	0	0	None	None	255	128	6000	300	Golden Stone	100	Belzac
 298	Kanzas	Thunder	60000	344	317	180	210	70	10	0	0	0	0	0	None	None	255	128	6000	300	Violet Stone	100	Kanzas
 299	Mappi	Dark	1920	48	45	150	140	70	0	0	0	0	0	0	None	None	255	128	2000	150	Total Vanishing	100	Mappi I
-300	Mappi	Dark	3600	55	50	150	140	65	0	0	0	0	0	0	None	None	255	128	0	0	Diamond Claw	25	Mappi II
-301	Gehrich	Earth	6000	60	50	160	140	50	0	0	0	0	0	0	None	None	255	128	5000	200	Soul Headband	25	Gehrich
+300	Mappi	Dark	3600	55	50	150	140	65	0	0	0	0	0	0	None	None	255	128	0	0	Diamond Claw	100	Mappi II
+301	Gehrich	Earth	6000	60	50	160	140	50	0	0	0	0	0	0	None	None	255	128	5000	200	Soul Headband	100	Gehrich
 302	Gorgaga	Non-Elemental	160	16	16	100	80	50	0	0	0	0	0	0	None	None	255	128	0	0	None	0	Gorgaga
 303	Serfius	Fire	200	20	20	100	100	50	0	0	0	0	0	0	None	None	255	128	0	0	None	0	Serfius
 304	Danton	Earth	240	23	8	120	80	45	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Danton
@@ -216,7 +216,7 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 320	S Virage(head)	Non-Elemental	46667	290	255	540	540	50	0	0	0	0	0	0	None	None	255	144	15000	300	None	0	S Virage(head)
 321	S Virage(arm)	Non-Elemental	14000	270	255	756	648	60	0	0	0	0	0	0	None	None	255	144	0	0	None	0	S Virage(arm)
 322	S Virage(body)	Non-Elemental	70000	270	255	972	648	40	0	0	0	0	0	0	None	None	255	144	0	0	None	0	S Virage(body)
-325	Drake the Bandit	Wind	3000	29	25	110	110	70	0	0	0	0	0	0	None	None	255	144	1500	100	Bandit's Ring	30	Drake the Bandit
+325	Drake the Bandit	Wind	3000	29	25	110	110	70	0	0	0	0	0	0	None	None	255	144	1500	100	Bandit's Ring	100	Drake the Bandit
 326	Wire	Non-Elemental	140	13	13	120	100	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Wire
 327	Bursting Ball	Non-Elemental	80	30	30	250	150	70	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Bursting Ball
 329	Jiango	Earth	3200	25	22	180	100	50	0	0	0	0	0	0	None	None	255	144	2000	100	Sachet	100	Jiango
@@ -250,7 +250,7 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 361	Selebus	Dark	15000	106	130	160	220	60	10	0	0	0	0	0	None	None	255	144	0	0	None	0	Selebus
 362	Kubila	Dark	17500	115	110	180	180	55	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Kubila
 363	Zackwell	Dark	56000	177	140	180	210	60	0	0	0	0	0	0	None	None	255	144	0	0	Healing Rain	100	Zackwell
-364	Lavitz's Spirit	Wind	5000	88	88	120	80	50	0	0	0	0	0	0	None	None	255	144	12000	300	Halberd	50	Lavitz's Spirit
+364	Lavitz's Spirit	Wind	5000	88	88	120	80	50	0	0	0	0	0	0	None	None	255	144	12000	300	Halberd	100	Lavitz's Spirit
 365	Last Kraken	Water	40000	143	125	180	240	50	0	0	0	0	0	0	None	None	255	144	12000	300	Pretty Hammer	100	Last Kraken
 366	Cleone	Water	2720	110	116	100	200	60	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Cleone
 367	 	None	0	0	0	50	50	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	 

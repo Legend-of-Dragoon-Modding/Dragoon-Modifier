@@ -6672,12 +6672,28 @@ namespace Dragoon_Modifier {
                 btnHell.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
                 Globals.DIFFICULTY_MODE = "Hard";
                 Globals.MOD = "Hard_Mode";
+                Globals.MONSTER_CHANGE = true;
+                Globals.DROP_CHANGE = true;
+                Globals.ITEM_CHANGE = true;
+                Globals.CHARACTER_CHANGE = false;
+                Globals.ADDITION_CHANGE = true;
+                Globals.DRAGOON_CHANGE = true;
+                Globals.DRAGOON_ADDITION_CHANGE = true;
+                Globals.SHOP_CHANGE = true;
             } else if (btn == btnHell) {
                 btn.Background = new SolidColorBrush(Color.FromArgb(255, 168, 211, 255));
                 btnNormal.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
                 btnHard.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
                 Globals.DIFFICULTY_MODE = "Hell";
                 Globals.MOD = "Hell_Mode";
+                Globals.MONSTER_CHANGE = true;
+                Globals.DROP_CHANGE = true;
+                Globals.ITEM_CHANGE = true;
+                Globals.CHARACTER_CHANGE = false;
+                Globals.ADDITION_CHANGE = true;
+                Globals.DRAGOON_CHANGE = true;
+                Globals.DRAGOON_ADDITION_CHANGE = true;
+                Globals.SHOP_CHANGE = true;
             }
 
             Globals.DICTIONARY = new LoDDict();
