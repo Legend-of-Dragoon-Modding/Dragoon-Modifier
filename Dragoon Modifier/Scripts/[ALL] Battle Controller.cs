@@ -159,7 +159,7 @@ public class BattleController {
             long address = Constants.GetAddress("ADDITION") + GetOffset(emulator);
             Dictionary<int, int> additionnum = new Dictionary<int, int> {
                         {0, 0 },
-                        {1, 2 },
+                        {1, 1 },
                         {2, 2 },
                         {3, 3 },
                         {4, 4 },
@@ -196,12 +196,11 @@ public class BattleController {
                     character = (int) Globals.NO_DART;
                 }
                 if (character == 2 || character == 8) {
-                    int addition = additionnum[emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + (character * 0x2C) + 0x19)];
-                    emulator.WriteByte(Globals.M_POINT + 0x148AC, Globals.DICTIONARY.AdditionData[character, addition, 0].SP);
-                    emulator.WriteByte(Globals.M_POINT + 0x148AC + 0x4, Globals.DICTIONARY.AdditionData[character, addition, 1].SP);
-                    emulator.WriteByte(Globals.M_POINT + 0x148AC + 0x8, Globals.DICTIONARY.AdditionData[character, addition, 2].SP);
-                    emulator.WriteByte(Globals.M_POINT + 0x148AC + 0xC, Globals.DICTIONARY.AdditionData[character, addition, 3].SP);
-                    emulator.WriteByte(Globals.M_POINT + 0x148AC + 0x10, Globals.DICTIONARY.AdditionData[character, addition, 4].SP);
+                    emulator.WriteByte(Globals.M_POINT + 0x148AC, Globals.DICTIONARY.AdditionData[character, 0, 0].SP);
+                    emulator.WriteByte(Globals.M_POINT + 0x148AC + 0x4, Globals.DICTIONARY.AdditionData[character, 0, 1].SP);
+                    emulator.WriteByte(Globals.M_POINT + 0x148AC + 0x8, Globals.DICTIONARY.AdditionData[character, 0, 2].SP);
+                    emulator.WriteByte(Globals.M_POINT + 0x148AC + 0xC, Globals.DICTIONARY.AdditionData[character, 0, 3].SP);
+                    emulator.WriteByte(Globals.M_POINT + 0x148AC + 0x10, Globals.DICTIONARY.AdditionData[character, 0, 4].SP);
                 } else if (character < 9) {
                     int addition = additionnum[emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + (character * 0x2C) + 0x19)];
                     for (int hit = 0; hit < 8; hit++) {
@@ -469,7 +468,7 @@ public class BattleController {
             if (Globals.ADDITION_CHANGE == false) {
                 Dictionary<int, int> additionnum = new Dictionary<int, int> {
                     {0, 0 },
-                    {1, 2 },
+                    {1, 1 },
                     {2, 2 },
                     {3, 3 },
                     {4, 4 },
