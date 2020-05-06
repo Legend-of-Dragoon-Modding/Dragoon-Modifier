@@ -14,6 +14,7 @@ namespace Dragoon_Modifier {
         public static int BATTLE_VALUE = 0;
         public static ushort ENCOUNTER_ID = 0;
         public static ushort MAP = 0;
+        public static ushort BEFORE_BATTLE_MAP = 0;
         public static byte[] PARTY_SLOT = new byte[3];
         public static byte DRAGOON_SPIRITS = 0;
         public static bool IN_BATTLE = false;
@@ -51,20 +52,29 @@ namespace Dragoon_Modifier {
         public static double MDF_MULTI = 1;
         public static double SPD_MULTI = 1;
         public static int HASCHEL = 0;
+        public static Dictionary<string, bool> dmScripts = new Dictionary<string, bool>();
+        public static string[] MONSTER_NAME = new string[5];
+        public static string[] CHARACTER_NAME = new string[3];
 
-        public static void SetM_POINT(int mPoint) {
+        public static void SetM_POINT(long mPoint) {
             M_POINT = mPoint;
             for (int i = 0; i < 5; i++) {
                 MONS_ADDRESS[i] = mPoint - (i * 0x388);
             }
         }
 
-        public static void SetC_POINT(int cPoint) {
+        public static void SetC_POINT(long cPoint) {
             C_POINT = cPoint;
             for (int i = 0; i < 3; i++) {
                 CHAR_ADDRESS[i] = cPoint - (i * 0x388);
             }
 
+        }
+        public static bool CheckDMScript(string name) {
+            if (Globals.dmScripts.ContainsKey(name) && Globals.dmScripts[name])
+                return true;
+            else
+                return false;
         }
     }
 }

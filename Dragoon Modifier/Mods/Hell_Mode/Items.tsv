@@ -24,15 +24,15 @@ Lance	Weapon	Lavitz	Spear				19
 Glaive	Weapon	Lavitz	Spear				28																 
 Spear of Terror	Weapon	Lavitz	Spear		Fear	20	37																20% chance of<LINE>frightening enemy.
 Partisan	Weapon	Lavitz	Spear				45																 
-Halberd	Weapon	Lavitz	Spear				56																 
-Twister Glaive	Weapon	Lavitz	Spear	Wind			65																Wind-based attack.
+Halberd	Weapon	Lavitz	Spear				65																 
+Twister Glaive	Weapon	Lavitz	Spear	Wind			28																Wind-based attack.
 Short Bow	Weapon	Shana	Bow				3					20											 
 Sparkle Arrow	Weapon	Shana	Bow	Light			9					20											Light-based attack.
 Long Bow	Weapon	Shana	Bow				18					30											 
 Bemusing Arrow	Weapon	Shana	Bow		Confusion	20	24					20											20% chance of<LINE>confusing enemy.
 Virulent Arrow	Weapon	Shana	Bow		Poison	20	30					20											20% chance of<LINE>poisoning enemy.
-Detonate Arrow	Weapon	Shana	Bow				40					20										attack_all	Hits all enemies.
-Arrow of Force	Weapon	Shana	Bow				50					20							sp_multi		50		Attacks generate<LINE>50% more SP.
+Detonate Arrow	Weapon	Shana	Bow				50					20										attack_all	Hits all enemies.
+Arrow of Force	Weapon	Shana	Bow				40					20							sp_multi		50		Attacks generate<LINE>50% more SP.
 Mace	Weapon	Meru	Mace				15																 
 Morning Star	Weapon	Meru	Hammer				20																 
 War Hammer	Weapon	Meru	Hammer				25																 

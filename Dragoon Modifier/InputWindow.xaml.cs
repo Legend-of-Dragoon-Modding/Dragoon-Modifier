@@ -16,10 +16,20 @@ namespace Dragoon_Modifier {
         public InputWindow() {
             InitializeComponent();
         }
+        public InputWindow(bool enter) {
+            InitializeComponent();
+            btnOk.IsDefault = enter;
+        }
 
         public InputWindow(string title) {
             InitializeComponent();
             this.Title = title;
+        }
+
+        public InputWindow(string title, bool enter) {
+            InitializeComponent();
+            this.Title = title;
+            btnOk.IsDefault = enter;
         }
 
         protected override void OnSourceInitialized(EventArgs e) {

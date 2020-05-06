@@ -161,7 +161,7 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 253	Merchant	Water	100	2	2	40	40	50	0	0	0	0	0	0	None	None	255	192	0	0	None	0	Merchant
 254	Master Tasman	Fire	100	2	2	40	50	50	0	0	0	0	0	0	None	None	255	192	0	0	None	0	Master Tasman
 255	Rose	Dark	100	2	2	40	40	50	0	0	0	0	0	0	None	None	255	192	0	0	None	0	Rose
-256	Commander	Dark	35	4	9	40	40	40	0	0	0	0	0	0	None	None	255	128	20	20	Burn Out	100	Commander I
+256	Commander	Dark	35	4	9	40	40	40	0	0	0	0	0	0	None	None	255	128	66	20	Burn Out	100	Commander I
 257	Knight of Sandora	Fire	20	3	3	40	50	40	0	0	0	0	0	0	None	None	255	0	2	3	Healing Potion	100	Knight of Sandora (Seles)
 258	Sandora Elite	Dark	1260	20	22	80	120	60	0	0	0	0	0	0	None	None	255	128	200	50	Healing Breeze	100	Sandora Elite I
 259	Hellena Warden	Fire	30	7	7	130	130	50	0	0	0	0	0	0	None	None	255	0	0	0	Healing Potion	100	Hellena Warden (Frugel)

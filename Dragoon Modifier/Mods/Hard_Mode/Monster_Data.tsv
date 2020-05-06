@@ -161,7 +161,7 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 253	Merchant	Water	100	2	2	40	40	50	0	0	0	0	0	0	None	None	255	192	0	0	None	0	Merchant
 254	Master Tasman	Fire	100	2	2	40	50	50	0	0	0	0	0	0	None	None	255	192	0	0	None	0	Master Tasman
 255	Rose	Dark	100	2	2	40	40	50	0	0	0	0	0	0	None	None	255	192	0	0	None	0	Rose
-256	Commander	Dark	35	2	4	40	40	40	0	0	0	0	0	0	None	None	255	128	20	20	Burn Out	100	Commander I
+256	Commander	Dark	35	2	4	40	40	40	0	0	0	0	0	0	None	None	255	128	56	20	Burn Out	100	Commander I
 257	Knight of Sandora	Fire	10	2	2	40	50	40	0	0	0	0	0	0	None	None	255	0	2	3	Healing Potion	100	Knight of Sandora (Seles)
 258	Sandora Elite	Dark	700	14	14	100	140	60	0	0	0	0	0	0	None	None	255	128	200	50	Healing Breeze	100	Sandora Elite I
 259	Hellena Warden	Fire	30	7	7	130	130	50	0	0	0	0	0	0	None	None	255	0	0	0	Healing Potion	100	Hellena Warden (Frugel)
@@ -170,7 +170,7 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 262	Fruegel	Earth	2500	32	26	120	100	50	0	0	0	0	0	0	None	None	255	144	2000	200	Gravity Grabber	100	Fruegel II
 263	Rodriguez	Wind	1000	28	28	120	120	70	10	0	0	0	0	0	None	None	255	16	0	0	None	0	Rodriguez
 264	Guftas	Dark	1250	30	24	140	80	50	0	0	0	0	0	0	None	None	255	16	0	0	None	0	Guftas
-265	Kongol	Earth	640	14	13	120	70	60	0	0	0	0	0	0	None	None	255	144	300	50	Power Wrist	100	Kongol I
+265	Kongol	Earth	640	14	13	120	70	60	0	0	0	0	0	0	None	None	255	144	350	80	Power Wrist	100	Kongol I
 266	Kongol	Earth	3000	39	28	160	100	50	0	0	0	0	0	0	None	None	255	144	2000	200	Wargod Calling	100	Kongol II
 267	Emperor Doel	Thunder	1800	38	38	120	120	55	0	0	0	0	0	0	None	None	255	128	3000	200	None	0	Emperor Doel
 268	Dragoon Doel	Thunder	5400	38	38	140	120	55	0	0	0	0	0	0	None	None	255	128	0	0	None	0	Dragoon Doel

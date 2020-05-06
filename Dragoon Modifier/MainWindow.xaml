@@ -4,9 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-                      xmlns:wpfx="http://schemas.xceed.com/wpf/xaml/toolkit"
-                      xmlns:local="clr-namespace:Dragoon_Modifier"
-                      mc:Ignorable="d"
+        xmlns:local="clr-namespace:Dragoon_Modifier"
+        mc:Ignorable="d"
+        Closing="Window_Closing"
         Closed="Window_Closed"
         Loaded="Window_Loaded"
         Icon="1.ico"
@@ -847,7 +847,7 @@
                             <Button x:Name="btnNormal" Grid.Column="0" Content="Normal Mode" Background="#FFA8D3FF" FontFamily="/#Segoe WP Black" FontSize="20" Foreground="White" Click="DifficultyButton"/>
                             <Button x:Name="btnHard" Grid.Column="1" Content="Hard Mode" Background="#00000000" FontFamily="/#Segoe WP Black" FontSize="20" Foreground="White" Click="DifficultyButton"/>
                             <Button x:Name="btnHell" Grid.Column="2" Content="Hell Mode" Background="#00000000" FontFamily="/#Segoe WP Black" FontSize="20" Foreground="White" Click="DifficultyButton"/>
-                            <Button x:Name="btnEnrageBoss" Grid.Column="3" Content="+" Background="#00000000" FontFamily="/#Segoe WP Black" FontSize="20" Foreground="White"/>
+                            <Button x:Name="btnEnrageBoss" Grid.Column="3" Content="+" Background="#00000000" FontFamily="/#Segoe WP Black" FontSize="20" Foreground="White" Click="DifficultyButton"/>
                         </Grid>
                     </DockPanel>
 
@@ -983,7 +983,6 @@
                         </Grid>
                     </DockPanel>
                     <Button x:Name="btnSoloMode" Grid.Row="5" Grid.Column="2" Content="Solo Mode" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <Button x:Name="btnSoloModeEXP" Grid.Row="3" Grid.Column="3" Content="Solo Mode 33% EXP" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                     <Button x:Name="btnSolo" Grid.Row="6" Grid.Column="2" Content="Solo Leader" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
                     <ComboBox x:Name="cboSoloLeader" Grid.Row="6" Grid.Column="3" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
                     <Button x:Name="btnDuoMode" Grid.Row="5" Grid.Column="3" Content="Duo Mode" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
@@ -1076,9 +1075,11 @@
                     <Button x:Name="btnUltimateBoss" Grid.Row="1" Grid.Column="0" Content="Ultimate Boss" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                     <ComboBox x:Name="cboUltimateBoss" Grid.Row="1" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
                     <Button x:Name="btnRows" Grid.Row="2" Grid.Column="0" Content="Battle Rows" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2" Click="SwitchButton"/>
-                    <DockPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"  Grid.RowSpan="7" HorizontalAlignment="Stretch" Margin="0" >
+                    <DockPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"  Grid.RowSpan="9" HorizontalAlignment="Stretch" Margin="0" >
                         <Grid>
                             <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
                                 <RowDefinition/>
                                 <RowDefinition/>
                                 <RowDefinition/>
@@ -1093,27 +1094,33 @@
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
 
-                            <Button x:Name="btnDart" Grid.Row="0" Grid.Column="0" Content="Dart" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                            <ComboBox x:Name="cboDart" Grid.Row="0" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <ComboBox x:Name="cboDartBoost" Grid.Row="0" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <Button x:Name="btnLavitz" Grid.Row="1" Grid.Column="0" Content="Lavitz" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                            <ComboBox x:Name="cboLavitz" Grid.Row="1" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <ComboBox x:Name="cboLavitzBoost" Grid.Row="1" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <Button x:Name="btnShana" Grid.Row="2" Grid.Column="0" Content="Shana" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                            <ComboBox x:Name="cboShana" Grid.Row="2" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <ComboBox x:Name="cboShanaBoost" Grid.Row="2" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <Button x:Name="btnRose" Grid.Row="3" Grid.Column="0" Content="Rose" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                            <ComboBox x:Name="cboRose" Grid.Row="3" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <ComboBox x:Name="cboRoseBoost" Grid.Row="3" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <Button x:Name="bthnHaschel" Grid.Row="4" Grid.Column="0" Content="Haschel" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                            <ComboBox x:Name="cboHaschel" Grid.Row="4" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <ComboBox x:Name="cboHaschelBoost" Grid.Row="4" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <Button x:Name="btnMeru" Grid.Row="5" Grid.Column="0" Content="Meru" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                            <ComboBox x:Name="cboMeru" Grid.Row="5" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <ComboBox x:Name="cboMeruBoost" Grid.Row="5" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <Button x:Name="btnKongol" Grid.Row="6" Grid.Column="0" Content="Kongol" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                            <ComboBox x:Name="cboKongol" Grid.Row="6" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <ComboBox x:Name="cboKongolBoost" Grid.Row="6" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                            <Button x:Name="btnRowDart" Grid.Row="0" Grid.Column="0" Content="Dart" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
+                            <ComboBox x:Name="cboRowDart" Grid.Row="0" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                            <ComboBox x:Name="cboRowDartBoost" Grid.Row="0" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                            <Button x:Name="btnRowLavitz" Grid.Row="1" Grid.Column="0" Content="Lavitz" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
+                            <ComboBox x:Name="cboRowLavitz" Grid.Row="1" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                            <ComboBox x:Name="cboRowLavitzBoost" Grid.Row="1" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                            <Button x:Name="btnRowShana" Grid.Row="2" Grid.Column="0" Content="Shana" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
+                            <ComboBox x:Name="cboRowShana" Grid.Row="2" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                            <ComboBox x:Name="cboRowShanaBoost" Grid.Row="2" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                            <Button x:Name="btnRowRose" Grid.Row="3" Grid.Column="0" Content="Rose" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
+                            <ComboBox x:Name="cboRowRose" Grid.Row="3" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                            <ComboBox x:Name="cboRowRoseBoost" Grid.Row="3" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                            <Button x:Name="btnRowHaschel" Grid.Row="4" Grid.Column="0" Content="Haschel" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
+                            <ComboBox x:Name="cboRowHaschel" Grid.Row="4" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                            <ComboBox x:Name="cboRowHaschelBoost" Grid.Row="4" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                            <Button x:Name="btnRowAlbert" Grid.Row="5" Grid.Column="0" Content="Albert" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
+                            <ComboBox x:Name="cboRowAlbert" Grid.Row="5" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                            <ComboBox x:Name="cboRowAlbertBoost" Grid.Row="5" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                            <Button x:Name="btnRowMeru" Grid.Row="6" Grid.Column="0" Content="Meru" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
+                            <ComboBox x:Name="cboRowMeru" Grid.Row="6" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                            <ComboBox x:Name="cboRowMeruBoost" Grid.Row="6" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                            <Button x:Name="btnRowKongol" Grid.Row="7" Grid.Column="0" Content="Kongol" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
+                            <ComboBox x:Name="cboRowKongol" Grid.Row="7" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                            <ComboBox x:Name="cboRowKongolBoost" Grid.Row="7" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                            <Button x:Name="btnMirandaKongol" Grid.Row="8" Grid.Column="0" Content="Miranda" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
+                            <ComboBox x:Name="cboRowMiranda" Grid.Row="8" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                            <ComboBox x:Name="cboRowMirandaBoost" Grid.Row="8" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
                         </Grid>
                     </DockPanel>
                     <Button x:Name="btnNoDart" Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" Content="No Dart Mode" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
@@ -1121,13 +1128,14 @@
 
                     <Button x:Name="btnFlowerStorm" Grid.Row="8" Grid.Column="3" Content="Flower Storm" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
                     <ComboBox x:Name="cboFlowerStorm" Grid.Row="9" Grid.Column="3" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
-                    <Button x:Name="btnNoDragoon" Grid.Row="10" Grid.Column="0" Content="No Dragoon" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <Button x:Name="btnDivineRed" Grid.Row="10" Grid.Column="1" Content="Divine Red-Eye" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <Button x:Name="btnNoDragoon" Grid.Row="3" Grid.Column="2" Content="No Dragoon" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <Button x:Name="btnDivineRed" Grid.Row="4" Grid.Column="2" Content="Divine Red-Eye" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
 
                     <Button x:Name="btnElementArrow" Grid.Row="10" Grid.Column="2" Content="Element Arrow" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
-                    <Button x:Name="btnBlackRoom" Grid.Row="11" Grid.Column="1" Content="Black Room" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <Button x:Name="btnEarlyAdditions" Grid.Row="11" Grid.Column="0" Content="Early Additions" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <Button x:Name="btnBlackRoom" Grid.Row="6" Grid.Column="2" Content="Black Room" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <Button x:Name="btnEarlyAdditions" Grid.Row="5" Grid.Column="2" Content="Early Additions" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                     <ComboBox x:Name="cboElement" Grid.Row="11" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
+                    <Button x:Name="btnReduceSDEXP" Grid.Row="7" Grid.Column="2" Content="Reduce Solo/Duo EXP" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                 </Grid>
             </TabItem>
             <TabItem x:Name="tabShop" Header="Shop">
@@ -1163,6 +1171,33 @@
                     <TextBox x:Name="txtHelp" Grid.Row="1" TextWrapping="Wrap" Text="" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" IsEnabled="True"/>
                 </Grid>
             </TabItem>
+            <TabItem x:Name="tabReader" Header="Reader">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Button x:Name="btnReader" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Content="Reader Mode" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <Button x:Name="btnReaderConfig" Click="GreenButton" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Content="Window Config" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
+                    <Button x:Name="btnReaderSave" Click="GreenButton" Grid.Row="2" Grid.Column="0" Content="Save" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
+                    <Button x:Name="btnReaderLoad" Click="GreenButton" Grid.Row="2" Grid.Column="1" Content="Load" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
+                    <Button x:Name="btnReaderReset" Click="GreenButton" Grid.Row="2" Grid.Column="2" Content="Reset" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
+                    <Button x:Name="btnReaderAdd" Click="GreenButton" Grid.Row="3" Grid.Column="0" Content="Add" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
+                    <Button x:Name="btnReaderChange" Click="GreenButton" Grid.Row="3" Grid.Column="1" Content="Change" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
+                    <Button x:Name="btnReaderDelete" Click="GreenButton" Grid.Row="3" Grid.Column="2" Content="Delete" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
+                    <Button x:Name="btnReaderHotkey" Grid.Row="4" Grid.Column="0" Content="Button On/Off" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
+                    <ComboBox x:Name="cboReaderOnHotkey" Grid.Row="4" Grid.Column="1"/>
+                    <ComboBox x:Name="cboReaderOffHotkey" Grid.Row="4" Grid.Column="2"/>
+                </Grid>
+            </TabItem>
             <TabItem x:Name="tabSettings" Header="Settings">
                 <Grid>
                     <DockPanel>
@@ -1185,6 +1220,7 @@
                                     <MenuItem Header="ePSXe 2.0.5" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
                                     <MenuItem Header="RetroArch" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
                                     <MenuItem Header="PCSX2" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
+                                    <MenuItem Header="Other" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
                                 </MenuItem>
                                 <MenuItem x:Name="miRegion" Header="Region" Background="#FFB6B6B6" Foreground="White">
                                     <MenuItem Header="USA" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" IsChecked="True" Click="miRegion_Click"/>
@@ -1214,6 +1250,7 @@
                                 </MenuItem>
                                 <MenuItem x:Name="miOpenPreset" Header="Open Preset on Open" Background="#FFB6B6B6" Foreground="White" Click="miOpenPreset_Click"/>
                                 <MenuItem x:Name="miModOptions" Header="Mod Options" Background="#FFB6B6B6" Foreground="White" Click="miModOptions_Click"/>
+                                <MenuItem x:Name="miPresetHotkeys" Header="Preset Hotkeys" Background="#FFB6B6B6" Foreground="White" Click="miPresetHotkeys_Click"/>
                             </MenuItem>
                             <MenuItem Header="About" Background="#FFB6B6B6" Foreground="White">
                                 <MenuItem x:Name="miAuthor" Background="#FFB6B6B6" Foreground="White" Header="Author" Click="miAuthor_Click"/>

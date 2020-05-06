@@ -38,7 +38,7 @@ public class BattleController {
             Globals.UNIQUE_MONSTER_IDS = new List<int>();
             Globals.MONSTER_TABLE = new List<dynamic>();
             Globals.MONSTER_IDS = new List<int>();
-            Thread.Sleep(2000);
+            Thread.Sleep(4000);
             Globals.MONSTER_SIZE = emulator.ReadByte(Constants.GetAddress("MONSTER_SIZE"));
             Globals.UNIQUE_MONSTERS = emulator.ReadByte(Constants.GetAddress("UNIQUE_MONSTERS"));
 
@@ -47,10 +47,9 @@ public class BattleController {
             } else {
                 Globals.SetM_POINT(0x1A43B4 + emulator.ReadShort(Constants.GetAddress("M_POINT")));
             }
-            Globals.SetC_POINT((int) (emulator.ReadInteger(Constants.GetAddress("C_POINT")) - 0x7F5A8558 - (uint) Constants.OFFSET));
+            Globals.SetC_POINT((long) (emulator.ReadInteger(Constants.GetAddress("C_POINT")) - 0x7FFFFEF8));
 
             LoDDictInIt(emulator);
-            Globals.STATS_CHANGED = true;
 
             Constants.WriteDebug("Monster Size:        " + Globals.MONSTER_SIZE);
             Constants.WriteDebug("Unique Monsters:     " + Globals.UNIQUE_MONSTERS);
@@ -61,6 +60,7 @@ public class BattleController {
 
             ChangeParty(emulator);
             Constants.WriteOutput("Finished loading.");
+            Globals.STATS_CHANGED = true;
         } else {
             if (Globals.STATS_CHANGED && encounterValue < 9999) {
                 Globals.STATS_CHANGED = false;
@@ -69,7 +69,7 @@ public class BattleController {
                 Globals.NO_DART = null;
                 Globals.HASCHEL = 0;
                 Constants.WriteOutput("Exiting out of battle.");
-                if (Globals.ITEM_CHANGE == true) {
+                if (Globals.ITEM_CHANGE == true && (!Globals.DIFFICULTY_MODE.Equals("Hard") && !Globals.DIFFICULTY_MODE.Equals("Hell"))) {
                     Constants.WriteOutput("Changing Item table...");
                     if (String.Join("", Globals.DICTIONARY.NameList).Replace(" ", "").Length / 2 < 6423) {
                         emulator.WriteAOB(Constants.GetAddress("ITEM_NAME"), String.Join(" ", Globals.DICTIONARY.NameList));
@@ -235,7 +235,7 @@ public class BattleController {
                 }
             }
         }
-        if (Globals.DRAGOON_CHANGE == true) {
+        if (Globals.DRAGOON_CHANGE == true && (!Globals.DIFFICULTY_MODE.Equals("Hard") && !Globals.DIFFICULTY_MODE.Equals("Hell"))) {
             Constants.WriteOutput("Changing Dragoon Stats...");
             for (int slot = 0; slot < 3; slot++) {
                 int character = Globals.PARTY_SLOT[slot];
@@ -287,7 +287,7 @@ public class BattleController {
                 emulator.WriteByteU(address + ((z + 65) * 0xC) + 0x9, Globals.DRAGOON_SPELLS[z + 10].Element);
             }
         }
-        if ((Globals.ITEM_CHANGE == true) || (Globals.CHARACTER_CHANGE == true)) {
+        if (((Globals.ITEM_CHANGE == true) || (Globals.CHARACTER_CHANGE == true)) && (!Globals.DIFFICULTY_MODE.Equals("Hard") && !Globals.DIFFICULTY_MODE.Equals("Hell"))) {
             Constants.WriteDebug("Changing Character Stats...");
             for (int slot = 0; slot < 3; slot++) {
                 int character = Globals.PARTY_SLOT[slot];
@@ -345,17 +345,22 @@ public class BattleController {
             emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET + Globals.HASCHEL * 0x4, (byte) character);
             emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET + 0x234E, (byte) character); // Secondary ID
             Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Image", (byte) Globals.NO_DART);
+            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Weapon", emulator.ReadByte(Constants.GetAddress("EQUIP_TABLE") + ((int) Globals.NO_DART * 0x2C)));
+            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Helmet", emulator.ReadByte(Constants.GetAddress("EQUIP_TABLE") + 1 + ((int) Globals.NO_DART * 0x2C)));
+            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Armor", emulator.ReadByte(Constants.GetAddress("EQUIP_TABLE") + 2 + ((int) Globals.NO_DART * 0x2C)));
+            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Shoes", emulator.ReadByte(Constants.GetAddress("EQUIP_TABLE") + 3 + ((int) Globals.NO_DART * 0x2C)));
+            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Accessory", emulator.ReadByte(Constants.GetAddress("EQUIP_TABLE") + 4 + ((int) Globals.NO_DART * 0x2C)));
             Dictionary<int, byte> charelement = new Dictionary<int, byte> {
-            {0, 128 },
-            {1, 64 },
-            {2, 32 },
-            {3, 4 },
-            {4, 16 },
-            {5, 64 },
-            {6, 1 },
-            {7, 2 },
-            {8, 32 }
-        };
+                {0, 128 },
+                {1, 64 },
+                {2, 32 },
+                {3, 4 },
+                {4, 16 },
+                {5, 64 },
+                {6, 1 },
+                {7, 2 },
+                {8, 32 }
+            };
             Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Element", charelement[character]);
             Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("LV", Globals.CURRENT_STATS[character].LV);
             Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("DLV", Globals.CURRENT_STATS[character].DLV);
@@ -618,7 +623,7 @@ public class BattleController {
             }
         }
 
-        if (Globals.MONSTER_CHANGE == true) {
+        if (Globals.MONSTER_CHANGE == true && !Globals.CheckDMScript("btnUltimateBoss")) {
             Constants.WriteOutput("Changing Monster stats...");
             if (Globals.ULTIMATE == false) {
                 for (int monster = 0; monster < Globals.MONSTER_SIZE; monster++) {
@@ -727,6 +732,16 @@ public class BattleController {
         long[] turn = { 0, 2 };
         long[] a_av = { 0, 1 };
         long[] m_av = { 0, 1 };
+        long[] pwr_at = { 0, 1 };
+        long[] pwr_at_trn = { 0, 1 };
+        long[] pwr_mat = { 0, 1 };
+        long[] pwr_mat_trn = { 0, 1 };
+        long[] pwr_df = { 0, 1 };
+        long[] pwr_df_trn = { 0, 1 };
+        long[] pwr_mdf = { 0, 1 };
+        long[] pwr_mdf_trn = { 0, 1 };
+        long[] speed_up_trn = { 0, 1 };
+        long[] speed_down_trn = { 0, 1 };
         long[] p_immune = { 0, 1 };
         long[] m_immune = { 0, 1 };
         long[] p_half = { 0, 1 };
@@ -762,6 +777,16 @@ public class BattleController {
         public long[] Turn { get { return turn; } }
         public long[] A_AV { get { return a_av; } }
         public long[] M_AV { get { return m_av; } }
+        public long[] PWR_AT { get { return pwr_at; } }
+        public long[] PWR_AT_TRN { get { return pwr_at_trn; } }
+        public long[] PWR_MAT { get { return pwr_mat; } }
+        public long[] PWR_MAT_TRN { get { return pwr_mat_trn; } }
+        public long[] PWR_DF { get { return pwr_df; } }
+        public long[] PWR_DF_TRN { get { return pwr_df_trn; } }
+        public long[] PWR_MDF { get { return pwr_mdf; } }
+        public long[] PWR_MDF_TRN { get { return pwr_mdf_trn; } }
+        public long[] SPEED_UP_TRN { get { return speed_up_trn; } }
+        public long[] SPEED_DOWN_TRN { get { return speed_down_trn; } }
         public long[] P_Immune { get { return p_immune; } }
         public long[] M_Immune { get { return m_immune; } }
         public long[] P_Half { get { return p_half; } }
@@ -798,6 +823,16 @@ public class BattleController {
             turn[0] = m_point + 0x44 - monster * 0x388;
             a_av[0] = m_point + 0x38 - monster * 0x388;
             m_av[0] = m_point + 0x3A - monster * 0x388;
+            pwr_at[0] = m_point + 0xAC - monster * 0x388;
+            pwr_at_trn[0] = m_point + 0xAD - monster * 0x388;
+            pwr_mat[0] = m_point + 0xAE - monster * 0x388;
+            pwr_mat_trn[0] = m_point + 0xAF - monster * 0x388;
+            pwr_df[0] = m_point + 0xB0 - monster * 0x388;
+            pwr_df_trn[0] = m_point + 0xB1 - monster * 0x388;
+            pwr_mdf[0] = m_point + 0xB2 - monster * 0x388;
+            pwr_mdf_trn[0] = m_point + 0xB3 - monster * 0x388;
+            speed_up_trn[0] = m_point + 0xC1 - monster * 0x388;
+            speed_down_trn[0] = m_point + 0xC3 - monster * 0x388;
             p_immune[0] = m_point + 0x108 - monster * 0x388;
             m_immune[0] = m_point + 0x10A - monster * 0x388;
             p_half[0] = m_point + 0x10C - monster * 0x388;
@@ -859,6 +894,7 @@ public class BattleController {
         long[] spd = { 0, 2 };
         long[] og_spd = { 0, 2 };
         long[] turn = { 0, 2 };
+        long[] dragoon_move = { 0, 1 };
         long[] a_hit = { 0, 1 };
         long[] m_hit = { 0, 1 };
         long[] a_av = { 0, 1 };
@@ -953,6 +989,7 @@ public class BattleController {
         public long[] SPD { get { return spd; } }
         public long[] OG_SPD { get { return og_spd; } }
         public long[] Turn { get { return turn; } }
+        public long[] Dragoon_Move { get { return dragoon_move; } }
         public long[] A_HIT { get { return a_hit; } }
         public long[] M_HIT { get { return m_hit; } }
         public long[] A_AV { get { return a_av; } }
@@ -1049,6 +1086,7 @@ public class BattleController {
             spd[0] = c_point + 0x2A - character * 0x388;
             og_spd[0] = c_point + 0x5C - character * 0x388;
             turn[0] = c_point + 0x44 - character * 0x388;
+            dragoon_move[0] = c_point + 0x46 - character * 0x388;
             a_hit[0] = c_point + 0x34 - character * 0x388;
             m_hit[0] = c_point + 0x36 - character * 0x388;
             a_av[0] = c_point + 0x38 - character * 0x388;

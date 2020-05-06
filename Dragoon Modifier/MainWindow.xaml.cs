@@ -11,15 +11,21 @@ using System.Collections;
 using System.Windows.Controls;
 using System.Text.RegularExpressions;
 using System.Globalization;
+using System.ComponentModel;
+using Mono.CSharp;
+using Microsoft.Win32;
+using System.Windows.Input;
+using static Dragoon_Modifier.ReaderWindow;
+using Xceed.Wpf.Toolkit.PropertyGrid.Editors;
 
 namespace Dragoon_Modifier {
     public partial class MainWindow {
         #region Variables
         #region Program Variables
         public static Emulator emulator = new Emulator();
-        public Thread fieldThread, battleThread, hotkeyThread, otherThread;
+        public Thread fieldThread, battleThread, hotkeyThread, otherThread, ultimateThread;
         public string preset = "";
-        public static Dictionary<string, bool> dmScripts = new Dictionary<string, bool>();
+        public bool presetHotkeys = true;
         public static Dictionary<string, int> uiCombo = new Dictionary<string, int>();
 
         public TextBlock[,] monsterDisplay = new TextBlock[5, 6];
@@ -27,6 +33,7 @@ namespace Dragoon_Modifier {
         public Button[] difficultyButton = new Button[3];
         public ProgressBar[] progressMATB = new ProgressBar[5];
         public ProgressBar[] progressCATB = new ProgressBar[3];
+        public ReaderWindow readerWindow = new ReaderWindow();
         #endregion
 
         #region Script Variables
@@ -36,15 +43,19 @@ namespace Dragoon_Modifier {
         public double[,] originalMonsterStats = new double[5, 6];
         //Shop Changes
         public bool shopChange = false;
+        static bool SHOP_CHANGED = true;
+        static int[] SHOP_MAPS = new int[] { 16, 23, 83, 84, 122, 145, 175, 180, 193, 204, 211, 214, 247,
+        287, 309, 329, 332, 349, 357, 384, 435, 479, 515, 530, 564, 619, 624}; // Some maps missing??
         //Icon Changes
         public bool wroteIcons = false;
         //Damage Cap
         public bool firstDamageCapRemoval = false;
         public int lastItemUsedDamageCap = 0;
-        //Solo Mode
+        //Solo/Duo Mode
         public bool addSoloPartyMembers = false;
         public bool alwaysAddSoloPartyMembers = false;
         public bool soloModeOnBattleEntry = false;
+        public bool duoModeOnBattleEntry = false;
         //Dragoon Changes
         public ushort[] currentMP = { 0, 0, 0 };
         public ushort[] previousMP = { 0, 0, 0 };
@@ -56,6 +67,7 @@ namespace Dragoon_Modifier {
         public ushort checkRoseDamageSave = 0;
         public bool checkRoseDamage = false;
         public bool roseEnhanceDragoon = false;
+        public bool starChildren = false;
         //HP Cap Break
         public double[] hpChangeCheck = { 65535, 65535, 65535 };
         public byte[] hpChangeSlot = { 255, 255, 255 };
@@ -133,25 +145,64 @@ namespace Dragoon_Modifier {
         public bool ubSharedHP = false;
         public bool ubRemoveResistances = false;
         public bool ubTPDamage = false;
+        public short tpDamage = 0;
         public bool ubTrackHPChange = false;
+        public ushort[] ubTrackHP = new ushort[3];
+        public int[] ubTrackEHP = new int[5];
+        public ushort[] ubTrackTP = new ushort[3];
+        public ushort[] ubTrackMTP = new ushort[3];
         public bool ubBodyDamage = false;
         public bool ubVirageKilledPart = false;
         public int ubDragoonBondMode = 0;
         public bool ubDragoonBond = false;
         public bool ubDragoonExtras = false;
+        public int[] ubCustomStatusTurns = new int[3];
+        public bool ubBlockMenuHPTrack = false;
+        public bool ubBlockMenuTPTrack = false;
+        public byte ubTrackDMove = 0;
+        public ushort ubTrackTM = 0;
+        public ushort ubElectricCharges = 0;
+        public ushort ubElectricUnleash = 0;
         public bool ubTrackDragoon = false;
         public bool ubCountdown = false;
+        public byte ubLivesIncreased = 0;
+        public int ubTotalGold = 0;
         public bool ubUltimateEnrage = false;
+        public byte enrageChangeTurns = 0;
+        public byte enrageChangeIndex = 0;
+        public double ubEnrageTurns = 0;
+        public double ubEnrageTurnsPlus = 0;
         public bool ubInventoryRefresh = false;
+        public byte inventoryRefreshSize = 0;
+        public byte[] inventoryRefresh = new byte[64];
         public bool ubEnhancedShield = false;
+        public short shieldTurnsTaken = 0;
+        public short enhancedShieldTurns = 0;
+        public bool ubBodyProtect = false;
+        public bool ubFinalAttack = false;
         public bool ubReverseDBS = false;
+        public bool ubArmorGuard = false;
+        public bool ubDragoonGuard = false;
+        public bool ubGrantMaxHP = false;
+        public byte[] deathRes = new byte[3];
+        public byte ubZiegDragoon = 82;
         public long ultimateShopLimited = 0;
+        public int doubleRepeatUsed = 0;
+        public bool doubleRepeatOnBattleEntry = false;
+        public int magicShieldTurns = 0;
+        public int magicShieldSlot = 0;
+        public int materialShieldTurns = 0;
+        public int materialShieldSlot = 0;
+        public int sigStoneTurns = 0;
+        public int sigStoneSlot = 0;
+        public int pandemoniumTurns = 0;
+        public int pandemoniumSlot = 0;
         //Ultimate Boss Equips
         public int soasSiphonSlot = -1;
         public ushort spiritEaterSP = 0;
         public ushort spiritEaterSaveSP = 0;
-        public ushort elementArrowItem = 0;
-        public ushort elementArrowElement = 0;
+        public ushort elementArrowItem = 0xC3;
+        public ushort elementArrowElement = 0x80;
         public ushort elementArrowLastAction = 0;
         public ushort elementArrowTurns = 0;
         public ushort gloveLastAction = 0;
@@ -161,11 +212,153 @@ namespace Dragoon_Modifier {
         public bool checkHarpoon = false;
         public bool ubSoasWargod = false;
         public bool ubSoasDragoonBoost = false;
+        //Ultimate Boss Shop
+        public int[] uShopPrices = {
+            70000,   //Spirit Eater
+            70000,   //Harpoon
+            70000,   //Element Arrow
+            70000,   //Dragon Buster II
+            70000,   //Battery Glove
+            70000,   //Jeweled Hammer
+            70000,   //Giant Axe
+            280000,  //Soa's Light
+            30000,   //Fake Legend Casque
+            120000,  //Soa's Helm
+            30000,   //Fake Legend Armor
+            30000,   //Divine DG Armor
+            120000,  //Soa's Armor
+            40000,   //Lloyd's Boots
+            40000,   //Winged Shoes
+            120000,  //Soa's Greveas
+            20000,   //Heal Ring
+            40000,   //Soa's Sash
+            50000,   //Soa's Ahnk
+            50000,   //Soa's Health Ring
+            50000,   //Soa's Mage Ring
+            50000,   //Soa's Shield Ring
+            50000,   //Soa's Siphon Ring
+            100000,  //Power Up
+            100000,  //Power Down
+            100000,  //Speed Up
+            100000,  //Speed Down
+            100000,  //Magic Shield
+            100000,  //Material Shield
+            75000,   //Magic Stone of Signet
+            25000,   //Pandemonium
+            1000000, //Psychedelic Bomb X
+            250000,  //Empty Dragoon Crystal
+            500000,  //Soa's Wargod
+            500000   //Soa's Dragoon Boost
+        };
+        public int[] uLimited = {
+            1,          //Spirit Eater
+            2,          //Harpoon
+            4,          //Element Arrow
+            8,          //DB2
+            16,         //Battery Glove
+            32,         //Jeweled Hammer
+            64,         //Giant Axe
+            128,        //Soa's Light
+            0,          //Fake Legend Casque
+            256,        //Soa's Helm
+            0,          //Fake Legend Armor
+            0,          //Divine DG Armor
+            512,        //Soa's Armor
+            0,          //Lloyd's Boots
+            0,          //Winged Shoes
+            1024,       //Soa's Greveas
+            0,          //Heal Ring
+            2048,       //Soa's Sash
+            4096,       //Soa's Ahnk
+            8192,       //Soa's Health Ring
+            16384,      //Soa's Mage Ring
+            32768,      //Soa's Shield Ring
+            65536,      //Soa's Siphon Ring
+            131072,     //Power Up
+            262144,     //Power Down
+            524288,     //Speed Up
+            1048576,    //Speed Down
+            2097152,    //Magic Shield
+            4194304,    //Material Shield
+            8388608,    //Magic Stone of Signet
+            16777216,   //Pandemonium
+            33554432,   //Psychedelic Bomb X
+            67108864,   //Empty Dragon Crystal
+            134217728,  //Soa's Wargod
+            268435456   //Soa's Dragoon Boost
+        };
+        public int[] uItemId = {
+            159, //Spirit Eater
+            160, //Harpoon
+            161, //Element Arrow
+            162, //Dragon Buster II
+            163, //Battery Glove
+            164, //Jeweled Hammer
+            165, //Giant Axe
+            166, //Soa's Light
+            167, //Fake Legend Casque
+            168, //Soa's Helm
+            169, //Fake Legend Armor
+            170, //Divine DG Armor
+            171, //Soa's Armor
+            172, //Lloyd's Boots
+            173, //Winged Shoes
+            174, //Soa's Greveas
+            175, //Heal Ring
+            176, //Soa's Sash
+            177, //Soa's Ahnk
+            178, //Soa's Health Ring
+            179, //Soa's Mage Ring
+            180, //Soa's Shield Ring
+            181, //Soa's Siphon Ring
+            0,   //Power Up
+            0,   //Power Down
+            0,   //Speed Up
+            0,   //Speed Down
+            0,   //Magic Shield
+            0,   //Material Shield
+            0,   //Magic Stone of Signet
+            0,   //Pandemonium
+            250, //Psychedelic Bomb X
+            0,   //Empty Dragon Crystal
+            0,   //Soa's Wargod
+            0    //Soa's Dragoon Boost
+        };
         //Damage Tracker
         public bool damageTrackerOnBattleEntry = false;
         public int[] dmgTrkHP = new int[5];
         public int[] dmgTrkChr = new int[3];
         public int dmgTrkSlot = 0;
+        //Early Additions
+        public bool earlyAdditionsOnFieldEntry = false;
+        //Enrage Mode
+        public bool enrageBoss = false;
+        public byte[] enragedMode = { 0, 0, 0, 0, 0 };
+        //Battle Formation Rows
+        public ComboBox[] battleRow = new ComboBox[9];
+        public ComboBox[] battleRowBoost = new ComboBox[9];
+        public bool battleRowsOnBattleEntry = false;
+        //Black Room
+        public bool blackRoomOnBattleEntry = false;
+        //No Escape
+        public bool noEscapeOnBattleEntry = false;
+        //Hell Mode SP Reduction
+        public bool bossSPLossOnBattleEntry = false;
+        // * Turn Battle
+        public bool eatbOnBattleEntry = false;
+        public bool qtbOnBattleEntry = false;
+        public bool atbOnBattleEntry = false;
+        public int[] extraTurnBattleM = new int[5];
+        public int[] extraTurnBattleC = new int[3];
+        public int timePlayed = 0;
+        public int cooldowns = 0;
+        public byte qtbTurns = 0;
+        public bool qtbUsedDuringEnemyTurn = false;
+        public bool qtbLeaderTurn = false;
+        public int[] currentHP = new int[3];
+        public int[] playerSpeed = new int[3];
+        //Hotkeys
+        public int goldQuest = 0;
         #endregion
         #endregion
 
@@ -180,6 +373,8 @@ namespace Dragoon_Modifier {
                 battleThread = new Thread(BattleController);
                 hotkeyThread = new Thread(HotkeysController);
                 otherThread = new Thread(OtherController);
+                //extra threads
+                ultimateThread = new Thread(UltimateController);
 
                 Constants.Init();
                 InitUI();
@@ -187,7 +382,7 @@ namespace Dragoon_Modifier {
                 Globals.DICTIONARY = new LoDDict();
 
                 if (Constants.EMULATOR != 255) {
-                    SetupEmulator();
+                    SetupEmulator(true);
                 } else {
                     Constants.WriteOutput("Please pick an emulator to use in the settings menu.");
                 }
@@ -198,7 +393,7 @@ namespace Dragoon_Modifier {
                     LoadPreset();
                 }
             } catch (Exception ex) {
-                MessageBox.Show("Error loading Scripts folder.");
+                MessageBox.Show("Error on startup.");
                 MessageBox.Show(ex.ToString());
                 Application.Current.Shutdown();
             }
@@ -304,6 +499,26 @@ namespace Dragoon_Modifier {
             cboSwitchChar.Items.Add("Kongol");
             cboSwitchChar.Items.Add("Miranda");
 
+            cboSwitch1.Items.Add("Dart");
+            cboSwitch1.Items.Add("Lavitz");
+            cboSwitch1.Items.Add("Shana");
+            cboSwitch1.Items.Add("Rose");
+            cboSwitch1.Items.Add("Haschel");
+            cboSwitch1.Items.Add("Albert");
+            cboSwitch1.Items.Add("Meru");
+            cboSwitch1.Items.Add("Kongol");
+            cboSwitch1.Items.Add("Miranda");
+
+            cboSwitch2.Items.Add("Dart");
+            cboSwitch2.Items.Add("Lavitz");
+            cboSwitch2.Items.Add("Shana");
+            cboSwitch2.Items.Add("Rose");
+            cboSwitch2.Items.Add("Haschel");
+            cboSwitch2.Items.Add("Albert");
+            cboSwitch2.Items.Add("Meru");
+            cboSwitch2.Items.Add("Kongol");
+            cboSwitch2.Items.Add("Miranda");
+
             cboElement.Items.Add("Fire");
             cboElement.Items.Add("Water");
             cboElement.Items.Add("Wind");
@@ -311,6 +526,56 @@ namespace Dragoon_Modifier {
             cboElement.Items.Add("Dark");
             cboElement.Items.Add("Light");
             cboElement.Items.Add("Thunder");
+
+            cboQTB.Items.Add("Dart");
+            cboQTB.Items.Add("Lavitz");
+            cboQTB.Items.Add("Shana");
+            cboQTB.Items.Add("Rose");
+            cboQTB.Items.Add("Haschel");
+            cboQTB.Items.Add("Albert");
+            cboQTB.Items.Add("Meru");
+            cboQTB.Items.Add("Kongol");
+            cboQTB.Items.Add("Miranda");
+
+            cboFlowerStorm.Items.Add("1 Turn (20 MP)");
+            cboFlowerStorm.Items.Add("2 Turns (40 MP)");
+            cboFlowerStorm.Items.Add("3 Turns (60 MP)");
+            cboFlowerStorm.Items.Add("4 Turns (80 MP)");
+            cboFlowerStorm.Items.Add("5 Turns (100 MP)");
+
+            battleRow[0] = cboRowDart;
+            battleRow[1] = cboRowLavitz;
+            battleRow[2] = cboRowShana;
+            battleRow[3] = cboRowRose;
+            battleRow[4] = cboRowHaschel;
+            battleRow[5] = cboRowAlbert;
+            battleRow[6] = cboRowMeru;
+            battleRow[7] = cboRowKongol;
+            battleRow[8] = cboRowMiranda;
+
+            for (int i = 0; i < 9; i++) {
+                battleRow[i].Items.Add("Stay");
+                battleRow[i].Items.Add("Front");
+                battleRow[i].Items.Add("Back");
+                battleRow[i].SelectedIndex = 0;
+            }
+
+            battleRowBoost[0] = cboRowDartBoost;
+            battleRowBoost[1] = cboRowLavitzBoost;
+            battleRowBoost[2] = cboRowShanaBoost;
+            battleRowBoost[3] = cboRowRoseBoost;
+            battleRowBoost[4] = cboRowHaschelBoost;
+            battleRowBoost[5] = cboRowAlbertBoost;
+            battleRowBoost[6] = cboRowMeruBoost;
+            battleRowBoost[7] = cboRowKongolBoost;
+            battleRowBoost[8] = cboRowMirandaBoost;
+
+            for (int i = 0; i < 9; i++) {
+                battleRowBoost[i].Items.Add("No Boost");
+                battleRowBoost[i].Items.Add("Attack Boost");
+                battleRowBoost[i].Items.Add("Magic Boost");
+                battleRowBoost[i].SelectedIndex = 0;
+            }
 
             cboUltimateBoss.Items.Add("Zone 1 - Commander II");
             cboUltimateBoss.Items.Add("Zone 1 - Fruegel");
@@ -353,6 +618,49 @@ namespace Dragoon_Modifier {
             cboUltimateBoss.Items.Add("Zone 4 - Zieg");
             cboUltimateBoss.Items.Add("Zone 4 - Melbu Frahma");
 
+            lstTicketShop.Items.Add("1 Ticket / 15 G");
+            lstTicketShop.Items.Add("5 Tickets / 60 G");
+            lstTicketShop.Items.Add("10 Tickets / 100 G");
+            lstHeroShop.Items.Add("Spirit Poition/20 Tickets");
+            lstHeroShop.Items.Add("Total Vanishing/40 Tickets");
+            lstHeroShop.Items.Add("Healing Rain/60 Tickets");
+            lstHeroShop.Items.Add("Moon Serenade/100 Tickets");
+            lstUltimateShop.Items.Add("Spirit Eater (SPE) / 70,000 G");
+            lstUltimateShop.Items.Add("Harpoon (HRP) / 70,000 G");
+            lstUltimateShop.Items.Add("Element Arrow (ELA) / 70,000 G");
+            lstUltimateShop.Items.Add("Dragon Buster II (DB2) / 70,000 G");
+            lstUltimateShop.Items.Add("Battery Glove (BGL) / 70,000 G");
+            lstUltimateShop.Items.Add("Jeweled Hammer (JHA) / 70,000 G");
+            lstUltimateShop.Items.Add("Giant Axe (GAX) / 70,000 G");
+            lstUltimateShop.Items.Add("Soa's Light (SLI) / 280,000 G");
+            lstUltimateShop.Items.Add("Fake Legend Casque (FLC) / 30,000 G");
+            lstUltimateShop.Items.Add("Soa's Helm (SHL) / 120,000 G");
+            lstUltimateShop.Items.Add("Fake Legend Armor (FLA) / 30,000 G");
+            lstUltimateShop.Items.Add("Divine DG Armor (DDA) / 30,000 G");
+            lstUltimateShop.Items.Add("Soa's Armor (SAR) / 120,000 G");
+            lstUltimateShop.Items.Add("Lloyd's Boots (LBS) / 40,000 G");
+            lstUltimateShop.Items.Add("Winged Shoes (WGS) / 40,000 G");
+            lstUltimateShop.Items.Add("Soa's Greaves (SGS) / 120,000 G");
+            lstUltimateShop.Items.Add("Heal Ring (HLR) / 20,000 G");
+            lstUltimateShop.Items.Add("Soa's Sash (SSH) / 40,000 G");
+            lstUltimateShop.Items.Add("Soa's Ahnk (SAK) / 50,000 G");
+            lstUltimateShop.Items.Add("Soa's Health Ring (SHR) / 50,000 G");
+            lstUltimateShop.Items.Add("Soa's Mage Ring (SMR) / 50,000 G");
+            lstUltimateShop.Items.Add("Soa's Shield (SSD) / 50,000 G");
+            lstUltimateShop.Items.Add("Soa's Siphon Ring (SSR) / 50,000 G");
+            lstUltimateShop.Items.Add("Super Power Up / 100,000 G");
+            lstUltimateShop.Items.Add("Super Power Down / 100,000 G");
+            lstUltimateShop.Items.Add("Super Speed Up / 100,000 G");
+            lstUltimateShop.Items.Add("Super Speed Down / 100,000 G");
+            lstUltimateShop.Items.Add("Super Magic Shield / 100,000 G");
+            lstUltimateShop.Items.Add("Super Material Shield / 100,000 G");
+            lstUltimateShop.Items.Add("Super Magic Stone of Signet / 75,000 G");
+            lstUltimateShop.Items.Add("Super Pandemonium / 25,000 G");
+            lstUltimateShop.Items.Add("Psychedelic Bomb X / 1,000,000 G");
+            lstUltimateShop.Items.Add("Empty Dragon Crystal / 250,000 G");
+            lstUltimateShop.Items.Add("Soa's Wargod / 500,000 G");
+            lstUltimateShop.Items.Add("Soa's Dragoon Boost / 500,000 G");
+
             cboSoloLeader.SelectedIndex = 0;
             cboAspectRatio.SelectedIndex = 0;
             cboCamera.SelectedIndex = 0;
@@ -360,6 +668,10 @@ namespace Dragoon_Modifier {
             cboSwitchChar.SelectedIndex = 0;
             cboElement.SelectedIndex = 0;
             cboUltimateBoss.SelectedIndex = 0;
+            cboSwitch1.SelectedIndex = 0;
+            cboSwitch2.SelectedIndex = 1;
+            cboQTB.SelectedIndex = 0;
+            cboFlowerStorm.SelectedIndex = 0;
         }
 
         public void LoadKey() {
@@ -382,8 +694,24 @@ namespace Dragoon_Modifier {
                     Constants.EMULATOR_NAME = "RetroArch";
                 } else if (Constants.EMULATOR == 9) {
                     Constants.EMULATOR_NAME = "pcsx2";
-                } else {
+                } else if (Constants.EMULATOR < 8) {
                     Constants.EMULATOR_NAME = "ePSXe";
+                } else {
+                    if (Constants.KEY.GetValue("Other Emulator") == null) {
+                        OpenFileDialog ofg = new OpenFileDialog();
+                        ofg.Title = "Select Emulator";
+                        ofg.Filter = "Emulator|*.exe";
+                        if (ofg.ShowDialog() == true) {
+                            Constants.EMULATOR_NAME = System.IO.Path.GetFileNameWithoutExtension(ofg.FileName);
+                            Constants.KEY.SetValue("Other Emulator", Constants.EMULATOR_NAME);
+                        } else {
+                            Constants.KEY.SetValue("Other Emulator", null);
+                            Constants.EMULATOR = 255;
+                            miEmulator_Click(null, null);
+                        }
+                    } else {
+                        Constants.EMULATOR_NAME = Constants.KEY.GetValue("Other Emulator").ToString();
+                    }
                 }
 
                 foreach (MenuItem mi in miEmulator.Items)
@@ -408,6 +736,36 @@ namespace Dragoon_Modifier {
                 }
                 miOpenPreset.IsChecked = load;
             }
+
+            if (Constants.KEY.GetValue("Preset Hotkeys") == null) {
+                Constants.KEY.SetValue("Preset Hotkeys", true);
+                miPresetHotkeys.IsChecked = true;
+                presetHotkeys = true;
+            } else {
+                bool preset = Convert.ToBoolean(Constants.KEY.GetValue("Preset Hotkeys"));
+                miPresetHotkeys.IsChecked = preset;
+                presetHotkeys = miPresetHotkeys.IsChecked;
+            }
+        }
+
+        public void LoadReaderKey() {
+            if (Constants.KEY.GetValue("Reader Width") != null)
+                readerWindow.Width = Double.Parse(Constants.KEY.GetValue("Reader Width").ToString());
+
+            if (Constants.KEY.GetValue("Reader Height") != null)
+                readerWindow.Height = Double.Parse(Constants.KEY.GetValue("Reader Height").ToString());
+
+            if (Constants.KEY.GetValue("Reader AA") != null)
+                readerWindow.SetAntiAlias(bool.Parse(Constants.KEY.GetValue("Reader AA").ToString()));
+
+            if (Constants.KEY.GetValue("Reader Write Text") != null)
+                readerWindow.WRITE_TEXT = bool.Parse(Constants.KEY.GetValue("Reader Write Text").ToString());
+
+            if (Constants.KEY.GetValue("Reader Write Folder") != null)
+                readerWindow.WRITE_LOCATION = Constants.KEY.GetValue("Reader Write Folder").ToString();
+
+            if (Constants.KEY.GetValue("Reader Background") != null)
+                readerWindow.Background = new SolidColorBrush((Color) ColorConverter.ConvertFromString(Constants.KEY.GetValue("Reader Background").ToString()));
         }
 
         public void LoadSubKey() {
@@ -435,12 +793,27 @@ namespace Dragoon_Modifier {
 
         public void SaveKey() {
             Constants.KEY.SetValue("Save Slot", Constants.SAVE_SLOT);
-            if (Constants.EMULATOR != 255)
+            if (Constants.EMULATOR != 255) {
                 Constants.KEY.SetValue("EmulatorType", (int) Constants.EMULATOR);
+                if (Constants.EMULATOR == 10) {
+                    Constants.KEY.SetValue("Other Emulator", Constants.EMULATOR_NAME);
+                }
+            }
             Constants.KEY.SetValue("Region", (int) Constants.REGION);
             Constants.KEY.SetValue("LoadPreset", miOpenPreset.IsChecked);
             if (miOpenPreset.IsChecked)
                 Constants.KEY.SetValue("Preset", preset);
+            Constants.KEY.SetValue("Preset Hotkeys", miPresetHotkeys.IsChecked);
+            SaveReaderKey();
+        }
+
+        public void SaveReaderKey() {
+            Constants.KEY.SetValue("Reader Width", readerWindow.Width);
+            Constants.KEY.SetValue("Reader Height", readerWindow.Height);
+            Constants.KEY.SetValue("Reader AA", readerWindow.AA);
+            Constants.KEY.SetValue("Reader Write Text", readerWindow.WRITE_TEXT);
+            Constants.KEY.SetValue("Reader Write Folder", readerWindow.WRITE_LOCATION);
+            Constants.KEY.SetValue("Reader Background", readerWindow.Background.ToString());
         }
 
         public void SaveSubKey() {
@@ -573,6 +946,7 @@ namespace Dragoon_Modifier {
             dynamic[,,] additionData = new dynamic[9, 8, 8];
             List<int> monsterScript = new List<int>();
             dynamic[][] dragoonStats = new dynamic[9][];
+            dynamic[] dragoonAddition = new dynamic[9];
             IDictionary<int, string> num2item = new Dictionary<int, string>();
             IDictionary<string, int> item2num = new Dictionary<string, int>();
             IDictionary<int, string> num2element = new Dictionary<int, string>() {
@@ -626,6 +1000,7 @@ namespace Dragoon_Modifier {
             public List<int[]>[] ShopList { get { return shopList; } }
             public dynamic[][] CharacterStats { get { return characterStats; } }
             public dynamic[,,] AdditionData { get { return additionData; } }
+            public dynamic[] DragoonAddition { get { return dragoonAddition; } }
             public List<int> MonsterScript { get { return monsterScript; } }
             public IDictionary<int, string> Num2Item { get { return num2item; } }
             public IDictionary<string, int> Item2Num { get { return item2num; } }
@@ -868,6 +1243,26 @@ namespace Dragoon_Modifier {
                         string file = cwd + @"Mods\" + Globals.MOD + @"\Additions.tsv";
                         Constants.WriteDebug(file + " not found. Turning off Addition Changes.");
                         Globals.ADDITION_CHANGE = false;
+                    }
+                    try {
+                        using (var dAddition = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Dragoon_Additions.tsv")) {
+                            bool firstline = true;
+                            var i = 0;
+                            while (!dAddition.EndOfStream) {
+                                var line = dAddition.ReadLine();
+                                if (firstline == false) {
+                                    var values = line.Split('\t').ToArray();
+                                    dragoonAddition[i] = new DragoonAdditionStats(values[1], values[2], values[3], values[4], values[5]);
+                                    i++;
+                                } else {
+                                    firstline = false;
+                                }
+                            }
+                        }
+                    } catch (FileNotFoundException) {
+                        string file = cwd + @"Mods\" + Globals.MOD + @"\Dragoon_Additions.tsv";
+                        Constants.WriteDebug(file + " not found. Turning off Dragoon Addition Changes.");
+                        Globals.DRAGOON_ADDITION_CHANGE = false;
                     }
                 } catch (DirectoryNotFoundException ex) {
                     if (!Globals.MOD.Equals("US_Base")) {
@@ -1424,6 +1819,49 @@ namespace Dragoon_Modifier {
             }
         }
 
+        public class DragoonAdditionStats {
+            ushort hit1 = 0;
+            ushort hit2 = 0;
+            ushort hit3 = 0;
+            ushort hit4 = 0;
+            ushort hit5 = 0;
+
+            public ushort HIT1 { get { return hit1; } }
+            public ushort HIT2 { get { return hit2; } }
+            public ushort HIT3 { get { return hit3; } }
+            public ushort HIT4 { get { return hit4; } }
+            public ushort HIT5 { get { return hit5; } }
+
+            public DragoonAdditionStats(string nhit1, string nhit2, string nhit3, string nhit4, string nhit5) {
+                ushort key = 0;
+                if (ushort.TryParse(nhit1, NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+                    hit1 = key;
+                } else if (nhit1 != "") {
+                    Constants.WriteDebug(nhit1 + " not found as HIT1");
+                }
+                if (ushort.TryParse(nhit2, NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+                    hit2 = key;
+                } else if (nhit2 != "") {
+                    Constants.WriteDebug(nhit2 + " not found as HIT2");
+                }
+                if (ushort.TryParse(nhit3, NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+                    hit3 = key;
+                } else if (nhit3 != "") {
+                    Constants.WriteDebug(nhit3 + " not found as HIT3");
+                }
+                if (ushort.TryParse(nhit4, NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+                    hit4 = key;
+                } else if (nhit4 != "") {
+                    Constants.WriteDebug(nhit4 + " not found as HIT4");
+                }
+                if (ushort.TryParse(nhit5, NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+                    hit5 = key;
+                } else if (nhit5 != "") {
+                    Constants.WriteDebug(nhit5 + " not found as HIT5");
+                }
+            }
+        }
+
         public class CharacterStats {
             short max_hp = 1;
             byte spd = 1;
@@ -1767,30 +2205,36 @@ namespace Dragoon_Modifier {
                     }), DispatcherPriority.ContextIdle);
                 }
 
-                LoadMaxHPTable();
+                LoadMaxHPTable(false);
 
                 if (inventorySize != 32) {
                     ExtendInventory();
                 }
 
                 try {
-                    if (dmScripts.ContainsKey("btnSaveAnywhere") && dmScripts["btnSaveAnywhere"])
-                        SaveAnywhere();
-                    if (dmScripts.ContainsKey("btnIconChanges") && dmScripts["btnIconChanges"])
-                        IconChanges();
-                    if (dmScripts.ContainsKey("btnShopChanges") && dmScripts["btnShopChanges"])
+                    if (Globals.SHOP_CHANGE)
                         ShopChanges();
-                    if (dmScripts.ContainsKey("btnSoloMode") && dmScripts["btnSoloMode"])
+                    if (Globals.CheckDMScript("btnSaveAnywhere"))
+                        SaveAnywhere();
+                    if ((Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) && Globals.ITEM_CHANGE)
+                        IconChanges();
+                    if (Globals.CheckDMScript("btnSoloMode"))
                         SoloModeField();
-                    if (dmScripts.ContainsKey("btnHPCapBreak") && dmScripts["btnHPCapBreak"])
+                    if (Globals.CheckDMScript("btnDuoMode"))
+                        DuoModeField();
+                    if (Globals.CheckDMScript("btnHPCapBreak"))
                         HPCapBreakField();
-                    if (dmScripts.ContainsKey("btnKillBGM") && dmScripts["btnKillBGM"] && killBGMField)
+                    if (Globals.CheckDMScript("btnKillBGM") && killBGMField)
                         KillBGMField();
-                    if (dmScripts.ContainsKey("btnCharmPotion") && dmScripts["btnCharmPotion"])
+                    if (Globals.CheckDMScript("btnCharmPotion"))
                         AutoCharmPotion();
-                    if (dmScripts.ContainsKey("btnEquipChanges") && dmScripts["btnEquipChanges"])
+                    if ((Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) && Globals.ITEM_CHANGE)
                         EquipChangesField();
-                    if (dmScripts.ContainsKey("btnUltimateBoss") && dmScripts["btnUltimateBoss"])
+                    if (Globals.CheckDMScript("btnBlackRoom"))
+                        BlackRoomField();
+                    if (Globals.CheckDMScript("btnEarlyAdditions"))
+                        EarlyAdditions();
+                    if (Globals.CheckDMScript("btnUltimateBoss"))
                         UltimateBossField();
                 } catch (Exception ex) {
                     Constants.RUN = false;
@@ -1800,8 +2244,13 @@ namespace Dragoon_Modifier {
                     Constants.WriteDebug(ex.ToString());
                 }
 
+
                 Thread.Sleep(500);
                 this.Dispatcher.BeginInvoke(new Action(() => {
+                    if (Globals.CheckDMScript("btnReader") && !readerWindow.IsOpen) {
+                        Globals.dmScripts["btnReader"] = false;
+                        TurnOnOffButton(ref btnReader);
+                    }
                     FieldUI();
                 }), DispatcherPriority.ContextIdle);
             }
@@ -1822,18 +2271,21 @@ namespace Dragoon_Modifier {
 
                 this.Dispatcher.BeginInvoke(new Action(() => {
                     if (Globals.IN_BATTLE && !Constants.BATTLE_UI) {
+                        Globals.BEFORE_BATTLE_MAP = emulator.ReadShort(Constants.GetAddress("MAP"));
                         for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                            monsterDisplay[i, 0].Text = emulator.ReadName(0xC69D0 + (0x2C * i));
+                            monsterDisplay[i, 0].Text = emulator.ReadName(Constants.GetAddress("MONSTERS_NAMES") + (0x2C * i));
                         }
                     }
                 }), DispatcherPriority.ContextIdle);
 
                 try {
-                    if (dmScripts.ContainsKey("btnRemoveCaps") && dmScripts["btnRemoveCaps"])
+                    if (Globals.CheckDMScript("btnRemoveCaps"))
                         RemoveDamageCap();
-                    if (dmScripts.ContainsKey("btnSoloMode") && dmScripts["btnSoloMode"])
+                    if (Globals.CheckDMScript("btnSoloMode"))
                         SoloModeBattle();
-                    if (dmScripts.ContainsKey("btnDragoonChanges") && dmScripts["btnDragoonChanges"]) {
+                    if (Globals.CheckDMScript("btnDuoMode"))
+                        DuoModeBattle();
+                    if ((Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) && !Globals.DRAGOON_CHANGE) {
                         DragoonChanges();
                         if (burnActive) {
                             for (int i = 0; i < 3; i++) {
@@ -1842,36 +2294,48 @@ namespace Dragoon_Modifier {
                                     if (action == 0 || action == 2) {
                                         Globals.CHARACTER_TABLE[i].Write("AT", originalCharacterStats[i, 1]);
                                         Globals.CHARACTER_TABLE[i].Write("MAT", originalCharacterStats[i, 2]);
+                                        dartBurnStack = 0;
                                         burnActive = false;
+                                        Constants.WriteGLogOutput("Burn stack deactivated.");
                                     }
                                 }
                             }
                         }
                     }
-                    if (dmScripts.ContainsKey("btnHPCapBreak") && dmScripts["btnHPCapBreak"])
+                    if (Globals.CheckDMScript("btnHPCapBreak"))
                         HPCapBreakBattle();
-                    if (dmScripts.ContainsKey("btnAspectRatio") && dmScripts["btnAspectRatio"])
+                    if (Globals.CheckDMScript("btnAspectRatio"))
                         ChangeAspectRatio();
-                    if (dmScripts.ContainsKey("btnKillBGM") && dmScripts["btnKillBGM"] && killBGMBattle)
+                    if (Globals.CheckDMScript("btnKillBGM") && killBGMBattle)
                         KillBGMBattle();
-                    if (dmScripts.ContainsKey("btnElementalBomb") && dmScripts["btnElementalBomb"])
+                    if (Globals.CheckDMScript("btnElementalBomb"))
                         ElementalBomb();
-                    if (dmScripts.ContainsKey("btnNoDragoon") && dmScripts["btnNoDragoon"])
+                    if (Globals.CheckDMScript("btnNoDragoon"))
                         NoDragoonMode();
-                    if (dmScripts.ContainsKey("btnHalfSP") && dmScripts["btnHalfSP"])
+                    if (Globals.CheckDMScript("btnHalfSP"))
                         AdditionHalfSPChanges();
-                    if (dmScripts.ContainsKey("btnAdditionChanges") && dmScripts["btnAdditionChanges"])
-                        AdditionDamageChanges();
-                    if (dmScripts.ContainsKey("btnSoulEater") && dmScripts["btnSoulEater"])
+                    if (Globals.CheckDMScript("btnSoulEater"))
                         NoHPDecaySoulEater();
-                    if (dmScripts.ContainsKey("btnHPNames") && dmScripts["btnHPNames"])
+                    if (Globals.CheckDMScript("btnHPNames"))
                         MonsterHPNames();
-                    if (dmScripts.ContainsKey("btnUltimateBoss") && dmScripts["btnUltimateBoss"])
+                    if (Globals.CheckDMScript("btnUltimateBoss") && keepStats)
                         UltimateBossBattle();
-                    if (dmScripts.ContainsKey("btnDamageTracker") && dmScripts["btnDamageTracker"])
+                    if (Globals.CheckDMScript("btnDamageTracker"))
                         DamageTracker();
-                    if (dmScripts.ContainsKey("btnEquipChanges") && dmScripts["btnEquipChanges"])
+                    if (Globals.CheckDMScript("btnBlackRoom"))
+                        BlackRoomBattle();
+                    if (Globals.DIFFICULTY_MODE.Equals("Hell"))
+                        ApplyNoEscape();
+                    if (Globals.DIFFICULTY_MODE.Equals("Hell"))
+                        BossSPLoss();
+                    if ((Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) && Globals.ITEM_CHANGE)
                         EquipChangesBattle();
+                    if (Globals.CheckDMScript("btnRows") && !Globals.DIFFICULTY_MODE.Equals("Hell"))
+                        BattleFormationRows();
+                    if (Globals.CheckDMScript("btnEATB"))
+                        EATB();
+                    if (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell"))
+                        DoubleRepeat();
                 } catch (Exception ex) {
                     Constants.RUN = false;
                     Constants.WriteGLog("Program stopped.");
@@ -1935,156 +2399,350 @@ namespace Dragoon_Modifier {
                     }), DispatcherPriority.ContextIdle);
                 }
 
-                if (Globals.CURRENT_TIME >= (Globals.LAST_HOTKEY + 2)) {
-                    if (!Globals.IN_BATTLE) { //Field
-                        if (Globals.HOTKEY == (Hotkey.KEY_SQUARE + Hotkey.KEY_CIRCLE)) { //Change Lohan Shop
-                            ChangeShop();
-                            Globals.LAST_HOTKEY = Constants.GetTime();
-                        }
-                    } else { //Battle
-                        if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_UP)) { //Exit Dragoon Slot 1
-                            if (emulator.ReadByte(Constants.GetAddress("DRAGOON_TURNS")) > 0) {
-                                emulator.WriteByte(Constants.GetAddress("DRAGOON_TURNS"), 1);
-                                Constants.WriteGLogOutput("Slot 1 will exit Dragoon after next action.");
+                if (presetHotkeys) {
+                    if (Globals.CURRENT_TIME >= (Globals.LAST_HOTKEY + 3)) {
+                        if (!Globals.IN_BATTLE) { //Field
+                            if (Globals.HOTKEY == (Hotkey.KEY_L2 + Hotkey.KEY_SQUARE)) { //Shana - GoH
+                                if (emulator.ReadShort(Constants.GetAddress("CHAR_TABLE") + 0xA + 0x2C * 2) >= 30) {
+                                    for (int i = 0; i < 9; i++) {
+                                        emulator.WriteShort(Constants.GetAddress("CHAR_TABLE") + 0x8 + 0x2C * i, 9999);
+                                    }
+                                    emulator.WriteShort(Constants.GetAddress("CHAR_TABLE") + 0xA + 0x2C * 2, (ushort) (emulator.ReadShort(Constants.GetAddress("CHAR_TABLE") + 0xA + 0x2C * 2) - 30));
+                                    Constants.WriteGLogOutput("Shana used Gates of Heaven.");
+                                    Globals.LAST_HOTKEY = Constants.GetTime();
+                                }
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_L2 + Hotkey.KEY_CROSS)) { //???
+                                if (emulator.ReadShort(Constants.GetAddress("CHAR_TABLE") + 0xA + 0x2C * 8) >= 30) {
+                                    for (int i = 0; i < 9; i++) {
+                                        emulator.WriteShort(Constants.GetAddress("CHAR_TABLE") + 0x8 + 0x2C * i, 9999);
+                                    }
+                                    emulator.WriteShort(Constants.GetAddress("CHAR_TABLE") + 0xA + 0x2C * 8, (ushort) (emulator.ReadShort(Constants.GetAddress("CHAR_TABLE") + 0xA + 0x2C * 8) - 30));
+                                    Constants.WriteGLogOutput("Miranda used Gates of Heaven.");
+                                    Globals.LAST_HOTKEY = Constants.GetTime();
+                                }
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_L2 + Hotkey.KEY_CIRCLE)) { //Meru - RB
+                                if (emulator.ReadShort(Constants.GetAddress("CHAR_TABLE") + 0xA + 0x2C * 6) >= 30) {
+                                    for (int i = 0; i < 9; i++) {
+                                        emulator.WriteShort(Constants.GetAddress("CHAR_TABLE") + 0x8 + 0x2C * i, 9999);
+                                    }
+                                    emulator.WriteShort(Constants.GetAddress("CHAR_TABLE") + 0xA + 0x2C * 6, (ushort) (emulator.ReadShort(Constants.GetAddress("CHAR_TABLE") + 0xA + 0x2C * 6) - 30));
+                                    Constants.WriteGLogOutput("Meru used Rainbow Breath.");
+                                    Globals.LAST_HOTKEY = Constants.GetTime();
+                                }
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_SELECT + Hotkey.KEY_L3)) { //Add Shana
+                                emulator.WriteShort(Constants.GetAddress("CHAR_TABLE") + 0x4 + 0x2C * 2, 3);
+                                Constants.WriteGLogOutput("Added Shana.");
+                                Globals.LAST_HOTKEY = Constants.GetTime();
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_SELECT + Hotkey.KEY_R3)) { //Add Lavitz
+                                emulator.WriteShort(Constants.GetAddress("CHAR_TABLE") + 0x4 + 0x2C * 1, 3);
+                                Constants.WriteGLogOutput("Added Lavitz.");
+                                Globals.LAST_HOTKEY = Constants.GetTime();
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_CROSS + Hotkey.KEY_L1)) { //Add Dragoon
+                                if (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) {
+                                    if (Globals.MAP == 10) {
+                                        emulator.WriteByte(Constants.GetAddress("DRAGOON_SPIRITS"), 127);
+                                        Constants.WriteGLogOutput("All Dragoons at Start.");
+                                        Globals.LAST_HOTKEY = Constants.GetTime();
+                                    }
+                                } else {
+                                    if (Globals.MAP == 232) {
+                                        byte dragoons = emulator.ReadByte(Constants.GetAddress("DRAGOON_SPIRITS"));
+                                        dragoons |= 1 << 0;
+                                        emulator.WriteByte(Constants.GetAddress("DRAGOON_SPIRITS"), dragoons);
+                                        Constants.WriteGLogOutput("Added Dart's Dragoon.");
+                                        Globals.LAST_HOTKEY = Constants.GetTime();
+                                    }
+                                }
+                                if (Globals.CheckDMScript("btnSoloMode") || Globals.CheckDMScript("btnDuoMode")) {
+                                    for (int i = 0; i < 9; i++) {
+                                        emulator.WriteInteger(Constants.GetAddress("CHAR_TABLE") + 0x0 + 0x2C * i, 0);  // EXP
+                                        emulator.WriteByte(Constants.GetAddress("CHAR_TABLE") + 0x4 + 0x2C * i, 3);  // In Party
+                                        emulator.WriteByte(Constants.GetAddress("CHAR_TABLE") + 0x12 + 0x2C * i, 1); // Level
+                                        if (i > 2 && (i != 5 || i != 8)) {
+                                            emulator.WriteByte(Constants.GetAddress("CHAR_TABLE") + 0x14 + 0x2C * i, 0); // Weapon
+                                            emulator.WriteByte(Constants.GetAddress("CHAR_TABLE") + 0x15 + 0x2C * i, 76); // Armor
+                                            emulator.WriteByte(Constants.GetAddress("CHAR_TABLE") + 0x16 + 0x2C * i, 46); // Helmet
+                                            emulator.WriteByte(Constants.GetAddress("CHAR_TABLE") + 0x17 + 0x2C * i, 93); // Shoe
+                                        }
+                                    }
+                                    Constants.WriteGLogOutput("Solo Mode all character start.");
+                                    Globals.LAST_HOTKEY = Constants.GetTime();
+                                }
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_CROSS + Hotkey.KEY_R1)) { //Gold Quest
+                                if (Globals.MAP == 333) {
+                                    if (goldQuest == 0) {
+                                        goldQuest = emulator.ReadInteger(Constants.GetAddress("GOLD"));
+                                        Constants.WriteGLogOutput("Extra gold set, complete the quest and press this hotkey again.");
+                                        Globals.LAST_HOTKEY = Constants.GetTime();
+                                    } else if (goldQuest + 500 == emulator.ReadInteger(Constants.GetAddress("GOLD"))) {
+                                        emulator.WriteInteger(Constants.GetAddress("GOLD"), goldQuest + 2500);
+                                        Constants.WriteGLogOutput("5x gold.");
+                                        Globals.LAST_HOTKEY = Constants.GetTime();
+                                    }
+                                }
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_SQUARE + Hotkey.KEY_TRIANGLE)) { //Divine Dragoon
+                                byte dragoonSpirits = emulator.ReadByte(Constants.GetAddress("DRAGOON_SPIRITS"));
+                                if (Globals.DIFFICULTY_MODE.Equals("Hard")) {
+                                    if (Globals.MAP == 424 || Globals.MAP == 736) {
+                                        if (dragoonSpirits == 127) {
+                                            emulator.WriteByte(Constants.GetAddress("DRAGOON_SPIRITS"), 254);
+                                            Constants.WriteGLogOutput("Change to Divine Dragon mode.");
+                                            Globals.LAST_HOTKEY = Constants.GetTime();
+                                        } else if (dragoonSpirits == 254) {
+                                            emulator.WriteByte(Constants.GetAddress("DRAGOON_SPIRITS"), 127);
+                                            Constants.WriteGLogOutput("Changed to Red-Eyed Dragon mode.");
+                                            Globals.LAST_HOTKEY = Constants.GetTime();
+                                        } else {
+                                            Constants.WriteGLogOutput("You need all dragoon mode.");
+                                            Globals.LAST_HOTKEY = Constants.GetTime();
+                                        }
+                                    }
+                                } else if (Globals.DIFFICULTY_MODE.Equals("Hell") && ultimateBossCompleted >= 34) {
+                                    if (Globals.MAP == 424 || Globals.MAP == 736) {
+                                        if (dragoonSpirits == 127) {
+                                            emulator.WriteByte(Constants.GetAddress("DRAGOON_SPIRITS"), 254);
+                                            Constants.WriteGLogOutput("Change to Divine Dragon mode.");
+                                            Globals.LAST_HOTKEY = Constants.GetTime();
+                                        } else if (dragoonSpirits == 254) {
+                                            emulator.WriteByte(Constants.GetAddress("DRAGOON_SPIRITS"), 127);
+                                            Constants.WriteGLogOutput("Changed to Red-Eyed Dragon mode.");
+                                            Globals.LAST_HOTKEY = Constants.GetTime();
+                                        } else {
+                                            Constants.WriteGLogOutput("You need all dragoon mode.");
+                                            Globals.LAST_HOTKEY = Constants.GetTime();
+                                        }
+                                    }
+                                }
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_SQUARE + Hotkey.KEY_CROSS)) { //Faust Battle
+                                if (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) {
+                                    if (Globals.MAP == 732) {
+                                        emulator.WriteShort(Constants.GetAddress("BATTLE_FIELD"), 78);
+                                        emulator.WriteShort(Constants.GetAddress("ENCOUNTER_ID"), 420);
+                                    }
+                                }
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_START + Hotkey.KEY_L3)) { //Moon Warp
+                                if (Globals.MAP == 729 || Globals.MAP == 730 || Globals.MAP == 527)
+                                    emulator.WriteShort(Constants.GetAddress("MAP"), 527);
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_START + Hotkey.KEY_R3)) { //Moon Warp 2
+                                if (Globals.MAP == 597 || Globals.MAP == 521 || Globals.MAP == 524 || Globals.MAP == 526 || Globals.MAP == 527 || Globals.MAP == 729 || Globals.MAP == 9)
+                                    emulator.WriteShort(Constants.GetAddress("MAP"), 729);
+                                if (Globals.BATTLE_VALUE == 0 && Globals.CHAPTER == 4 && (Globals.BEFORE_BATTLE_MAP >= 401 && Globals.BEFORE_BATTLE_MAP <= 405))
+                                    emulator.WriteShort(Constants.GetAddress("MAP"), 402);
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_CIRCLE + Hotkey.KEY_TRIANGLE)) { //Skip Dialog
+                                emulator.WriteByte(Constants.GetAddress("SKIP_DIALOG_1"), 0);
+                                emulator.WriteByte(Constants.GetAddress("SKIP_DIALOG_2"), 0);
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_CROSS + Hotkey.KEY_RIGHT)) { //UB Gold
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_SQUARE + Hotkey.KEY_UP)) { //*TB Slot 1
+                                if (extraTurnBattleC[0] > 6000) {
+                                    ExtraTurnBattle(ref extraTurnBattleC[0], 0);
+                                    Globals.LAST_HOTKEY = Constants.GetTime();
+                                }
+
+                                if (Globals.CheckDMScript("btnQTB") && qtbTurns > 0) {
+                                    if (Globals.PARTY_SLOT[0] == uiCombo["cboQTB"]) {
+                                        qtbTurns -= 1;
+                                        SubQTB(0);
+                                        Globals.LAST_HOTKEY = Constants.GetTime();
+                                    } else {
+                                        SubQTB(0);
+                                        Globals.LAST_HOTKEY = Constants.GetTime();
+                                    }
+                                }
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_SQUARE + Hotkey.KEY_RIGHT)) { //*TB Slot 2
+                                if (extraTurnBattleC[1] > 6000) {
+                                    ExtraTurnBattle(ref extraTurnBattleC[1], 0);
+                                    Globals.LAST_HOTKEY = Constants.GetTime();
+                                }
+
+                                if (Globals.CheckDMScript("btnQTB") && qtbTurns > 0) {
+                                    if (Globals.PARTY_SLOT[1] == uiCombo["cboQTB"]) {
+                                        qtbTurns -= 1;
+                                        SubQTB(1);
+                                        Globals.LAST_HOTKEY = Constants.GetTime();
+                                    } else {
+                                        SubQTB(1);
+                                        Globals.LAST_HOTKEY = Constants.GetTime();
+                                    }
+                                }
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_SQUARE + Hotkey.KEY_LEFT)) { //*TB Slot 3
+                                if (extraTurnBattleC[2] > 6000) {
+                                    ExtraTurnBattle(ref extraTurnBattleC[2], 0);
+                                    Globals.LAST_HOTKEY = Constants.GetTime();
+                                }
+
+                                if (Globals.CheckDMScript("btnQTB") && qtbTurns > 0) {
+                                    if (Globals.PARTY_SLOT[2] == uiCombo["cboQTB"]) {
+                                        qtbTurns -= 1;
+                                        SubQTB(2);
+                                        Globals.LAST_HOTKEY = Constants.GetTime();
+                                    } else {
+                                        SubQTB(2);
+                                        Globals.LAST_HOTKEY = Constants.GetTime();
+                                    }
+                                }
+
+                            }
+                        } else { //Battle
+                            if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_UP)) { //Exit Dragoon Slot 1
+                                if (emulator.ReadByte(Constants.GetAddress("DRAGOON_TURNS")) > 0) {
+                                    emulator.WriteByte(Constants.GetAddress("DRAGOON_TURNS"), 1);
+                                    Constants.WriteGLogOutput("Slot 1 will exit Dragoon after next action.");
+                                    Globals.LAST_HOTKEY = Constants.GetTime();
+                                }
+                            }
+                            if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_RIGHT)) { //Exit Dragoon Slot 2
+                                if (emulator.ReadByte(Constants.GetAddress("DRAGOON_TURNS") + 0x4) > 0) {
+                                    emulator.WriteByte(Constants.GetAddress("DRAGOON_TURNS") + 0x4, 1);
+                                    Constants.WriteGLogOutput("Slot 2 will exit Dragoon after next action.");
+                                    Globals.LAST_HOTKEY = Constants.GetTime();
+                                }
+                            }
+                            if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_LEFT)) { //Exit Dragoon Slot 3
+                                if (emulator.ReadByte(Constants.GetAddress("DRAGOON_TURNS") + 0x8) > 0) {
+                                    emulator.WriteByte(Constants.GetAddress("DRAGOON_TURNS") + 0x8, 1);
+                                    Constants.WriteGLogOutput("Slot 3 will exit Dragoon after next action.");
+                                    Globals.LAST_HOTKEY = Constants.GetTime();
+                                }
+                            }
+                            if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_LEFT)) { //*TB Slot 1
+
+                            }
+                            if (Globals.HOTKEY == (Hotkey.KEY_CIRCLE + Hotkey.KEY_LEFT)) { //Burn Stack
+                                if (!burnActive) {
+                                    for (int i = 0; i < 3; i++) {
+                                        if (Globals.PARTY_SLOT[i] == 0) {
+                                            byte action = Globals.CHARACTER_TABLE[i].Read("Action");
+                                            if (action == 8 || action == 10) {
+                                                Globals.CHARACTER_TABLE[i].Write("AT", Math.Round(originalCharacterStats[i, 1] * (1 + (dartBurnStack * 0.2)))); Globals.CHARACTER_TABLE[i].Write("MAT", Math.Round(originalCharacterStats[i, 2] * (1 + (dartBurnStack * 0.2))));
+                                                burnActive = true;
+                                                Constants.WriteGLogOutput("Burn stack activated.");
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    Constants.WriteGLogOutput("Burn stack is already active.");
+                                }
                                 Globals.LAST_HOTKEY = Constants.GetTime();
                             }
-                        }
-                        if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_RIGHT)) { //Exit Dragoon Slot 2
-                            if (emulator.ReadByte(Constants.GetAddress("DRAGOON_TURNS") + 0x4) > 0) {
-                                emulator.WriteByte(Constants.GetAddress("DRAGOON_TURNS") + 0x4, 1);
-                                Constants.WriteGLogOutput("Slot 2 will exit Dragoon after next action.");
-                                Globals.LAST_HOTKEY = Constants.GetTime();
-                            }
-                        }
-                        if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_LEFT)) { //Exit Dragoon Slot 3
-                            if (emulator.ReadByte(Constants.GetAddress("DRAGOON_TURNS") + 0x8) > 0) {
-                                emulator.WriteByte(Constants.GetAddress("DRAGOON_TURNS") + 0x8, 1);
-                                Constants.WriteGLogOutput("Slot 3 will exit Dragoon after next action.");
-                                Globals.LAST_HOTKEY = Constants.GetTime();
-                            }
-                        }
-                        if (Globals.HOTKEY == (Hotkey.KEY_CIRCLE + Hotkey.KEY_LEFT)) { //Burn Stack
-                            if (!burnActive) {
+                            if (Globals.HOTKEY == (Hotkey.KEY_CIRCLE + Hotkey.KEY_RIGHT)) { //Dragon Buster II
+                                bool skip = true;
                                 for (int i = 0; i < 3; i++) {
-                                    if (Globals.PARTY_SLOT[i] == 0) {
-                                        byte action = Globals.CHARACTER_TABLE[i].Read("Action");
-                                        if (action == 8 || action == 10) {
-                                            Globals.CHARACTER_TABLE[i].Write("AT", Math.Round(originalCharacterStats[i, 1] * (1 + (dartBurnStack * 0.2))));
-                                            Globals.CHARACTER_TABLE[i].Write("MAT", Math.Round(originalCharacterStats[i, 2] * (1 + (dartBurnStack * 0.2))));
-                                            burnActive = true;
-                                            Constants.WriteGLogOutput("Burn stack activated.");
-                                        }
+                                    if (Globals.PARTY_SLOT[i] == 3 && Globals.CHARACTER_TABLE[i].Read("Weapon") == 162) {
+                                        skip = false;
                                     }
                                 }
-                            } else {
-                                Constants.WriteGLogOutput("Burn stack is already active.");
-                            }
-                            Globals.LAST_HOTKEY = Constants.GetTime();
-                        }
-                        if (Globals.HOTKEY == (Hotkey.KEY_CIRCLE + Hotkey.KEY_RIGHT)) { //Dragon Buster II
-                            bool skip = true;
-                            for (int i = 0; i < 3; i++) {
-                                if (Globals.PARTY_SLOT[i] == 3 && Globals.CHARACTER_TABLE[i].Read("Weapon") == 162) {
-                                    skip = false;
-                                }
-                            }
-                            if (!skip) {
-                                if (dmScripts.ContainsKey("btnDragoonChanges") && dmScripts["btnDragoonChanges"] && !checkRoseDamage) {
-                                    if (roseEnhanceDragoon) {
-                                        if (Constants.REGION == Region.USA) {
-                                            emulator.WriteAOB(0x51ADC, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1A 00 1E 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 00 00 30 00 3D 00 3B 00 4E 00 FF A0");
-                                            emulator.WriteAOB(0x51B14, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 18 00 1E 00 1A 00 0F 00 00 00 10 00 00 00 24 00 3D 00 39 00 4A 00 FF A0");
-                                            emulator.WriteAOB(0x51BA8, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 16 00 1B 00 1D 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 00 00 FF A0");
+                                if (!skip) {
+                                    if (Globals.CheckDMScript("btnDragoonChanges") && !checkRoseDamage) {
+                                        if (roseEnhanceDragoon) {
+                                            if (Constants.REGION == Region.USA) {
+                                                emulator.WriteAOB(0x51ADC, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1A 00 1E 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 00 00 30 00 3D 00 3B 00 4E 00 FF A0");
+                                                emulator.WriteAOB(0x51B14, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 18 00 1E 00 1A 00 0F 00 00 00 10 00 00 00 24 00 3D 00 39 00 4A 00 FF A0");
+                                                emulator.WriteAOB(0x51BA8, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 16 00 1B 00 1D 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 00 00 FF A0");
+                                            }
+                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (15 * 0xC), 10); //Astral Drain MP
+                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (16 * 0xC), 20); //Death Dimension MP
+                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (19 * 0xC), 80); //Dark Dragon MP
+                                            roseEnhanceDragoon = false;
+                                            Constants.WriteGLogOutput("Rose's dragoon magic has returned to normal.");
+                                        } else {
+                                            if (Constants.REGION == Region.USA) {
+                                                emulator.WriteAOB(0x51ADC, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1D 00 17 00 1A 00 0F 00 00 00 10 00 00 00 26 00 2E 00 00 00 30 00 3D 00 3B 00 4E 00 FF A0");
+                                                emulator.WriteAOB(0x51B14, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1C 00 1E 00 15 00 0F 00 00 00 10 00 00 00 24 00 3D 00 39 00 4A 00 FF A0");
+                                                emulator.WriteAOB(0x51BA8, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 16 00 16 00 1A 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 FF A0");
+                                            }
+                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (15 * 0xC), 20); //Astral Drain MP
+                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (16 * 0xC), 50); //Death Dimension MP
+                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (19 * 0xC), 100); //Dark Dragon MP
+                                            roseEnhanceDragoon = true;
+                                            Constants.WriteGLogOutput("Rose will now consume more MP for bonus effects.");
                                         }
-                                        emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (15 * 0xC), 10); //Astral Drain MP
-                                        emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (16 * 0xC), 20); //Death Dimension MP
-                                        emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (19 * 0xC), 80); //Dark Dragon MP
-                                        roseEnhanceDragoon = false;
-                                        Constants.WriteGLogOutput("Rose's dragoon magic has returned to normal.");
                                     } else {
-                                        if (Constants.REGION == Region.USA) {
-                                            emulator.WriteAOB(0x51ADC, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1D 00 17 00 1A 00 0F 00 00 00 10 00 00 00 26 00 2E 00 00 00 30 00 3D 00 3B 00 4E 00 FF A0");
-                                            emulator.WriteAOB(0x51B14, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1C 00 1E 00 15 00 0F 00 00 00 10 00 00 00 24 00 3D 00 39 00 4A 00 FF A0");
-                                            emulator.WriteAOB(0x51BA8, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 16 00 16 00 1A 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 FF A0");
-                                        }
-                                        emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (15 * 0xC), 20); //Astral Drain MP
-                                        emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (16 * 0xC), 50); //Death Dimension MP
-                                        emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (19 * 0xC), 100); //Dark Dragon MP
-                                        roseEnhanceDragoon = true;
-                                        Constants.WriteGLogOutput("Rose will now consume more MP for bonus effects.");
+                                        Constants.WriteGLogOutput("You can't swap MP modes right now.");
                                     }
                                 } else {
-                                    Constants.WriteGLogOutput("You can't swap MP modes right now.");
+                                    Constants.WriteGLogOutput("Dragon Buster II not equipped.");
                                 }
-                            } else {
-                                Constants.WriteGLogOutput("Dragon Buster II not equipped.");
+                                Globals.LAST_HOTKEY = Constants.GetTime();
                             }
-                            Globals.LAST_HOTKEY = Constants.GetTime();
-                        }
-                        if (Globals.HOTKEY == (Hotkey.KEY_CIRCLE + Hotkey.KEY_DOWN)) { //Jeweled Hammer
-                            bool skip = true;
-                            for (int i = 0; i < 3; i++) {
-                                if (Globals.PARTY_SLOT[i] == 6 && Globals.CHARACTER_TABLE[i].Read("Weapon") == 164) {
-                                    skip = false;
+                            if (Globals.HOTKEY == (Hotkey.KEY_CIRCLE + Hotkey.KEY_DOWN)) { //Jeweled Hammer
+                                bool skip = true;
+                                for (int i = 0; i < 3; i++) {
+                                    if (Globals.PARTY_SLOT[i] == 6 && Globals.CHARACTER_TABLE[i].Read("Weapon") == 164) {
+                                        skip = false;
+                                    }
                                 }
-                            }
-                            if (!skip) {
-                                if (dmScripts.ContainsKey("btnDragoonChanges") && dmScripts["btnDragoonChanges"] && !checkRoseDamage) {
-                                    if (jeweledHammer) {
-                                        if (Constants.REGION == Region.USA) {
-                                            emulator.WriteAOB(0x51CA8, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1A 00 16 00 15 00 0F 00 FF A0");
-                                            emulator.WriteAOB(0x51D3C, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1A 00 18 00 15 00 0F 00 FF A0");
-                                            emulator.WriteAOB(0x51D64, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 16 00 19 00 15 00 15 00 0F 00 FF A0");
+                                if (!skip) {
+                                    if (Globals.CheckDMScript("btnDragoonChanges") && !checkRoseDamage) {
+                                        if (jeweledHammer) {
+                                            if (Constants.REGION == Region.USA) {
+                                                emulator.WriteAOB(0x51CA8, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1A 00 16 00 15 00 0F 00 FF A0");
+                                                emulator.WriteAOB(0x51D3C, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1A 00 18 00 15 00 0F 00 FF A0");
+                                                emulator.WriteAOB(0x51D64, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 16 00 19 00 15 00 15 00 0F 00 FF A0");
+                                            }
+                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (24 * 0xC), 10); //Freezing Ring MP
+                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (25 * 0xC), 20); //Rainbow Breath MP
+                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (27 * 0xC), 80); //Diamond Dust MP
+                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (28 * 0xC), 80); //Blue Sea Dragon MP
+                                            jeweledHammer = false;
+                                            Constants.WriteGLogOutput("Meru's dragoon magic has returned to normal.");
+                                        } else {
+                                            if (Constants.REGION == Region.USA) {
+                                                emulator.WriteAOB(0x51CA8, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1D 00 15 00 15 00 0F 00 FF A0");
+                                                emulator.WriteAOB(0x51D3C, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1D 00 1D 00 15 00 0F 00 FF A0");
+                                                emulator.WriteAOB(0x51D64, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 17 00 16 00 15 00 15 00 0F 00 FF A0");
+                                            }
+                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (24 * 0xC), 50); //Freezing Ring MP
+                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (25 * 0xC), 100); //Rainbow Breath MP
+                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (27 * 0xC), 100); //Diamond Dust MP
+                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (28 * 0xC), 150); //Blue Sea Dragon MP
+                                            jeweledHammer = true;
+                                            Constants.WriteGLogOutput("Meru will now consume more MP for bonus effects.");
                                         }
-                                        emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (24 * 0xC), 10); //Freezing Ring MP
-                                        emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (25 * 0xC), 20); //Rainbow Breath MP
-                                        emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (27 * 0xC), 80); //Diamond Dust MP
-                                        emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (28 * 0xC), 80); //Blue Sea Dragon MP
-                                        jeweledHammer = false;
-                                        Constants.WriteGLogOutput("Meru's dragoon magic has returned to normal.");
                                     } else {
-                                        if (Constants.REGION == Region.USA) {
-                                            emulator.WriteAOB(0x51CA8, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1D 00 15 00 15 00 0F 00 FF A0");
-                                            emulator.WriteAOB(0x51D3C, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1D 00 1D 00 15 00 0F 00 FF A0");
-                                            emulator.WriteAOB(0x51D64, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 17 00 16 00 15 00 15 00 0F 00 FF A0");
-                                        }
-                                        emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (24 * 0xC), 50); //Freezing Ring MP
-                                        emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (25 * 0xC), 100); //Rainbow Breath MP
-                                        emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (27 * 0xC), 100); //Diamond Dust MP
-                                        emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (28 * 0xC), 150); //Blue Sea Dragon MP
-                                        jeweledHammer = true;
-                                        Constants.WriteGLogOutput("Meru will now consume more MP for bonus effects.");
+                                        Constants.WriteGLogOutput("You can't swap MP modes right now.");
                                     }
                                 } else {
-                                    Constants.WriteGLogOutput("You can't swap MP modes right now.");
+                                    Constants.WriteGLogOutput("Jeweled Hammer not equipped.");
                                 }
-                            } else {
-                                Constants.WriteGLogOutput("Jeweled Hammer not equipped.");
+                                Globals.LAST_HOTKEY = Constants.GetTime();
                             }
-                            Globals.LAST_HOTKEY = Constants.GetTime();
-                        }
-                        if (Globals.HOTKEY == (Hotkey.KEY_L2 + Hotkey.KEY_LEFT)) { //Soa's Wargod
-                            if ((134217728 & ultimateShopLimited) != 0) {
-                                ubSoasWargod = ubSoasWargod ? false : true;
-                                Constants.WriteGLogOutput("Soa's Wargod has been " + (ubSoasWargod ? "activated" : "deactivated") + ".");
-                            } else {
-                                Constants.WriteGLogOutput("You do not have Soa's Wargod.");
+                            if (Globals.HOTKEY == (Hotkey.KEY_L2 + Hotkey.KEY_LEFT)) { //Soa's Wargod
+                                if ((134217728 & ultimateShopLimited) != 0) {
+                                    ubSoasWargod = ubSoasWargod ? false : true;
+                                    Constants.WriteGLogOutput("Soa's Wargod has been " + (ubSoasWargod ? "activated" : "deactivated") + ".");
+                                } else {
+                                    Constants.WriteGLogOutput("You do not have Soa's Wargod.");
+                                }
+                                Globals.LAST_HOTKEY = Constants.GetTime();
                             }
-                            Globals.LAST_HOTKEY = Constants.GetTime();
-                        }
-                        if (Globals.HOTKEY == (Hotkey.KEY_L2 + Hotkey.KEY_RIGHT)) { //Soa's Dragoon Boost
-                            if ((268435456 & ultimateShopLimited) != 0) {
-                                ubSoasDragoonBoost = ubSoasDragoonBoost ? false : true;
-                                Constants.WriteGLogOutput("Soa's Dragoon Boost has been " + (ubSoasDragoonBoost ? "activated" : "deactivated") + ".");
-                            } else {
-                                Constants.WriteGLogOutput("You do not have Soa's Dragoon Boost.");
+                            if (Globals.HOTKEY == (Hotkey.KEY_L2 + Hotkey.KEY_RIGHT)) { //Soa's Dragoon Boost
+                                if ((268435456 & ultimateShopLimited) != 0) {
+                                    ubSoasDragoonBoost = ubSoasDragoonBoost ? false : true;
+                                    Constants.WriteGLogOutput("Soa's Dragoon Boost has been " + (ubSoasDragoonBoost ? "activated" : "deactivated") + ".");
+                                } else {
+                                    Constants.WriteGLogOutput("You do not have Soa's Dragoon Boost.");
+                                }
+                                Globals.LAST_HOTKEY = Constants.GetTime();
                             }
-                            Globals.LAST_HOTKEY = Constants.GetTime();
+                            if (Globals.HOTKEY == (Hotkey.KEY_CIRCLE + Hotkey.KEY_R2)) { //Black Room
+                                if (Globals.DIFFICULTY_MODE.Equals("Hell")) {
+                                    Constants.WriteGLogOutput("Killing monsters is not available in Hell Mode.");
+                                } else {
+                                    if (Globals.CheckDMScript("btnBlackRoom")) {
+                                        if ((Globals.MAP >= 5 && Globals.MAP <= 7) || (Globals.MAP >= 624 && Globals.MAP <= 625)) {
+                                            for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
+                                                Globals.MONSTER_TABLE[i].Write("HP", 0);
+                                            }
+                                        }
+                                    }
+                                }
+                                Globals.LAST_HOTKEY = Constants.GetTime();
+                            }
                         }
                     }
                 }
 
-                Thread.Sleep(1000);
+                Thread.Sleep(500);
             }
         }
 
@@ -2104,12 +2762,65 @@ namespace Dragoon_Modifier {
                 Thread.Sleep(1000);
 
                 this.Dispatcher.BeginInvoke(new Action(() => {
-                    if (Globals.NO_DART != null || Globals.HASCHEL != 0) {
+                    if (Globals.NO_DART != null) {
                         if (btnNoDart.Background.ToString() == "#FFFFA8A8") {
                             btnNoDart.Background = new SolidColorBrush(Color.FromArgb(255, 168, 211, 255));
                         }
                     }
                 }), DispatcherPriority.ContextIdle);
+            }
+        }
+
+        public void UltimateController() {
+            while (Globals.IN_BATTLE && Globals.STATS_CHANGED && Constants.RUN) {
+                if (Globals.ENCOUNTER_ID == 442) {
+                    if (ultimateHP[0] > 360000) {
+                        if (ubTrackMTP[0] > Globals.MONSTER_TABLE[0].Read("Turn")) {
+                            byte[] dragoonMagic = { 80, 81, 82 };
+                            int chance = new Random().Next(1, 100);
+                            if (chance > 50) {
+                                ubZiegDragoon = dragoonMagic[0];
+                            } else if (chance > 15) {
+                                ubZiegDragoon = dragoonMagic[1];
+                            } else {
+                                ubZiegDragoon = dragoonMagic[2];
+                            }
+                        }
+                    } else if (ultimateHP[0] > 180000) {
+                        if (ubTrackMTP[0] > Globals.MONSTER_TABLE[0].Read("Turn")) {
+                            byte[] dragoonMagic = { 80, 81, 82, 83 };
+                            int chance = new Random().Next(1, 100);
+                            if (chance > 65) {
+                                ubZiegDragoon = dragoonMagic[2];
+                            } else if (chance > 35) {
+                                ubZiegDragoon = dragoonMagic[1];
+                            } else if (chance > 15) {
+                                ubZiegDragoon = dragoonMagic[0];
+                            } else {
+                                ubZiegDragoon = dragoonMagic[3];
+                            }
+                        }
+                    } else {
+                        if (ubTrackMTP[0] > Globals.MONSTER_TABLE[0].Read("Turn")) {
+                            byte[] dragoonMagic = { 80, 81, 82, 83 };
+                            int chance = new Random().Next(1, 100);
+                            if (chance > 65) {
+                                ubZiegDragoon = dragoonMagic[2];
+                            } else if (chance > 45) {
+                                ubZiegDragoon = dragoonMagic[1];
+                            } else if (chance > 25) {
+                                ubZiegDragoon = dragoonMagic[0];
+                            } else {
+                                ubZiegDragoon = dragoonMagic[3];
+                            }
+                        }
+                    }
+
+                    if (Globals.MONSTER_TABLE[0].Read("Action") == 12)
+                        emulator.WriteByte(Globals.M_POINT - 0x50, ubZiegDragoon);
+                    ubTrackMTP[0] = Globals.MONSTER_TABLE[0].Read("Turn");
+                }
+                Thread.Sleep(100);
             }
         }
         #endregion
@@ -2126,101 +2837,45 @@ namespace Dragoon_Modifier {
 
         #region Shop Changes
         public void ShopChanges() {
-            switch (Globals.MAP) {
-                case 145: // Lohan
-                    if (ReadShop(0x11E0FC) == 229) {
-                        WriteShop(0x11E100, 222);
-                        WriteShop(0x11E102, 30);
-                    } else {
-                        WriteShop(0x11E100, 90);
-                        WriteShop(0x11E102, 7500);
+            if (!Globals.IN_BATTLE) {
+                if (SHOP_MAPS.Contains((int) Globals.MAP)) {
+                    if (Globals.SHOP_CHANGE == true) {
+                        if (SHOP_CHANGED == false && emulator.ReadByteU(Constants.GetAddress("SHOP_BUY-SELL") + Constants.OFFSET) == 3) {
+                            int shop_og_size = ReadShop(0x11E13C, emulator);
+                            int shop = emulator.ReadByteU(Constants.GetAddress("SHOP_ID") + Constants.OFFSET); // Shop ID
+                            Constants.WriteDebug("Shop " + shop + " Changed");
+                            SHOP_CHANGED = true;
+                            int i = 0;
+                            foreach (int[] item in Globals.DICTIONARY.ShopList[shop]) {
+                                WriteShop(0x11E0F8 + i * 4, (ushort) item[0], emulator);
+                                WriteShop(0x11E0F8 + 0x2 + i * 4, (ushort) item[1], emulator);
+                                i += 1;
+                            }
+                            int shop_size = Globals.DICTIONARY.ShopList[shop].Count;
+                            WriteShop(0x11E13C, (ushort) shop_size, emulator);
+                            if (shop_og_size > shop_size) {
+                                for (int z = shop_size; z < 17; z++) {
+                                    WriteShop(0x11E0F8 + z * 4, (ushort) 255, emulator);
+                                    WriteShop(0x11E0F8 + 2 + z * 4, (ushort) 0, emulator);
+                                }
+                            }
+                        } else if (emulator.ReadByteU(Constants.GetAddress("SHOP_BUY-SELL") + Constants.OFFSET) != 3) { // Shop Buy/Sell screen
+                            SHOP_CHANGED = false;
+                        }
                     }
-                    WriteShop(0x11E118, 101);
-                    WriteShop(0x11E11A, 3750);
-                    if (shopChange) {
-                        WriteShop(0x11E11C, 133);
-                        WriteShop(0x11E120, 131);
-                    } else {
-                        WriteShop(0x11E11C, 150);
-                        WriteShop(0x11E120, 151);
-                    }
-                    WriteShop(0x11E0FE, 100);
-                    break;
-                case 180: //Kanzas
-                    WriteShop(0x11E0FE, 80);
-                    break;
-                case 267: //I'm not sure what shop this was supposed to be
-                case 214: //Feltz
-                case 287: //Phantom Ship
-                case 309: //Lideria
-                case 479: //Vellweb
-                    WriteShop(0x11E0FE, 80);
-                    WriteShop(0x11E102, 100);
-                    break;
-                case 247: //Donau
-                case 332: //Furni
-                    WriteShop(0x11E0FE, 100);
-                    break;
-                case 349: //Dennigrad
-                case 357: //Dennigrad
-                    WriteShop(0x11E124, 241);
-                    WriteShop(0x11E0FE, 80);
-                    WriteShop(0x11E102, 100);
-                    break;
-                case 384: //Wingly Forest
-                    if (ReadShop(0x11E0FA) == 30) {
-                        WriteShop(0x11E0FE, 100);
-                        WriteShop(0x11E102, 80);
-                    } else {
-                        WriteShop(0x11E0FE, 600);
-                        WriteShop(0x11E102, 600);
-                    }
-                    break;
-                case 515: //Ulra
-                case 525: //Ulra
-                case 435: //Kashua
-                    WriteShop(0x11E0FE, 100);
-                    WriteShop(0x11E102, 80);
-                    break;
-                case 564: //Rouge
-                    if (ReadShop(0x11E0FA) == 30) {
-                        WriteShop(0x11E0FE, 80);
-                        WriteShop(0x11E102, 100);
-                    } else {
-                        WriteShop(0x11E0FE, 1000);
-                        WriteShop(0x11E102, 1000);
-                    }
-                    break;
-                case 619: //Moon
-                    if (ReadShop(0x11E0FA) == 30) {
-                        WriteShop(0x11E0FE, 80);
-                        WriteShop(0x11E102, 100);
-                    } else {
-                        WriteShop(0x11E0FE, 500);
-                        WriteShop(0x11E102, 500);
-                    }
-                    break;
-                case 530: //Law City
-                    if (ReadShop(0x11E0FC) == 229) {
-                        WriteShop(0x11E0FE, 80);
-                        WriteShop(0x11E102, 100);
-                    } else {
-                        WriteShop(0x11E0FE, 400);
-                        WriteShop(0x11E102, 800);
-                    }
-                    break;
+                }
             }
         }
 
-        public int ReadShop(int address) {
+        public static int ReadShop(int address, Emulator emulator) {
             return emulator.ReadShort(address + ShopOffset());
         }
 
-        public void WriteShop(int address, ushort value) {
+        public static void WriteShop(int address, ushort value, Emulator emulator) {
             emulator.WriteShort(address + ShopOffset(), value);
         }
 
-        public int ShopOffset() {
+        public static int ShopOffset() {
             int offset = 0x0;
             if (Constants.REGION == Region.JPN) {
                 offset -= 0x4D90;
@@ -2228,34 +2883,6 @@ namespace Dragoon_Modifier {
                 offset += 0x120;
             }
             return offset;
-        }
-
-        /*public int GetShopItem(int slot) {
-            return emulator.ReadShort(Constants.GetAddress("SHOP") + ((slot - 1) * 0x2));
-        }
-
-        public int GetShopPrice(int slot) {
-            return emulator.ReadShort(Constants.GetAddress("SHOP") + ((slot - 1) * 0x2)) + 0x2;
-        }
-        
-        public void ChangeShopItemPrice(int slot, byte item, ushort price) {
-            emulator.WriteShort(Constants.GetAddress("SHOP") + ((slot - 1) * 0x2), item);
-            emulator.WriteShort(Constants.GetAddress("SHOP") + ((slot - 1) * 0x2) + 0x2, price);
-        }
-        
-        public void ChangeShopItem(int slot, byte item) {
-            emulator.WriteShort(Constants.GetAddress("SHOP") + ((slot - 1) * 0x2), item);
-        }
-        
-        public void ChangeShopPrice(int slot, ushort price) {
-            emulator.WriteShort(Constants.GetAddress("SHOP") + ((slot - 1) * 0x2) + 0x2, price);
-        }*/
-
-        public void ChangeShop() { //SQUARE + CIRCLE
-            if (Globals.BATTLE_VALUE == 0 && Globals.MAP == 145) {
-                shopChange = shopChange ? false : true;
-                Constants.WriteGLogOutput("Changed Lohan shop to state: " + shopChange);
-            }
         }
         #endregion
 
@@ -2380,6 +3007,252 @@ namespace Dragoon_Modifier {
             }
         }
         #endregion
+
+        #region Switch EXP
+        public void SwitchEXP() {
+            long char1 = Constants.GetAddress("CHAR_TABLE") + (0x2C * cboSwitch1.SelectedIndex);
+            long char2 = Constants.GetAddress("CHAR_TABLE") + (0x2C * cboSwitch2.SelectedIndex);
+            int maxEXP = Globals.DIFFICULTY_MODE.Equals("Hell") ? 160000 : 80000;
+
+            if (char1 != char2) {
+                if (emulator.ReadByte(char1 + 0x4) != 0 && emulator.ReadByte(char2 + 0x4) != 0) {
+                    if (emulator.ReadInteger(char1) < maxEXP && emulator.ReadInteger(char2) < maxEXP) {
+                        int tempEXP = emulator.ReadInteger(char1);
+                        emulator.WriteInteger(char1, emulator.ReadInteger(char2));
+                        emulator.WriteInteger(char2, tempEXP);
+                        Constants.WriteGLog("Switch exp of " + cboSwitch1.Text + " and " + cboSwitch2.Text);
+                    } else {
+                        Constants.WriteGLog("One of the characters has " + maxEXP + " or more EXP and can't be switched.");
+                    }
+                } else {
+                    Constants.WriteGLog("One of the characters are not in the party");
+                }
+            } else {
+                Constants.WriteGLog("You can't switch the same character's EXP");
+            }
+        }
+        #endregion
+
+        #region Early Additions
+        public void EarlyAdditions() {
+            if (!Globals.IN_BATTLE && !earlyAdditionsOnFieldEntry) {
+                //Dart
+                emulator.WriteByte(Constants.GetAddress("DART_LEVEL_UNLOCK") * 0xE * 3, 13); //Crush Dance
+                emulator.WriteByte(Constants.GetAddress("DART_LEVEL_UNLOCK") * 0xE * 4, 18); //Madness Hero
+                emulator.WriteByte(Constants.GetAddress("DART_LEVEL_UNLOCK") * 0xE * 5, 23); //Moon Strike
+                emulator.WriteByte(Constants.GetAddress("DART_LEVEL_UNLOCK") * 0xE * 6, 60); //Blazying Dynamo
+                if (emulator.ReadByte(Constants.GetAddress("DART_ADDITION_TOTAL") + 0) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("DART_ADDITION_TOTAL") + 1) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("DART_ADDITION_TOTAL") + 2) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("DART_ADDITION_TOTAL") + 3) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("DART_ADDITION_TOTAL") + 4) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("DART_ADDITION_TOTAL") + 5) >= 80) {
+                    emulator.WriteByte(Constants.GetAddress("DART_LEVEL_UNLOCK") * 0xE * 6, 29); //Blazying Dynamo
+                }
+                //Lavitz
+                emulator.WriteByte(Constants.GetAddress("LAVITZ_LEVEL_UNLOCK") * 0xE * 2, 10); //Rod Typhoon
+                emulator.WriteByte(Constants.GetAddress("LAVITZ_LEVEL_UNLOCK") * 0xE * 3, 16); //Gust of Wind Dance
+                emulator.WriteByte(Constants.GetAddress("LAVITZ_LEVEL_UNLOCK") * 0xE * 4, 60); //Flower Storm
+                if (emulator.ReadByte(Constants.GetAddress("LAVITZ_ADDITION_TOTAL") + 0) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("LAVITZ_ADDITION_TOTAL") + 1) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("LAVITZ_ADDITION_TOTAL") + 2) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("LAVITZ_ADDITION_TOTAL") + 3) >= 80) {
+                    emulator.WriteByte(Constants.GetAddress("LAVITZ_LEVEL_UNLOCK") * 0xE * 4, 21); //Flower Storm
+                }
+                //Rose
+                emulator.WriteByte(Constants.GetAddress("ROSE_LEVEL_UNLOCK") + 0xE * 1, 8); //More & More
+                emulator.WriteByte(Constants.GetAddress("ROSE_LEVEL_UNLOCK") + 0xE * 2, 15); //Hard Blade
+                emulator.WriteByte(Constants.GetAddress("ROSE_LEVEL_UNLOCK") + 0xE * 3, 60); //Demon's Dance
+                if (emulator.ReadByte(Constants.GetAddress("ROSE_ADDITION_TOTAL") + 0) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("ROSE_ADDITION_TOTAL") + 1) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("ROSE_ADDITION_TOTAL") + 2) >= 80) {
+                    emulator.WriteByte(Constants.GetAddress("ROSE_LEVEL_UNLOCK") + 0xE * 3, 21); //Demon's Dance
+                }
+                //Kongol
+                emulator.WriteByte(Constants.GetAddress("KONGOL_LEVEL_UNLOCK") + 0xE * 1, 10); //Inferno
+                emulator.WriteByte(Constants.GetAddress("KONGOL_LEVEL_UNLOCK") + 0xE * 2, 60); //Bone Crush
+                if (emulator.ReadByte(Constants.GetAddress("KONGOL_ADDITION_TOTAL") + 0) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("KONGOL_ADDITION_TOTAL") + 1) >= 80) {
+                    emulator.WriteByte(Constants.GetAddress("KONGOL_LEVEL_UNLOCK") + 0xE * 2, 20); //Bone Crush
+                }
+                //Meru
+                emulator.WriteByte(Constants.GetAddress("MERU_LEVEL_UNLOCK") * 0xE * 1, 6); //Hammer Spin
+                emulator.WriteByte(Constants.GetAddress("MERU_LEVEL_UNLOCK") * 0xE * 2, 12); //Cool Boogie
+                emulator.WriteByte(Constants.GetAddress("MERU_LEVEL_UNLOCK") * 0xE * 3, 18); //Cat's Cradle
+                emulator.WriteByte(Constants.GetAddress("MERU_LEVEL_UNLOCK") * 0xE * 4, 60); //Perky Step
+                if (emulator.ReadByte(Constants.GetAddress("MERU_ADDITION_TOTAL") + 0) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("MERU_ADDITION_TOTAL") + 1) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("MERU_ADDITION_TOTAL") + 2) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("MERU_ADDITION_TOTAL") + 3) >= 80) {
+                    emulator.WriteByte(Constants.GetAddress("MERU_LEVEL_UNLOCK") * 0xE * 4, 22);  //Perky Step
+                }
+                //Haschel
+                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") * 0xE * 1, 5); // Flurry of Styx
+                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") * 0xE * 2, 10); //Summon 4 Gods
+                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") * 0xE * 3, 16); //5 Ring Shattering
+                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") * 0xE * 4, 22); //Hex Hammer
+                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") * 0xE * 5, 60); //Omni-Sweep        
+                if (emulator.ReadByte(Constants.GetAddress("HASCHEL_ADDITION_TOTAL") + 0) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("HASCHEL_ADDITION_TOTAL") + 1) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("HASCHEL_ADDITION_TOTAL") + 2) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("HASCHEL_ADDITION_TOTAL") + 3) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("HASCHEL_ADDITION_TOTAL") + 4) >= 80) {
+                    emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") * 0xE * 5, 25); //Omni-Sweep 
+                }
+                earlyAdditionsOnFieldEntry = true;
+            } else {
+                if (Globals.IN_BATTLE)
+                    earlyAdditionsOnFieldEntry = false;
+            }
+        }
+
+        public void TurnOffEarlyAdditions() {
+            if (!Globals.IN_BATTLE) {
+                //Dart
+                emulator.WriteByte(0x528AE, 15); //Crush Dance
+                emulator.WriteByte(0x528BC, 22); //Madness Hero
+                emulator.WriteByte(0x528CA, 29); //Moon Strike
+                emulator.WriteByte(0x529D8, 255); //Blazying Dynamo
+                                                  //Lavitz
+                emulator.WriteByte(0x52910, 7); //Rod Typhoon
+                emulator.WriteByte(0x5291E, 11); //Gust of Wind Dance
+                emulator.WriteByte(0x5292C, 255); //Flower Storm
+                                                  //Rose
+                emulator.WriteByte(0x52956, 14); //More & More
+                emulator.WriteByte(0x52964, 19); //Hard Blade
+                emulator.WriteByte(0x52972, 255); //Demon//s Dance
+                                                  //Kongol
+                emulator.WriteByte(0x5299C, 23); //Inferno
+                emulator.WriteByte(0x529AA, 255); //Bone Crush
+                                                  //Meru
+                emulator.WriteByte(0x529D4, 21); //Hammer Spin
+                emulator.WriteByte(0x529E2, 26); //Cool Boogie
+                emulator.WriteByte(0x529F0, 30); //Cat//s Cradle
+                emulator.WriteByte(0x529FE, 255); //Perky Step
+                                                  //Haschel
+                emulator.WriteByte(0x52A28, 14); // Flurry of Styx
+                emulator.WriteByte(0x52A36, 18); //Summon 4 Gods
+                emulator.WriteByte(0x52A44, 22); //5 Ring Shattering
+                emulator.WriteByte(0x52A52, 26); //Hex Hammer
+                emulator.WriteByte(0x52A60, 255); //Omni-Sweep   
+            }
+        }
+        #endregion
+
+        #region Shops
+        public void HeroTicketShop() {
+            if (lstTicketShop.SelectedIndex == 0)
+                BuyTicket(15, 1);
+            else if (lstTicketShop.SelectedIndex == 1)
+                BuyTicket(60, 5);
+            else if (lstTicketShop.SelectedIndex == 2)
+                BuyTicket(100, 10);
+        }
+
+        public void BuyTicket(int cost, int tickets) {
+            if (emulator.ReadInteger(Constants.GetAddress("GOLD")) >= cost) {
+                emulator.WriteInteger(Constants.GetAddress("GOLD"), emulator.ReadInteger(Constants.GetAddress("GOLD")) - cost);
+                emulator.WriteInteger(Constants.GetAddress("HERO_TICKETS"), emulator.ReadInteger(Constants.GetAddress("HERO_TICKETS")) + tickets);
+            }
+            Constants.WriteGLogOutput("You have " + emulator.ReadInteger(Constants.GetAddress("HERO_TICKETS")) + " tickets. Gold: " + emulator.ReadInteger(Constants.GetAddress("GOLD")));
+        }
+
+        public void HeroItemShop() {
+            if (lstHeroShop.SelectedIndex == 0)
+                BuyShopItem(0xD3, 0, 20);
+            else if (lstHeroShop.SelectedIndex == 1)
+                BuyShopItem(0xDD, 0, 40);
+            else if (lstHeroShop.SelectedIndex == 2)
+                BuyShopItem(0xE9, 0, 60);
+            else if (lstHeroShop.SelectedIndex == 3)
+                BuyShopItem(0xEA, 0, 100);
+        }
+
+        public void UltimateItemShop() {
+            int gold = emulator.ReadInteger(Constants.GetAddress("GOLD"));
+            int price = uShopPrices[lstUltimateShop.SelectedIndex];
+            int item = uItemId[lstUltimateShop.SelectedIndex];
+            int oneLimited = uLimited[lstUltimateShop.SelectedIndex];
+
+            if (oneLimited > 0) {
+                if ((ultimateShopLimited & oneLimited) == oneLimited) {
+                    Constants.WriteGLogOutput("This item can only be bought once.");
+                    return;
+                }
+            }
+
+            if (gold < price) {
+                Constants.WriteGLogOutput("Not enough gold");
+                return;
+            }
+
+            if (item > 0) {
+                bool shop = BuyShopItem((byte) item, price, 0, true);
+                if (shop)
+                    ultimateShopLimited += oneLimited;
+            } else {
+                if (oneLimited > 0) 
+                    ultimateShopLimited += oneLimited;
+                emulator.WriteInteger(Constants.GetAddress("Gold"), gold - price);
+                Constants.WriteGLogOutput("Bought item. Gold: " + (gold - price));
+            }
+        }
+
+        public bool BuyShopItem(byte item, int goldCost, int ticketCost, bool armor = false) {
+            int gold = emulator.ReadInteger(Constants.GetAddress("GOLD"));
+            int tickets = emulator.ReadInteger(Constants.GetAddress("HERO_TICKETS"));
+
+            if (gold < goldCost) {
+                Constants.WriteGLogOutput("Not enough gold.");
+                return false;
+            }
+
+            if (tickets < ticketCost) {
+                Constants.WriteGLogOutput("Not enough tickets.");
+                return false;
+            }
+
+            long address = armor ? Constants.GetAddress("ARMOR_INVENTORY") : Constants.GetAddress("INVENTORY");
+            bool slots = false;
+
+            if (armor) {
+                for (int i = 0; i < 255; i++) {
+                    if (emulator.ReadByte(address) == 255) {
+                        slots = true;
+                        emulator.WriteByte(address, item);
+
+                        if (goldCost > 0)
+                            emulator.WriteInteger(Constants.GetAddress("GOLD"), gold - goldCost);
+
+                        if (ticketCost > 0)
+                            emulator.WriteShort(Constants.GetAddress("HERO_TICKETS"), (ushort) (tickets - ticketCost));
+                    }
+                    address += 1;
+                }
+            } else {
+                for (int i = 0; i < inventorySize; i++) {
+                    if (emulator.ReadByte(address) == 255) {
+                        slots = true;
+                        emulator.WriteByte(address, item);
+
+                        if (goldCost > 0)
+                            emulator.WriteInteger(Constants.GetAddress("GOLD"), gold - goldCost);
+
+                        if (ticketCost > 0)
+                            emulator.WriteShort(Constants.GetAddress("HERO_TICKETS"), (ushort) (tickets - ticketCost));
+                    }
+                    address += 1;
+                }
+            }
+
+            if (slots)
+                Constants.WriteGLogOutput("Item bought. Gold: " + (gold - goldCost) + " | Tickets: " + (tickets - ticketCost));
+            else
+                Constants.WriteGLogOutput("Inventory full.");
+
+            return slots;
+        }
+        #endregion
         #endregion
 
         #region Both
@@ -2393,10 +3266,12 @@ namespace Dragoon_Modifier {
         public void BattleUI() {
             if (Globals.IN_BATTLE && Globals.STATS_CHANGED) {
                 for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                    if (!Constants.BATTLE_UI)
-                        monsterDisplay[i, 0].Text = emulator.ReadName(0xC69D0 + (0x2C * i));
+                    if (!Constants.BATTLE_UI) {
+                        monsterDisplay[i, 0].Text = emulator.ReadName(Constants.GetAddress("MONSTERS_NAMES") + (0x2C * i));
+                        Globals.MONSTER_NAME[i] = monsterDisplay[i, 0].Text;
+                    }
 
-                    if (dmScripts.ContainsKey("btnUltimateBoss") && dmScripts["btnUltimateBoss"]) {
+                    if (Globals.CheckDMScript("btnUltimateBoss")) {
                         if (ultimateMaxHP[i] > 65535) {
                             monsterDisplay[i, 1].Text = " " + ultimateHP[i] + "/" + ultimateMaxHP[i];
                         } else {
@@ -2410,10 +3285,13 @@ namespace Dragoon_Modifier {
                     monsterDisplay[i, 3].Text = " " + Globals.MONSTER_TABLE[i].Read("DF") + "/" + Globals.MONSTER_TABLE[i].Read("MDF");
                     monsterDisplay[i, 4].Text = " " + Globals.MONSTER_TABLE[i].Read("SPD");
                     monsterDisplay[i, 5].Text = " " + Globals.MONSTER_TABLE[i].Read("Turn");
+
+                    EnrageMode(i);
                 }
                 for (int i = 0; i < 3; i++) {
                     if (Globals.PARTY_SLOT[i] < 9) {
                         characterDisplay[i, 0].Text = Constants.GetCharName(Globals.PARTY_SLOT[i]);
+                        Globals.CHARACTER_NAME[i] = characterDisplay[i, 0].Text;
                         characterDisplay[i, 1].Text = " " + Globals.CHARACTER_TABLE[i].Read("HP") + "/" + Globals.CHARACTER_TABLE[i].Read("Max_HP") + "\r\n\r\n " + Globals.CHARACTER_TABLE[i].Read("MP") + "/" + Globals.CHARACTER_TABLE[i].Read("Max_MP");
                         characterDisplay[i, 2].Text = " " + Globals.CHARACTER_TABLE[i].Read("AT") + "\r\n\r\n " + Globals.CHARACTER_TABLE[i].Read("MAT");
                         characterDisplay[i, 3].Text = " " + Globals.CHARACTER_TABLE[i].Read("DF") + "\r\n\r\n " + Globals.CHARACTER_TABLE[i].Read("MDF");
@@ -2533,12 +3411,14 @@ namespace Dragoon_Modifier {
 
         public void HPCapBreakBattle() {
             if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !hpCapBreakOnBattleEntry && maxHPTableLoaded) {
-                for (int i = 0; i < 3; i++) {
-                    if (Globals.PARTY_SLOT[i] < 9) {
-                        if (hpChangeCheck[i] != 65535) {
-                            Globals.CHARACTER_TABLE[i].Write("Max_HP", hpChangeCheck[i]);
-                            if (hpChangeSave[i] != 65535 && Globals.CHARACTER_TABLE[i].Read("HP") < hpChangeSave[i]) {
-                                Globals.CHARACTER_TABLE[i].Write("HP", hpChangeSave[i]);
+                if (!Globals.CHARACTER_CHANGE) {
+                    for (int i = 0; i < 3; i++) {
+                        if (Globals.PARTY_SLOT[i] < 9) {
+                            if (hpChangeCheck[i] != 65535) {
+                                Globals.CHARACTER_TABLE[i].Write("Max_HP", hpChangeCheck[i]);
+                                if (hpChangeSave[i] != 65535 && Globals.CHARACTER_TABLE[i].Read("HP") < hpChangeSave[i]) {
+                                    Globals.CHARACTER_TABLE[i].Write("HP", hpChangeSave[i]);
+                                }
                             }
                         }
                     }
@@ -2558,8 +3438,8 @@ namespace Dragoon_Modifier {
             }
         }
 
-        public void LoadMaxHPTable() {
-            if (!maxHPTableLoaded && !Globals.IN_BATTLE && emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) < 5130) {
+        public void LoadMaxHPTable(bool forceLoad) {
+            if ((!maxHPTableLoaded && !Globals.IN_BATTLE && emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) < 5130) || forceLoad) {
                 byte tableSlot = 0;
                 for (int i = 0; i < 9; i++) {
                     switch (i) {
@@ -2658,11 +3538,20 @@ namespace Dragoon_Modifier {
         }
         #endregion
 
-        #region Solo Mode
+        #region Solo/Duo Mode
         public void SoloModeField() {
             if (!Globals.IN_BATTLE && !addSoloPartyMembers) {
                 if (emulator.ReadByte(Constants.GetAddress("PARTY_SLOT") + 0x4) != 255 || emulator.ReadByte(Constants.GetAddress("PARTY_SLOT") + 0x8) != 255) {
                     for (int i = 0; i < 8; i++) {
+                        emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + i + 0x4, 255);
+                    }
+                }
+            }
+        }
+        public void DuoModeField() {
+            if (!Globals.IN_BATTLE && !addSoloPartyMembers) {
+                if (emulator.ReadByte(Constants.GetAddress("PARTY_SLOT") + 0x8) != 255) {
+                    for (int i = 4; i < 8; i++) {
                         emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + i + 0x4, 255);
                     }
                 }
@@ -2679,18 +3568,18 @@ namespace Dragoon_Modifier {
                             Globals.CHARACTER_TABLE[i].Write("HP_Regen", 200);
                             Globals.CHARACTER_TABLE[i].Write("Turn", 10000);
                             //yeet
-                            Globals.CHARACTER_TABLE[i].Write("POS_X", 255);
-                            Globals.CHARACTER_TABLE[i].Write("POS_Y", 255);
-                            Globals.CHARACTER_TABLE[i].Write("POS_Z", 255);
+                            Globals.CHARACTER_TABLE[i].Write("POS_FB", 255);
+                            Globals.CHARACTER_TABLE[i].Write("POS_UD", 255);
+                            Globals.CHARACTER_TABLE[i].Write("POS_RL", 255);
                         } else {
-                            Globals.CHARACTER_TABLE[i].Write("POS_X", 9);
-                            Globals.CHARACTER_TABLE[i].Write("POS_Y", 0);
-                            Globals.CHARACTER_TABLE[i].Write("POS_Z", 0);
+                            Globals.CHARACTER_TABLE[i].Write("POS_FB", 9);
+                            Globals.CHARACTER_TABLE[i].Write("POS_UD", 0);
+                            Globals.CHARACTER_TABLE[i].Write("POS_RL", 0);
                         }
                     }
                 }
 
-                if (dmScripts.ContainsKey("btnSoloModeEXP") && dmScripts["btnSoloModeEXP"]) {
+                if (Globals.CheckDMScript("btnReduceSDEXP")) {
                     for (int i = 0; i < 5; i++) {
                         emulator.WriteShort(Constants.GetAddress("MONSTER_REWARDS_EXP") + (i * 0x1A8), (ushort) Math.Round((double) (emulator.ReadShort(Constants.GetAddress("MONSTER_REWARDS_EXP") + (i * 0x1A8)) / 3)));
                     }
@@ -2704,9 +3593,36 @@ namespace Dragoon_Modifier {
                 }
             }
         }
+        public void DuoModeBattle() {
+            if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !duoModeOnBattleEntry) {
+                if (Globals.PARTY_SLOT[2] < 9) {
+                    Globals.CHARACTER_TABLE[2].Write("HP", 0);
+                    Globals.CHARACTER_TABLE[2].Write("Max_HP", 0);
+                    Globals.CHARACTER_TABLE[2].Write("HP_Regen", 200);
+                    Globals.CHARACTER_TABLE[2].Write("Turn", 10000);
+                    //yeet
+                    Globals.CHARACTER_TABLE[2].Write("POS_FB", 255);
+                    Globals.CHARACTER_TABLE[2].Write("POS_UD", 255);
+                    Globals.CHARACTER_TABLE[2].Write("POS_RL", 255);
+                }
+
+                if (Globals.CheckDMScript("btnReduceSDEXP")) {
+                    for (int i = 0; i < 5; i++) {
+                        emulator.WriteShort(Constants.GetAddress("MONSTER_REWARDS_EXP") + (i * 0x1A8), (ushort) Math.Round((double) (emulator.ReadShort(Constants.GetAddress("MONSTER_REWARDS_EXP") + (i * 0x1A8)) * (2 / 3))));
+                    }
+                }
+                duoModeOnBattleEntry = true;
+            } else {
+                if (!Globals.IN_BATTLE && duoModeOnBattleEntry) {
+                    duoModeOnBattleEntry = false;
+                    if (!alwaysAddSoloPartyMembers)
+                        addSoloPartyMembers = false;
+                }
+            }
+        }
 
         public void AddSoloPartyMembers() {
-            if (dmScripts.ContainsKey("btnSoloMode") && dmScripts["btnSoloMode"]) {
+            if (Globals.CheckDMScript("btnSoloMode")) {
                 addSoloPartyMembers = true;
                 emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x4, Globals.PARTY_SLOT[0]);
                 emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x5, 0);
@@ -2716,16 +3632,22 @@ namespace Dragoon_Modifier {
                 emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x9, 0);
                 emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0xA, 0);
                 emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0xB, 0);
+            } else if (Globals.CheckDMScript("btnDuoMode")) {
+                addSoloPartyMembers = true;
+                emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x8, Globals.PARTY_SLOT[0]);
+                emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x9, 0);
+                emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0xA, 0);
+                emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0xB, 0);
             } else {
-                Constants.WritePLogOutput("Solo Mode must be turned on to add party members.");
+                Constants.WritePLogOutput("Solo/Duo Mode must be turned on to add party members.");
             }
         }
 
         public void SwitchSoloCharacter() {
-            if (dmScripts.ContainsKey("btnSoloMode") && dmScripts["btnSoloMode"]) {
+            if (emulator.ReadByte(Constants.GetAddress("IN_PARTY") + 0x2C * uiCombo["cboSwitchChar"]) != 0) {
                 emulator.WriteByte(Constants.GetAddress("PARTY_SLOT"), uiCombo["cboSwitchChar"]);
             } else {
-                Constants.WritePLogOutput("Solo Mode must be turned on to switch party members.");
+                Constants.WritePLogOutput("The selected character is not in the party.");
             }
         }
         #endregion
@@ -2874,8 +3796,8 @@ namespace Dragoon_Modifier {
                 WriteEquipChanges(0x11328A, 64);
                 WriteEquipChanges(0x11328B, 247);
                 WriteEquipChanges(0x113296, 10);
-                WriteEquipChanges(0x11329A, 40);
-                WriteEquipChanges(0x11329B, 40);
+                WriteEquipChanges(0x11329A, 50);
+                WriteEquipChanges(0x11329B, 50);
                 WriteEquipChangesAOB(0x118FE4, "22 00 22 00 1F 00 FF A0");
                 //Soa's Armor
                 WriteEquipChanges(0x1132A5, 32);
@@ -2968,7 +3890,6 @@ namespace Dragoon_Modifier {
                     if (Globals.PARTY_SLOT[i] < 9) {
                         long p = Globals.CHAR_ADDRESS[i];
                         int s = 0;
-
                         if (Globals.PARTY_SLOT[i] == 2 || Globals.PARTY_SLOT[i] == 8) {
                             if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 28 && emulator.ReadByte(Constants.GetAddress("CHAPTER")) >= 3) { //Sparkle Arrow
                                 Globals.CHARACTER_TABLE[i].Write("AT", (Globals.CHARACTER_TABLE[i].Read("AT") + 8));
@@ -3098,7 +4019,7 @@ namespace Dragoon_Modifier {
 
                         if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 159 && Globals.PARTY_SLOT[i] == 0) { //Spirit Eater
                             spiritEaterSP = 35;
-                            if (dmScripts.ContainsKey("btnHalfSP") && dmScripts["btnHalfSP"]) {
+                            if (Globals.CheckDMScript("btnHalfSP")) {
                                 spiritEaterSP = 15;
                             }
                             spiritEaterSaveSP = Globals.CHARACTER_TABLE[i].Read("SP_Regen");
@@ -3256,7 +4177,7 @@ namespace Dragoon_Modifier {
                         }
 
                         if (Globals.CHARACTER_TABLE[i].Read("Accessory") == 177) { //Soa's Ahnk
-                            if (dmScripts.ContainsKey("btnSoloMode") && dmScripts["btnSoloMode"]) {
+                            if (Globals.CheckDMScript("btnSoloMode")) {
                                 Globals.CHARACTER_TABLE[i].Write("Revive", (Globals.CHARACTER_TABLE[i].Read("Revive") + 50));
                             } else {
                                 Globals.CHARACTER_TABLE[i].Write("Revive", 100);
@@ -3365,60 +4286,62 @@ namespace Dragoon_Modifier {
                 } else {
                     if (emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) == 41215 && Globals.STATS_CHANGED /*&& equipChangesLoop*/) { //Battle Loop
                         for (int i = 0; i < 3; i++) {
-                            long p = Globals.CHAR_ADDRESS[i];
-                            if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 159 && Globals.PARTY_SLOT[i] == 0) { //Spirit Eater
-                                if (Globals.CHARACTER_TABLE[i].Read("SP") == (emulator.ReadByte(Constants.GetAddress("DART_DRAGOON_LEVEL")) * 100)) {
-                                    Globals.CHARACTER_TABLE[i].Write("SP_Regen", spiritEaterSaveSP);
-                                } else {
-                                    if (spiritEaterSaveSP < spiritEaterSP) {
-                                        Globals.CHARACTER_TABLE[i].Write("SP_Regen", (65536 - (spiritEaterSP - spiritEaterSaveSP)));
+                            if (Globals.PARTY_SLOT[i] < 9) {
+                                long p = Globals.CHAR_ADDRESS[i];
+                                if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 159 && Globals.PARTY_SLOT[i] == 0) { //Spirit Eater
+                                    if (Globals.CHARACTER_TABLE[i].Read("SP") == (emulator.ReadByte(Constants.GetAddress("DART_DRAGOON_LEVEL")) * 100)) {
+                                        Globals.CHARACTER_TABLE[i].Write("SP_Regen", spiritEaterSaveSP);
                                     } else {
-                                        Globals.CHARACTER_TABLE[i].Write("SP_Regen", (spiritEaterSaveSP - spiritEaterSP));
-                                    }
-                                }
-                            }
-
-                            if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 160 && (Globals.PARTY_SLOT[i] == 1 || Globals.PARTY_SLOT[i] == 5)) { //Harpoon
-                                if (Globals.CHARACTER_TABLE[i].Read("Action") == 10 && Globals.CHARACTER_TABLE[i].Read("SP") >= 400) {
-                                    checkHarpoon = true;
-                                    if (Globals.CHARACTER_TABLE[i].Read("SP") == 500) {
-                                        emulator.WriteAOB(p + 0xC0, "00 00 00 04");
-                                        Globals.CHARACTER_TABLE[i].Write("SP", 200);
-                                        emulator.WriteByte(Constants.GetAddress("DRAGOON_TURNS") + i * 4, 2);
-                                    } else {
-                                        emulator.WriteAOB(p + 0xC0, "00 00 00 03");
-                                        Globals.CHARACTER_TABLE[i].Write("SP", 100);
-                                        emulator.WriteByte(Constants.GetAddress("DRAGOON_TURNS") + i * 4, 1);
-                                    }
-                                }
-
-                                if (emulator.ReadByte(Constants.GetAddress("DRAGOON_TURNS") + i * 4) == 0) {
-                                    checkHarpoon = false;
-                                }
-                            }
-
-                            if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 161 && (Globals.PARTY_SLOT[i] == 2 || Globals.PARTY_SLOT[i] == 8)) { //Element Arrow
-                                if (elementArrowLastAction != Globals.CHARACTER_TABLE[i].Read("Action")) {
-                                    if (elementArrowLastAction == 8 && Globals.CHARACTER_TABLE[i].Read("Action") == 136) {
-                                        //old method ...
-                                    } else {
-                                        elementArrowLastAction = Globals.CHARACTER_TABLE[i].Read("Action");
-                                        if (elementArrowLastAction == 8) {
-                                            Globals.CHARACTER_TABLE[i].Write("Element", elementArrowElement);
-                                            elementArrowTurns += 1;
+                                        if (spiritEaterSaveSP < spiritEaterSP) {
+                                            Globals.CHARACTER_TABLE[i].Write("SP_Regen", (65536 - (spiritEaterSP - spiritEaterSaveSP)));
                                         } else {
-                                            if (elementArrowLastAction == 10) {
-                                                Globals.CHARACTER_TABLE[i].Write("Element", 0);
-                                            }
-                                            if (elementArrowTurns == 4) {
-                                                elementArrowTurns = 0;
-                                                if (emulator.ReadInteger(Constants.GetAddress("GOLD")) >= 100) {
-                                                    for (int x = 0; x < inventorySize; x++) {
-                                                        if (emulator.ReadByte(0xBAEB1 + x + EquipChangesInventoryOffset()) == 255) {
-                                                            emulator.WriteByte(0xBAEB1 + x + EquipChangesInventoryOffset(), elementArrowItem);
-                                                            emulator.WriteByte(0xBADAE + EquipChangesInventoryOffset(), emulator.ReadByte(0xBADAE + EquipChangesInventoryOffset()) + 1);
-                                                            emulator.WriteInteger(Constants.GetAddress("GOLD"), emulator.ReadInteger(Constants.GetAddress("GOLD")) - 100);
-                                                            break;
+                                            Globals.CHARACTER_TABLE[i].Write("SP_Regen", (spiritEaterSaveSP - spiritEaterSP));
+                                        }
+                                    }
+                                }
+
+                                if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 160 && (Globals.PARTY_SLOT[i] == 1 || Globals.PARTY_SLOT[i] == 5)) { //Harpoon
+                                    if (Globals.CHARACTER_TABLE[i].Read("Action") == 10 && Globals.CHARACTER_TABLE[i].Read("SP") >= 400) {
+                                        checkHarpoon = true;
+                                        if (Globals.CHARACTER_TABLE[i].Read("SP") == 500) {
+                                            emulator.WriteAOB(p + 0xC0, "00 00 00 04");
+                                            Globals.CHARACTER_TABLE[i].Write("SP", 200);
+                                            emulator.WriteByte(Constants.GetAddress("DRAGOON_TURNS") + i * 4, 2);
+                                        } else {
+                                            emulator.WriteAOB(p + 0xC0, "00 00 00 03");
+                                            Globals.CHARACTER_TABLE[i].Write("SP", 100);
+                                            emulator.WriteByte(Constants.GetAddress("DRAGOON_TURNS") + i * 4, 1);
+                                        }
+                                    }
+
+                                    if (emulator.ReadByte(Constants.GetAddress("DRAGOON_TURNS") + i * 4) == 0) {
+                                        checkHarpoon = false;
+                                    }
+                                }
+
+                                if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 161 && (Globals.PARTY_SLOT[i] == 2 || Globals.PARTY_SLOT[i] == 8)) { //Element Arrow
+                                    if (elementArrowLastAction != Globals.CHARACTER_TABLE[i].Read("Action")) {
+                                        if (elementArrowLastAction == 8 && Globals.CHARACTER_TABLE[i].Read("Action") == 136) {
+                                            //old method ...
+                                        } else {
+                                            elementArrowLastAction = Globals.CHARACTER_TABLE[i].Read("Action");
+                                            if (elementArrowLastAction == 8) {
+                                                Globals.CHARACTER_TABLE[i].Write("Element", elementArrowElement);
+                                                elementArrowTurns += 1;
+                                            } else {
+                                                if (elementArrowLastAction == 10) {
+                                                    Globals.CHARACTER_TABLE[i].Write("Element", 0);
+                                                }
+                                                if (elementArrowTurns == 4) {
+                                                    elementArrowTurns = 0;
+                                                    if (emulator.ReadInteger(Constants.GetAddress("GOLD")) >= 100) {
+                                                        for (int x = 0; x < inventorySize; x++) {
+                                                            if (emulator.ReadByte(Constants.GetAddress("INVENTORY") + x) == 255) {
+                                                                emulator.WriteByte(Constants.GetAddress("INVENTORY") + x, elementArrowItem);
+                                                                emulator.WriteByte(Constants.GetAddress("INVENTORY_SIZE"), emulator.ReadByte(Constants.GetAddress("INVENTORY_SIZE")) + 1);
+                                                                emulator.WriteInteger(Constants.GetAddress("GOLD"), emulator.ReadInteger(Constants.GetAddress("GOLD")) - 100);
+                                                                break;
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -3426,220 +4349,220 @@ namespace Dragoon_Modifier {
                                         }
                                     }
                                 }
-                            }
 
-                            if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 162 && Globals.PARTY_SLOT[i] == 3) { //Dragon Buster II
-                                if (Globals.CHARACTER_TABLE[i].Read("Action") == 136) {
-                                    if (emulator.ReadShort(Constants.GetAddress("DAMAGE_SLOT1")) != 0) {
-                                        emulator.WriteShort(p, (ushort) Math.Min(Globals.CHARACTER_TABLE[i].Read("HP") + Math.Round(emulator.ReadShort(Constants.GetAddress("DAMAGE_SLOT1")) * 0.02) + 2, Globals.CHARACTER_TABLE[i].Read("Max_HP")));
-                                        emulator.WriteShort(Constants.GetAddress("DAMAGE_SLOT1"), 0);
-                                        /*} else {
-                                            emulator.WriteShort(Constants.GetAddress("DAMAGE_SLOT1"), 0);*/
+                                if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 162 && Globals.PARTY_SLOT[i] == 3) { //Dragon Buster II
+                                    if (Globals.CHARACTER_TABLE[i].Read("Action") == 136) {
+                                        if (emulator.ReadShort(Constants.GetAddress("DAMAGE_SLOT1")) != 0) {
+                                            emulator.WriteShort(p, (ushort) Math.Min(Globals.CHARACTER_TABLE[i].Read("HP") + Math.Round(emulator.ReadShort(Constants.GetAddress("DAMAGE_SLOT1")) * 0.02) + 2, Globals.CHARACTER_TABLE[i].Read("Max_HP")));
+                                            emulator.WriteShort(Constants.GetAddress("DAMAGE_SLOT1"), 0);
+                                            /*} else {
+                                                emulator.WriteShort(Constants.GetAddress("DAMAGE_SLOT1"), 0);*/
+                                        }
                                     }
                                 }
-                            }
 
-                            if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 163 && Globals.PARTY_SLOT[i] == 4) { //Battery Glove
-                                if ((Globals.CHARACTER_TABLE[i].Read("Action") == 136 || Globals.CHARACTER_TABLE[i].Read("Action") == 26) &&
-                                (gloveLastAction != 136 && gloveLastAction != 26)) {
-                                    gloveCharge += 1;
-                                    if (gloveCharge == 7) {
-                                        Globals.CHARACTER_TABLE[i].Write("AT", Math.Round(originalCharacterStats[i, 1] * 2.5));
+                                if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 163 && Globals.PARTY_SLOT[i] == 4) { //Battery Glove
+                                    if ((Globals.CHARACTER_TABLE[i].Read("Action") == 136 || Globals.CHARACTER_TABLE[i].Read("Action") == 26) &&
+                                    (gloveLastAction != 136 && gloveLastAction != 26)) {
+                                        gloveCharge += 1;
+                                        if (gloveCharge == 7) {
+                                            Globals.CHARACTER_TABLE[i].Write("AT", Math.Round(originalCharacterStats[i, 1] * 2.5));
+                                        } else {
+                                            if (gloveCharge > 7) {
+                                                gloveCharge = 1;
+                                                Globals.CHARACTER_TABLE[i].Write("AT", originalCharacterStats[i, 1]);
+                                            }
+                                        }
+
+                                        gloveLastAction = Globals.CHARACTER_TABLE[i].Read("Action");
+                                    }
+
+                                    //stsProgram.Text = "Glove Charge: " & gloveCharge & " / " & gloveLastAction & " / " & Globals.CHARACTER_TABLE[i].Read("Action") & " / " &
+                                    //    (Globals.CHARACTER_TABLE[i].Read("Action") = 136 Or Globals.CHARACTER_TABLE[i].Read("Action") = 138) & " / " &
+                                    //    (gloveLastAction <> 136 Or gloveLastAction <> 138) & " / " &
+                                    //    ((Globals.CHARACTER_TABLE[i].Read("Action") = 136 Or Globals.CHARACTER_TABLE[i].Read("Action") = 138) And
+                                    //    (gloveLastAction <> 136 And gloveLastAction <> 138))
+                                }
+
+                                if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 165 && Globals.PARTY_SLOT[i] == 7) { //Giant Axe
+                                    if (Globals.CHARACTER_TABLE[i].Read("Action") == 136 && axeLastAction != Globals.CHARACTER_TABLE[i].Read("Action")) {
+                                        axeLastAction = Globals.CHARACTER_TABLE[i].Read("Action");
+                                        if (new Random().Next(0, 9) < 2) {
+                                            Globals.CHARACTER_TABLE[i].Write("Guard", 1);
+                                        }
                                     } else {
-                                        if (gloveCharge > 7) {
-                                            gloveCharge = 1;
-                                            Globals.CHARACTER_TABLE[i].Write("AT", originalCharacterStats[i, 1]);
+                                        axeLastAction = Globals.CHARACTER_TABLE[i].Read("Action");
+                                    }
+                                }
+
+                                if (Globals.CHARACTER_TABLE[i].Read("Helmet") == 167) { //Fake Legend Casque
+                                    if (Globals.CHARACTER_TABLE[i].Read("Guard") == 1 && guardStatusMDF[i] == 0) {
+                                        if (new Random().Next(0, 9) < 3) {
+                                            Globals.CHARACTER_TABLE[i].Write("MDF", (Globals.CHARACTER_TABLE[i].Read("MDF") + 40));
+                                            guardStatusMDF[i] = 1;
+                                        }
+                                    }
+                                    if ((Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10) && guardStatusMDF[i] == 1) {
+                                        Globals.CHARACTER_TABLE[i].Write("MDF", originalCharacterStats[i, 4]);
+                                        guardStatusMDF[i] = 0;
+                                    }
+                                }
+
+                                if (Globals.CHARACTER_TABLE[i].Read("Armor") == 169) { //Fake Legend Armor
+                                    if (Globals.CHARACTER_TABLE[i].Read("Guard") == 1 && guardStatusDF[i] == 0) {
+                                        if (new Random().Next(0, 9) < 3) {
+                                            Globals.CHARACTER_TABLE[i].Write("DF", (Globals.CHARACTER_TABLE[i].Read("DF") + 40));
+                                            guardStatusDF[i] = 1;
+                                        }
+                                    }
+                                    if ((Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10) && guardStatusDF[i] == 1) {
+                                        Globals.CHARACTER_TABLE[i].Write("DF", originalCharacterStats[i, 3]);
+                                        guardStatusDF[i] = 0;
+                                    }
+                                }
+
+                                if (Globals.CHARACTER_TABLE[i].Read("Armor") == 170) { //Divine DG Armor
+                                    Globals.CHARACTER_TABLE[i].Write("SP_P_Hit", originalCharacterStats[i, 6]);
+                                    Globals.CHARACTER_TABLE[i].Write("MP_P_Hit", originalCharacterStats[i, 7]);
+                                    Globals.CHARACTER_TABLE[i].Write("SP_M_Hit", originalCharacterStats[i, 8]);
+                                    Globals.CHARACTER_TABLE[i].Write("MP_M_Hit", originalCharacterStats[i, 9]);
+                                }
+
+                                if (Globals.CHARACTER_TABLE[i].Read("Shoes") == 172 || Globals.CHARACTER_TABLE[i].Read("Shoes") == 173 || Globals.CHARACTER_TABLE[i].Read("Shoes") == 174) { //Lloyd's Boots/ Winged Shoes / Soa's Greaves
+                                    if (emulator.ReadByte(p + 0xC1) > 0) {
+                                        Globals.CHARACTER_TABLE[i].Write("SPD", (originalCharacterStats[i, 5] * 2));
+                                    } else {
+                                        if (emulator.ReadByte(p + 0xC3) > 0) {
+                                            Globals.CHARACTER_TABLE[i].Write("SPD", (originalCharacterStats[i, 5] / 2));
+                                        } else {
+                                            Globals.CHARACTER_TABLE[i].Write("SPD", (originalCharacterStats[i, 5]));
                                         }
                                     }
 
-                                    gloveLastAction = Globals.CHARACTER_TABLE[i].Read("Action");
-                                }
-
-                                //stsProgram.Text = "Glove Charge: " & gloveCharge & " / " & gloveLastAction & " / " & Globals.CHARACTER_TABLE[i].Read("Action") & " / " &
-                                //    (Globals.CHARACTER_TABLE[i].Read("Action") = 136 Or Globals.CHARACTER_TABLE[i].Read("Action") = 138) & " / " &
-                                //    (gloveLastAction <> 136 Or gloveLastAction <> 138) & " / " &
-                                //    ((Globals.CHARACTER_TABLE[i].Read("Action") = 136 Or Globals.CHARACTER_TABLE[i].Read("Action") = 138) And
-                                //    (gloveLastAction <> 136 And gloveLastAction <> 138))
-                            }
-
-                            if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 165 && Globals.PARTY_SLOT[i] == 7) { //Giant Axe
-                                if (Globals.CHARACTER_TABLE[i].Read("Action") == 136 && axeLastAction != Globals.CHARACTER_TABLE[i].Read("Action")) {
-                                    axeLastAction = Globals.CHARACTER_TABLE[i].Read("Action");
-                                    if (new Random().Next(0, 9) < 2) {
-                                        Globals.CHARACTER_TABLE[i].Write("Guard", 1);
-                                    }
-                                } else {
-                                    axeLastAction = Globals.CHARACTER_TABLE[i].Read("Action");
-                                }
-                            }
-
-                            if (Globals.CHARACTER_TABLE[i].Read("Helmet") == 167) { //Fake Legend Casque
-                                if (Globals.CHARACTER_TABLE[i].Read("Guard") == 1 && guardStatusMDF[i] == 0) {
-                                    if (new Random().Next(0, 9) < 3) {
-                                        Globals.CHARACTER_TABLE[i].Write("MDF", (Globals.CHARACTER_TABLE[i].Read("MDF") + 40));
-                                        guardStatusMDF[i] = 1;
-                                    }
-                                }
-                                if ((Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10) && guardStatusMDF[i] == 1) {
-                                    Globals.CHARACTER_TABLE[i].Write("MDF", originalCharacterStats[i, 4]);
-                                    guardStatusMDF[i] = 0;
-                                }
-                            }
-
-                            if (Globals.CHARACTER_TABLE[i].Read("Armor") == 169) { //Fake Legend Armor
-                                if (Globals.CHARACTER_TABLE[i].Read("Guard") == 1 && guardStatusDF[i] == 0) {
-                                    if (new Random().Next(0, 9) < 3) {
-                                        Globals.CHARACTER_TABLE[i].Write("DF", (Globals.CHARACTER_TABLE[i].Read("DF") + 40));
-                                        guardStatusDF[i] = 1;
-                                    }
-                                }
-                                if ((Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10) && guardStatusDF[i] == 1) {
-                                    Globals.CHARACTER_TABLE[i].Write("DF", originalCharacterStats[i, 3]);
-                                    guardStatusDF[i] = 0;
-                                }
-                            }
-
-                            if (Globals.CHARACTER_TABLE[i].Read("Armor") == 170) { //Divine DG Armor
-                                Globals.CHARACTER_TABLE[i].Write("SP_P_Hit", originalCharacterStats[i, 6]);
-                                Globals.CHARACTER_TABLE[i].Write("MP_P_Hit", originalCharacterStats[i, 7]);
-                                Globals.CHARACTER_TABLE[i].Write("SP_M_Hit", originalCharacterStats[i, 8]);
-                                Globals.CHARACTER_TABLE[i].Write("MP_M_Hit", originalCharacterStats[i, 9]);
-                            }
-
-                            if (Globals.CHARACTER_TABLE[i].Read("Shoes") == 172 || Globals.CHARACTER_TABLE[i].Read("Shoes") == 173 || Globals.CHARACTER_TABLE[i].Read("Shoes") == 174) { //Lloyd's Boots/ Winged Shoes / Soa's Greaves
-                                if (emulator.ReadByte(p + 0xC1) > 0) {
-                                    Globals.CHARACTER_TABLE[i].Write("SPD", (originalCharacterStats[i, 5] * 2));
-                                } else {
-                                    if (emulator.ReadByte(p + 0xC3) > 0) {
-                                        Globals.CHARACTER_TABLE[i].Write("SPD", (originalCharacterStats[i, 5] / 2));
-                                    } else {
-                                        Globals.CHARACTER_TABLE[i].Write("SPD", (originalCharacterStats[i, 5]));
-                                    }
-                                }
-
-                                if (Globals.CHARACTER_TABLE[i].Read("Shoes") == 174) {
-                                    for (int x = 0; x < 3; x++) {
-                                        if (x != i && Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[x].Read("HP") > 0) {
-                                            if (Globals.CHARACTER_TABLE[x].Read("HP") > 0) {
-                                                if (emulator.ReadByte(Globals.CHAR_ADDRESS[x] + 0xC1) > 0) {
-                                                    Globals.CHARACTER_TABLE[x].Write("HP" + 0x2A, (ushort) (originalCharacterStats[x, 5] * 2));
-                                                } else {
-                                                    if (emulator.ReadByte(Globals.CHAR_ADDRESS[x] + 0xC3) > 0) {
-                                                        Globals.CHARACTER_TABLE[x].Write("HP" + 0x2A, (ushort) (originalCharacterStats[x, 5] / 2));
+                                    if (Globals.CHARACTER_TABLE[i].Read("Shoes") == 174) {
+                                        for (int x = 0; x < 3; x++) {
+                                            if (x != i && Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[x].Read("HP") > 0) {
+                                                if (Globals.CHARACTER_TABLE[x].Read("HP") > 0) {
+                                                    if (emulator.ReadByte(Globals.CHAR_ADDRESS[x] + 0xC1) > 0) {
+                                                        Globals.CHARACTER_TABLE[x].Write("HP" + 0x2A, (ushort) (originalCharacterStats[x, 5] * 2));
                                                     } else {
-                                                        Globals.CHARACTER_TABLE[x].Write("HP" + 0x2A, (ushort) (originalCharacterStats[x, 5]));
+                                                        if (emulator.ReadByte(Globals.CHAR_ADDRESS[x] + 0xC3) > 0) {
+                                                            Globals.CHARACTER_TABLE[x].Write("HP" + 0x2A, (ushort) (originalCharacterStats[x, 5] / 2));
+                                                        } else {
+                                                            Globals.CHARACTER_TABLE[x].Write("HP" + 0x2A, (ushort) (originalCharacterStats[x, 5]));
+                                                        }
                                                     }
                                                 }
                                             }
                                         }
                                     }
                                 }
-                            }
 
-                            if (Globals.CHARACTER_TABLE[i].Read("Accessory") == 177) { //Soa's Ahnk
-                                bool alive = false;
-                                int kill = -1;
-                                int lastPartyID = -1;
-                                if (Globals.CHARACTER_TABLE[i].Read("HP") == 0) {
-                                    for (int x = 0; x < 3; x++) {
-                                        if (x != i && Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[x].Read("HP") > 0) {
-                                            alive = true;
-                                        }
-                                    }
-
-                                    if (alive) {
+                                if (Globals.CHARACTER_TABLE[i].Read("Accessory") == 177) { //Soa's Ahnk
+                                    bool alive = false;
+                                    int kill = -1;
+                                    int lastPartyID = -1;
+                                    if (Globals.CHARACTER_TABLE[i].Read("HP") == 0) {
                                         for (int x = 0; x < 3; x++) {
-                                            if (kill == -1 && new Random().Next(0, 9) < 5 && Globals.CHARACTER_TABLE[x].Read("HP") > 0) {
-                                                kill = x;
-                                            } else {
-                                                lastPartyID = x;
+                                            if (x != i && Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[x].Read("HP") > 0) {
+                                                alive = true;
                                             }
                                         }
-                                    }
 
-                                    if (kill != -1) {
-                                        Globals.CHARACTER_TABLE[kill].Write("HP", 0);
-                                        Globals.CHARACTER_TABLE[kill].Write("Action", 192);
+                                        if (alive) {
+                                            for (int x = 0; x < 3; x++) {
+                                                if (kill == -1 && new Random().Next(0, 9) < 5 && Globals.CHARACTER_TABLE[x].Read("HP") > 0) {
+                                                    kill = x;
+                                                } else {
+                                                    lastPartyID = x;
+                                                }
+                                            }
+                                        }
+
+                                        if (kill != -1) {
+                                            Globals.CHARACTER_TABLE[kill].Write("HP", 0);
+                                            Globals.CHARACTER_TABLE[kill].Write("Action", 192);
+                                        } else {
+                                            Globals.CHARACTER_TABLE[lastPartyID].Write("HP", 0);
+                                            Globals.CHARACTER_TABLE[lastPartyID].Write("Action", 192);
+                                        }
+                                        Globals.CHARACTER_TABLE[i].Write("HP", 1);
                                     } else {
-                                        Globals.CHARACTER_TABLE[lastPartyID].Write("HP", 0);
-                                        Globals.CHARACTER_TABLE[lastPartyID].Write("Action", 192);
+                                        Globals.CHARACTER_TABLE[i].Write("MAX_HP", 0);
+                                        Globals.CHARACTER_TABLE[i].Write("Revive", 0);
+                                        Globals.CHARACTER_TABLE[i].Write("Action", 192);
                                     }
-                                    Globals.CHARACTER_TABLE[i].Write("HP", 1);
-                                } else {
-                                    Globals.CHARACTER_TABLE[i].Write("MAX_HP", 0);
-                                    Globals.CHARACTER_TABLE[i].Write("Revive", 0);
-                                    Globals.CHARACTER_TABLE[i].Write("Action", 192);
                                 }
-                            }
 
-                            if (Globals.CHARACTER_TABLE[i].Read("Armor") == 74) { //Armor of Legend
-                                if (lGuardStateDF[i] == false) {
-                                    if (Globals.CHARACTER_TABLE[i].Read("Guard") == 1 && guardStatusDF[i] == 0) {
-                                        guardStatusDF[i] = 1;
-                                        lGuardStatusDF[i] += 1;
-                                    }
-                                    if ((Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10) && guardStatusDF[i] == 1 && Globals.CHARACTER_TABLE[i].Read("Guard") == 0) {
-                                        guardStatusDF[i] = 0;
-                                    }
-                                    if (lGuardStatusDF[i] >= 3) {
-                                        lGuardStatusDF[i] = 0;
-                                        guardStatusDF[i] = 1;
-                                        lGuardStateDF[i] = true;
-                                        emulator.WriteByte(p + 0xB5, 4);
-                                        Globals.CHARACTER_TABLE[i].Write("DF", Math.Round(originalCharacterStats[i, 3] * 1.2));
-                                    }
-                                } else {
-                                    if (emulator.ReadByte(p + 0xB5) == 0) {
-                                        Globals.CHARACTER_TABLE[i].Write("DF", originalCharacterStats[i, 3]);
-                                        lGuardStateDF[i] = false;
-                                    }
-                                }
-                                if (!sGuardStatusDF[i]) {
-                                    if (Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10) {
-                                        if (new Random().Next(0, 100) <= 10) {
-                                            emulator.WriteByte(Constants.GetAddress("SPECIAL_EFFECT") + ((Globals.MONSTER_SIZE + i) * 0x20) + EquipChangesBattleGlobalOffset(), emulator.ReadByte(Constants.GetAddress("SPECIAL_EFFECT") + ((Globals.MONSTER_SIZE + i) * 0x20) + EquipChangesBattleGlobalOffset()) + 1);
+                                if (Globals.CHARACTER_TABLE[i].Read("Armor") == 74) { //Armor of Legend
+                                    if (lGuardStateDF[i] == false) {
+                                        if (Globals.CHARACTER_TABLE[i].Read("Guard") == 1 && guardStatusDF[i] == 0) {
+                                            guardStatusDF[i] = 1;
+                                            lGuardStatusDF[i] += 1;
                                         }
-                                        sGuardStatusDF[i] = true;
+                                        if ((Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10) && guardStatusDF[i] == 1 && Globals.CHARACTER_TABLE[i].Read("Guard") == 0) {
+                                            guardStatusDF[i] = 0;
+                                        }
+                                        if (lGuardStatusDF[i] >= 3) {
+                                            lGuardStatusDF[i] = 0;
+                                            guardStatusDF[i] = 1;
+                                            lGuardStateDF[i] = true;
+                                            emulator.WriteByte(p + 0xB5, 4);
+                                            Globals.CHARACTER_TABLE[i].Write("DF", Math.Round(originalCharacterStats[i, 3] * 1.2));
+                                        }
+                                    } else {
+                                        if (emulator.ReadByte(p + 0xB5) == 0) {
+                                            Globals.CHARACTER_TABLE[i].Write("DF", originalCharacterStats[i, 3]);
+                                            lGuardStateDF[i] = false;
+                                        }
                                     }
-                                } else {
-                                    if (Globals.CHARACTER_TABLE[i].Read("Action") != 8 && Globals.CHARACTER_TABLE[i].Read("Action") != 10) {
-                                        sGuardStatusDF[i] = false;
+                                    if (!sGuardStatusDF[i]) {
+                                        if (Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10) {
+                                            if (new Random().Next(0, 100) <= 10) {
+                                                emulator.WriteByte(Constants.GetAddress("SPECIAL_EFFECT") + ((Globals.MONSTER_SIZE + i) * 0x20), emulator.ReadByte(Constants.GetAddress("SPECIAL_EFFECT") + ((Globals.MONSTER_SIZE + i) * 0x20)) + 1);
+                                            }
+                                            sGuardStatusDF[i] = true;
+                                        }
+                                    } else {
+                                        if (Globals.CHARACTER_TABLE[i].Read("Action") != 8 && Globals.CHARACTER_TABLE[i].Read("Action") != 10) {
+                                            sGuardStatusDF[i] = false;
+                                        }
                                     }
                                 }
-                            }
 
-                            if (Globals.CHARACTER_TABLE[i].Read("Helmet") == 89) { //Legend Casque
-                                if (!lGuardStateMDF[i]) {
-                                    if (Globals.CHARACTER_TABLE[i].Read("Guard") == 1 && guardStatusMDF[i] == 0) {
-                                        guardStatusMDF[i] = 1;
-                                        lGuardStatusMDF[i] += 1;
-                                    }
-                                    if ((Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10) && guardStatusMDF[i] == 1 && Globals.CHARACTER_TABLE[i].Read("Guard") == 0) {
-                                        guardStatusMDF[i] = 0;
-                                    }
-                                    if (lGuardStatusMDF[i] >= 3) {
-                                        lGuardStatusMDF[i] = 0;
-                                        guardStatusMDF[i] = 1;
-                                        lGuardStateMDF[i] = true;
-                                        emulator.WriteByte(p + 0xB7, 4);
-                                        Globals.CHARACTER_TABLE[i].Write("MDF", Math.Round(originalCharacterStats[i, 4] * 1.2));
-                                    }
-                                } else {
-                                    if (emulator.ReadByte(p + 0xB7) == 0) {
-                                        Globals.CHARACTER_TABLE[i].Write("MDF", originalCharacterStats[i, 4]);
-                                        lGuardStateMDF[i] = false;
-                                    }
-                                }
-                                if (!sGuardStatusMDF[i]) {
-                                    if (Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10) {
-                                        if (new Random().Next(0, 100) <= 10) {
-                                            emulator.WriteByte(Constants.GetAddress("SPECIAL_EFFECT") + ((Globals.MONSTER_SIZE + i) * 0x20) + EquipChangesBattleGlobalOffset(), emulator.ReadByte(Constants.GetAddress("SPECIAL_EFFECT") + ((Globals.MONSTER_SIZE + i) * 0x20) + EquipChangesBattleGlobalOffset()) + 4);
+                                if (Globals.CHARACTER_TABLE[i].Read("Helmet") == 89) { //Legend Casque
+                                    if (!lGuardStateMDF[i]) {
+                                        if (Globals.CHARACTER_TABLE[i].Read("Guard") == 1 && guardStatusMDF[i] == 0) {
+                                            guardStatusMDF[i] = 1;
+                                            lGuardStatusMDF[i] += 1;
                                         }
-                                        sGuardStatusMDF[i] = true;
+                                        if ((Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10) && guardStatusMDF[i] == 1 && Globals.CHARACTER_TABLE[i].Read("Guard") == 0) {
+                                            guardStatusMDF[i] = 0;
+                                        }
+                                        if (lGuardStatusMDF[i] >= 3) {
+                                            lGuardStatusMDF[i] = 0;
+                                            guardStatusMDF[i] = 1;
+                                            lGuardStateMDF[i] = true;
+                                            emulator.WriteByte(p + 0xB7, 4);
+                                            Globals.CHARACTER_TABLE[i].Write("MDF", Math.Round(originalCharacterStats[i, 4] * 1.2));
+                                        }
+                                    } else {
+                                        if (emulator.ReadByte(p + 0xB7) == 0) {
+                                            Globals.CHARACTER_TABLE[i].Write("MDF", originalCharacterStats[i, 4]);
+                                            lGuardStateMDF[i] = false;
+                                        }
                                     }
-                                } else {
-                                    if (Globals.CHARACTER_TABLE[i].Read("Action") != 8 && Globals.CHARACTER_TABLE[i].Read("Action") != 10) {
-                                        sGuardStatusMDF[i] = false;
+                                    if (!sGuardStatusMDF[i]) {
+                                        if (Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10) {
+                                            if (new Random().Next(0, 100) <= 10) {
+                                                emulator.WriteByte(Constants.GetAddress("SPECIAL_EFFECT") + ((Globals.MONSTER_SIZE + i) * 0x20), emulator.ReadByte(Constants.GetAddress("SPECIAL_EFFECT") + ((Globals.MONSTER_SIZE + i) * 0x20)) + 4);
+                                            }
+                                            sGuardStatusMDF[i] = true;
+                                        }
+                                    } else {
+                                        if (Globals.CHARACTER_TABLE[i].Read("Action") != 8 && Globals.CHARACTER_TABLE[i].Read("Action") != 10) {
+                                            sGuardStatusMDF[i] = false;
+                                        }
                                     }
                                 }
                             }
@@ -3663,22 +4586,6 @@ namespace Dragoon_Modifier {
             int offset = 0x0;
             if (Constants.REGION == Region.JPN) {
                 offset -= 0x186C;
-            }
-            return offset;
-        }
-
-        public int EquipChangesBattleGlobalOffset() {
-            int offset = 0x0;
-            if (Constants.REGION == Region.JPN) {
-                offset -= 0x1300;
-            }
-            return offset;
-        }
-
-        public int EquipChangesInventoryOffset() {
-            int offset = 0x0;
-            if (Constants.REGION == Region.JPN) {
-                offset -= 0x1300;
             }
             return offset;
         }
@@ -3791,13 +4698,25 @@ namespace Dragoon_Modifier {
                     emulator.WriteByte(Constants.GetAddress("BATTLE_FIELD"), 22);
                 } else if (uiCombo["cboUltimateBoss"] == 34 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
                     emulator.WriteShort(Constants.GetAddress("ENCOUNTER_ID"), 411);
-                    emulator.WriteByte(Constants.GetAddress("BATTLE_FIELD"), 63);
+                    emulator.WriteByte(Constants.GetAddress("BATTLE_FIELD"), 24);
                 } else if (uiCombo["cboUltimateBoss"] == 35 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
                     emulator.WriteShort(Constants.GetAddress("ENCOUNTER_ID"), 394);
                     emulator.WriteByte(Constants.GetAddress("BATTLE_FIELD"), 40);
+                } else if (uiCombo["cboUltimateBoss"] == 36 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
+                    emulator.WriteShort(Constants.GetAddress("ENCOUNTER_ID"), 392);
+                    emulator.WriteByte(Constants.GetAddress("BATTLE_FIELD"), 45);
+                } else if (uiCombo["cboUltimateBoss"] == 37 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
+                    emulator.WriteShort(Constants.GetAddress("ENCOUNTER_ID"), 420);
+                    emulator.WriteByte(Constants.GetAddress("BATTLE_FIELD"), 44);
+                } else if (uiCombo["cboUltimateBoss"] == 38 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
+                    emulator.WriteShort(Constants.GetAddress("ENCOUNTER_ID"), 442);
+                    emulator.WriteByte(Constants.GetAddress("BATTLE_FIELD"), 71);
+                } else if (uiCombo["cboUltimateBoss"] == 39 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
+                    emulator.WriteShort(Constants.GetAddress("ENCOUNTER_ID"), 443);
+                    emulator.WriteByte(Constants.GetAddress("BATTLE_FIELD"), 65);
                 } else {
                     this.Dispatcher.BeginInvoke(new Action(() => {
-                        dmScripts["btnUltimateBoss"] = false;
+                        Globals.dmScripts["btnUltimateBoss"] = false;
                         TurnOnOffButton(ref btnUltimateBoss);
                     }), DispatcherPriority.ContextIdle);
                 }
@@ -3805,34 +4724,34 @@ namespace Dragoon_Modifier {
         }
 
         public void UltimateBossFieldSet() {
-            if (dmScripts.ContainsKey("btnUltimateBoss") && dmScripts["btnUltimateBoss"]) {
+            if (Globals.CheckDMScript("btnUltimateBoss")) {
                 if (Globals.MAP >= 393 && Globals.MAP <= 405) {
                     if (ultimateBossCompleted >= uiCombo["cboUltimateBoss"]) {
                         if ((uiCombo["cboUltimateBoss"] >= 0 && uiCombo["cboUltimateBoss"] <= 2) && Globals.MAP > 394) {
-                            dmScripts["btnUltimateBoss"] = false;
+                            Globals.dmScripts["btnUltimateBoss"] = false;
                             Constants.WriteGLogOutput("You must be in Zone 1 - Maps 393-394.");
                         }
 
                         if ((uiCombo["cboUltimateBoss"] >= 3 && uiCombo["cboUltimateBoss"] <= 7) && (Globals.MAP < 395 || Globals.MAP > 397)) {
-                            dmScripts["btnUltimateBoss"] = false;
+                            Globals.dmScripts["btnUltimateBoss"] = false;
                             Constants.WriteGLogOutput("You must be in Zone 2 - Maps 395-397.");
                         }
 
                         if ((uiCombo["cboUltimateBoss"] >= 8 && uiCombo["cboUltimateBoss"] <= 21) && (Globals.MAP < 398 || Globals.MAP > 400)) {
-                            dmScripts["btnUltimateBoss"] = false;
+                            Globals.dmScripts["btnUltimateBoss"] = false;
                             Constants.WriteGLogOutput("You must be in Zone 3 - Maps 398-400.");
                         }
 
                         if (uiCombo["cboUltimateBoss"] >= 22 && Globals.MAP < 401) {
-                            dmScripts["btnUltimateBoss"] = false;
+                            Globals.dmScripts["btnUltimateBoss"] = false;
                             Constants.WriteGLogOutput("You must be in Zone 4 - Maps 401-405.");
                         }
                     } else {
-                        dmScripts["btnUltimateBoss"] = false;
+                        Globals.dmScripts["btnUltimateBoss"] = false;
                         Constants.WriteGLogOutput("You must defeat a previous Ultimate Boss.");
                     }
                 } else {
-                    dmScripts["btnUltimateBoss"] = false;
+                    Globals.dmScripts["btnUltimateBoss"] = false;
                     Constants.WriteGLogOutput("You are not in the Forbidden Land.");
                 }
 
@@ -3849,18 +4768,47 @@ namespace Dragoon_Modifier {
                 ubHPChanged = ubCheckedDamage = ubUltimateHPSet = false;
                 ubCheckDamageCycle = 0;
                 ubDragoonBondMode = -1;
-                ubGuardBreak = ubHealingPotion = ubZeroSP = ubMPAttack = ubWoundDamage = ubHealthSteal = ubSPAttack = ubMoveChange = ubMagicChange = ubElementalShift = ubArmorShell = ubSharedHP = ubRemoveResistances = ubTPDamage = ubTrackHPChange = ubBodyDamage = ubVirageKilledPart = ubDragoonBond = ubDragoonExtras = ubCountdown = ubUltimateEnrage = ubInventoryRefresh = ubEnhancedShield = ubReverseDBS = false;
+                ubGuardBreak =
+                    ubHealingPotion =
+                    ubZeroSP =
+                    ubMPAttack =
+                    ubWoundDamage =
+                    ubHealthSteal =
+                    ubSPAttack =
+                    ubMoveChange =
+                    ubMagicChange =
+                    ubElementalShift =
+                    ubArmorShell =
+                    ubSharedHP =
+                    ubRemoveResistances =
+                    ubTPDamage =
+                    ubTrackHPChange =
+                    ubBodyDamage =
+                    ubVirageKilledPart =
+                    ubDragoonBond =
+                    ubDragoonExtras =
+                    ubTrackDragoon =
+                    ubCountdown =
+                    ubUltimateEnrage =
+                    ubInventoryRefresh =
+                    ubEnhancedShield =
+                    ubBodyProtect =
+                    ubFinalAttack =
+                    ubReverseDBS =
+                    ubArmorGuard =
+                    ubDragoonGuard =
+                    ubGrantMaxHP = false;
                 SetUltimateStats();
 
-                if (dmScripts.ContainsKey("btnRemoveCaps") && !dmScripts["btnRemoveCaps"]) {
+                if (Globals.CheckDMScript("btnRemoveCaps")) {
                     this.Dispatcher.BeginInvoke(new Action(() => {
-                        dmScripts["btnRemoveCaps"] = true;
+                        Globals.dmScripts["btnRemoveCaps"] = true;
                         TurnOnOffButton(ref btnRemoveCaps);
                     }), DispatcherPriority.ContextIdle);
                 } else {
-                    if (!dmScripts.ContainsKey("btnRemoveCaps")) {
+                    if (!Globals.CheckDMScript("btnRemoveCaps")) {
                         this.Dispatcher.BeginInvoke(new Action(() => {
-                            dmScripts.Add("btnRemoveCaps", true);
+                            Globals.dmScripts.Add("btnRemoveCaps", true);
                             TurnOnOffButton(ref btnRemoveCaps);
                         }), DispatcherPriority.ContextIdle);
                     }
@@ -3903,7 +4851,95 @@ namespace Dragoon_Modifier {
 
                 if (ubRemoveResistances) {
                     for (int i = 0; i < 3; i++) {
-                        Globals.CHARACTER_TABLE[i].Write("Stat_Res", 0);
+                        if (Globals.PARTY_SLOT[i] < 9) {
+                            Globals.CHARACTER_TABLE[i].Write("Stat_Res", 0);
+                            Globals.CHARACTER_TABLE[i].Write("Death_Res", 0);
+                        }
+                    }
+                }
+
+                if (ubTrackHPChange) {
+                    for (int i = 0; i < 3; i++) {
+                        if (Globals.PARTY_SLOT[i] < 9) {
+                            ubTrackHP[i] = Globals.CHARACTER_TABLE[i].Read("HP");
+                        }
+                    }
+
+                    for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
+                        ubTrackEHP[i] = Globals.MONSTER_TABLE[i].Read("HP");
+                        if (ubBodyProtect)
+                            ubTrackEHP[i] = ultimateHP[i];
+                    }
+
+
+                    for (int i = 0; i < 3; i++) {
+                        if (Globals.PARTY_SLOT[i] < 9) {
+                            ubTrackTP[i] = Globals.CHARACTER_TABLE[i].Read("Turn");
+                        }
+                    }
+
+                    for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
+                        ubTrackMTP[i] = Globals.MONSTER_TABLE[i].Read("Turn");
+                    }
+
+                    ubBlockMenuHPTrack = false;
+                    ubBlockMenuTPTrack = false;
+                    ubTrackDMove = 255;
+                }
+
+                if (ubTPDamage) {
+                    tpDamage = 0;
+                }
+
+                if (ubDragoonExtras) {
+                    ubCustomStatusTurns[0] = 0;
+                    ubCustomStatusTurns[1] = 0;
+                    ubCustomStatusTurns[2] = 0;
+                }
+
+                if (ubCountdown) {
+                    ubLivesIncreased = 0;
+                    ubTotalGold = 0;
+                }
+
+                if (ubInventoryRefresh) {
+                    if (Globals.ENCOUNTER_ID == 390) {
+                        for (int i = 0; i < inventorySize + 1; i++) {
+                            if (i == inventorySize) {
+                                inventoryRefreshSize = emulator.ReadByte(Constants.GetAddress("INVENTORY_SIZE"));
+                            } else {
+                                inventoryRefresh[i] = emulator.ReadByte(Constants.GetAddress("INVENTORY") + i);
+                            }
+                        }
+                    }
+                }
+
+                if (ubUltimateEnrage) {
+                    enrageChangeIndex = 0;
+                    enrageChangeTurns = 0;
+                    ubEnrageTurns = 0;
+                    ubEnrageTurnsPlus = 0;
+
+                }
+
+                if (ubEnhancedShield) {
+                    shieldTurnsTaken = 0;
+                    enhancedShieldTurns = 0;
+                }
+
+                if (ubDragoonGuard) {
+                    /*for (int i = 0; i < 3; i++) {
+                        if (Globals.PARTY_SLOT[i] < 9) {
+                            deathRes[i] = Globals.CHARACTER_TABLE[i].Read("Death_Res");
+                        }
+                    }*/
+                }
+
+                if (ubGrantMaxHP) {
+                    for (int i = 0; i < 3; i++) {
+                        if (Globals.PARTY_SLOT[i] < 9) {
+                            Globals.CHARACTER_TABLE[i].Write("Max_HP", Globals.CHARACTER_TABLE[i].Read("Max_HP") * 1.5);
+                        }
                     }
                 }
 
@@ -3912,7 +4948,7 @@ namespace Dragoon_Modifier {
                 if (!Globals.IN_BATTLE && ultimateBossOnBattleEntry) {
                     ultimateBossOnBattleEntry = false;
                     this.Dispatcher.BeginInvoke(new Action(() => {
-                        dmScripts["btnUltimateBoss"] = false;
+                        Globals.dmScripts["btnUltimateBoss"] = false;
                         TurnOnOffButton(ref btnUltimateBoss);
                     }), DispatcherPriority.ContextIdle);
                 } else {
@@ -4017,16 +5053,77 @@ namespace Dragoon_Modifier {
 
                                     magicChangeTurns = emulator.ReadShort(Globals.MONS_ADDRESS[1] + 0x44);
                                 }
+                            } else if (Globals.ENCOUNTER_ID == 394) { //Divine Dargon
+                                double hpDamage = ultimateMaxHP[0] - ultimateHP[0];
+                                if ((hpDamage / ultimateMaxHP[0]) * 5 >= magicChangeTurns) {
+                                    MagicChange();
+                                }
+                            } else if (Globals.ENCOUNTER_ID == 392) { //Lloyd
+                                double hpDamage = ultimateMaxHP[0] - ultimateHP[0];
+                                if ((hpDamage / ultimateMaxHP[0]) * 7 >= magicChangeTurns) {
+                                    MagicChange();
+                                }
+                            } else if (Globals.ENCOUNTER_ID == 420) { //Magician Faust
+                                double hpDamage = ultimateMaxHP[0] - ultimateHP[0];
+                                Constants.WriteDebug((hpDamage / ultimateMaxHP[0]) * 100 + " >= " + magicChangeTurns);
+                                if ((hpDamage / ultimateMaxHP[0]) * 100 >= magicChangeTurns) {
+                                    MagicChange();
+                                }
                             }
                         }
 
-                        if (ubElementalShift) {
+                        if (ubElementalShift)
                             ElementalShift();
+
+                        if (ubArmorShell)
+                            BreakArmor();
+
+                        if (ubTPDamage)
+                            TurnPointDamage();
+
+                        if (ubBodyDamage)
+                            BodyDamage();
+
+                        if (ubDragoonBond)
+                            DragoonBond();
+
+                        if (ubDragoonExtras)
+                            DragoonExtras();
+
+                        if (ubCountdown)
+                            Countdown();
+
+                        if (ubInventoryRefresh) {
+                            if (Globals.ENCOUNTER_ID == 390) {
+                                if (Globals.MONSTER_TABLE[0].Read("HP") == 0) {
+                                    for (int i = 0; i < inventorySize + 1; i++) {
+                                        if (i == inventorySize) {
+                                            emulator.WriteByte(Constants.GetAddress("INVENTORY_SIZE"), inventoryRefreshSize);
+                                        } else {
+                                            emulator.WriteByte(Constants.GetAddress("INVENTORY") + i, inventoryRefresh[i]);
+                                        }
+                                    }
+                                }
+                            }
                         }
 
-                        if (ubArmorShell) {
-                            BreakArmor();
-                        }
+                        if (ubUltimateEnrage)
+                            UltimateEnrage();
+
+                        if (ubEnhancedShield)
+                            EnhancedShield();
+
+                        if (ubBodyProtect)
+                            BodyProtect();
+
+                        if (ubReverseDBS)
+                            ReverseDragonBlockStaff();
+
+                        if (ubArmorGuard)
+                            ArmorGuard();
+
+                        if (ubDragoonGuard)
+                            DragoonGuard();
 
                         UltimateBossDefeatCheck();
                     }
@@ -4290,7 +5387,7 @@ namespace Dragoon_Modifier {
                     multiplyMode[2] = 13;
                     multiplyMode[3] = 1.5;
                     multiplyMode[4] = 0.5;
-                } else if (Globals.MONSTER_IDS[i] == 0) { //Lenus
+                } else if (Globals.MONSTER_IDS[i] == 293) { //Lenus
                     ultimateHP[i] = ultimateMaxHP[i] = 525000;
                     multiplyMode[0] = 65535;
                     multiplyMode[1] = 6.6;
@@ -4298,43 +5395,40 @@ namespace Dragoon_Modifier {
                     multiplyMode[3] = 0.8;
                     multiplyMode[4] = 0.8;
                     ubMagicChange = true;
-                } else if (Globals.MONSTER_IDS[i] == 0) { //Syuveil
+                } else if (Globals.MONSTER_IDS[i] == 296) { //Syuveil
                     ultimateHP[i] = ultimateMaxHP[i] = 500000;
                     multiplyMode[0] = 65535;
                     multiplyMode[1] = 3.2;
                     multiplyMode[2] = 3.9;
                     ubTPDamage = true;
                     ubTrackHPChange = true;
-                } else if (Globals.MONSTER_IDS[i] == 0) { //Syuveil
-                    ultimateHP[i] = ultimateMaxHP[i] = 500000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 3.2;
-                    multiplyMode[2] = 3.9;
-                    ubTPDamage = true;
-                    ubTrackHPChange = true;
-                } else if (Globals.MONSTER_IDS[i] == 0) { //Virage(head)
+                } else if (Globals.MONSTER_IDS[i] == 311) { //Virage(head)
                     ultimateHP[i] = ultimateMaxHP[i] = 1280000;
                     multiplyMode[0] = 65535;
                     multiplyMode[1] = 14;
                     multiplyMode[2] = 14;
                     ubBodyDamage = true;
                     ubTrackHPChange = true;
-                    ubVirageKilledPart = true;
-                } else if (Globals.MONSTER_IDS[i] == 0) { //Virage(body)
+                    ubVirageKilledPart = false;
+                } else if (Globals.MONSTER_IDS[i] == 313) { //Virage(body)
                     ultimateHP[i] = ultimateMaxHP[i] = 500000;
                     multiplyMode[0] = 65535;
                     multiplyMode[1] = 14;
                     multiplyMode[2] = 14;
                     multiplyMode[3] = 0.33;
                     multiplyMode[4] = 0.33;
-                } else if (Globals.MONSTER_IDS[i] == 0) { //Virage(arm)
-                    ultimateHP[i] = ultimateMaxHP[i] = 288000;
+                } else if (Globals.MONSTER_IDS[i] == 312) { //Virage(arm)
                     multiplyMode[0] = 180;
                     multiplyMode[1] = 14;
                     multiplyMode[2] = 14;
                     multiplyMode[3] = 0.25;
                     multiplyMode[4] = 0.25;
-                } else if (Globals.MONSTER_IDS[i] == 0) { //Greham
+                } else if (Globals.MONSTER_IDS[i] == 275) { //Feyrbrand
+                    ultimateHP[i] = ultimateMaxHP[i] = 288000;
+                    multiplyMode[0] = 65535;
+                    multiplyMode[1] = 20;
+                    multiplyMode[2] = 20;
+                } else if (Globals.MONSTER_IDS[i] == 287) { //Greham
                     ultimateHP[i] = ultimateMaxHP[i] = 210000;
                     multiplyMode[0] = 65535;
                     multiplyMode[1] = 20;
@@ -4342,58 +5436,60 @@ namespace Dragoon_Modifier {
                     ubDragoonBond = true;
                     ubRemoveResistances = true;
                     ubDragoonBondMode = -1;
-                } else if (Globals.MONSTER_IDS[i] == 0) { //Damia
+                } else if (Globals.MONSTER_IDS[i] == 295) { //Damia
                     ultimateHP[i] = ultimateMaxHP[i] = 360000;
                     multiplyMode[0] = 65535;
                     multiplyMode[1] = 3.1;
                     multiplyMode[2] = 3.1;
                     ubDragoonExtras = true;
                     ubTrackHPChange = true;
-                } else if (Globals.MONSTER_IDS[i] == 0) { //Regole
+                } else if (Globals.MONSTER_IDS[i] == 279) { //Regole
                     ultimateHP[i] = ultimateMaxHP[i] = 300000;
                     multiplyMode[0] = 65535;
                     multiplyMode[1] = 6;
                     multiplyMode[2] = 6;
-                } else if (Globals.MONSTER_IDS[i] == 0) { //Dragoon Lenus
+                } else if (Globals.MONSTER_IDS[i] == 294) { //Dragoon Lenus
                     ultimateHP[i] = ultimateMaxHP[i] = 300000;
                     multiplyMode[0] = 65535;
                     multiplyMode[1] = 6;
                     multiplyMode[2] = 6;
                     ubDragoonBond = true;
                     ubDragoonBondMode = -1;
-                } else if (Globals.MONSTER_IDS[i] == 0) { //Belzac
+                } else if (Globals.MONSTER_IDS[i] == 297) { //Belzac
                     ultimateHP[i] = ultimateMaxHP[i] = 608000;
                     multiplyMode[0] = 65535;
                     multiplyMode[1] = 4;
                     multiplyMode[2] = 4;
                     multiplyMode[3] = 0.25;
                     multiplyMode[4] = 0.25;
+                    ubDragoonExtras = true;
                     ubTrackDragoon = true;
                     ubTrackHPChange = true;
-                } else if (Globals.MONSTER_IDS[i] == 0) { //S Virage(head)
+                } else if (Globals.MONSTER_IDS[i] == 316) { //S Virage(head)
                     ultimateHP[i] = ultimateMaxHP[i] = 320000;
                     multiplyMode[0] = 65535;
                     multiplyMode[1] = 6;
                     multiplyMode[2] = 15;
                     ubCountdown = true;
-                } else if (Globals.MONSTER_IDS[i] == 0) { //S Virage(body)
+                } else if (Globals.MONSTER_IDS[i] == 317) { //S Virage(body)
                     ultimateHP[i] = ultimateMaxHP[i] = 320000;
                     multiplyMode[0] = 65535;
                     multiplyMode[1] = 6;
                     multiplyMode[2] = 6;
-                } else if (Globals.MONSTER_IDS[i] == 0) { //S Virage(arm)
+                } else if (Globals.MONSTER_IDS[i] == 318) { //S Virage(arm)
                     ultimateHP[i] = ultimateMaxHP[i] = 160000;
                     multiplyMode[0] = 65535;
                     multiplyMode[1] = 6;
                     multiplyMode[2] = 6;
-                } else if (Globals.MONSTER_IDS[i] == 0) { //Kanzas
+                } else if (Globals.MONSTER_IDS[i] == 298) { //Kanzas
                     ultimateHP[i] = ultimateMaxHP[i] = 396000;
                     multiplyMode[0] = 65535;
                     multiplyMode[1] = 2.4;
                     multiplyMode[2] = 2.4;
+                    ubDragoonExtras = true;
                     ubTrackDragoon = true;
                     ubTrackHPChange = true;
-                } else if (Globals.MONSTER_IDS[i] == 0) { //Emperor Doel
+                } else if (Globals.MONSTER_IDS[i] == 267) { //Emperor Doel
                     ultimateHP[i] = ultimateMaxHP[i] = 250000;
                     multiplyMode[0] = 65535;
                     multiplyMode[1] = 7;
@@ -4402,7 +5498,7 @@ namespace Dragoon_Modifier {
                     multiplyMode[4] = 0.3;
                     ubZeroSP = true;
                     ubUltimateEnrage = true;
-                } else if (Globals.MONSTER_IDS[i] == 0) { //Dragoon Doel
+                } else if (Globals.MONSTER_IDS[i] == 268) { //Dragoon Doel
                     ultimateHP[i] = ultimateMaxHP[i] = 750000;
                     multiplyMode[0] = 65535;
                     multiplyMode[1] = 7;
@@ -4412,25 +5508,87 @@ namespace Dragoon_Modifier {
                     ubInventoryRefresh = true;
                     ubMagicChange = true;
                     ubEnhancedShield = true;
-                } else if (Globals.MONSTER_IDS[i] == 0) { //Divine Dragon
-                    multiplyMode[0] = 0.25;
-                    multiplyMode[1] = 6;
-                    multiplyMode[2] = 6;
-                    multiplyMode[3] = 100;
-                    multiplyMode[4] = 200;
+                    ubTrackHPChange = true;
+                } else if (Globals.MONSTER_IDS[i] == 320) { //S Virage II (head)
+                    ultimateHP[i] = ultimateMaxHP[i] = 333333;
+                    multiplyMode[0] = 65535;
+                    multiplyMode[1] = 3.2;
+                    multiplyMode[2] = 3.2;
+                    multiplyMode[3] = 1.5;
+                    multiplyMode[4] = 1.5;
+                    ubBodyProtect = true;
+                    ubFinalAttack = true;
+                    ubTrackHPChange = true;
+                } else if (Globals.MONSTER_IDS[i] == 321) { //S Virage II (arm)
+                    ultimateHP[i] = ultimateMaxHP[i] = 666666;
+                    multiplyMode[0] = 65535;
+                    multiplyMode[1] = 3.2;
+                    multiplyMode[2] = 3.2;
+                    multiplyMode[3] = 0.2;
+                    multiplyMode[4] = 0.2;
+                } else if (Globals.MONSTER_IDS[i] == 322) { //S Virage II (body)
+                    ultimateHP[i] = ultimateMaxHP[i] = 222222;
+                    multiplyMode[0] = 65535;
+                    multiplyMode[1] = 3.2;
+                    multiplyMode[2] = 3.2;
+                    multiplyMode[3] = 1.5;
+                    multiplyMode[4] = 1.5;
+                } else if (Globals.MONSTER_IDS[i] == 283) { //Divine Dragon
+                    multiplyMode[0] = 1;
+                    multiplyMode[1] = 5; //attack set by ultimate enrage
+                    multiplyMode[2] = 5;
+                    multiplyMode[3] = 200;
+                    multiplyMode[4] = 400;
                     ubReverseDBS = true;
-                } else if (Globals.MONSTER_IDS[i] == 0) { //Divine Cannon
+                    ubUltimateEnrage = true;
+                    ubArmorGuard = true;
+                    ubTrackHPChange = true;
+                    ubMagicChange = true;
+                } else if (Globals.MONSTER_IDS[i] == 284) { //Divine Cannon
                     multiplyMode[0] = 65535;
                     multiplyMode[1] = 0;
                     multiplyMode[2] = 0;
-                    multiplyMode[3] = 0;
-                    multiplyMode[4] = 0;
-                } else if (Globals.MONSTER_IDS[i] == 0) { //Divine Ball
+                    multiplyMode[3] = 100;
+                    multiplyMode[4] = 400;
+                } else if (Globals.MONSTER_IDS[i] == 285) { //Divine Ball
                     multiplyMode[0] = 65535;
                     multiplyMode[1] = 0;
                     multiplyMode[2] = 0;
-                    multiplyMode[3] = 0;
-                    multiplyMode[4] = 0;
+                    multiplyMode[3] = 100;
+                    multiplyMode[4] = 400;
+                } else if (Globals.MONSTER_IDS[i] == 270) { //Lloyd
+                    ultimateHP[i] = ultimateMaxHP[i] = 666666;
+                    multiplyMode[0] = 65535;
+                    multiplyMode[1] = 4; //stats set by ultimate enrage
+                    multiplyMode[2] = 4;
+                    multiplyMode[3] = 0.8;
+                    multiplyMode[4] = 0.8;
+                    ubUltimateEnrage = true;
+                    ubTrackHPChange = true;
+                    ubRemoveResistances = true;
+                    ubMagicChange = true;
+                } else if (Globals.MONSTER_IDS[i] == 344) { //Magician Faust
+                    ultimateHP[i] = ultimateMaxHP[i] = 1000000;
+                    multiplyMode[0] = 65535;
+                    multiplyMode[1] = 2.52;
+                    multiplyMode[2] = 2.52;
+                    multiplyMode[3] = 1;
+                    multiplyMode[4] = 0.125;
+                    ubMagicChange = true;
+                    ubDragoonGuard = true;
+                    ubGrantMaxHP = true;
+                } else if (Globals.MONSTER_IDS[i] == 387) { //Zieg
+                    ultimateHP[i] = ultimateMaxHP[i] = 720000;
+                    multiplyMode[0] = 65535;
+                    multiplyMode[1] = 3.5;
+                    multiplyMode[2] = 3.5; //mat set be enrage mode
+                    multiplyMode[3] = 1;
+                    multiplyMode[4] = 1;
+                    ubDragoonExtras = true;
+                    ubTrackDragoon = true;
+                    ubTrackHPChange = true;
+                    ubUltimateEnrage = true;
+                    ultimateThread.Start();
                 }
 
                 Globals.MONSTER_TABLE[i].Write("HP", Math.Min(65535, Math.Round(Globals.MONSTER_TABLE[i].Read("HP") * multiplyMode[0])));
@@ -4462,7 +5620,7 @@ namespace Dragoon_Modifier {
                     case 432: //Last Kraken
                     case 431: //Zackwell
                     case 409: //Virage II
-                    case 394: //Divine Dragon
+                    case 420: //Magician Faust
                         if (Globals.MONSTER_TABLE[0].Read("HP") == 0 || ultimateHP[0] == 0) {
                             UltimateBossDefeated();
                         }
@@ -4472,6 +5630,16 @@ namespace Dragoon_Modifier {
                     case 448: //Regole (Spirit)
                     case 447: //Divine Dragon (Spirit)
                         if (Globals.MONSTER_TABLE[1].Read("HP") == 0 || ultimateHP[1] == 0) {
+                            UltimateBossDefeated();
+                        }
+                        break;
+                    case 411: //S Virage II
+                        if (emulator.ReadInteger(Constants.GetAddress("TOTAL_EXP")) > 0 && (ultimateHP[0] == 0 || ultimateHP[1] == 0)) {
+                            UltimateBossDefeated();
+                        }
+                        break;
+                    case 394: //Divine Dragon
+                        if (Globals.MONSTER_TABLE[0].Read("HP") == 0) {
                             UltimateBossDefeated();
                         }
                         break;
@@ -4493,13 +5661,43 @@ namespace Dragoon_Modifier {
 
         public void UltimateBossDefeated() {
             this.Dispatcher.BeginInvoke(new Action(() => {
-                dmScripts["btnUltimateBoss"] = false;
+                Globals.dmScripts["btnUltimateBoss"] = false;
                 TurnOnOffButton(ref btnUltimateBoss);
                 ultimateBossOnBattleEntry = false;
                 ubHPChanged = ubCheckedDamage = ubUltimateHPSet = false;
                 ubCheckDamageCycle = 0;
                 ubDragoonBondMode = -1;
-                ubGuardBreak = ubHealingPotion = ubZeroSP = ubMPAttack = ubWoundDamage = ubHealthSteal = ubSPAttack = ubMoveChange = ubMagicChange = ubElementalShift = ubArmorShell = ubSharedHP = ubRemoveResistances = ubTPDamage = ubTrackHPChange = ubBodyDamage = ubVirageKilledPart = ubDragoonBond = ubDragoonExtras = ubCountdown = ubUltimateEnrage = ubInventoryRefresh = ubEnhancedShield = ubReverseDBS = false;
+                ubGuardBreak =
+                    ubHealingPotion =
+                    ubZeroSP =
+                    ubMPAttack =
+                    ubWoundDamage =
+                    ubHealthSteal =
+                    ubSPAttack =
+                    ubMoveChange =
+                    ubMagicChange =
+                    ubElementalShift =
+                    ubArmorShell =
+                    ubSharedHP =
+                    ubRemoveResistances =
+                    ubTPDamage =
+                    ubTrackHPChange =
+                    ubBodyDamage =
+                    ubVirageKilledPart =
+                    ubDragoonBond =
+                    ubDragoonExtras =
+                    ubTrackDragoon =
+                    ubCountdown =
+                    ubUltimateEnrage =
+                    ubInventoryRefresh =
+                    ubEnhancedShield =
+                    ubBodyProtect =
+                    ubFinalAttack =
+                    ubReverseDBS =
+                    ubArmorGuard =
+                    ubDragoonGuard =
+                    ubGrantMaxHP
+                    = false;
 
                 if (ultimateBossCompleted == uiCombo["cboUltimateBoss"]) {
                     ultimateBossCompleted += 1;
@@ -4517,12 +5715,198 @@ namespace Dragoon_Modifier {
                     Constants.WritePLog("On how to extend inventory please see the output log in the settings tab.");
                     Constants.WriteGLogOutput("Ultimate Boss Zone 2 completed! Inventory expanded to 40 slots.");
                     Constants.WriteOutput("Please note Extended Inventory must be applied at the Save Slot screen once per emulator session to avoid loss of items. To do this simply open up Dragoon Modifier right before you load your save.");
+                } else if (ultimateBossCompleted == 22) {
+                    inventorySize = 48;
+                    ExtendInventory();
+                    Constants.WritePLog("On how to extend inventory please see the output log in the settings tab.");
+                    Constants.WriteGLogOutput("Ultimate Boss Zone 3 completed! Inventory expanded to 48 slots.");
+                    Constants.WriteOutput("Please note Extended Inventory must be applied at the Save Slot screen once per emulator session to avoid loss of items. To do this simply open up Dragoon Modifier right before you load your save.");
+                } else if (ultimateBossCompleted == 34) {
+                    inventorySize = 64;
+                    ExtendInventory();
+                    Constants.WritePLog("On how to extend inventory please see the output log in the settings tab.");
+                    Constants.WriteGLogOutput("Ultimate Boss Zone 4 midboss completed! Inventory expanded to 64 slots.");
+                    Constants.WriteOutput("Please note Extended Inventory must be applied at the Save Slot screen once per emulator session to avoid loss of items. To do this simply open up Dragoon Modifier right before you load your save.");
                 } else {
                     Constants.WriteGLogOutput("Ultimate Boss defeated.");
                 }
 
                 SaveSubKey();
             }), DispatcherPriority.ContextIdle);
+        }
+
+        public void DoubleRepeat() {
+            if (Globals.IN_BATTLE && Globals.STATS_CHANGED) {
+                if ((ultimateShopLimited & 131072) == 131072) { //Power Up
+                    if ((doubleRepeatUsed & 131072) != 131072) {
+                        for (int i = 0; i < 3; i++) {
+                            if (Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[i].Read("PWR_AT") == 50 && Globals.CHARACTER_TABLE[i].Read("PWR_AT_TRN") > 0) {
+                                doubleRepeatUsed += 131072;
+                                Globals.CHARACTER_TABLE[i].Write("PWR_AT_TRN", Globals.CHARACTER_TABLE[i].Read("PWR_AT_TRN") + 3);
+                                Globals.CHARACTER_TABLE[i].Write("PWR_MAT_TRN", Globals.CHARACTER_TABLE[i].Read("PWR_MAT_TRN") + 3);
+                                Globals.CHARACTER_TABLE[i].Write("PWR_DF_TRN", Globals.CHARACTER_TABLE[i].Read("PWR_DF_TRN") + 3);
+                                Globals.CHARACTER_TABLE[i].Write("PWR_MDF_TRN", Globals.CHARACTER_TABLE[i].Read("PWR_MDF_TRN") + 3);
+                            }
+                        }
+                    }
+                }
+
+                if ((ultimateShopLimited & 262144) == 262144) { //Power Down
+                    if ((doubleRepeatUsed & 262144) != 262144) {
+                        for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
+                            if (Globals.MONSTER_TABLE[i].Read("PWR_AT") == 206 && Globals.MONSTER_TABLE[i].Read("PWR_AT_TRN") > 0) {
+                                doubleRepeatUsed += 262144;
+                                Globals.MONSTER_TABLE[i].Write("PWR_AT_TRN", Globals.MONSTER_TABLE[i].Read("PWR_AT_TRN") + 3);
+                                Globals.MONSTER_TABLE[i].Write("PWR_MAT_TRN", Globals.MONSTER_TABLE[i].Read("PWR_MAT_TRN") + 3);
+                                Globals.MONSTER_TABLE[i].Write("PWR_DF_TRN", Globals.MONSTER_TABLE[i].Read("PWR_DF_TRN") + 3);
+                                Globals.MONSTER_TABLE[i].Write("PWR_MDF_TRN", Globals.MONSTER_TABLE[i].Read("PWR_MDF_TRN") + 3);
+                            }
+                        }
+                    }
+                }
+
+                if ((ultimateShopLimited & 524288) == 524288) { //Speed Up
+                    if ((doubleRepeatUsed & 524288) != 524288) {
+                        for (int i = 0; i < 3; i++) {
+                            if (Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[i].Read("SPEED_UP_TRN") > 0) {
+                                doubleRepeatUsed += 524288;
+                                Globals.CHARACTER_TABLE[i].Write("SPEED_UP_TRN", Globals.CHARACTER_TABLE[i].Read("SPEED_UP_TRN") + 3);
+                            }
+                        }
+                    }
+                }
+
+                if ((ultimateShopLimited & 1048576) == 1048576) { //Speed Down
+                    if ((doubleRepeatUsed & 1048576) != 1048576) {
+                        for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
+                            if (Globals.MONSTER_TABLE[i].Read("SPEED_DOWN_TRN") > 0) {
+                                doubleRepeatUsed += 1048576;
+                                Globals.CHARACTER_TABLE[i].Write("SPEED_DOWN_TRN", Globals.CHARACTER_TABLE[i].Read("SPEED_DOWN_TRN") + 3);
+                            }
+                        }
+                    }
+                }
+
+                if ((ultimateShopLimited & 2097152) == 2097152) { //Magic Shield
+                    if ((doubleRepeatUsed & 2097152) != 2097152) {
+                        for (int i = 0; i < 3; i++) {
+                            if (Globals.PARTY_SLOT[i] < 9) {
+                                if (emulator.ReadByte(Constants.GetAddress("SPECIAL_EFFECT") + ((Globals.MONSTER_SIZE + i) * 0x20)) >= 12) {
+                                    doubleRepeatUsed += 2097152;
+                                    magicShieldSlot = i;
+                                    magicShieldTurns = 12;
+                                }
+                            }
+                        }
+                    } else {
+                        DoubleShield();
+                    }
+                }
+
+                if ((ultimateShopLimited & 4194304) == 4194304) { //Material Shield
+                    if ((doubleRepeatUsed & 4194304) != 4194304) {
+                        for (int i = 0; i < 3; i++) {
+                            if (Globals.PARTY_SLOT[i] < 9) {
+                                int shieldValue = emulator.ReadByte(Constants.GetAddress("SPECIAL_EFFECT") + ((Globals.MONSTER_SIZE + i) * 0x20));
+                                if (shieldValue == 3 || shieldValue == 7 || shieldValue == 11 || shieldValue == 15) {
+                                    doubleRepeatUsed += 4194304;
+                                    materialShieldSlot = i;
+                                    materialShieldTurns = 3;
+                                }
+                            }
+                        }
+                    } else {
+                        DoubleShield();
+                    }
+                }
+
+                if ((ultimateShopLimited & 8388608) == 8388608) { //Magic Sig Stone
+                    if ((doubleRepeatUsed & 8388608) != 8388608) {
+                        for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
+                            if (emulator.ReadByte(Constants.GetAddress("SPECIAL_EFFECT") + (i * 0x20)) == 48) {
+                                doubleRepeatUsed += 8388608;
+                                sigStoneSlot = i;
+                                sigStoneTurns = 48;
+                            }
+                        }
+                    } else {
+                        if (sigStoneTurns > 0) {
+                            if (emulator.ReadByte(Constants.GetAddress("SPECIAL_EFFECT") + (sigStoneSlot * 0x20)) == 16) {
+                                emulator.WriteByte(Constants.GetAddress("SPECIAL_EFFECT") + (sigStoneSlot * 0x20), emulator.ReadByte(Constants.GetAddress("SPECIAL_EFFECT") + (sigStoneSlot * 0x20)) + 16);
+                                sigStoneTurns -= 16;
+                            }
+
+                            if (Globals.MONSTER_TABLE[sigStoneSlot].Read("HP") == 0)
+                                sigStoneTurns = 0;
+                        }
+                    }
+                }
+
+                if ((ultimateShopLimited & 16777216) == 16777216) { //Pandemonium
+                    if ((doubleRepeatUsed & 16777216) != 16777216) {
+                        for (int i = 0; i < 3; i++) {
+                            if (Globals.PARTY_SLOT[i] < 9) {
+                                if (emulator.ReadByte(Constants.GetAddress("SPECIAL_EFFECT") + 1 + ((Globals.MONSTER_SIZE + i) * 0x20)) == 3) {
+                                    doubleRepeatUsed += 16777216;
+                                    pandemoniumSlot = i;
+                                    pandemoniumTurns = 3;
+                                }
+                            }
+                        }
+                    } else {
+                        if (pandemoniumTurns > 0) {
+                            if (pandemoniumTurns > 0) {
+                                if (emulator.ReadByte(Constants.GetAddress("SPECIAL_EFFECT") + 1 + ((Globals.MONSTER_SIZE + pandemoniumSlot) * 0x20)) == 1) {
+                                    emulator.WriteByte(Constants.GetAddress("SPECIAL_EFFECT") + 1 + ((Globals.MONSTER_SIZE + pandemoniumSlot) * 0x20), emulator.ReadByte(Constants.GetAddress("SPECIAL_EFFECT") + 1 + ((Globals.MONSTER_SIZE + pandemoniumSlot) * 0x20)) + 1);
+                                    pandemoniumTurns -= 1;
+                                }
+
+                                if (Globals.CHARACTER_TABLE[pandemoniumSlot].Read("HP") == 0)
+                                    pandemoniumTurns = 0;
+                            }
+                        }
+                    }
+                }
+
+                doubleRepeatOnBattleEntry = true;
+            } else {
+                if (!Globals.IN_BATTLE && doubleRepeatOnBattleEntry) {
+                    doubleRepeatOnBattleEntry = false;
+                    doubleRepeatUsed = 0;
+                    magicShieldTurns = 0;
+                    magicShieldSlot = 0;
+                    materialShieldTurns = 0;
+                    materialShieldSlot = 0;
+                    sigStoneTurns = 0;
+                    sigStoneSlot = 0;
+                    pandemoniumTurns = 0;
+                    pandemoniumSlot = 0;
+                }
+            }
+        }
+
+        public void DoubleShield() {
+            if (materialShieldTurns == 0 && magicShieldTurns == 0)
+                return;
+
+            for (int i = 0; i < 3; i++) {
+                long address = Constants.GetAddress("SPECIAL_EFFECT") + ((Globals.MONSTER_SIZE + i) * 0x20);
+                if (materialShieldTurns > 0 && magicShieldTurns > 0 && materialShieldSlot == i && magicShieldSlot == i && (emulator.ReadByte(address) == 5 || emulator.ReadByte(address) == 8 || emulator.ReadByte(address) == 9)) {
+                    emulator.WriteByte(address, emulator.ReadByte(address) + 5);
+                    materialShieldTurns -= 1;
+                    magicShieldTurns -= 5;
+                } else {
+                    if (materialShieldTurns > 0 && materialShieldSlot == i && emulator.ReadByte(address) == 1) {
+                        emulator.WriteByte(address, emulator.ReadByte(address) + 1);
+                        materialShieldTurns -= 1;
+                    }
+                    if (magicShieldTurns > 0 && magicShieldSlot == i && emulator.ReadByte(address) == 4) {
+                        emulator.WriteByte(address, emulator.ReadByte(address) + 4);
+                        magicShieldTurns -= 4;
+                    }
+                }
+            }
+            
         }
         #endregion
 
@@ -4667,10 +6051,10 @@ namespace Dragoon_Modifier {
                 ubCheckedDamage = true;
             }
 
-            Constants.WriteDebug("HP[0]: " + ultimateHP[0] + "/" + Globals.MONSTER_TABLE[0].Read("HP") + " | P ATK: " + partyAttacking + "/" + ubCheckDamageCycle + " | CHK DMG: " + ubCheckedDamage + " | HP CHG: " + ubHPChanged + " | SET: " + ubUltimateHPSet + " | ACT: " + Globals.CHARACTER_TABLE[0].Read("Action") + "/" + Globals.CHARACTER_TABLE[1].Read("Action") + "/" + Globals.CHARACTER_TABLE[2].Read("Action"));
+            /*Constants.WriteDebug("HP[0]: " + ultimateHP[0] + "/" + Globals.MONSTER_TABLE[0].Read("HP") + " | P ATK: " + partyAttacking + "/" + ubCheckDamageCycle + " | CHK DMG: " + ubCheckedDamage + " | HP CHG: " + ubHPChanged + " | SET: " + ubUltimateHPSet + " | ACT: " + Globals.CHARACTER_TABLE[0].Read("Action") + "/" + Globals.CHARACTER_TABLE[1].Read("Action") + "/" + Globals.CHARACTER_TABLE[2].Read("Action"));
 
-            /*if (!partyAttacking && ubCheckDamageCycle > 0 && ubHPChanged) {
-                if (dmScripts.ContainsKey("btnDamageTracker") && dmScripts["btnDamageTracker"]) {
+            if (!partyAttacking && ubCheckDamageCycle > 0 && ubHPChanged) {
+                if (Globals.CheckDMScript("btnDamageTracker") && Globals.dmScripts["btnDamageTracker"]) {
                     DamageTracker();
                 }
                 ubCheckedDamage = false;
@@ -4890,9 +6274,295 @@ namespace Dragoon_Modifier {
                 index = new Random().Next(0, wideMagic.Count);
                 emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xB54, Convert.ToByte(wideMagic[index]));
                 wideMagic.RemoveAt(index);
+            } else if (Globals.ENCOUNTER_ID == 394) {
+                index = new Random().Next(0, singleMagic.Count);
+                emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x1ABC, Convert.ToByte(singleMagic[index]));
+                singleMagic.RemoveAt(index);
+
+                index = new Random().Next(0, powerMagic.Count);
+                emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x1A7C, Convert.ToByte(powerMagic[index]));
+                powerMagic.RemoveAt(index);
+                index = new Random().Next(0, powerMagic.Count);
+                emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x1A3C, Convert.ToByte(powerMagic[index]));
+                powerMagic.RemoveAt(index);
+            } else if (Globals.ENCOUNTER_ID == 392) {
+                index = new Random().Next(0, singleMagic.Count);
+                emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xDAC, Convert.ToByte(singleMagic[index]));
+                singleMagic.RemoveAt(index);
+                index = new Random().Next(0, singleMagic.Count);
+                emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xD6C, Convert.ToByte(singleMagic[index]));
+                singleMagic.RemoveAt(index);
+
+                index = new Random().Next(0, wideMagic.Count);
+                emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xD2C, Convert.ToByte(wideMagic[index]));
+                wideMagic.RemoveAt(index);
+                index = new Random().Next(0, wideMagic.Count);
+                emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xCEC, Convert.ToByte(wideMagic[index]));
+                wideMagic.RemoveAt(index);
+                index = new Random().Next(0, wideMagic.Count);
+                emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xCAC, Convert.ToByte(wideMagic[index]));
+                wideMagic.RemoveAt(index);
+            } else if (Globals.ENCOUNTER_ID == 420) {
+                if (ultimateHP[0] >= 800000) {
+                    byte[] element = { 16, 16, 16 };
+                    for (int i = 0; i < 3; i++) {
+                        if (Globals.PARTY_SLOT[i] < 9) {
+                            element[i] = CharacterToElement(Globals.PARTY_SLOT[i]);
+                        }
+                    }
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5BBC, ElementToItem(0, element[0]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B84, ElementToItem(0, element[0]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B4C, ElementToItem(0, element[1]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B14, ElementToItem(0, element[1]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5ADC, ElementToItem(0, element[2]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5AA4, ElementToItem(0, element[2]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A6C, ElementToItem(0, element[new Random().Next(0, 2)]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A2C, ElementToItem(1, element[0]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59EC, ElementToItem(1, element[1]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59AC, ElementToItem(1, element[2]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x596C, ElementToItem(2, element[0]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x592C, ElementToItem(2, element[0]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58EC, ElementToItem(2, element[1]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58AC, ElementToItem(2, element[1]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x586C, ElementToItem(2, element[2]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x582C, ElementToItem(2, element[2]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x57EC, ElementToItem(2, element[new Random().Next(0, 2)]));
+                } else if (ultimateHP[0] >= 600000) {
+                    byte[] element = { 16, 16, 16 };
+                    for (int i = 0; i < 3; i++) {
+                        if (Globals.PARTY_SLOT[i] < 9) {
+                            element[i] = CharacterToOppositeElement(Globals.PARTY_SLOT[i]);
+                        }
+                    }
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5BBC, ElementToItem(0, element[0]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B84, ElementToItem(0, element[0]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B4C, ElementToItem(0, element[1]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B14, ElementToItem(0, element[1]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5ADC, ElementToItem(0, element[2]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5AA4, ElementToItem(0, element[2]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A6C, ElementToItem(0, element[new Random().Next(0, 2)]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A2C, ElementToItem(1, element[0]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59EC, ElementToItem(1, element[1]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59AC, ElementToItem(1, element[2]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x596C, ElementToItem(2, element[0]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x592C, ElementToItem(2, element[0]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58EC, ElementToItem(2, element[1]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58AC, ElementToItem(2, element[1]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x586C, ElementToItem(2, element[2]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x582C, ElementToItem(2, element[2]));
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x57EC, ElementToItem(2, element[new Random().Next(0, 2)]));
+                } else if (ultimateHP[0] >= 400000) {
+                    index = new Random().Next(0, singleMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5BBC, Convert.ToByte(singleMagic[index]));
+                    singleMagic.RemoveAt(index);
+                    index = new Random().Next(0, singleMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B84, Convert.ToByte(singleMagic[index]));
+                    singleMagic.RemoveAt(index);
+                    index = new Random().Next(0, singleMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B4C, Convert.ToByte(singleMagic[index]));
+                    singleMagic.RemoveAt(index);
+                    index = new Random().Next(0, singleMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B14, Convert.ToByte(singleMagic[index]));
+                    singleMagic.RemoveAt(index);
+                    index = new Random().Next(0, singleMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5ADC, Convert.ToByte(singleMagic[index]));
+                    singleMagic.RemoveAt(index);
+                    index = new Random().Next(0, singleMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5AA4, Convert.ToByte(singleMagic[index]));
+                    singleMagic.RemoveAt(index);
+                    index = new Random().Next(0, singleMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A6C, Convert.ToByte(singleMagic[index]));
+                    singleMagic.RemoveAt(index);
+
+                    index = new Random().Next(0, wideMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A2C, Convert.ToByte(wideMagic[index]));
+                    wideMagic.RemoveAt(index);
+                    index = new Random().Next(0, wideMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59EC, Convert.ToByte(wideMagic[index]));
+                    wideMagic.RemoveAt(index);
+                    index = new Random().Next(0, wideMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59AC, Convert.ToByte(wideMagic[index]));
+                    wideMagic.RemoveAt(index);
+
+
+                    index = new Random().Next(0, powerMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x596C, Convert.ToByte(powerMagic[index]));
+                    powerMagic.RemoveAt(index);
+                    index = new Random().Next(0, powerMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x592C, Convert.ToByte(powerMagic[index]));
+                    powerMagic.RemoveAt(index);
+                    index = new Random().Next(0, powerMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58EC, Convert.ToByte(powerMagic[index]));
+                    powerMagic.RemoveAt(index);
+                    index = new Random().Next(0, powerMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58AC, Convert.ToByte(powerMagic[index]));
+                    powerMagic.RemoveAt(index);
+                    index = new Random().Next(0, powerMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x586C, Convert.ToByte(powerMagic[index]));
+                    powerMagic.RemoveAt(index);
+                    index = new Random().Next(0, powerMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x582C, Convert.ToByte(powerMagic[index]));
+                    powerMagic.RemoveAt(index);
+                    index = new Random().Next(0, powerMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x57EC, Convert.ToByte(powerMagic[index]));
+                    powerMagic.RemoveAt(index);
+                } else {
+                    wideMagic.Add(0xF1);
+                    powerMagic.Add(0xFA);
+
+                    index = new Random().Next(0, singleMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5BBC, Convert.ToByte(singleMagic[index]));
+                    singleMagic.RemoveAt(index);
+                    index = new Random().Next(0, singleMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B84, Convert.ToByte(singleMagic[index]));
+                    singleMagic.RemoveAt(index);
+                    index = new Random().Next(0, singleMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B4C, Convert.ToByte(singleMagic[index]));
+                    singleMagic.RemoveAt(index);
+                    index = new Random().Next(0, singleMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B14, Convert.ToByte(singleMagic[index]));
+                    singleMagic.RemoveAt(index);
+                    index = new Random().Next(0, singleMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5ADC, Convert.ToByte(singleMagic[index]));
+                    singleMagic.RemoveAt(index);
+                    index = new Random().Next(0, singleMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5AA4, Convert.ToByte(singleMagic[index]));
+                    singleMagic.RemoveAt(index);
+                    index = new Random().Next(0, singleMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A6C, Convert.ToByte(singleMagic[index]));
+                    singleMagic.RemoveAt(index);
+
+                    index = wideMagic.Count - 1;
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A2C, Convert.ToByte(wideMagic[index]));
+                    wideMagic.RemoveAt(index);
+                    index = new Random().Next(0, wideMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59EC, Convert.ToByte(wideMagic[index]));
+                    wideMagic.RemoveAt(index);
+                    index = new Random().Next(0, wideMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59AC, Convert.ToByte(wideMagic[index]));
+                    wideMagic.RemoveAt(index);
+
+
+                    index = powerMagic.Count - 1;
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x596C, Convert.ToByte(powerMagic[index]));
+                    powerMagic.RemoveAt(index);
+                    index = new Random().Next(0, powerMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x592C, Convert.ToByte(powerMagic[index]));
+                    powerMagic.RemoveAt(index);
+                    index = new Random().Next(0, powerMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58EC, Convert.ToByte(powerMagic[index]));
+                    powerMagic.RemoveAt(index);
+                    index = new Random().Next(0, powerMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58AC, Convert.ToByte(powerMagic[index]));
+                    powerMagic.RemoveAt(index);
+                    index = new Random().Next(0, powerMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x586C, Convert.ToByte(powerMagic[index]));
+                    powerMagic.RemoveAt(index);
+                    index = new Random().Next(0, powerMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x582C, Convert.ToByte(powerMagic[index]));
+                    powerMagic.RemoveAt(index);
+                    index = new Random().Next(0, powerMagic.Count);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x57EC, Convert.ToByte(powerMagic[index]));
+                    powerMagic.RemoveAt(index);
+                }
             }
 
             magicChangeTurns += 1;
+        }
+
+        public byte CharacterToElement(byte character) {
+            byte element = 0;
+            if (character == 0) {
+                element = 0x80;
+            } else if (character == 1 || character == 5) {
+                element = 0x40;
+            } else if (character == 2 || character == 8) {
+                element = 0x20;
+            } else if (character == 3) {
+                element = 0x4;
+            } else if (character == 4) {
+                element = 0x10;
+            } else if (character == 6) {
+                element = 0x1;
+            } else if (character == 7) {
+                element = 0x2;
+            }
+            return element;
+        }
+
+        public byte CharacterToOppositeElement(byte character) {
+            byte element = 0;
+            if (character == 0) {
+                element = 0x1;
+            } else if (character == 1 || character == 5) {
+                element = 0x2;
+            } else if (character == 2 || character == 8) {
+                element = 0x4;
+            } else if (character == 3) {
+                element = 0x20;
+            } else if (character == 4) {
+                element = 0x80;
+            } else if (character == 6) {
+                element = 0x80;
+            } else if (character == 7) {
+                element = 0x40;
+            }
+            return element;
+        }
+
+        public byte ElementToItem(byte type, byte element) {
+            byte item = 0xC0;
+            if (type == 0) {
+                if (element == 0x1)  //Water
+                    item = 0xC6;
+                else if (element == 0x2) // Earth
+                    item = 0xC5;
+                else if (element == 0x4) // Dark
+                    item = 0xCA;
+                else if (element == 0x10) // Thunder
+                    item = 0xC2;
+                else if (element == 0x20) // Light
+                    item = 0xC9;
+                else if (element == 0x40) // Wind
+                    item = 0xC7;
+                else if (element == 0x80) // Fire
+                    item = 0xC3;
+            } else if (type == 1) {
+                if (element == 0x1)  //Water
+                    item = 0xD6;
+                else if (element == 0x2) // Earth
+                    item = 0xD0;
+                else if (element == 0x4) // Dark
+                    item = 0xD8;
+                else if (element == 0x8) // Non Elemental
+                    item = 0xC1;
+                else if (element == 0x10) // Thunder
+                    item = 0xCF;
+                else if (element == 0x20) // Light
+                    item = 0xD2;
+                else if (element == 0x40) // Wind
+                    item = 0xDC;
+                else if (element == 0x80) // Fire
+                    item = 0xD1;
+            } else if (type == 2) {
+                if (element == 0x1)  //Water
+                    item = 0xF3;
+                else if (element == 0x2) // Earth
+                    item = 0xF5;
+                else if (element == 0x4) // Dark
+                    item = 0xF7;
+                else if (element == 0x8) // Non Elemental
+                    item = 0xF1;
+                else if (element == 0x10) // Thunder
+                    item = 0xF8;
+                else if (element == 0x20) // Light
+                    item = 0xF6;
+                else if (element == 0x40) // Wind
+                    item = 0xF4;
+                else if (element == 0x80) // Fire
+                    item = 0xF2;
+            }
+            return item;
         }
 
         public void ElementalShift() {
@@ -4948,66 +6618,860 @@ namespace Dragoon_Modifier {
                 ubArmorShellTurns = 0;
             }
         }
+
+        public void TurnPointDamage() {
+            if (Globals.ENCOUNTER_ID == 399) {
+                bool resetTP = false, pass = false;
+
+                for (int i = 0; i < 3; i++) {
+                    if (Globals.PARTY_SLOT[i] < 9) {
+                        if (Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10) {
+                            pass = true;
+                        }
+                    }
+                }
+
+                for (int i = 0; i < 3; i++) {
+                    if (Globals.PARTY_SLOT[i] < 9) {
+                        if (ubTrackHP[i] < Globals.CHARACTER_TABLE[i].Read("HP")) {
+                            if (tpDamage > 0 && pass) {
+                                Globals.CHARACTER_TABLE[i].Write("Turn", Math.Max(0, Globals.CHARACTER_TABLE[i].Read("Turn") - tpDamage));
+                                ubTrackHP[i] = Globals.CHARACTER_TABLE[i].Read("HP");
+                                resetTP = true;
+                            }
+                        } else if (ubTrackHP[i] >= Globals.CHARACTER_TABLE[i].Read("HP")) {
+                            ubTrackHP[i] = Globals.CHARACTER_TABLE[i].Read("HP");
+                        }
+                    }
+                }
+
+                if (resetTP) {
+                    tpDamage = 0;
+                    emulator.WriteByte(Globals.M_POINT - 0x50, 0);
+                }
+
+                byte moveSet = emulator.ReadByte(Globals.M_POINT - 0x50);
+                if ((moveSet == 68 || moveSet == 69 || moveSet == 76) && tpDamage == 0) {
+                    if (moveSet == 68) {
+                        tpDamage = 120;
+                    } else if (moveSet == 69) {
+                        tpDamage = 32767;
+                    } else if (moveSet == 76) {
+                        tpDamage = 32767;
+                    }
+                }
+            }
+        }
+
+        public void BodyDamage() {
+            if (Globals.ENCOUNTER_ID == 409) {
+                if (ultimateHP[1] == 0 && ubVirageKilledPart == false) {
+                    ultimateHP[0] -= 540000;
+                    ubVirageKilledPart = true;
+                }
+            }
+
+            for (int i = 2; i < 4; i++) {
+                if (Globals.MONSTER_TABLE[i].Read("HP") < ubTrackEHP[i]) {
+                    ubTrackEHP[i] = Globals.MONSTER_TABLE[i].Read("HP");
+                } else if (Globals.MONSTER_TABLE[i].Read("HP") > ubTrackEHP[i]) {
+                    ultimateHP[0] -= 54000;
+                    ubTrackEHP[i] = Globals.MONSTER_TABLE[i].Read("HP");
+                }
+            }
+
+            if (ultimateHP[0] < 0)
+                ultimateHP[0] = 0;
+        }
+
+        public void DragoonBond() {
+            if (ultimateHP[0] == ultimateMaxHP[0] && ultimateHP[1] == ultimateMaxHP[1])
+                ubDragoonBondMode = -1;
+
+            if (ubDragoonBondMode == -1) {
+                if (ultimateHP[0] < ultimateMaxHP[0] && ultimateHP[1] < ultimateMaxHP[1]) {
+                    double[] multiplyMode = { 1, 1 };
+                    ubDragoonBondMode = 2;
+                    ultimateHP[0] = (int) Math.Round(ultimateHP[0] * 1.8);
+                    ultimateHP[1] = (int) Math.Round(ultimateHP[1] * 1.8);
+                    ultimateMaxHP[0] = (int) Math.Round(ultimateMaxHP[0] * 1.8);
+                    ultimateMaxHP[1] = (int) Math.Round(ultimateMaxHP[1] * 1.8);
+
+                    if (Globals.ENCOUNTER_ID == 393) {
+                        multiplyMode[0] = 23;
+                        multiplyMode[1] = 23;
+                    } else if (Globals.ENCOUNTER_ID == 397) {
+                        multiplyMode[0] = 6.8;
+                        multiplyMode[1] = 6.8;
+                    }
+
+                    Globals.MONSTER_TABLE[0].Write("AT", (int) Math.Round(originalMonsterStats[0, 1] * multiplyMode[0]));
+                    Globals.MONSTER_TABLE[1].Write("AT", (int) Math.Round(originalMonsterStats[1, 1] * multiplyMode[0]));
+                    Globals.MONSTER_TABLE[0].Write("MAT", (int) Math.Round(originalMonsterStats[0, 2] * multiplyMode[1]));
+                    Globals.MONSTER_TABLE[1].Write("MAT", (int) Math.Round(originalMonsterStats[1, 2] * multiplyMode[1]));
+                } else {
+                    if (ultimateHP[0] < ultimateMaxHP[0]) {
+                        ubDragoonBondMode = 0;
+                    } else {
+                        if (ultimateHP[1] < ultimateMaxHP[1]) {
+                            ubDragoonBondMode = 1;
+                        }
+                    }
+                    DragoonBondEnhance(0);
+                }
+            } else if (ubDragoonBondMode == 0) {
+                if (ultimateHP[1] < ultimateMaxHP[1]) {
+                    if (ultimateHP[0] > 0) {
+                        int hpLoss = ultimateMaxHP[1] - ultimateHP[1];
+                        ultimateHP[0] -= hpLoss;
+                        ultimateHP[1] += hpLoss;
+                    }
+                    if (ultimateHP[0] < 0)
+                        ultimateHP[0] = 0;
+                }
+            } else if (ubDragoonBondMode == 1) {
+                if (ultimateHP[0] < ultimateMaxHP[0]) {
+                    if (ultimateHP[1] > 0) {
+                        int hpLoss = ultimateMaxHP[0] - ultimateHP[0];
+                        ultimateHP[1] -= hpLoss;
+                        ultimateHP[0] += hpLoss;
+                    }
+
+                    if (ultimateHP[1] < 0)
+                        ultimateHP[1] = 0;
+                }
+                DragoonBondEnhance(1);
+            }
+        }
+
+        public void DragoonBondEnhance(byte slot) {
+            if (slot == 0) {
+                if (ultimateHP[0] <= 0) {
+                    double[] multiplyMode = { 1, 1 };
+                    ubDragoonBondMode = 999;
+                    if (Globals.ENCOUNTER_ID == 393) {
+                        ultimateHP[1] = (int) Math.Round(ultimateHP[1] * 1.8);
+                        ultimateMaxHP[1] = (int) Math.Round(ultimateMaxHP[1] * 1.8);
+                        multiplyMode[0] = 26;
+                        multiplyMode[1] = 26;
+                    } else if (Globals.ENCOUNTER_ID == 397) {
+                        ultimateHP[1] = (int) Math.Round(ultimateHP[1] * 1.5);
+                        ultimateMaxHP[1] = (int) Math.Round(ultimateMaxHP[1] * 1.5);
+                        multiplyMode[0] = 7;
+                        multiplyMode[1] = 7;
+                    }
+                    Globals.MONSTER_TABLE[1].Write("AT", (int) Math.Round(originalMonsterStats[1, 1] * multiplyMode[0]));
+                    Globals.MONSTER_TABLE[1].Write("MAT", (int) Math.Round(originalMonsterStats[1, 2] * multiplyMode[1]));
+                }
+            } else {
+                if (ultimateHP[1] <= 0) {
+                    double[] multiplyMode = { 1, 1 };
+                    ubDragoonBondMode = 999;
+                    if (Globals.ENCOUNTER_ID == 393) {
+                        ultimateHP[0] = (int) Math.Round(ultimateHP[0] * 1.5);
+                        ultimateMaxHP[0] = (int) Math.Round(ultimateMaxHP[0] * 1.5);
+                        multiplyMode[0] = 26;
+                        multiplyMode[1] = 26;
+                    } else if (Globals.ENCOUNTER_ID == 397) {
+                        ultimateHP[1] = (int) Math.Round(ultimateHP[0] * 1.5);
+                        ultimateMaxHP[1] = (int) Math.Round(ultimateMaxHP[0] * 1.5);
+                        multiplyMode[0] = 7;
+                        multiplyMode[1] = 7;
+                    }
+                    Globals.MONSTER_TABLE[1].Write("AT", (int) Math.Round(originalMonsterStats[0, 1] * multiplyMode[0]));
+                    Globals.MONSTER_TABLE[1].Write("MAT", (int) Math.Round(originalMonsterStats[0, 2] * multiplyMode[1]));
+                }
+            }
+        }
+
+        public void DragoonExtras() {
+            if (Globals.ENCOUNTER_ID == 398) {
+                if (ubBlockMenuHPTrack) {
+                    for (int i = 0; i < 3; i++) {
+                        if (Globals.PARTY_SLOT[i] < 9) {
+                            if (ubTrackHP[i] != Globals.CHARACTER_TABLE[i].Read("HP")) {
+                                if (Globals.CHARACTER_TABLE[i].Read("HP") < ubTrackHP[i]) {
+                                    if (emulator.ReadByte(Globals.M_POINT + 0xABC) == 78) {
+                                        ubCustomStatusTurns[i] += 4;
+                                        ubBlockMenuHPTrack = false;
+                                        ubBlockMenuTPTrack = true;
+                                    } else {
+                                        if (new Random().Next(10) >= 3) {
+                                            ubCustomStatusTurns[i] += 2;
+                                            ubBlockMenuHPTrack = false;
+                                            ubBlockMenuTPTrack = true;
+                                        }
+                                    }
+                                    ubTrackHP[i] = Globals.CHARACTER_TABLE[i].Read("HP");
+                                }
+                            } else {
+                                ubTrackHP[i] = Globals.CHARACTER_TABLE[i].Read("HP");
+                            }
+                        }
+                    }
+                }
+
+                if (ubBlockMenuHPTrack) {
+                    bool allZero = true;
+                    for (int i = 0; i < 3; i++) {
+                        if (Globals.PARTY_SLOT[i] < 9 && ubCustomStatusTurns[i] > 0) {
+                            allZero = false;
+                            if (ubTrackTP[i] != Globals.CHARACTER_TABLE[i].Read("Turn")) {
+                                if (Globals.CHARACTER_TABLE[i].Read("Turn") < ubTrackTP[i]) {
+                                    ubCustomStatusTurns[i] -= 1;
+                                }
+                                ubTrackTP[i] = Globals.CHARACTER_TABLE[i].Read("Turn");
+                            }
+
+                            if (ubCustomStatusTurns[i] > 0) {
+                                emulator.WriteByte(Constants.GetAddress("SPECIAL_EFFECT") - 0x4 + (Globals.MONSTER_SIZE + i) * 0x20, 221);
+                            } else {
+                                emulator.WriteByte(Constants.GetAddress("SPECIAL_EFFECT") - 0x4 + (Globals.MONSTER_SIZE + i) * 0x20, 8);
+                            }
+
+                            if (Globals.CHARACTER_TABLE[i].Read("HP") == 0)
+                                ubCustomStatusTurns[i] = 0;
+                        }
+                    }
+
+                    if (allZero)
+                        ubBlockMenuTPTrack = false;
+                } else {
+                    for (int i = 0; i < 3; i++) {
+                        if (Globals.PARTY_SLOT[i] < 9 && ubCustomStatusTurns[i] > 0) {
+                            emulator.WriteByte(Constants.GetAddress("SPECIAL_EFFECT") - 0x4 + (Globals.MONSTER_SIZE + i) * 0x20, 8);
+                        }
+                    }
+                }
+
+                byte moveSet = emulator.ReadByte(Globals.M_POINT + 0xABC);
+
+                if ((moveSet == 72 || moveSet == 73 || moveSet == 78) && (ubTrackDMove != moveSet)) {
+                    if (moveSet == 72 || moveSet == 78) {
+                        for (int i = 0; i < 3; i++) {
+                            if (Globals.PARTY_SLOT[i] < 9) {
+                                ubTrackHP[i] = Globals.CHARACTER_TABLE[i].Read("HP");
+                            }
+                        }
+                        ubBlockMenuHPTrack = true;
+                        ubBlockMenuTPTrack = true;
+                    } else {
+                        byte partySize = 0;
+                        for (int i = 0; i < 3; i++) {
+                            if (Globals.PARTY_SLOT[i] < 9) {
+                                partySize++;
+                            }
+                        }
+
+                        if (new Random().Next(10) >= 2) {
+                            ubCustomStatusTurns[new Random().Next(partySize)] += 2;
+                            ubBlockMenuTPTrack = true;
+                        }
+                    }
+
+                    for (int i = 0; i < 3; i++) {
+                        if (Globals.PARTY_SLOT[i] < 9) {
+                            ubTrackTP[i] = Globals.CHARACTER_TABLE[i].Read("Turn");
+                        }
+                    }
+                }
+            }
+
+            if (ubTrackDragoon) {
+                if (Globals.ENCOUNTER_ID == 400) {
+                    bool trackDamage = false;
+                    bool setStream = false;
+                    bool setMeteor = false;
+                    bool setDragon = false;
+
+                    for (int i = 0; i < 3; i++) {
+                        if (Globals.PARTY_SLOT[i] < 9 && !trackDamage) {
+                            if (ubTrackHP[i] != Globals.CHARACTER_TABLE[i].Read("HP")) {
+                                if (Globals.CHARACTER_TABLE[i].Read("HP") < ubTrackHP[i]) {
+                                    byte moveSet = emulator.ReadByte(Globals.M_POINT + 0xABC);
+
+                                    if (moveSet == 74) {
+                                        if (new Random().Next(10) <= 3 && !setStream)
+                                            setStream = true;
+                                        trackDamage = true;
+                                    } else if (moveSet == 75 && !setMeteor) {
+                                        if (new Random().Next(10) <= 2 && !setMeteor)
+                                            setMeteor = true;
+                                        trackDamage = true;
+                                    } else if (moveSet == 79) {
+                                        if (new Random().Next(10) <= 5)
+                                            setDragon = true;
+                                        trackDamage = true;
+                                    }
+
+                                    ubTrackHP[i] = Globals.CHARACTER_TABLE[i].Read("HP");
+                                } else {
+                                    ubTrackHP[i] = Globals.CHARACTER_TABLE[i].Read("HP");
+                                }
+                            }
+                        }
+                    }
+
+                    if (setStream) {
+                        emulator.WriteByte(Globals.M_POINT + 0xB5, 1);
+                        Globals.MONSTER_TABLE[0].Write("A_AV", 30);
+                        Globals.MONSTER_TABLE[0].Write("M_AV", 30);
+                        Constants.WriteGLogOutput("[BOSS] Grand Stream accuracy lost activated.");
+                    }
+
+                    if (setMeteor) {
+                        for (int i = 0; i < 3; i++) {
+                            if (Globals.PARTY_SLOT[i] < 9) {
+                                Globals.CHARACTER_TABLE[i].Write("PWR_DF", 206);
+                                Globals.CHARACTER_TABLE[i].Write("PWR_MDF", 206);
+                                Globals.CHARACTER_TABLE[i].Write("PWR_DF_TRN", 2);
+                                Globals.CHARACTER_TABLE[i].Write("PWR_MDF_TRN", 2);
+                                Constants.WriteGLogOutput("[BOSS] Meteor Strike defense down activated.");
+                            }
+                        }
+                    }
+
+                    if (setDragon) {
+                        for (int i = 0; i < 3; i++) {
+                            if (Globals.PARTY_SLOT[i] < 9) {
+                                Globals.CHARACTER_TABLE[i].Write("SPEED_DOWN_TRN", 3);
+                                Constants.WriteGLogOutput("[BOSS] Golden Dragon speed down activated.");
+                            }
+                        }
+                    }
+
+                    if (trackDamage) {
+                        for (int i = 0; i < 3; i++) {
+                            if (Globals.PARTY_SLOT[i] < 9) {
+                                ubTrackHP[i] = Globals.CHARACTER_TABLE[i].Read("HP");
+                            }
+                        }
+                    }
+
+                    if (Globals.MONSTER_TABLE[0].Read("A_AV") > 0 && emulator.ReadByte(Globals.M_POINT + 0xB5) == 0) {
+                        Globals.MONSTER_TABLE[0].Write("A_AV", 0);
+                        Globals.MONSTER_TABLE[0].Write("M_AV", 0);
+                    }
+                } else if (Globals.ENCOUNTER_ID == 401) {
+                    bool trackDamage = false;
+
+                    if (ubTrackTM > Globals.MONSTER_TABLE[0].Read("Turn") && ubElectricUnleash == 0) {
+                        ubElectricCharges += 1;
+                    }
+
+                    ubTrackTM = Globals.MONSTER_TABLE[0].Read("Turn");
+
+                    byte moveSet = emulator.ReadByte(Globals.M_POINT + 0xABC);
+
+                    for (int i = 0; i < 3; i++) {
+                        if (Globals.PARTY_SLOT[i] < 9 && !trackDamage) {
+                            if (ubTrackHP[i] != Globals.CHARACTER_TABLE[i].Read("HP") && (ubElectricUnleash == 0 || ubElectricUnleash == 2)) {
+                                if (Globals.CHARACTER_TABLE[i].Read("HP") < ubTrackHP[i]) {
+                                    if (moveSet == 59) {
+                                        ubElectricCharges += 1;
+                                        trackDamage = true;
+                                    } else if (moveSet == 70) {
+                                        ubElectricCharges += 3;
+                                        trackDamage = true;
+
+                                        Globals.CHARACTER_TABLE[i].Write("PWR_AT", 206);
+                                        Globals.CHARACTER_TABLE[i].Write("PWR_MAT", 206);
+                                        Globals.CHARACTER_TABLE[i].Write("PWR_AT_TRN", 3);
+                                        Globals.CHARACTER_TABLE[i].Write("PWR_MAT_TRN", 3);
+                                        Constants.WriteGLogOutput("[BOSS] Attack down activated.");
+                                    } else if (moveSet == 71) {
+                                        ubElectricCharges += 5;
+                                        trackDamage = true;
+
+                                        Globals.CHARACTER_TABLE[i].Write("PWR_DF", 206);
+                                        Globals.CHARACTER_TABLE[i].Write("PWR_MDF", 206);
+                                        Globals.CHARACTER_TABLE[i].Write("PWR_DF_TRN", 3);
+                                        Globals.CHARACTER_TABLE[i].Write("PWR_MDF_TRN", 3);
+                                        Constants.WriteGLogOutput("[BOSS] Defense down activated.");
+                                    } else if (moveSet == 77) {
+                                        trackDamage = true;
+
+                                        Globals.CHARACTER_TABLE[i].Write("PWR_AT", 206);
+                                        Globals.CHARACTER_TABLE[i].Write("PWR_MAT", 206);
+                                        Globals.CHARACTER_TABLE[i].Write("PWR_DF", 206);
+                                        Globals.CHARACTER_TABLE[i].Write("PWR_MDF", 206);
+                                        Globals.CHARACTER_TABLE[i].Write("PWR_AT_TRN", 3);
+                                        Globals.CHARACTER_TABLE[i].Write("PWR_MAT_TRN", 3);
+                                        Globals.CHARACTER_TABLE[i].Write("PWR_DF_TRN", 3);
+                                        Globals.CHARACTER_TABLE[i].Write("PWR_MDF_TRN", 3);
+                                        Constants.WriteGLogOutput("[BOSS] Power down activated.");
+                                    }
+
+                                    if (ubElectricUnleash == 2)
+                                        ubElectricUnleash = 3;
+                                }
+                            } else {
+                                if (moveSet == 77 && ubElectricUnleash == 0) {
+                                    ubElectricCharges += 15;
+                                    ubElectricUnleash = 1;
+                                    trackDamage = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    //Constants.WriteDebug("Charges: " + ubElectricCharges + "/" + ubElectricUnleash + " | Move: " + moveSet + " | Track:" + trackDamage);
+
+                    if (trackDamage && ubElectricUnleash == 0) {
+                        if (ubElectricCharges >= 30) {
+                            ubElectricCharges = 30;
+                            ubElectricUnleash = 1;
+                        } else if (ubElectricCharges > 20) {
+                            if (new Random().Next(100) <= 50) {
+                                ubElectricUnleash = 1;
+                            }
+                        } else if (ubElectricCharges > 10) {
+                            if (new Random().Next(100) <= 15) {
+                                ubElectricUnleash = 1;
+                            }
+                        } else {
+                            if (new Random().Next(100) <= 5) {
+                                ubElectricCharges = 1;
+                            }
+                        }
+                    }
+
+                    if (ubElectricCharges >= 30)
+                        ubElectricCharges = 30;
+
+                    for (int i = 0; i < 3; i++) {
+                        if (Globals.PARTY_SLOT[i] < 9) {
+                            ubTrackHP[i] = Globals.CHARACTER_TABLE[i].Read("HP");
+                            if (Globals.CHARACTER_TABLE[i].Read("Action") == 192) {
+                                Globals.CHARACTER_TABLE[i].Write("PWR_AT", 0);
+                                Globals.CHARACTER_TABLE[i].Write("PWR_MAT", 0);
+                                Globals.CHARACTER_TABLE[i].Write("PWR_DF", 0);
+                                Globals.CHARACTER_TABLE[i].Write("PWR_MDF", 0);
+                                Globals.CHARACTER_TABLE[i].Write("PWR_AT_TRN", 0);
+                                Globals.CHARACTER_TABLE[i].Write("PWR_MAT_TRN", 0);
+                                Globals.CHARACTER_TABLE[i].Write("PWR_DF_TRN", 0);
+                                Globals.CHARACTER_TABLE[i].Write("PWR_MDF_TRN", 0);
+                            }
+                        }
+                    }
+
+                    if (ubElectricUnleash == 1) {
+                        double[] multiplyMode = { 2.4, 2.4, 1, 1 };
+                        if (Globals.CheckDMScript("btnEnrage") || CheckEnrageBoss()) {
+                            if (enragedMode[0] == 1) {
+                                Globals.MONSTER_TABLE[0].Write("AT", Math.Round(originalMonsterStats[0, 1] * multiplyMode[0] * ((ubElectricCharges / 20) + 1) * 1.1));
+                                Globals.MONSTER_TABLE[0].Write("MAT", Math.Round(originalMonsterStats[0, 2] * multiplyMode[1] * ((ubElectricCharges / 20) + 1) * 1.1));
+                                Globals.MONSTER_TABLE[0].Write("DF", Math.Round(originalMonsterStats[0, 3] * multiplyMode[2] * ((ubElectricCharges / 20) + 1) * 1.1));
+                                Globals.MONSTER_TABLE[0].Write("MDF", Math.Round(originalMonsterStats[0, 4] * multiplyMode[3] * ((ubElectricCharges / 20) + 1) * 1.1));
+                            } else if (enragedMode[0] == 2) {
+                                Globals.MONSTER_TABLE[0].Write("AT", Math.Round(originalMonsterStats[0, 1] * multiplyMode[0] * ((ubElectricCharges / 20) + 1) * 1.25));
+                                Globals.MONSTER_TABLE[0].Write("MAT", Math.Round(originalMonsterStats[0, 2] * multiplyMode[1] * ((ubElectricCharges / 20) + 1) * 1.25));
+                                Globals.MONSTER_TABLE[0].Write("DF", Math.Round(originalMonsterStats[0, 3] * multiplyMode[2] * ((ubElectricCharges / 20) + 1) * 1.25));
+                                Globals.MONSTER_TABLE[0].Write("MDF", Math.Round(originalMonsterStats[0, 4] * multiplyMode[3] * ((ubElectricCharges / 20) + 1) * 1.25));
+                            }
+                        } else {
+                            Globals.MONSTER_TABLE[0].Write("AT", Math.Round(originalMonsterStats[0, 1] * multiplyMode[0] * ((ubElectricCharges / 20) + 1)));
+                            Globals.MONSTER_TABLE[0].Write("MAT", Math.Round(originalMonsterStats[0, 2] * multiplyMode[1] * ((ubElectricCharges / 20) + 1)));
+                            Globals.MONSTER_TABLE[0].Write("DF", Math.Round(originalMonsterStats[0, 3] * multiplyMode[2] * ((ubElectricCharges / 20) + 1)));
+                            Globals.MONSTER_TABLE[0].Write("MDF", Math.Round(originalMonsterStats[0, 4] * multiplyMode[3] * ((ubElectricCharges / 20) + 1)));
+                        }
+
+                        ubElectricUnleash = 2;
+                    } else if (ubElectricUnleash == 3) {
+                        double[] multiplyMode = { 2.4, 2.4, 1, 1 };
+                        if (trackDamage) {
+                            if (Globals.CheckDMScript("btnEnrage") || CheckEnrageBoss()) {
+                                if (enragedMode[0] == 1) {
+                                    Globals.MONSTER_TABLE[0].Write("AT", Math.Round(originalMonsterStats[0, 1] * multiplyMode[0] * 1.1));
+                                    Globals.MONSTER_TABLE[0].Write("MAT", Math.Round(originalMonsterStats[0, 2] * multiplyMode[1] * 1.1));
+                                    Globals.MONSTER_TABLE[0].Write("DF", Math.Round(originalMonsterStats[0, 3] * multiplyMode[2] * 1.1));
+                                    Globals.MONSTER_TABLE[0].Write("MDF", Math.Round(originalMonsterStats[0, 4] * multiplyMode[3] * 1.1));
+                                } else if (enragedMode[0] == 2) {
+                                    Globals.MONSTER_TABLE[0].Write("AT", Math.Round(originalMonsterStats[0, 1] * multiplyMode[0] * 1.25));
+                                    Globals.MONSTER_TABLE[0].Write("MAT", Math.Round(originalMonsterStats[0, 2] * multiplyMode[1] * 1.25));
+                                    Globals.MONSTER_TABLE[0].Write("DF", Math.Round(originalMonsterStats[0, 3] * multiplyMode[2] * 1.25));
+                                    Globals.MONSTER_TABLE[0].Write("MDF", Math.Round(originalMonsterStats[0, 4] * multiplyMode[3] * 1.25));
+                                }
+                            } else {
+                                Globals.MONSTER_TABLE[0].Write("AT", Math.Round(originalMonsterStats[0, 1] * multiplyMode[0]));
+                                Globals.MONSTER_TABLE[0].Write("MAT", Math.Round(originalMonsterStats[0, 2] * multiplyMode[1]));
+                                Globals.MONSTER_TABLE[0].Write("DF", Math.Round(originalMonsterStats[0, 3] * multiplyMode[2]));
+                                Globals.MONSTER_TABLE[0].Write("MDF", Math.Round(originalMonsterStats[0, 4] * multiplyMode[3]));
+                            }
+                        }
+
+                        ubElectricCharges = 0;
+                        ubElectricUnleash = 0;
+                    }
+                }
+            }
+
+            ubTrackDMove = emulator.ReadByte(Globals.M_POINT + 0xABC);
+        }
+
+        public void Countdown() {
+            double totalDamage = (ultimateMaxHP[0] - ultimateHP[0]) + (ultimateMaxHP[1] - ultimateHP[1]) + (ultimateMaxHP[2] - ultimateHP[2]);
+            if (Math.Floor(totalDamage / 40000) >= (ubLivesIncreased + 1)) {
+                ubLivesIncreased += 1;
+
+                if (emulator.ReadByte(Constants.GetAddress("BOSS_COUNT")) > 0) {
+                    emulator.WriteByte(Constants.GetAddress("BOSS_COUNT"), emulator.ReadByte(Constants.GetAddress("BOSS_COUNT")) - 1);
+                }
+            }
+
+            ubTotalGold = ubLivesIncreased * 1000;
+
+            if (ultimateHP[0] == 0 || Globals.MONSTER_TABLE[0].Read("HP") == 0)
+                ubTotalGold += 45000;
+
+            if (ultimateHP[1] == 0 || Globals.MONSTER_TABLE[1].Read("HP") == 0)
+                ubTotalGold += 15000;
+
+            if (ultimateHP[2] == 0 || Globals.MONSTER_TABLE[2].Read("HP") == 0)
+                ubTotalGold += 10000;
+
+            if (emulator.ReadByte(Constants.GetAddress("BOSS_COUNT")) == 11) {
+                for (int i = 0; i < 3; i++) {
+                    if (Globals.PARTY_SLOT[i] < 9) {
+                        Globals.CHARACTER_TABLE[i].Write("Guard", 0);
+                    }
+                }
+            }
+
+            emulator.WriteInteger(Constants.GetAddress("BATTLE_REWARDS_GOLD"), ubTotalGold);
+
+            if (ultimateHP[0] == 0 || ultimateHP[1] == 0 || emulator.ReadByte(Constants.GetAddress("BOSS_COUNT")) == 11)
+                UltimateBossDefeated();
+        }
+
+        public void UltimateEnrage() {
+            if (Globals.ENCOUNTER_ID == 390) {
+                double hpDamage = ultimateMaxHP[enrageChangeIndex] - ultimateHP[enrageChangeIndex];
+
+                if (((hpDamage / ultimateMaxHP[enrageChangeIndex]) * 100) >= enrageChangeTurns + 1) {
+                    enrageChangeTurns += 1;
+                    Globals.MONSTER_TABLE[enrageChangeIndex].Write("AT", Math.Round(Globals.MONSTER_TABLE[enrageChangeIndex].Read("AT") * 1.01));
+                    Globals.MONSTER_TABLE[enrageChangeIndex].Write("MAT", Math.Round(Globals.MONSTER_TABLE[enrageChangeIndex].Read("MAT") * 1.01));
+
+                    if (enrageChangeTurns == 90 && enrageChangeIndex == 1) {
+                        Globals.MONSTER_TABLE[enrageChangeIndex].Write("DF", Math.Round(Globals.MONSTER_TABLE[enrageChangeIndex].Read("DF") / 0.3));
+                        Globals.MONSTER_TABLE[enrageChangeIndex].Write("MDF", Math.Round(Globals.MONSTER_TABLE[enrageChangeIndex].Read("MDF") / 0.3));
+                    }
+                }
+
+                if (ultimateHP[0] == 0 && enrageChangeIndex == 0) {
+                    enrageChangeIndex = 1;
+                    enrageChangeTurns = 0;
+                }
+            } else if (Globals.ENCOUNTER_ID == 394) {
+                double[] multiplyMode = { 5, 5 };
+                double dragoons = 0.0;
+                double enrage = 0.0;
+                for (int i = 0; i < 3; i++) {
+                    if (emulator.ReadByte(Constants.GetAddress("DRAGOON_TURNS") + i * 0x4) > 0) {
+                        dragoons += 0.25;
+                    }
+                }
+
+                if ((Globals.MONSTER_TABLE[0].Read("HP") <= (Globals.MONSTER_TABLE[0].Read("Max_HP") / 2)) && enragedMode[0] == 0) {
+                    enragedMode[0] = 1;
+                } else if ((Globals.MONSTER_TABLE[0].Read("HP") <= (Globals.MONSTER_TABLE[0].Read("Max_HP") / 4)) && enragedMode[0] == 1) {
+                    enragedMode[0] = 2;
+                }
+
+                if (enragedMode[0] == 2 && emulator.ReadByte(Constants.GetAddress("BOSS_COUNT")) == 1)
+                    emulator.WriteByte(Constants.GetAddress("BOSS_COUNT"), 2);
+
+                enrage = enragedMode[0] == 1 ? 1.10 : enragedMode[0] == 2 ? 1.25 : 1;
+
+                Globals.MONSTER_TABLE[0].Write("AT", (int) Math.Round(originalMonsterStats[0, 1] * multiplyMode[0] * (1 + dragoons) * enrage));
+                Globals.MONSTER_TABLE[0].Write("MAT", (int) Math.Round(originalMonsterStats[0, 2] * multiplyMode[1] * (1 + dragoons) * enrage));
+            } else if (Globals.ENCOUNTER_ID == 392) {
+                double multiAT = 3;
+                double divDF = 1.25;
+
+                if (ubTrackTP[0] > Globals.MONSTER_TABLE[0].Read("Turn"))
+                    ubEnrageTurns += 0.10;
+
+                Globals.MONSTER_TABLE[0].Write("AT", Math.Round(originalMonsterStats[0, 1] * multiAT * (1 + ubEnrageTurns + ubEnrageTurnsPlus)));
+
+                if (Globals.MONSTER_TABLE[0].Read("Action") == 28 && emulator.ReadByte(Globals.M_POINT + 0xABC) == 226)
+                    multiAT *= 2;
+
+                Globals.MONSTER_TABLE[0].Write("MAT", Math.Round(originalMonsterStats[0, 2] * multiAT * (1 + ubEnrageTurns + ubEnrageTurnsPlus)));
+
+                if (ubEnrageTurns + ubEnrageTurnsPlus >= 1.75) {
+                    Globals.MONSTER_TABLE[0].Write("DF", Math.Round(originalMonsterStats[0, 3] / 3));
+                    Globals.MONSTER_TABLE[0].Write("MDF", Math.Round(originalMonsterStats[0, 4] / 3));
+                } else {
+                    Globals.MONSTER_TABLE[0].Write("DF", Math.Round(originalMonsterStats[0, 3] / (divDF + ubEnrageTurns + ubEnrageTurnsPlus)));
+                    Globals.MONSTER_TABLE[0].Write("MDF", Math.Round(originalMonsterStats[0, 4] / (divDF + ubEnrageTurns + ubEnrageTurnsPlus)));
+                }
+
+                if (Globals.MONSTER_TABLE[0].Read("Action") == 28 && emulator.ReadByte(Globals.M_POINT + 0xABC) == 225) {
+                    ubEnrageTurns -= 5;
+                    ubEnrageTurnsPlus += 0.10;
+                    emulator.WriteByte(Globals.M_POINT + 0xABC, 0);
+                    if (ubEnrageTurns < 0)
+                        ubEnrageTurns = 0;
+                }
+
+                ubTrackTP[0] = Globals.MONSTER_TABLE[0].Read("Turn");
+            } else if (Globals.ENCOUNTER_ID == 442) {
+                double multiMAT = 3.5;
+
+                multiMAT *= enragedMode[0] == 0 ? 1 : enragedMode[0] == 1 ? 1.1 : 1.25;
+
+                if (ubZiegDragoon == 81)
+                    multiMAT *= 1.25;
+
+                Globals.MONSTER_TABLE[0].Write("MAT", Math.Round(originalMonsterStats[0, 2] * multiMAT));
+
+                if ((Globals.MONSTER_TABLE[0].Read("HP") <= (Globals.MONSTER_TABLE[0].Read("Max_HP") / 2)) && enragedMode[0] == 0) {
+                    Globals.MONSTER_TABLE[0].Write("AT", Math.Round(originalMonsterStats[0, 1] * 1.1));
+                    Globals.MONSTER_TABLE[0].Write("DF", Math.Round(originalMonsterStats[0, 3] * 1.1));
+                    Globals.MONSTER_TABLE[0].Write("MDF", Math.Round(originalMonsterStats[0, 4] * 1.1));
+                    enragedMode[0] = 1;
+                } else if ((Globals.MONSTER_TABLE[0].Read("HP") <= (Globals.MONSTER_TABLE[0].Read("Max_HP") / 4)) && enragedMode[0] == 1) {
+                    Globals.MONSTER_TABLE[0].Write("AT", Math.Round(originalMonsterStats[0, 1] * 1.25));
+                    Globals.MONSTER_TABLE[0].Write("DF", Math.Round(originalMonsterStats[0, 3] * 1.25));
+                    Globals.MONSTER_TABLE[0].Write("MDF", Math.Round(originalMonsterStats[0, 4] * 1.25));
+                    enragedMode[0] = 2;
+                }
+            }
+        }
+
+        public void EnhancedShield() {
+            if (ultimateHP[0] == 0) {
+                if (shieldTurnsTaken == -1) {
+                    Constants.WritePLog("[BOSS] Doel is now invincible.");
+                } else {
+                    Constants.WritePLog("[BOSS] Shield Turns: " + shieldTurnsTaken + " | Next Shield: " + enrageChangeTurns + "/" + enhancedShieldTurns);
+                }
+
+                if (emulator.ReadByte(Constants.GetAddress("SHIELD_ACTIVE")) == 1) {
+                    if (shieldTurnsTaken >= 0) {
+                        if (shieldTurnsTaken >= 3) {
+                            emulator.WriteByte(Constants.GetAddress("SHIELD_ACTION"), 7);
+                            emulator.WriteByte(Constants.GetAddress("BOSS_COUNT"), 3);
+                            shieldTurnsTaken -= 1;
+                        } else {
+                            Globals.MONSTER_TABLE[1].Write("P_Half", 1);
+                            Globals.MONSTER_TABLE[1].Write("M_Half", 1);
+                        }
+
+                        if (ubTrackTP[1] > Globals.MONSTER_TABLE[1].Read("Turn"))
+                            shieldTurnsTaken += 1;
+                    }
+
+                    if (enrageChangeTurns >= enhancedShieldTurns && enhancedShieldTurns < 90) {
+                        enhancedShieldTurns += (short) new Random().Next(10, 30);
+                        if (enrageChangeTurns < 90 && (enhancedShieldTurns >= 91 && enhancedShieldTurns <= 125))
+                            shieldTurnsTaken = 0;
+                    }
+                } else {
+                    shieldTurnsTaken = 0;
+                    if (enrageChangeTurns >= enhancedShieldTurns && enhancedShieldTurns <= 90) {
+                        emulator.WriteByte(Constants.GetAddress("BOSS_COUNT"), 4);
+                        emulator.WriteByte(Constants.GetAddress("SHIELD_ACTION"), 23);
+                        Globals.MONSTER_TABLE[1].Write("Turn", Globals.MONSTER_TABLE[1].Read("Turn") + 255);
+                        enhancedShieldTurns += (short) new Random().Next(10, 30);
+                        if (enrageChangeTurns <= 90 && (enhancedShieldTurns >= 91 && enhancedShieldTurns <= 125)) {
+                            enhancedShieldTurns = 90;
+                        }
+                    }
+
+                    Globals.MONSTER_TABLE[1].Write("P_Half", 0);
+                    Globals.MONSTER_TABLE[1].Write("M_Half", 0);
+                }
+
+                ubTrackTP[1] = Globals.MONSTER_TABLE[1].Read("Turn");
+            }
+        }
+
+        public void BodyProtect() {
+            double[] damage = { 0, 0, 0 };
+            double[] heal = { 0, 0, 0 };
+            for (int i = 0; i < 3; i++) {
+                if (ultimateHP[i] < ubTrackEHP[i]) {
+                    damage[i] = (ubTrackEHP[i] - (ultimateHP[i])) * 1.0;
+                    heal[i] = (ubTrackEHP[i] - (ultimateHP[i])) * 0.5;
+                }
+            }
+
+            for (int i = 0; i < 3; i++) {
+                if (damage[i] != 0 && ultimateHP[i] != 0) {
+                    if (i == 0) { //hit head
+                        ultimateHP[0] -= (int) Math.Round(damage[i]); //damage head
+                        ultimateHP[1] += (int) Math.Round(heal[i]); //heal arm
+                    } else if (i == 1) { //hit arm
+                        //ultimateHP[1] -= (int) Math.Round(damage[i]); //damage arm
+                        ultimateHP[0] += (int) Math.Round(heal[i]); //heal head
+                    } else if (i == 2) { //hit body
+                        ultimateHP[0] -= (int) Math.Round(damage[i]); //damage head
+                        ultimateHP[2] += (int) Math.Round(heal[i]); //heal body
+                    }
+
+                    if (ultimateHP[0] < 0) {
+                        ultimateHP[0] = 0;
+                        Globals.MONSTER_TABLE[0].Write("HP", 0);
+                    }
+                    if (ultimateHP[1] < 0) {
+                        ultimateHP[1] = 0;
+                        Globals.MONSTER_TABLE[0].Write("HP", 0);
+                    }
+                    if (ultimateHP[2] < 0) {
+                        ultimateHP[2] = 0;
+                        Globals.MONSTER_TABLE[0].Write("HP", 0);
+                    }
+
+                    ubTrackEHP[0] = ultimateHP[0];
+                    ubTrackEHP[1] = ultimateHP[1];
+                    ubTrackEHP[2] = ultimateHP[2];
+                }
+            }
+
+            if (ultimateHP[0] == 0 && ubFinalAttack) {
+                ubFinalAttack = false;
+                Globals.MONSTER_TABLE[0].Write("MAT", Math.Round(originalMonsterStats[0, 1] * 21));
+            }
+        }
+
+        public void ReverseDragonBlockStaff() {
+            if (Globals.DIFFICULTY_MODE.Equals("Normal")) {
+                for (int i = 0; i < 3; i++) {
+                    if (Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[i].Read("DAT") < 1000) {
+                        Globals.CHARACTER_TABLE[i].Write("DAT", Globals.CHARACTER_TABLE[i].Read("DAT") * 20);
+                        Globals.CHARACTER_TABLE[i].Write("DMAT", Globals.CHARACTER_TABLE[i].Read("DMAT") * 20);
+                        Globals.CHARACTER_TABLE[i].Write("DDF", Globals.CHARACTER_TABLE[i].Read("DDF") * 20);
+                        Globals.CHARACTER_TABLE[i].Write("DMDF", Globals.CHARACTER_TABLE[i].Read("DMDF") * 20);
+                    }
+                }
+            }
+        }
+
+        public void ArmorGuard() {
+            for (int i = 0; i < 3; i++) {
+                if (Globals.PARTY_SLOT[i] < 9) {
+                    if (emulator.ReadByte(Constants.GetAddress("DRAGOON_TURNS") + (0x4 * i)) > 0 && Globals.CHARACTER_TABLE[i].Read("PWR_DF") != 0) {
+                        Globals.CHARACTER_TABLE[i].Write("PWR_DF", 0);
+                        Globals.CHARACTER_TABLE[i].Write("PWR_DF_TRN", 0);
+                        Globals.CHARACTER_TABLE[i].Write("PWR_MDF", 0);
+                        Globals.CHARACTER_TABLE[i].Write("PWR_MDF_TRN", 0);
+                    } else {
+                        if (Globals.CHARACTER_TABLE[i].Read("Guard") == 1) {
+                            if (Globals.CHARACTER_TABLE[i].Read("PWR_DF") == 206 || Globals.CHARACTER_TABLE[i].Read("PWR_DF") == 0 || Globals.CHARACTER_TABLE[i].Read("PWR_DF_TRN") == 0) {
+                                Globals.CHARACTER_TABLE[i].Write("PWR_DF", 50);
+                                Globals.CHARACTER_TABLE[i].Write("PWR_DF_TRN", 20);
+                                Globals.CHARACTER_TABLE[i].Write("PWR_MDF", 50);
+                                Globals.CHARACTER_TABLE[i].Write("PWR_MDF_TRN", 20);
+                            }
+                        } else {
+                            if (Globals.CHARACTER_TABLE[i].Read("PWR_DF") == 50 || Globals.CHARACTER_TABLE[i].Read("PWR_DF") == 0 || Globals.CHARACTER_TABLE[i].Read("PWR_DF_TRN") == 0) {
+                                Globals.CHARACTER_TABLE[i].Write("PWR_DF", 206);
+                                Globals.CHARACTER_TABLE[i].Write("PWR_DF_TRN", 20);
+                                Globals.CHARACTER_TABLE[i].Write("PWR_MDF", 206);
+                                Globals.CHARACTER_TABLE[i].Write("PWR_MDF_TRN", 20);
+                            }
+                        }
+                    }
+                }
+            }
+
+            for (int i = 1; i < 3; i++) {
+                if (Globals.MONSTER_TABLE[i].Read("HP") < 65535 && Globals.MONSTER_TABLE[0].Read("HP") > 0) {
+                    int damage = 65535 - Globals.MONSTER_TABLE[i].Read("HP");
+                    Globals.MONSTER_TABLE[i].Write("HP", 65535);
+                    Globals.MONSTER_TABLE[0].Write("HP", Math.Max(0, Globals.MONSTER_TABLE[0].Read("HP") - damage));
+                }
+            }
+        }
+
+        public void DragoonGuard() {
+            for (int i = 0; i < 3; i++) {
+                if (Globals.PARTY_SLOT[i] < 9) {
+                    if (Globals.CHARACTER_TABLE[i].Read("Action") == 10 && Globals.CHARACTER_TABLE[i].Read("Menu") == 96) {
+                        Globals.CHARACTER_TABLE[i].Write("Menu", 98);
+                    }
+                }
+            }
+
+            for (int i = 0; i < 3; i++) {
+                if (Globals.PARTY_SLOT[i] < 9) {
+                    if (Globals.CHARACTER_TABLE[i].Read("Action") == 10 && emulator.ReadByte(Globals.M_POINT + 0xD46) == 0) {
+                        //Globals.CHARACTER_TABLE[i].Write("Death_Res", 192);
+                        Globals.CHARACTER_TABLE[i].Write("Guard", 1);
+                    } else {
+                        if (Globals.CHARACTER_TABLE[i].Read("Action") == 10) {
+                            Globals.CHARACTER_TABLE[i].Write("Guard", 0);
+                        }
+                    }
+                }
+            }
+
+
+        }
         #endregion
 
         #region Extend Inventory
         public void ExtendInventory() {
             if (Constants.REGION == Region.USA) { //Temp
                 if (Globals.IN_BATTLE) {
-                    emulator.WriteShort(0x231F8, 64);
-                    emulator.WriteShort(0x23308, 64);
-                    emulator.WriteShort(0x233B8, 64);
-                    emulator.WriteShort(0x23500, 64);
-                    emulator.WriteShort(0x23324, 63);
-                    emulator.WriteShort(0x2334C, 63);
-                    emulator.WriteShort(0x23234, 65);
-                    emulator.WriteShort(0x23250, 65);
-                    if (emulator.ReadByte(0x10B0C8) == 32) {
-                        emulator.WriteShort(0x10B0C8, 64);
+                    emulator.WriteShort(Constants.GetAddress("INVENTORY_CAP_1"), 64);
+                    emulator.WriteShort(Constants.GetAddress("INVENTORY_CAP_2"), 64);
+                    emulator.WriteShort(Constants.GetAddress("INVENTORY_CAP_3"), 64);
+                    emulator.WriteShort(Constants.GetAddress("INVENTORY_CAP_4"), 64);
+                    emulator.WriteShort(Constants.GetAddress("INVENTORY_CAP_MINUS_1"), 63);
+                    emulator.WriteShort(Constants.GetAddress("INVENTORY_CAP_MINUS_2"), 63);
+                    emulator.WriteShort(Constants.GetAddress("INVENTORY_CAP_PLUS_1"), 65);
+                    emulator.WriteShort(Constants.GetAddress("INVENTORY_CAP_PLUS_2"), 65);
+                    if (emulator.ReadByte(Constants.GetAddress("ITEM_LIMIT_1")) == 32) {
+                        emulator.WriteShort(Constants.GetAddress("ITEM_LIMIT_1"), 64);
                     }
-                    if (emulator.ReadByte(0x10C3D4) == 32) {
-                        emulator.WriteShort(0x10C3D4, 64);
+                    if (emulator.ReadByte(Constants.GetAddress("ITEM_LIMIT_2")) == 32) {
+                        emulator.WriteShort(Constants.GetAddress("ITEM_LIMIT_2"), 64);
                     }
-                    if (emulator.ReadByte(0x102970) == 32) {
-                        emulator.WriteShort(0x102970, 64);
+                    if (emulator.ReadByte(Constants.GetAddress("ITEM_LIMIT_3")) == 32) {
+                        emulator.WriteShort(Constants.GetAddress("ITEM_LIMIT_3"), 64);
                     }
-                    emulator.WriteShort(0x2336C, 808);
-                    //writeByte(0xBADAE, 64);
+                    emulator.WriteShort(Constants.GetAddress("ITEM_CAP"), 808);
+                    //writeByte(Constants.GetAddress("INVENTORY_SIZE"), 64);
                 } else {
-                    if (emulator.ReadByte(0xBDC30) == 19) {
-                        emulator.WriteShort(0x231F8, 64);
-                        emulator.WriteShort(0x23308, 64);
-                        emulator.WriteShort(0x233B8, 64);
-                        emulator.WriteShort(0x23500, 64);
-                        emulator.WriteShort(0x23324, 63);
-                        emulator.WriteShort(0x2334C, 63);
-                        emulator.WriteShort(0x23234, 65);
-                        emulator.WriteShort(0x23250, 65);
-                        emulator.WriteShort(0x10B0C8, 64);
-                        emulator.WriteShort(0x10C3D4, (ushort) inventorySize);
-                        emulator.WriteShort(0x102970, (ushort) inventorySize);
-                        emulator.WriteShort(0x2336C, 808);
+                    if (emulator.ReadByte(Constants.GetAddress("MENU")) == 19) {
+                        emulator.WriteShort(Constants.GetAddress("INVENTORY_CAP_1"), 64);
+                        emulator.WriteShort(Constants.GetAddress("INVENTORY_CAP_2"), 64);
+                        emulator.WriteShort(Constants.GetAddress("INVENTORY_CAP_3"), 64);
+                        emulator.WriteShort(Constants.GetAddress("INVENTORY_CAP_4"), 64);
+                        emulator.WriteShort(Constants.GetAddress("INVENTORY_CAP_MINUS_1"), 63);
+                        emulator.WriteShort(Constants.GetAddress("INVENTORY_CAP_MINUS_2"), 63);
+                        emulator.WriteShort(Constants.GetAddress("INVENTORY_CAP_PLUS_1"), 65);
+                        emulator.WriteShort(Constants.GetAddress("INVENTORY_CAP_PLUS_2"), 65);
+                        emulator.WriteShort(Constants.GetAddress("ITEM_LIMIT_1"), 64);
+                        emulator.WriteShort(Constants.GetAddress("ITEM_LIMIT_2"), (ushort) inventorySize);
+                        emulator.WriteShort(Constants.GetAddress("ITEM_LIMIT_3"), (ushort) inventorySize);
+                        emulator.WriteShort(Constants.GetAddress("ITEM_CAP"), 808);
                     } else {
-                        emulator.WriteShort(0x231F8, (ushort) inventorySize);
-                        emulator.WriteShort(0x23308, (ushort) inventorySize);
-                        emulator.WriteShort(0x233B8, (ushort) inventorySize);
-                        emulator.WriteShort(0x23500, (ushort) inventorySize);
+                        emulator.WriteShort(Constants.GetAddress("INVENTORY_CAP_1"), (ushort) inventorySize);
+                        emulator.WriteShort(Constants.GetAddress("INVENTORY_CAP_2"), (ushort) inventorySize);
+                        emulator.WriteShort(Constants.GetAddress("INVENTORY_CAP_3"), (ushort) inventorySize);
+                        emulator.WriteShort(Constants.GetAddress("INVENTORY_CAP_4"), (ushort) inventorySize);
 
-                        emulator.WriteShort(0x23324, (ushort) (inventorySize - 1));
-                        emulator.WriteShort(0x2334C, (ushort) (inventorySize - 1));
+                        emulator.WriteShort(Constants.GetAddress("INVENTORY_CAP_MINUS_1"), (ushort) (inventorySize - 1));
+                        emulator.WriteShort(Constants.GetAddress("INVENTORY_CAP_MINUS_2"), (ushort) (inventorySize - 1));
 
-                        emulator.WriteShort(0x23234, (ushort) (inventorySize + 1));
-                        emulator.WriteShort(0x23250, (ushort) (inventorySize + 1));
-                        //if (emulator.ReadByte(0x10B0C8) == 32) {
-                        emulator.WriteShort(0x10B0C8, (ushort) inventorySize);
+                        emulator.WriteShort(Constants.GetAddress("INVENTORY_CAP_PLUS_1"), (ushort) (inventorySize + 1));
+                        emulator.WriteShort(Constants.GetAddress("INVENTORY_CAP_PLUS_2"), (ushort) (inventorySize + 1));
+                        //if (emulator.ReadByte(Constants.GetAddress("ITEM_LIMIT_1")) == 32) {
+                        emulator.WriteShort(Constants.GetAddress("ITEM_LIMIT_1"), (ushort) inventorySize);
                         //}
-                        //if (emulator.ReadByte(0x10C3D4) == 32) {
-                        emulator.WriteShort(0x10C3D4, (ushort) inventorySize);
+                        //if (emulator.ReadByte(Constants.GetAddress("ITEM_LIMIT_2")) == 32) {
+                        emulator.WriteShort(Constants.GetAddress("ITEM_LIMIT_2"), (ushort) inventorySize);
                         //}
-                        //if (emulator.ReadByte(0x102970) == 32) {
-                        emulator.WriteShort(0x102970, (ushort) inventorySize);
+                        //if (emulator.ReadByte(Constants.GetAddress("ITEM_LIMIT_3")) == 32) {
+                        emulator.WriteShort(Constants.GetAddress("ITEM_LIMIT_3"), (ushort) inventorySize);
                         //}
-                        emulator.WriteShort(0x2336C, 808);
+                        emulator.WriteShort(Constants.GetAddress("ITEM_CAP"), 808);
                     }
                 }
             }
@@ -5036,9 +7500,14 @@ namespace Dragoon_Modifier {
                     }
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9) {
-                            if (emulator.ReadByte(Globals.C_POINT - 0xA8 - (0x388 * i)) == 24) {
+                            if (Globals.CHARACTER_TABLE[i].Read("Action") == 24) {
                                 DamageCapScan();
                             }
+                        }
+                    }
+                    for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
+                        if (Globals.MONSTER_TABLE[i].Read("Action") == 28) { //Most used, not all monsters use action code 28 for item spells
+                            DamageCapScan();
                         }
                     }
                 }
@@ -5076,68 +7545,70 @@ namespace Dragoon_Modifier {
 
         #region Dragoon Changes
         public void ChangeDragoonDescription() {
-            if (Constants.REGION == Region.USA) {
-                //Red-Eyed
-                emulator.WriteAOB(0x51858, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 1A 00 16 00 15 00 0F 00 FF A0");
-                if ((dmScripts.ContainsKey("btnDivineRed") && dmScripts["btnDivineRed"]) && Globals.PARTY_SLOT[0] == 0 && (Globals.DIFFICULTY_MODE.Equals("Normal") || Globals.DIFFICULTY_MODE.Equals("Hard"))) {
-                    emulator.WriteAOB(0x51884, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 16 00 15 00 17 00 15 00 0F 00 FF A0");
-                    emulator.WriteAOB(0x518AC, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 16 00 1A 00 18 00 15 00 0F 00 FF A0");
-                } else {
-                    emulator.WriteAOB(0x51884, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 18 00 19 00 15 00 0F 00 FF A0");
-                    emulator.WriteAOB(0x518AC, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 1C 00 1B 00 1A 00 0F 00 FF A0");
+            if (emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) == 41215 && Globals.STATS_CHANGED) {
+                if (Constants.REGION == Region.USA) {
+                    //Red-Eyed
+                    emulator.WriteAOB(0x51858, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 1A 00 16 00 15 00 0F 00 FF A0");
+                    if (Globals.CheckDMScript("btnDivineRed") && Globals.PARTY_SLOT[0] == 0 && (Globals.DIFFICULTY_MODE.Equals("Normal") || Globals.DIFFICULTY_MODE.Equals("Hard"))) {
+                        emulator.WriteAOB(0x51884, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 16 00 15 00 17 00 15 00 0F 00 FF A0");
+                        emulator.WriteAOB(0x518AC, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 16 00 1A 00 18 00 15 00 0F 00 FF A0");
+                    } else {
+                        emulator.WriteAOB(0x51884, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 18 00 19 00 15 00 0F 00 FF A0");
+                        emulator.WriteAOB(0x518AC, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 1C 00 1B 00 1A 00 0F 00 FF A0");
+                    }
+                    emulator.WriteAOB(0x518D8, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 16 00 15 00 17 00 15 00 0F 00 FF A0");
+                    //Divine
+                    emulator.WriteAOB(0x519D4, "31 00 32 00 30 00 00 00 16 00 15 00 17 00 15 00 0F 00 FF A0");
+                    emulator.WriteAOB(0x51900, "31 00 32 00 30 00 00 00 16 00 1A 00 18 00 15 00 0F 00 FF A0");
+                    //Jade
+                    emulator.WriteAOB(0x51924, "35 00 41 00 46 00 3C 00 00 00 31 00 32 00 30 00 00 00 19 00 19 00 15 00 0F 00 FF A0");
+                    emulator.WriteAOB(0x5194C, "35 00 41 00 46 00 3C 00 00 00 31 00 32 00 30 00 00 00 1E 00 1E 00 15 00 0F 00 FF A0");
+                    emulator.WriteAOB(0x519AC, "35 00 41 00 46 00 3C 00 00 00 31 00 32 00 30 00 00 00 16 00 18 00 17 00 15 00 0F 00 FF A0");
+                    emulator.WriteAOB(0x51AB4, "35 00 41 00 46 00 3C 00 00 00 31 00 32 00 30 00 00 00 19 00 19 00 15 00 0F 00 FF A0");
+                    emulator.WriteAOB(0x51B48, "35 00 41 00 46 00 3C 00 00 00 31 00 32 00 30 00 00 00 19 00 19 00 15 00 0F 00 FF A0");
+                    //White-Silver
+                    emulator.WriteAOB(0x519F0, "2A 00 41 00 3F 00 40 00 4C 00 00 00 31 00 32 00 30 00 00 00 18 00 18 00 15 00 0F 00 FF A0");
+                    emulator.WriteAOB(0x51A84, "2A 00 41 00 3F 00 40 00 4C 00 00 00 31 00 32 00 30 00 00 00 1D 00 1B 00 1A 00 0F 00 FF A0");
+                    //Dark
+                    emulator.WriteAOB(0x51ADC, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1A 00 1E 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 00 00 30 00 3D 00 3B 00 4E 00 FF A0");
+                    emulator.WriteAOB(0x51B14, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 18 00 1E 00 1A 00 0F 00 00 00 10 00 00 00 24 00 3D 00 39 00 4A 00 FF A0");
+                    emulator.WriteAOB(0x51BA8, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 16 00 1B 00 1D 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 00 00 FF A0");
+                    //Violet
+                    emulator.WriteAOB(0x51BD8, "32 00 40 00 4D 00 46 00 3C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 18 00 18 00 15 00 0F 00 FF A0");
+                    emulator.WriteAOB(0x51C0C, "32 00 40 00 4D 00 46 00 3C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1B 00 1B 00 15 00 0F 00 FF A0");
+                    emulator.WriteAOB(0x51C40, "32 00 40 00 4D 00 46 00 3C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1E 00 1E 00 15 00 0F 00 FF A0");
+                    emulator.WriteAOB(0x51C74, "32 00 40 00 4D 00 46 00 3C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 16 00 19 00 1E 00 1A 00 0F 00 FF A0");
+                    //Blue-Sea
+                    emulator.WriteAOB(0x51CA8, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1A 00 16 00 15 00 0F 00 FF A0");
+                    emulator.WriteAOB(0x51D3C, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1A 00 18 00 15 00 0F 00 FF A0");
+                    emulator.WriteAOB(0x51D64, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 16 00 19 00 15 00 15 00 0F 00 FF A0");
+                    //Golden
+                    emulator.WriteAOB(0x51D94, "23 00 39 00 4A 00 4C 00 40 00 00 00 31 00 32 00 30 00 00 00 1B 00 1C 00 1A 00 0F 00 FF A0");
+                    emulator.WriteAOB(0x51DBC, "23 00 39 00 4A 00 4C 00 40 00 00 00 31 00 32 00 30 00 00 00 16 00 16 00 17 00 15 00 0F 00 FF A0");
+                    emulator.WriteAOB(0x51DE4, "23 00 39 00 4A 00 4C 00 40 00 00 00 31 00 32 00 30 00 00 00 17 00 17 00 17 00 15 00 0F 00 FF A0");
                 }
-                emulator.WriteAOB(0x518D8, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 16 00 15 00 17 00 15 00 0F 00 FF A0");
-                //Divine
-                emulator.WriteAOB(0x519D4, "31 00 32 00 30 00 00 00 16 00 15 00 17 00 15 00 0F 00 FF A0");
-                emulator.WriteAOB(0x51900, "31 00 32 00 30 00 00 00 16 00 1A 00 18 00 15 00 0F 00 FF A0");
-                //Jade
-                emulator.WriteAOB(0x51924, "35 00 41 00 46 00 3C 00 00 00 31 00 32 00 30 00 00 00 19 00 19 00 15 00 0F 00 FF A0");
-                emulator.WriteAOB(0x5194C, "35 00 41 00 46 00 3C 00 00 00 31 00 32 00 30 00 00 00 1E 00 1E 00 15 00 0F 00 FF A0");
-                emulator.WriteAOB(0x519AC, "35 00 41 00 46 00 3C 00 00 00 31 00 32 00 30 00 00 00 16 00 18 00 17 00 15 00 0F 00 FF A0");
-                emulator.WriteAOB(0x51AB4, "35 00 41 00 46 00 3C 00 00 00 31 00 32 00 30 00 00 00 19 00 19 00 15 00 0F 00 FF A0");
-                emulator.WriteAOB(0x51B48, "35 00 41 00 46 00 3C 00 00 00 31 00 32 00 30 00 00 00 19 00 19 00 15 00 0F 00 FF A0");
-                //White-Silver
-                emulator.WriteAOB(0x519F0, "2A 00 41 00 3F 00 40 00 4C 00 00 00 31 00 32 00 30 00 00 00 18 00 18 00 15 00 0F 00 FF A0");
-                emulator.WriteAOB(0x51A84, "2A 00 41 00 3F 00 40 00 4C 00 00 00 31 00 32 00 30 00 00 00 1D 00 1B 00 1A 00 0F 00 FF A0");
-                //Dark
-                emulator.WriteAOB(0x51ADC, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1A 00 1E 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 00 00 30 00 3D 00 3B 00 4E 00 FF A0");
-                emulator.WriteAOB(0x51B14, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 18 00 1E 00 1A 00 0F 00 00 00 10 00 00 00 24 00 3D 00 39 00 4A 00 FF A0");
-                emulator.WriteAOB(0x51BA8, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 16 00 1B 00 1D 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 00 00 FF A0");
-                //Violet
-                emulator.WriteAOB(0x51BD8, "32 00 40 00 4D 00 46 00 3C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 18 00 18 00 15 00 0F 00 FF A0");
-                emulator.WriteAOB(0x51C0C, "32 00 40 00 4D 00 46 00 3C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1B 00 1B 00 15 00 0F 00 FF A0");
-                emulator.WriteAOB(0x51C40, "32 00 40 00 4D 00 46 00 3C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1E 00 1E 00 15 00 0F 00 FF A0");
-                emulator.WriteAOB(0x51C74, "32 00 40 00 4D 00 46 00 3C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 16 00 19 00 1E 00 1A 00 0F 00 FF A0");
-                //Blue-Sea
-                emulator.WriteAOB(0x51CA8, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1A 00 16 00 15 00 0F 00 FF A0");
-                emulator.WriteAOB(0x51D3C, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1A 00 18 00 15 00 0F 00 FF A0");
-                emulator.WriteAOB(0x51D64, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 16 00 19 00 15 00 15 00 0F 00 FF A0");
-                //Golden
-                emulator.WriteAOB(0x51D94, "23 00 39 00 4A 00 4C 00 40 00 00 00 31 00 32 00 30 00 00 00 1B 00 1C 00 1A 00 0F 00 FF A0");
-                emulator.WriteAOB(0x51DBC, "23 00 39 00 4A 00 4C 00 40 00 00 00 31 00 32 00 30 00 00 00 16 00 16 00 17 00 15 00 0F 00 FF A0");
-                emulator.WriteAOB(0x51DE4, "23 00 39 00 4A 00 4C 00 40 00 00 00 31 00 32 00 30 00 00 00 17 00 17 00 17 00 15 00 0F 00 FF A0");
-            }
 
-            if ((dmScripts.ContainsKey("btnDivineRed") && dmScripts["btnDivineRed"]) && Globals.PARTY_SLOT[0] == 0 && (Globals.DIFFICULTY_MODE.Equals("Normal") || Globals.DIFFICULTY_MODE.Equals("Hard")) && Globals.PARTY_SLOT[0] == 0) {
-                emulator.WriteAOB(Constants.GetAddress("SLOT1_SPELLS"), "01 02 FF FF FF FF FF FF");
-                emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (1 * 0xC), 50); //Explosion MP
-                emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (2 * 0xC), 50); //Final Burst MP
-            }
-
-            for (int i = 0; i < 3; i++) {
-                if (Globals.PARTY_SLOT[i] == 2 || Globals.PARTY_SLOT[i] == 8) {
-                    recoveryRateSave = Globals.CHARACTER_TABLE[i].Read("HP_Regen");
+                if (Globals.CheckDMScript("btnDivineRed") && Globals.PARTY_SLOT[0] == 0 && (Globals.DIFFICULTY_MODE.Equals("Normal") || Globals.DIFFICULTY_MODE.Equals("Hard")) && Globals.PARTY_SLOT[0] == 0) {
+                    emulator.WriteAOB(Constants.GetAddress("SLOT1_SPELLS"), "01 02 FF FF FF FF FF FF");
+                    emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (1 * 0xC), 50); //Explosion MP
+                    emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (2 * 0xC), 50); //Final Burst MP
                 }
-            }
 
-            if (Globals.DIFFICULTY_MODE.Equals("Hell")) {
-                emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (7 * 0xC), (uiCombo["cboFlowerStorm"] + 1) * 20); //Lavitz's Blossom Storm MP
-                emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (26 * 0xC), (uiCombo["cboFlowerStorm"] + 1) * 20); //Albert's Rose storm MP
-                emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (11 * 0xC), 20); //Shana's Moon Light MP
-                emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (66 * 0xC), 20); //???'s Moon Light MP
-                emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (25 * 0xC), 30); //Rainbow Breath MP
-                emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (12 * 0xC), 40); //Shana's Gates of Heaven MP
-                emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (67 * 0xC), 40); //???'s Gates of Heaven MP
+                for (int i = 0; i < 3; i++) {
+                    if (Globals.PARTY_SLOT[i] == 2 || Globals.PARTY_SLOT[i] == 8) {
+                        recoveryRateSave = Globals.CHARACTER_TABLE[i].Read("HP_Regen");
+                    }
+                }
+
+                if (Globals.DIFFICULTY_MODE.Equals("Hell")) {
+                    emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (7 * 0xC), (uiCombo["cboFlowerStorm"] + 1) * 20); //Lavitz's Blossom Storm MP
+                    emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (26 * 0xC), (uiCombo["cboFlowerStorm"] + 1) * 20); //Albert's Rose storm MP
+                    emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (11 * 0xC), 20); //Shana's Moon Light MP
+                    emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (66 * 0xC), 20); //???'s Moon Light MP
+                    emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (25 * 0xC), 30); //Rainbow Breath MP
+                    emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (12 * 0xC), 40); //Shana's Gates of Heaven MP
+                    emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (67 * 0xC), 40); //???'s Gates of Heaven MP
+                }
             }
         }
 
@@ -5146,81 +7617,364 @@ namespace Dragoon_Modifier {
                 if (!dragoonChangesOnBattleEntry) {
                     ChangeDragoonDescription();
                     dragoonChangesOnBattleEntry = true;
-                    checkRoseDamage = checkFlowerStorm = burnActive = false;
+                    checkRoseDamage = checkFlowerStorm = burnActive = starChildren = false;
                     dartBurnStack = 0;
                 } else {
                     if (emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) == 41215) {
                         for (int i = 0; i < 3; i++) {
-                            int mp = 0;
-                            double multi = 1;
-                            byte dragoonSpecialAttack = emulator.ReadByte(Constants.GetAddress("DRAGOON_SPECIAL_ATTACK"));
-                            byte dragoonSpecialMagic = emulator.ReadByte(Constants.GetAddress("DRAGOON_SPECIAL_MAGIC"));
+                            if (Globals.PARTY_SLOT[i] < 9) {
+                                int mp = 0;
+                                double multi = 1;
+                                byte dragoonSpecialAttack = emulator.ReadByte(Constants.GetAddress("DRAGOON_SPECIAL_ATTACK"));
+                                byte dragoonSpecialMagic = emulator.ReadByte(Constants.GetAddress("DRAGOON_SPECIAL_MAGIC"));
 
-                            if (Globals.ENCOUNTER_ID == 416 || Globals.ENCOUNTER_ID == 394 || Globals.ENCOUNTER_ID == 443) {
-                                if (emulator.ReadByte(Constants.GetAddress("DRAGON_BLOCK_STAFF")) == 1) {
-                                    multi = 8;
-                                } else {
-                                    multi = 1;
-                                }
-                            }
-
-                            /*if (ubReverseDBS) {
-                                multi = 10;
-                            }*/
-
-                            if (Globals.PARTY_SLOT[i] == 3 && Globals.CHARACTER_TABLE[i].Read("Weapon") == 162) {
-                                multi *= 1.1;
-                            }
-
-                            currentMP[i] = Globals.CHARACTER_TABLE[i].Read("MP");
-
-                            if (Globals.PARTY_SLOT[i] == 0) { //Dart
-                                if (dragoonSpecialAttack == 0 || dragoonSpecialAttack == 9) {
-                                    if (Globals.DRAGOON_SPIRITS >= 254) {
-                                        Globals.CHARACTER_TABLE[i].Write("DAT", (306 * multi));
+                                if (Globals.ENCOUNTER_ID == 416 || Globals.ENCOUNTER_ID == 394 || Globals.ENCOUNTER_ID == 443) {
+                                    if (emulator.ReadByte(Constants.GetAddress("DRAGON_BLOCK_STAFF")) == 1) {
+                                        multi = 8;
                                     } else {
-                                        if (dmScripts.ContainsKey("btnDivineRed") && dmScripts["btnDivineRed"]) {
-                                            Globals.CHARACTER_TABLE[i].Write("DAT", (612 * multi));
-                                        } else {
-                                            Globals.CHARACTER_TABLE[i].Write("DAT", (422 * multi));
-                                        }
-                                    }
-                                } else {
-                                    if (Globals.DRAGOON_SPIRITS >= 254) {
-                                        emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA5, 0);
-                                        Globals.CHARACTER_TABLE[i].Write("DAT", (204 * multi));
-                                    } else {
-                                        if (dmScripts.ContainsKey("btnDivineRed") && dmScripts["btnDivineRed"]) {
-                                            Globals.CHARACTER_TABLE[i].Write("DAT", (408 * multi));
-                                        } else {
-                                            Globals.CHARACTER_TABLE[i].Write("DAT", (281 * multi));
-                                        }
+                                        multi = 1;
                                     }
                                 }
 
-                                if (multi == 1) {
-                                    emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA9, 0);
-                                    emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xAB, 0);
-                                    Globals.CHARACTER_TABLE[i].Write("DDF", (180 * multi));
-                                    Globals.CHARACTER_TABLE[i].Write("DMDF", (180 * multi));
-                                } else {
-                                    Globals.CHARACTER_TABLE[i].Write("DDF", (180 * multi));
-                                    Globals.CHARACTER_TABLE[i].Write("DMDF", (180 * multi));
+                                if (ubReverseDBS) {
+                                    multi = 20;
                                 }
 
-                                if (soasSiphonSlot == i) { //Soa's Siphon Ring
-                                    multi *= 0.3;
+                                if (Globals.PARTY_SLOT[i] == 3 && Globals.CHARACTER_TABLE[i].Read("Weapon") == 162) {
+                                    multi *= 1.1;
                                 }
 
-                                if (currentMP[i] != previousMP[i] && currentMP[i] < previousMP[i]) {
-                                    mp = previousMP[i] - currentMP[i];
-                                    if (dmScripts.ContainsKey("btnDivineRed") && dmScripts["btnDivineRed"]) {
-                                        if (Globals.CHARACTER_TABLE[i].Read("Spell_Cast") == 1) {
-                                            Globals.CHARACTER_TABLE[i].Write("DMAT", (1020 * multi));
+                                currentMP[i] = Globals.CHARACTER_TABLE[i].Read("MP");
+
+                                if (Globals.PARTY_SLOT[i] == 0) { //Dart
+                                    if (dragoonSpecialAttack == 0 || dragoonSpecialAttack == 9) {
+                                        if (Globals.DRAGOON_SPIRITS >= 254) {
+                                            Globals.CHARACTER_TABLE[i].Write("DAT", (306 * multi));
                                         } else {
-                                            Globals.CHARACTER_TABLE[i].Write("DMAT", (510 * multi));
+                                            if (Globals.CheckDMScript("btnDivineRed")) {
+                                                Globals.CHARACTER_TABLE[i].Write("DAT", (612 * multi));
+                                            } else {
+                                                Globals.CHARACTER_TABLE[i].Write("DAT", (422 * multi));
+                                            }
                                         }
                                     } else {
+                                        if (Globals.DRAGOON_SPIRITS >= 254) {
+                                            emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA5, 0);
+                                            Globals.CHARACTER_TABLE[i].Write("DAT", (204 * multi));
+                                        } else {
+                                            if (Globals.CheckDMScript("btnDivineRed")) {
+                                                Globals.CHARACTER_TABLE[i].Write("DAT", (408 * multi));
+                                            } else {
+                                                Globals.CHARACTER_TABLE[i].Write("DAT", (281 * multi));
+                                            }
+                                        }
+                                    }
+
+                                    if (multi == 1) {
+                                        emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA9, 0);
+                                        emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xAB, 0);
+                                        Globals.CHARACTER_TABLE[i].Write("DDF", (180 * multi));
+                                        Globals.CHARACTER_TABLE[i].Write("DMDF", (180 * multi));
+                                    } else {
+                                        Globals.CHARACTER_TABLE[i].Write("DDF", (180 * multi));
+                                        Globals.CHARACTER_TABLE[i].Write("DMDF", (180 * multi));
+                                    }
+
+                                    if (soasSiphonSlot == i) { //Soa's Siphon Ring
+                                        multi *= 0.3;
+                                    }
+
+                                    if (currentMP[i] != previousMP[i] && currentMP[i] < previousMP[i]) {
+                                        mp = previousMP[i] - currentMP[i];
+                                        if (Globals.CheckDMScript("btnDivineRed")) {
+                                            if (Globals.CHARACTER_TABLE[i].Read("Spell_Cast") == 1) {
+                                                Globals.CHARACTER_TABLE[i].Write("DMAT", (1020 * multi));
+                                            } else {
+                                                Globals.CHARACTER_TABLE[i].Write("DMAT", (510 * multi));
+                                            }
+                                        } else {
+                                            if (mp == 10) {
+                                                if (multi == 1) {
+                                                    emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA7, 0);
+                                                    Globals.CHARACTER_TABLE[i].Write("DMAT", (255 * multi));
+                                                } else {
+                                                    Globals.CHARACTER_TABLE[i].Write("DMAT", (255 * multi));
+                                                }
+                                                AddBurnStack(1);
+                                            } else if (mp == 20) {
+                                                Globals.CHARACTER_TABLE[i].Write("DMAT", (340 * multi));
+                                                AddBurnStack(1);
+                                            } else if (mp == 30) {
+                                                if (multi == 1) {
+                                                    emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA7, 0);
+                                                    Globals.CHARACTER_TABLE[i].Write("DMAT", (255 * multi));
+                                                } else {
+                                                    Globals.CHARACTER_TABLE[i].Write("DMAT", (255 * multi));
+                                                }
+                                                AddBurnStack(2);
+                                            } else if (mp == 50) {
+                                                if (multi == 1) {
+                                                    emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA7, 0);
+                                                    Globals.CHARACTER_TABLE[i].Write("DMAT", (255 * multi));
+                                                } else {
+                                                    Globals.CHARACTER_TABLE[i].Write("DMAT", (255 * multi));
+                                                }
+                                            } else if (mp == 80) {
+                                                Globals.CHARACTER_TABLE[i].Write("DMAT", (340 * multi));
+                                                AddBurnStack(3);
+                                            }
+                                        }
+                                        previousMP[i] = currentMP[i];
+                                    } else {
+                                        if (currentMP[i] > previousMP[i]) {
+                                            previousMP[i] = currentMP[i];
+                                        }
+                                    }
+                                } else if (Globals.PARTY_SLOT[i] == 1 || Globals.PARTY_SLOT[i] == 5) { //Lavitz/Albert
+                                    if (checkHarpoon) {
+                                        if (Globals.ENCOUNTER_ID == 416 || Globals.ENCOUNTER_ID == 394 || Globals.ENCOUNTER_ID == 443) {
+                                            if (emulator.ReadByte(Constants.GetAddress("DRAGON_BLOCK_STAFF")) == 1) {
+                                                multi = 24;
+                                            } else {
+                                                multi = 3;
+                                            }
+                                        } else {
+                                            multi = 3;
+                                        }
+                                    } else {
+                                        if (Globals.ENCOUNTER_ID == 416 || Globals.ENCOUNTER_ID == 394 || Globals.ENCOUNTER_ID == 443) {
+                                            if (emulator.ReadByte(Constants.GetAddress("DRAGON_BLOCK_STAFF")) == 1) {
+                                                multi = 8;
+                                            } else {
+                                                multi = 1;
+                                            }
+                                        } else {
+                                            multi = 1;
+                                        }
+                                    }
+
+                                    if (multi == 1) {
+                                        emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA9, 0);
+                                        emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xAB, 0);
+                                        Globals.CHARACTER_TABLE[i].Write("DDF", (180 * multi));
+                                        Globals.CHARACTER_TABLE[i].Write("DMDF", (180 * multi));
+                                    } else {
+                                        Globals.CHARACTER_TABLE[i].Write("DDF", (180 * multi));
+                                        Globals.CHARACTER_TABLE[i].Write("DMDF", (180 * multi));
+                                    }
+
+                                    if (dragoonSpecialAttack == 1 || dragoonSpecialAttack == 5) {
+                                        Globals.CHARACTER_TABLE[i].Write("DAT", (495 * multi));
+                                    } else {
+                                        Globals.CHARACTER_TABLE[i].Write("DAT", (330 * multi));
+                                    }
+
+                                    if (soasSiphonSlot == i) { //Soa's Siphon Ring
+                                        multi *= 0.3;
+                                    }
+
+                                    if (currentMP[i] != previousMP[i] && currentMP[i] < previousMP[i]) {
+                                        mp = previousMP[i] - currentMP[i];
+                                        if (mp == 20 || mp == 80) {
+                                            Globals.CHARACTER_TABLE[i].Write("DMAT", (440 * multi));
+                                        } else if (mp == 30) {
+                                            Globals.CHARACTER_TABLE[i].Write("DMAT", (330 * multi));
+                                        }
+                                        if ((Globals.CHARACTER_TABLE[i].Read("Spell_Cast") == 7 || Globals.CHARACTER_TABLE[i].Read("Spell_Cast") == 26) && Globals.DIFFICULTY_MODE.Equals("Hell")) {
+                                            checkFlowerStorm = true;
+                                        }
+                                    } else {
+                                        if (currentMP[i] > previousMP[i]) {
+                                            previousMP[i] = currentMP[i];
+                                        } else {
+                                            if (checkFlowerStorm) {
+                                                byte changed = 0;
+                                                byte partySize = 0;
+                                                for (int x = 0; x < 3; x++) {
+                                                    if (Globals.PARTY_SLOT[x] < 9) {
+                                                        partySize++;
+                                                        if (Globals.CHARACTER_TABLE[i].Read("PWR_DF_TRN") != 0) {
+                                                            changed++;
+                                                        }
+                                                    }
+                                                }
+                                                if (changed == partySize) {
+                                                    checkFlowerStorm = false;
+                                                    for (int x = 0; x < 3; x++) {
+                                                        Globals.CHARACTER_TABLE[i].Write("PWR_DF_TRN", uiCombo["cboFlowerStorm"]);
+                                                        Globals.CHARACTER_TABLE[i].Write("PWR_MDF_TRN", uiCombo["cboFlowerStorm"]);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else if (Globals.PARTY_SLOT[i] == 2 || Globals.PARTY_SLOT[i] == 8) { //Shana
+                                    if (starChildren && Globals.CHARACTER_TABLE[i].Read("Action") == 8) {
+                                        starChildren = false;
+                                        Globals.CHARACTER_TABLE[i].Write("HP_Regen", recoveryRateSave);
+                                    }
+
+                                    if (dragoonSpecialAttack == 2 || dragoonSpecialAttack == 8) {
+                                        Globals.CHARACTER_TABLE[i].Write("DAT", (510 * multi));
+                                    } else {
+                                        Globals.CHARACTER_TABLE[i].Write("DAT", (365 * multi));
+                                    }
+
+                                    if (multi == 1) {
+                                        emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA9, 0);
+                                        emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xAB, 0);
+                                        Globals.CHARACTER_TABLE[i].Write("DDF", (180 * multi));
+                                        Globals.CHARACTER_TABLE[i].Write("DMDF", (180 * multi));
+                                    } else {
+                                        Globals.CHARACTER_TABLE[i].Write("DDF", (180 * multi));
+                                        Globals.CHARACTER_TABLE[i].Write("DMDF", (180 * multi));
+                                    }
+
+                                    if (soasSiphonSlot == i) { //Soa's Siphon Ring
+                                        multi *= 0.3;
+                                    }
+
+                                    if (currentMP[i] != previousMP[i] && currentMP[i] < previousMP[i]) {
+                                        mp = previousMP[i] - currentMP[i];
+                                        if (mp == 20) {
+                                            Globals.CHARACTER_TABLE[i].Write("DMAT", (332 * multi));
+                                            Globals.CHARACTER_TABLE[i].Write("HP_Regen", (recoveryRateSave + 20));
+                                            starChildren = true;
+                                        } else if (mp == 80) {
+                                            Globals.CHARACTER_TABLE[i].Write("DMAT", (289 * multi));
+                                        }
+                                        previousMP[i] = currentMP[i];
+                                    } else {
+                                        if (currentMP[i] > previousMP[i]) {
+                                            previousMP[i] = currentMP[i];
+                                        }
+                                    }
+                                } else if (Globals.PARTY_SLOT[i] == 3) { //Rose
+                                    if (dragoonSpecialAttack == 3) {
+                                        Globals.CHARACTER_TABLE[i].Write("DAT", (495 * multi));
+                                    } else {
+                                        Globals.CHARACTER_TABLE[i].Write("DAT", (330 * multi));
+                                    }
+
+                                    if (multi == 1) {
+                                        emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA9, 0);
+                                        emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xAB, 0);
+                                        Globals.CHARACTER_TABLE[i].Write("DDF", (180 * multi));
+                                        Globals.CHARACTER_TABLE[i].Write("DMDF", (180 * multi));
+                                    } else {
+                                        Globals.CHARACTER_TABLE[i].Write("DDF", (180 * multi));
+                                        Globals.CHARACTER_TABLE[i].Write("DMDF", (180 * multi));
+                                    }
+
+                                    if (soasSiphonSlot == i) { //Soa's Siphon Ring
+                                        multi *= 0.3;
+                                    }
+
+                                    if (currentMP[i] != previousMP[i] && currentMP[i] < previousMP[i]) {
+                                        mp = previousMP[i] - currentMP[i];
+                                        if (mp == 10) {
+                                            Globals.CHARACTER_TABLE[i].Write("DMAT", (295 * multi));
+                                            for (int x = 0; x < 3; x++) {
+                                                if (Globals.PARTY_SLOT[x] < 9 && Globals.CHARACTER_TABLE[i].Read("HP") > 0) {
+                                                    Globals.CHARACTER_TABLE[i].Write("HP", (ushort) Math.Min(Globals.CHARACTER_TABLE[i].Read("Max_HP"), Globals.CHARACTER_TABLE[x].Read("HP") + Math.Round(Globals.CHARACTER_TABLE[i].Read("HP") * (emulator.ReadByte(Constants.GetAddress("ROSE_DRAGOON_LEVEL")) * 0.05))));
+                                                }
+                                            }
+                                        } else if (mp == 20) {
+                                            Globals.CHARACTER_TABLE[i].Write("DMAT", (395 * multi));
+                                        } else if (mp == 25) {
+                                            Globals.CHARACTER_TABLE[i].Write("DMAT", (410 * multi));
+                                            for (int x = 0; x < 3; x++) {
+                                                if (Globals.PARTY_SLOT[x] < 9 && Globals.CHARACTER_TABLE[i].Read("HP") > 0) {
+                                                    Globals.CHARACTER_TABLE[i].Write("HP", (ushort) Math.Min(Globals.CHARACTER_TABLE[i].Read("Max_HP"), Globals.CHARACTER_TABLE[x].Read("HP") + Math.Round(Globals.CHARACTER_TABLE[i].Read("HP") * (emulator.ReadByte(Constants.GetAddress("ROSE_DRAGOON_LEVEL")) * 0.04))));
+                                                }
+                                            }
+                                        } else if (mp == 50) {
+                                            Globals.CHARACTER_TABLE[i].Write("DMAT", (790 * multi));
+                                        } else if (mp == 80) {
+                                            Globals.CHARACTER_TABLE[i].Write("DMAT", (420 * multi));
+                                            checkRoseDamage = true;
+                                            checkRoseDamageSave = emulator.ReadShort(Constants.GetAddress("DAMAGE_SLOT1"));
+                                        } else if (mp == 100) {
+                                            Globals.CHARACTER_TABLE[i].Write("DMAT", (290 * multi));
+                                            checkRoseDamage = true;
+                                            checkRoseDamageSave = emulator.ReadShort(Constants.GetAddress("DAMAGE_SLOT1"));
+                                        }
+                                        previousMP[i] = currentMP[i];
+                                    } else {
+                                        if (currentMP[i] > previousMP[i]) {
+                                            previousMP[i] = currentMP[i];
+                                        } else {
+                                            if (checkRoseDamage && emulator.ReadShort(Constants.GetAddress("DAMAGE_SLOT1")) != checkRoseDamageSave) {
+                                                checkRoseDamage = false;
+                                                if (roseEnhanceDragoon) {
+                                                    Globals.CHARACTER_TABLE[i].Write("HP", (ushort) Math.Min(Globals.CHARACTER_TABLE[i].Read("HP") + (emulator.ReadShort(Constants.GetAddress("DAMAGE_SLOT1")) * 0.4), Globals.CHARACTER_TABLE[i].Read("Max_HP")));
+                                                } else {
+                                                    Globals.CHARACTER_TABLE[i].Write("HP", (ushort) Math.Min(Globals.CHARACTER_TABLE[i].Read("HP") + (emulator.ReadShort(Constants.GetAddress("DAMAGE_SLOT1")) * 0.1), Globals.CHARACTER_TABLE[i].Read("Max_HP")));
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else if (Globals.PARTY_SLOT[i] == 4) { //Haschel
+                                    if (dragoonSpecialAttack == 4) {
+                                        Globals.CHARACTER_TABLE[i].Write("DAT", (422 * multi));
+                                    } else {
+                                        Globals.CHARACTER_TABLE[i].Write("DAT", (281 * multi));
+                                    }
+
+                                    if (multi == 1) {
+                                        emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA9, 0);
+                                        emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xAB, 0);
+                                        Globals.CHARACTER_TABLE[i].Write("DDF", (180 * multi));
+                                        Globals.CHARACTER_TABLE[i].Write("DMDF", (180 * multi));
+                                    } else {
+                                        Globals.CHARACTER_TABLE[i].Write("DDF", (180 * multi));
+                                        Globals.CHARACTER_TABLE[i].Write("DMDF", (180 * multi));
+                                    }
+
+                                    if (soasSiphonSlot == i) { //Soa's Siphon Ring
+                                        multi *= 0.3;
+                                    }
+
+                                    if (eleBombTurns > 0 && eleBombElement == 16) {
+                                        multi *= 3;
+                                    }
+
+                                    if (currentMP[i] != previousMP[i] && currentMP[i] < previousMP[i]) {
+                                        mp = previousMP[i] - currentMP[i];
+                                        if (mp == 10 || mp == 20 || mp == 30) {
+                                            Globals.CHARACTER_TABLE[i].Write("DMAT", (330 * multi));
+                                        } else if (mp == 80) {
+                                            Globals.CHARACTER_TABLE[i].Write("DMAT", (374 * multi));
+                                        }
+                                        previousMP[i] = currentMP[i];
+                                    } else {
+                                        if (currentMP[i] > previousMP[i]) {
+                                            previousMP[i] = currentMP[i];
+                                        }
+                                    }
+                                } else if (Globals.PARTY_SLOT[i] == 6) { //Meru
+                                    if (dragoonSpecialAttack == 6) {
+                                        Globals.CHARACTER_TABLE[i].Write("DAT", (495 * multi));
+                                    } else {
+                                        Globals.CHARACTER_TABLE[i].Write("DAT", (330 * multi));
+                                    }
+
+                                    if (multi == 1) {
+                                        emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA9, 0);
+                                        emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xAB, 0);
+                                        Globals.CHARACTER_TABLE[i].Write("DDF", (180 * multi));
+                                        Globals.CHARACTER_TABLE[i].Write("DMDF", (180 * multi));
+                                    } else {
+                                        Globals.CHARACTER_TABLE[i].Write("DDF", (180 * multi));
+                                        Globals.CHARACTER_TABLE[i].Write("DMDF", (180 * multi));
+                                    }
+
+                                    if (soasSiphonSlot == i) { //Soa's Siphon Ring
+                                        multi *= 0.3;
+                                    }
+
+                                    if (currentMP[i] != previousMP[i] && currentMP[i] < previousMP[i]) {
+                                        mp = previousMP[i] - currentMP[i];
                                         if (mp == 10) {
                                             if (multi == 1) {
                                                 emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA7, 0);
@@ -5228,348 +7982,73 @@ namespace Dragoon_Modifier {
                                             } else {
                                                 Globals.CHARACTER_TABLE[i].Write("DMAT", (255 * multi));
                                             }
-                                            AddBurnStack(1);
-                                        } else if (mp == 20) {
-                                            Globals.CHARACTER_TABLE[i].Write("DMAT", (340 * multi));
-                                            AddBurnStack(1);
                                         } else if (mp == 30) {
-                                            if (multi == 1) {
-                                                emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA7, 0);
-                                                Globals.CHARACTER_TABLE[i].Write("DMAT", (255 * multi));
-                                            } else {
-                                                Globals.CHARACTER_TABLE[i].Write("DMAT", (255 * multi));
-                                            }
-                                            AddBurnStack(2);
-                                        } else if (mp == 50) {
-                                            if (multi == 1) {
-                                                emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA7, 0);
-                                                Globals.CHARACTER_TABLE[i].Write("DMAT", (255 * multi));
-                                            } else {
-                                                Globals.CHARACTER_TABLE[i].Write("DMAT", (255 * multi));
-                                            }
+                                            Globals.CHARACTER_TABLE[i].Write("DMAT", (264 * multi));
                                         } else if (mp == 80) {
-                                            Globals.CHARACTER_TABLE[i].Write("DMAT", (340 * multi));
-                                            AddBurnStack(3);
+                                            Globals.CHARACTER_TABLE[i].Write("DMAT", (350 * multi));
                                         }
-                                    }
-                                    previousMP[i] = currentMP[i];
-                                } else {
-                                    if (currentMP[i] > previousMP[i]) {
-                                        previousMP[i] = currentMP[i];
-                                    }
-                                }
-                            } else if (Globals.PARTY_SLOT[i] == 1 || Globals.PARTY_SLOT[i] == 5) { //Lavitz/Albert
-                                if (checkHarpoon) {
-                                    if (Globals.ENCOUNTER_ID == 416 || Globals.ENCOUNTER_ID == 394 || Globals.ENCOUNTER_ID == 443) {
-                                        if (emulator.ReadByte(Constants.GetAddress("DRAGON_BLOCK_STAFF")) == 1) {
-                                            multi = 24;
-                                        } else {
-                                            multi = 3;
-                                        }
-                                    } else {
-                                        multi = 3;
-                                    }
-                                } else {
-                                    if (Globals.ENCOUNTER_ID == 416 || Globals.ENCOUNTER_ID == 394 || Globals.ENCOUNTER_ID == 443) {
-                                        if (emulator.ReadByte(Constants.GetAddress("DRAGON_BLOCK_STAFF")) == 1) {
-                                            multi = 8;
-                                        } else {
-                                            multi = 1;
-                                        }
-                                    } else {
-                                        multi = 1;
-                                    }
-                                }
 
-                                if (multi == 1) {
-                                    emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA9, 0);
-                                    emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xAB, 0);
-                                    Globals.CHARACTER_TABLE[i].Write("DDF", (180 * multi));
-                                    Globals.CHARACTER_TABLE[i].Write("DMDF", (180 * multi));
-                                } else {
-                                    Globals.CHARACTER_TABLE[i].Write("DDF", (180 * multi));
-                                    Globals.CHARACTER_TABLE[i].Write("DMDF", (180 * multi));
-                                }
-
-                                if (dragoonSpecialAttack == 1 || dragoonSpecialAttack == 5) {
-                                    Globals.CHARACTER_TABLE[i].Write("DAT", (495 * multi));
-                                } else {
-                                    Globals.CHARACTER_TABLE[i].Write("DAT", (330 * multi));
-                                }
-
-                                if (soasSiphonSlot == i) { //Soa's Siphon Ring
-                                    multi *= 0.3;
-                                }
-
-                                if (currentMP[i] != previousMP[i] && currentMP[i] < previousMP[i]) {
-                                    mp = previousMP[i] - currentMP[i];
-                                    if (mp == 20 || mp == 80) {
-                                        Globals.CHARACTER_TABLE[i].Write("DMAT", (440 * multi));
-                                    } else if (mp == 30) {
-                                        Globals.CHARACTER_TABLE[i].Write("DMAT", (330 * multi));
-                                    }
-                                    if ((Globals.CHARACTER_TABLE[i].Read("Spell_Cast") == 7 || Globals.CHARACTER_TABLE[i].Read("Spell_Cast") == 26) && Globals.DIFFICULTY_MODE.Equals("Hell")) {
-                                        checkFlowerStorm = true;
-                                    }
-                                } else {
-                                    if (currentMP[i] > previousMP[i]) {
-                                        previousMP[i] = currentMP[i];
-                                    } else {
-                                        if (checkFlowerStorm) {
-                                            byte changed = 0;
-                                            byte partySize = 0;
-                                            for (int x = 0; x < 3; x++) {
-                                                if (Globals.PARTY_SLOT[x] < 9) {
-                                                    partySize++;
-                                                    if (Globals.CHARACTER_TABLE[i].Read("PWR_DF_TRN") != 0) {
-                                                        changed++;
-                                                    }
+                                        //Jeweled Hammer
+                                        if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 164) {
+                                            if (mp == 50) {
+                                                if (multi == 1) {
+                                                    emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA7, 0);
+                                                    Globals.CHARACTER_TABLE[i].Write("DMAT", (255 * multi));
+                                                } else {
+                                                    Globals.CHARACTER_TABLE[i].Write("DMAT", (255 * multi));
                                                 }
-                                            }
-                                            if (changed == partySize) {
-                                                checkFlowerStorm = false;
-                                                for (int x = 0; x < 3; x++) {
-                                                    Globals.CHARACTER_TABLE[i].Write("PWR_DF_TRN", uiCombo["cboFlowerStorm"]);
-                                                    Globals.CHARACTER_TABLE[i].Write("PWR_MDF_TRN", uiCombo["cboFlowerStorm"]);
+                                            } else if (mp == 100) {
+                                                if (Globals.CHARACTER_TABLE[i].Read("Spell_Cast") == 25) {
+                                                    //trackchp
+                                                    //rainbow breath
+                                                } else {
+                                                    Globals.CHARACTER_TABLE[i].Write("DMAT", (350 * multi));
                                                 }
+                                            } else if (mp == 150) {
+                                                Globals.CHARACTER_TABLE[i].Write("DMAT", (525 * multi));
                                             }
                                         }
-                                    }
-                                }
-                            } else if (Globals.PARTY_SLOT[i] == 2 || Globals.PARTY_SLOT[i] == 8) { //Shana
-                                if (dragoonSpecialAttack == 2 || dragoonSpecialAttack == 8) {
-                                    Globals.CHARACTER_TABLE[i].Write("DAT", (510 * multi));
-                                } else {
-                                    Globals.CHARACTER_TABLE[i].Write("DAT", (365 * multi));
-                                }
-
-                                if (multi == 1) {
-                                    emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA9, 0);
-                                    emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xAB, 0);
-                                    Globals.CHARACTER_TABLE[i].Write("DDF", (180 * multi));
-                                    Globals.CHARACTER_TABLE[i].Write("DMDF", (180 * multi));
-                                } else {
-                                    Globals.CHARACTER_TABLE[i].Write("DDF", (180 * multi));
-                                    Globals.CHARACTER_TABLE[i].Write("DMDF", (180 * multi));
-                                }
-
-                                if (soasSiphonSlot == i) { //Soa's Siphon Ring
-                                    multi *= 0.3;
-                                }
-
-                                if (currentMP[i] != previousMP[i] && currentMP[i] < previousMP[i]) {
-                                    mp = previousMP[i] - currentMP[i];
-                                    if (mp == 20) {
-                                        Globals.CHARACTER_TABLE[i].Write("DMAT", (332 * multi));
-                                        Globals.CHARACTER_TABLE[i].Write("HP_Regen", (recoveryRateSave + 20));
-                                    } else if (mp == 80) {
-                                        Globals.CHARACTER_TABLE[i].Write("DMAT", (289 * multi));
-                                    }
-                                    previousMP[i] = currentMP[i];
-                                } else {
-                                    if (currentMP[i] > previousMP[i]) {
-                                        previousMP[i] = currentMP[i];
-                                    }
-                                }
-                            } else if (Globals.PARTY_SLOT[i] == 3) { //Rose
-                                if (dragoonSpecialAttack == 3) {
-                                    Globals.CHARACTER_TABLE[i].Write("DAT", (495 * multi));
-                                } else {
-                                    Globals.CHARACTER_TABLE[i].Write("DAT", (330 * multi));
-                                }
-
-                                if (multi == 1) {
-                                    emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA9, 0);
-                                    emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xAB, 0);
-                                    Globals.CHARACTER_TABLE[i].Write("DDF", (180 * multi));
-                                    Globals.CHARACTER_TABLE[i].Write("DMDF", (180 * multi));
-                                } else {
-                                    Globals.CHARACTER_TABLE[i].Write("DDF", (180 * multi));
-                                    Globals.CHARACTER_TABLE[i].Write("DMDF", (180 * multi));
-                                }
-
-                                if (soasSiphonSlot == i) { //Soa's Siphon Ring
-                                    multi *= 0.3;
-                                }
-
-                                if (currentMP[i] != previousMP[i] && currentMP[i] < previousMP[i]) {
-                                    mp = previousMP[i] - currentMP[i];
-                                    if (mp == 10) {
-                                        Globals.CHARACTER_TABLE[i].Write("DMAT", (295 * multi));
-                                        for (int x = 0; x < 3; x++) {
-                                            if (Globals.PARTY_SLOT[x] < 9 && Globals.CHARACTER_TABLE[i].Read("HP") > 0) {
-                                                Globals.CHARACTER_TABLE[i].Write("HP", (ushort) Math.Min(Globals.CHARACTER_TABLE[i].Read("Max_HP"), Globals.CHARACTER_TABLE[x].Read("HP") + Math.Round(Globals.CHARACTER_TABLE[i].Read("HP") * (emulator.ReadByte(Constants.GetAddress("ROSE_DRAGOON_LEVEL")) * 0.05))));
-                                            }
-                                        }
-                                    } else if (mp == 20) {
-                                        Globals.CHARACTER_TABLE[i].Write("DMAT", (395 * multi));
-                                    } else if (mp == 25) {
-                                        Globals.CHARACTER_TABLE[i].Write("DMAT", (410 * multi));
-                                        for (int x = 0; x < 3; x++) {
-                                            if (Globals.PARTY_SLOT[x] < 9 && Globals.CHARACTER_TABLE[i].Read("HP") > 0) {
-                                                Globals.CHARACTER_TABLE[i].Write("HP", (ushort) Math.Min(Globals.CHARACTER_TABLE[i].Read("Max_HP"), Globals.CHARACTER_TABLE[x].Read("HP") + Math.Round(Globals.CHARACTER_TABLE[i].Read("HP") * (emulator.ReadByte(Constants.GetAddress("ROSE_DRAGOON_LEVEL")) * 0.04))));
-                                            }
-                                        }
-                                    } else if (mp == 50) {
-                                        Globals.CHARACTER_TABLE[i].Write("DMAT", (790 * multi));
-                                    } else if (mp == 80) {
-                                        Globals.CHARACTER_TABLE[i].Write("DMAT", (420 * multi));
-                                        checkRoseDamage = true;
-                                        checkRoseDamageSave = emulator.ReadShort(Constants.GetAddress("DAMAGE_SLOT1"));
-                                    } else if (mp == 100) {
-                                        Globals.CHARACTER_TABLE[i].Write("DMAT", (290 * multi));
-                                        checkRoseDamage = true;
-                                        checkRoseDamageSave = emulator.ReadShort(Constants.GetAddress("DAMAGE_SLOT1"));
-                                    }
-                                    previousMP[i] = currentMP[i];
-                                } else {
-                                    if (currentMP[i] > previousMP[i]) {
                                         previousMP[i] = currentMP[i];
                                     } else {
-                                        if (checkRoseDamage && emulator.ReadShort(Constants.GetAddress("DAMAGE_SLOT1")) != checkRoseDamageSave) {
-                                            checkRoseDamage = false;
-                                            if (roseEnhanceDragoon) {
-                                                Globals.CHARACTER_TABLE[i].Write("HP", (ushort) Math.Min(Globals.CHARACTER_TABLE[i].Read("HP") + (emulator.ReadShort(Constants.GetAddress("DAMAGE_SLOT1")) * 0.4), Globals.CHARACTER_TABLE[i].Read("Max_HP")));
-                                            } else {
-                                                Globals.CHARACTER_TABLE[i].Write("HP", (ushort) Math.Min(Globals.CHARACTER_TABLE[i].Read("HP") + (emulator.ReadShort(Constants.GetAddress("DAMAGE_SLOT1")) * 0.1), Globals.CHARACTER_TABLE[i].Read("Max_HP")));
-                                            }
+                                        if (currentMP[i] > previousMP[i]) {
+                                            previousMP[i] = currentMP[i];
                                         }
                                     }
-                                }
-                            } else if (Globals.PARTY_SLOT[i] == 4) { //Haschel
-                                if (dragoonSpecialAttack == 4) {
-                                    Globals.CHARACTER_TABLE[i].Write("DAT", (422 * multi));
-                                } else {
-                                    Globals.CHARACTER_TABLE[i].Write("DAT", (281 * multi));
-                                }
-
-                                if (multi == 1) {
-                                    emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA9, 0);
-                                    emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xAB, 0);
-                                    Globals.CHARACTER_TABLE[i].Write("DDF", (180 * multi));
-                                    Globals.CHARACTER_TABLE[i].Write("DMDF", (180 * multi));
-                                } else {
-                                    Globals.CHARACTER_TABLE[i].Write("DDF", (180 * multi));
-                                    Globals.CHARACTER_TABLE[i].Write("DMDF", (180 * multi));
-                                }
-
-                                if (soasSiphonSlot == i) { //Soa's Siphon Ring
-                                    multi *= 0.3;
-                                }
-
-                                if (eleBombTurns > 0 && eleBombElement == 16) {
-                                    multi *= 3;
-                                }
-
-                                if (currentMP[i] != previousMP[i] && currentMP[i] < previousMP[i]) {
-                                    mp = previousMP[i] - currentMP[i];
-                                    if (mp == 10 || mp == 20 || mp == 30) {
-                                        Globals.CHARACTER_TABLE[i].Write("DMAT", (330 * multi));
-                                    } else if (mp == 80) {
-                                        Globals.CHARACTER_TABLE[i].Write("DMAT", (374 * multi));
+                                } else if (Globals.PARTY_SLOT[i] == 7) {
+                                    if (dragoonSpecialAttack == 7) {
+                                        Globals.CHARACTER_TABLE[i].Write("DAT", (600 * multi));
+                                    } else {
+                                        Globals.CHARACTER_TABLE[i].Write("DAT", (500 * multi));
                                     }
-                                    previousMP[i] = currentMP[i];
-                                } else {
-                                    if (currentMP[i] > previousMP[i]) {
-                                        previousMP[i] = currentMP[i];
+
+                                    if (multi == 1) {
+                                        emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA9, 0);
+                                        emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xAB, 0);
+                                        Globals.CHARACTER_TABLE[i].Write("DDF", (130 * multi));
+                                        Globals.CHARACTER_TABLE[i].Write("DMDF", (130 * multi));
+                                    } else {
+                                        Globals.CHARACTER_TABLE[i].Write("DDF", (130 * multi));
+                                        Globals.CHARACTER_TABLE[i].Write("DMDF", (130 * multi));
                                     }
-                                }
-                            } else if (Globals.PARTY_SLOT[i] == 6) { //Meru
-                                if (dragoonSpecialAttack == 6) {
-                                    Globals.CHARACTER_TABLE[i].Write("DAT", (495 * multi));
-                                } else {
-                                    Globals.CHARACTER_TABLE[i].Write("DAT", (330 * multi));
-                                }
 
-                                if (multi == 1) {
-                                    emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA9, 0);
-                                    emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xAB, 0);
-                                    Globals.CHARACTER_TABLE[i].Write("DDF", (180 * multi));
-                                    Globals.CHARACTER_TABLE[i].Write("DMDF", (180 * multi));
-                                } else {
-                                    Globals.CHARACTER_TABLE[i].Write("DDF", (180 * multi));
-                                    Globals.CHARACTER_TABLE[i].Write("DMDF", (180 * multi));
-                                }
+                                    if (soasSiphonSlot == i) { //Soa's Siphon Ring
+                                        multi *= 0.3;
+                                    }
 
-                                if (soasSiphonSlot == i) { //Soa's Siphon Ring
-                                    multi *= 0.3;
-                                }
-
-                                if (currentMP[i] != previousMP[i] && currentMP[i] < previousMP[i]) {
-                                    mp = previousMP[i] - currentMP[i];
-                                    if (mp == 10) {
-                                        if (multi == 1) {
-                                            emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA7, 0);
-                                            Globals.CHARACTER_TABLE[i].Write("DMAT", (255 * multi));
-                                        } else {
-                                            Globals.CHARACTER_TABLE[i].Write("DMAT", (255 * multi));
+                                    if (currentMP[i] != previousMP[i] && currentMP[i] < previousMP[i]) {
+                                        mp = previousMP[i] - currentMP[i];
+                                        if (mp == 20) {
+                                            Globals.CHARACTER_TABLE[i].Write("DMAT", (450 * multi));
+                                        } else if (mp == 30) {
+                                            Globals.CHARACTER_TABLE[i].Write("DMAT", (560 * multi));
+                                        } else if (mp == 80) {
+                                            Globals.CHARACTER_TABLE[i].Write("DMAT", (740 * multi));
                                         }
-                                    } else if (mp == 30) {
-                                        Globals.CHARACTER_TABLE[i].Write("DMAT", (264 * multi));
-                                    } else if (mp == 80) {
-                                        Globals.CHARACTER_TABLE[i].Write("DMAT", (350 * multi));
-                                    }
-
-                                    //Jeweled Hammer
-                                    if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 164) {
-                                        if (mp == 50) {
-                                            if (multi == 1) {
-                                                emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA7, 0);
-                                                Globals.CHARACTER_TABLE[i].Write("DMAT", (255 * multi));
-                                            } else {
-                                                Globals.CHARACTER_TABLE[i].Write("DMAT", (255 * multi));
-                                            }
-                                        } else if (mp == 100) {
-                                            if (Globals.CHARACTER_TABLE[i].Read("Spell_Cast") == 25) {
-                                                //trackchp
-                                                //rainbow breath
-                                            } else {
-                                                Globals.CHARACTER_TABLE[i].Write("DMAT", (350 * multi));
-                                            }
-                                        } else if (mp == 150) {
-                                            Globals.CHARACTER_TABLE[i].Write("DMAT", (525 * multi));
+                                        previousMP[i] = currentMP[i];
+                                    } else {
+                                        if (currentMP[i] > previousMP[i]) {
+                                            previousMP[i] = currentMP[i];
                                         }
-                                    }
-                                    previousMP[i] = currentMP[i];
-                                } else {
-                                    if (currentMP[i] > previousMP[i]) {
-                                        previousMP[i] = currentMP[i];
-                                    }
-                                }
-                            } else if (Globals.PARTY_SLOT[i] == 7) {
-                                if (dragoonSpecialAttack == 7) {
-                                    Globals.CHARACTER_TABLE[i].Write("DAT", (600 * multi));
-                                } else {
-                                    Globals.CHARACTER_TABLE[i].Write("DAT", (500 * multi));
-                                }
-
-                                if (multi == 1) {
-                                    emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA9, 0);
-                                    emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xAB, 0);
-                                    Globals.CHARACTER_TABLE[i].Write("DDF", (130 * multi));
-                                    Globals.CHARACTER_TABLE[i].Write("DMDF", (130 * multi));
-                                } else {
-                                    Globals.CHARACTER_TABLE[i].Write("DDF", (130 * multi));
-                                    Globals.CHARACTER_TABLE[i].Write("DMDF", (130 * multi));
-                                }
-
-                                if (soasSiphonSlot == i) { //Soa's Siphon Ring
-                                    multi *= 0.3;
-                                }
-
-                                if (currentMP[i] != previousMP[i] && currentMP[i] < previousMP[i]) {
-                                    mp = previousMP[i] - currentMP[i];
-                                    if (mp == 20) {
-                                        Globals.CHARACTER_TABLE[i].Write("DMAT", (450 * multi));
-                                    } else if (mp == 30) {
-                                        Globals.CHARACTER_TABLE[i].Write("DMAT", (560 * multi));
-                                    } else if (mp == 80) {
-                                        Globals.CHARACTER_TABLE[i].Write("DMAT", (740 * multi));
-                                    }
-                                    previousMP[i] = currentMP[i];
-                                } else {
-                                    if (currentMP[i] > previousMP[i]) {
-                                        previousMP[i] = currentMP[i];
                                     }
                                 }
                             }
@@ -5724,9 +8203,11 @@ namespace Dragoon_Modifier {
                             Globals.MONSTER_TABLE[i].Write("Element", eleBombOldElement[i]);
                             Globals.MONSTER_TABLE[i].Write("Display_Element", eleBombOldElement[i]);
                         }
+                        eleBombChange = false;
                         eleBombTurns = 0;
                         eleBombElement = 255;
                         eleBombSlot = 255;
+                        eleBombItemUsed = 255;
                     }
                 } else {
                     if (Globals.EXITING_BATTLE == 1) {
@@ -5891,13 +8372,13 @@ namespace Dragoon_Modifier {
                                 if (equippedAddition == 19) {
                                     spMulti = 65535 - 25 + 1;
                                 } else if (equippedAddition == 20) {
-                                    if (dmScripts.ContainsKey("btnAdditionChanges") && dmScripts["btnAdditionChanges"]) {
+                                    if (Globals.CheckDMScript("btnAdditionChanges")) {
                                         spMulti = 0;
                                     } else {
                                         spMulti = 65535 - 40 + 1;
                                     }
                                 } else if (equippedAddition == 21) {
-                                    if (dmScripts.ContainsKey("btnAdditionChanges") && dmScripts["btnAdditionChanges"]) {
+                                    if (Globals.CheckDMScript("btnAdditionChanges")) {
                                         spMulti = 65535 - 25 + 1;
                                     } else {
                                         spMulti = 65535 - 50 + 1;
@@ -5909,7 +8390,7 @@ namespace Dragoon_Modifier {
                                 } else if (equippedAddition == 20) {
                                     spMulti = 65535 - 40 + 1;
                                 } else if (equippedAddition == 21) {
-                                    if (dmScripts.ContainsKey("btnAdditionChanges") && dmScripts["btnAdditionChanges"]) {
+                                    if (Globals.CheckDMScript("btnAdditionChanges")) {
                                         spMulti = 65535 - 20 + 1;
                                     } else {
                                         spMulti = 65535 - 50 + 1;
@@ -6080,6 +8561,574 @@ namespace Dragoon_Modifier {
             }
         }
         #endregion
+
+        #region Enrage Mode
+        public void EnrageMode(int i) {
+            if ((Globals.CheckDMScript("btnEnrage") || CheckEnrageBoss()) && !ubUltimateEnrage) {
+                if ((Globals.MONSTER_TABLE[i].Read("HP") <= (Globals.MONSTER_TABLE[i].Read("Max_HP") / 2)) && enragedMode[i] == 0) {
+                    Globals.MONSTER_TABLE[i].Write("AT", Math.Round(originalMonsterStats[i, 1] * 1.1));
+                    Globals.MONSTER_TABLE[i].Write("MAT", Math.Round(originalMonsterStats[i, 2] * 1.1));
+                    Globals.MONSTER_TABLE[i].Write("DF", Math.Round(originalMonsterStats[i, 3] * 1.1));
+                    Globals.MONSTER_TABLE[i].Write("MDF", Math.Round(originalMonsterStats[i, 4] * 1.1));
+                    enragedMode[i] = 1;
+                } else if ((Globals.MONSTER_TABLE[i].Read("HP") <= (Globals.MONSTER_TABLE[i].Read("Max_HP") / 4)) && enragedMode[i] == 1) {
+                    Globals.MONSTER_TABLE[i].Write("AT", Math.Round(originalMonsterStats[i, 1] * 1.25));
+                    Globals.MONSTER_TABLE[i].Write("MAT", Math.Round(originalMonsterStats[i, 2] * 1.25));
+                    Globals.MONSTER_TABLE[i].Write("DF", Math.Round(originalMonsterStats[i, 3] * 1.25));
+                    Globals.MONSTER_TABLE[i].Write("MDF", Math.Round(originalMonsterStats[i, 4] * 1.25));
+                    enragedMode[i] = 2;
+                }
+            }
+        }
+
+        public bool CheckEnrageBoss() {
+            if (enrageBoss) {
+                if (Globals.ENCOUNTER_ID == 384 || Globals.ENCOUNTER_ID == 385 || Globals.ENCOUNTER_ID == 386 || Globals.ENCOUNTER_ID == 387 || Globals.ENCOUNTER_ID == 388 || Globals.ENCOUNTER_ID == 389 || Globals.ENCOUNTER_ID == 390 || Globals.ENCOUNTER_ID == 391 || Globals.ENCOUNTER_ID == 392 || Globals.ENCOUNTER_ID == 393 || Globals.ENCOUNTER_ID == 394 || Globals.ENCOUNTER_ID == 395 || Globals.ENCOUNTER_ID == 396 || Globals.ENCOUNTER_ID == 397 || Globals.ENCOUNTER_ID == 398 || Globals.ENCOUNTER_ID == 399 || Globals.ENCOUNTER_ID == 400 || Globals.ENCOUNTER_ID == 401 || Globals.ENCOUNTER_ID == 402 || Globals.ENCOUNTER_ID == 403 || Globals.ENCOUNTER_ID == 408 || Globals.ENCOUNTER_ID == 409 || Globals.ENCOUNTER_ID == 410 || Globals.ENCOUNTER_ID == 411 || Globals.ENCOUNTER_ID == 412 || Globals.ENCOUNTER_ID == 413 || Globals.ENCOUNTER_ID == 414 || Globals.ENCOUNTER_ID == 415 || Globals.ENCOUNTER_ID == 416 || Globals.ENCOUNTER_ID == 417 || Globals.ENCOUNTER_ID == 418 || Globals.ENCOUNTER_ID == 421 || Globals.ENCOUNTER_ID == 422 || Globals.ENCOUNTER_ID == 423 || Globals.ENCOUNTER_ID == 430 || Globals.ENCOUNTER_ID == 431 || Globals.ENCOUNTER_ID == 432 || Globals.ENCOUNTER_ID == 433 || Globals.ENCOUNTER_ID == 434 || Globals.ENCOUNTER_ID == 435 || Globals.ENCOUNTER_ID == 436 || Globals.ENCOUNTER_ID == 437 || Globals.ENCOUNTER_ID == 438 || Globals.ENCOUNTER_ID == 439 || Globals.ENCOUNTER_ID == 442 || Globals.ENCOUNTER_ID == 443 || Globals.ENCOUNTER_ID == 444 || Globals.ENCOUNTER_ID == 445 || Globals.ENCOUNTER_ID == 446 || Globals.ENCOUNTER_ID == 447 || Globals.ENCOUNTER_ID == 448 || Globals.ENCOUNTER_ID == 449 || Globals.ENCOUNTER_ID == 489) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+        #endregion
+
+        #region Battle Rows
+        public void BattleFormationRows() {
+            if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !battleRowsOnBattleEntry) {
+                this.Dispatcher.BeginInvoke(new Action(() => {
+                    for (int i = 0; i < 3; i++) {
+                        if (Globals.PARTY_SLOT[i] < 9) {
+                            int rowType = battleRow[i].SelectedIndex;
+                            int boostType = battleRowBoost[i].SelectedIndex;
+                            double attackBoost = 0, magicBoost = 0, defenseBoost = 0;
+
+                            if (rowType == 0) { //Stay
+                                if (boostType == 1) {
+                                    attackBoost = 1.1;
+                                    magicBoost = 1;
+                                    defenseBoost = 0.75;
+                                } else {
+                                    attackBoost = 1;
+                                    magicBoost = 1.1;
+                                    defenseBoost = 0.75;
+                                }
+                            } else if (rowType == 1) { //Front
+                                if (boostType == 0) {
+                                    attackBoost = 1.25;
+                                    magicBoost = 1.25;
+                                    defenseBoost = 0.5;
+                                } else if (boostType == 1) {
+                                    attackBoost = 1.5;
+                                    magicBoost = 1;
+                                    defenseBoost = 0.25;
+                                } else {
+                                    attackBoost = 1;
+                                    magicBoost = 1.5;
+                                    defenseBoost = 0.25;
+                                }
+                            } else if (rowType == 2) { //Back
+                                if (boostType == 0) {
+                                    attackBoost = 0.75;
+                                    magicBoost = 0.75;
+                                    defenseBoost = 1.25;
+                                } else if (boostType == 1) {
+                                    attackBoost = 1;
+                                    magicBoost = 0.5;
+                                    defenseBoost = 1.1;
+                                } else {
+                                    attackBoost = 0.5;
+                                    magicBoost = 1;
+                                    defenseBoost = 1.1;
+                                }
+                            }
+
+                            //if (Globals.PARTY_SLOT[i] != 2 && Globals.PARTY_SLOT[i] != 8)
+                            Globals.CHARACTER_TABLE[i].Write("AT", Math.Round(Globals.CHARACTER_TABLE[i].Read("AT") * attackBoost));
+                            Globals.CHARACTER_TABLE[i].Write("MAT", Math.Round(Globals.CHARACTER_TABLE[i].Read("MAT") * magicBoost));
+                            Globals.CHARACTER_TABLE[i].Write("DF", Math.Round(Globals.CHARACTER_TABLE[i].Read("DF") * defenseBoost));
+                            Globals.CHARACTER_TABLE[i].Write("MDF", Math.Round(Globals.CHARACTER_TABLE[i].Read("MDF") * defenseBoost));
+
+                            if (rowType == 1)
+                                Globals.CHARACTER_TABLE[i].Write("POS_FB", 5);
+                            else if (rowType == 2)
+                                Globals.CHARACTER_TABLE[i].Write("POS_FB", 13);
+                        }
+                    }
+                }), DispatcherPriority.ContextIdle);
+
+                battleRowsOnBattleEntry = true;
+            } else {
+                if (!Globals.IN_BATTLE && battleRowsOnBattleEntry) {
+                    battleRowsOnBattleEntry = false;
+                }
+            }
+        }
+        #endregion
+
+        #region Black Room
+        public void BlackRoomField() {
+            if ((Globals.MAP >= 5 && Globals.MAP <= 7) || (Globals.MAP >= 624 && Globals.MAP <= 625)) {
+                emulator.WriteByte(Constants.GetAddress("BATTLE_FIELD"), 96);
+            }
+        }
+
+        public void BlackRoomBattle() {
+            if ((Globals.MAP >= 5 && Globals.MAP <= 7) || (Globals.MAP >= 624 && Globals.MAP <= 625)) {
+                if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !blackRoomOnBattleEntry) {
+                    WipeRewards();
+                    for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
+                        Globals.MONSTER_TABLE[i].Write("HP", 65535);
+                        Globals.MONSTER_TABLE[i].Write("Max_HP", 65535);
+                        Globals.MONSTER_TABLE[i].Write("SPD", 0);
+                        Globals.MONSTER_TABLE[i].Write("AT", 0);
+                        Globals.MONSTER_TABLE[i].Write("MAT", 0);
+                        Globals.MONSTER_TABLE[i].Write("DF", 65535);
+                        Globals.MONSTER_TABLE[i].Write("MDF", 65535);
+                        Globals.MONSTER_TABLE[i].Write("Turn", 0);
+                    }
+                    blackRoomOnBattleEntry = true;
+                } else {
+                    if (!Globals.IN_BATTLE && blackRoomOnBattleEntry) {
+                        blackRoomOnBattleEntry = false;
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region Apply No Escape
+        public void ApplyNoEscape() {
+            if (Globals.CheckDMScript("btnBlackRoom")) {
+                if ((Globals.MAP >= 5 && Globals.MAP <= 7) || (Globals.MAP >= 624 && Globals.MAP <= 625)) { } else {
+                    for (int i = 0; i < 3; i++) {
+                        emulator.WriteByte(Constants.GetAddress("NO_ESCAPE") + ((Globals.MONSTER_SIZE + i) * 0x20), 8);
+                    }
+                }
+            } else {
+                for (int i = 0; i < 3; i++) {
+                    emulator.WriteByte(Constants.GetAddress("NO_ESCAPE") + ((Globals.MONSTER_SIZE + i) * 0x20), 8);
+                }
+            }
+        }
+        #endregion
+
+        #region Boss SP Loss
+        public void BossSPLoss() {
+            if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !bossSPLossOnBattleEntry) {
+                int bossSPLoss = 0;
+                if (Globals.ENCOUNTER_ID == 384) //Marsh Commander
+                    bossSPLoss = 500;
+                else if (Globals.ENCOUNTER_ID == 386) //Fruegel I
+                    bossSPLoss = 250;
+                else if (Globals.ENCOUNTER_ID == 414) //Urobolus
+                    bossSPLoss = 750;
+                else if (Globals.ENCOUNTER_ID == 388) //Kongol I
+                    bossSPLoss = 2000;
+                else if (Globals.ENCOUNTER_ID == 408) //Virage I
+                    bossSPLoss = 250;
+                else if (Globals.ENCOUNTER_ID == 415) //Fire Bird
+                    bossSPLoss = 1000;
+                else if (Globals.ENCOUNTER_ID == 393) //Greham + Ferybrand
+                    bossSPLoss = 1500;
+                else if (Globals.ENCOUNTER_ID == 412) //Drake the Bandit
+                    bossSPLoss = -3;
+                else if (Globals.ENCOUNTER_ID == 413) //Jiango
+                    bossSPLoss = 500;
+                else if (Globals.ENCOUNTER_ID == 387) //Fruegel II
+                    bossSPLoss = 1500;
+                else if (Globals.ENCOUNTER_ID == 390) //Dragoon Doel
+                    bossSPLoss = -4;
+                else if (Globals.ENCOUNTER_ID == 402) //Mappi + Craft Theif
+                    bossSPLoss = 1000;
+                else if (Globals.ENCOUNTER_ID == 409) //Virage II
+                    bossSPLoss = 1000;
+                else if (Globals.ENCOUNTER_ID == 403) //Gehrich + Mappi
+                    bossSPLoss = 2000;
+                else if (Globals.ENCOUNTER_ID == 396) //Lenus
+                    bossSPLoss = -2;
+                else if (Globals.ENCOUNTER_ID == 417) //Ghost Commander
+                    bossSPLoss = 1000;
+                else if (Globals.ENCOUNTER_ID == 397) //Lenus II
+                    bossSPLoss = -4;
+                else if (Globals.ENCOUNTER_ID == 410) //S Virage I
+                    bossSPLoss = 2000;
+                else if (Globals.ENCOUNTER_ID == 416) //Grand Jewel
+                    bossSPLoss = 1000;
+                else if (Globals.ENCOUNTER_ID == 394) //Divine Dragon
+                    bossSPLoss = -2;
+                else if (Globals.ENCOUNTER_ID == 392) //Lloyd
+                    bossSPLoss = -5;
+                else if (Globals.ENCOUNTER_ID == 423) //Polter Set
+                    bossSPLoss = 500;
+                else if (Globals.ENCOUNTER_ID == 432) //Last Kraken
+                    bossSPLoss = -1;
+                else if (Globals.ENCOUNTER_ID == 430) //Executioners
+                    bossSPLoss = 1000;
+                else if (Globals.ENCOUNTER_ID == 431) //Zackwell
+                    bossSPLoss = 1000;
+                else if (Globals.ENCOUNTER_ID == 433) //Imago
+                    bossSPLoss = 1000;
+
+                for (int i = 0; i < 9; i++) {
+                    int currentTotalSP = emulator.ReadShort(Constants.GetAddress("TOTAL_SP") + (i * 0x2C));
+                    int newSP = 0;
+                    if (bossSPLoss > 0)
+                        newSP = Math.Max(currentTotalSP - bossSPLoss, 0);
+                    else if (bossSPLoss == -1)
+                        newSP = (int) Math.Max(Math.Round(currentTotalSP / 1.2), 0);
+                    else if (bossSPLoss == -2)
+                        newSP = Math.Max(currentTotalSP / 2, 0);
+                    else if (bossSPLoss == -3)
+                        newSP = Math.Max(currentTotalSP / 2 - 500, 0);
+                    else if (bossSPLoss == -4)
+                        newSP = Math.Max(currentTotalSP / 4, 0);
+                    else if (bossSPLoss == -5)
+                        newSP = Math.Max(currentTotalSP / 4 - 500, 0);
+
+                    emulator.WriteShort(Constants.GetAddress("TOTAL_SP") + (i * 0x2C), (ushort) newSP);
+
+                    byte dragoonLevel = emulator.ReadByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C));
+
+                    if (i == 0 || i == 3) {
+                        if (newSP < 20000 && dragoonLevel >= 5)
+                            emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 4);
+                        if (newSP < 12000 && dragoonLevel >= 4)
+                            emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 4);
+                        if (newSP < 6000 && dragoonLevel >= 3)
+                            emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 4);
+                        if (newSP < 1200 && dragoonLevel >= 2)
+                            emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 4);
+                    } else if (i == 6 || i == 7) {
+                        if (newSP < 20000 && dragoonLevel >= 5)
+                            emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 4);
+                        if (newSP < 12000 && dragoonLevel >= 4)
+                            emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 4);
+                        if (newSP < 2000 && dragoonLevel >= 3)
+                            emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 4);
+                        if (newSP < 1200 && dragoonLevel >= 2)
+                            emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 4);
+                    } else {
+                        if (newSP < 20000 && dragoonLevel >= 5)
+                            emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 4);
+                        if (newSP < 12000 && dragoonLevel >= 4)
+                            emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 4);
+                        if (newSP < 6000 && dragoonLevel >= 3)
+                            emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 4);
+                        if (newSP < 1000 && dragoonLevel >= 2)
+                            emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 4);
+                    }
+                }
+
+                bossSPLossOnBattleEntry = true;
+            } else {
+                if (!Globals.IN_BATTLE && blackRoomOnBattleEntry) {
+                    blackRoomOnBattleEntry = false;
+                }
+            }
+        }
+        #endregion
+
+        #region * Turn Battle
+        public void EATB() {
+            this.Dispatcher.BeginInvoke(new Action(() => {
+                if (Globals.IN_BATTLE && Globals.STATS_CHANGED && Globals.CheckDMScript("btnEATB")) {
+                    if (!eatbOnBattleEntry)
+                        timePlayed = emulator.ReadInteger(Constants.GetAddress("TIME_PLAYED"));
+
+                    if (timePlayed + 60 < emulator.ReadInteger(Constants.GetAddress("TIME_PLAYED"))) {
+                        timePlayed = emulator.ReadInteger(Constants.GetAddress("TIME_PLAYED"));
+
+                        for (int i = 0; i < 3; i++) {
+                            if (Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[i].Read("HP") > 0) {
+                                if (cooldowns > 0) {
+                                    cooldowns -= 1;
+                                    extraTurnBattleC[i] += Globals.CHARACTER_TABLE[i].Read("SPD") / 2;
+                                } else {
+                                    extraTurnBattleC[i] += Globals.CHARACTER_TABLE[i].Read("SPD");
+                                }
+                                if (extraTurnBattleC[i] > 6000) {
+                                    extraTurnBattleC[i] = 6000;
+                                    //beep
+                                }
+                                progressCATB[i].Value = extraTurnBattleC[i];
+                            }
+                        }
+
+                        for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
+                            if (Globals.MONSTER_TABLE[i].Read("HP") > 0) {
+                                if (Globals.ENCOUNTER_ID == 390 && i == 1)
+                                    break;
+                                if (Globals.ENCOUNTER_ID == 433 && i == 1)
+                                    if (Globals.MONSTER_TABLE[0].Read("HP") > 0)
+                                        break;
+                                if (Globals.ENCOUNTER_ID == 433 && i == 2)
+                                    if (Globals.MONSTER_TABLE[1].Read("HP") > 0)
+                                        break;
+                                if (Globals.ENCOUNTER_ID == 433 && i >= 1)
+                                    if (Globals.MONSTER_TABLE[i - 1].Read("HP") > 0)
+                                        continue;
+
+                                extraTurnBattleM[i] += Globals.MONSTER_TABLE[i].Read("SPD");
+                                if (extraTurnBattleM[i] > 7000 + (1000 * i)) {
+                                    extraTurnBattleM[i] = 0;
+                                    emulator.WriteByte(Globals.MONS_ADDRESS[i] + 0x45, emulator.ReadByte(Globals.MONS_ADDRESS[i] + 0x45) + 1);
+                                }
+                                progressMATB[i].Value = extraTurnBattleM[i];
+
+                                if (Globals.ENCOUNTER_ID == 385 || Globals.ENCOUNTER_ID == 415 || Globals.ENCOUNTER_ID == 412 || Globals.ENCOUNTER_ID == 417 || Globals.ENCOUNTER_ID == 394 || Globals.ENCOUNTER_ID == 422 || Globals.ENCOUNTER_ID == 432 || Globals.ENCOUNTER_ID == 443)
+                                    break;
+                            }
+                        }
+                    }
+                    eatbOnBattleEntry = true;
+                } else {
+                    if (!Globals.IN_BATTLE && eatbOnBattleEntry) {
+                        eatbOnBattleEntry = false;
+                        for (int i = 0; i < 3; i++) {
+                            progressCATB[i].Value = 0;
+                            extraTurnBattleC[i] = 0;
+                        }
+                        for (int i = 0; i < 5; i++) {
+                            progressMATB[i].Value = 0;
+                            extraTurnBattleM[i] = 0;
+                        }
+                    }
+                }
+            }), DispatcherPriority.ContextIdle);
+        }
+
+        public void ExtraTurnBattle(ref int eatbTime, int slot) {
+            eatbTime = 0;
+            if (Globals.CheckDMScript("btnATB"))
+                cooldowns = 0;
+            else
+                cooldowns = cooldowns + 90;
+
+            if (emulator.ReadByte(Constants.GetAddress("DRAGOON_TURNS") + 0x4 * slot) > 0)
+                Globals.CHARACTER_TABLE[slot].Write("Action", 10);
+            else
+                Globals.CHARACTER_TABLE[slot].Write("Action", 8);
+        }
+
+        public void QTB() {
+            if (Globals.IN_BATTLE && Globals.STATS_CHANGED && Globals.CheckDMScript("btnQTB")) {
+                if (!qtbOnBattleEntry) {
+                    this.Dispatcher.BeginInvoke(new Action(() => {
+                        for (int i = 0; i < 3; i++)
+                            currentHP[i] = Globals.CHARACTER_TABLE[i].Read("HP");
+                        qtbTurns = 2;
+                        pgrQTB.Value = qtbTurns;
+                    }), DispatcherPriority.ContextIdle);
+                }
+
+                byte partyMembersAttacked = 0;
+                for (int i = 0; i < 3; i++) {
+                    if (Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[i].Read("HP") > 0) {
+                        if (currentHP[i] < Globals.CHARACTER_TABLE[i].Read("HP")) {
+                            partyMembersAttacked += 1;
+                            currentHP[i] = Globals.CHARACTER_TABLE[i].Read("HP");
+                        } else {
+                            if (uiCombo["cboQTB"] == Globals.PARTY_SLOT[i]) {
+                                byte healAmount = 10;
+                                if (Globals.CHARACTER_TABLE[i].Read("Accessory") == 125) {
+                                    healAmount = 20;
+                                }
+                                if (Globals.CHARACTER_TABLE[i].Read("HP") + 1 <= (currentHP[i] + Math.Round(Globals.CHARACTER_TABLE[i].Read("Max_HP") / healAmount) + 2)) {
+                                    AddQTB();
+                                    currentHP[i] = Globals.CHARACTER_TABLE[i].Read("HP");
+                                }
+                            } else {
+                                currentHP[i] = Globals.CHARACTER_TABLE[i].Read("HP");
+                            }
+                        }
+
+                        if (uiCombo["cboQTB"] == Globals.PARTY_SLOT[i]) {
+                            if (Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10) {
+                                if (!qtbLeaderTurn)
+                                    AddQTB();
+                                qtbLeaderTurn = true;
+                            } else {
+                                qtbLeaderTurn = false;
+                            }
+                        }
+                    }
+                }
+
+                if (partyMembersAttacked > 1) {
+                    if (!qtbUsedDuringEnemyTurn) {
+                        AddQTB();
+                        AddQTB();
+                    } else {
+                        AddQTB();
+                        qtbUsedDuringEnemyTurn = false;
+                    }
+                } else if (partyMembersAttacked == 1) {
+                    if (!qtbUsedDuringEnemyTurn)
+                        AddQTB();
+                    else
+                        qtbUsedDuringEnemyTurn = false;
+                }
+
+                qtbOnBattleEntry = true;
+            } else {
+                if (!Globals.IN_BATTLE && qtbOnBattleEntry) {
+                    qtbOnBattleEntry = false;
+                    qtbTurns = 0;
+                    pgrQTB.Value = qtbTurns;
+                    for (int i = 0; i < 3; i++) {
+                        currentHP[i] = 0;
+                    }
+                }
+            }
+        }
+
+        public void AddQTB() {
+            this.Dispatcher.BeginInvoke(new Action(() => {
+                qtbTurns += 1;
+                if (qtbTurns > pgrQTB.Maximum)
+                    qtbTurns = (byte) pgrQTB.Maximum;
+                pgrQTB.Value = qtbTurns;
+            }), DispatcherPriority.ContextIdle);
+        }
+
+        public void SubQTB(int slot) {
+            this.Dispatcher.BeginInvoke(new Action(() => {
+                qtbTurns -= 1;
+                pgrQTB.Value = qtbTurns;
+
+                if (emulator.ReadByte(Constants.GetAddress("DRAGOON_TURNS") + 0x4 * slot) > 0)
+                    Globals.CHARACTER_TABLE[slot].Write("Action", 10);
+                else
+                    Globals.CHARACTER_TABLE[slot].Write("Action", 8);
+
+                bool playerTurn = false;
+                for (int i = 0; i < 3; i++) {
+                    if (Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[i].Read("HP")) {
+                        if (Globals.CHARACTER_TABLE[i].Read("Action") == 24 || Globals.CHARACTER_TABLE[i].Read("Action") == 26 | Globals.CHARACTER_TABLE[i].Read("Action") == 136) {
+                            playerTurn = true;
+                        }
+                    }
+                }
+
+                qtbUsedDuringEnemyTurn = playerTurn ? false : true;
+                AddEnemyQTB();
+            }), DispatcherPriority.ContextIdle);
+        }
+
+        public void AddEnemyQTB() {
+            int enemiesAlive = 0;
+            int turnPoints = 0;
+            for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
+                if (Globals.MONSTER_TABLE[i].Read("HP") > 0)
+                    enemiesAlive++;
+            }
+            turnPoints = enemiesAlive == 1 ? 180 : enemiesAlive == 2 ? 90 : enemiesAlive == 3 ? 70 : enemiesAlive == 4 ? 60 : 50;
+
+            if (Globals.ENCOUNTER_ID == 390 || Globals.ENCOUNTER_ID == 433 || Globals.ENCOUNTER_ID == 385 || Globals.ENCOUNTER_ID == 415 || Globals.ENCOUNTER_ID == 413 || Globals.ENCOUNTER_ID == 417 || Globals.ENCOUNTER_ID == 394 || Globals.ENCOUNTER_ID == 422 || Globals.ENCOUNTER_ID == 432 || Globals.ENCOUNTER_ID == 443)
+                turnPoints = 180;
+
+            for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
+                if (Globals.MONSTER_TABLE[i].Read("HP") > 0) {
+                    if (Globals.ENCOUNTER_ID == 390)
+                        if (i == 0)
+                            continue;
+                    if (Globals.ENCOUNTER_ID == 433 && i >= 1)
+                        if (Globals.MONSTER_TABLE[i - 1].Read("HP") > 0)
+                            continue;
+
+                    Globals.MONSTER_TABLE[i].Write("Turn", Globals.MONSTER_TABLE[i].Read("Turn") + turnPoints);
+
+                    if (Globals.ENCOUNTER_ID == 385 || Globals.ENCOUNTER_ID == 415 || Globals.ENCOUNTER_ID == 413 || Globals.ENCOUNTER_ID == 417 || Globals.ENCOUNTER_ID == 394 || Globals.ENCOUNTER_ID == 422 || Globals.ENCOUNTER_ID == 432 || Globals.ENCOUNTER_ID == 443)
+                        break;
+                }
+            }
+        }
+
+        public void ATB() {
+            if (Globals.IN_BATTLE && Globals.STATS_CHANGED && Globals.CheckDMScript("btnQTB")) {
+                if (!atbOnBattleEntry) {
+                    for (int i = 0; i < 3; i++) {
+                        if (Globals.PARTY_SLOT[i] < 9) {
+                            currentHP[i] = Globals.CHARACTER_TABLE[i].Read("HP");
+                            playerSpeed[i] = Globals.CHARACTER_TABLE[i].Read("SPD");
+                            Globals.CHARACTER_TABLE[i].Write("SPD", 0);
+                            Globals.CHARACTER_TABLE[i].Write("Turn", 0);
+                        }
+                    }
+                }
+
+                bool[] partyMemberAttacked = new bool[3];
+                int partyMembersAttacked = 0;
+                bool partyTakingAction = false;
+
+                for (int i = 0; i < 3; i++) {
+                    if (Globals.PARTY_SLOT[i] < 9) {
+                        byte action = Globals.CHARACTER_TABLE[i].Read("Action");
+                        if (action == 8 || action == 10 || action == 24 || action == 26 || action == 136 || action == 138)
+                            partyTakingAction = true;
+                    }
+                }
+
+                for (int i = 0; i < 3; i++) {
+                    if (Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[i].Read("HP") > 0) {
+                        partyMemberAttacked[i] = false;
+                        Globals.CHARACTER_TABLE[i].Write("SPD", 0);
+                        Globals.CHARACTER_TABLE[i].Write("Turn", 0);
+                        if (currentHP[i] < Globals.CHARACTER_TABLE[i].Read("HP")) {
+                            partyMemberAttacked[i] = true;
+                            partyMembersAttacked += 1;
+                        }
+                        currentHP[i] = Globals.CHARACTER_TABLE[i].Read("HP");
+                    }
+                }
+
+                this.Dispatcher.BeginInvoke(new Action(() => {
+                    for (int i = 0; i < 3; i++) {
+                        if (Globals.PARTY_SLOT[i] < 9 && partyMemberAttacked[i]) {
+                            extraTurnBattleC[i] += partyMembersAttacked == 1 ? 4000 : partyMembersAttacked == 2 ? 3250 : 2500;
+                            if (extraTurnBattleC[i] > 6000) {
+                                extraTurnBattleC[i] = 6000;
+                                //beep
+                            }
+                            progressCATB[i].Value = extraTurnBattleC[i];
+                        }
+                    }
+
+                    if (partyTakingAction) {
+                        for (int i = 0; i < 3; i++) {
+                            if (Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[i].Read("HP") > 0) {
+                                extraTurnBattleC[i] += playerSpeed[i] * 3;
+                                if (extraTurnBattleC[i] > 6000) {
+                                    extraTurnBattleC[i] = 6000;
+                                    //beep
+                                }
+                                progressCATB[i].Value = extraTurnBattleC[i];
+                            }
+                        }
+                    }
+                }), DispatcherPriority.ContextIdle);
+
+                atbOnBattleEntry = true;
+            } else {
+                if (!Globals.IN_BATTLE && atbOnBattleEntry) {
+                    atbOnBattleEntry = false;
+                }
+            }
+        }
+        #endregion
+
+        #region Extras
+        public void WipeRewards() {
+            for (int i = 0; i < 5; i++) {
+                emulator.WriteShort(Constants.GetAddress("MONSTER_REWARDS") + Constants.OFFSET + i * 0x1A8, 0);
+                emulator.WriteShort(Constants.GetAddress("MONSTER_REWARDS") + Constants.OFFSET + 0x2 + i * 0x1A8, 0);
+                emulator.WriteByte(Constants.GetAddress("MONSTER_REWARDS") + Constants.OFFSET + 0x4 + i * 0x1A8, 0);
+                emulator.WriteByte(Constants.GetAddress("MONSTER_REWARDS") + Constants.OFFSET + 0x5 + i * 0x1A8, 0);
+            }
+        }
+        #endregion
         #endregion
         #endregion
 
@@ -6104,7 +9153,7 @@ namespace Dragoon_Modifier {
 
         private void miAttach_Click(object sender, RoutedEventArgs e) {
             if (!Constants.RUN) {
-                int processID = emulator.getProcIDFromName(Constants.EMULATOR_NAME);
+                int processID = emulator.GetProcIdFromName(Constants.EMULATOR_NAME);
 
                 if (processID > 0) {
                     Constants.RUN = true;
@@ -6129,105 +9178,168 @@ namespace Dragoon_Modifier {
                 }
 
                 Constants.EMULATOR = (byte) miEmulator.Items.IndexOf((MenuItem) sender);
-                SetupEmulator();
+                SetupEmulator(false);
             } else {
+                ((MenuItem) sender).IsChecked = false;
                 Constants.WriteOutput("You can only change emulators outside of battle.");
             }
         }
 
-        public void SetupEmulator() {
+        public void SetupEmulator(bool onOpen) {
+            string oldEmulator = Constants.EMULATOR_NAME;
             if (Constants.EMULATOR == 8) {
                 Constants.EMULATOR_NAME = "RetroArch";
             } else if (Constants.EMULATOR == 9) {
                 Constants.EMULATOR_NAME = "pcsx2";
+            } else if (Constants.EMULATOR == 10) {
+                Constants.EMULATOR_NAME = "Other";
             } else {
                 Constants.EMULATOR_NAME = "ePSXe";
             }
 
-            if (!this.IsLoaded) {
-                Constants.RUN = false;
-                Thread.Sleep(3000);
+            if (!onOpen && (Constants.EMULATOR_NAME != oldEmulator || Constants.EMULATOR_NAME.Equals("Other"))) {
+                MessageBox.Show("Dragoon Modifier needs to be shut down to switch emulators.");
+                if (Constants.EMULATOR_NAME.Equals("Other")) {
+                    OpenFileDialog ofg = new OpenFileDialog();
+                    ofg.Title = "Select Emulator";
+                    ofg.Filter = "Emulator|*.exe";
+                    if (ofg.ShowDialog() == true) {
+                        Constants.EMULATOR_NAME = System.IO.Path.GetFileNameWithoutExtension(ofg.FileName);
+                    } else {
+                        Constants.EMULATOR = 10;
+                    }
+                }
+                System.Windows.Application.Current.Shutdown();
             } else {
-                CloseEmulator();
-            }
+                if (!this.IsLoaded) {
+                    Constants.RUN = false;
+                    Thread.Sleep(3000);
+                }
 
-            switch (Constants.EMULATOR) {
-                case 0: //ePSXe 1.6.0
-                    Constants.OFFSET = 0x5B6E40;
-                    break;
-                case 1: //ePSXe 1.7.0
-                    Constants.OFFSET = 0x94C020;
-                    break;
-                case 2: //ePSXe 1.8.0
-                    Constants.OFFSET = 0xA52EA0;
-                    break;
-                case 3: //ePSXe 1.9.0
-                    Constants.OFFSET = 0xA579A0;
-                    break;
-                case 4: //ePSXe 1.9.25
-                    Constants.OFFSET = 0xA8B6A0;
-                    break;
-                case 5: //ePSXe 2.0
-                case 6: //ePSXe 2.0.2
-                case 7: //ePSXe 2.0.5
-                    try {
-                        Process emulator = null;
-                        foreach (Process p in Process.GetProcessesByName("ePSXe")) {
-                            emulator = p;
-                        }
-                        ProcessModule emMod = emulator.MainModule;
-
-                        if (Constants.EMULATOR == 5) {
-                            Constants.OFFSET = (int) (emMod.BaseAddress + 0x81A020);
-                        } else if (Constants.EMULATOR == 6) {
-                            Constants.OFFSET = (int) (emMod.BaseAddress + 0x825140);
-                        } else if (Constants.EMULATOR == 7) {
-                            Constants.OFFSET = (int) (emMod.BaseAddress + 0xA82020);
-                        }
-
-                    } catch (Exception ex) {
-                        Constants.WriteOutput("Address calculation failed. Please open ePSXe.");
-                        Constants.RUN = false;
-                    }
-                    break;
-                case 8: //RetroArch Beetle PSX HW
-                    try {
-                        miAttach_Click(null, null);
-                        Process em = null;
-                        ProcessModule dll = null;
-                        foreach (Process p in Process.GetProcessesByName("retroarch")) {
-                            em = p;
-                        }
-                        foreach (ProcessModule pm in em.Modules) {
-                            if (pm.ModuleName == "mednafen_psx_hw_libretro.dll") {
-                                dll = pm;
+                switch (Constants.EMULATOR) {
+                    case 0: //ePSXe 1.6.0
+                        Constants.OFFSET = 0x5B6E40;
+                        break;
+                    case 1: //ePSXe 1.7.0
+                        Constants.OFFSET = 0x94C020;
+                        break;
+                    case 2: //ePSXe 1.8.0
+                        Constants.OFFSET = 0xA52EA0;
+                        break;
+                    case 3: //ePSXe 1.9.0
+                        Constants.OFFSET = 0xA579A0;
+                        break;
+                    case 4: //ePSXe 1.9.25
+                        Constants.OFFSET = 0xA8B6A0;
+                        break;
+                    case 5: //ePSXe 2.0
+                    case 6: //ePSXe 2.0.2
+                    case 7: //ePSXe 2.0.5
+                        try {
+                            Process emulator = null;
+                            foreach (Process p in Process.GetProcessesByName("ePSXe")) {
+                                emulator = p;
                             }
-                        }
-                        var scan = emulator.AoBScan((long) (dll.BaseAddress), (long) (dll.BaseAddress + 0xCFFFFF), "82 E3 04 00 00 31 05 00 36 81 05 00 30 D4 05 00", true, true);
-                        scan.Wait();
-                        var results = scan.Result;
-                        long offset = 0;
-                        foreach (var x in results)
-                            offset = x;
-                        Constants.OFFSET = offset - 0x1136C8;
-                        if (Constants.OFFSET <= 0) {
-                            throw new Exception();
-                        }
-                    } catch (Exception ex) {
-                        Constants.WriteOutput("Address calculation failed. Please open retroarch with Beetle PSX HW at the Load Game screen before loading a save.");
-                        Constants.RUN = false;
-                    }
-                    break;
-                case 9: //PCSX2
-                    miAttach_Click(null, null);
-                    Constants.OFFSET = 0x24000000;
-                    break;
-            }
+                            ProcessModule emMod = emulator.MainModule;
 
-            if (Constants.EMULATOR <= 7) {
-                miAttach_Click(null, null);
+                            if (Constants.EMULATOR == 5) {
+                                Constants.OFFSET = (int) (emMod.BaseAddress + 0x81A020);
+                            } else if (Constants.EMULATOR == 6) {
+                                Constants.OFFSET = (int) (emMod.BaseAddress + 0x825140);
+                            } else if (Constants.EMULATOR == 7) {
+                                Constants.OFFSET = (int) (emMod.BaseAddress + 0xA82020);
+                            }
+
+                        } catch (Exception ex) {
+                            Constants.WriteOutput("Address calculation failed. Please open ePSXe.");
+                            Constants.RUN = false;
+                        }
+                        break;
+                    case 8: //RetroArch Beetle PSX HW
+                        try {
+                            miAttach_Click(null, null);
+                            Process em = null;
+                            //ProcessModule dll = null;
+                            foreach (Process p in Process.GetProcessesByName("retroarch")) {
+                                em = p;
+                            }
+                            /*foreach (ProcessModule pm in em.Modules) {
+                                if (pm.ModuleName == "mednafen_psx_hw_libretro.dll") {
+                                    dll = pm;
+                                }
+                            }*/
+
+                            for (int i = 0; i < 16; i++) {
+                                Constants.OFFSET = 0;
+                                var scan = emulator.AoBScan(0x8000000 * i, i == 15 ? 0x7FFFFFFF : (0x8000000 * (i + 1)), "50 53 2D 58 20 45 58 45");
+                                scan.Wait();
+                                var results = scan.Result;
+                                long offset = 0;
+                                foreach (var x in results) {
+                                    offset = x;
+                                    Constants.OFFSET = offset - 0xB070;
+                                }
+
+                                Constants.WriteDebug("[RetroArch] " + Convert.ToString(Constants.OFFSET, 16).ToUpper());
+
+                                if (Constants.OFFSET > 0)
+                                    break;
+                            }
+                            if (Constants.OFFSET <= 0) {
+                                Constants.WritePLog("Failed to attach to RetroArch.");
+                                throw new Exception();
+                            }
+                        } catch (Exception ex) {
+                            Constants.WriteOutput("Address calculation failed. Please open retroarch with Beetle PSX HW at the Load Game screen before loading a save.");
+                            Constants.RUN = false;
+                        }
+                        break;
+                    case 9: //PCSX2
+                        miAttach_Click(null, null);
+                        Constants.OFFSET = 0x24000000;
+                        break;
+                    case 10:
+                        try {
+                            Constants.EMULATOR_NAME = Constants.KEY.GetValue("Other Emulator").ToString();
+                            miAttach_Click(null, null);
+                            Process em = null;
+                            foreach (Process p in Process.GetProcessesByName(Constants.EMULATOR_NAME)) {
+                                em = p;
+                            }
+
+                            for (int i = 0; i < 16; i++) {
+                                Constants.OFFSET = 0;
+                                var scan = emulator.AoBScan(0x8000000 * i, i == 15 ? 0x7FFFFFFF : (0x8000000 * (i + 1)), "50 53 2D 58 20 45 58 45");
+                                scan.Wait();
+                                var results = scan.Result;
+                                long offset = 0;
+                                foreach (var x in results) {
+                                    offset = x;
+                                    Constants.OFFSET = offset - 0xB070;
+                                }
+
+                                Constants.WriteDebug("[" + Constants.EMULATOR_NAME + "] " + Convert.ToString(Constants.OFFSET, 16).ToUpper());
+
+                                if (Constants.OFFSET > 0)
+                                    break;
+                            }
+                            if (Constants.OFFSET <= 0) {
+                                Constants.WritePLog("Failed to attach to " + Constants.EMULATOR_NAME + ".");
+                                throw new Exception();
+                            }
+                        } catch (Exception ex) {
+                            Constants.WriteOutput("Address calculation failed. Please open " + Constants.EMULATOR_NAME + ".");
+                            Constants.RUN = false;
+                        }
+                        break;
+                }
+
+                if (Constants.EMULATOR <= 7) {
+                    miAttach_Click(null, null);
+                }
+                LoadMaxHPTable(true);
+                Constants.ProgramInfo();
             }
-            Constants.ProgramInfo();
         }
 
         public void SetupScripts() {
@@ -6469,6 +9581,11 @@ namespace Dragoon_Modifier {
             miOpenPreset.IsChecked = miOpenPreset.IsChecked ? false : true;
         }
 
+        private void miPresetHotkeys_Click(object sender, RoutedEventArgs e) {
+            miPresetHotkeys.IsChecked = miPresetHotkeys.IsChecked ? false : true;
+            presetHotkeys = miPresetHotkeys.IsChecked;
+        }
+
         private void miModOptions_Click(object sender, RoutedEventArgs e) {
             if (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) {
                 Constants.WriteOutput("You can't change Mod Options while using a preset.");
@@ -6536,17 +9653,17 @@ namespace Dragoon_Modifier {
                 openModWindow.AddTextBlock("Please select the mods you want to turn on or off.");
                 openModWindow.ShowDialog();
 
-                Globals.MONSTER_CHANGE = (bool)monster.IsChecked;
-                Globals.DROP_CHANGE = (bool)drop.IsChecked;
-                Globals.ITEM_CHANGE = (bool)item.IsChecked;
-                Globals.CHARACTER_CHANGE = (bool)character.IsChecked;
-                Globals.ADDITION_CHANGE = (bool)addition.IsChecked;
-                Globals.DRAGOON_CHANGE = (bool)dragoon.IsChecked;
-                Globals.DRAGOON_ADDITION_CHANGE = (bool)dragoonAddition.IsChecked;
-                Globals.SHOP_CHANGE = (bool)shop.IsChecked;
+                Globals.MONSTER_CHANGE = (bool) monster.IsChecked;
+                Globals.DROP_CHANGE = (bool) drop.IsChecked;
+                Globals.ITEM_CHANGE = (bool) item.IsChecked;
+                Globals.CHARACTER_CHANGE = (bool) character.IsChecked;
+                Globals.ADDITION_CHANGE = (bool) addition.IsChecked;
+                Globals.DRAGOON_CHANGE = (bool) dragoon.IsChecked;
+                Globals.DRAGOON_ADDITION_CHANGE = (bool) dragoonAddition.IsChecked;
+                Globals.SHOP_CHANGE = (bool) shop.IsChecked;
 
-                if (Globals.MOD != (string)mod.SelectedValue) {
-                    Globals.MOD = (string)mod.SelectedValue;
+                if (Globals.MOD != (string) mod.SelectedValue) {
+                    Globals.MOD = (string) mod.SelectedValue;
                     Globals.DICTIONARY = new LoDDict();
                     Constants.WriteOutput("Changing Mod");
                 }
@@ -6593,36 +9710,79 @@ namespace Dragoon_Modifier {
         #region UI
         public void SwitchButton(object sender, EventArgs e) {
             Button btn = (Button) sender;
-            if (!dmScripts.ContainsKey(btn.Name)) {
-                dmScripts.Add(btn.Name, true);
+            if (!Globals.dmScripts.ContainsKey(btn.Name)) {
+                Globals.dmScripts.Add(btn.Name, true);
             } else {
-                dmScripts[btn.Name] = dmScripts[btn.Name] ? false : true;
+                Globals.dmScripts[btn.Name] = Globals.dmScripts[btn.Name] ? false : true;
             }
 
-            if (btn.Name.Equals("btnAddPartyMembersOn")) {
-                alwaysAddSoloPartyMembers = dmScripts[btn.Name] ? true : false;
-            }
+            if (btn.Name.Equals("btnAddPartyMembersOn"))
+                alwaysAddSoloPartyMembers = Globals.dmScripts[btn.Name] ? true : false;
 
-            if (btn.Name.Equals("btnKillBGM")) {
+            if (btn.Name.Equals("btnKillBGM"))
                 SetKillBGMState();
+
+            if (btn.Name.Equals("btnUltimateBoss"))
+                UltimateBossFieldSet();
+
+            if (btn.Name.Equals("btnEarlyAdditions") && !Globals.dmScripts[btn.Name])
+                TurnOffEarlyAdditions();
+
+            if (btn.Name.Equals("btnReader")) {
+                if (!readerWindow.IsLoaded) {
+                    readerWindow = new ReaderWindow();
+                    LoadReaderKey();
+                    readerWindow.Show();
+                } else {
+                    if (readerWindow.IsOpen) {
+                        readerWindow.Focus();
+                        return;
+                    }
+                }
             }
 
-            if (btn.Name.Equals("btnUltimateBoss")) {
-                UltimateBossFieldSet();
+            if (btn.Name.Equals("btnSoloMode")) {
+                Globals.dmScripts["btnDuoMode"] = false;
+                TurnOnOffButton(ref btnDuoMode);
+            }
+
+            if (btn.Name.Equals("btnDuoMode")) {
+                Globals.dmScripts["btnSoloMode"] = false;
+                TurnOnOffButton(ref btnSoloMode);
+            }
+
+            if (btn.Name.Equals("btnEATB")) {
+                Globals.dmScripts["btnQTB"] = false;
+                Globals.dmScripts["btnATB"] = false;
+                TurnOnOffButton(ref btnQTB);
+                TurnOnOffButton(ref btnATB);
+            }
+
+            if (btn.Name.Equals("btnQTB")) {
+                Globals.dmScripts["btnATB"] = false;
+                Globals.dmScripts["btnEATB"] = false;
+                TurnOnOffButton(ref btnATB);
+                TurnOnOffButton(ref btnEATB);
+            }
+
+            if (btn.Name.Equals("btnATB")) {
+                Globals.dmScripts["btnQTB"] = false;
+                Globals.dmScripts["btnEATB"] = false;
+                TurnOnOffButton(ref btnQTB);
+                TurnOnOffButton(ref btnEATB);
             }
 
             if (!btn.Name.Equals("btnNoDart")) {
                 TurnOnOffButton(ref btn);
             } else {
                 Globals.NO_DART = null;
-                Globals.HASCHEL = 0;
                 emulator.WriteByte(Constants.GetAddress("PARTY_SLOT"), 0);
                 btn.Background = new SolidColorBrush(Color.FromArgb(255, 255, 168, 168));
             }
         }
 
         public void TurnOnOffButton(ref Button sender) {
-            if (!dmScripts[sender.Name]) {
+            if (!Globals.dmScripts[sender.Name]) {
                 sender.Background = new SolidColorBrush(Color.FromArgb(255, 255, 168, 168));
             } else {
                 sender.Background = new SolidColorBrush(Color.FromArgb(255, 168, 211, 255));
@@ -6637,6 +9797,28 @@ namespace Dragoon_Modifier {
                 SwitchSoloCharacter();
             } else if (btn.Name.Equals("btnElementArrow")) {
                 ChangeElementArrow();
+            } else if (btn.Name.Equals("btnReaderConfig")) {
+                ReaderModeConfig();
+            } else if (btn.Name.Equals("btnReaderAdd")) {
+                ReaderModeAdd();
+            } else if (btn.Name.Equals("btnReaderChange")) {
+                ReaderModeChange();
+            } else if (btn.Name.Equals("btnReaderDelete")) {
+                ReaderModeDelete();
+            } else if (btn.Name.Equals("btnReaderSave")) {
+                ReaderModeSave();
+            } else if (btn.Name.Equals("btnReaderLoad")) {
+                ReaderModeLoad();
+            } else if (btn.Name.Equals("btnReaderReset")) {
+                ReaderModeReset();
+            } else if (btn.Name.Equals("btnSwitchEXP")) {
+                SwitchEXP();
+            } else if (btn.Name.Equals("btnHeroTicketShop")) {
+                HeroTicketShop();
+            } else if (btn.Name.Equals("btnHeroItemShop")) {
+                HeroItemShop();
+            } else if (btn.Name.Equals("btnUltimateShop")) {
+                UltimateItemShop();
             }
         }
 
@@ -6677,8 +9859,8 @@ namespace Dragoon_Modifier {
                 Globals.ITEM_CHANGE = true;
                 Globals.CHARACTER_CHANGE = false;
                 Globals.ADDITION_CHANGE = true;
-                Globals.DRAGOON_CHANGE = true;
-                Globals.DRAGOON_ADDITION_CHANGE = true;
+                Globals.DRAGOON_CHANGE = false;
+                Globals.DRAGOON_ADDITION_CHANGE = false;
                 Globals.SHOP_CHANGE = true;
             } else if (btn == btnHell) {
                 btn.Background = new SolidColorBrush(Color.FromArgb(255, 168, 211, 255));
@@ -6691,9 +9873,12 @@ namespace Dragoon_Modifier {
                 Globals.ITEM_CHANGE = true;
                 Globals.CHARACTER_CHANGE = false;
                 Globals.ADDITION_CHANGE = true;
-                Globals.DRAGOON_CHANGE = true;
-                Globals.DRAGOON_ADDITION_CHANGE = true;
+                Globals.DRAGOON_CHANGE = false;
+                Globals.DRAGOON_ADDITION_CHANGE = false;
                 Globals.SHOP_CHANGE = true;
+            } else {
+                enrageBoss = enrageBoss ? false : true;
+                btn.Background = enrageBoss ? (new SolidColorBrush(Color.FromArgb(255, 168, 211, 255))) : (new SolidColorBrush(Color.FromArgb(0, 0, 0, 0)));
             }
 
             Globals.DICTIONARY = new LoDDict();
@@ -6719,11 +9904,894 @@ namespace Dragoon_Modifier {
             }
         }
 
+        #region Reader Window
+        //TODO: This can be cleaned up a lot..
+        public void ReaderModeConfig() {
+            InputWindow readerConfigWindow = new InputWindow("Reader Window Config");
+            TextBox width = new TextBox();
+            TextBox height = new TextBox();
+            CheckBox write = new CheckBox();
+            CheckBox antiAlias = new CheckBox();
+            Button openFolder = new Button();
+            Xceed.Wpf.Toolkit.ColorPicker background = new Xceed.Wpf.Toolkit.ColorPicker();
+
+            width.Text = readerWindow.Width.ToString();
+            height.Text = readerWindow.Height.ToString();
+            write.IsChecked = readerWindow.GetWriteText();
+            antiAlias.IsChecked = readerWindow.GetAliasMode();
+            openFolder.Content = readerWindow.GetWriteLocation();
+            SolidColorBrush bgBrush = ((SolidColorBrush) readerWindow.Background);
+            background.SelectedColor = Color.FromArgb((byte) readerWindow.Background.Opacity, bgBrush.Color.R, bgBrush.Color.G, bgBrush.Color.B);
+
+            openFolder.Click += new RoutedEventHandler(delegate (Object o, RoutedEventArgs b) {
+                Constants.WritePLogOutput("Reader Mode writes to the disk every 2 seconds. Best to use a RAMDISK.");
+                System.Windows.Forms.FolderBrowserDialog folder = new System.Windows.Forms.FolderBrowserDialog();
+                System.Windows.Forms.DialogResult result = folder.ShowDialog();
+                if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(folder.SelectedPath)) {
+                    readerWindow.SetWriteLocation(folder.SelectedPath);
+                    openFolder.Content = folder.SelectedPath;
+                }
+            });
+
+            readerConfigWindow.AddObject(background);
+            readerConfigWindow.AddTextBlock("Background");
+            readerConfigWindow.AddObject(openFolder);
+            readerConfigWindow.AddTextBlock("Write Text Folder");
+            readerConfigWindow.AddObject(write);
+            readerConfigWindow.AddTextBlock("Write Text?");
+            readerConfigWindow.AddObject(antiAlias);
+            readerConfigWindow.AddTextBlock("Anti Alias?");
+            readerConfigWindow.AddObject(height);
+            readerConfigWindow.AddTextBlock("Height");
+            readerConfigWindow.AddObject(width);
+            readerConfigWindow.AddTextBlock("Width");
+            readerConfigWindow.ShowDialog();
+
+            readerWindow.Width = Double.Parse(width.Text);
+            readerWindow.Height = Double.Parse(height.Text);
+            readerWindow.WriteText((bool) write.IsChecked);
+            readerWindow.SetAntiAlias((bool) antiAlias.IsChecked);
+            readerWindow.SetWriteLocation(openFolder.Content.ToString());
+            readerWindow.Background = new SolidColorBrush((Color) background.SelectedColor);
+
+            SaveReaderKey();
+        }
+
+        public void ReaderModeAdd() {
+            InputWindow readerAddConfigWindow = new InputWindow("Reader Window Add Config");
+            ComboBox readerComponents = new ComboBox();
+
+            readerComponents.Items.Add("Label (Just Text)");
+            readerComponents.Items.Add("Battle Label (Reads and updates battle values)");
+            readerComponents.Items.Add("Progress Bar (Battle values with min and maxs)");
+            readerComponents.Items.Add("Radial Progress Bar (Battle values with min and maxs)");
+            readerComponents.SelectedIndex = 0;
+
+            readerAddConfigWindow.AddObject(readerComponents);
+            readerAddConfigWindow.AddTextBlock("Which do you want to add?");
+
+            readerAddConfigWindow.ShowDialog();
+
+            if (readerComponents.SelectedIndex == 0) {
+                InputWindow readerAddWindow = new InputWindow("Reader Window Add Label");
+                Grid grid = new Grid();
+                Label lbl1 = new Label();
+                Label lbl2 = new Label();
+                Label lbl3 = new Label();
+                Label lbl4 = new Label();
+                Label lbl5 = new Label();
+                Label lbl6 = new Label();
+                Label lbl7 = new Label();
+                Label lbl8 = new Label();
+                Label lbl9 = new Label();
+                Label lbl10 = new Label();
+                Label lbl11 = new Label();
+                TextBox txtId = new TextBox();
+                TextBox txtContent = new TextBox();
+                TextBox txtFontFamily = new TextBox();
+                TextBox txtFontSize = new TextBox();
+                TextBox txtX = new TextBox();
+                TextBox txtY = new TextBox();
+                TextBox txtZ = new TextBox();
+                ComboBox cboAlignment = new ComboBox();
+                TextBox txtWidth = new TextBox();
+                Xceed.Wpf.Toolkit.ColorPicker clpForeground = new Xceed.Wpf.Toolkit.ColorPicker();
+                Xceed.Wpf.Toolkit.ColorPicker clpBackground = new Xceed.Wpf.Toolkit.ColorPicker();
+
+                lbl1.Content = "ID";
+                lbl2.Content = "Content";
+                lbl3.Content = "Font Family";
+                lbl4.Content = "Font Size";
+                lbl5.Content = "X";
+                lbl6.Content = "Y";
+                lbl7.Content = "Z";
+                lbl8.Content = "Alignment";
+                lbl9.Content = "Width";
+                lbl10.Content = "Foreground";
+                lbl11.Content = "Background";
+                txtId.Text = "ID";
+                txtContent.Text = "Label Text";
+                txtFontFamily.Text = "Arial";
+                txtFontSize.Text = "12";
+                txtX.Text = "0";
+                txtY.Text = "0";
+                txtZ.Text = "0";
+                cboAlignment.Items.Add("Left");
+                cboAlignment.Items.Add("Center");
+                cboAlignment.Items.Add("Right");
+                cboAlignment.SelectedIndex = 0;
+                clpForeground.SelectedColor = Color.FromArgb(255, 0, 0, 0);
+                clpBackground.SelectedColor = Color.FromArgb(0, 0, 0, 0);
+
+                grid.ColumnDefinitions.Add(new ColumnDefinition());
+                grid.ColumnDefinitions.Add(new ColumnDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+
+                SetObject(ref grid, (Control) lbl1, 0, 0);
+                SetObject(ref grid, (Control) lbl2, 0, 1);
+                SetObject(ref grid, (Control) lbl3, 0, 2);
+                SetObject(ref grid, (Control) lbl4, 0, 3);
+                SetObject(ref grid, (Control) lbl5, 0, 4);
+                SetObject(ref grid, (Control) lbl6, 0, 5);
+                SetObject(ref grid, (Control) lbl7, 0, 6);
+                SetObject(ref grid, (Control) lbl8, 0, 7);
+                SetObject(ref grid, (Control) lbl9, 0, 8);
+                SetObject(ref grid, (Control) lbl10, 0, 9);
+                SetObject(ref grid, (Control) lbl11, 0, 10);
+                SetObject(ref grid, (Control) txtId, 1, 0);
+                SetObject(ref grid, (Control) txtContent, 1, 1);
+                SetObject(ref grid, (Control) txtFontFamily, 1, 2);
+                SetObject(ref grid, (Control) txtFontSize, 1, 3);
+                SetObject(ref grid, (Control) txtX, 1, 4);
+                SetObject(ref grid, (Control) txtY, 1, 5);
+                SetObject(ref grid, (Control) txtZ, 1, 6);
+                SetObject(ref grid, (Control) cboAlignment, 1, 7);
+                SetObject(ref grid, (Control) txtWidth, 1, 8);
+                SetObject(ref grid, (Control) clpForeground, 1, 9);
+                SetObject(ref grid, (Control) clpBackground, 1, 10);
+
+                readerAddWindow.AddObject(grid);
+                readerAddWindow.ShowDialog();
+
+                if (readerWindow.IsUnique(txtId.Text)) {
+                    if (!readerWindow.AddLabel(txtId.Text, txtContent.Text, txtFontFamily.Text, txtFontSize.Text, txtX.Text, txtY.Text, txtZ.Text, cboAlignment.SelectedIndex, txtWidth.Text, clpForeground, clpBackground))
+                        Constants.WritePLogOutput("Something is wrong with one of the inputs.");
+                } else {
+                    Constants.WritePLogOutput("Input did not have a unique ID.");
+                }
+            } else if (readerComponents.SelectedIndex == 1) {
+                InputWindow changeWindow = new InputWindow("Reader Window Add Battle Label", false);
+                Grid grid = new Grid();
+                Label lbl1 = new Label();
+                Label lbl2 = new Label();
+                Label lbl3 = new Label();
+                Label lbl4 = new Label();
+                Label lbl5 = new Label();
+                Label lbl6 = new Label();
+                Label lbl7 = new Label();
+                Label lbl8 = new Label();
+                Label lbl9 = new Label();
+                Label lbl10 = new Label();
+                Label lbl11 = new Label();
+                Label lbl12 = new Label();
+                Label lbl13 = new Label();
+                Label lbl14 = new Label();
+                TextBox txtId = new TextBox();
+                TextBox txtFontFamily = new TextBox();
+                TextBox txtFontSize = new TextBox();
+                TextBox txtX = new TextBox();
+                TextBox txtY = new TextBox();
+                TextBox txtZ = new TextBox();
+                CheckBox chkPlayer = new CheckBox();
+                TextBox txtSlotSelect = new TextBox();
+                ComboBox cboData = new ComboBox();
+                TextBox txtMS = new TextBox();
+                ComboBox cboAlignment = new ComboBox();
+                TextBox txtWidth = new TextBox();
+                Xceed.Wpf.Toolkit.ColorPicker clpForeground = new Xceed.Wpf.Toolkit.ColorPicker();
+                Xceed.Wpf.Toolkit.ColorPicker clpBackground = new Xceed.Wpf.Toolkit.ColorPicker();
+
+                lbl1.Content = "ID";
+                lbl2.Content = "Font Family";
+                lbl3.Content = "Font Size";
+                lbl4.Content = "X";
+                lbl5.Content = "Y";
+                lbl6.Content = "Z";
+                lbl7.Content = "Player";
+                lbl8.Content = "Slot Select";
+                lbl9.Content = "Data";
+                lbl10.Content = "Update Time (ms)";
+                lbl11.Content = "Alignment";
+                lbl12.Content = "Width";
+                lbl13.Content = "Foreground";
+                lbl14.Content = "Background";
+                txtId.Text = "ID";
+                txtFontFamily.Text = "Arial";
+                txtFontSize.Text = "12";
+                txtX.Text = "0";
+                txtY.Text = "0";
+                txtZ.Text = "0";
+                chkPlayer.IsChecked = true;
+                txtSlotSelect.Text = "1";
+                txtMS.Text = "1000";
+                cboAlignment.Items.Add("Left");
+                cboAlignment.Items.Add("Center");
+                cboAlignment.Items.Add("Right");
+                cboAlignment.SelectedIndex = 0;
+                clpForeground.SelectedColor = Color.FromArgb(255, 0, 0, 0);
+                clpBackground.SelectedColor = Color.FromArgb(0, 0, 0, 0);
+
+                foreach (string s in Constants.READER_CHARACTER_LABEL)
+                    cboData.Items.Add(s);
+
+                chkPlayer.Click += new RoutedEventHandler(delegate (Object o, RoutedEventArgs r) {
+                    cboData.Items.Clear();
+
+                    if ((bool) chkPlayer.IsChecked) {
+                        foreach (string s in Constants.READER_CHARACTER_LABEL)
+                            cboData.Items.Add(s);
+                    } else {
+                        foreach (string s in Constants.READER_MONSTER_LABEL)
+                            cboData.Items.Add(s);
+                    }
+                });
+
+                cboData.SelectedIndex = 0;
+
+                grid.ColumnDefinitions.Add(new ColumnDefinition());
+                grid.ColumnDefinitions.Add(new ColumnDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+
+                SetObject(ref grid, (Control) lbl1, 0, 0);
+                SetObject(ref grid, (Control) lbl2, 0, 1);
+                SetObject(ref grid, (Control) lbl3, 0, 2);
+                SetObject(ref grid, (Control) lbl4, 0, 3);
+                SetObject(ref grid, (Control) lbl5, 0, 4);
+                SetObject(ref grid, (Control) lbl6, 0, 5);
+                SetObject(ref grid, (Control) lbl7, 0, 6);
+                SetObject(ref grid, (Control) lbl8, 0, 7);
+                SetObject(ref grid, (Control) lbl9, 0, 8);
+                SetObject(ref grid, (Control) lbl10, 0, 9);
+                SetObject(ref grid, (Control) lbl11, 0, 10);
+                SetObject(ref grid, (Control) lbl12, 0, 11);
+                SetObject(ref grid, (Control) lbl13, 0, 12);
+                SetObject(ref grid, (Control) lbl14, 0, 13);
+                SetObject(ref grid, (Control) txtId, 1, 0);
+                SetObject(ref grid, (Control) txtFontFamily, 1, 1);
+                SetObject(ref grid, (Control) txtFontSize, 1, 2);
+                SetObject(ref grid, (Control) txtX, 1, 3);
+                SetObject(ref grid, (Control) txtY, 1, 4);
+                SetObject(ref grid, (Control) txtZ, 1, 5);
+                SetObject(ref grid, (Control) chkPlayer, 1, 6);
+                SetObject(ref grid, (Control) txtSlotSelect, 1, 7);
+                SetObject(ref grid, (Control) cboData, 1, 8);
+                SetObject(ref grid, (Control) txtMS, 1, 9);
+                SetObject(ref grid, (Control) cboAlignment, 1, 10);
+                SetObject(ref grid, (Control) txtWidth, 1, 11);
+                SetObject(ref grid, (Control) clpForeground, 1, 12);
+                SetObject(ref grid, (Control) clpBackground, 1, 13);
+
+                changeWindow.AddObject(grid);
+                changeWindow.ShowDialog();
+
+                if (readerWindow.IsUnique(txtId.Text)) {
+                    if (!readerWindow.AddBattleLabel(txtId.Text, txtFontFamily.Text, txtFontSize.Text, txtX.Text, txtY.Text, txtZ.Text, (bool) chkPlayer.IsChecked, txtSlotSelect.Text, cboData.SelectedItem.ToString(), txtMS.Text, cboAlignment.SelectedIndex, txtWidth.Text, clpForeground, clpBackground))
+                        Constants.WritePLogOutput("Something is wrong with one of the inputs.");
+                } else {
+                    Constants.WritePLogOutput("Input did not have a unique ID.");
+                }
+            } else if (readerComponents.SelectedIndex == 2) {
+                InputWindow changeWindow = new InputWindow("Reader Window Add Progress Bar", false);
+                Grid grid = new Grid();
+                Label lbl1 = new Label();
+                Label lbl2 = new Label();
+                Label lbl3 = new Label();
+                Label lbl4 = new Label();
+                Label lbl5 = new Label();
+                Label lbl6 = new Label();
+                Label lbl7 = new Label();
+                Label lbl8 = new Label();
+                Label lbl9 = new Label();
+                Label lbl10 = new Label();
+                Label lbl11 = new Label();
+                Label lbl12 = new Label();
+                Label lbl13 = new Label();
+                Label lbl14 = new Label();
+                TextBox txtId = new TextBox();
+                TextBox txtX = new TextBox();
+                TextBox txtY = new TextBox();
+                TextBox txtZ = new TextBox();
+                CheckBox chkPlayer = new CheckBox();
+                TextBox txtSlotSelect = new TextBox();
+                TextBox txtData = new TextBox();
+                TextBox txtMin = new TextBox();
+                TextBox txtMax = new TextBox();
+                TextBox txtWidth = new TextBox();
+                TextBox txtHeight = new TextBox();
+                TextBox txtMS = new TextBox();
+                Xceed.Wpf.Toolkit.ColorPicker clpForeground = new Xceed.Wpf.Toolkit.ColorPicker();
+                Xceed.Wpf.Toolkit.ColorPicker clpBackground = new Xceed.Wpf.Toolkit.ColorPicker();
+
+                lbl1.Content = "ID";
+                lbl2.Content = "X";
+                lbl3.Content = "Y";
+                lbl4.Content = "Z";
+                lbl5.Content = "Player";
+                lbl6.Content = "Slot Select";
+                lbl7.Content = "Value";
+                lbl8.Content = "Minimum";
+                lbl9.Content = "Maximum";
+                lbl10.Content = "Width";
+                lbl11.Content = "Height";
+                lbl12.Content = "Update Time (ms)";
+                lbl13.Content = "Foreground";
+                lbl14.Content = "Background";
+                txtId.Text = "ID";
+                txtX.Text = "0";
+                txtY.Text = "0";
+                txtZ.Text = "0";
+                chkPlayer.IsChecked = true;
+                txtSlotSelect.Text = "1";
+                txtData.Text = "0";
+                txtMin.Text = "0";
+                txtMax.Text = "0";
+                txtWidth.Text = "200";
+                txtHeight.Text = "10";
+                txtMS.Text = "1000";
+                clpForeground.SelectedColor = Color.FromArgb(255, 0, 0, 0);
+                clpBackground.SelectedColor = Color.FromArgb(0, 0, 0, 0);
+
+                chkPlayer.Click += new RoutedEventHandler(delegate (Object o, RoutedEventArgs r) {
+                    txtData.Text = "";
+                    txtMin.Text = "";
+                    txtMax.Text = "";
+                });
+
+                lbl7.MouseDoubleClick += new MouseButtonEventHandler(delegate (Object o, MouseButtonEventArgs m) {
+                    InputWindow fieldWindow = new InputWindow("Field Select", false);
+                    ComboBox cboData = new ComboBox();
+
+                    if ((bool) chkPlayer.IsChecked) {
+                        foreach (string s in Constants.READER_CHARACTER_LABEL)
+                            cboData.Items.Add(s);
+                    } else {
+                        foreach (string s in Constants.READER_MONSTER_LABEL)
+                            cboData.Items.Add(s);
+                    }
+
+                    cboData.SelectedIndex = 0;
+                    fieldWindow.AddObject(cboData);
+                    fieldWindow.AddTextBlock("Select Field to Read");
+
+                    fieldWindow.ShowDialog();
+
+                    txtData.Text = cboData.SelectedItem.ToString();
+                });
+
+                lbl8.MouseDoubleClick += new MouseButtonEventHandler(delegate (Object o, MouseButtonEventArgs m) {
+                    InputWindow fieldWindow = new InputWindow("Field Select", false);
+                    ComboBox cboData = new ComboBox();
+
+                    if ((bool) chkPlayer.IsChecked) {
+                        foreach (string s in Constants.READER_CHARACTER_LABEL)
+                            cboData.Items.Add(s);
+                    } else {
+                        foreach (string s in Constants.READER_MONSTER_LABEL)
+                            cboData.Items.Add(s);
+                    }
+
+                    cboData.SelectedIndex = 0;
+                    fieldWindow.AddObject(cboData);
+                    fieldWindow.AddTextBlock("Select Field to Read");
+
+                    fieldWindow.ShowDialog();
+
+                    txtMin.Text = cboData.SelectedItem.ToString();
+                });
+
+
+                lbl9.MouseDoubleClick += new MouseButtonEventHandler(delegate (Object o, MouseButtonEventArgs m) {
+                    InputWindow fieldWindow = new InputWindow("Field Select", false);
+                    ComboBox cboData = new ComboBox();
+
+                    if ((bool) chkPlayer.IsChecked) {
+                        foreach (string s in Constants.READER_CHARACTER_LABEL)
+                            cboData.Items.Add(s);
+                    } else {
+                        foreach (string s in Constants.READER_MONSTER_LABEL)
+                            cboData.Items.Add(s);
+                    }
+
+                    cboData.SelectedIndex = 0;
+                    fieldWindow.AddObject(cboData);
+                    fieldWindow.AddTextBlock("Select Field to Read");
+
+                    fieldWindow.ShowDialog();
+
+                    txtMax.Text = cboData.SelectedItem.ToString();
+                });
+
+                grid.ColumnDefinitions.Add(new ColumnDefinition());
+                grid.ColumnDefinitions.Add(new ColumnDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+
+                SetObject(ref grid, (Control) lbl1, 0, 0);
+                SetObject(ref grid, (Control) lbl2, 0, 1);
+                SetObject(ref grid, (Control) lbl3, 0, 2);
+                SetObject(ref grid, (Control) lbl4, 0, 3);
+                SetObject(ref grid, (Control) lbl5, 0, 4);
+                SetObject(ref grid, (Control) lbl6, 0, 5);
+                SetObject(ref grid, (Control) lbl7, 0, 6);
+                SetObject(ref grid, (Control) lbl8, 0, 7);
+                SetObject(ref grid, (Control) lbl9, 0, 8);
+                SetObject(ref grid, (Control) lbl10, 0, 9);
+                SetObject(ref grid, (Control) lbl11, 0, 10);
+                SetObject(ref grid, (Control) lbl12, 0, 11);
+                SetObject(ref grid, (Control) lbl13, 0, 12);
+                SetObject(ref grid, (Control) lbl14, 0, 13);
+                SetObject(ref grid, (Control) txtId, 1, 0);
+                SetObject(ref grid, (Control) txtX, 1, 1);
+                SetObject(ref grid, (Control) txtY, 1, 2);
+                SetObject(ref grid, (Control) txtZ, 1, 3);
+                SetObject(ref grid, (Control) chkPlayer, 1, 4);
+                SetObject(ref grid, (Control) txtSlotSelect, 1, 5);
+                SetObject(ref grid, (Control) txtData, 1, 6);
+                SetObject(ref grid, (Control) txtMin, 1, 7);
+                SetObject(ref grid, (Control) txtMax, 1, 8);
+                SetObject(ref grid, (Control) txtWidth, 1, 9);
+                SetObject(ref grid, (Control) txtHeight, 1, 10);
+                SetObject(ref grid, (Control) txtMS, 1, 11);
+                SetObject(ref grid, (Control) clpForeground, 1, 12);
+                SetObject(ref grid, (Control) clpBackground, 1, 13);
+
+                changeWindow.AddObject(grid);
+                changeWindow.ShowDialog();
+
+                if (readerWindow.IsUnique(txtId.Text)) {
+                    if (!readerWindow.AddProgressBar(txtId.Text, txtX.Text, txtY.Text, txtZ.Text, (bool) chkPlayer.IsChecked, txtSlotSelect.Text, txtData.Text, txtMin.Text, txtMax.Text, txtWidth.Text, txtHeight.Text, txtMS.Text, clpForeground, clpBackground))
+                        Constants.WritePLogOutput("Something is wrong with one of the inputs.");
+                } else {
+                    Constants.WritePLogOutput("Input did not have a unique ID.");
+                }
+            } else if (readerComponents.SelectedIndex == 3) {
+                InputWindow changeWindow = new InputWindow("Reader Window Add Radial Bar", false);
+                Grid grid = new Grid();
+                Label lbl1 = new Label();
+                Label lbl2 = new Label();
+                Label lbl3 = new Label();
+                Label lbl4 = new Label();
+                Label lbl5 = new Label();
+                Label lbl6 = new Label();
+                Label lbl7 = new Label();
+                Label lbl8 = new Label();
+                Label lbl9 = new Label();
+                Label lbl10 = new Label();
+                Label lbl11 = new Label();
+                Label lbl12 = new Label();
+                Label lbl13 = new Label();
+                Label lbl14 = new Label();
+                Label lbl15 = new Label();
+                Label lbl16 = new Label();
+                Label lbl17 = new Label();
+                Label lbl18 = new Label();
+                TextBox txtId = new TextBox();
+                TextBox txtX = new TextBox();
+                TextBox txtY = new TextBox();
+                TextBox txtZ = new TextBox();
+                CheckBox chkPlayer = new CheckBox();
+                TextBox txtSlotSelect = new TextBox();
+                TextBox txtData = new TextBox();
+                TextBox txtMin = new TextBox();
+                TextBox txtMax = new TextBox();
+                TextBox txtSize = new TextBox();
+                TextBox txtStroke = new TextBox();
+                TextBox txtBStroke = new TextBox();
+                ComboBox cboDirection = new ComboBox();
+                TextBox txtRenderDegree = new TextBox();
+                TextBox txtRotationDegree = new TextBox();
+                TextBox txtMS = new TextBox();
+                Xceed.Wpf.Toolkit.ColorPicker clpForeground = new Xceed.Wpf.Toolkit.ColorPicker();
+                Xceed.Wpf.Toolkit.ColorPicker clpBackground = new Xceed.Wpf.Toolkit.ColorPicker();
+
+                lbl1.Content = "ID";
+                lbl2.Content = "X";
+                lbl3.Content = "Y";
+                lbl4.Content = "Z";
+                lbl5.Content = "Player";
+                lbl6.Content = "Slot Select";
+                lbl7.Content = "Value";
+                lbl8.Content = "Minimum";
+                lbl9.Content = "Maximum";
+                lbl10.Content = "Size";
+                lbl11.Content = "Stroke Width";
+                lbl12.Content = "Background Width";
+                lbl13.Content = "Direction";
+                lbl14.Content = "Render Degree";
+                lbl15.Content = "Rotation Degree";
+                lbl16.Content = "Update Time (ms)";
+                lbl17.Content = "Foreground";
+                lbl18.Content = "Background";
+
+                txtId.Text = "ID";
+                txtX.Text = "0";
+                txtY.Text = "0";
+                txtZ.Text = "0";
+                chkPlayer.IsChecked = true;
+                txtSlotSelect.Text = "1";
+                txtData.Text = "0";
+                txtMin.Text = "0";
+                txtMax.Text = "0";
+                txtSize.Text = "100";
+                txtStroke.Text = "10";
+                txtBStroke.Text = "10";
+                cboDirection.Items.Add("Counterclockwise");
+                cboDirection.Items.Add("Clockwise");
+                cboDirection.SelectedIndex = 0;
+                txtRenderDegree.Text = "359.999";
+                txtRotationDegree.Text = "0";
+                txtMS.Text = "1000";
+                clpForeground.SelectedColor = Color.FromArgb(255, 0, 0, 0);
+                clpBackground.SelectedColor = Color.FromArgb(0, 0, 0, 0);
+
+                chkPlayer.Click += new RoutedEventHandler(delegate (Object o, RoutedEventArgs r) {
+                    txtData.Text = "";
+                    txtMin.Text = "";
+                    txtMax.Text = "";
+                });
+
+                lbl7.MouseDoubleClick += new MouseButtonEventHandler(delegate (Object o, MouseButtonEventArgs m) {
+                    InputWindow fieldWindow = new InputWindow("Field Select", false);
+                    ComboBox cboData = new ComboBox();
+
+                    if ((bool) chkPlayer.IsChecked) {
+                        foreach (string s in Constants.READER_CHARACTER_LABEL)
+                            cboData.Items.Add(s);
+                    } else {
+                        foreach (string s in Constants.READER_MONSTER_LABEL)
+                            cboData.Items.Add(s);
+                    }
+
+                    cboData.SelectedIndex = 0;
+                    fieldWindow.AddObject(cboData);
+                    fieldWindow.AddTextBlock("Select Field to Read");
+
+                    fieldWindow.ShowDialog();
+
+                    txtData.Text = cboData.SelectedItem.ToString();
+                });
+
+                lbl8.MouseDoubleClick += new MouseButtonEventHandler(delegate (Object o, MouseButtonEventArgs m) {
+                    InputWindow fieldWindow = new InputWindow("Field Select", false);
+                    ComboBox cboData = new ComboBox();
+
+                    if ((bool) chkPlayer.IsChecked) {
+                        foreach (string s in Constants.READER_CHARACTER_LABEL)
+                            cboData.Items.Add(s);
+                    } else {
+                        foreach (string s in Constants.READER_MONSTER_LABEL)
+                            cboData.Items.Add(s);
+                    }
+
+                    cboData.SelectedIndex = 0;
+                    fieldWindow.AddObject(cboData);
+                    fieldWindow.AddTextBlock("Select Field to Read");
+
+                    fieldWindow.ShowDialog();
+
+                    txtMin.Text = cboData.SelectedItem.ToString();
+                });
+
+
+                lbl9.MouseDoubleClick += new MouseButtonEventHandler(delegate (Object o, MouseButtonEventArgs m) {
+                    InputWindow fieldWindow = new InputWindow("Field Select", false);
+                    ComboBox cboData = new ComboBox();
+
+                    if ((bool) chkPlayer.IsChecked) {
+                        foreach (string s in Constants.READER_CHARACTER_LABEL)
+                            cboData.Items.Add(s);
+                    } else {
+                        foreach (string s in Constants.READER_MONSTER_LABEL)
+                            cboData.Items.Add(s);
+                    }
+
+                    cboData.SelectedIndex = 0;
+                    fieldWindow.AddObject(cboData);
+                    fieldWindow.AddTextBlock("Select Field to Read");
+
+                    fieldWindow.ShowDialog();
+
+                    txtMax.Text = cboData.SelectedItem.ToString();
+                });
+
+                grid.ColumnDefinitions.Add(new ColumnDefinition());
+                grid.ColumnDefinitions.Add(new ColumnDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+
+                SetObject(ref grid, (Control) lbl1, 0, 0);
+                SetObject(ref grid, (Control) lbl2, 0, 1);
+                SetObject(ref grid, (Control) lbl3, 0, 2);
+                SetObject(ref grid, (Control) lbl4, 0, 3);
+                SetObject(ref grid, (Control) lbl5, 0, 4);
+                SetObject(ref grid, (Control) lbl6, 0, 5);
+                SetObject(ref grid, (Control) lbl7, 0, 6);
+                SetObject(ref grid, (Control) lbl8, 0, 7);
+                SetObject(ref grid, (Control) lbl9, 0, 8);
+                SetObject(ref grid, (Control) lbl10, 0, 9);
+                SetObject(ref grid, (Control) lbl11, 0, 10);
+                SetObject(ref grid, (Control) lbl12, 0, 11);
+                SetObject(ref grid, (Control) lbl13, 0, 12);
+                SetObject(ref grid, (Control) lbl14, 0, 13);
+                SetObject(ref grid, (Control) lbl15, 0, 14);
+                SetObject(ref grid, (Control) lbl16, 0, 15);
+                SetObject(ref grid, (Control) lbl17, 0, 16);
+                SetObject(ref grid, (Control) lbl18, 0, 17);
+                SetObject(ref grid, (Control) txtId, 1, 0);
+                SetObject(ref grid, (Control) txtX, 1, 1);
+                SetObject(ref grid, (Control) txtY, 1, 2);
+                SetObject(ref grid, (Control) txtZ, 1, 3);
+                SetObject(ref grid, (Control) chkPlayer, 1, 4);
+                SetObject(ref grid, (Control) txtSlotSelect, 1, 5);
+                SetObject(ref grid, (Control) txtData, 1, 6);
+                SetObject(ref grid, (Control) txtMin, 1, 7);
+                SetObject(ref grid, (Control) txtMax, 1, 8);
+                SetObject(ref grid, (Control) txtSize, 1, 9);
+                SetObject(ref grid, (Control) txtStroke, 1, 10);
+                SetObject(ref grid, (Control) txtBStroke, 1, 11);
+                SetObject(ref grid, (Control) cboDirection, 1, 12);
+                SetObject(ref grid, (Control) txtRenderDegree, 1, 13);
+                SetObject(ref grid, (Control) txtRotationDegree, 1, 14);
+                SetObject(ref grid, (Control) txtMS, 1, 15);
+                SetObject(ref grid, (Control) clpForeground, 1, 16);
+                SetObject(ref grid, (Control) clpBackground, 1, 17);
+
+                changeWindow.AddObject(grid);
+                changeWindow.ShowDialog();
+
+                if (readerWindow.IsUnique(txtId.Text)) {
+                    if (!readerWindow.AddRadialBar(txtId.Text, txtX.Text, txtY.Text, txtZ.Text, (bool) chkPlayer.IsChecked, txtSlotSelect.Text, txtData.Text, txtMin.Text, txtMax.Text, txtSize.Text, txtStroke.Text, txtBStroke.Text, cboDirection.SelectedIndex, txtRenderDegree.Text, txtRotationDegree.Text, txtMS.Text, clpForeground, clpBackground))
+                        Constants.WritePLogOutput("Something is wrong with one of the inputs.");
+                } else {
+                    Constants.WritePLogOutput("Input did not have a unique ID.");
+                }
+            }
+        }
+
+        public void ReaderModeChange() {
+            InputWindow readerChangeWindow = new InputWindow("Reader Window Change");
+            ComboBox type = new ComboBox();
+            ComboBox elements = new ComboBox();
+
+            type.Items.Add("Label");
+            type.Items.Add("Battle Label");
+            type.Items.Add("Progress Bar");
+            type.Items.Add("Radial Bar");
+
+            type.SelectionChanged += new SelectionChangedEventHandler(delegate (Object o, SelectionChangedEventArgs s) {
+                elements.Items.Clear();
+                if (type.SelectedIndex == 0) {
+                    foreach (ReaderLabel c in readerWindow.cv.Children.OfType<ReaderLabel>())
+                        elements.Items.Add(c.id);
+                } else if (type.SelectedIndex == 1) {
+                    foreach (ReaderBattleLabel c in readerWindow.cv.Children.OfType<ReaderBattleLabel>())
+                        elements.Items.Add(c.id);
+                } else if (type.SelectedIndex == 2) {
+                    foreach (ReaderProgressBar c in readerWindow.cv.Children.OfType<ReaderProgressBar>())
+                        elements.Items.Add(c.id);
+                } else if (type.SelectedIndex == 3) {
+                    foreach (ReaderRadialBar c in readerWindow.cv.Children.OfType<ReaderRadialBar>())
+                        elements.Items.Add(c.id);
+                }
+                elements.SelectedIndex = 0;
+            });
+
+            type.SelectedIndex = 0;
+
+            readerChangeWindow.AddObject(elements);
+            readerChangeWindow.AddObject(type);
+            readerChangeWindow.AddTextBlock("What element do you want to change?");
+            readerChangeWindow.ShowDialog();
+
+            if (elements.Items.Count > 0) {
+                if (type.SelectedIndex == 0) {
+                    foreach (ReaderLabel c in readerWindow.cv.Children.OfType<ReaderLabel>()) {
+                        if (c.id == elements.SelectedItem.ToString())
+                            c.Click();
+                    }
+                } else if (type.SelectedIndex == 1) {
+                    foreach (ReaderBattleLabel c in readerWindow.cv.Children.OfType<ReaderBattleLabel>()) {
+                        if (c.id == elements.SelectedItem.ToString())
+                            c.Click();
+                    }
+                } else if (type.SelectedIndex == 2) {
+                    foreach (ReaderProgressBar c in readerWindow.cv.Children.OfType<ReaderProgressBar>()) {
+                        if (c.id == elements.SelectedItem.ToString())
+                            c.Click();
+                    }
+                } else if (type.SelectedIndex == 3) {
+                    foreach (ReaderRadialBar c in readerWindow.cv.Children.OfType<ReaderRadialBar>()) {
+                        if (c.id == elements.SelectedItem.ToString())
+                            c.Click();
+                    }
+                }
+            }
+        }
+
+        public void ReaderModeDelete() {
+            InputWindow readerChangeWindow = new InputWindow("Reader Window Change");
+            ComboBox type = new ComboBox();
+            ComboBox elements = new ComboBox();
+
+            type.Items.Add("Label");
+            type.Items.Add("Battle Label");
+            type.Items.Add("Progress Bar");
+            type.Items.Add("Radial Bar");
+
+            type.SelectionChanged += new SelectionChangedEventHandler(delegate (Object o, SelectionChangedEventArgs s) {
+                elements.Items.Clear();
+                if (type.SelectedIndex == 0) {
+                    foreach (ReaderLabel c in readerWindow.cv.Children.OfType<ReaderLabel>())
+                        elements.Items.Add(c.id);
+                } else if (type.SelectedIndex == 1) {
+                    foreach (ReaderBattleLabel c in readerWindow.cv.Children.OfType<ReaderBattleLabel>())
+                        elements.Items.Add(c.id);
+                } else if (type.SelectedIndex == 2) {
+                    foreach (ReaderProgressBar c in readerWindow.cv.Children.OfType<ReaderProgressBar>())
+                        elements.Items.Add(c.id);
+                } else if (type.SelectedIndex == 3) {
+                    foreach (ReaderRadialBar c in readerWindow.cv.Children.OfType<ReaderRadialBar>())
+                        elements.Items.Add(c.id);
+                }
+                elements.SelectedIndex = 0;
+            });
+
+            type.SelectedIndex = 0;
+
+            readerChangeWindow.AddObject(elements);
+            readerChangeWindow.AddObject(type);
+            readerChangeWindow.AddTextBlock("What element do you want to delete?");
+            readerChangeWindow.ShowDialog();
+
+            //???
+            try {
+                if (elements.Items.Count > 0) {
+                    if (type.SelectedIndex == 0) {
+                        foreach (ReaderLabel c in readerWindow.cv.Children.OfType<ReaderLabel>()) {
+                            if (c.id == elements.SelectedItem.ToString())
+                                readerWindow.cv.Children.Remove(c);
+                        }
+                    } else if (type.SelectedIndex == 1) {
+                        foreach (ReaderBattleLabel c in readerWindow.cv.Children.OfType<ReaderBattleLabel>()) {
+                            if (c.id == elements.SelectedItem.ToString())
+                                readerWindow.cv.Children.Remove(c);
+                        }
+                    } else if (type.SelectedIndex == 2) {
+                        foreach (ReaderProgressBar c in readerWindow.cv.Children.OfType<ReaderProgressBar>()) {
+                            if (c.id == elements.SelectedItem.ToString())
+                                readerWindow.cv.Children.Remove(c);
+                        }
+                    } else if (type.SelectedIndex == 3) {
+                        foreach (ReaderRadialBar c in readerWindow.cv.Children.OfType<ReaderRadialBar>()) {
+                            if (c.id == elements.SelectedItem.ToString())
+                                readerWindow.cv.Children.Remove(c);
+                        }
+                    }
+                }
+            } catch (Exception e) { }
+        }
+
+        public void ReaderModeSave() {
+            InputWindow openReaderSave = new InputWindow("Save Profile");
+            TextBox txt = new TextBox();
+            openReaderSave.AddObject(txt);
+            openReaderSave.AddTextBlock("What do you want to call your reader profile?");
+            openReaderSave.ShowDialog();
+
+            if (!txt.Text.Equals(""))
+                if (readerWindow.IsOpen)
+                    readerWindow.Save(txt.Text);
+                else
+                    Constants.WriteOutput("Reader Window is not open.");
+            else
+                Constants.WriteOutput("Nothing was input.");
+        }
+
+        public void ReaderModeLoad() {
+            InputWindow openReaderLoad = new InputWindow("Load Profile");
+            TextBox txt = new TextBox();
+            openReaderLoad.AddObject(txt);
+            openReaderLoad.AddTextBlock("What profile do you want to load?");
+            openReaderLoad.ShowDialog();
+
+            if (!txt.Text.Equals(""))
+                if (readerWindow.IsOpen)
+                    readerWindow.Load(txt.Text);
+                else
+                    Constants.WriteOutput("Reader Window is not open.");
+            else
+                Constants.WriteOutput("Nothing was input.");
+        }
+
+        public void ReaderModeReset() {
+            if (readerWindow.IsOpen)
+                readerWindow.Reset();
+            else
+                Constants.WriteOutput("Reader Window is not open.");
+        }
+
+        public static void SetObject(ref Grid grid, Control obj, int x, int y) {
+            Grid.SetColumn(obj, x);
+            Grid.SetRow(obj, y);
+            grid.Children.Add(obj);
+        }
+        #endregion
         #endregion
 
         #region On Close
-        private void Window_Closed(object sender, EventArgs e) {
+        private void Window_Closing(object sender, CancelEventArgs e) {
+            //readerWindow.Close();
             CloseEmulator();
+        }
+
+        private void Window_Closed(object sender, EventArgs e) {
+            System.Windows.Application.Current.Shutdown();
         }
 
         public void CloseEmulator() {
