@@ -18,7 +18,7 @@ Also all scripts should start with their appropriate region codes. When switchin
 [EUR]  
 [ALL]  
 
-#Credits  
+# Credits  
 Dragoon Modifier uses the following projects for functionality.  
 
 Memory.dll - Read/Write/Scan memory functions  
