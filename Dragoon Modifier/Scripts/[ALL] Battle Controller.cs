@@ -943,9 +943,9 @@ public class BattleController {
         long[] armor = { 0, 1 };
         long[] shoes = { 0, 1 };
         long[] accessory = { 0, 1 };
-        long[] pos_x = { 0, 4 };
-        long[] pos_y = { 0, 4 };
-        long[] pos_z = { 0, 4 };
+        long[] pos_fb = { 0, 4 };
+        long[] pos_ud = { 0, 4 };
+        long[] pos_rl = { 0, 4 };
         long[] a_hit_inc = { 0, 1 };
         long[] a_hit_inc_trn = { 0, 1 };
         long[] m_hit_inc = { 0, 1 };
@@ -1038,9 +1038,9 @@ public class BattleController {
         public long[] Armor { get { return armor; } }
         public long[] Shoes { get { return shoes; } }
         public long[] Accessory { get { return accessory; } }
-        public long[] POS_X { get { return pos_x; } }
-        public long[] POS_Y { get { return pos_y; } }
-        public long[] POS_Z { get { return pos_z; } }
+        public long[] POS_FB { get { return pos_fb; } }
+        public long[] POS_UD { get { return pos_ud; } }
+        public long[] POS_RL { get { return pos_rl; } }
         public long[] A_HIT_INC { get { return a_hit_inc; } }
         public long[] A_HIT_INC_TRN { get { return a_hit_inc_trn; } }
         public long[] M_HIT_INC { get { return m_hit_inc; } }
@@ -1150,9 +1150,9 @@ public class BattleController {
             mp_regen[0] = c_point + 0x12E - character * 0x388;
             sp_regen[0] = c_point + 0x130 - character * 0x388;
             revive[0] = c_point + 0x132 - character * 0x388;
-            pos_x[0] = c_point + 0x16D - character * 0x388;
-            pos_y[0] = c_point + 0x171 - character * 0x388;
-            pos_z[0] = c_point + 0x175 - character * 0x388;
+            pos_fb[0] = c_point + 0x16D - character * 0x388;
+            pos_ud[0] = c_point + 0x171 - character * 0x388;
+            pos_rl[0] = c_point + 0x175 - character * 0x388;
             unique_index[0] = c_point + 0x264 - character * 0x388;
             image[0] = c_point + 0x26A - character * 0x388;
             color_map[0] = c_point + 0x1DD - character * 0x388;

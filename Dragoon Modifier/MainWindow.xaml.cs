@@ -2749,6 +2749,7 @@ namespace Dragoon_Modifier {
         public void OtherController() {
             string currentScript = "";
             int run = 1;
+            bool readerWrite = false;
             while (run == 1 && Constants.RUN) {
                 foreach (SubScript script in lstOther.Items) {
                     if (script.state == ScriptState.DISABLED)
@@ -2758,6 +2759,11 @@ namespace Dragoon_Modifier {
                         run = script.Run(emulator);
                     }), DispatcherPriority.ContextIdle);
                 }
+
+                if (Globals.CheckDMScript("btnReader") && readerWindow.WRITE_TEXT && readerWrite)
+                    readerWindow.WriteToText();
+
+                readerWrite = readerWrite ? false : true;
 
                 Thread.Sleep(1000);
 
@@ -9930,6 +9936,10 @@ namespace Dragoon_Modifier {
                 if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(folder.SelectedPath)) {
                     readerWindow.SetWriteLocation(folder.SelectedPath);
                     openFolder.Content = folder.SelectedPath;
+                    if (!Directory.Exists(folder.SelectedPath + "/Character"))
+                        Directory.CreateDirectory(folder.SelectedPath + "/Character");
+                    if (!Directory.Exists(folder.SelectedPath + "/Monster"))
+                        Directory.CreateDirectory(folder.SelectedPath + "/Monster");
                 }
             });
 

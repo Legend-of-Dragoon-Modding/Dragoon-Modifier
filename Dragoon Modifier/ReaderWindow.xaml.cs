@@ -43,6 +43,14 @@ namespace Dragoon_Modifier {
 
         public new void Show() {
             IsOpen = true;
+
+            if (!WRITE_LOCATION.Equals("")) {
+                if (!Directory.Exists(WRITE_LOCATION + "/Character"))
+                    Directory.CreateDirectory(WRITE_LOCATION + "/Character");
+                if (!Directory.Exists(WRITE_LOCATION + "/Monster"))
+                    Directory.CreateDirectory(WRITE_LOCATION + "/Monster");
+            }
+
             base.Show();
         }
 
@@ -125,7 +133,7 @@ namespace Dragoon_Modifier {
             if (Globals.IN_BATTLE && Globals.STATS_CHANGED) {
                 for (int i = 0; i < 3; i++) {
                     foreach (string field in Constants.READER_CHARACTER_LABEL) {
-                        StreamWriter writer = new StreamWriter(WRITE_LOCATION + "/" + field + "" + (i + 1));
+                        StreamWriter writer = new StreamWriter(WRITE_LOCATION + "/Character/" + field + "" + (i + 1) + ".txt");
                         if (field.Equals("Name")) {
                             if (Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10)
                                 writer.WriteLine(Globals.CHARACTER_NAME[i] + "*");
@@ -144,7 +152,7 @@ namespace Dragoon_Modifier {
 
                 for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
                     foreach (string field in Constants.READER_MONSTER_LABEL) {
-                        StreamWriter writer = new StreamWriter(WRITE_LOCATION + "/" + field + "" + (i + 1));
+                        StreamWriter writer = new StreamWriter(WRITE_LOCATION + "/Monster/" + field + "" + (i + 1) + ".txt");
                         if (field.Equals("Name")) {
                             writer.WriteLine(Globals.MONSTER_NAME[i]);
                         } else {
