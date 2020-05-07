@@ -109,6 +109,9 @@ namespace Dragoon_Modifier {
         public bool[] lGuardStateMDF = new bool[3];
         public bool[] sGuardStatusDF = new bool[3];
         public bool[] sGuardStatusMDF = new bool[3];
+        public int bossSPLoss = 0;
+        //Reader Mode
+        public bool readerRemoveUIOnBattleEntry = false;
         //Ultimate Boss
         public int[] ultimateHP = new int[5];
         public int[] ultimateHPSave = new int[5];
@@ -543,6 +546,10 @@ namespace Dragoon_Modifier {
             cboFlowerStorm.Items.Add("4 Turns (80 MP)");
             cboFlowerStorm.Items.Add("5 Turns (100 MP)");
 
+            cboReaderUIRemoval.Items.Add("None");
+            cboReaderUIRemoval.Items.Add("Remove Pictures and Stats");
+            cboReaderUIRemoval.Items.Add("Remove Entire UI");
+
             battleRow[0] = cboRowDart;
             battleRow[1] = cboRowLavitz;
             battleRow[2] = cboRowShana;
@@ -672,6 +679,7 @@ namespace Dragoon_Modifier {
             cboSwitch2.SelectedIndex = 1;
             cboQTB.SelectedIndex = 0;
             cboFlowerStorm.SelectedIndex = 0;
+            cboReaderUIRemoval.SelectedIndex = 0;
         }
 
         public void LoadKey() {
@@ -766,6 +774,9 @@ namespace Dragoon_Modifier {
 
             if (Constants.KEY.GetValue("Reader Background") != null)
                 readerWindow.Background = new SolidColorBrush((Color) ColorConverter.ConvertFromString(Constants.KEY.GetValue("Reader Background").ToString()));
+
+            if (Constants.KEY.GetValue("Reader Remove UI") != null)
+                cboReaderUIRemoval.SelectedIndex = (int) Constants.KEY.GetValue("Reader Remove UI");
         }
 
         public void LoadSubKey() {
@@ -814,6 +825,7 @@ namespace Dragoon_Modifier {
             Constants.KEY.SetValue("Reader Write Text", readerWindow.WRITE_TEXT);
             Constants.KEY.SetValue("Reader Write Folder", readerWindow.WRITE_LOCATION);
             Constants.KEY.SetValue("Reader Background", readerWindow.Background.ToString());
+            Constants.KEY.SetValue("Reader Remove UI", uiCombo["cboReaderUIRemoval"]);
         }
 
         public void SaveSubKey() {
@@ -2336,6 +2348,8 @@ namespace Dragoon_Modifier {
                         EATB();
                     if (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell"))
                         DoubleRepeat();
+                    if (Globals.CheckDMScript("btnReader") && uiCombo["cboReaderUIRemoval"] > 0)
+                        ReaderRemoveUI();
                 } catch (Exception ex) {
                     Constants.RUN = false;
                     Constants.WriteGLog("Program stopped.");
@@ -8723,7 +8737,6 @@ namespace Dragoon_Modifier {
         #region Boss SP Loss
         public void BossSPLoss() {
             if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !bossSPLossOnBattleEntry) {
-                int bossSPLoss = 0;
                 if (Globals.ENCOUNTER_ID == 384) //Marsh Commander
                     bossSPLoss = 500;
                 else if (Globals.ENCOUNTER_ID == 386) //Fruegel I
@@ -8777,60 +8790,61 @@ namespace Dragoon_Modifier {
                 else if (Globals.ENCOUNTER_ID == 433) //Imago
                     bossSPLoss = 1000;
 
-                for (int i = 0; i < 9; i++) {
-                    int currentTotalSP = emulator.ReadShort(Constants.GetAddress("TOTAL_SP") + (i * 0x2C));
-                    int newSP = 0;
-                    if (bossSPLoss > 0)
-                        newSP = Math.Max(currentTotalSP - bossSPLoss, 0);
-                    else if (bossSPLoss == -1)
-                        newSP = (int) Math.Max(Math.Round(currentTotalSP / 1.2), 0);
-                    else if (bossSPLoss == -2)
-                        newSP = Math.Max(currentTotalSP / 2, 0);
-                    else if (bossSPLoss == -3)
-                        newSP = Math.Max(currentTotalSP / 2 - 500, 0);
-                    else if (bossSPLoss == -4)
-                        newSP = Math.Max(currentTotalSP / 4, 0);
-                    else if (bossSPLoss == -5)
-                        newSP = Math.Max(currentTotalSP / 4 - 500, 0);
-
-                    emulator.WriteShort(Constants.GetAddress("TOTAL_SP") + (i * 0x2C), (ushort) newSP);
-
-                    byte dragoonLevel = emulator.ReadByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C));
-
-                    if (i == 0 || i == 3) {
-                        if (newSP < 20000 && dragoonLevel >= 5)
-                            emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 4);
-                        if (newSP < 12000 && dragoonLevel >= 4)
-                            emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 4);
-                        if (newSP < 6000 && dragoonLevel >= 3)
-                            emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 4);
-                        if (newSP < 1200 && dragoonLevel >= 2)
-                            emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 4);
-                    } else if (i == 6 || i == 7) {
-                        if (newSP < 20000 && dragoonLevel >= 5)
-                            emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 4);
-                        if (newSP < 12000 && dragoonLevel >= 4)
-                            emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 4);
-                        if (newSP < 2000 && dragoonLevel >= 3)
-                            emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 4);
-                        if (newSP < 1200 && dragoonLevel >= 2)
-                            emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 4);
-                    } else {
-                        if (newSP < 20000 && dragoonLevel >= 5)
-                            emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 4);
-                        if (newSP < 12000 && dragoonLevel >= 4)
-                            emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 4);
-                        if (newSP < 6000 && dragoonLevel >= 3)
-                            emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 4);
-                        if (newSP < 1000 && dragoonLevel >= 2)
-                            emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 4);
-                    }
-                }
-
                 bossSPLossOnBattleEntry = true;
             } else {
-                if (!Globals.IN_BATTLE && blackRoomOnBattleEntry) {
-                    blackRoomOnBattleEntry = false;
+                if (!Globals.IN_BATTLE && bossSPLossOnBattleEntry) {
+                    if (bossSPLoss != 0) {
+                        for (int i = 0; i < 9; i++) {
+                            int currentTotalSP = emulator.ReadShort(Constants.GetAddress("TOTAL_SP") + (i * 0x2C));
+                            int newSP = 0;
+                            if (bossSPLoss > 0)
+                                newSP = Math.Max(currentTotalSP - bossSPLoss, 0);
+                            else if (bossSPLoss == -1)
+                                newSP = (int) Math.Max(Math.Round(currentTotalSP / 1.2), 0);
+                            else if (bossSPLoss == -2)
+                                newSP = Math.Max(currentTotalSP / 2, 0);
+                            else if (bossSPLoss == -3)
+                                newSP = Math.Max(currentTotalSP / 2 - 500, 0);
+                            else if (bossSPLoss == -4)
+                                newSP = Math.Max(currentTotalSP / 4, 0);
+                            else if (bossSPLoss == -5)
+                                newSP = Math.Max(currentTotalSP / 4 - 500, 0);
+
+                            emulator.WriteShort(Constants.GetAddress("TOTAL_SP") + (i * 0x2C), (ushort) newSP);
+
+                            byte dragoonLevel = emulator.ReadByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C));
+
+                            if (i == 0 || i == 3) {
+                                if (newSP < 20000 && dragoonLevel >= 5)
+                                    emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 4);
+                                if (newSP < 12000 && dragoonLevel >= 4)
+                                    emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 3);
+                                if (newSP < 6000 && dragoonLevel >= 3)
+                                    emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 2);
+                                if (newSP < 1200 && dragoonLevel >= 2)
+                                    emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 1);
+                            } else if (i == 6 || i == 7) {
+                                if (newSP < 20000 && dragoonLevel >= 5)
+                                    emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 4);
+                                if (newSP < 12000 && dragoonLevel >= 4)
+                                    emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 3);
+                                if (newSP < 2000 && dragoonLevel >= 3)
+                                    emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 2);
+                                if (newSP < 1200 && dragoonLevel >= 2)
+                                    emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 1);
+                            } else {
+                                if (newSP < 20000 && dragoonLevel >= 5)
+                                    emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 4);
+                                if (newSP < 12000 && dragoonLevel >= 4)
+                                    emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 3);
+                                if (newSP < 6000 && dragoonLevel >= 3)
+                                    emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 2);
+                                if (newSP < 1000 && dragoonLevel >= 2)
+                                    emulator.WriteByte(Constants.GetAddress("DRAGOON_LEVEL") + (i * 0x2C), 1);
+                            }
+                        }
+                    }
+                    bossSPLossOnBattleEntry = false;
                 }
             }
         }
@@ -10790,6 +10804,18 @@ namespace Dragoon_Modifier {
             Grid.SetColumn(obj, x);
             Grid.SetRow(obj, y);
             grid.Children.Add(obj);
+        }
+
+        public void ReaderRemoveUI() {
+            if (Globals.IN_BATTLE && Globals.STATS_CHANGED) {
+                if (uiCombo["cboReaderUIRemoval"] == 1) {
+                    emulator.WriteByte(Globals.M_POINT + 0x1775, 2);
+                    emulator.WriteByte(Globals.M_POINT + 0x18B9, 2);
+                    emulator.WriteByte(Globals.M_POINT + 0x19FD, 2);
+                } else if (uiCombo["cboReaderUIRemoval"] == 2) {
+                    emulator.WriteShort(Constants.GetAddress("UI_Y"), 270);
+                }
+            }
         }
         #endregion
         #endregion

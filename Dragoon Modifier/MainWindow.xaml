@@ -1184,6 +1184,7 @@
                         <RowDefinition />
                         <RowDefinition />
                         <RowDefinition />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <Button x:Name="btnReader" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Content="Reader Mode" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                     <Button x:Name="btnReaderConfig" Click="GreenButton" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Content="Window Config" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
@@ -1194,8 +1195,12 @@
                     <Button x:Name="btnReaderChange" Click="GreenButton" Grid.Row="3" Grid.Column="1" Content="Change" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
                     <Button x:Name="btnReaderDelete" Click="GreenButton" Grid.Row="3" Grid.Column="2" Content="Delete" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
                     <Button x:Name="btnReaderHotkey" Grid.Row="4" Grid.Column="0" Content="Button On/Off" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
-                    <ComboBox x:Name="cboReaderOnHotkey" Grid.Row="4" Grid.Column="1"/>
-                    <ComboBox x:Name="cboReaderOffHotkey" Grid.Row="4" Grid.Column="2"/>
+                    <ComboBox x:Name="cboReaderOnHotkey" Grid.Row="4" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20"/>
+                    <ComboBox x:Name="cboReaderOffHotkey" Grid.Row="4" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20"/>
+                    <Button x:Name="btnReaderUIRemoval" Grid.Row="5" Grid.Column="0" Content="UI Removal Mode" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
+                    <DockPanel Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
+                        <ComboBox x:Name="cboReaderUIRemoval" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
+                    </DockPanel>
                 </Grid>
             </TabItem>
             <TabItem x:Name="tabSettings" Header="Settings">
