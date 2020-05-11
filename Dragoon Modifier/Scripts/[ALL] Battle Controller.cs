@@ -14,27 +14,6 @@ public class BattleController {
         int encounterValue = emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE"));
         if (Globals.IN_BATTLE && !Globals.STATS_CHANGED && encounterValue == 41215) {
             Constants.WriteOutput("Battle detected. Loading...");
-            if (Globals.PARTY_SLOT[0] != 0 && Globals.PARTY_SLOT[1] < 9 && Globals.PARTY_SLOT[2] < 9) {
-                if (Globals.PARTY_SLOT[0] != 4) {
-                    if (Globals.PARTY_SLOT[1] == 4) {
-                        Globals.NO_DART = Globals.PARTY_SLOT[0];
-                        emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET, Globals.PARTY_SLOT[2]);
-                        Globals.HASCHEL = 0;
-                    } else if (Globals.PARTY_SLOT[2] == 4) {
-                        Globals.NO_DART = Globals.PARTY_SLOT[0];
-                        emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET, Globals.PARTY_SLOT[1]);
-                        Globals.HASCHEL = 0;
-                    } else {
-                        Globals.NO_DART = Globals.PARTY_SLOT[0];
-                        emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET, 0);
-                    }
-                } else {
-                    Globals.NO_DART = Globals.PARTY_SLOT[1];
-                    emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET + 0x4, Globals.PARTY_SLOT[2]);
-                    Globals.HASCHEL = 1;
-                }
-
-            }
             Globals.UNIQUE_MONSTER_IDS = new List<int>();
             Globals.MONSTER_TABLE = new List<dynamic>();
             Globals.MONSTER_IDS = new List<int>();
@@ -66,7 +45,9 @@ public class BattleController {
                 Globals.STATS_CHANGED = false;
                 Globals.IN_BATTLE = false;
                 Globals.EXITING_BATTLE = 2;
-                Globals.NO_DART = null;
+                if (Globals.PARTY_SLOT[0] != 0 && Globals.PARTY_SLOT[1] < 9 && Globals.PARTY_SLOT[2] < 9) {
+                    emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET, 0);
+                }
                 Globals.HASCHEL = 0;
                 Constants.WriteOutput("Exiting out of battle.");
                 if (Globals.ITEM_CHANGE == true && (!Globals.DIFFICULTY_MODE.Equals("Hard") && !Globals.DIFFICULTY_MODE.Equals("Hell"))) {
@@ -192,7 +173,7 @@ public class BattleController {
                     };
             for (int slot = 0; slot < 3; slot++) {
                 int character = Globals.PARTY_SLOT[slot];
-                if (slot == Globals.HASCHEL && Globals.NO_DART != null) {
+                if (slot == 0 && Globals.NO_DART != null) {
                     character = (int) Globals.NO_DART;
                 }
                 if (character == 2 || character == 8) {
@@ -239,7 +220,7 @@ public class BattleController {
             Constants.WriteOutput("Changing Dragoon Stats...");
             for (int slot = 0; slot < 3; slot++) {
                 int character = Globals.PARTY_SLOT[slot];
-                if (slot == Globals.HASCHEL && Globals.NO_DART != null) {
+                if (slot == 0 && Globals.NO_DART != null) {
                     character = (int) Globals.NO_DART;
                 }
                 if (character < 9) {
@@ -291,7 +272,7 @@ public class BattleController {
             Constants.WriteDebug("Changing Character Stats...");
             for (int slot = 0; slot < 3; slot++) {
                 int character = Globals.PARTY_SLOT[slot];
-                if (slot == Globals.HASCHEL && Globals.NO_DART != null) {
+                if (slot == 0 && Globals.NO_DART != null) {
                     character = (int) Globals.NO_DART;
                 }
                 if (character < 9) {
