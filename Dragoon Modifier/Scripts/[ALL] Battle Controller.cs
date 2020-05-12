@@ -123,6 +123,63 @@ public class BattleController {
                         }
                     }
                 }
+                if (Globals.ADDITION_CHANGE == true) {
+                    Constants.WriteOutput("Changing Addition table...");
+                    int reorderedaddition = 0;
+                    int character = 0;
+                    long address = 0x52884 + Constants.OFFSET;
+                    for (int addition = 0; addition < 35; addition++) {
+                        if (new int[] { 7, 13, 18, 22, 28}.Contains(addition)) {
+                            continue;
+                        }
+                        if (addition == 8) {
+                            character = 1;
+                            reorderedaddition = 0;
+                        } else if (addition == 14) {
+                            character = 3;
+                            reorderedaddition = 0;
+                        } else if (addition == 19) {
+                            character = 7;
+                            reorderedaddition = 0;
+                        } else if (addition == 23) {
+                            character = 5;
+                            reorderedaddition = 0;
+                        } else if (addition == 29) {
+                            character = 4;
+                            reorderedaddition = 0;
+                        } else {
+                            if (addition != 0) {
+                                reorderedaddition += 1;
+                            }
+                        }
+                        ushort damage = 0;
+                        ushort sp1 = 0;
+                        ushort sp2 = 0;
+                        ushort sp3 = 0;
+                        ushort sp4 = 0;
+                        ushort sp5 = 0;
+                        for (int hit = 0; hit < 8; hit++) {
+                            damage += (ushort)Globals.DICTIONARY.AdditionData[character, reorderedaddition, hit].DMG;
+                            sp1 += (ushort)(Globals.DICTIONARY.AdditionData[character, reorderedaddition, hit].SP * (1 + (double)Globals.DICTIONARY.AdditionData[character, reorderedaddition, 1].ADD_SP_Multi / 100));
+                            sp2 += (ushort)(Globals.DICTIONARY.AdditionData[character, reorderedaddition, hit].SP * (1 + (double)Globals.DICTIONARY.AdditionData[character, reorderedaddition, 2].ADD_SP_Multi / 100));
+                            sp3 += (ushort)(Globals.DICTIONARY.AdditionData[character, reorderedaddition, hit].SP * (1 + (double)Globals.DICTIONARY.AdditionData[character, reorderedaddition, 3].ADD_SP_Multi / 100));
+                            sp4 += (ushort)(Globals.DICTIONARY.AdditionData[character, reorderedaddition, hit].SP * (1 + (double)Globals.DICTIONARY.AdditionData[character, reorderedaddition, 4].ADD_SP_Multi / 100));
+                            sp5 += (ushort)(Globals.DICTIONARY.AdditionData[character, reorderedaddition, hit].SP * (1 + (double)Globals.DICTIONARY.AdditionData[character, reorderedaddition, 5].ADD_SP_Multi / 100));
+                        }
+                        emulator.WriteShortU(address + addition * 0xE + 0x2, sp1);
+                        emulator.WriteShortU(address + addition * 0xE + 0x4, sp2);
+                        emulator.WriteShortU(address + addition * 0xE + 0x6, sp3);
+                        emulator.WriteShortU(address + addition * 0xE + 0x8, sp4);
+                        emulator.WriteShortU(address + addition * 0xE + 0xA, sp5);
+                        emulator.WriteShortU(address + addition * 0xE + 0xC, damage);
+
+                        emulator.WriteByteU(0xb6b597 + addition * 0x18, (byte)Globals.DICTIONARY.AdditionData[character, reorderedaddition, 1].ADD_DMG_Multi);
+                        emulator.WriteByteU(0xb6b597 + 0x4 + addition * 0x18, (byte)Globals.DICTIONARY.AdditionData[character, reorderedaddition, 2].ADD_DMG_Multi);
+                        emulator.WriteByteU(0xb6b597 + 0x8 + addition * 0x18, (byte)Globals.DICTIONARY.AdditionData[character, reorderedaddition, 3].ADD_DMG_Multi);
+                        emulator.WriteByteU(0xb6b597 + 0xC + addition * 0x18, (byte)Globals.DICTIONARY.AdditionData[character, reorderedaddition, 4].ADD_DMG_Multi);
+                        emulator.WriteByteU(0xb6b597 + 0x10 + addition * 0x18, (byte)Globals.DICTIONARY.AdditionData[character, reorderedaddition, 5].ADD_DMG_Multi);
+                    }
+                }
             }
         }
     }
