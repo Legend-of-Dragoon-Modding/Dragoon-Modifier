@@ -424,7 +424,7 @@ public class BattleController {
                 {4, 23 },
                 {5, 8 },
                 {6, 28 },
-                {7, 32 },
+                {7, 31 },
                 {8, 13 }
             };
             Dictionary<int, byte> dmagic3 = new Dictionary<int, byte> {
@@ -446,7 +446,7 @@ public class BattleController {
                 {4, 21 },
                 {5, 26 },
                 {6, 25 },
-                {7, 31 },
+                {7, 30 },
                 {8, 65 }
             };
             Dictionary<int, byte> dmagic1 = new Dictionary<int, byte> {
@@ -457,12 +457,17 @@ public class BattleController {
                 {4, 20 },
                 {5, 14 },
                 {6, 24 },
-                {7, 30 },
+                {7, 29 },
                 {8, 66 }
             };
             if (dlv == 5) {
-                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 4, dmagic5[character]);
-                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 3, dmagic3[character]);
+                if (Globals.NO_DART != 7) {
+                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 4, dmagic5[character]);
+                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 3, dmagic3[character]);
+                } else {
+                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 4, 0xFF);
+                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 3, dmagic5[character]);
+                }
                 emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 2, dmagic2[character]);
                 emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 1, dmagic1[character]);
             } else if (dlv > 2) {
