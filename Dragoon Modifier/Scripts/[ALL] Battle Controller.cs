@@ -486,36 +486,7 @@ public class BattleController {
                 emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 2, 0xFF);
                 emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 1, 0xFF);
             }
-            if (Globals.PARTY_SLOT[0] == 4) {
-                emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x12, 4); // Magic
-                if (Globals.CURRENT_STATS[4].DLV == 5) {
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x16, dmagic5[4]);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x15, dmagic3[4]);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x14, dmagic2[4]);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x13, dmagic1[4]);
-                } else if (Globals.CURRENT_STATS[4].DLV > 2) {
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x16, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x15, dmagic3[4]);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x14, dmagic2[4]);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x13, dmagic1[4]);
-                } else if (Globals.CURRENT_STATS[4].DLV > 1) {
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x16, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x15, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x14, dmagic2[4]);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x13, dmagic1[4]);
-                } else if (Globals.CURRENT_STATS[4].DLV > 0) {
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x16, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x15, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x14, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x13, dmagic1[4]);
-                } else {
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x16, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x15, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x14, 0xFF);
-                    emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET + 0x13, 0xFF);
-                }
-            }
-
+           
             if (Globals.ADDITION_CHANGE == false) {
                 Dictionary<int, int> additionnum = new Dictionary<int, int> {
                     {0, 0 },
