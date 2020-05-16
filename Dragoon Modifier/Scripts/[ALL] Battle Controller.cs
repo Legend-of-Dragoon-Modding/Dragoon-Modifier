@@ -55,7 +55,6 @@ public class BattleController {
                 if (Globals.PARTY_SLOT[0] != 0 && Globals.PARTY_SLOT[1] < 9 && Globals.PARTY_SLOT[2] < 9) {
                     emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET, 0);
                 }
-                Globals.HASCHEL = 0;
                 Constants.WriteOutput("Exiting out of battle.");
                 if (Globals.ITEM_CHANGE == true && (!Globals.DIFFICULTY_MODE.Equals("Hard") && !Globals.DIFFICULTY_MODE.Equals("Hell"))) {
                     Constants.WriteOutput("Changing Item table...");
@@ -385,17 +384,18 @@ public class BattleController {
             while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[0].Read("Turn") == 0)) {
                 Thread.Sleep(50);
             }
-            int current_turn = Globals.CHARACTER_TABLE[Globals.HASCHEL].Read("Turn");
-            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Turn", 800);
+            int current_turn = Globals.CHARACTER_TABLE[0].Read("Turn");
+            Globals.CHARACTER_TABLE[0].Write("Turn", 800);
             int character = (int) Globals.NO_DART;
-            emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET + Globals.HASCHEL * 0x4, (byte) character);
+            Globals.CHARACTER_TABLE[0].Write("Dragoon", 0x20);
+            emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET, (byte) character);
             emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET + 0x234E, (byte) character); // Secondary ID
-            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Image", (byte) Globals.NO_DART);
-            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Weapon", emulator.ReadByte(Constants.GetAddress("EQUIP_TABLE") + ((int) Globals.NO_DART * 0x2C)));
-            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Helmet", emulator.ReadByte(Constants.GetAddress("EQUIP_TABLE") + 1 + ((int) Globals.NO_DART * 0x2C)));
-            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Armor", emulator.ReadByte(Constants.GetAddress("EQUIP_TABLE") + 2 + ((int) Globals.NO_DART * 0x2C)));
-            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Shoes", emulator.ReadByte(Constants.GetAddress("EQUIP_TABLE") + 3 + ((int) Globals.NO_DART * 0x2C)));
-            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Accessory", emulator.ReadByte(Constants.GetAddress("EQUIP_TABLE") + 4 + ((int) Globals.NO_DART * 0x2C)));
+            Globals.CHARACTER_TABLE[0].Write("Image", (byte) Globals.NO_DART);
+            Globals.CHARACTER_TABLE[0].Write("Weapon", emulator.ReadByte(Constants.GetAddress("EQUIP_TABLE") + ((int) Globals.NO_DART * 0x2C)));
+            Globals.CHARACTER_TABLE[0].Write("Helmet", emulator.ReadByte(Constants.GetAddress("EQUIP_TABLE") + 1 + ((int) Globals.NO_DART * 0x2C)));
+            Globals.CHARACTER_TABLE[0].Write("Armor", emulator.ReadByte(Constants.GetAddress("EQUIP_TABLE") + 2 + ((int) Globals.NO_DART * 0x2C)));
+            Globals.CHARACTER_TABLE[0].Write("Shoes", emulator.ReadByte(Constants.GetAddress("EQUIP_TABLE") + 3 + ((int) Globals.NO_DART * 0x2C)));
+            Globals.CHARACTER_TABLE[0].Write("Accessory", emulator.ReadByte(Constants.GetAddress("EQUIP_TABLE") + 4 + ((int) Globals.NO_DART * 0x2C)));
             Dictionary<int, byte> charelement = new Dictionary<int, byte> {
                 {0, 128 },
                 {1, 64 },
@@ -407,13 +407,13 @@ public class BattleController {
                 {7, 2 },
                 {8, 32 }
             };
-            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Element", charelement[character]);
-            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("LV", Globals.CURRENT_STATS[character].LV);
-            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("DLV", Globals.CURRENT_STATS[character].DLV);
-            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("SP", 100);
-            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("HP_Regen", 0);
-            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("SP_Regen", 0);
-            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("MP_Regen", 0);
+            Globals.CHARACTER_TABLE[0].Write("Element", charelement[character]);
+            Globals.CHARACTER_TABLE[0].Write("LV", Globals.CURRENT_STATS[character].LV);
+            Globals.CHARACTER_TABLE[0].Write("DLV", Globals.CURRENT_STATS[character].DLV);
+            Globals.CHARACTER_TABLE[0].Write("SP", 100);
+            Globals.CHARACTER_TABLE[0].Write("HP_Regen", 0);
+            Globals.CHARACTER_TABLE[0].Write("SP_Regen", 0);
+            Globals.CHARACTER_TABLE[0].Write("MP_Regen", 0);
             int dlv = Globals.CURRENT_STATS[character].DLV;
             emulator.WriteByteU(Constants.GetAddress("DRAGOON_MAGIC") + Constants.OFFSET, (byte) character); // Magic
             Dictionary<int, byte> dmagic5 = new Dictionary<int, byte> {
@@ -551,7 +551,7 @@ public class BattleController {
                     {255, 0 }
                 };
                 int addition = additionnum[emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + (character * 0x2C) + 0x19)];
-                long address = Constants.GetAddress("ADDITION") + GetOffset(emulator) + Globals.HASCHEL * 0x100;
+                long address = Constants.GetAddress("ADDITION") + GetOffset(emulator);
                 for (int hit = 0; hit < 8; hit++) {
                     emulator.WriteShort(address + (hit * 0x20), (ushort) Globals.DICTIONARY.AdditionData[character, addition, hit].UU1);
                     emulator.WriteShort(address + (hit * 0x20) + 0x2, (ushort) Globals.DICTIONARY.AdditionData[character, addition, hit].Next_Hit);
@@ -579,62 +579,62 @@ public class BattleController {
                     emulator.WriteByte(address + (hit * 0x20) + 0x1F, Globals.DICTIONARY.AdditionData[character, addition, hit].UU15);
                 }
                 int addition_level = emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + (character * 0x2C) + 0x1A + addition);
-                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("ADD_DMG_Multi", Globals.DICTIONARY.AdditionData[character, addition, addition_level].ADD_DMG_Multi);
-                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("ADD_SP_Multi", Globals.DICTIONARY.AdditionData[character, addition, addition_level].ADD_SP_Multi);
+                Globals.CHARACTER_TABLE[0].Write("ADD_DMG_Multi", Globals.DICTIONARY.AdditionData[character, addition, addition_level].ADD_DMG_Multi);
+                Globals.CHARACTER_TABLE[0].Write("ADD_SP_Multi", Globals.DICTIONARY.AdditionData[character, addition, addition_level].ADD_SP_Multi);
             }
             if (Globals.DRAGOON_CHANGE == false) {
-                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("DAT", Globals.DICTIONARY.DragoonStats[character][dlv].DAT);
-                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("DMAT", Globals.DICTIONARY.DragoonStats[character][dlv].DMAT);
-                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("DDF", Globals.DICTIONARY.DragoonStats[character][dlv].DDF);
-                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("DMDF", Globals.DICTIONARY.DragoonStats[character][dlv].DMDF);
+                Globals.CHARACTER_TABLE[0].Write("DAT", Globals.DICTIONARY.DragoonStats[character][dlv].DAT);
+                Globals.CHARACTER_TABLE[0].Write("DMAT", Globals.DICTIONARY.DragoonStats[character][dlv].DMAT);
+                Globals.CHARACTER_TABLE[0].Write("DDF", Globals.DICTIONARY.DragoonStats[character][dlv].DDF);
+                Globals.CHARACTER_TABLE[0].Write("DMDF", Globals.DICTIONARY.DragoonStats[character][dlv].DMDF);
             }
             if ((Globals.ITEM_CHANGE == false) || (Globals.CHARACTER_CHANGE == false)) {
-                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("HP", Globals.CURRENT_STATS[character].HP);
-                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Max_HP", Globals.CURRENT_STATS[character].Max_HP);
-                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("AT", Globals.CURRENT_STATS[character].AT);
-                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("OG_AT", Globals.CURRENT_STATS[character].AT);
-                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("MAT", Globals.CURRENT_STATS[character].MAT);
-                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("OG_MAT", Globals.CURRENT_STATS[character].MAT);
-                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("DF", Globals.CURRENT_STATS[character].DF);
-                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("OG_DF", Globals.CURRENT_STATS[character].DF);
-                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("MDF", Globals.CURRENT_STATS[character].MDF);
-                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("OG_MDF", Globals.CURRENT_STATS[character].MDF);
-                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("SPD", Globals.CURRENT_STATS[character].SPD);
-                Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("OG_SPD", Globals.CURRENT_STATS[character].SPD);
+                Globals.CHARACTER_TABLE[0].Write("HP", Globals.CURRENT_STATS[character].HP);
+                Globals.CHARACTER_TABLE[0].Write("Max_HP", Globals.CURRENT_STATS[character].Max_HP);
+                Globals.CHARACTER_TABLE[0].Write("AT", Globals.CURRENT_STATS[character].AT);
+                Globals.CHARACTER_TABLE[0].Write("OG_AT", Globals.CURRENT_STATS[character].AT);
+                Globals.CHARACTER_TABLE[0].Write("MAT", Globals.CURRENT_STATS[character].MAT);
+                Globals.CHARACTER_TABLE[0].Write("OG_MAT", Globals.CURRENT_STATS[character].MAT);
+                Globals.CHARACTER_TABLE[0].Write("DF", Globals.CURRENT_STATS[character].DF);
+                Globals.CHARACTER_TABLE[0].Write("OG_DF", Globals.CURRENT_STATS[character].DF);
+                Globals.CHARACTER_TABLE[0].Write("MDF", Globals.CURRENT_STATS[character].MDF);
+                Globals.CHARACTER_TABLE[0].Write("OG_MDF", Globals.CURRENT_STATS[character].MDF);
+                Globals.CHARACTER_TABLE[0].Write("SPD", Globals.CURRENT_STATS[character].SPD);
+                Globals.CHARACTER_TABLE[0].Write("OG_SPD", Globals.CURRENT_STATS[character].SPD);
                 if (Globals.ITEM_CHANGE == false) {
-                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("MP", Globals.CURRENT_STATS[character].MP);
-                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Max_MP", Globals.CURRENT_STATS[character].Max_MP);
-                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Stat_Res", Globals.CURRENT_STATS[character].Stat_Res);
-                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("E_Half", Globals.CURRENT_STATS[character].E_Half);
-                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("E_Immune", Globals.CURRENT_STATS[character].E_Immune);
-                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("A_AV", Globals.CURRENT_STATS[character].A_AV);
-                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("M_AV", Globals.CURRENT_STATS[character].M_AV);
-                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("A_HIT", Globals.CURRENT_STATS[character].A_Hit);
-                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("M_HIT", Globals.CURRENT_STATS[character].M_Hit);
-                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("P_Half", Globals.CURRENT_STATS[character].P_Half);
-                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("M_Half", Globals.CURRENT_STATS[character].M_Half);
-                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("On_Hit_Status", Globals.CURRENT_STATS[character].Status);
-                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("On_Hit_Status_Chance", Globals.CURRENT_STATS[character].Status_Chance);
-                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Revive", Globals.CURRENT_STATS[character].Revive);
-                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("SP_Regen", Globals.CURRENT_STATS[character].SP_Regen);
-                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("MP_Regen", Globals.CURRENT_STATS[character].MP_Regen);
-                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("HP_Regen", Globals.CURRENT_STATS[character].HP_Regen);
-                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Display_Element", Globals.CURRENT_STATS[character].Element);
-                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("MP_M_Hit", Globals.CURRENT_STATS[character].MP_M_Hit);
-                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("SP_M_Hit", Globals.CURRENT_STATS[character].SP_M_Hit);
-                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("MP_P_Hit", Globals.CURRENT_STATS[character].MP_P_Hit);
-                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("SP_P_Hit", Globals.CURRENT_STATS[character].SP_P_Hit);
-                    Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("SP_Multi", Globals.CURRENT_STATS[character].SP_Multi);
+                    Globals.CHARACTER_TABLE[0].Write("MP", Globals.CURRENT_STATS[character].MP);
+                    Globals.CHARACTER_TABLE[0].Write("Max_MP", Globals.CURRENT_STATS[character].Max_MP);
+                    Globals.CHARACTER_TABLE[0].Write("Stat_Res", Globals.CURRENT_STATS[character].Stat_Res);
+                    Globals.CHARACTER_TABLE[0].Write("E_Half", Globals.CURRENT_STATS[character].E_Half);
+                    Globals.CHARACTER_TABLE[0].Write("E_Immune", Globals.CURRENT_STATS[character].E_Immune);
+                    Globals.CHARACTER_TABLE[0].Write("A_AV", Globals.CURRENT_STATS[character].A_AV);
+                    Globals.CHARACTER_TABLE[0].Write("M_AV", Globals.CURRENT_STATS[character].M_AV);
+                    Globals.CHARACTER_TABLE[0].Write("A_HIT", Globals.CURRENT_STATS[character].A_Hit);
+                    Globals.CHARACTER_TABLE[0].Write("M_HIT", Globals.CURRENT_STATS[character].M_Hit);
+                    Globals.CHARACTER_TABLE[0].Write("P_Half", Globals.CURRENT_STATS[character].P_Half);
+                    Globals.CHARACTER_TABLE[0].Write("M_Half", Globals.CURRENT_STATS[character].M_Half);
+                    Globals.CHARACTER_TABLE[0].Write("On_Hit_Status", Globals.CURRENT_STATS[character].Status);
+                    Globals.CHARACTER_TABLE[0].Write("On_Hit_Status_Chance", Globals.CURRENT_STATS[character].Status_Chance);
+                    Globals.CHARACTER_TABLE[0].Write("Revive", Globals.CURRENT_STATS[character].Revive);
+                    Globals.CHARACTER_TABLE[0].Write("SP_Regen", Globals.CURRENT_STATS[character].SP_Regen);
+                    Globals.CHARACTER_TABLE[0].Write("MP_Regen", Globals.CURRENT_STATS[character].MP_Regen);
+                    Globals.CHARACTER_TABLE[0].Write("HP_Regen", Globals.CURRENT_STATS[character].HP_Regen);
+                    Globals.CHARACTER_TABLE[0].Write("Display_Element", Globals.CURRENT_STATS[character].Element);
+                    Globals.CHARACTER_TABLE[0].Write("MP_M_Hit", Globals.CURRENT_STATS[character].MP_M_Hit);
+                    Globals.CHARACTER_TABLE[0].Write("SP_M_Hit", Globals.CURRENT_STATS[character].SP_M_Hit);
+                    Globals.CHARACTER_TABLE[0].Write("MP_P_Hit", Globals.CURRENT_STATS[character].MP_P_Hit);
+                    Globals.CHARACTER_TABLE[0].Write("SP_P_Hit", Globals.CURRENT_STATS[character].SP_P_Hit);
+                    Globals.CHARACTER_TABLE[0].Write("SP_Multi", Globals.CURRENT_STATS[character].SP_Multi);
                 }
             }
 
-            while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[Globals.HASCHEL].Read("Action") != 8)) {
+            while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[0].Read("Action") != 8)) {
                 Thread.Sleep(50);
             }
-            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Turn", current_turn);
+            Globals.CHARACTER_TABLE[0].Write("Turn", current_turn);
             Thread.Sleep(250);
-            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Menu", 16);
-            while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[Globals.HASCHEL].Read("Menu") != 96)) {
+            Globals.CHARACTER_TABLE[0].Write("Menu", 16);
+            while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[0].Read("Menu") != 96)) {
                 Thread.Sleep(50);
             }
             if (Globals.NO_DART == 4) {
@@ -644,14 +644,14 @@ public class BattleController {
                     " 0x00 0x01 0x00 0x02 0x00 0x03 0x00 0x04 0x00 0x05 0x00 0x06 0x00 0x07 0x00 0x08 0x00 0x09 0x00 0x0A 0x00 0x0B 0x00 0x0C 0x00 0x0D 0x00 0x0E 0x00 0x0F 0x00 0x10 0x00 0x11 0x00 0x12" +
                     " 0x00 0x13 0x00 0x14 0x00 0x15 0x00 0x16 0x00 0x17 0x00 0x18 0x00 0x19 0x00 0x1A 0x00 0x1B"));
             }
-            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("Menu", 16);
-            while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[Globals.HASCHEL].Read("Action") != 9)) {
+            Globals.CHARACTER_TABLE[0].Write("Menu", 16);
+            while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[0].Read("Action") != 9)) {
                 Thread.Sleep(50);
             }
-            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("SP", Globals.CURRENT_STATS[character].SP);
-            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("HP_Regen", Globals.CURRENT_STATS[character].HP_Regen);
-            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("MP_Regen", Globals.CURRENT_STATS[character].MP_Regen);
-            Globals.CHARACTER_TABLE[Globals.HASCHEL].Write("SP_Regen", Globals.CURRENT_STATS[character].SP_Regen);
+            Globals.CHARACTER_TABLE[0].Write("SP", Globals.CURRENT_STATS[character].SP);
+            Globals.CHARACTER_TABLE[0].Write("HP_Regen", Globals.CURRENT_STATS[character].HP_Regen);
+            Globals.CHARACTER_TABLE[0].Write("MP_Regen", Globals.CURRENT_STATS[character].MP_Regen);
+            Globals.CHARACTER_TABLE[0].Write("SP_Regen", Globals.CURRENT_STATS[character].SP_Regen);
         }
     }
 

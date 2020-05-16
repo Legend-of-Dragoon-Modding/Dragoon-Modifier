@@ -51,7 +51,6 @@ namespace Dragoon_Modifier {
         public static double DF_MULTI = 1;
         public static double MDF_MULTI = 1;
         public static double SPD_MULTI = 1;
-        public static int HASCHEL = 0;
         public static Dictionary<string, bool> dmScripts = new Dictionary<string, bool>();
         public static Dictionary<string, int> CUSTOM_VALUES = new Dictionary<string, int>();
         public static string[] MONSTER_NAME = new string[5];
