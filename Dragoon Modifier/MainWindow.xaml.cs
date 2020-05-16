@@ -34,6 +34,7 @@ namespace Dragoon_Modifier {
         public ProgressBar[] progressMATB = new ProgressBar[5];
         public ProgressBar[] progressCATB = new ProgressBar[3];
         public ReaderWindow readerWindow = new ReaderWindow();
+        int oldOffset = 0;
         #endregion
 
         #region Script Variables
@@ -753,6 +754,12 @@ namespace Dragoon_Modifier {
                 bool preset = Convert.ToBoolean(Constants.KEY.GetValue("Preset Hotkeys"));
                 miPresetHotkeys.IsChecked = preset;
                 presetHotkeys = miPresetHotkeys.IsChecked;
+            }
+
+            if (Constants.KEY.GetValue("Offset") == null) {
+                Constants.KEY.SetValue("Offset", 0);
+            } else {
+                oldOffset = Int32.Parse(Constants.KEY.GetValue("Offset").ToString());
             }
         }
 
@@ -2307,6 +2314,7 @@ namespace Dragoon_Modifier {
                                         Globals.CHARACTER_TABLE[i].Write("AT", originalCharacterStats[i, 1]);
                                         Globals.CHARACTER_TABLE[i].Write("MAT", originalCharacterStats[i, 2]);
                                         dartBurnStack = 0;
+                                        Globals.SetCustomValue("Burn Stack", 0);
                                         burnActive = false;
                                         Constants.WriteGLogOutput("Burn stack deactivated.");
                                     }
@@ -2546,8 +2554,28 @@ namespace Dragoon_Modifier {
                                 emulator.WriteByte(Constants.GetAddress("SKIP_DIALOG_1"), 0);
                                 emulator.WriteByte(Constants.GetAddress("SKIP_DIALOG_2"), 0);
                             } else if (Globals.HOTKEY == (Hotkey.KEY_CROSS + Hotkey.KEY_RIGHT)) { //UB Gold
+                            }
+                        } else { //Battle
+                            if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_UP)) { //Exit Dragoon Slot 1
+                                if (emulator.ReadByte(Constants.GetAddress("DRAGOON_TURNS")) > 0) {
+                                    emulator.WriteByte(Constants.GetAddress("DRAGOON_TURNS"), 1);
+                                    Constants.WriteGLogOutput("Slot 1 will exit Dragoon after next action.");
+                                    Globals.LAST_HOTKEY = Constants.GetTime();
+                                }
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_RIGHT)) { //Exit Dragoon Slot 2
+                                if (emulator.ReadByte(Constants.GetAddress("DRAGOON_TURNS") + 0x4) > 0) {
+                                    emulator.WriteByte(Constants.GetAddress("DRAGOON_TURNS") + 0x4, 1);
+                                    Constants.WriteGLogOutput("Slot 2 will exit Dragoon after next action.");
+                                    Globals.LAST_HOTKEY = Constants.GetTime();
+                                }
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_LEFT)) { //Exit Dragoon Slot 3
+                                if (emulator.ReadByte(Constants.GetAddress("DRAGOON_TURNS") + 0x8) > 0) {
+                                    emulator.WriteByte(Constants.GetAddress("DRAGOON_TURNS") + 0x8, 1);
+                                    Constants.WriteGLogOutput("Slot 3 will exit Dragoon after next action.");
+                                    Globals.LAST_HOTKEY = Constants.GetTime();
+                                }
                             } else if (Globals.HOTKEY == (Hotkey.KEY_SQUARE + Hotkey.KEY_UP)) { //*TB Slot 1
-                                if (extraTurnBattleC[0] > 6000) {
+                                if (extraTurnBattleC[0] >= 6000) {
                                     ExtraTurnBattle(ref extraTurnBattleC[0], 0);
                                     Globals.LAST_HOTKEY = Constants.GetTime();
                                 }
@@ -2563,8 +2591,8 @@ namespace Dragoon_Modifier {
                                     }
                                 }
                             } else if (Globals.HOTKEY == (Hotkey.KEY_SQUARE + Hotkey.KEY_RIGHT)) { //*TB Slot 2
-                                if (extraTurnBattleC[1] > 6000) {
-                                    ExtraTurnBattle(ref extraTurnBattleC[1], 0);
+                                if (extraTurnBattleC[1] >= 6000) {
+                                    ExtraTurnBattle(ref extraTurnBattleC[1], 1);
                                     Globals.LAST_HOTKEY = Constants.GetTime();
                                 }
 
@@ -2579,8 +2607,8 @@ namespace Dragoon_Modifier {
                                     }
                                 }
                             } else if (Globals.HOTKEY == (Hotkey.KEY_SQUARE + Hotkey.KEY_LEFT)) { //*TB Slot 3
-                                if (extraTurnBattleC[2] > 6000) {
-                                    ExtraTurnBattle(ref extraTurnBattleC[2], 0);
+                                if (extraTurnBattleC[2] >= 6000) {
+                                    ExtraTurnBattle(ref extraTurnBattleC[2], 2);
                                     Globals.LAST_HOTKEY = Constants.GetTime();
                                 }
 
@@ -2594,34 +2622,7 @@ namespace Dragoon_Modifier {
                                         Globals.LAST_HOTKEY = Constants.GetTime();
                                     }
                                 }
-
-                            }
-                        } else { //Battle
-                            if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_UP)) { //Exit Dragoon Slot 1
-                                if (emulator.ReadByte(Constants.GetAddress("DRAGOON_TURNS")) > 0) {
-                                    emulator.WriteByte(Constants.GetAddress("DRAGOON_TURNS"), 1);
-                                    Constants.WriteGLogOutput("Slot 1 will exit Dragoon after next action.");
-                                    Globals.LAST_HOTKEY = Constants.GetTime();
-                                }
-                            }
-                            if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_RIGHT)) { //Exit Dragoon Slot 2
-                                if (emulator.ReadByte(Constants.GetAddress("DRAGOON_TURNS") + 0x4) > 0) {
-                                    emulator.WriteByte(Constants.GetAddress("DRAGOON_TURNS") + 0x4, 1);
-                                    Constants.WriteGLogOutput("Slot 2 will exit Dragoon after next action.");
-                                    Globals.LAST_HOTKEY = Constants.GetTime();
-                                }
-                            }
-                            if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_LEFT)) { //Exit Dragoon Slot 3
-                                if (emulator.ReadByte(Constants.GetAddress("DRAGOON_TURNS") + 0x8) > 0) {
-                                    emulator.WriteByte(Constants.GetAddress("DRAGOON_TURNS") + 0x8, 1);
-                                    Constants.WriteGLogOutput("Slot 3 will exit Dragoon after next action.");
-                                    Globals.LAST_HOTKEY = Constants.GetTime();
-                                }
-                            }
-                            if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_LEFT)) { //*TB Slot 1
-
-                            }
-                            if (Globals.HOTKEY == (Hotkey.KEY_CIRCLE + Hotkey.KEY_LEFT)) { //Burn Stack
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_CIRCLE + Hotkey.KEY_LEFT)) { //Burn Stack
                                 if (!burnActive) {
                                     for (int i = 0; i < 3; i++) {
                                         if (Globals.PARTY_SLOT[i] == 0) {
@@ -2637,8 +2638,7 @@ namespace Dragoon_Modifier {
                                     Constants.WriteGLogOutput("Burn stack is already active.");
                                 }
                                 Globals.LAST_HOTKEY = Constants.GetTime();
-                            }
-                            if (Globals.HOTKEY == (Hotkey.KEY_CIRCLE + Hotkey.KEY_RIGHT)) { //Dragon Buster II
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_CIRCLE + Hotkey.KEY_RIGHT)) { //Dragon Buster II
                                 bool skip = true;
                                 for (int i = 0; i < 3; i++) {
                                     if (Globals.PARTY_SLOT[i] == 3 && Globals.CHARACTER_TABLE[i].Read("Weapon") == 162) {
@@ -2677,8 +2677,7 @@ namespace Dragoon_Modifier {
                                     Constants.WriteGLogOutput("Dragon Buster II not equipped.");
                                 }
                                 Globals.LAST_HOTKEY = Constants.GetTime();
-                            }
-                            if (Globals.HOTKEY == (Hotkey.KEY_CIRCLE + Hotkey.KEY_DOWN)) { //Jeweled Hammer
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_CIRCLE + Hotkey.KEY_DOWN)) { //Jeweled Hammer
                                 bool skip = true;
                                 for (int i = 0; i < 3; i++) {
                                     if (Globals.PARTY_SLOT[i] == 6 && Globals.CHARACTER_TABLE[i].Read("Weapon") == 164) {
@@ -2719,8 +2718,7 @@ namespace Dragoon_Modifier {
                                     Constants.WriteGLogOutput("Jeweled Hammer not equipped.");
                                 }
                                 Globals.LAST_HOTKEY = Constants.GetTime();
-                            }
-                            if (Globals.HOTKEY == (Hotkey.KEY_L2 + Hotkey.KEY_LEFT)) { //Soa's Wargod
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_L2 + Hotkey.KEY_LEFT)) { //Soa's Wargod
                                 if ((134217728 & ultimateShopLimited) != 0) {
                                     ubSoasWargod = ubSoasWargod ? false : true;
                                     Constants.WriteGLogOutput("Soa's Wargod has been " + (ubSoasWargod ? "activated" : "deactivated") + ".");
@@ -2728,8 +2726,7 @@ namespace Dragoon_Modifier {
                                     Constants.WriteGLogOutput("You do not have Soa's Wargod.");
                                 }
                                 Globals.LAST_HOTKEY = Constants.GetTime();
-                            }
-                            if (Globals.HOTKEY == (Hotkey.KEY_L2 + Hotkey.KEY_RIGHT)) { //Soa's Dragoon Boost
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_L2 + Hotkey.KEY_RIGHT)) { //Soa's Dragoon Boost
                                 if ((268435456 & ultimateShopLimited) != 0) {
                                     ubSoasDragoonBoost = ubSoasDragoonBoost ? false : true;
                                     Constants.WriteGLogOutput("Soa's Dragoon Boost has been " + (ubSoasDragoonBoost ? "activated" : "deactivated") + ".");
@@ -2737,8 +2734,7 @@ namespace Dragoon_Modifier {
                                     Constants.WriteGLogOutput("You do not have Soa's Dragoon Boost.");
                                 }
                                 Globals.LAST_HOTKEY = Constants.GetTime();
-                            }
-                            if (Globals.HOTKEY == (Hotkey.KEY_CIRCLE + Hotkey.KEY_R2)) { //Black Room
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_CIRCLE + Hotkey.KEY_R2)) { //Black Room
                                 if (Globals.DIFFICULTY_MODE.Equals("Hell")) {
                                     Constants.WriteGLogOutput("Killing monsters is not available in Hell Mode.");
                                 } else {
@@ -2748,9 +2744,9 @@ namespace Dragoon_Modifier {
                                                 Globals.MONSTER_TABLE[i].Write("HP", 0);
                                             }
                                         }
+                                        Globals.LAST_HOTKEY = Constants.GetTime();
                                     }
                                 }
-                                Globals.LAST_HOTKEY = Constants.GetTime();
                             }
                         }
                     }
@@ -2798,9 +2794,9 @@ namespace Dragoon_Modifier {
                         if (ubTrackMTP[0] > Globals.MONSTER_TABLE[0].Read("Turn")) {
                             byte[] dragoonMagic = { 80, 81, 82 };
                             int chance = new Random().Next(1, 100);
-                            if (chance > 50) {
+                            if (chance > 60) {
                                 ubZiegDragoon = dragoonMagic[0];
-                            } else if (chance > 15) {
+                            } else if (chance > 10) {
                                 ubZiegDragoon = dragoonMagic[1];
                             } else {
                                 ubZiegDragoon = dragoonMagic[2];
@@ -2840,7 +2836,7 @@ namespace Dragoon_Modifier {
                         emulator.WriteByte(Globals.M_POINT - 0x50, ubZiegDragoon);
                     ubTrackMTP[0] = Globals.MONSTER_TABLE[0].Read("Turn");
                 }
-                Thread.Sleep(100);
+                Thread.Sleep(10);
             }
         }
         #endregion
@@ -3211,7 +3207,7 @@ namespace Dragoon_Modifier {
                 if (shop)
                     ultimateShopLimited += oneLimited;
             } else {
-                if (oneLimited > 0) 
+                if (oneLimited > 0)
                     ultimateShopLimited += oneLimited;
                 emulator.WriteInteger(Constants.GetAddress("Gold"), gold - price);
                 Constants.WriteGLogOutput("Bought item. Gold: " + (gold - price));
@@ -3392,7 +3388,7 @@ namespace Dragoon_Modifier {
 
         #region HP Cap Break
         public void HPCapBreakField() {
-            if (!Globals.IN_BATTLE && (Globals.BATTLE_VALUE > 4000 && Globals.BATTLE_VALUE < 9999) && maxHPTableLoaded) {
+            if (!Globals.IN_BATTLE && (Globals.BATTLE_VALUE > 0 && Globals.BATTLE_VALUE < 9999) && maxHPTableLoaded) {
                 int hp = Constants.GetAddress("CHAR_MAX_HP_START");
                 int level = Constants.GetAddress("CHAR_LEVEL_START");
                 int helmet = Constants.GetAddress("CHAR_HELMET_START");
@@ -3425,7 +3421,9 @@ namespace Dragoon_Modifier {
                         }
                     }
                 }
-                //Constants.WriteDebug("Break HP: " + hpChangeSave[0] + "/" + hpChangeCheck[0] + " | " + hpChangeSave[1] + "/" + hpChangeCheck[1] + " | " + hpChangeSave[2] + "/" + hpChangeCheck[2]);
+                Constants.WriteDebug("Break HP: " + hpChangeSave[0] + "/" + hpChangeCheck[0] + " | " + hpChangeSave[1] + "/" + hpChangeCheck[1] + " | " + hpChangeSave[2] + "/" + hpChangeCheck[2]);
+            } else {
+                Constants.WritePLog("Please open the menu to load the Max HP table.");
             }
         }
 
@@ -3434,7 +3432,7 @@ namespace Dragoon_Modifier {
                 if (!Globals.CHARACTER_CHANGE) {
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9) {
-                            if (hpChangeCheck[i] != 65535) {
+                            if (hpChangeCheck[i] != 65535 && hpChangeCheck[i] > 9999) {
                                 Globals.CHARACTER_TABLE[i].Write("Max_HP", hpChangeCheck[i]);
                                 if (hpChangeSave[i] != 65535 && Globals.CHARACTER_TABLE[i].Read("HP") < hpChangeSave[i]) {
                                     Globals.CHARACTER_TABLE[i].Write("HP", hpChangeSave[i]);
@@ -3450,7 +3448,8 @@ namespace Dragoon_Modifier {
                 } else {
                     if (emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) == 41215 && Globals.STATS_CHANGED && hpCapBreakOnBattleEntry && maxHPTableLoaded) {
                         for (int i = 0; i < 3; i++) {
-                            hpChangeSave[i] = Globals.CHARACTER_TABLE[i].Read("HP");
+                            if (Globals.PARTY_SLOT[i] < 9)
+                                hpChangeSave[i] = Globals.CHARACTER_TABLE[i].Read("HP");
                             //Constants.WriteDebug("xBreak HP: " + hpChangeSave[0] + "/" + hpChangeCheck[0] + " | " + hpChangeSave[1] + "/" + hpChangeCheck[1] + " | " + hpChangeSave[2] + "/" + hpChangeCheck[2]);
                         }
                     }
@@ -3493,6 +3492,7 @@ namespace Dragoon_Modifier {
                     }
                 }
                 maxHPTableLoaded = true;
+                Constants.WritePLog("Max HP table loaded.");
             }
         }
         #endregion
@@ -3570,9 +3570,16 @@ namespace Dragoon_Modifier {
         }
         public void DuoModeField() {
             if (!Globals.IN_BATTLE && !addSoloPartyMembers) {
+                if (emulator.ReadByte(Constants.GetAddress("PARTY_SLOT") + 0x4) == 255) {
+                    emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x4, emulator.ReadByte(Constants.GetAddress("PARTY_SLOT")));
+                    emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x5, 0);
+                    emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x6, 0);
+                    emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + 0x7, 0);
+                }
+
                 if (emulator.ReadByte(Constants.GetAddress("PARTY_SLOT") + 0x8) != 255) {
-                    for (int i = 4; i < 8; i++) {
-                        emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + i + 0x4, 255);
+                    for (int i = 0; i < 4; i++) {
+                        emulator.WriteByte(Constants.GetAddress("PARTY_SLOT") + i + 0x8, 255);
                     }
                 }
             }
@@ -3665,7 +3672,19 @@ namespace Dragoon_Modifier {
 
         public void SwitchSoloCharacter() {
             if (emulator.ReadByte(Constants.GetAddress("IN_PARTY") + 0x2C * uiCombo["cboSwitchChar"]) != 0) {
-                emulator.WriteByte(Constants.GetAddress("PARTY_SLOT"), uiCombo["cboSwitchChar"]);
+                if (Globals.CheckDMScript("btnSoloMode") || Globals.CheckDMScript("btnDuoMode")) {
+                    emulator.WriteByte(Constants.GetAddress("PARTY_SLOT"), uiCombo["cboSwitchChar"]);
+                    Globals.NO_DART = null;
+                } else {
+                    if (uiCombo["cboSwitchChar"] == 0) {
+                        Globals.NO_DART = null;
+                        emulator.WriteByte(Constants.GetAddress("PARTY_SLOT"), uiCombo["cboSwitchChar"]);
+                    } else {
+                        Globals.NO_DART = uiCombo["cboSwitchChar"];
+                        Constants.WritePLogOutput("No Dart has been activated for Slot 1 and will swap to your select character in battle.");
+                    }
+                }
+
             } else {
                 Constants.WritePLogOutput("The selected character is not in the party.");
             }
@@ -5926,7 +5945,7 @@ namespace Dragoon_Modifier {
                     }
                 }
             }
-            
+
         }
         #endregion
 
@@ -7326,7 +7345,7 @@ namespace Dragoon_Modifier {
                         ultimateHP[0] -= (int) Math.Round(damage[i]); //damage head
                         ultimateHP[1] += (int) Math.Round(heal[i]); //heal arm
                     } else if (i == 1) { //hit arm
-                        //ultimateHP[1] -= (int) Math.Round(damage[i]); //damage arm
+                                         //ultimateHP[1] -= (int) Math.Round(damage[i]); //damage arm
                         ultimateHP[0] += (int) Math.Round(heal[i]); //heal head
                     } else if (i == 2) { //hit body
                         ultimateHP[0] -= (int) Math.Round(damage[i]); //damage head
@@ -7639,6 +7658,7 @@ namespace Dragoon_Modifier {
                     dragoonChangesOnBattleEntry = true;
                     checkRoseDamage = checkFlowerStorm = burnActive = starChildren = false;
                     dartBurnStack = 0;
+                    Globals.SetCustomValue("Burn Stack", 0);
                 } else {
                     if (emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) == 41215) {
                         for (int i = 0; i < 3; i++) {
@@ -8089,6 +8109,7 @@ namespace Dragoon_Modifier {
 
         public void AddBurnStack(int amount) {
             dartBurnStack = (dartBurnStack + amount) > 6 ? 6 : (dartBurnStack + amount);
+            Globals.SetCustomValue("Burn Stack", dartBurnStack);
             Constants.WriteGLogOutput("Dart's Burn Stack Count: " + dartBurnStack);
         }
         #endregion
@@ -8128,37 +8149,40 @@ namespace Dragoon_Modifier {
             if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !ubElementalShift && eleBombTurns == 0) {
                 eleBombItemUsed = emulator.ReadByte(Globals.MONS_ADDRESS[0] + 0xABC);
                 if ((eleBombItemUsed >= 241 && eleBombItemUsed <= 248) || eleBombItemUsed == 250) {
-                    byte player1Action = Globals.CHARACTER_TABLE[0].Read("Action");
-                    byte player2Action = Globals.CHARACTER_TABLE[1].Read("Action");
-                    byte player3Action = Globals.CHARACTER_TABLE[2].Read("Action");
                     if (Globals.PARTY_SLOT[2] < 9) {
-                        if (player1Action == 24 && (player2Action == 16 || player2Action == 18) && (player3Action == 16 || player3Action == 18)) {
+                        byte player1Action = Globals.CHARACTER_TABLE[0].Read("Action");
+                        byte player2Action = Globals.CHARACTER_TABLE[1].Read("Action");
+                        byte player3Action = Globals.CHARACTER_TABLE[2].Read("Action");
+                        if (player1Action == 24 && (player2Action == 16 || player2Action == 18 || player2Action == 208) && (player3Action == 16 || player3Action == 18 || player3Action == 208)) {
                             eleBombSlot = 0;
                             eleBombTurns = 5;
                             eleBombChange = false;
                         }
-                        if (player2Action == 24 && (player1Action == 16 || player1Action == 18) && (player3Action == 16 || player3Action == 18)) {
+                        if (player2Action == 24 && (player1Action == 16 || player1Action == 18 || player1Action == 208) && (player3Action == 16 || player3Action == 18 || player3Action == 208)) {
                             eleBombSlot = 1;
                             eleBombTurns = 5;
                             eleBombChange = false;
                         }
-                        if (player3Action == 24 && (player1Action == 16 || player1Action == 18) && (player2Action == 16 || player2Action == 18)) {
+                        if (player3Action == 24 && (player1Action == 16 || player1Action == 18 || player1Action == 208) && (player2Action == 16 || player2Action == 18 || player2Action == 208)) {
                             eleBombSlot = 2;
                             eleBombTurns = 5;
                             eleBombChange = false;
                         }
                     } else if (Globals.PARTY_SLOT[1] < 9) {
-                        if (player1Action == 24 && (player2Action == 16 || player2Action == 18)) {
+                        byte player1Action = Globals.CHARACTER_TABLE[0].Read("Action");
+                        byte player2Action = Globals.CHARACTER_TABLE[1].Read("Action");
+                        if (player1Action == 24 && (player2Action == 16 || player2Action == 18 || player2Action == 208)) {
                             eleBombSlot = 0;
                             eleBombTurns = 5;
                             eleBombChange = false;
                         }
-                        if (player2Action == 24 && (player1Action == 16 || player1Action == 18)) {
+                        if (player2Action == 24 && (player1Action == 16 || player1Action == 18 || player1Action == 208)) {
                             eleBombSlot = 1;
                             eleBombTurns = 5;
                             eleBombChange = false;
                         }
                     } else {
+                        byte player1Action = Globals.CHARACTER_TABLE[0].Read("Action");
                         if (player1Action == 24) {
                             eleBombSlot = 0;
                             eleBombTurns = 5;
@@ -8548,10 +8572,12 @@ namespace Dragoon_Modifier {
                     if (Globals.IN_BATTLE && Globals.STATS_CHANGED) {
                         bool partyAttacking = false;
                         for (int i = 0; i < 3; i++) {
-                            byte action = Globals.CHARACTER_TABLE[i].Read("Action");
-                            if (action == 24 || action == 26 || action == 136 || action == 138) {
-                                partyAttacking = true;
-                                dmgTrkSlot = i;
+                            if (Globals.PARTY_SLOT[i] < 9) {
+                                byte action = Globals.CHARACTER_TABLE[i].Read("Action");
+                                if (action == 24 || action == 26 || action == 136 || action == 138) {
+                                    partyAttacking = true;
+                                    dmgTrkSlot = i;
+                                }
                             }
                         }
 
@@ -8574,7 +8600,9 @@ namespace Dragoon_Modifier {
                             }
                         }
                         //}
-
+                        Globals.SetCustomValue("Damage Tracker1", dmgTrkChr[0]);
+                        Globals.SetCustomValue("Damage Tracker2", dmgTrkChr[1]);
+                        Globals.SetCustomValue("Damage Tracker3", dmgTrkChr[2]);
                         Constants.WritePLog("Damage Track: " + dmgTrkChr[0] + " / " + dmgTrkChr[1] + " / " + dmgTrkChr[2]);
                     }
                 }
@@ -9278,36 +9306,44 @@ namespace Dragoon_Modifier {
                     case 8: //RetroArch Beetle PSX HW
                         try {
                             miAttach_Click(null, null);
-                            Process em = null;
-                            //ProcessModule dll = null;
-                            foreach (Process p in Process.GetProcessesByName("retroarch")) {
-                                em = p;
-                            }
-                            /*foreach (ProcessModule pm in em.Modules) {
-                                if (pm.ModuleName == "mednafen_psx_hw_libretro.dll") {
-                                    dll = pm;
+                            if (!CheckOldOffset()) {
+                                Process em = null;
+                                //ProcessModule dll = null;
+                                foreach (Process p in Process.GetProcessesByName("retroarch")) {
+                                    em = p;
                                 }
-                            }*/
+                                /*foreach (ProcessModule pm in em.Modules) {
+                                    if (pm.ModuleName == "mednafen_psx_hw_libretro.dll") {
+                                        dll = pm;
+                                    }
+                                }*/
 
-                            for (int i = 0; i < 16; i++) {
-                                Constants.OFFSET = 0;
-                                var scan = emulator.AoBScan(0x8000000 * i, i == 15 ? 0x7FFFFFFF : (0x8000000 * (i + 1)), "50 53 2D 58 20 45 58 45");
-                                scan.Wait();
-                                var results = scan.Result;
-                                long offset = 0;
-                                foreach (var x in results) {
-                                    offset = x;
-                                    Constants.OFFSET = offset - 0xB070;
+                                for (int i = 0; i < 16; i++) {
+                                    Constants.OFFSET = 0;
+                                    var scan = emulator.AoBScan(0x8000000 * i, i == 15 ? 0x7FFF0000 : (0x8000000 * (i + 1)), "50 53 2D 58 20 45 58 45");
+                                    scan.Wait();
+                                    var results = scan.Result;
+                                    long offset = 0;
+                                    foreach (var x in results) {
+                                        offset = x;
+                                        Constants.OFFSET = offset - 0xB070;
+                                        if (emulator.ReadInteger(Constants.GetAddress("STARTUP_SEARCH")) == 320386 || emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) == 32776 || emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) == 41215) {
+                                            Constants.KEY.SetValue("Offset", Constants.OFFSET);
+                                            break;
+                                        } else {
+                                            Constants.OFFSET = 0;
+                                        }
+                                    }
+
+                                    Constants.WriteDebug("[RetroArch] " + Convert.ToString(Constants.OFFSET, 16).ToUpper()); Constants.WriteDebug("[RetroArch] " + Convert.ToString(Constants.OFFSET, 16).ToUpper());
+
+                                    if (Constants.OFFSET > 0)
+                                        break;
                                 }
-
-                                Constants.WriteDebug("[RetroArch] " + Convert.ToString(Constants.OFFSET, 16).ToUpper());
-
-                                if (Constants.OFFSET > 0)
-                                    break;
-                            }
-                            if (Constants.OFFSET <= 0) {
-                                Constants.WritePLog("Failed to attach to RetroArch.");
-                                throw new Exception();
+                                if (Constants.OFFSET <= 0) {
+                                    Constants.WritePLog("Failed to attach to RetroArch.");
+                                    throw new Exception();
+                                }
                             }
                         } catch (Exception ex) {
                             Constants.WriteOutput("Address calculation failed. Please open retroarch with Beetle PSX HW at the Load Game screen before loading a save.");
@@ -9322,30 +9358,38 @@ namespace Dragoon_Modifier {
                         try {
                             Constants.EMULATOR_NAME = Constants.KEY.GetValue("Other Emulator").ToString();
                             miAttach_Click(null, null);
-                            Process em = null;
-                            foreach (Process p in Process.GetProcessesByName(Constants.EMULATOR_NAME)) {
-                                em = p;
-                            }
-
-                            for (int i = 0; i < 16; i++) {
-                                Constants.OFFSET = 0;
-                                var scan = emulator.AoBScan(0x8000000 * i, i == 15 ? 0x7FFFFFFF : (0x8000000 * (i + 1)), "50 53 2D 58 20 45 58 45");
-                                scan.Wait();
-                                var results = scan.Result;
-                                long offset = 0;
-                                foreach (var x in results) {
-                                    offset = x;
-                                    Constants.OFFSET = offset - 0xB070;
+                            if (!CheckOldOffset()) {
+                                Process em = null;
+                                foreach (Process p in Process.GetProcessesByName(Constants.EMULATOR_NAME)) {
+                                    em = p;
                                 }
 
-                                Constants.WriteDebug("[" + Constants.EMULATOR_NAME + "] " + Convert.ToString(Constants.OFFSET, 16).ToUpper());
+                                for (int i = 0; i < 16; i++) {
+                                    Constants.OFFSET = 0;
+                                    var scan = emulator.AoBScan(0x8000000 * i, i == 15 ? 0x7FFF0000 : (0x8000000 * (i + 1)), "50 53 2D 58 20 45 58 45");
+                                    scan.Wait();
+                                    var results = scan.Result;
+                                    long offset = 0;
+                                    foreach (var x in results) {
+                                        offset = x;
+                                        Constants.OFFSET = offset - 0xB070;
+                                        if (emulator.ReadInteger(Constants.GetAddress("STARTUP_SEARCH")) == 320386 || emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) == 32776 || emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) == 41215) {
+                                            Constants.KEY.SetValue("Offset", Constants.OFFSET);
+                                            break;
+                                        } else {
+                                            Constants.OFFSET = 0;
+                                        }
+                                    }
 
-                                if (Constants.OFFSET > 0)
-                                    break;
-                            }
-                            if (Constants.OFFSET <= 0) {
-                                Constants.WritePLog("Failed to attach to " + Constants.EMULATOR_NAME + ".");
-                                throw new Exception();
+                                    Constants.WriteDebug("[" + Constants.EMULATOR_NAME + "] " + Convert.ToString(Constants.OFFSET, 16).ToUpper());
+
+                                    if (Constants.OFFSET > 0)
+                                        break;
+                                }
+                                if (Constants.OFFSET <= 0) {
+                                    Constants.WritePLog("Failed to attach to " + Constants.EMULATOR_NAME + ".");
+                                    throw new Exception();
+                                }
                             }
                         } catch (Exception ex) {
                             Constants.WriteOutput("Address calculation failed. Please open " + Constants.EMULATOR_NAME + ".");
@@ -9359,6 +9403,16 @@ namespace Dragoon_Modifier {
                 }
                 LoadMaxHPTable(true);
                 Constants.ProgramInfo();
+            }
+        }
+
+        public bool CheckOldOffset() {
+            Constants.OFFSET = oldOffset;
+            if (emulator.ReadInteger(Constants.GetAddress("STARTUP_SEARCH")) == 320386 || emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) == 32776 || emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) == 41215) {
+                return true;
+            } else {
+                Constants.OFFSET = 0;
+                return false;
             }
         }
 
@@ -9798,6 +9852,7 @@ namespace Dragoon_Modifier {
                 Globals.NO_DART = null;
                 emulator.WriteByte(Constants.GetAddress("PARTY_SLOT"), 0);
                 btn.Background = new SolidColorBrush(Color.FromArgb(255, 255, 168, 168));
+                Constants.WritePLogOutput("No Dart turned off.");
             }
         }
 

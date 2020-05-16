@@ -133,7 +133,33 @@ namespace Dragoon_Modifier {
             if (Globals.IN_BATTLE && Globals.STATS_CHANGED) {
                 for (int i = 0; i < 3; i++) {
                     foreach (string field in Constants.READER_CHARACTER_LABEL) {
-                        StreamWriter writer = new StreamWriter(WRITE_LOCATION + "/Character/" + field + "" + (i + 1) + ".txt");
+                        string location = field + "" + (i + 1);
+                        if (field.Equals("Burn Stack")) {
+                            if (Globals.PARTY_SLOT[i] != 0) {
+                                continue;
+                            } else {
+                                location = "Burn Stack";
+                            }
+                        } else if (field.Equals("Damage Tracker1")) {
+                            if (i != 0) {
+                                continue;
+                            } else {
+                                location = "Damage Tracker1";
+                            }
+                        } else if (field.Equals("Damage Tracker2")) {
+                            if (i != 1) {
+                                continue;
+                            } else {
+                                location = "Damage Tracker2";
+                            }
+                        } else if (field.Equals("Damage Tracker3")) {
+                            if (i != 2) {
+                                continue;
+                            } else {
+                                location = "Damage Tracker3";
+                            }
+                        }
+                        StreamWriter writer = new StreamWriter(WRITE_LOCATION + "/Character/" + location + ".txt");
                         if (field.Equals("Name")) {
                             if (Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10)
                                 writer.WriteLine(Globals.CHARACTER_NAME[i] + "*");
@@ -142,7 +168,13 @@ namespace Dragoon_Modifier {
                         } else if (field.Equals("Max_SP")) {
                             writer.WriteLine((Globals.CHARACTER_TABLE[i].Read("DLV") * 100).ToString());
                         } else if (field.Equals("Burn Stack")) {
-
+                            writer.WriteLine(Globals.GetCustomValue("Burn Stack"));
+                        } else if (field.Equals("Damage Tracker1")) {
+                            writer.WriteLine(Globals.GetCustomValue("Damage Tracker1"));
+                        } else if (field.Equals("Damage Tracker2")) {
+                            writer.WriteLine(Globals.GetCustomValue("Damage Tracker2"));
+                        } else if (field.Equals("Damage Tracker3")) {
+                            writer.WriteLine(Globals.GetCustomValue("Damage Tracker3"));
                         } else {
                             writer.WriteLine(Globals.CHARACTER_TABLE[i].Read(field));
                         }
@@ -517,7 +549,13 @@ namespace Dragoon_Modifier {
                             if (character)
                                 this.Content = (Globals.CHARACTER_TABLE[slot - 1].Read("DLV") * 100).ToString();
                         } else if (field.Equals("Burn Stack")) {
-                            //
+                            this.Content = Globals.GetCustomValue("Burn Stack");
+                        } else if (field.Equals("Danage Tracker1")) {
+                            this.Content = Globals.GetCustomValue("Danage Tracker1");
+                        } else if (field.Equals("Danage Tracker2")) {
+                            this.Content = Globals.GetCustomValue("Danage Tracker2");
+                        } else if (field.Equals("Danage Tracker3")) {
+                            this.Content = Globals.GetCustomValue("Danage Tracker3");
                         } else if (field.Equals("Name")) { 
                             if (character) {
                                 if (Globals.CHARACTER_TABLE[slot - 1].Read("Action") == 8 || Globals.CHARACTER_TABLE[slot - 1].Read("Action") == 10)
@@ -812,7 +850,7 @@ namespace Dragoon_Modifier {
                         } else {
                             if (character) {
                                 if (field.Equals("Burn Stack")) {
-                                    //
+                                    this.Value = Globals.GetCustomValue("Burn Stack");
                                 } else {
                                     this.Value = Globals.CHARACTER_TABLE[slot - 1].Read(field);
                                 }
@@ -836,8 +874,8 @@ namespace Dragoon_Modifier {
                             if (character) {
                                 if (field.Equals("Max_SP")) {
                                     this.Maximum = Globals.CHARACTER_TABLE[slot - 1].Read("DLV") * 100;
-                                } else if (field.Equals("Burn Stack Max")) {
-                                    //
+                                } else if (field.Equals("Burn Stack")) {
+                                    this.Maximum = 6;
                                 } else {
                                     this.Maximum = Globals.CHARACTER_TABLE[slot - 1].Read(max);
                                 }

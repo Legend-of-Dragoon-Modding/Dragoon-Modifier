@@ -53,6 +53,7 @@ namespace Dragoon_Modifier {
         public static double SPD_MULTI = 1;
         public static int HASCHEL = 0;
         public static Dictionary<string, bool> dmScripts = new Dictionary<string, bool>();
+        public static Dictionary<string, int> CUSTOM_VALUES = new Dictionary<string, int>();
         public static string[] MONSTER_NAME = new string[5];
         public static string[] CHARACTER_NAME = new string[3];
 
@@ -70,11 +71,26 @@ namespace Dragoon_Modifier {
             }
 
         }
+
         public static bool CheckDMScript(string name) {
             if (Globals.dmScripts.ContainsKey(name) && Globals.dmScripts[name])
                 return true;
             else
                 return false;
+        }
+
+        public static int GetCustomValue(string name) {
+            if (Globals.CUSTOM_VALUES.ContainsKey(name))
+                return Globals.CUSTOM_VALUES[name];
+            else
+                return 0;
+        }
+
+        public static void SetCustomValue(string name, int value) {
+            if (Globals.CUSTOM_VALUES.ContainsKey(name))
+                Globals.CUSTOM_VALUES[name] = value;
+            else
+                Globals.CUSTOM_VALUES.Add(name, value);
         }
     }
 }
