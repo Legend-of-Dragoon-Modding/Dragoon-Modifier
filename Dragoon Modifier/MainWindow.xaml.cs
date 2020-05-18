@@ -2653,9 +2653,9 @@ namespace Dragoon_Modifier {
                                                 emulator.WriteAOB(0x51B14, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 18 00 1E 00 1A 00 0F 00 00 00 10 00 00 00 24 00 3D 00 39 00 4A 00 FF A0");
                                                 emulator.WriteAOB(0x51BA8, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 16 00 1B 00 1D 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 00 00 FF A0");
                                             }
-                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x7 + (15 * 0xC), 10); //Astral Drain MP
-                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x7 + (16 * 0xC), 20); //Death Dimension MP
-                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x7 + (19 * 0xC), 80); //Dark Dragon MP
+                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (15 * 0xC), 10); //Astral Drain MP
+                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (16 * 0xC), 20); //Death Dimension MP
+                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (19 * 0xC), 80); //Dark Dragon MP
                                             roseEnhanceDragoon = false;
                                             Constants.WriteGLogOutput("Rose's dragoon magic has returned to normal.");
                                         } else {
@@ -2664,9 +2664,9 @@ namespace Dragoon_Modifier {
                                                 emulator.WriteAOB(0x51B14, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1C 00 1E 00 15 00 0F 00 00 00 10 00 00 00 24 00 3D 00 39 00 4A 00 FF A0");
                                                 emulator.WriteAOB(0x51BA8, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 16 00 16 00 1A 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 FF A0");
                                             }
-                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x7 + (15 * 0xC), 20); //Astral Drain MP
-                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x7 + (16 * 0xC), 50); //Death Dimension MP
-                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x7 + (19 * 0xC), 100); //Dark Dragon MP
+                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (15 * 0xC), 20); //Astral Drain MP
+                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (16 * 0xC), 50); //Death Dimension MP
+                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (19 * 0xC), 100); //Dark Dragon MP
                                             roseEnhanceDragoon = true;
                                             Constants.WriteGLogOutput("Rose will now consume more MP for bonus effects.");
                                         }
@@ -2692,10 +2692,10 @@ namespace Dragoon_Modifier {
                                                 emulator.WriteAOB(0x51D3C, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1A 00 18 00 15 00 0F 00 FF A0");
                                                 emulator.WriteAOB(0x51D64, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 16 00 19 00 15 00 15 00 0F 00 FF A0");
                                             }
-                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x7 + (24 * 0xC), 10); //Freezing Ring MP
-                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x7 + (25 * 0xC), 20); //Rainbow Breath MP
-                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x7 + (27 * 0xC), 80); //Diamond Dust MP
-                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x7 + (28 * 0xC), 80); //Blue Sea Dragon MP
+                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (24 * 0xC), 10); //Freezing Ring MP
+                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (25 * 0xC), 20); //Rainbow Breath MP
+                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (27 * 0xC), 80); //Diamond Dust MP
+                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (28 * 0xC), 80); //Blue Sea Dragon MP
                                             jeweledHammer = false;
                                             Constants.WriteGLogOutput("Meru's dragoon magic has returned to normal.");
                                         } else {
@@ -2704,10 +2704,10 @@ namespace Dragoon_Modifier {
                                                 emulator.WriteAOB(0x51D3C, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1D 00 1D 00 15 00 0F 00 FF A0");
                                                 emulator.WriteAOB(0x51D64, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 17 00 16 00 15 00 15 00 0F 00 FF A0");
                                             }
-                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x7 + (24 * 0xC), 50); //Freezing Ring MP
-                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x7 + (25 * 0xC), 100); //Rainbow Breath MP
-                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x7 + (27 * 0xC), 100); //Diamond Dust MP
-                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x7 + (28 * 0xC), 150); //Blue Sea Dragon MP
+                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (24 * 0xC), 50); //Freezing Ring MP
+                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (25 * 0xC), 100); //Rainbow Breath MP
+                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (27 * 0xC), 100); //Diamond Dust MP
+                                            emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (28 * 0xC), 150); //Blue Sea Dragon MP
                                             jeweledHammer = true;
                                             Constants.WriteGLogOutput("Meru will now consume more MP for bonus effects.");
                                         }
@@ -2743,7 +2743,6 @@ namespace Dragoon_Modifier {
                                             for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
                                                 Globals.MONSTER_TABLE[i].Write("HP", 0);
                                             }
-                                            Constants.WriteGLogOutput("You can now kill the monsters.");
                                         }
                                         Globals.LAST_HOTKEY = Constants.GetTime();
                                     }
@@ -3609,7 +3608,7 @@ namespace Dragoon_Modifier {
 
                 if (Globals.CheckDMScript("btnReduceSDEXP")) {
                     for (int i = 0; i < 5; i++) {
-                        emulator.WriteShort(Constants.GetAddress("MONSTER_REWARDS_EXP") + (i * 0x1A8), (ushort) Math.Ceiling((double) (emulator.ReadShort(Constants.GetAddress("MONSTER_REWARDS_EXP") + (i * 0x1A8)) / 3)));
+                        emulator.WriteShort(Constants.GetAddress("MONSTER_REWARDS_EXP") + (i * 0x1A8), (ushort) Math.Round((double) (emulator.ReadShort(Constants.GetAddress("MONSTER_REWARDS_EXP") + (i * 0x1A8)) / 3)));
                     }
                 }
                 soloModeOnBattleEntry = true;
@@ -4104,10 +4103,10 @@ namespace Dragoon_Modifier {
                                     emulator.WriteAOB(0x51D3C, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1D 00 1D 00 15 00 0F 00 FF A0");
                                     emulator.WriteAOB(0x51D64, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 17 00 16 00 15 00 15 00 0F 00 FF A0");
                                 }
-                                emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x7 + (24 * 0xC), 50); //Freezing Ring MP
-                                emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x7 + (25 * 0xC), 100); //Rainbow Breath MP
-                                emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x7 + (27 * 0xC), 100); //Diamond Dust MP
-                                emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x7 + (28 * 0xC), 150); //Blue Sea Dragon
+                                emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (24 * 0xC), 50); //Freezing Ring MP
+                                emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (25 * 0xC), 100); //Rainbow Breath MP
+                                emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (27 * 0xC), 100); //Diamond Dust MP
+                                emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (28 * 0xC), 150); //Blue Sea Dragon
                             }
                         }
 
@@ -7589,7 +7588,7 @@ namespace Dragoon_Modifier {
                 if (Constants.REGION == Region.USA) {
                     //Red-Eyed
                     emulator.WriteAOB(0x51858, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 1A 00 16 00 15 00 0F 00 FF A0");
-                    if (Globals.CheckDMScript("btnDivineRed") && Globals.PARTY_SLOT[0] == 0 && (/*Globals.DIFFICULTY_MODE.Equals("Normal") || */Globals.DIFFICULTY_MODE.Equals("Hard"))) {
+                    if (Globals.CheckDMScript("btnDivineRed") && Globals.PARTY_SLOT[0] == 0 && (Globals.DIFFICULTY_MODE.Equals("Normal") || Globals.DIFFICULTY_MODE.Equals("Hard"))) {
                         emulator.WriteAOB(0x51884, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 16 00 15 00 17 00 15 00 0F 00 FF A0");
                         emulator.WriteAOB(0x518AC, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 16 00 1A 00 18 00 15 00 0F 00 FF A0");
                     } else {
@@ -7628,10 +7627,10 @@ namespace Dragoon_Modifier {
                     emulator.WriteAOB(0x51DE4, "23 00 39 00 4A 00 4C 00 40 00 00 00 31 00 32 00 30 00 00 00 17 00 17 00 17 00 15 00 0F 00 FF A0");
                 }
 
-                if (Globals.CheckDMScript("btnDivineRed") && Globals.PARTY_SLOT[0] == 0 && (/*Globals.DIFFICULTY_MODE.Equals("Normal") || */Globals.DIFFICULTY_MODE.Equals("Hard")) && Globals.PARTY_SLOT[0] == 0) {
+                if (Globals.CheckDMScript("btnDivineRed") && Globals.PARTY_SLOT[0] == 0 && (Globals.DIFFICULTY_MODE.Equals("Normal") || Globals.DIFFICULTY_MODE.Equals("Hard")) && Globals.PARTY_SLOT[0] == 0) {
                     emulator.WriteAOB(Constants.GetAddress("SLOT1_SPELLS"), "01 02 FF FF FF FF FF FF");
-                    emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x7 + (1 * 0xC), 50); //Explosion MP
-                    emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x7 + (2 * 0xC), 50); //Final Burst MP
+                    emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (1 * 0xC), 50); //Explosion MP
+                    emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (2 * 0xC), 50); //Final Burst MP
                 }
 
                 for (int i = 0; i < 3; i++) {
@@ -7641,13 +7640,13 @@ namespace Dragoon_Modifier {
                 }
 
                 if (Globals.DIFFICULTY_MODE.Equals("Hell")) {
-                    emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x7 + (7 * 0xC), (uiCombo["cboFlowerStorm"] + 1) * 20); //Lavitz's Blossom Storm MP
-                    emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x7 + (26 * 0xC), (uiCombo["cboFlowerStorm"] + 1) * 20); //Albert's Rose storm MP
-                    emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x7 + (11 * 0xC), 20); //Shana's Moon Light MP
-                    emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x7 + (66 * 0xC), 20); //???'s Moon Light MP
-                    emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x7 + (25 * 0xC), 30); //Rainbow Breath MP
-                    emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x7 + (12 * 0xC), 40); //Shana's Gates of Heaven MP
-                    emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x7 + (67 * 0xC), 40); //???'s Gates of Heaven MP
+                    emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (7 * 0xC), (uiCombo["cboFlowerStorm"] + 1) * 20); //Lavitz's Blossom Storm MP
+                    emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (26 * 0xC), (uiCombo["cboFlowerStorm"] + 1) * 20); //Albert's Rose storm MP
+                    emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (11 * 0xC), 20); //Shana's Moon Light MP
+                    emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (66 * 0xC), 20); //???'s Moon Light MP
+                    emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (25 * 0xC), 30); //Rainbow Breath MP
+                    emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (12 * 0xC), 40); //Shana's Gates of Heaven MP
+                    emulator.WriteByte(Constants.GetAddress("SPELL_TABLE") + 0x8 + (67 * 0xC), 40); //???'s Gates of Heaven MP
                 }
             }
         }
