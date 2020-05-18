@@ -407,7 +407,6 @@ public class BattleController {
                 {7, 2 },
                 {8, 32 }
             };
-            Globals.CHARACTER_TABLE[0].Write("Element", charelement[character]);
             Globals.CHARACTER_TABLE[0].Write("LV", Globals.CURRENT_STATS[character].LV);
             Globals.CHARACTER_TABLE[0].Write("DLV", Globals.CURRENT_STATS[character].DLV);
             Globals.CHARACTER_TABLE[0].Write("SP", 100);
