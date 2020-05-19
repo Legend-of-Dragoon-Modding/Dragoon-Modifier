@@ -603,7 +603,7 @@ public class BattleController {
                 Thread.Sleep(50);
             }
             Globals.CHARACTER_TABLE[0].Write("Turn", current_turn);
-            Thread.Sleep(250);
+            Thread.Sleep(300);
             Globals.CHARACTER_TABLE[0].Write("Menu", 16);
             while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[0].Read("Menu") != 96)) {
                 Thread.Sleep(50);
