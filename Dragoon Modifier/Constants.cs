@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using CSScriptLibrary;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -26,12 +27,14 @@ namespace Dragoon_Modifier {
         public static RegistryKey SUBKEY;
         public static string[] READER_CHARACTER_LABEL = { "Name","Action","Menu","LV","DLV","HP","Max_HP","MP","Max_MP","SP","Max_SP","Element","Display_Element","AT","OG_AT","MAT","OG_MAT","DF","OG_DF","MDF","OG_MDF","SPD","OG_SPD","Turn","A_HIT","M_HIT","A_AV","M_AV","P_Immune","M_Immune","P_Half","M_Half","E_Immune","E_Half","On_Hit_Status","On_Hit_Status_Chance","Stat_Res","Death_Res","SP_P_Hit","SP_M_Hit","MP_P_Hit","MP_M_Hit","HP_Regen","MP_Regen","SP_Regen","SP_Multi","Revive","Unique_Index","Image","DAT","DMAT","DDF","DMDF","Special_Effect","Guard","Dragoon","Spell_Cast","PWR_AT","PWR_AT_TRN","PWR_MAT","PWR_MAT_TRN","PWR_DF","PWR_DF_TRN","PWR_MDF","PWR_MDF_TRN","ADD_SP_Multi","ADD_DMG_Multi","Weapon","Helmet","Armor","Shoes","Accessory","POS_FB","POS_UD","POS_RL","A_HIT_INC","A_HIT_INC_TRN","M_HIT_INC","M_HIT_INC_TRN","PHYSICAL_IMMUNITY","PHYSICAL_IMMUNITY_TRN","ELEMENTAL_IMMUNITY","ELEMENTAL_IMMUNITY_TRN","SPEED_UP_TRN","SPEED_DOWN_TRN","SP_ONHIT_PHYSICAL","SP_ONHIT_PHYSICAL_TRN","MP_ONHIT_PHYSICAL","MP_ONHIT_PHYSICAL_TRN","SP_ONHIT_MAGIC","SP_ONHIT_MAGIC_TRN","MP_ONHIT_MAGIC","MP_ONHIT_MAGIC_TRN","Color_Map","Burn Stack", "Damage Tracker1","Damage Tracker2","Damage Tracker3" };
         public static string[] READER_MONSTER_LABEL = { "Name","Action","HP","Max_HP","Element","Display_Element","AT","OG_AT","MAT","OG_MAT","DF","OG_DF","MDF","OG_MDF","SPD","OG_SPD","Turn","A_AV","M_AV","P_Immune","M_Immune","P_Half","M_Half","E_Immune","E_Half","Stat_Res","Death_Res","Unique_Index","EXP","Gold","Drop_Chance","Drop_Item","Special_Effect","Attack_Move"  };
+        public static int[] DISC_OFFSET = { 0xD80, 0x0, 0x1458, 0x1B0 };
+
         public static void Init() {
             using (StreamReader reader = File.OpenText("Scripts\\Addresses.csv")) {
                 string line;
                 while ((line = reader.ReadLine()) != null) {
                     string[] values = line.Split(',');
-                    ADDRESSES.Add(values[0], new int[] { Convert.ToInt32(values[1], 16), Convert.ToInt32(values[2], 16), Convert.ToInt32(values[3], 16) });
+                    ADDRESSES.Add(values[0], new int[] { Convert.ToInt32(values[1], 16), Convert.ToInt32(values[2], 16), Convert.ToInt32(values[3], 16), Convert.ToInt32(values[4], 16), Convert.ToInt32(values[5], 16), Convert.ToInt32(values[6], 16), Convert.ToInt32(values[7], 16) });
                 }
             }
 
@@ -43,11 +46,16 @@ namespace Dragoon_Modifier {
                         if (ADDRESSES.ContainsKey(values[0])) {
                             Constants.WriteDebug("Same key warning: " + values[0]);
                         } else {
-                            ADDRESSES.Add(values[0], new int[] { Convert.ToInt32(values[1], 16), Convert.ToInt32(values[2], 16), Convert.ToInt32(values[3], 16) });
+                            ADDRESSES.Add(values[0], new int[] { Convert.ToInt32(values[1], 16), Convert.ToInt32(values[2], 16), Convert.ToInt32(values[3], 16), Convert.ToInt32(values[4], 16), Convert.ToInt32(values[5], 16), Convert.ToInt32(values[6], 16), Convert.ToInt32(values[7], 16) });
                         }
                     }
                 }
             }
+
+            ADDRESSES.Add("HASCHEL_FIX" + 1, new int[] { ADDRESSES["HASCHEL_FIX"][0] + DISC_OFFSET[0], ADDRESSES["HASCHEL_FIX"][1] + DISC_OFFSET[0], ADDRESSES["HASCHEL_FIX"][2] + DISC_OFFSET[0], ADDRESSES["HASCHEL_FIX"][3] + DISC_OFFSET[0], ADDRESSES["HASCHEL_FIX"][4] + DISC_OFFSET[0], ADDRESSES["HASCHEL_FIX"][5] + DISC_OFFSET[0], ADDRESSES["HASCHEL_FIX"][6] + DISC_OFFSET[0] });
+            ADDRESSES.Add("HASCHEL_FIX" + 2, new int[] { ADDRESSES["HASCHEL_FIX"][0] + DISC_OFFSET[1], ADDRESSES["HASCHEL_FIX"][1] + DISC_OFFSET[1], ADDRESSES["HASCHEL_FIX"][2] + DISC_OFFSET[1], ADDRESSES["HASCHEL_FIX"][3] + DISC_OFFSET[1], ADDRESSES["HASCHEL_FIX"][4] + DISC_OFFSET[1], ADDRESSES["HASCHEL_FIX"][5] + DISC_OFFSET[1], ADDRESSES["HASCHEL_FIX"][6] + DISC_OFFSET[1] });
+            ADDRESSES.Add("HASCHEL_FIX" + 3, new int[] { ADDRESSES["HASCHEL_FIX"][0] + DISC_OFFSET[2], ADDRESSES["HASCHEL_FIX"][1] + DISC_OFFSET[2], ADDRESSES["HASCHEL_FIX"][2] + DISC_OFFSET[2], ADDRESSES["HASCHEL_FIX"][3] + DISC_OFFSET[2], ADDRESSES["HASCHEL_FIX"][4] + DISC_OFFSET[2], ADDRESSES["HASCHEL_FIX"][5] + DISC_OFFSET[2], ADDRESSES["HASCHEL_FIX"][6] + DISC_OFFSET[2] });
+            ADDRESSES.Add("HASCHEL_FIX" + 4, new int[] { ADDRESSES["HASCHEL_FIX"][0] + DISC_OFFSET[3], ADDRESSES["HASCHEL_FIX"][1] + DISC_OFFSET[3], ADDRESSES["HASCHEL_FIX"][2] + DISC_OFFSET[3], ADDRESSES["HASCHEL_FIX"][3] + DISC_OFFSET[3], ADDRESSES["HASCHEL_FIX"][4] + DISC_OFFSET[3], ADDRESSES["HASCHEL_FIX"][5] + DISC_OFFSET[3], ADDRESSES["HASCHEL_FIX"][6] + DISC_OFFSET[3] });
 
             KEY = Registry.CurrentUser.OpenSubKey("Legend of Dragoon", true);
             if (KEY == null) 
