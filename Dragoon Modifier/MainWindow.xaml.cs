@@ -3608,7 +3608,7 @@ namespace Dragoon_Modifier {
 
                 if (Globals.CheckDMScript("btnReduceSDEXP")) {
                     for (int i = 0; i < 5; i++) {
-                        emulator.WriteShort(Constants.GetAddress("MONSTER_REWARDS_EXP") + (i * 0x1A8), (ushort) Math.Round((double) (emulator.ReadShort(Constants.GetAddress("MONSTER_REWARDS_EXP") + (i * 0x1A8)) / 3)));
+                        emulator.WriteShort(Constants.GetAddress("MONSTER_REWARDS_EXP") + (i * 0x1A8), (ushort) Math.Ceiling((double) (emulator.ReadShort(Constants.GetAddress("MONSTER_REWARDS_EXP") + (i * 0x1A8)) / 3)));
                     }
                 }
                 soloModeOnBattleEntry = true;
