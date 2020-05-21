@@ -55,6 +55,7 @@ namespace Dragoon_Modifier {
         public static Dictionary<string, int> CUSTOM_VALUES = new Dictionary<string, int>();
         public static string[] MONSTER_NAME = new string[5];
         public static string[] CHARACTER_NAME = new string[3];
+        public static bool SHANA_FIX = false;
 
         public static void SetM_POINT(long mPoint) {
             M_POINT = mPoint;

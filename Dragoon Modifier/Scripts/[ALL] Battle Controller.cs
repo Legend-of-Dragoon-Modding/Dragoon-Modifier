@@ -15,11 +15,41 @@ public class BattleController {
         if (Globals.IN_BATTLE && Globals.STATS_CHANGED && encounterValue == 41215 && Globals.PARTY_SLOT[0] == 4 && emulator.ReadByte(Constants.GetAddress("HASCHEL_FIX" + Globals.DISC)) != 0x80) {
             HaschelFix(emulator);
         }
+        if (Globals.IN_BATTLE && Globals.STATS_CHANGED && encounterValue == 41215 && new int[] { 414, 408, 387, 409, 392 }.Contains(Globals.ENCOUNTER_ID) && Globals.PARTY_SLOT[0] == 2 && Globals.SHANA_FIX == false) {
+            byte HP = 0;
+            if (Globals.ENCOUNTER_ID == 408 | Globals.ENCOUNTER_ID == 409) {
+                if (Globals.MONSTER_TABLE[0].Read("HP") != 0) {
+                    HP = 1;
+                }
+            } else {
+                foreach (dynamic monster in Globals.MONSTER_TABLE) {
+                    if (monster.Read("HP") != 0) {
+                        HP |= 1;
+                    }
+                }
+            }  
+            if (HP == 0) {
+                Constants.WriteDebug("Toggle Shana");
+                emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET, 0);
+                Globals.CHARACTER_TABLE[0].Write("Action", 2);
+                while (Globals.CHARACTER_TABLE[0].Read("Action") != 0) {
+                    Thread.Sleep(250);
+                }
+                try {
+                    Thread.Sleep(10000);
+                    emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET, (byte)Globals.NO_DART);
+                } catch {
+                    Constants.WriteDebug("No Dart not set");
+                }
+                Globals.SHANA_FIX = true;
+            }
+        }
         if (Globals.IN_BATTLE && !Globals.STATS_CHANGED && encounterValue == 41215) {
             Constants.WriteOutput("Battle detected. Loading...");
             Globals.UNIQUE_MONSTER_IDS = new List<int>();
             Globals.MONSTER_TABLE = new List<dynamic>();
             Globals.MONSTER_IDS = new List<int>();
+            Globals.SHANA_FIX = false;
             Thread.Sleep(4000);
             Globals.MONSTER_SIZE = emulator.ReadByte(Constants.GetAddress("MONSTER_SIZE"));
             Globals.UNIQUE_MONSTERS = emulator.ReadByte(Constants.GetAddress("UNIQUE_MONSTERS"));
