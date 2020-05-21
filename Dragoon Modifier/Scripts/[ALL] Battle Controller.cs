@@ -343,6 +343,7 @@ public class BattleController {
                     Globals.CHARACTER_TABLE[slot].Write("MAT", Globals.CURRENT_STATS[character].MAT);
                     Globals.CHARACTER_TABLE[slot].Write("OG_MAT", Globals.CURRENT_STATS[character].MAT);
                     Globals.CHARACTER_TABLE[slot].Write("DF", Globals.CURRENT_STATS[character].DF);
+                    Globals.CHARACTER_TABLE[slot].Write("DF", Globals.CURRENT_STATS[character].DF);
                     Globals.CHARACTER_TABLE[slot].Write("OG_DF", Globals.CURRENT_STATS[character].DF);
                     Globals.CHARACTER_TABLE[slot].Write("MDF", Globals.CURRENT_STATS[character].MDF);
                     Globals.CHARACTER_TABLE[slot].Write("OG_MDF", Globals.CURRENT_STATS[character].MDF);
@@ -654,8 +655,8 @@ public class BattleController {
                         resup = HP / 65535;
                         HP = 65535;
                     }
-                    Globals.MONSTER_TABLE[monster].Write("HP", (short) Math.Round(HP));
-                    Globals.MONSTER_TABLE[monster].Write("Max_HP", (short) Math.Round(HP));
+                    Globals.MONSTER_TABLE[monster].Write("HP", (ushort) Math.Round(HP));
+                    Globals.MONSTER_TABLE[monster].Write("Max_HP", (ushort) Math.Round(HP));
                     Globals.MONSTER_TABLE[monster].Write("AT", (short) Math.Round(Globals.DICTIONARY.StatList[ID].AT * Globals.AT_MULTI));
                     Globals.MONSTER_TABLE[monster].Write("OG_AT", (short) Math.Round(Globals.DICTIONARY.StatList[ID].AT * Globals.AT_MULTI));
                     Globals.MONSTER_TABLE[monster].Write("MAT", (short) Math.Round(Globals.DICTIONARY.StatList[ID].MAT * Globals.MAT_MULTI));
@@ -686,8 +687,8 @@ public class BattleController {
                         resup = HP / 65535;
                         HP = 65535;
                     }
-                    Globals.MONSTER_TABLE[monster].Write("HP", (short) Math.Round(HP));
-                    Globals.MONSTER_TABLE[monster].Write("Max_HP", (short) Math.Round(HP));
+                    Globals.MONSTER_TABLE[monster].Write("HP", (ushort) Math.Round(HP));
+                    Globals.MONSTER_TABLE[monster].Write("Max_HP", (ushort) Math.Round(HP));
                     Globals.MONSTER_TABLE[monster].Write("AT", (short) Math.Round(Globals.DICTIONARY.UltimateStatList[ID].AT * Globals.AT_MULTI));
                     Globals.MONSTER_TABLE[monster].Write("OG_AT", (short) Math.Round(Globals.DICTIONARY.UltimateStatList[ID].AT * Globals.AT_MULTI));
                     Globals.MONSTER_TABLE[monster].Write("MAT", (short) Math.Round(Globals.DICTIONARY.UltimateStatList[ID].MAT * Globals.MAT_MULTI));
@@ -881,12 +882,18 @@ public class BattleController {
         }
 
         public void Write(string attribute, object value) {
-            PropertyInfo property = GetType().GetProperty(attribute);
-            var address = (long[]) property.GetValue(this, null);
-            if (address[1] == 2) {
-                this.emulator.WriteShortU(address[0], Convert.ToUInt16(value));
-            } else {
-                this.emulator.WriteByteU(address[0], Convert.ToByte(value));
+
+            try {
+
+                PropertyInfo property = GetType().GetProperty(attribute);
+                var address = (long[]) property.GetValue(this, null);
+                if (address[1] == 2) {
+                    this.emulator.WriteShortU(address[0], Convert.ToUInt16(value));
+                } else {
+                    this.emulator.WriteByteU(address[0], Convert.ToByte(value));
+                }
+            } catch (Exception e) {
+                Console.WriteLine("A: " + attribute + " - V: " + value);
             }
         }
     }
