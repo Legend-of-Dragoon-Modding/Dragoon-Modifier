@@ -8817,6 +8817,8 @@ namespace Dragoon_Modifier {
                     bossSPLoss = 1000;
                 else if (Globals.ENCOUNTER_ID == 433) //Imago
                     bossSPLoss = 1000;
+                else
+                    bossSPLoss = 0;
 
                 bossSPLossOnBattleEntry = true;
             } else {
