@@ -435,7 +435,7 @@ public class BattleController {
                 {8, 32 }
             };
             Globals.CHARACTER_TABLE[0].Write("LV", Globals.CURRENT_STATS[character].LV);
-            Globals.CHARACTER_TABLE[0].Write("DLV", Globals.CURRENT_STATS[character].DLV);
+            Globals.CHARACTER_TABLE[0].Write("DLV", 1);
             Globals.CHARACTER_TABLE[0].Write("SP", 100);
             Globals.CHARACTER_TABLE[0].Write("HP_Regen", 0);
             Globals.CHARACTER_TABLE[0].Write("SP_Regen", 0);
@@ -646,10 +646,14 @@ public class BattleController {
             while ((emulator.ReadShort(Constants.GetAddress("BATTLE_VALUE")) > 9999) && (Globals.CHARACTER_TABLE[0].Read("Action") != 9)) {
                 Thread.Sleep(50);
             }
+            Globals.CHARACTER_TABLE[0].Write("DLV", Globals.CURRENT_STATS[character].DLV);
             Globals.CHARACTER_TABLE[0].Write("SP", Globals.CURRENT_STATS[character].SP);
             Globals.CHARACTER_TABLE[0].Write("HP_Regen", Globals.CURRENT_STATS[character].HP_Regen);
             Globals.CHARACTER_TABLE[0].Write("MP_Regen", Globals.CURRENT_STATS[character].MP_Regen);
             Globals.CHARACTER_TABLE[0].Write("SP_Regen", Globals.CURRENT_STATS[character].SP_Regen);
+            if (dlv == 0) {
+                Globals.CHARACTER_TABLE[0].Write("Dragoon", 0);
+            }
         }
     }
 
@@ -1280,6 +1284,7 @@ public class BattleController {
         byte sp_multi = 0;
         byte element = 0;
         byte death_res = 0;
+        byte[] dragoon_spirits = new byte[] { 1, 4, 32, 64, 16, 4, 2, 8, 32};
 
         public byte LV { get { return lv; } }
         public byte DLV { get { return dlv; } }
@@ -1318,7 +1323,12 @@ public class BattleController {
 
         public CurrentStats(int character, Emulator emulator) {
             lv = emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + (character * 0x2C) + 0x12);
-            dlv = emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + (character * 0x2C) + 0x13);
+            if ((dragoon_spirits[character] & emulator.ReadByte(Constants.GetAddress("DRAGOON_SPIRITS"))) > 1) {
+                dlv = emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + (character * 0x2C) + 0x13);
+            }
+            if (character == 0 && emulator.ReadByte(Constants.GetAddress("DRAGOON_SPIRITS")) > 128) {
+                dlv = emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + (character * 0x2C) + 0x13);
+            }
             weapon = Globals.DICTIONARY.ItemList[emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + character * 0x2C + 0x14)];
             armor = Globals.DICTIONARY.ItemList[emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + character * 0x2C + 0x15)];
             helm = Globals.DICTIONARY.ItemList[emulator.ReadByteU(Constants.GetAddress("CHAR_TABLE") + Constants.OFFSET + character * 0x2C + 0x16)];
