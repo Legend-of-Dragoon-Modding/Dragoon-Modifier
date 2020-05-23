@@ -113,6 +113,7 @@ namespace Dragoon_Modifier {
         public int bossSPLoss = 0;
         //Reader Mode
         public bool readerRemoveUIOnBattleEntry = false;
+        public bool partyMenu = false;
         //Ultimate Boss
         public int[] ultimateHP = new int[5];
         public int[] ultimateHPSave = new int[5];
@@ -551,6 +552,14 @@ namespace Dragoon_Modifier {
             cboReaderUIRemoval.Items.Add("Remove Pictures and Stats");
             cboReaderUIRemoval.Items.Add("Remove Entire UI");
 
+            cboReaderOnHotkey.Items.Add("None");
+            cboReaderOffHotkey.Items.Add("None");
+            
+            for (int i = 1; i < 17; i++) {
+                cboReaderOnHotkey.Items.Add("F" + i);
+                cboReaderOffHotkey.Items.Add("F" + i);
+            }
+
             battleRow[0] = cboRowDart;
             battleRow[1] = cboRowLavitz;
             battleRow[2] = cboRowShana;
@@ -681,6 +690,8 @@ namespace Dragoon_Modifier {
             cboQTB.SelectedIndex = 0;
             cboFlowerStorm.SelectedIndex = 0;
             cboReaderUIRemoval.SelectedIndex = 0;
+            cboReaderOnHotkey.SelectedIndex = 0;
+            cboReaderOffHotkey.SelectedIndex = 0;
         }
 
         public void LoadKey() {
@@ -761,6 +772,18 @@ namespace Dragoon_Modifier {
             } else {
                 oldOffset = Int32.Parse(Constants.KEY.GetValue("Offset").ToString());
             }
+
+            if (Constants.KEY.GetValue("Reader Hotkey On") == null) {
+                Constants.KEY.SetValue("Reader Hotkey On", 0);
+            } else {
+                cboReaderOnHotkey.SelectedIndex = ((int) Constants.KEY.GetValue("Reader Hotkey On")); ;
+            }
+
+            if (Constants.KEY.GetValue("Reader Hotkey Off") == null) {
+                Constants.KEY.SetValue("Reader Hotkey Off", 0);
+            } else {
+                cboReaderOffHotkey.SelectedIndex = ((int) Constants.KEY.GetValue("Reader Hotkey Off")); ;
+            }
         }
 
         public void LoadReaderKey() {
@@ -822,6 +845,8 @@ namespace Dragoon_Modifier {
             if (miOpenPreset.IsChecked)
                 Constants.KEY.SetValue("Preset", preset);
             Constants.KEY.SetValue("Preset Hotkeys", miPresetHotkeys.IsChecked);
+            Constants.KEY.SetValue("Reader Hotkey On", cboReaderOnHotkey.SelectedIndex);
+            Constants.KEY.SetValue("Reader Hotkey Off", cboReaderOffHotkey.SelectedIndex);
             SaveReaderKey();
         }
 
@@ -2358,6 +2383,8 @@ namespace Dragoon_Modifier {
                         DoubleRepeat();
                     if (Globals.CheckDMScript("btnReader") && uiCombo["cboReaderUIRemoval"] > 0)
                         ReaderRemoveUI();
+                    if (Globals.CheckDMScript("btnReader") && uiCombo["cboReaderOnHotkey"] > 0 && uiCombo["cboReaderOffHotkey"] > 0)
+                        ReaderAutoHotkey();
                 } catch (Exception ex) {
                     Constants.RUN = false;
                     Constants.WriteGLog("Program stopped.");
@@ -10871,6 +10898,50 @@ namespace Dragoon_Modifier {
                     emulator.WriteByte(Globals.M_POINT + 0x19FD, 2);
                 } else if (uiCombo["cboReaderUIRemoval"] == 2) {
                     emulator.WriteShort(Constants.GetAddress("UI_Y"), 270);
+                }
+            }
+        }
+
+        public void ReaderAutoHotkey() {
+            if (Globals.IN_BATTLE && Globals.STATS_CHANGED) {
+                bool update = false;
+                int shanaSlot = -1;
+                int[] actions = new int[3];
+                for (int i = 0; i < 3; i++) {
+                    if (Globals.PARTY_SLOT[i] < 9) {
+                        actions[i] = Globals.CHARACTER_TABLE[i].Read("Action");
+                        if (actions[i] == 8 || actions[i] == 10 || actions[i] == 136) {
+                            update = true;
+                        }
+                        if (Globals.PARTY_SLOT[i] == 2 || Globals.PARTY_SLOT[i] == 8) {
+                            shanaSlot = i;
+                        }
+                    }
+                }
+
+                if (actions[0] == 16 || actions[1] == 16 || actions[2] == 16) {
+                    update = false;
+                }
+
+                if (shanaSlot > -1) {
+                    int otherSlot1 = shanaSlot == 0 ? 1 : 0;
+                    int otherSlot2 = shanaSlot == 2 ? 1 : 2;
+
+                    if (actions[shanaSlot] == 136 && actions[otherSlot1] == 0 && actions[otherSlot2] == 0) {
+                        update = false;
+                    }
+                }
+
+                if (update != partyMenu) {
+                    partyMenu = update;
+
+                    this.Dispatcher.BeginInvoke(new Action(() => {
+                        if (partyMenu) {
+                            System.Windows.Forms.SendKeys.SendWait("{" + cboReaderOnHotkey.SelectedValue + "}");
+                        } else {
+                            System.Windows.Forms.SendKeys.SendWait("{" + cboReaderOffHotkey.SelectedValue + "}");
+                        }
+                    }), DispatcherPriority.ContextIdle);
                 }
             }
         }
