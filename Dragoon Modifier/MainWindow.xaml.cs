@@ -3338,32 +3338,32 @@ namespace Dragoon_Modifier {
         public void TurnOffEarlyAdditions() {
             if (!Globals.IN_BATTLE) {
                 //Dart
-                emulator.WriteByte(0x528AE, 15); //Crush Dance
-                emulator.WriteByte(0x528BC, 22); //Madness Hero
-                emulator.WriteByte(0x528CA, 29); //Moon Strike
-                emulator.WriteByte(0x529D8, 255); //Blazying Dynamo
-                                                  //Lavitz
-                emulator.WriteByte(0x52910, 7); //Rod Typhoon
-                emulator.WriteByte(0x5291E, 11); //Gust of Wind Dance
-                emulator.WriteByte(0x5292C, 255); //Flower Storm
-                                                  //Rose
-                emulator.WriteByte(0x52956, 14); //More & More
-                emulator.WriteByte(0x52964, 19); //Hard Blade
-                emulator.WriteByte(0x52972, 255); //Demon//s Dance
-                                                  //Kongol
-                emulator.WriteByte(0x5299C, 23); //Inferno
-                emulator.WriteByte(0x529AA, 255); //Bone Crush
-                                                  //Meru
-                emulator.WriteByte(0x529D4, 21); //Hammer Spin
-                emulator.WriteByte(0x529E2, 26); //Cool Boogie
-                emulator.WriteByte(0x529F0, 30); //Cat//s Cradle
-                emulator.WriteByte(0x529FE, 255); //Perky Step
-                                                  //Haschel
-                emulator.WriteByte(0x52A28, 14); // Flurry of Styx
-                emulator.WriteByte(0x52A36, 18); //Summon 4 Gods
-                emulator.WriteByte(0x52A44, 22); //5 Ring Shattering
-                emulator.WriteByte(0x52A52, 26); //Hex Hammer
-                emulator.WriteByte(0x52A60, 255); //Omni-Sweep   
+                emulator.WriteByte(Constants.GetAddress("DART_LEVEL_UNLOCK") * 0xE * 3, 15); //Crush Dance
+                emulator.WriteByte(Constants.GetAddress("DART_LEVEL_UNLOCK") * 0xE * 4, 22); //Madness Hero
+                emulator.WriteByte(Constants.GetAddress("DART_LEVEL_UNLOCK") * 0xE * 5, 29); //Moon Strike
+                emulator.WriteByte(Constants.GetAddress("DART_LEVEL_UNLOCK") * 0xE * 6, 255); //Blazying Dynamo
+                //Lavitz
+                emulator.WriteByte(Constants.GetAddress("LAVITZ_LEVEL_UNLOCK") * 0xE * 2, 7); //Rod Typhoon
+                emulator.WriteByte(Constants.GetAddress("LAVITZ_LEVEL_UNLOCK") * 0xE * 3, 11); //Gust of Wind Dance
+                emulator.WriteByte(Constants.GetAddress("LAVITZ_LEVEL_UNLOCK") * 0xE * 4, 255); //Flower Storm
+                //Rose
+                emulator.WriteByte(Constants.GetAddress("ROSE_LEVEL_UNLOCK") + 0xE * 1, 14); //More & More
+                emulator.WriteByte(Constants.GetAddress("ROSE_LEVEL_UNLOCK") + 0xE * 2, 19); //Hard Blade
+                emulator.WriteByte(Constants.GetAddress("ROSE_LEVEL_UNLOCK") + 0xE * 3, 255); //Demon//s Dance
+                //Kongol
+                emulator.WriteByte(Constants.GetAddress("KONGOL_LEVEL_UNLOCK") + 0xE * 1, 23); //Inferno
+                emulator.WriteByte(Constants.GetAddress("KONGOL_LEVEL_UNLOCK") + 0xE * 2, 255); //Bone Crush
+                //Meru
+                emulator.WriteByte(Constants.GetAddress("MERU_LEVEL_UNLOCK") * 0xE * 1, 21); //Hammer Spin
+                emulator.WriteByte(Constants.GetAddress("MERU_LEVEL_UNLOCK") * 0xE * 2, 26); //Cool Boogie
+                emulator.WriteByte(Constants.GetAddress("MERU_LEVEL_UNLOCK") * 0xE * 3, 30); //Cat//s Cradle
+                emulator.WriteByte(Constants.GetAddress("MERU_LEVEL_UNLOCK") * 0xE * 4, 255); //Perky Step
+                //Haschel
+                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") * 0xE * 1, 14); // Flurry of Styx
+                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") * 0xE * 2, 18); //Summon 4 Gods
+                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") * 0xE * 3, 22); //5 Ring Shattering
+                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") * 0xE * 4, 26); //Hex Hammer
+                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") * 0xE * 5, 255); //Omni-Sweep   
             }
         }
         #endregion
