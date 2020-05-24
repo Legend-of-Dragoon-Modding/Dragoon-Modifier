@@ -8875,8 +8875,8 @@ namespace Dragoon_Modifier {
                 this.Dispatcher.BeginInvoke(new Action(() => {
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9) {
-                            int rowType = battleRow[i].SelectedIndex;
-                            int boostType = battleRowBoost[i].SelectedIndex;
+                            int rowType = battleRow[Globals.PARTY_SLOT[i]].SelectedIndex;
+                            int boostType = battleRowBoost[Globals.PARTY_SLOT[i]].SelectedIndex;
                             double attackBoost = 0, magicBoost = 0, defenseBoost = 0;
 
                             if (rowType == 0) { //Stay
