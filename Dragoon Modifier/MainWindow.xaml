@@ -1138,6 +1138,36 @@
                     <Button x:Name="btnReduceSDEXP" Grid.Row="7" Grid.Column="2" Content="Reduce Solo/Duo EXP" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                 </Grid>
             </TabItem>
+            <TabItem x:Name="tabEnhancements3" Header="Enhancements III">
+                <Grid Background="#FFB6B6B6">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="btnTextSpeed" Grid.Row="0" Grid.Column="0" Content="Text Speed" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <Button x:Name="btnAutoText" Grid.Row="1" Grid.Column="0" Content="Auto Advance Text" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <DockPanel Grid.Row="2" Grid.Column="0" HorizontalAlignment="Stretch" Margin="0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Button x:Name="btnZoom" Grid.Column="0" Content="Zoom" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                            <Slider x:Name="sldZoom" Grid.Column="1" Grid.ColumnSpan="2" VerticalAlignment="Center" Value="4096" Minimum="0" Maximum="16384" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="Slider_ValueChanged"/>
+                            <TextBlock x:Name="lblZoom" Grid.Column="3" Text="{Binding ElementName=sldZoom,Path=Value}" VerticalAlignment="Center" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" />
+                        </Grid>
+                    </DockPanel>
+                </Grid>
+            </TabItem>
             <TabItem x:Name="tabShop" Header="Shop">
                 <Grid Background="#FFB6B6B6">
                     <Grid.RowDefinitions>

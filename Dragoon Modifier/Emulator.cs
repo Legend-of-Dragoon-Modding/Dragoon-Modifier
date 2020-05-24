@@ -24,10 +24,29 @@ namespace Dragoon_Modifier {
             WriteMemory("0x" + (address + Constants.OFFSET).ToString("x8"), "int", write.ToString(), file = "");
         }
 
+        public void WriteByte(string address, int write, int offset = 0) {
+            WriteMemory("0x" + (Constants.GetAddress(address) + Constants.OFFSET + offset).ToString("x8"), "byte", write.ToString("X"), "");
+        }
+
+        public void WriteShort(string address, ushort write, int offset = 0) {
+            WriteMemory("0x" + (Constants.GetAddress(address) + Constants.OFFSET + offset).ToString("x8"), "2bytes", write.ToString(), "");
+        }
+
+        public void WriteInteger(string address, int write, int offset = 0) {
+            WriteMemory("0x" + (Constants.GetAddress(address) + Constants.OFFSET + offset).ToString("x8"), "int", write.ToString(), "");
+        }
+
         public void WriteAOB(long address, string aob) {
             String[] aobArray = aob.Split(' ');
             for (int i = 0; i < aobArray.Length; i++) {
                 WriteByte(address + i, Convert.ToByte(aobArray[i], 16));
+            }
+        }
+
+        public void WriteAOB(string address, string aob) {
+            String[] aobArray = aob.Split(' ');
+            for (int i = 0; i < aobArray.Length; i++) {
+                WriteByte(Constants.GetAddress(address) + i, Convert.ToByte(aobArray[i], 16));
             }
         }
 
@@ -41,6 +60,18 @@ namespace Dragoon_Modifier {
 
         public int ReadInteger(long address, string file = "") {
             return ReadInt("0x" + (address + Constants.OFFSET).ToString("x8"), file);
+        }
+
+        public byte ReadByte(string address, int offset = 0) {
+            return (byte) ReadByte("0x" + (Constants.GetAddress(address) + Constants.OFFSET + offset).ToString("x8"), "");
+        }
+
+        public ushort ReadShort(string address, int offset = 0) {
+            return (ushort) Read2Byte("0x" + (Constants.GetAddress(address) + Constants.OFFSET + offset).ToString("x8"), "");
+        }
+
+        public int ReadInteger(string address, int offset = 0) {
+            return ReadInt("0x" + (Constants.GetAddress(address) + Constants.OFFSET + offset).ToString("x8"), "");
         }
 
         public long ScanAOB(string search) {
@@ -99,6 +130,18 @@ namespace Dragoon_Modifier {
             return WriteMemory("0x" + address.ToString("x8"), "int", write.ToString(), file = "");
         }
 
+        public bool WriteByteU(string address, byte write, int offset = 0) {
+            return WriteMemory("0x" + (Constants.GetAddress(address) + offset).ToString("x8"), "byte", write.ToString("X"), "");
+        }
+
+        public bool WriteShortU(string address, ushort write, int offset = 0) {
+            return WriteMemory("0x" + (Constants.GetAddress(address) + offset).ToString("x8"), "2bytes", write.ToString(), "");
+        }
+
+        public bool WriteIntegerU(string address, int write, int offset = 0) {
+            return WriteMemory("0x" + (Constants.GetAddress(address) + offset).ToString("x8"), "int", write.ToString(), "");
+        }
+
         public byte ReadByteU(long address, string file = "") {
             return (byte) ReadByte("0x" + address.ToString("x8"), file);
         }
@@ -109,6 +152,18 @@ namespace Dragoon_Modifier {
 
         public int ReadIntegerU(long address, string file = "") {
             return ReadInt("0x" + address.ToString("x8"), file);
+        }
+
+        public byte ReadByteU(string address, int offset = 0) {
+            return (byte) ReadByte("0x" + (Constants.GetAddress(address) + offset).ToString("x8"), "");
+        }
+
+        public ushort ReadShortU(string address, int offset = 0) {
+            return (ushort) Read2Byte("0x" + (Constants.GetAddress(address) + offset).ToString("x8"), "");
+        }
+
+        public int ReadIntegerU(string address, int offset = 0) {
+            return ReadInt("0x" + (Constants.GetAddress(address) + offset).ToString("x8"), "");
         }
 
         public string ReadName(int nameAddress) {
