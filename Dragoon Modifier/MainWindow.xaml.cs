@@ -3749,6 +3749,7 @@ namespace Dragoon_Modifier {
             foreach (var address in bgmScan) {
                 for (int i = 0; i <= 255; i++) {
                     emulator.WriteByteU((long) address + i, 0);
+                    Thread.Sleep(10);
                 }
             }
             Constants.WriteGLogOutput("Killed BGM.");
@@ -3774,8 +3775,8 @@ namespace Dragoon_Modifier {
         }
         public void KillBGMBattle() {
             if (Globals.IN_BATTLE && !killedBGMBattle && Globals.BATTLE_VALUE > 0) {
-                emulator.WriteShort("MUSIC_SPEED_BATTLE", 0);
                 KillBGM();
+                emulator.WriteShort("MUSIC_SPEED_BATTLE", 0);
                 killedBGMBattle = true;
             } else {
                 if (killedBGMBattle && !Globals.IN_BATTLE) {
