@@ -173,7 +173,7 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 265	Kongol	Earth	640	14	13	120	70	60	0	0	0	0	0	0	None	None	255	144	350	80	Power Wrist	100	Kongol I
 266	Kongol	Earth	3000	39	28	160	100	50	0	0	0	0	0	0	None	None	255	144	2000	200	Wargod Calling	100	Kongol II
 267	Emperor Doel	Thunder	1800	38	38	120	120	55	0	0	0	0	0	0	None	None	255	128	3000	200	None	0	Emperor Doel
-268	Dragoon Doel	Thunder	5400	38	38	140	120	55	0	0	0	0	0	0	None	None	255	128	0	0	None	0	Dragoon Doel
+268	Dragoon Doel	Thunder	5400	40	42	140	120	55	0	0	0	0	0	0	None	None	255	128	0	0	None	0	Dragoon Doel
 269	Lloyd	Non-Elemental	399	20	20	100	100	50	0	0	0	0	0	0	None	None	255	128	0	0	None	0	Lloyd (Arena)
 270	Lloyd	Non-Elemental	24000	112	97	140	190	65	0	0	0	0	0	0	None	None	255	144	12000	300	None	0	Lloyd II
 271	Missing	None	0	0	0	50	50	50	0	0	0	0	0	0	None	None	255	128	0	0	None	0	Missing
@@ -191,7 +191,7 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 288	Shirley	Light	640	15	15	80	120	50	0	0	0	0	0	0	None	None	255	144	0	0	Silver Stone	100	Shirley
 289	Shana	Light	120	15	15	80	120	55	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Shirley (Shana)
 290	Albert	Wind	120	17	15	100	100	45	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Shirley (Albert)
-293	Lenus	Water	10500	57	72	140	200	50	0	0	0	0	0	0	None	None	255	144	6000	200	None	0	Lenus I
+293	Lenus	Water	10500	62	80	140	200	50	0	0	0	0	0	0	None	None	255	144	6000	200	None	0	Lenus I
 294	Lenus	Water	9000	66	82	140	220	55	0	0	0	0	0	0	None	None	255	128	0	0	Jeweled Crown	100	Lenus II
 295	Damia	Water	45000	326	326	160	260	60	0	0	0	0	0	0	None	None	255	128	6000	300	Blue Sea Stone	100	Damia
 296	Syuveil	Wind	50000	382	308	210	180	50	10	0	0	0	0	0	None	None	255	128	6000	300	Jade Stone	100	Syuveil
@@ -246,9 +246,9 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 355	Missing	None	0	0	0	0	0	50	0	0	0	0	0	0	None	None	255	128	0	0	None	0	Missing
 356	Missing	None	0	0	0	0	0	50	0	0	0	0	0	0	None	None	255	128	0	0	None	0	Missing
 357	Missing	None	0	0	0	0	0	50	0	0	0	0	0	0	None	None	255	128	0	0	None	0	Missing
-360	Vector	Dark	20000	124	102	140	140	50	0	0	0	0	0	0	None	None	255	144	12000	300	None	0	Vector
-361	Selebus	Dark	15000	106	130	160	220	60	10	0	0	0	0	0	None	None	255	144	0	0	None	0	Selebus
-362	Kubila	Dark	17500	115	110	180	180	55	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Kubila
+360	Vector	Dark	20000	134	112	140	140	50	0	0	0	0	0	0	None	None	255	144	12000	300	None	0	Vector
+361	Selebus	Dark	15000	116	140	160	220	60	10	0	0	0	0	0	None	None	255	144	0	0	None	0	Selebus
+362	Kubila	Dark	17500	125	120	180	180	55	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Kubila
 363	Zackwell	Dark	56000	177	140	180	210	60	0	0	0	0	0	0	None	None	255	144	0	0	Healing Rain	100	Zackwell
 364	Lavitz's Spirit	Wind	5000	88	88	120	80	50	0	0	0	0	0	0	None	None	255	144	12000	300	Halberd	100	Lavitz's Spirit
 365	Last Kraken	Water	40000	143	125	180	240	50	0	0	0	0	0	0	None	None	255	144	12000	300	Pretty Hammer	100	Last Kraken
@@ -256,7 +256,7 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 367	 	None	0	0	0	50	50	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	 
 368	Caterpillar	Non-Elemental	30000	190	172	180	180	70	0	0	0	0	0	0	None	None	255	144	13000	300	Healing Rain	100	Caterpillar
 369	Pupa	Non-Elemental	5000	172	172	220	220	60	0	0	0	0	0	0	None	None	255	144	0	0	Moon Serenade	100	Pupa
-370	Imago	Non-Elemental	60000	180	214	180	220	70	0	0	0	0	0	0	None	None	255	144	0	0	Sun Rhapsody	100	Imago
+370	Imago	Light	60000	180	214	180	220	70	0	0	0	0	0	0	None	None	255	144	0	0	Sun Rhapsody	100	Imago
 371	Death Rose	Non-Elemental	2400	44	44	80	140	50	0	0	0	0	0	0	None	None	255	144	6000	0	None	0	Death Rose
 372	 	None	0	0	0	50	50	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	 
 373	Claire	Thunder	3200	76	76	100	100	55	0	0	0	0	0	0	None	None	255	144	6000	0	None	0	Claire

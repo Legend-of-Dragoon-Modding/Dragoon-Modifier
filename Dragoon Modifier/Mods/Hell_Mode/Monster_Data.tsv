@@ -256,7 +256,7 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 367	 	None	0	0	0	50	50	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	 
 368	Caterpillar	Non-Elemental	48000	286	239	120	120	70	0	0	0	0	0	0	None	None	255	144	13000	300	Healing Rain	100	Caterpillar
 369	Pupa	Non-Elemental	20000	239	239	160	160	60	0	0	0	0	0	0	None	None	255	144	0	0	Moon Serenade	100	Pupa
-370	Imago	Non-Elemental	48000	260	348	240	320	70	0	0	0	0	0	0	None	None	255	144	0	0	Sun Rhapsody	100	Imago
+370	Imago	Light	48000	260	348	240	320	70	0	0	0	0	0	0	None	None	255	144	0	0	Sun Rhapsody	100	Imago
 371	Death Rose	Non-Elemental	2400	44	44	80	140	50	0	0	0	0	0	0	None	None	255	144	6000	0	None	0	Death Rose
 372	 	None	0	0	0	50	50	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	 
 373	Claire	Thunder	3200	76	76	100	100	55	0	0	0	0	0	0	None	None	255	144	6000	0	None	0	Claire
