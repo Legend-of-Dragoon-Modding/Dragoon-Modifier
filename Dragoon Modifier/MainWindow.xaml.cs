@@ -42,6 +42,7 @@ namespace Dragoon_Modifier {
         public bool keepStats = false;
         public double[,] originalCharacterStats = new double[3, 10];
         public double[,] originalMonsterStats = new double[5, 6];
+        public bool stopSave = false;
         //Shop Changes
         public bool shopChange = false;
         static bool SHOP_CHANGED = true;
@@ -870,6 +871,8 @@ namespace Dragoon_Modifier {
         }
 
         public void SaveSubKey() {
+            if (stopSave)
+                return;
             Constants.SUBKEY.SetValue("Ultimate Boss", ultimateBossCompleted);
             Constants.SUBKEY.SetValue("Inventory Size", inventorySize);
             Constants.SUBKEY.SetValue("Ultimate Shop", ultimateShopLimited);
@@ -9884,6 +9887,13 @@ namespace Dragoon_Modifier {
         private void miPresetHotkeys_Click(object sender, RoutedEventArgs e) {
             miPresetHotkeys.IsChecked = miPresetHotkeys.IsChecked ? false : true;
             presetHotkeys = miPresetHotkeys.IsChecked;
+        }
+
+        private void miDeleteSave_Click(object sender, RoutedEventArgs e) {
+            stopSave = true;
+            MessageBox.Show("Dragoon Modifier needs to be shut down to delete a save.");
+            Constants.KEY.DeleteSubKey(Constants.SAVE_SLOT.ToString());
+            System.Windows.Application.Current.Shutdown();
         }
 
         private void miModOptions_Click(object sender, RoutedEventArgs e) {
