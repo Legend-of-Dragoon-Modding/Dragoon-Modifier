@@ -204,6 +204,8 @@ namespace Dragoon_Modifier {
         public int sigStoneSlot = 0;
         public int pandemoniumTurns = 0;
         public int pandemoniumSlot = 0;
+        public ushort ultimateBossMap = 0;
+        public bool ultimateBossKeepMap = false;
         //Ultimate Boss Equips
         public int soasSiphonSlot = -1;
         public ushort spiritEaterSP = 0;
@@ -367,6 +369,8 @@ namespace Dragoon_Modifier {
         //Hotkeys
         public int goldQuest = 0;
         public bool faustBattle = false;
+        public bool saveFaust = false;
+        public int faustCount = 0;
         #endregion
         #endregion
 
@@ -839,6 +843,13 @@ namespace Dragoon_Modifier {
             } else {
                 ultimateShopLimited = Convert.ToInt64(Constants.SUBKEY.GetValue("Ultimate Shop"));
             }
+
+            if (Constants.SUBKEY.GetValue("Faust") == null) {
+                Constants.SUBKEY.SetValue("Faust", 0);
+                faustCount = 0;
+            } else {
+                faustCount = (int) Constants.SUBKEY.GetValue("Faust");
+            }
         }
 
         public void SaveKey() {
@@ -876,6 +887,7 @@ namespace Dragoon_Modifier {
             Constants.SUBKEY.SetValue("Ultimate Boss", ultimateBossCompleted);
             Constants.SUBKEY.SetValue("Inventory Size", inventorySize);
             Constants.SUBKEY.SetValue("Ultimate Shop", ultimateShopLimited);
+            Constants.SUBKEY.SetValue("Faust", faustCount);
         }
 
         private void LoadPreset() {
@@ -2409,6 +2421,20 @@ namespace Dragoon_Modifier {
                     Constants.WriteDebug(ex.ToString());
                 }
 
+                if (Globals.MAP == 732 && Globals.ENCOUNTER_ID == 420 && Globals.IN_BATTLE && Globals.STATS_CHANGED && Globals.MONSTER_TABLE[0].Read("HP") == 0 && (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) && saveFaust) {
+                    faustCount += 1;
+                    saveFaust = false;
+                    Constants.WriteGLogOutput("Your current Faust count is: " + faustCount);
+                    SaveSubKey();
+                }
+
+                if (ultimateBossKeepMap && !Globals.IN_BATTLE) {
+                    emulator.WriteShort("MAP", ultimateBossMap);
+                    if (Globals.BATTLE_VALUE > 10) {
+                        ultimateBossKeepMap = false;
+                    }
+                }
+
                 if (!keepStats && Globals.IN_BATTLE && Globals.STATS_CHANGED) {
                     for (int i = 0; i < 3; i++) { //Should execute after equip changes
                         if (Globals.PARTY_SLOT[i] < 9) {
@@ -2442,7 +2468,22 @@ namespace Dragoon_Modifier {
                         Globals.MONSTER_TABLE[0].Write("DF", 75);
                         Globals.MONSTER_TABLE[0].Write("MDF", 200);
                         Globals.MONSTER_TABLE[0].Write("SPD", 50);
+
+                        WipeRewards();
+
+                        emulator.WriteShort("MONSTER_REWARDS", 60000, 1 * 0x1A8);
+                        emulator.WriteShort("MONSTER_REWARDS", 250, 1 * 0x1A8 + 0x2);
+
+                        if (faustCount + 1 == 39) {
+                            emulator.WriteByte("MONSTER_REWARDS", 100, 1 * 0x1A8 + 0x4);
+                            emulator.WriteByte("MONSTER_REWARDS", 74, 1 * 0x1A8 + 0x5);
+                        } else if (faustCount + 1 == 40) {
+                            emulator.WriteByte("MONSTER_REWARDS", 100, 1 * 0x1A8 + 0x4);
+                            emulator.WriteByte("MONSTER_REWARDS", 89, 1 * 0x1A8 + 0x5);
+                        }
+
                         faustBattle = false;
+                        saveFaust = true;
                     }
 
                     this.Dispatcher.BeginInvoke(new Action(() => {
@@ -3134,7 +3175,6 @@ namespace Dragoon_Modifier {
             emulator.WriteByte(0x112116 + IconOffset(), 1);
             emulator.WriteByte(0x112132 + IconOffset(), 1);
             emulator.WriteByte(0x11214E + IconOffset(), 1);
-            emulator.WriteByte(0x1121F6 + IconOffset(), 56);
             emulator.WriteByte(0x11222E + IconOffset(), 3);
             emulator.WriteByte(0x11224A + IconOffset(), 3);
             emulator.WriteByte(0x112266 + IconOffset(), 3);
@@ -3398,6 +3438,11 @@ namespace Dragoon_Modifier {
         }
 
         public void UltimateItemShop() {
+            if (Globals.CHAPTER < 4) {
+                Constants.WriteGLogOutput("You must have completed Chapter 3 to purchase from this shop.");
+                return;
+            }
+
             int gold = emulator.ReadInteger("GOLD");
             int price = uShopPrices[lstUltimateShop.SelectedIndex];
             int item = uItemId[lstUltimateShop.SelectedIndex];
@@ -3486,7 +3531,7 @@ namespace Dragoon_Modifier {
         #region Increase Text Speed
         public void IncreaseTextSpeed() {
             if (!Globals.IN_BATTLE) {
-                emulator.WriteByte("INCREASE_TEXT_SPEED", 1);
+                emulator.WriteByte("TEXT_SPEED", 1);
             }
         }
 
@@ -3650,7 +3695,8 @@ namespace Dragoon_Modifier {
                 }
                 Constants.WriteDebug("Break HP: " + hpChangeSave[0] + "/" + hpChangeCheck[0] + " | " + hpChangeSave[1] + "/" + hpChangeCheck[1] + " | " + hpChangeSave[2] + "/" + hpChangeCheck[2]);
             } else {
-                Constants.WritePLog("Please open the menu to load the Max HP table.");
+                if (!Globals.IN_BATTLE && !maxHPTableLoaded)
+                    Constants.WritePLog("Please open the menu to load the Max HP table.");
             }
         }
 
@@ -5065,6 +5111,9 @@ namespace Dragoon_Modifier {
                     ubArmorGuard =
                     ubDragoonGuard =
                     ubGrantMaxHP = false;
+
+                ultimateBossKeepMap = true;
+                ultimateBossMap = Globals.MAP;
                 SetUltimateStats();
 
                 if (Globals.CheckDMScript("btnRemoveCaps")) {
@@ -5208,6 +5257,58 @@ namespace Dragoon_Modifier {
                             Globals.CHARACTER_TABLE[i].Write("Max_HP", Globals.CHARACTER_TABLE[i].Read("Max_HP") * 1.5);
                         }
                     }
+                }
+
+                WipeRewards();
+
+                if (Globals.ENCOUNTER_ID == 449 || Globals.ENCOUNTER_ID == 402 || Globals.ENCOUNTER_ID == 403) {
+                    if (Globals.ENCOUNTER_ID == 402 || Globals.ENCOUNTER_ID == 403) {
+                        emulator.WriteShort("MONSTER_REWARDS", 3000, 0x1A8 + 0x2);
+                    } else {
+                        emulator.WriteShort("MONSTER_REWARDS", 3000, 0x2);
+                    }
+                } else if (Globals.ENCOUNTER_ID == 417 || Globals.ENCOUNTER_ID == 418 || Globals.ENCOUNTER_ID == 448) {
+                    if (Globals.ENCOUNTER_ID == 418) {
+                        emulator.WriteShort("MONSTER_REWARDS", 3000, 0x1A8 + 0x2);
+                    } else {
+                        emulator.WriteShort("MONSTER_REWARDS", 3000, 0x2);
+                    }
+                } else if (Globals.ENCOUNTER_ID == 416 || Globals.ENCOUNTER_ID == 422 || Globals.ENCOUNTER_ID == 423) {
+                    emulator.WriteShort("MONSTER_REWARDS", 9000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 432 || Globals.ENCOUNTER_ID == 430 || Globals.ENCOUNTER_ID == 433) {
+                    emulator.WriteShort("MONSTER_REWARDS", 12000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 431 || Globals.ENCOUNTER_ID == 408) {
+                    emulator.WriteShort("MONSTER_REWARDS", 15000, 0x1A8 + 0x2);
+                } else if (Globals.ENCOUNTER_ID == 447) {
+                    emulator.WriteShort("MONSTER_REWARDS", 18000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 389 || Globals.ENCOUNTER_ID == 396) {
+                    emulator.WriteShort("MONSTER_REWARDS", 20000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 399) {
+                    emulator.WriteShort("MONSTER_REWARDS", 25000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 409) {
+                    emulator.WriteShort("MONSTER_REWARDS", 30000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 393 || Globals.ENCOUNTER_ID == 398) {
+                    emulator.WriteShort("MONSTER_REWARDS", 35000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 397 || Globals.ENCOUNTER_ID == 400) {
+                    emulator.WriteShort("MONSTER_REWARDS", 40000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 410) {
+                    emulator.WriteShort("MONSTER_REWARDS", 1000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 401) {
+                    emulator.WriteShort("MONSTER_REWARDS", 45000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 390) {
+                    emulator.WriteInteger("TOTAL_GOLD", 100000);
+                } else if (Globals.ENCOUNTER_ID == 390) {
+                    emulator.WriteInteger("TOTAL_GOLD", 100000);
+                } else if (Globals.ENCOUNTER_ID == 411) {
+                    emulator.WriteInteger("TOTAL_GOLD", 60000);
+                } else if (Globals.ENCOUNTER_ID == 394) {
+                    emulator.WriteInteger("TOTAL_GOLD", 70000);
+                } else if (Globals.ENCOUNTER_ID == 392) {
+                    emulator.WriteInteger("TOTAL_GOLD", 80000);
+                } else if (Globals.ENCOUNTER_ID == 420) {
+                    emulator.WriteInteger("TOTAL_GOLD", 120000);
+                } else if (Globals.ENCOUNTER_ID == 442) {
+                    emulator.WriteInteger("TOTAL_GOLD", 100000);
                 }
 
                 ultimateBossOnBattleEntry = true;
@@ -7689,7 +7790,7 @@ namespace Dragoon_Modifier {
                     emulator.WriteShort("INVENTORY_CAP_2", 64);
                     emulator.WriteShort("INVENTORY_CAP_3", 64);
                     emulator.WriteShort("INVENTORY_CAP_4", 64);
-                    emulator.WriteShort("INVENTORY_CAP_MIUS_1", 63);
+                    emulator.WriteShort("INVENTORY_CAP_MINUS_1", 63);
                     emulator.WriteShort("INVENTORY_CAP_MINUS_2", 63);
                     emulator.WriteShort("INVENTORY_CAP_PLUS_1", 65);
                     emulator.WriteShort("INVENTORY_CAP_PLUS_2", 65);
@@ -9400,10 +9501,10 @@ namespace Dragoon_Modifier {
         #region Extras
         public void WipeRewards() {
             for (int i = 0; i < 5; i++) {
-                emulator.WriteShort(Constants.GetAddress("MONSTER_REWARDS") + Constants.OFFSET + i * 0x1A8, 0);
-                emulator.WriteShort(Constants.GetAddress("MONSTER_REWARDS") + Constants.OFFSET + 0x2 + i * 0x1A8, 0);
-                emulator.WriteByte(Constants.GetAddress("MONSTER_REWARDS") + Constants.OFFSET + 0x4 + i * 0x1A8, 0);
-                emulator.WriteByte(Constants.GetAddress("MONSTER_REWARDS") + Constants.OFFSET + 0x5 + i * 0x1A8, 0);
+                emulator.WriteShortU(Constants.GetAddress("MONSTER_REWARDS") + Constants.OFFSET + i * 0x1A8, 0);
+                emulator.WriteShortU(Constants.GetAddress("MONSTER_REWARDS") + Constants.OFFSET + 0x2 + i * 0x1A8, 0);
+                emulator.WriteByteU(Constants.GetAddress("MONSTER_REWARDS") + Constants.OFFSET + 0x4 + i * 0x1A8, 0);
+                emulator.WriteByteU(Constants.GetAddress("MONSTER_REWARDS") + Constants.OFFSET + 0x5 + i * 0x1A8, 0);
             }
         }
         #endregion
@@ -10083,6 +10184,14 @@ namespace Dragoon_Modifier {
                 TurnOnOffButton(ref btnEATB);
             }
 
+            if (btn.Name.Equals("btnTextSpeed") && !Globals.dmScripts[btn.Name]) {
+                emulator.WriteByte("TEXT_SPEED", 223);
+            }
+
+            if (btn.Name.Equals("btnAutoText") && !Globals.dmScripts[btn.Name]) {
+                emulator.WriteShort("AUTO_TEXT", 12354);
+            }
+
             if (!btn.Name.Equals("btnNoDart")) {
                 TurnOnOffButton(ref btn);
             } else {
@@ -10222,6 +10331,8 @@ namespace Dragoon_Modifier {
         #region Reader Window
         //TODO: This can be cleaned up a lot..
         public void ReaderModeConfig() {
+            if (!readerWindow.IsOpen)
+                LoadReaderKey();
             InputWindow readerConfigWindow = new InputWindow("Reader Window Config");
             TextBox width = new TextBox();
             TextBox height = new TextBox();
