@@ -1268,16 +1268,24 @@ namespace Dragoon_Modifier {
                         Globals.SHOP_CHANGE = false;
                     }
                     try {
-                        using (var shop = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Dragoon_Spells.tsv")) {
+                        Globals.DRAGOON_SPELLS = new List<dynamic>();
+                        using (var spell = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Dragoon_Spells.tsv")) {
                             var i = 0;
-                            while (!shop.EndOfStream) {
-                                var line = shop.ReadLine();
+                            while (!spell.EndOfStream) {
+                                var line = spell.ReadLine();
                                 if (i > 0) {
                                     var values = line.Split('\t').ToArray();
                                     Globals.DRAGOON_SPELLS.Add(new DragoonSpells(values, element2num));
                                 }
                                 i++;
                             }
+                        }
+                        long offset = 0x0;
+                        long start = 0x80000000 | Constants.GetAddress("DRAGOON_DESC");
+                        foreach (dynamic spell in Globals.DRAGOON_SPELLS) {
+                            spell.Description_Pointer = start + offset;
+                            offset += (spell.Encoded_Description.Replace(" ", "").Length / 2);
+                           
                         }
                     } catch (FileNotFoundException) {
                         string file = cwd + @"Mods\" + Globals.MOD + @"\Dragoon_Spells.tsv";
@@ -1826,6 +1834,9 @@ namespace Dragoon_Modifier {
             byte accuracy = 100;
             byte mp = 10;
             byte element = 128;
+            string description = "";
+            string encoded_description = "00 00 FF A0";
+            long description_pointer = 0x0;
             IDictionary<string, bool> perc = new Dictionary<string, bool> {
                 { "yes", true},
                 { "no", false },
@@ -1842,6 +1853,9 @@ namespace Dragoon_Modifier {
             public byte Accuracy { get { return accuracy; } }
             public byte MP { get { return mp; } }
             public byte Element { get { return element; } }
+            public string Description { get { return description; } }
+            public string Encoded_Description { get { return encoded_description; } }
+            public long Description_Pointer { get; set; }
 
             public DragoonSpells(string[] values, IDictionary<string, int> Element2Num) {
                 bool key = new bool();
@@ -1884,6 +1898,10 @@ namespace Dragoon_Modifier {
                 accuracy = (byte) Convert.ToInt32(values[3]);
                 mp = (byte) Convert.ToInt32(values[4]);
                 element = (byte) Element2Num[values[5].ToLower()];
+                description = values[6];
+                if (description != "") {
+                    encoded_description = StringEncode(description);
+                }
             }
         }
 

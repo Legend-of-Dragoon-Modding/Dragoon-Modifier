@@ -331,6 +331,7 @@ public class BattleController {
             }
             Constants.WriteDebug("Changing Dragoon Magic...");
             int i = 0;
+            string descr = String.Empty;
             long address = Constants.GetAddress("SPELL_TABLE");
             foreach (dynamic Spell in Globals.DRAGOON_SPELLS) {
                 int intValue = (int) emulator.ReadByte("SPELL_TABLE", (i * 0xC) + 0x2);
@@ -345,8 +346,12 @@ public class BattleController {
                 emulator.WriteByte(address + (i * 0xC) + 0x6, Spell.Accuracy);
                 emulator.WriteByte(address + (i * 0xC) + 0x7, Spell.MP);
                 emulator.WriteByte(address + (i * 0xC) + 0x9, Spell.Element);
+                descr += (string)Spell.Encoded_Description + " ";
+                emulator.WriteInteger(Constants.GetAddress("DRAGOON_DESC_PTR") + i * 0x4, (int)Spell.Description_Pointer);
                 i++;
             }
+            descr = descr.Remove(descr.Length - 1);
+            emulator.WriteAOB(Constants.GetAddress("DRAGOON_DESC"), descr);
             for (int z = 0; z < 3; z++) { // Miranda Hotfix
                 int intValue = (int) emulator.ReadByteU(address + ((z + 65) * 0xC) + 0x2);
                 if (Globals.DRAGOON_SPELLS[z + 10].Percentage == true) {
