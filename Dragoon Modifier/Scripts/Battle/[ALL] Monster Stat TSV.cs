@@ -202,6 +202,8 @@ public class MonsterStatTSV {
 		stats += '\t';
 		stats += emulator.ReadByte(Constants.GetAddress("MONSTER_REWARDS") + (int) 0x4 + Globals.UNIQUE_MONSTER_IDS.IndexOf(monster) * 0x1A8);
 		stats += '\t';
+		stats += Globals.MONSTER_TABLE[offset].Read("Counter");
+		stats += '\t';
 		stats += emulator.ReadName(0xC69D0 + (0x2C * offset));
 		Console.WriteLine(stats);
 		return stats;

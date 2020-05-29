@@ -310,7 +310,7 @@ public class BattleController {
                 }
             }
         }
-        if (Globals.DRAGOON_CHANGE == true && (!Globals.DIFFICULTY_MODE.Equals("Hard") && !Globals.DIFFICULTY_MODE.Equals("Hell"))) {
+        if (Globals.DRAGOON_CHANGE == true) {
             Constants.WriteOutput("Changing Dragoon Stats...");
             for (int slot = 0; slot < 3; slot++) {
                 int character = Globals.PARTY_SLOT[slot];
@@ -367,6 +367,20 @@ public class BattleController {
                 emulator.WriteByteU(address + ((z + 65) * 0xC) + 0x9, Globals.DRAGOON_SPELLS[z + 10].Element);
             }
         }
+
+        if (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) {
+            Constants.WriteDebug("Changing Preset Dragoon Descriptions...");
+            int i = 0;
+            string descr = String.Empty;
+            foreach (dynamic Spell in Globals.DRAGOON_SPELLS) {
+                descr += (string) Spell.Encoded_Description + " ";
+                emulator.WriteInteger(Constants.GetAddress("DRAGOON_DESC_PTR") + i * 0x4, (int) Spell.Description_Pointer);
+                i++;
+            }
+            descr = descr.Remove(descr.Length - 1);
+            emulator.WriteAOB(Constants.GetAddress("DRAGOON_DESC"), descr);
+        }
+
         if (((Globals.ITEM_CHANGE == true) || (Globals.CHARACTER_CHANGE == true)) && (!Globals.DIFFICULTY_MODE.Equals("Hard") && !Globals.DIFFICULTY_MODE.Equals("Hell"))) {
             Constants.WriteDebug("Changing Character Stats...");
             for (int slot = 0; slot < 3; slot++) {
@@ -783,6 +797,7 @@ public class BattleController {
         long[] max_hp = { 0, 2 };
         long[] element = { 0, 2 };
         long[] display_element = { 0, 2 };
+        long[] guard = { 0, 1 };
         long[] at = { 0, 2 };
         long[] og_at = { 0, 2 };
         long[] mat = { 0, 2 };
@@ -828,6 +843,7 @@ public class BattleController {
         public long[] Max_HP { get { return max_hp; } }
         public long[] Element { get { return element; } }
         public long[] Display_Element { get { return display_element; } }
+        public long[] Guard { get { return guard; } }
         public long[] AT { get { return at; } }
         public long[] OG_AT { get { return og_at; } }
         public long[] MAT { get { return mat; } }
@@ -874,7 +890,8 @@ public class BattleController {
             max_hp[0] = m_point + 0x8 - monster * 0x388;
             element[0] = m_point + 0x14 - monster * 0x388;
             display_element[0] = m_point + 0x6A - monster * 0x388;
-            at[0] = m_point + 0x2c - monster * 0x388;
+            guard[0] = m_point + 0x4C - monster * 0x388;
+            at[0] = m_point + 0x2C - monster * 0x388;
             og_at[0] = m_point + 0x58 - monster * 0x388;
             mat[0] = m_point + 0x2E - monster * 0x388;
             og_mat[0] = m_point + 0x5A - monster * 0x388;

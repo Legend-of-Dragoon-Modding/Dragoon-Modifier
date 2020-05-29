@@ -371,6 +371,12 @@ namespace Dragoon_Modifier {
         public bool faustBattle = false;
         public bool saveFaust = false;
         public int faustCount = 0;
+        //Addition Swap
+        public byte additionSwapMode = 0;
+        public byte additionSwapSlot = 0;
+        public byte additionSwapBlock = 0;
+        public byte additionSwapMenu = 0;
+        public byte additionSwapAddition = 0;
         #endregion
         #endregion
 
@@ -699,6 +705,108 @@ namespace Dragoon_Modifier {
             cboReaderUIRemoval.SelectedIndex = 0;
             cboReaderOnHotkey.SelectedIndex = 0;
             cboReaderOffHotkey.SelectedIndex = 0;
+
+            txtHelp.Text += "==== 1 ====\r\nGeneral\r\n\r\n" +
+                "Click on the difficulty tab to change your difficulty or use a preset.\r\n" +
+                "Click on enhanments tabs to turn on features.\r\n" +
+                "Click on settings>settings>emulator to change your emulator.\r\n" +
+                "Change on Settings Tab>Settings>Region to change your game region.\r\n\r\n";
+            txtHelp.Text += "==== 2 ====\r\nBattle Stats Tab\r\n\r\n" +
+                "Encounter Value is how close you are to the next battle. If everything is setup correctly with your emulator in battle will display 41215. Enemy ID will display the value that determines what monsters show up in battle. Map ID will display where you are in the game.\r\n" +
+                "The top block will display monster stats, the bottom block will display stats.\r\n" +
+                "Blue: Name\r\nRed: HP\r\nOrange: AT/MAT\r\nGreen: DF/MDF\r\nMagenta: SPD\r\nViolet: Turn Points, Characters have SP\r\nGrey: A-AV/M-AV\r\nTeal: D-AT/D-MAT\r\nBrown: D-DF/D-MDF\r\n" +
+                "Turn Order will display the current Turn Point order of who will go next. Counterattacks are not counted in this calculation.\r\n\r\n";
+            txtHelp.Text += "==== 3 ====\r\nDifficulty Tab\r\n\r\n" +
+                "Presets Hard and Hell mode are plug and play difficulty settings which are locked in. Normal Mode will not do anything unless you have made changes. You can change your current mod loadout and location in Settings Tab>Settings>Mod Options. Hard and Hell Mode have a more detailed changes below.\r\n\r\n" +
+                "Hard Mode\r\nThis preset balances characters, monsters, weapons, additions, boss drops, and is very Dragoon focused. It is intended that you start off with Dragoons using hotkey (CROSS+L1) in starting Map 10. The mod starts off slightly harder than the Japanese version and gets more difficult as you progress through the discs. However you are not meant to grind for EXP in this mode. You can keep everyone at the same level by using Switch EXP in the Enhancements 1 tab up to 80,000 EXP.\r\n\r\n" +
+                "Hell Mode has the same character, weapon, drop, and dragoon adjustments. However incomplete Additions are punished and you gain about 50% SP from them. To encourage Elemental Bomb use the drop rates for magic items are tripled, powerful items are doubled. It is intended for you to start off Hell Mode will all Dragoons with hotkey (CROSS+L1) in Map 10. It is also intended that you use Elemental Bomb, it was left optional as it made Hell Mode easier but it was designed with this turned on. This changes the element of all monsters on the field when a powerful item is used, however you do not have to use this. Monsters are much harder and you may require grinding. You can keep everyone at the same level by using Switch EXP up to 160,000 EXP.\r\n\r\n" +
+                "+\r\nPlus turns on Enrage Mode for bosses only. Originally designed to be a part of Hell Mode but separated for the possibility of being too hard.\r\n\r\nThe sliders will multiply each stat at the bottom. If you choose a preset those stats will be multiplied as well.\r\n\r\n";
+            txtHelp.Text += "==== 4 ====\r\nEnhancements Tab I\r\n\r\n" +
+                "Break 9999 HP Cap\r\nWill break the HP cap and save your HP above 9999 between battles as long as you don't switch characters.\r\n\r\n" +
+                "Remove Damage Caps\r\nThe game's multiple damage caps will be changed to 50,000.\r\n\r\n" +
+                "Elemental Bomb\r\nPowerful items will change the element of all monsters for 5 turns on the field even through a miss.\r\n\r\n" +
+                "Enrage Mode\r\nMonsters will increase stats by 10% when they hit Yellow HP Zone, 25% when they hit Red HP Zone.\r\n\r\n" +
+                "Never Guard\r\nYou can still heal 10% HP when using guard, however you will not guard against attacks.\r\n\r\n" +
+                "Save Anywhere\r\nYou'll be able to save anywhere. The camera may be stuck when reloading on some maps.\r\n\r\n" +
+                "Auto Charm Potion\r\nThis will auto use a charm potion when you hit the red marker, it will automatically remove 8 gold.\r\n\r\n" +
+                "Monsters HPs as Names\r\nIn game the monster name will change to its current HP.\r\n\r\n" +
+                "No HP Decay Soul Eater\r\nTurns off 10% HP damage for Dart when equipped with Soul Eater.\r\n\r\n" +
+                "Extra Turn Battle\r\nBars will appear in the Battle Stats Tab. When the bar is maxed you can use the following hotkeys to gain an extra turn. Monsters will automatically gain a turn. When you gain an extra turn your progress is slowed down for some time.\r\nSlot 1 (SQUARE + UP)\r\nSlot 2 (SQUARE + RIGHT)\r\nSlot 3 (SQUARE + LEFT)\r\n\r\n" +
+                "Action Turn Battle\r\nSame as Extra Turn Battle but without cooldowns. Same hotkeys above.\r\n\r\n" +
+                "Quick Turn Battle\r\nThe Quick Turn Battle Bar is at the top right of the Battle Stats tab. You have a maximum of five points shared by the party. You gain 1 point if a single character is attacked, 2 if 2 or more party members are attacked. You also gain 1 QTB point when the leader takes a normal turn. Monsters will gain turn points when you use this however. The hotkeys are the same as Extra Turn Battle. Select the correct leader in the drop down below the button or you will not get the extra 1 turn when the leader takes a turn.\r\n\r\n" +
+                "Solo Mode/Duo Mode\r\nSolo/Duo Mode will allow you to battle with 1 or 2 characters. For boss battles with cutscenes you need to click \"Add Party Members\". If you are unsure click the \"On\" button beside it to always have it turned on. If you have it turned on you can change which slot the leader is in for Solo Mode. To change Dart out use the \"Switch Slot 1 Character\" button and combobox. You can only switch charaters that are in the party.\r\n\r\n" +
+                "Aspect Ratio/Advanced Camera\r\nAspect Ratio will change your ratio in battle. If you are on the World Map you can use hotkey (KEY + KEY) to change it manually. The Advanced Camera combobox beside this will allow you to change some 3D effects to your aspect ratio, however it can glitch some effects.\r\n\r\n" +
+                "Kill BGM\r\nKills the music in field, battle, or both.\r\n" +
+                "Switch EXP\r\nAllows you to switch EXP with the charters in both comboboxes. They must be in your party. For Normal/Hard Mode you can swap characters up to 80,000 EXP. In Hell Mode it is 160,000 EXP.\r\n\r\n" + 
+                "New Game+\r\nUnfinished and not usable\r\n\r\n";
+            txtHelp.Text += "==== 5 ====\r\nUltimate Boss\r\n\r\n" +
+                "Ultimate Boss\r\nFrom Chapter 4 you can go back to The Forbidden Land to fight tougher versions of bosses. You must be in the correct map per zone and each zone has a reommended level. You can gain lots of Gold from these bosses starting from Zone 3. Each boss is detailed below.\r\n\r\n" +
+                "Zone 1 - Level 30\r\n" +
+                "1. Commander - 64,000 HP\r\nDrops Saber, a +70 AT weapon for Rose.\r\n\r\n" +
+                "2. Fruegel I - 63,000 HP\r\n" +
+                "3. Urobolus - 61,600 HP\r\nDefeating this boss will increase your inventory to 36 Slots.\r\n\r\n" +
+                "Zone 2 - Level 40\r\n" +
+                "4. Sandora Elite - 159,600 HP\r\n" +
+                "5. Drake the Bandit - 148,000 HP\r\n" +
+                "6. Jiango - 204,800 HP\r\nThis boss has Zero SP start.\r\n\r\n" +
+                "7. Fruegel II - 220,000 HP\r\n" +
+                "8. Fire Bird - 281,600 HP\r\nThis boss has Zero SP start. This boss has Guard Break on dive attack. This boss has MP Attack on summon. Defeating this boss will increase your inventory to 40 slots.\r\n\r\n" +
+                "Zone 3 - Level 50\r\n" +
+                "9. Ghost Feyrbrand - 320,000 HP\r\n" +
+                "10. Mappi - 128,000 HP\r\n" +
+                "11. Gehrich - 200,000 HP | Mappi - 128,000 HP\r\nThis boss has Zero SP start.\r\n\r\n" +
+                "12. Ghost Commander - 221,000 HP\r\nThis boss has Wound Damage on slash attack. This boss has Health Steal on life sap attack.\r\n\r\n" +
+                "13. Kamuy - 300,000 HP\r\nThis boss unlocks an used attack.\r\nThis boss does SP damage.\r\n\r\n" +
+                "14. Ghost Regole - 336,000 HP\r\n" +
+                "15. Grand Jewel - 260,000 HP\r\nThis boss has Magic Change every 10%.\r\nThis boss has elemental shift.\r\nThis Boss has Reverse Dragon Block Staff.\r\n\r\n" +
+                "16. Windigo - 700,000 HP\r\nThis boss has Armor Break when heart is damaged.\r\n\r\n" +
+                "17. Polter Armor - 666.666 HP\r\nThis boss has Shared HP.\r\n\r\n" +
+                "18. The Last Kraken - 360,000 HP\r\nThis boss is actually centered.\r\n\r\n" +
+                "19. Vector - 180,000 HP | Selebus - 135,000 HP | Kubila - 157,500 HP\r\n" +
+                "20. Caterpillar - 120,000 HP | Pupa - 180,000 HP | Image - 240,000 HP\r\n" +
+                "21. Zackwell - 360,000 HP\r\n" +
+                "22. Ghost Divine Dragon - 400,000 HP\r\nDefeating this boss will increase your inventory to 48 Slots.\r\n\r\n" +
+                "Zone 4 - Level 60\r\n" +
+                "23. Virage I | Head - 360,000 HP | Body - 360,000 HP | Arm - 60,000  HP\r\n" +
+                "24. Kongol - 420,000 HP\r\n" +
+                "25. Lenus - 525,000 HP\r\nThis boss has magic change every 5%.\r\n\r\n" +
+                "26. Syuveil - 500,000 HP\r\nThis boss has Turn Point damage on all Dragoon magic attacks.\r\n\r\n" +
+                "27. Virage II | Head - 1,280,000 HP | Body - 540,000 HP | Arm - 54,000 HP\r\nThis boss has body damage.\r\n" +
+                "28. Feyrbrand - 288,000 HP | Greham - 210,000 HP\r\nThis boss has Dragoon Bond.\r\nThis boss will remove resistances.\r\n\r\n" +
+                "29. Damia - 360,000 HP\r\nThis boss has a custom status effect, Menu Block on all magic attacks. Will block all menu actions, Dragoons are removed.\r\n\r\n" +
+                "30. Regole - 300,000 HP | Dragoon Lenus - 300,000 HP\r\nThis boss has Dragoon Bond.\r\n\r\n" +
+                "31. Belzac - 608,000 HP\r\nThos bpss has custom status effects, each with a random chance of activation. 30% accuracy loss on Grand Stream. Power Down DF/MDF on Meteor Strike.\r\nSpeed Down on Golden Dragoon.\r\n\r\n" +
+                "32. S Virage I | Head - 320,000 HP | Body - 320,000 HP | Arm - 160,000 HP\r\nThis boss has Gold farming opportunities.\r\nThis boss has countdown changes. For every 40,000 damage, countdown increases. For each countdown increase you get 1,000 Gold each. Kill a body part grants the following gold: 45,000 Gold for the head, 15,000 Gold for the body, 10,000 Gold for the arm.\r\n\r\n" +
+                "33. Kanzas - 396,000 HP\r\nThis boss has Electric Charges, with a maximum of 30 charges. Each charge is released all at once and can be released at any time, each charge grants 5% power on the next attack. Dragoon Addition grants 1 charge. Atmoic Mind grants 3 charges and attack down for 3 turns. Thunder Kid grands 5 charges and defense down for 3 turns. Violet Dragon grans 15 charges and instantly releases all charges for this attack and grants power down for 3 turns.\r\n\r\n" +
+                "34. Emperror Doel - 250,000 HP | Dragoon Doel - 750,000 HP\r\nThis boss has Inventory Refresh.\r\nThis boss has Ultimate Enrage Mode.\r\nThis Boss has Magic Change. Doel can now cast any magic when he is below 75,000 HP and will use elemental weaknesses to his advantage.\r\nThis boss has Enhanced Shield. Doel's Shield when it is about to appear will grant him Damage Immunity. The Shield grants him half damage.\r\nDefeating this boss will increase your inventory to 64 Slots.\r\nIf you are on Hell Mode you will unlock Divine Red-Eyed Dragon mode.\r\n\r\n" +
+                "35. S Virage II | Head - 333,333 HP | Body - 222,222 HP | Arm 666,666\r\nThis boss has a modified Shared HP. Attacking the head heals the arm. Each attack to a body part will do 2x damage. Each part healed will recieve 1x HP. Attacking the arm heals the head. Attacking the head heals the body.\r\nThis boss has an enhanced Final Attack.\r\n\r\n" +
+                "36. Divine Dragon - 10,000 HP\r\nThis boss has Armor Guard.\r\nThis Boss has Reverse Dragon Block Staff.\r\nThis boss has Ultimate Enrage Mode.\r\n\r\n" +
+                "37. Lloyd - 666,666 HP\r\nThis boss has modified Ultimate Enrage Mode. Dying will reset his stats, but each time you die the base stats increase.\r\nThis boss will remove resistances.\r\n\r\n" +
+                "38. Magician Faust - 1,000,000 HP\r\nThis boss has Dragoon Guard.\r\nThis boss has any magic and will play to your weakness and strengths depending on the phase.\r\n\r\n" +
+                "39. Zieg - 720,000 HP\r\nThis boss unlocks unused attacks.\r\nThis boss has enhanced damage on Explosion.\r\n\r\n" +
+                "40. Melbu Frahma - ??? HP - Unfinished.\r\n\r\n" +
+                "Zero SP - Start the battle with zero SP.\r\n" +
+                "Guard Break - Removes guard status on a certain attack.\r\n" +
+                "MP Attack - Removes MP on a certain attack.\r\n" +
+                "Wound Damage - Reduces Max HP on a certain attack. Dying will restore Max HP.\r\n" +
+                "Health Steal - Health Steals on a certain attack.\r\n" +
+                "SP Damage - Damages your SP, dragoons are immune to this damage.\r\n" +
+                "Magic Change - Changes magic based on HP intervals. All magic is applicable, Faust and Melbu are the only bosses that can cast Psyche Bomb.\r\n" +
+                "Elemental Shift - Element changes based on the item used.\r\n" +
+                "Armor Break - Defense drop drastically when a specific monster is targeted.\r\n" +
+                "Shared HP - Attacking one part deals damage to the rest.\r\n" +
+                "Turn Point Damage - Removes turn points on a cetain attack.\r\n" +
+                "Body Damage - Killing one part damages the main part for all of its HP.\r\n" +
+                "Dragoon Bond - Attacking first determines the following. Attack either dragoon or dragon first, the other monster will heal the other for all damage. When one monsters dies the other becomes more powerful. Attacking both dragon and dragoon at the same time both of them become more powerful for a lesser amount.\r\n" +
+                "Remove Resistances - All resistances are removed.\r\n" +
+                "Countdown - Changes countdown mechanics.\r\n" +
+                "Inventory Refresh - Refreshes inventory at a certain point in battle.\r\n" +
+                "Ultimate Enrage Mode - Bosses will increase their stats for every 1% of damage.\r\n" +
+                "Reverse Dragon Block Staff - Dragoons will operate at 80%.\r\n" +
+                "Armor Guard - Significant increase to defenses.\r\n" +
+                "Dragoon Guard - Allows guarding in Dragoon mode for 100 SP.";
+            txtHelp.Text += "";
+            txtHelp.Text += "";
         }
 
         public void LoadKey() {
@@ -1426,7 +1534,7 @@ namespace Dragoon_Modifier {
                 { "bell", 28 },
                 { "bag", 29 },
                 { "cloak", 30 },
-                { "scarf", 30 },
+                { "scarf", 31 },
                 { "horn", 32 },
                 {"none", 64 },
                 {"", 64 }
@@ -2423,8 +2531,10 @@ namespace Dragoon_Modifier {
                         EquipChangesBattle();
                     if (Globals.CheckDMScript("btnRows") && !Globals.DIFFICULTY_MODE.Equals("Hell"))
                         BattleFormationRows();
-                    if (Globals.CheckDMScript("btnEATB"))
+                    if (Globals.CheckDMScript("btnEATB") || Globals.CheckDMScript("btnATB"))
                         EATB();
+                    if (Globals.CheckDMScript("btnQTB"))
+                        QTB();
                     if (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell"))
                         DoubleRepeat();
                     if (Globals.CheckDMScript("btnReader") && uiCombo["cboReaderUIRemoval"] > 0)
@@ -2679,7 +2789,7 @@ namespace Dragoon_Modifier {
                                     Globals.LAST_HOTKEY = Constants.GetTime();
                                 }
 
-                                if (Globals.MAP == 10 && (Globals.CheckDMScript("btnSoloMode") || Globals.CheckDMScript("btnDuoMode"))) { 
+                                if (Globals.MAP == 10 && (Globals.CheckDMScript("btnSoloMode") || Globals.CheckDMScript("btnDuoMode"))) {
                                     for (int i = 0; i < 9; i++) {
                                         emulator.WriteInteger("CHAR_TABLE", 0, 0x2C * i); //EXP
                                         emulator.WriteByte("CHAR_TABLE", 0, 0x2 + 0x2C * i); //Level
@@ -2699,14 +2809,14 @@ namespace Dragoon_Modifier {
                                     Globals.LAST_HOTKEY = Constants.GetTime();
                                 }
                             } else if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_RIGHT)) { //Exit Dragoon Slot 2
-                                if (emulator.ReadByte("DRAGOON_TURNS" + 0x4) > 0) {
-                                    emulator.WriteByte("DRAGOON_TURNS" + 0x4, 1);
+                                if (emulator.ReadByte("DRAGOON_TURNS", 0x4) > 0) {
+                                    emulator.WriteByte("DRAGOON_TURNS", 1, 0x4);
                                     Constants.WriteGLogOutput("Slot 2 will exit Dragoon after next action.");
                                     Globals.LAST_HOTKEY = Constants.GetTime();
                                 }
                             } else if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_LEFT)) { //Exit Dragoon Slot 3
-                                if (emulator.ReadByte("DRAGOON_TURNS" + 0x8) > 0) {
-                                    emulator.WriteByte("DRAGOON_TURNS" + 0x8, 1);
+                                if (emulator.ReadByte("DRAGOON_TURNS", 0x8) > 0) {
+                                    emulator.WriteByte("DRAGOON_TURNS", 1, 0x8);
                                     Constants.WriteGLogOutput("Slot 3 will exit Dragoon after next action.");
                                     Globals.LAST_HOTKEY = Constants.GetTime();
                                 }
@@ -2782,7 +2892,7 @@ namespace Dragoon_Modifier {
                                     }
                                 }
                                 if (!skip) {
-                                    if (Globals.CheckDMScript("btnDragoonChanges") && !checkRoseDamage) {
+                                    if ((Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) && !checkRoseDamage) {
                                         if (roseEnhanceDragoon) {
                                             if (Constants.REGION == Region.USA) {
                                                 emulator.WriteAOB(0x51ADC, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1A 00 1E 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 00 00 30 00 3D 00 3B 00 4E 00 FF A0");
@@ -2821,7 +2931,7 @@ namespace Dragoon_Modifier {
                                     }
                                 }
                                 if (!skip) {
-                                    if (Globals.CheckDMScript("btnDragoonChanges") && !checkRoseDamage) {
+                                    if (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) {
                                         if (jeweledHammer) {
                                             if (Constants.REGION == Region.USA) {
                                                 emulator.WriteAOB(0x51CA8, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1A 00 16 00 15 00 0F 00 FF A0");
@@ -2960,65 +3070,67 @@ namespace Dragoon_Modifier {
                                         Constants.WriteGLogOutput("Nerfing not available.");
                                         Globals.LAST_HOTKEY = Constants.GetTime();
                                     }
-                                } else if (Globals.HOTKEY == (Hotkey.KEY_SELECT + Hotkey.KEY_R3)) {
-                                    if (Globals.DIFFICULTY_MODE.Equals("Hard")) {
-                                        if (Globals.ENCOUNTER_ID == 411) {
-                                            Globals.MONSTER_TABLE[0].Write("HP", 50000);
-                                            Globals.MONSTER_TABLE[0].Write("Max_HP", 50000);
-                                            Globals.MONSTER_TABLE[0].Write("AT", 160);
-                                            Globals.MONSTER_TABLE[0].Write("MAT", 125);
-                                            Globals.MONSTER_TABLE[0].Write("DF", 160);
-                                            Globals.MONSTER_TABLE[0].Write("MDF", 160);
-                                            Globals.MONSTER_TABLE[1].Write("HP", 15000);
-                                            Globals.MONSTER_TABLE[1].Write("Max_HP", 15000);
-                                            Globals.MONSTER_TABLE[1].Write("AT", 140);
-                                            Globals.MONSTER_TABLE[1].Write("MAT", 125);
-                                            Globals.MONSTER_TABLE[1].Write("DF", 190);
-                                            Globals.MONSTER_TABLE[1].Write("MDF", 170);
-                                            Globals.MONSTER_TABLE[2].Write("HP", 50000);
-                                            Globals.MONSTER_TABLE[2].Write("Max_HP", 50000);
-                                            Globals.MONSTER_TABLE[2].Write("AT", 140);
-                                            Globals.MONSTER_TABLE[2].Write("MAT", 125);
-                                            Globals.MONSTER_TABLE[2].Write("DF", 345);
-                                            Globals.MONSTER_TABLE[2].Write("MDF", 255);
-                                            Constants.WriteGLogOutput("Ultra Nerfed.");
-                                            Globals.LAST_HOTKEY = Constants.GetTime();
-                                        } else if (Globals.ENCOUNTER_ID == 442) {
-                                            Globals.MONSTER_TABLE[0].Write("HP", 60000);
-                                            Globals.MONSTER_TABLE[0].Write("Max_HP", 60000);
-                                            Globals.MONSTER_TABLE[0].Write("AT", 222);
-                                            Globals.MONSTER_TABLE[0].Write("MAT", 190);
-                                            Globals.MONSTER_TABLE[0].Write("DF", 170);
-                                            Globals.MONSTER_TABLE[0].Write("MDF", 200);
-                                            Constants.WriteGLogOutput("Ultra Nerfed.");
-                                            Globals.LAST_HOTKEY = Constants.GetTime();
-                                        } else if (Globals.ENCOUNTER_ID == 443) {
-                                            Globals.MONSTER_TABLE[0].Write("HP", 52500);
-                                            Globals.MONSTER_TABLE[0].Write("Max_HP", 52500);
-                                            Globals.MONSTER_TABLE[0].Write("AT", 167);
-                                            Globals.MONSTER_TABLE[0].Write("MAT", 140);
-                                            Globals.MONSTER_TABLE[0].Write("DF", 720);
-                                            Globals.MONSTER_TABLE[0].Write("MDF", 870);
-                                            Globals.MONSTER_TABLE[1].Write("Max_HP", 4000);
-                                            Globals.MONSTER_TABLE[1].Write("AT", 167);
-                                            Globals.MONSTER_TABLE[1].Write("MAT", 140);
-                                            Globals.MONSTER_TABLE[2].Write("Max_HP", 4000);
-                                            Globals.MONSTER_TABLE[2].Write("AT", 167);
-                                            Globals.MONSTER_TABLE[2].Write("MAT", 140);
-                                            Globals.MONSTER_TABLE[3].Write("Max_HP", 4000);
-                                            Globals.MONSTER_TABLE[3].Write("AT", 167);
-                                            Globals.MONSTER_TABLE[3].Write("MAT", 140);
-                                            Globals.MONSTER_TABLE[4].Write("Max_HP", 4000);
-                                            Globals.MONSTER_TABLE[4].Write("AT", 167);
-                                            Globals.MONSTER_TABLE[4].Write("MAT", 140);
-                                            Constants.WriteGLogOutput("Ultra Nerfed.");
-                                            Globals.LAST_HOTKEY = Constants.GetTime();
-                                        } else {
-                                            Constants.WriteGLogOutput("Ultra Nerfing not available.");
-                                            Globals.LAST_HOTKEY = Constants.GetTime();
-                                        }
+                                }
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_SELECT + Hotkey.KEY_R3)) {
+                                if (Globals.DIFFICULTY_MODE.Equals("Hard")) {
+                                    if (Globals.ENCOUNTER_ID == 411) {
+                                        Globals.MONSTER_TABLE[0].Write("HP", 50000);
+                                        Globals.MONSTER_TABLE[0].Write("Max_HP", 50000);
+                                        Globals.MONSTER_TABLE[0].Write("AT", 160);
+                                        Globals.MONSTER_TABLE[0].Write("MAT", 125);
+                                        Globals.MONSTER_TABLE[0].Write("DF", 160);
+                                        Globals.MONSTER_TABLE[0].Write("MDF", 160);
+                                        Globals.MONSTER_TABLE[1].Write("HP", 15000);
+                                        Globals.MONSTER_TABLE[1].Write("Max_HP", 15000);
+                                        Globals.MONSTER_TABLE[1].Write("AT", 140);
+                                        Globals.MONSTER_TABLE[1].Write("MAT", 125);
+                                        Globals.MONSTER_TABLE[1].Write("DF", 190);
+                                        Globals.MONSTER_TABLE[1].Write("MDF", 170);
+                                        Globals.MONSTER_TABLE[2].Write("HP", 50000);
+                                        Globals.MONSTER_TABLE[2].Write("Max_HP", 50000);
+                                        Globals.MONSTER_TABLE[2].Write("AT", 140);
+                                        Globals.MONSTER_TABLE[2].Write("MAT", 125);
+                                        Globals.MONSTER_TABLE[2].Write("DF", 345);
+                                        Globals.MONSTER_TABLE[2].Write("MDF", 255);
+                                        Constants.WriteGLogOutput("Ultra Nerfed.");
+                                        Globals.LAST_HOTKEY = Constants.GetTime();
+                                    } else if (Globals.ENCOUNTER_ID == 442) {
+                                        Globals.MONSTER_TABLE[0].Write("HP", 60000);
+                                        Globals.MONSTER_TABLE[0].Write("Max_HP", 60000);
+                                        Globals.MONSTER_TABLE[0].Write("AT", 222);
+                                        Globals.MONSTER_TABLE[0].Write("MAT", 190);
+                                        Globals.MONSTER_TABLE[0].Write("DF", 170);
+                                        Globals.MONSTER_TABLE[0].Write("MDF", 200);
+                                        Constants.WriteGLogOutput("Ultra Nerfed.");
+                                        Globals.LAST_HOTKEY = Constants.GetTime();
+                                    } else if (Globals.ENCOUNTER_ID == 443) {
+                                        Globals.MONSTER_TABLE[0].Write("HP", 52500);
+                                        Globals.MONSTER_TABLE[0].Write("Max_HP", 52500);
+                                        Globals.MONSTER_TABLE[0].Write("AT", 167);
+                                        Globals.MONSTER_TABLE[0].Write("MAT", 140);
+                                        Globals.MONSTER_TABLE[0].Write("DF", 720);
+                                        Globals.MONSTER_TABLE[0].Write("MDF", 870);
+                                        Globals.MONSTER_TABLE[1].Write("Max_HP", 4000);
+                                        Globals.MONSTER_TABLE[1].Write("AT", 167);
+                                        Globals.MONSTER_TABLE[1].Write("MAT", 140);
+                                        Globals.MONSTER_TABLE[2].Write("Max_HP", 4000);
+                                        Globals.MONSTER_TABLE[2].Write("AT", 167);
+                                        Globals.MONSTER_TABLE[2].Write("MAT", 140);
+                                        Globals.MONSTER_TABLE[3].Write("Max_HP", 4000);
+                                        Globals.MONSTER_TABLE[3].Write("AT", 167);
+                                        Globals.MONSTER_TABLE[3].Write("MAT", 140);
+                                        Globals.MONSTER_TABLE[4].Write("Max_HP", 4000);
+                                        Globals.MONSTER_TABLE[4].Write("AT", 167);
+                                        Globals.MONSTER_TABLE[4].Write("MAT", 140);
+                                        Constants.WriteGLogOutput("Ultra Nerfed.");
+                                        Globals.LAST_HOTKEY = Constants.GetTime();
+                                    } else {
+                                        Constants.WriteGLogOutput("Ultra Nerfing not available.");
+                                        Globals.LAST_HOTKEY = Constants.GetTime();
                                     }
                                 }
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_TRIANGLE + Hotkey.KEY_UP)) {
+                                
                             }
                         }
                     }
@@ -3532,6 +3644,8 @@ namespace Dragoon_Modifier {
 
                         if (ticketCost > 0)
                             emulator.WriteShort("HERO_TICKETS", (ushort) (tickets - ticketCost));
+
+                        break;
                     }
                     address += 1;
                 }
@@ -4637,15 +4751,15 @@ namespace Dragoon_Modifier {
                                         if (Globals.CHARACTER_TABLE[i].Read("SP") == 500) {
                                             emulator.WriteAOB(p + 0xC0, "00 00 00 04");
                                             Globals.CHARACTER_TABLE[i].Write("SP", 200);
-                                            emulator.WriteByte("DRAGOON_TURNS" + i * 4, 2);
+                                            emulator.WriteByte("DRAGOON_TURNS", 2, i * 4);
                                         } else {
                                             emulator.WriteAOB(p + 0xC0, "00 00 00 03");
                                             Globals.CHARACTER_TABLE[i].Write("SP", 100);
-                                            emulator.WriteByte("DRAGOON_TURNS" + i * 4, 1);
+                                            emulator.WriteByte("DRAGOON_TURNS", 1, i * 4);
                                         }
                                     }
 
-                                    if (emulator.ReadByte("DRAGOON_TURNS" + i * 4) == 0) {
+                                    if (emulator.ReadByte("DRAGOON_TURNS", i * 4) == 0) {
                                         checkHarpoon = false;
                                     }
                                 }
@@ -5734,6 +5848,8 @@ namespace Dragoon_Modifier {
                     multiplyMode[0] = 65535;
                     multiplyMode[1] = 2.85;
                     multiplyMode[2] = 2.85;
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] + 0x14, 32);
+                    emulator.WriteByte(Globals.MONS_ADDRESS[0] + 0x6A, 32);
                 } else if (Globals.MONSTER_IDS[i] == 363) { //Zackwell
                     ultimateHP[i] = ultimateMaxHP[i] = 360000;
                     multiplyMode[0] = 65535;
@@ -5993,11 +6109,20 @@ namespace Dragoon_Modifier {
         }
 
         public void UltimateBossDefeatCheck() {
-            if (emulator.ReadShort("BATTLE_VALUE") == 41215) {
+            if (Globals.IN_BATTLE && Globals.STATS_CHANGED) {
                 switch (Globals.ENCOUNTER_ID) {
+                    case 386: //Fruegel I
+                        if (Globals.MONSTER_TABLE[0].Read("HP") == 0) {
+                            UltimateBossDefeated();
+                        }
+                        break;
+                    case 487: //Commander II
+                        if (Globals.MONSTER_TABLE[0].Read("HP") == 1) {
+                            UltimateBossDefeated();
+                        }
+                        break;
                     case 461: //Sandora Elite
                     case 415: //Fire Bird
-                    case 386: //Fruegel I
                     case 412: //Drake the Bandit
                     case 387: //Fruegel II
                     case 402: //Mappi
@@ -6011,7 +6136,6 @@ namespace Dragoon_Modifier {
                             UltimateBossDefeated();
                         }
                         break;
-                    case 487: //Commander II
                     case 449: //Feyrbrand (Spirit)
                     case 448: //Regole (Spirit)
                     case 447: //Divine Dragon (Spirit)
@@ -6546,7 +6670,7 @@ namespace Dragoon_Modifier {
                             Globals.CHARACTER_TABLE[i].Write("SP_ONHIT_PHYSICAL_TRN", turns);
                             Globals.CHARACTER_TABLE[i].Write("SP_ONHIT_MAGIC_TRN", turns);
                         }
-                        if (emulator.ReadByte("DRAGOON_TURNS" + (i * 0x4)) == 0) {
+                        if (emulator.ReadByte("DRAGOON_TURNS", (i * 0x4)) == 0) {
                             int sp = Globals.CHARACTER_TABLE[i].Read("SP") - spAmount;
                             Globals.CHARACTER_TABLE[i].Write("SP", sp > 0 ? sp : 0);
                         }
@@ -7555,7 +7679,7 @@ namespace Dragoon_Modifier {
                 double dragoons = 0.0;
                 double enrage = 0.0;
                 for (int i = 0; i < 3; i++) {
-                    if (emulator.ReadByte("DRAGOON_TURNS" + i * 0x4) > 0) {
+                    if (emulator.ReadByte("DRAGOON_TURNS", i * 0x4) > 0) {
                         dragoons += 0.25;
                     }
                 }
@@ -7740,7 +7864,7 @@ namespace Dragoon_Modifier {
         public void ArmorGuard() {
             for (int i = 0; i < 3; i++) {
                 if (Globals.PARTY_SLOT[i] < 9) {
-                    if (emulator.ReadByte("DRAGOON_TURNS" + (0x4 * i)) > 0 && Globals.CHARACTER_TABLE[i].Read("PWR_DF") != 0) {
+                    if (emulator.ReadByte("DRAGOON_TURNS", (0x4 * i)) > 0 && Globals.CHARACTER_TABLE[i].Read("PWR_DF") != 0) {
                         Globals.CHARACTER_TABLE[i].Write("PWR_DF", 0);
                         Globals.CHARACTER_TABLE[i].Write("PWR_DF_TRN", 0);
                         Globals.CHARACTER_TABLE[i].Write("PWR_MDF", 0);
@@ -7932,48 +8056,6 @@ namespace Dragoon_Modifier {
         #region Dragoon Changes
         public void ChangeDragoonDescription() {
             if (emulator.ReadShort("BATTLE_VALUE") == 41215 && Globals.STATS_CHANGED) {
-                if (Constants.REGION == Region.USA) {
-                    //Red-Eyed
-                    emulator.WriteAOB(0x51858, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 1A 00 16 00 15 00 0F 00 FF A0");
-                    if (Globals.CheckDMScript("btnDivineRed") && Globals.PARTY_SLOT[0] == 0 && (Globals.DIFFICULTY_MODE.Equals("Normal") || Globals.DIFFICULTY_MODE.Equals("Hard"))) {
-                        emulator.WriteAOB(0x51884, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 16 00 15 00 17 00 15 00 0F 00 FF A0");
-                        emulator.WriteAOB(0x518AC, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 16 00 1A 00 18 00 15 00 0F 00 FF A0");
-                    } else {
-                        emulator.WriteAOB(0x51884, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 18 00 19 00 15 00 0F 00 FF A0");
-                        emulator.WriteAOB(0x518AC, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 1C 00 1B 00 1A 00 0F 00 FF A0");
-                    }
-                    emulator.WriteAOB(0x518D8, "24 00 41 00 4A 00 3D 00 00 00 31 00 32 00 30 00 00 00 16 00 15 00 17 00 15 00 0F 00 FF A0");
-                    //Divine
-                    emulator.WriteAOB(0x519D4, "31 00 32 00 30 00 00 00 16 00 15 00 17 00 15 00 0F 00 FF A0");
-                    emulator.WriteAOB(0x51900, "31 00 32 00 30 00 00 00 16 00 1A 00 18 00 15 00 0F 00 FF A0");
-                    //Jade
-                    emulator.WriteAOB(0x51924, "35 00 41 00 46 00 3C 00 00 00 31 00 32 00 30 00 00 00 19 00 19 00 15 00 0F 00 FF A0");
-                    emulator.WriteAOB(0x5194C, "35 00 41 00 46 00 3C 00 00 00 31 00 32 00 30 00 00 00 1E 00 1E 00 15 00 0F 00 FF A0");
-                    emulator.WriteAOB(0x519AC, "35 00 41 00 46 00 3C 00 00 00 31 00 32 00 30 00 00 00 16 00 18 00 17 00 15 00 0F 00 FF A0");
-                    emulator.WriteAOB(0x51AB4, "35 00 41 00 46 00 3C 00 00 00 31 00 32 00 30 00 00 00 19 00 19 00 15 00 0F 00 FF A0");
-                    emulator.WriteAOB(0x51B48, "35 00 41 00 46 00 3C 00 00 00 31 00 32 00 30 00 00 00 19 00 19 00 15 00 0F 00 FF A0");
-                    //White-Silver
-                    emulator.WriteAOB(0x519F0, "2A 00 41 00 3F 00 40 00 4C 00 00 00 31 00 32 00 30 00 00 00 18 00 18 00 15 00 0F 00 FF A0");
-                    emulator.WriteAOB(0x51A84, "2A 00 41 00 3F 00 40 00 4C 00 00 00 31 00 32 00 30 00 00 00 1D 00 1B 00 1A 00 0F 00 FF A0");
-                    //Dark
-                    emulator.WriteAOB(0x51ADC, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1A 00 1E 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 00 00 30 00 3D 00 3B 00 4E 00 FF A0");
-                    emulator.WriteAOB(0x51B14, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 18 00 1E 00 1A 00 0F 00 00 00 10 00 00 00 24 00 3D 00 39 00 4A 00 FF A0");
-                    emulator.WriteAOB(0x51BA8, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 16 00 1B 00 1D 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 00 00 FF A0");
-                    //Violet
-                    emulator.WriteAOB(0x51BD8, "32 00 40 00 4D 00 46 00 3C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 18 00 18 00 15 00 0F 00 FF A0");
-                    emulator.WriteAOB(0x51C0C, "32 00 40 00 4D 00 46 00 3C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1B 00 1B 00 15 00 0F 00 FF A0");
-                    emulator.WriteAOB(0x51C40, "32 00 40 00 4D 00 46 00 3C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1E 00 1E 00 15 00 0F 00 FF A0");
-                    emulator.WriteAOB(0x51C74, "32 00 40 00 4D 00 46 00 3C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 16 00 19 00 1E 00 1A 00 0F 00 FF A0");
-                    //Blue-Sea
-                    emulator.WriteAOB(0x51CA8, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1A 00 16 00 15 00 0F 00 FF A0");
-                    emulator.WriteAOB(0x51D3C, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1A 00 18 00 15 00 0F 00 FF A0");
-                    emulator.WriteAOB(0x51D64, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 16 00 19 00 15 00 15 00 0F 00 FF A0");
-                    //Golden
-                    emulator.WriteAOB(0x51D94, "23 00 39 00 4A 00 4C 00 40 00 00 00 31 00 32 00 30 00 00 00 1B 00 1C 00 1A 00 0F 00 FF A0");
-                    emulator.WriteAOB(0x51DBC, "23 00 39 00 4A 00 4C 00 40 00 00 00 31 00 32 00 30 00 00 00 16 00 16 00 17 00 15 00 0F 00 FF A0");
-                    emulator.WriteAOB(0x51DE4, "23 00 39 00 4A 00 4C 00 40 00 00 00 31 00 32 00 30 00 00 00 17 00 17 00 17 00 15 00 0F 00 FF A0");
-                }
-
                 if (Globals.CheckDMScript("btnDivineRed") && Globals.PARTY_SLOT[0] == 0 && (Globals.DIFFICULTY_MODE.Equals("Normal") || Globals.DIFFICULTY_MODE.Equals("Hard")) && Globals.PARTY_SLOT[0] == 0) {
                     emulator.WriteAOB(Constants.GetAddress("SLOT1_SPELLS"), "01 02 FF FF FF FF FF FF");
                     emulator.WriteByte("SPELL_TABLE", 50, 0x7 + (1 * 0xC)); //Explosion MP
@@ -9303,7 +9385,7 @@ namespace Dragoon_Modifier {
             else
                 cooldowns = cooldowns + 90;
 
-            if (emulator.ReadByte("DRAGOON_TURNS" + 0x4 * slot) > 0)
+            if (emulator.ReadByte("DRAGOON_TURNS", 0x4 * slot) > 0)
                 Globals.CHARACTER_TABLE[slot].Write("Action", 10);
             else
                 Globals.CHARACTER_TABLE[slot].Write("Action", 8);
@@ -9395,7 +9477,7 @@ namespace Dragoon_Modifier {
                 qtbTurns -= 1;
                 pgrQTB.Value = qtbTurns;
 
-                if (emulator.ReadByte("DRAGOON_TURNS" + 0x4 * slot) > 0)
+                if (emulator.ReadByte("DRAGOON_TURNS", 0x4 * slot) > 0)
                     Globals.CHARACTER_TABLE[slot].Write("Action", 10);
                 else
                     Globals.CHARACTER_TABLE[slot].Write("Action", 8);
@@ -10152,7 +10234,7 @@ namespace Dragoon_Modifier {
             if (btn.Name.Equals("btnKillBGM"))
                 SetKillBGMState();
 
-            if (btn.Name.Equals("btnUltimateBoss"))
+            if (btn.Name.Equals("btnUltimateBoss") && !Globals.IN_BATTLE)
                 UltimateBossFieldSet();
 
             if (btn.Name.Equals("btnEarlyAdditions") && !Globals.dmScripts[btn.Name])
