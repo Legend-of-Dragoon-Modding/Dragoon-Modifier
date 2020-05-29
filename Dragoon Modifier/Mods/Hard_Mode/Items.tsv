@@ -167,7 +167,7 @@ Jeweled Hammer	Weapon	Meru	Hammer				40	40															Enhances Dragoon<LINE>m
 Giant Axe	Weapon	Kongol	Axe				100	10															Casts guard<LINE>periodically.
 Soa's Light	Weapon	All	Bag				127	127															Siphons DF & MDF<LINE>from others. 100 SP per turn only. 
 Fake Legend Casque	Helm	All	Helm							30		100	100										30% Chance to add 40MDF when guarding.
-Soa's Helm	Helm	All	Helm					127															Siphons AT from <LINE>others. Recovers 20%MP.
+Soa's Helm	Helm	All	Helm					127				100	100										Siphons AT from <LINE>others. Recovers 20%MP.
 Fake Legend Armor	Armor	All	Armor						30														30% Chance to add 40DF when guarding.
 Divine DG Armor	Armor	All	Armor						50	50													20 SP and 10 MP on<LINE>all hits.
 Soa's Armor	Armor	All	Armor				127																Siphons MAT from<LINE>others. Recovers 20%HP. 
