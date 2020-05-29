@@ -1190,6 +1190,7 @@ namespace Dragoon_Modifier {
                 try {
                     try {
                         using (var itemData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Items.tsv")) {
+                            itemList = new List<dynamic>();
                             bool firstline = true;
                             int i = 0;
                             while (!itemData.EndOfStream) {
@@ -1472,10 +1473,10 @@ namespace Dragoon_Modifier {
 
         public class ItemList {
             int id = 0;
-            string name = "";
-            string description = "";
-            string encodedName = "00 00 FF A0";
-            string encodedDescription = "00 00 FF A0";
+            string name = "<END>";
+            string description = "<END>";
+            string encodedName = "FF A0";
+            string encodedDescription = "FF A0";
             long descriptionPointer = 0;
             long namePointer = 0;
             byte icon = 0;
@@ -1664,9 +1665,10 @@ namespace Dragoon_Modifier {
                 short key2 = 0;
                 id = index;
                 name = values[0];
-                if (name != "") {
-                    encodedName = StringEncode(name);
+                if (name == "") {
+                    name = "<END>";
                 }
+                encodedName = StringEncode(name);
                 if (typeDict.TryGetValue(values[1].ToLower(), out key)) {
                     type = key;
                 } else {
@@ -1792,9 +1794,10 @@ namespace Dragoon_Modifier {
                     }
                 }
                 description = values[23];
-                if (description != "") {
-                    encodedDescription = StringEncode(description);
+                if (description == "") {
+                    description = "<END>";
                 }
+                encodedDescription = StringEncode(description);
             }
         }
 
