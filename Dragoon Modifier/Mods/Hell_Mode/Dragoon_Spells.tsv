@@ -1,7 +1,7 @@
 	is %	Damage	Accuracy	MP	Element	Description
 Flameshot		200	100	10	Fire	Fire STR 510%
-Explosion		100	100	20	Fire	Fire STR 340%
-Final Burst		300	100	30	Fire	Fire STR 765%
+Explosion		100	100	20	Fire	Fire STR 340%<END>
+Final Burst		300	100	30	Fire	Fire STR 765%<END>
 Red-Eye Dragon		300	100	80	Fire	Fire STR 1020%
 Divine Dragon Cannon		600	100	50	Non-Elemental	Void STR 1020%
 Wing Blaster (Lavitz)		100	100	20	Wind	Wind STR 440%
@@ -18,7 +18,7 @@ Astral Drain		200	100	10	Dark	Dark STR 590%
 Death Dimension		100	100	20	Dark	Dark STR 395%
 Gaspless (Albert)		300	100	30	Wind	Wind STR 990%
 Demon's Gate		100	100	30	Dark	Lethal attack for all
-Dark Dragon		400	100	80	Dark	Dark STR 1680%
+Dark Dragon		400	100	80	Dark	Dark STR 1680%<END>& HP
 Atomic Mind		100	100	10	Thunder	Thunder STR 330%
 Thunder Kid		200	100	20	Thunder	Thunder STR 660%
 Thunder God		300	100	30	Thunder	Thunder STR 990%
