@@ -3863,7 +3863,7 @@ namespace Dragoon_Modifier {
         }
 
         public void LoadMaxHPTable(bool forceLoad) {
-            if ((!maxHPTableLoaded && !Globals.IN_BATTLE && emulator.ReadShort("BATTLE_VALUE") < 5130) || forceLoad) {
+            if ((!maxHPTableLoaded && !Globals.IN_BATTLE && (emulator.ReadShort("BATTLE_VALUE") > 1 && emulator.ReadShort("BATTLE_VALUE") < 5130)) || forceLoad) {
                 byte tableSlot = 0;
                 for (int i = 0; i < 9; i++) {
                     switch (i) {
@@ -4133,11 +4133,7 @@ namespace Dragoon_Modifier {
 
         #region Equip Changes
         public void EquipChangesField() {
-            if (!Globals.IN_BATTLE && !equipChangesOnFieldEntry && (Globals.BATTLE_VALUE > 0 && Globals.BATTLE_VALUE < 9999)) {
-                //Angel Robe
-                WriteEquipChanges(0x1127ED, 32);
-                WriteEquipChanges(0x1127EE, 64);
-                WriteEquipChanges(0x1127EF, 7);
+            if (!Globals.IN_BATTLE && !equipChangesOnFieldEntry && (Globals.BATTLE_VALUE > 0 && Globals.BATTLE_VALUE < 9999) && !Globals.STATS_CHANGED) {
                 if (emulator.ReadByte("CHAPTER") >= 3) {
                     //Heat Blade
                     WriteEquipChanges(0x112032, 25);
@@ -4148,178 +4144,6 @@ namespace Dragoon_Modifier {
                     //Morning Star
                     WriteEquipChanges(0x1123CE, 0);
                 }
-                //+1C stats
-                //+8  name
-                //Sabre
-                WriteEquipChanges(0x113139, 128);
-                WriteEquipChanges(0x11313A, 128);
-                WriteEquipChanges(0x11313B, 4);
-                WriteEquipChanges(0x113148, 70);
-                WriteEquipChangesAOB(0x118F84, "31 00 1F 00 20 00 FF A0");
-                //Spirit Eater
-                WriteEquipChanges(0x113155, 128);
-                WriteEquipChanges(0x113156, 128);
-                WriteEquipChanges(0x113157, 128);
-                WriteEquipChanges(0x113164, 75);
-                WriteEquipChanges(0x113165, 50);
-                WriteEquipChangesAOB(0x118F8C, "31 00 2E 00 23 00 FF A0");
-                //Harpoon
-                WriteEquipChanges(0x113171, 128);
-                WriteEquipChanges(0x113172, 128);
-                WriteEquipChanges(0x113173, 64);
-                WriteEquipChanges(0x11317A, 100);
-                WriteEquipChangesAOB(0x118F94, "26 00 30 00 2E 00 FF A0");
-                //Element Arrow
-                WriteEquipChanges(0x11318D, 128);
-                WriteEquipChanges(0x11318E, 128);
-                WriteEquipChanges(0x11318F, 2);
-                WriteEquipChanges(0x11319C, 50);
-                WriteEquipChanges(0x11319D, 50);
-                WriteEquipChangesAOB(0x118F9C, "23 00 2A 00 1F 00 FF A0");
-                //Dragon Buster II
-                WriteEquipChanges(0x1131A9, 128);
-                WriteEquipChanges(0x1131AA, 128);
-                WriteEquipChanges(0x1131AB, 4);
-                WriteEquipChanges(0x1131B2, 3);
-                WriteEquipChanges(0x1131B8, 127);
-                WriteEquipChangesAOB(0x118FA4, "22 00 20 00 17 00 FF A0");
-                //Battery Glove
-                WriteEquipChanges(0x1131C5, 128);
-                WriteEquipChanges(0x1131C6, 128);
-                WriteEquipChanges(0x1131C7, 16);
-                WriteEquipChanges(0x1131CE, 80);
-                WriteEquipChanges(0x1131D5, 20);
-                WriteEquipChangesAOB(0x118FAC, "20 00 25 00 2A 00 FF A0");
-                //Jeweled Hammer
-                WriteEquipChanges(0x1131E1, 128);
-                WriteEquipChanges(0x1131E2, 128);
-                WriteEquipChanges(0x1131E3, 1);
-                WriteEquipChanges(0x1131EA, 40);
-                WriteEquipChanges(0x1131F1, 40);
-                WriteEquipChangesAOB(0x118FB4, "28 00 26 00 1F 00 FF A0");
-                //Giant Axe
-                WriteEquipChanges(0x1131FD, 128);
-                WriteEquipChanges(0x1131FE, 128);
-                WriteEquipChanges(0x1131FF, 32);
-                WriteEquipChanges(0x113206, 100);
-                WriteEquipChanges(0x11320D, 10);
-                WriteEquipChangesAOB(0x118FBC, "25 00 1F 00 36 00 FF A0");
-                //Soa's Light
-                WriteEquipChanges(0x113219, 255);
-                WriteEquipChanges(0x11321A, 255);
-                WriteEquipChanges(0x11321B, 255);
-                WriteEquipChanges(0x113222, 200);
-                WriteEquipChanges(0x113229, 127);
-                WriteEquipChangesAOB(0x118FC4, "31 00 2A 00 27 00 FF A0");
-                //Fake Legend Casque
-                WriteEquipChanges(0x113235, 64);
-                WriteEquipChanges(0x113236, 64);
-                WriteEquipChanges(0x113237, 247);
-                WriteEquipChanges(0x113242, 18);
-                WriteEquipChanges(0x113247, 30);
-                WriteEquipChanges(0x113248, 100);
-                WriteEquipChanges(0x113249, 100);
-                WriteEquipChangesAOB(0x118FCC, "24 00 2A 00 21 00 FF A0");
-                //Soa's Helm
-                WriteEquipChanges(0x113251, 64);
-                WriteEquipChanges(0x113252, 64);
-                WriteEquipChanges(0x113253, 247);
-                WriteEquipChanges(0x11325E, 18);
-                WriteEquipChanges(0x113263, 127);
-                WriteEquipChanges(0x113264, 100);
-                WriteEquipChanges(0x113265, 100);
-                WriteEquipChangesAOB(0x118FD4, "31 00 26 00 2A 00 FF A0");
-                //Fake Legend Armor
-                WriteEquipChanges(0x11326D, 32);
-                WriteEquipChanges(0x11326E, 64);
-                WriteEquipChanges(0x11326F, 247);
-                WriteEquipChanges(0x11327A, 10);
-                WriteEquipChanges(0x11327E, 30);
-                WriteEquipChangesAOB(0x118FDC, "24 00 2A 00 1F 00 FF A0");
-                //Divine DG Armor
-                WriteEquipChanges(0x113289, 32);
-                WriteEquipChanges(0x11328A, 64);
-                WriteEquipChanges(0x11328B, 247);
-                WriteEquipChanges(0x113296, 10);
-                WriteEquipChanges(0x11329A, 50);
-                WriteEquipChanges(0x11329B, 50);
-                WriteEquipChangesAOB(0x118FE4, "22 00 22 00 1F 00 FF A0");
-                //Soa's Armor
-                WriteEquipChanges(0x1132A5, 32);
-                WriteEquipChanges(0x1132A6, 64);
-                WriteEquipChanges(0x1132A7, 247);
-                WriteEquipChanges(0x1132B2, 10);
-                WriteEquipChanges(0x1132B6, 127);
-                WriteEquipChangesAOB(0x118FEC, "31 00 1F 00 30 00 FF A0");
-                //Lloyd's Boots
-                WriteEquipChanges(0x1132C1, 16);
-                WriteEquipChanges(0x1132C2, 64);
-                WriteEquipChanges(0x1132C3, 255);
-                WriteEquipChanges(0x1132CE, 21);
-                WriteEquipChanges(0x1132CF, 15);
-                WriteEquipChanges(0x1132D6, 15);
-                WriteEquipChanges(0x1132D7, 15);
-                WriteEquipChangesAOB(0x118FF4, "2A 00 20 00 31 00 FF A0");
-                //Winged Shoes
-                WriteEquipChanges(0x1132DD, 16);
-                WriteEquipChanges(0x1132DE, 64);
-                WriteEquipChanges(0x1132DF, 255);
-                WriteEquipChanges(0x1132EA, 21);
-                WriteEquipChanges(0x1132EB, 25);
-                WriteEquipChangesAOB(0x118FFC, "35 00 25 00 31 00 FF A0");
-                //Soa's Greaves
-                WriteEquipChanges(0x1132F9, 16);
-                WriteEquipChanges(0x1132FA, 64);
-                WriteEquipChanges(0x1132FB, 255);
-                WriteEquipChanges(0x113306, 21);
-                WriteEquipChanges(0x113307, 40);
-                WriteEquipChanges(0x11330E, 20);
-                WriteEquipChanges(0x11330F, 20);
-                WriteEquipChangesAOB(0x119004, "31 00 25 00 31 00 FF A0");
-                //Heal Ring
-                WriteEquipChanges(0x113315, 8);
-                WriteEquipChanges(0x113316, 32);
-                WriteEquipChanges(0x113317, 255);
-                WriteEquipChanges(0x113322, 23);
-                WriteEquipChangesAOB(0x11900C, "26 00 2A 00 30 00 FF A0");
-                //Soa's Sash
-                WriteEquipChanges(0x113331, 8);
-                WriteEquipChanges(0x113332, 32);
-                WriteEquipChanges(0x113333, 255);
-                WriteEquipChanges(0x11333E, 23);
-                WriteEquipChangesAOB(0x119014, "31 00 31 00 26 00 FF A0");
-                //Soa's Ahnk
-                WriteEquipChanges(0x11334D, 8);
-                WriteEquipChanges(0x11334E, 32);
-                WriteEquipChanges(0x11334F, 255);
-                WriteEquipChanges(0x11335A, 23);
-                WriteEquipChangesAOB(0x11901C, "31 00 1F 00 29 00 FF A0");
-                //Soa's Health Ring
-                WriteEquipChanges(0x113369, 8);
-                WriteEquipChanges(0x11336A, 32);
-                WriteEquipChanges(0x11336B, 255);
-                WriteEquipChanges(0x113376, 23);
-                WriteEquipChangesAOB(0x119024, "31 00 26 00 30 00 FF A0");
-                //Soa's Mage Ring
-                WriteEquipChanges(0x113385, 8);
-                WriteEquipChanges(0x113386, 32);
-                WriteEquipChanges(0x113387, 255);
-                WriteEquipChanges(0x113392, 23);
-                WriteEquipChangesAOB(0x11902C, "31 00 2B 00 30 00 FF A0");
-                //Soa's Shield Ring
-                WriteEquipChanges(0x1133A1, 8);
-                WriteEquipChanges(0x1133A2, 32);
-                WriteEquipChanges(0x1133A3, 255);
-                WriteEquipChanges(0x1133AE, 23);
-                WriteEquipChangesAOB(0x119034, "31 00 31 00 22 00 FF A0");
-                //Soa's Siphon Ring
-                WriteEquipChanges(0x1133BD, 8);
-                WriteEquipChanges(0x1133BE, 32);
-                WriteEquipChanges(0x1133BF, 255);
-                WriteEquipChanges(0x1133CA, 23);
-                WriteEquipChangesAOB(0x11903C, "31 00 31 00 30 00 FF A0");
-
-                //legend item check?
 
                 equipChangesOnFieldEntry = true;
             } else {
@@ -4572,7 +4396,7 @@ namespace Dragoon_Modifier {
                             Globals.CHARACTER_TABLE[i].Write("HP_Regen", (Globals.CHARACTER_TABLE[i].Read("HP_Regen") + 20));
                             for (int x = 0; x < 3; x++) {
                                 if (x != i && Globals.PARTY_SLOT[x] < 9) {
-                                    Globals.CHARACTER_TABLE[x].Write("MATK", Math.Round(Globals.CHARACTER_TABLE[x].Read("MATK") * 0.7));
+                                    Globals.CHARACTER_TABLE[x].Write("MAT", Math.Round(Globals.CHARACTER_TABLE[x].Read("MAT") * 0.7));
                                 }
                             }
                         }
@@ -4637,6 +4461,15 @@ namespace Dragoon_Modifier {
                                     if (Globals.CHARACTER_TABLE[x].Read("HP") > Globals.CHARACTER_TABLE[x].Read("Max_HP")) {
                                         Globals.CHARACTER_TABLE[x].Write("HP", Globals.CHARACTER_TABLE[x].Read("Max_HP"));
                                     }
+                                } else {
+                                    if (Globals.PARTY_SLOT[x] < 9) {
+                                        ushort maxhp = Globals.CHARACTER_TABLE[x].Read("Max_HP") * 2;
+                                        Globals.CHARACTER_TABLE[x].Write("HP", Globals.CHARACTER_TABLE[x].Read("HP") * 2);
+                                        Globals.CHARACTER_TABLE[x].Write("Max_HP", Math.Min(short.MaxValue, maxhp));
+                                        if (Globals.CHARACTER_TABLE[x].Read("HP") > Globals.CHARACTER_TABLE[x].Read("Max_HP")) {
+                                            Globals.CHARACTER_TABLE[x].Write("HP", Globals.CHARACTER_TABLE[x].Read("Max_HP"));
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -4649,7 +4482,7 @@ namespace Dragoon_Modifier {
                                     Globals.CHARACTER_TABLE[x].Write("HP" + 0xA, (ushort) Math.Round(Globals.CHARACTER_TABLE[x].Read("Max_MP") * 0.5));
 
                                     if (Globals.CHARACTER_TABLE[x].Read("MP") > Globals.CHARACTER_TABLE[x].Read("Max_MP")) {
-                                        Globals.CHARACTER_TABLE[x].Write("HP", Globals.CHARACTER_TABLE[x].Read("Max_MP"));
+                                        Globals.CHARACTER_TABLE[x].Write("MP", Globals.CHARACTER_TABLE[x].Read("Max_MP"));
                                     }
                                 }
                             }
@@ -4674,7 +4507,7 @@ namespace Dragoon_Modifier {
                             Globals.CHARACTER_TABLE[i].Write("DMAT", Math.Round(Globals.CHARACTER_TABLE[i].Read("DMAT") * 0.3));
                             for (int x = 0; x < 3; x++) {
                                 if (x != i && Globals.PARTY_SLOT[x] < 9) {
-                                    Globals.CHARACTER_TABLE[x].Write("MATK", Math.Round(Globals.CHARACTER_TABLE[x].Read("MATK") * 0.8));
+                                    Globals.CHARACTER_TABLE[x].Write("MAT", Math.Round(Globals.CHARACTER_TABLE[x].Read("MAT") * 0.8));
                                 }
                             }
                         }
@@ -6621,7 +6454,7 @@ namespace Dragoon_Modifier {
                         Globals.CHARACTER_TABLE[i].Write("MP", mpAmount > 0 ? mpAmount : 0);
                     }
                 }
-                Thread.Sleep(2000);
+                Thread.Sleep(1900);
                 Globals.MONSTER_TABLE[monsterSlot].Write("Attack_Move", 255);
             }
         }
@@ -6676,7 +6509,7 @@ namespace Dragoon_Modifier {
                         }
                     }
                 }
-                Thread.Sleep(2000);
+                Thread.Sleep(1900);
                 Globals.MONSTER_TABLE[monsterSlot].Write("Attack_Move", 255);
             }
         }
@@ -9636,17 +9469,18 @@ namespace Dragoon_Modifier {
 
                 if (processID > 0) {
                     Constants.RUN = true;
+                    Globals.STATS_CHANGED = true;
                     emulator.OpenProcess(processID);
                     fieldThread.Start();
                     battleThread.Start();
                     hotkeyThread.Start();
                     otherThread.Start();
-                    Constants.WriteOutput("Attached to " + Constants.EMULATOR_NAME + ".");
+                    Constants.WritePLogOutput("Attached to " + Constants.EMULATOR_NAME + ".");
                 } else {
-                    Constants.WriteOutput("Program failed to open. Please open " + Constants.EMULATOR_NAME + " then press attach.");
+                    Constants.WritePLogOutput("Program failed to open. Please open " + Constants.EMULATOR_NAME + " then press attach.");
                 }
             } else {
-                Constants.WriteOutput("Program is already attached to " + Constants.EMULATOR_NAME + ".");
+                Constants.WritePLogOutput("Program is already attached to " + Constants.EMULATOR_NAME + ".");
             }
         }
 
@@ -9692,7 +9526,7 @@ namespace Dragoon_Modifier {
             } else {
                 if (!this.IsLoaded) {
                     Constants.RUN = false;
-                    Thread.Sleep(3000);
+                    Thread.Sleep(2000);
                 }
 
                 switch (Constants.EMULATOR) {
@@ -9832,7 +9666,7 @@ namespace Dragoon_Modifier {
                 if (Constants.EMULATOR <= 7) {
                     miAttach_Click(null, null);
                 }
-                LoadMaxHPTable(true);
+
                 Constants.ProgramInfo();
             }
         }
@@ -10173,6 +10007,7 @@ namespace Dragoon_Modifier {
                 Globals.DRAGOON_CHANGE = (bool) dragoon.IsChecked;
                 Globals.DRAGOON_ADDITION_CHANGE = (bool) dragoonAddition.IsChecked;
                 Globals.SHOP_CHANGE = (bool) shop.IsChecked;
+                Globals.STATS_CHANGED = true;
 
                 if (Globals.MOD != (string) mod.SelectedValue) {
                     Globals.MOD = (string) mod.SelectedValue;
@@ -10362,6 +10197,8 @@ namespace Dragoon_Modifier {
 
         public void DifficultyButton(object sender, EventArgs e) {
             Button btn = (Button) sender;
+            Globals.STATS_CHANGED = true;
+            equipChangesOnFieldEntry = false;
 
             if (btn == btnNormal) {
                 btn.Background = new SolidColorBrush(Color.FromArgb(255, 168, 211, 255));
@@ -11382,7 +11219,7 @@ namespace Dragoon_Modifier {
 
         public void CloseEmulator() {
             Constants.RUN = false;
-            Thread.Sleep(3000);
+            Thread.Sleep(2000);
             SaveKey();
             SaveSubKey();
         }

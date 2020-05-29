@@ -75,11 +75,8 @@ public class BattleController {
             Globals.STATS_CHANGED = true;
         } else {
             if (Globals.STATS_CHANGED && encounterValue < 9999) {
-                Globals.STATS_CHANGED = false;
-                Globals.IN_BATTLE = false;
-                Globals.EXITING_BATTLE = 2;
                 Constants.WriteOutput("Exiting out of battle.");
-                if (Globals.ITEM_CHANGE == true && (!Globals.DIFFICULTY_MODE.Equals("Hard") && !Globals.DIFFICULTY_MODE.Equals("Hell"))) {
+                if (Globals.ITEM_CHANGE == true) {
                     Constants.WriteOutput("Changing Item table...");
                     if (String.Join("", Globals.DICTIONARY.NameList).Replace(" ", "").Length / 2 < 6423) {
                         emulator.WriteAOB("ITEM_NAME", String.Join(" ", Globals.DICTIONARY.NameList));
@@ -210,6 +207,9 @@ public class BattleController {
                         emulator.WriteByte(address2 + 0x10 + addition * 0x18, (byte) Globals.DICTIONARY.AdditionData[character, reorderedaddition, 5].ADD_DMG_Multi);
                     }
                 }
+                Globals.STATS_CHANGED = false;
+                Globals.IN_BATTLE = false;
+                Globals.EXITING_BATTLE = 2;
             } else {
                 if (Globals.NO_DART != null && (encounterValue > 0 && encounterValue < 9999)) {
                     if (Globals.PARTY_SLOT[0] != 0 && Globals.PARTY_SLOT[1] < 9 && Globals.PARTY_SLOT[2] < 9) {

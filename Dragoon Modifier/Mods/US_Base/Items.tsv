@@ -75,22 +75,22 @@ Rainbow Dress	Armor	Female	Robe						32	55				5	5			Poison, Stun, Arm Blocking		
 Angel Robe	Armor	Shana, Meru	Robe											5	5					revive	40		40% chance of<LINE>reviving from<LINE>death.
 Armor of Legend	Armor	All	Armor						127					50									Greatly reduces<LINE>damage from<LINE>physical attacks.
 																							 
-Bandana	Helm	Male	Bandana					3															 
-Sallet	Helm	Male	Helm					8															Increases hit<LINE>chance of physical<LINE>attacks by 10%.
-Armlet	Helm	Male	Helm					23		7													 
-Knight Helm	Helm	Male	Helm					37	5										sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.
-Giganto Helm	Helm	Kongol	Helm					14	10	5									sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.
-Soul Headband	Helm	Haschel	Bandana					25	5	5									sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.
-Felt Hat	Helm	Female	Hat					5															 
-Cape	Helm	Female	Hat					17															 
-Tiara	Helm	Female	Crown					24		5													Increases hit<LINE>chance of magical<LINE>attacks by 10%.
-Jeweled Crown	Helm	Shana, Meru	Crown					24		5									sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.
-Rose's Hair Band	Helm	Rose	Bandana					29	5													death_res	Grants immunity<LINE>to instant death.
+Bandana	Helm	Male	Bandana					3				100	100										 
+Sallet	Helm	Male	Helm					8				110	100										Increases hit<LINE>chance of physical<LINE>attacks by 10%.
+Armlet	Helm	Male	Helm					23		7		100	100										 
+Knight Helm	Helm	Male	Helm					37	5			100	100						sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.
+Giganto Helm	Helm	Kongol	Helm					14	10	5		100	100						sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.
+Soul Headband	Helm	Haschel	Bandana					25	5	5		100	100						sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.
+Felt Hat	Helm	Female	Hat					5				100	100										 
+Cape	Helm	Female	Hat					17				100	100										 
+Tiara	Helm	Female	Crown					24		5		100	110										Increases hit<LINE>chance of magical<LINE>attacks by 10%.
+Jeweled Crown	Helm	Shana, Meru	Crown					24		5		100	100						sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.
+Rose's Hair Band	Helm	Rose	Bandana					29	5			100	100									death_res	Grants immunity<LINE>to instant death.
 																							 
-Phoenix Plume	Helm	All	Helm					30	0	10								Bewitchment, Confusion, Fear, Dispirit					Avoids bewitchment,<LINE>confusion, fear,<LINE>and dispiriting.
-Legend Casque	Helm	All	Helm					50		127					50								Greatly reduces<LINE>damage from<LINE>magical attacks.
-Dragon Helm	Helm	All	Helm					50	12											hp_multi	50		Raises maximum<LINE>HP 50%.
-Magical Hat	Helm	All	Hat					50		10										mp_multi	50		Raises maximum<LINE>MP 50%.
+Phoenix Plume	Helm	All	Helm					30	0	10		100	100					Bewitchment, Confusion, Fear, Dispirit					Avoids bewitchment,<LINE>confusion, fear,<LINE>and dispiriting.
+Legend Casque	Helm	All	Helm					50		127		100	100		50								Greatly reduces<LINE>damage from<LINE>magical attacks.
+Dragon Helm	Helm	All	Helm					50	12			100	100							hp_multi	50		Raises maximum<LINE>HP 50%.
+Magical Hat	Helm	All	Hat					50		10		100	100							mp_multi	50		Raises maximum<LINE>MP 50%.
 																							 
 Leather Boots	Boots	Male	Boots																				 
 Iron Kneepiece	Boots	Male	Kneepiece						5														 

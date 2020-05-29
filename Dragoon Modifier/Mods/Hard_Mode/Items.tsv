@@ -72,25 +72,25 @@ Blue DG Armor	Armor	Meru	Armor						30	54				5	5		Water						Nullifies damage<LI
 Armor of Yore	Armor	Dart, Lavitz	Armor						35	35								Poison, Stun, Arm Blocking					Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.
 Satori Vest	Armor	Haschel	Warrior Dress						40	31				10				Poison, Stun, Arm Blocking					Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.
 Rainbow Dress	Armor	Female	Robe						32	55				5	5			Poison, Stun, Arm Blocking					Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.
-Angel Robe	Armor	Shana, Meru	Robe											5	5					revive	40		40% chance of<LINE>reviving from<LINE>death.
+Angel Robe	Armor	Female	Robe											5	5					revive	40		40% chance of<LINE>reviving from<LINE>death.
 Armor of Legend	Armor	All	Armor						127					50									Greatly reduces<LINE>damage from<LINE>physical attacks.
 																							 
-Bandana	Helm	Male	Bandana					3															 
-Sallet	Helm	Male	Helm					8															Increases hit<LINE>chance of physical<LINE>attacks by 10%.
-Armlet	Helm	Male	Helm					23		7													 
-Knight Helm	Helm	Male	Helm					37	5										sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.
-Giganto Helm	Helm	Kongol	Helm					14	10	5									sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.
-Soul Headband	Helm	Haschel	Bandana					25	5	5									sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.
-Felt Hat	Helm	Female	Hat					5															 
-Cape	Helm	Female	Hat					17															 
-Tiara	Helm	Female	Crown					24		5													Increases hit<LINE>chance of magical<LINE>attacks by 10%.
-Jeweled Crown	Helm	Shana, Meru	Crown					24		5									sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.
-Rose's Hair Band	Helm	Rose	Bandana					29	5													death_res	Grants immunity<LINE>to instant death.
+Bandana	Helm	Male	Bandana					3				100	100										 
+Sallet	Helm	Male	Helm					8				110	100										Increases hit<LINE>chance of physical<LINE>attacks by 10%.
+Armlet	Helm	Male	Helm					23		7		100	100										 
+Knight Helm	Helm	Male	Helm					37	5			100	100						sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.
+Giganto Helm	Helm	Kongol	Helm					14	10	5		100	100						sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.
+Soul Headband	Helm	Haschel	Bandana					25	5	5		100	100						sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.
+Felt Hat	Helm	Female	Hat					5				100	100										 
+Cape	Helm	Female	Hat					17				100	100										 
+Tiara	Helm	Female	Crown					24		5		100	110										Increases hit<LINE>chance of magical<LINE>attacks by 10%.
+Jeweled Crown	Helm	Shana, Meru	Crown					24		5		100	100						sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.
+Rose's Hair Band	Helm	Rose	Bandana					29	5			100	100									death_res	Grants immunity<LINE>to instant death.
 																							 
-Phoenix Plume	Helm	All	Helm					30	0	10								Bewitchment, Confusion, Fear, Dispirit					Avoids bewitchment,<LINE>confusion, fear,<LINE>and dispiriting.
-Legend Casque	Helm	All	Helm					50		127					50								Greatly reduces<LINE>damage from<LINE>magical attacks.
-Dragon Helm	Helm	All	Helm					50	12											hp_multi	50		Raises maximum<LINE>HP 50%.
-Magical Hat	Helm	All	Hat					50		10										mp_multi	50		Raises maximum<LINE>MP 50%.
+Phoenix Plume	Helm	All	Helm					30	0	10		100	100					Bewitchment, Confusion, Fear, Dispirit					Avoids bewitchment,<LINE>confusion, fear,<LINE>and dispiriting.
+Legend Casque	Helm	All	Helm					50		127		100	100		50								Greatly reduces<LINE>damage from<LINE>magical attacks.
+Dragon Helm	Helm	All	Helm					50	12			100	100							hp_multi	50		Raises maximum<LINE>HP 50%.
+Magical Hat	Helm	All	Hat					50		10		100	100							mp_multi	50		Raises maximum<LINE>MP 50%.
 																							 
 Leather Boots	Boots	Male	Boots																				 
 Iron Kneepiece	Boots	Male	Kneepiece						5														 
@@ -142,7 +142,7 @@ Violet Stone	Accessory	All	Stone													Thunder							Halves damage<LINE>fr
 Golden Stone	Accessory	All	Stone													Earth							Halves damage<LINE>from earth-based<LINE>attacks.
 																							 
 Ruby Ring	Accessory	All	Ring																sp_m_hit		20		Gain 20 SP when<LINE>damaged magically.
-Sapphire Pin	Accessory	All	Pin																mp_m_hit		10		Gain 10% MP when<LINE>damaged magically.
+Sapphire Pin	Accessory	All	Ring																mp_m_hit		10		Gain 10% MP when<LINE>damaged magically.
 Rainbow Earring	Accessory	All	Ring															All					Avoids all<LINE>abnormal status<LINE>ailments.
 																							 
 Emerald Earring	Accessory	All	Ring																sp_p_hit		20		Gain 20 SP when<LINE>damaged physically.
@@ -157,29 +157,29 @@ Fake Shield	Accessory	All	Ring						5														Raises physical<LINE>defense 
 																							 
 Wargod Calling	Accessory	All	Ring																				Automatic Addition:<LINE>Half Damage and SP.
 Ultimate Wargod	Accessory	All	Ring																				Automatic Addition:<LINE>Full Damage and SP.
-																							
-																							
-																							
-																							
-																							
-																							
-																							
-																							
-																							
-																							
-																							
-																							
-																							
-																							
-																							
-																							
-																							
-																							
-																							
-																							
-																							
-																							
-																							
+Sabre	Weapon	Rose	Sword				70																<LINE> 
+Spirit Eater	Weapon	Dart	Sword				75	50															Uses 35 SP per turn<LINE>unless full.
+Harpoon	Weapon	Lavitz	Spear				100																Powers up Dragoon<LINE>by using more SP.<LINE>Speed down on exit.
+Element Arrow	Weapon	Shana	Bow				50	50															Elemental Shift.<LINE>Adds magic for 100G<LINE>every 3 turns.
+Dragon Beater	Weapon	Rose	Sword				127																Enhances Dragoon<LINE>magic.
+Battery Glove	Weapon	Haschel	Boxing Glove				80	20															Unleashes powerful<LINE>physical attack<LINE>every 7 turns.
+Jeweled Hammer	Weapon	Meru	Hammer				40	40															Enhances Dragoon<LINE>magic.
+Giant Axe	Weapon	Kongol	Axe				100	10															Casts guard<LINE>periodically.
+Soa's Light	Weapon	All	Bag				127	127															Siphons DF & MDF<LINE>from others. 100 SP per turn only. 
+Fake Legend Casque	Helm	All	Helm							30		100	100										30% Chance to add 40MDF when guarding.
+Soa's Helm	Helm	All	Helm					127															Siphons AT from <LINE>others. Recovers 20%MP.
+Fake Legend Armor	Armor	All	Armor						30														30% Chance to add 40DF when guarding.
+Divine DG Armor	Armor	All	Armor						50	50													20 SP and 10 MP on<LINE>all hits.
+Soa's Armor	Armor	All	Armor				127																Siphons MAT from<LINE>others. Recovers 20%HP. 
+Lloyd's Boots	Boots	All	Boots								15			15	15								Lloyd's favorite<LINE>pair of boots.
+Winged Shoes	Boots	All	Shoes								25												Shoes with wings.
+Soa's Greaves	Boots	All	Kneepiece								40			40	40								Siphons SPD from<LINE>others.
+Heal Ring	Accessory	All	Ring																				Heals 7% HP/MP and<LINE>7 SP.
+Soa's Sash	Accessory	All	Ring																				Siphons SP gain fromothers.
+Soa's Ahnk	Accessory	All	Pin																				Revives always but<LINE>sacrifies another<LINE>party member.
+Soa's Health Ring	Accessory	All	Ring																				Siphons Max HP from<LINE>others but doubles<LINE>own.
+Soa's Mage Ring	Accessory	All	Ring																				Siphons Max MP from<LINE>others but triples<LINE>own.
+Soa's Shield Ring	Accessory	All	Ring																				Siphons accuracy<LINE>from others. Dies onhit.
 																							
 																							
 																							
