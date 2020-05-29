@@ -4329,9 +4329,10 @@ namespace Dragoon_Modifier {
                             Globals.CHARACTER_TABLE[i].Write("MAT", (Globals.CHARACTER_TABLE[i].Read("MAT") + 40));
                             if (jeweledHammer) {
                                 if (Constants.REGION == Region.USA) {
-                                    emulator.WriteAOB(0x51CA8, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1D 00 15 00 15 00 0F 00 FF A0");
-                                    emulator.WriteAOB(0x51D3C, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1D 00 1D 00 15 00 0F 00 FF A0");
-                                    emulator.WriteAOB(0x51D64, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 17 00 16 00 15 00 15 00 0F 00 FF A0");
+                                    
+                                    emulator.WriteAOB(Globals.DRAGOON_SPELLS[24].Description_Pointer - 0x80000000, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1D 00 15 00 15 00 0F 00 FF A0");
+                                    emulator.WriteAOB(Globals.DRAGOON_SPELLS[27].Description_Pointer - 0x80000000, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1D 00 1D 00 15 00 0F 00 FF A0");
+                                    emulator.WriteAOB(Globals.DRAGOON_SPELLS[28].Description_Pointer - 0x80000000, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 17 00 16 00 15 00 15 00 0F 00 FF A0");
                                 }
                                 emulator.WriteByte("SPELL_TABLE", 50, 0x7 + (24 * 0xC)); //Freezing Ring MP
                                 emulator.WriteByte("SPELL_TABLE", 100, 0x7 + (25 * 0xC)); //Rainbow Breath MP
