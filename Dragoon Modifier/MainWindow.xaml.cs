@@ -3663,7 +3663,7 @@ namespace Dragoon_Modifier {
         #region Increase Text Speed
         public void IncreaseTextSpeed() {
             if (!Globals.IN_BATTLE) {
-                emulator.WriteByte("TEXT_SPEED", 1);
+                emulator.WriteShort("TEXT_SPEED", 1);
             }
         }
 
@@ -9469,12 +9469,14 @@ namespace Dragoon_Modifier {
 
                 if (processID > 0) {
                     Constants.RUN = true;
-                    Globals.STATS_CHANGED = true;
                     emulator.OpenProcess(processID);
                     fieldThread.Start();
                     battleThread.Start();
                     hotkeyThread.Start();
                     otherThread.Start();
+
+                    if (emulator.ReadShort("BATTLE_VALUE") < 9999)
+                        Globals.STATS_CHANGED = true;
                     Constants.WritePLogOutput("Attached to " + Constants.EMULATOR_NAME + ".");
                 } else {
                     Constants.WritePLogOutput("Program failed to open. Please open " + Constants.EMULATOR_NAME + " then press attach.");
@@ -10007,7 +10009,9 @@ namespace Dragoon_Modifier {
                 Globals.DRAGOON_CHANGE = (bool) dragoon.IsChecked;
                 Globals.DRAGOON_ADDITION_CHANGE = (bool) dragoonAddition.IsChecked;
                 Globals.SHOP_CHANGE = (bool) shop.IsChecked;
-                Globals.STATS_CHANGED = true;
+
+                if (emulator.ReadShort("BATTLE_VALUE") < 9999)
+                    Globals.STATS_CHANGED = true;
 
                 if (Globals.MOD != (string) mod.SelectedValue) {
                     Globals.MOD = (string) mod.SelectedValue;
@@ -10120,7 +10124,7 @@ namespace Dragoon_Modifier {
             }
 
             if (btn.Name.Equals("btnTextSpeed") && !Globals.dmScripts[btn.Name]) {
-                emulator.WriteByte("TEXT_SPEED", 223);
+                emulator.WriteShort("TEXT_SPEED", 223);
             }
 
             if (btn.Name.Equals("btnAutoText") && !Globals.dmScripts[btn.Name]) {
@@ -10197,7 +10201,8 @@ namespace Dragoon_Modifier {
 
         public void DifficultyButton(object sender, EventArgs e) {
             Button btn = (Button) sender;
-            Globals.STATS_CHANGED = true;
+            if (emulator.ReadShort("BATTLE_VALUE") < 9999)
+                Globals.STATS_CHANGED = true;
             equipChangesOnFieldEntry = false;
 
             if (btn == btnNormal) {
