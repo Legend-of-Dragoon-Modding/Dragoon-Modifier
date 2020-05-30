@@ -1,69 +1,69 @@
 Item Name	Equip Type	Who equips	Icon	Element	Status	Status Chance	AT	MAT	DF	MDF	SPD	A-Hit	M-Hit	A-AV	M-AV	E_Half	E_Immune	Status_Resist	Special1	Special2	Special_Ammount	Death_Res	Description
-Broad Sword	Weapon	Dart	Sword				2																 
-Bastard Sword	Weapon	Dart	Sword				7																 
+Broad Sword	Weapon	Dart	Sword				2																
+Bastard Sword	Weapon	Dart	Sword				7																
 Heat Blade	Weapon	Dart	Sword	Fire			18																Fire-based attack.
-Falchion	Weapon	Dart	Sword				26																 
+Falchion	Weapon	Dart	Sword				26																
 Mind Crush	Weapon	Dart	Sword		Confusion	20	34																20% chance of<LINE>confusing enemy.
 Fairy Sword	Weapon	Dart	Sword				39												sp_multi		50		Attacks generate<LINE>50% more SP.
-Claymore	Weapon	Dart	Sword				44																 
+Claymore	Weapon	Dart	Sword				44																
 Soul Eater	Weapon	Dart	Sword				75													hp_regen	-10		Powerful, but<LINE>HP decays<LINE>each turn.
-Axe	Weapon	Kongol	Axe				45																 
-Tomahawk	Weapon	Kongol	Axe				59																 
-Battle Axe	Weapon	Kongol	Axe				67																 
+Axe	Weapon	Kongol	Axe				45																
+Tomahawk	Weapon	Kongol	Axe				59																
+Battle Axe	Weapon	Kongol	Axe				67																
 Great Axe	Weapon	Kongol	Axe		Stun	20	79																20% chance of<LINE>stunning enemy.
 Indora's Axe	Weapon	Kongol	Axe		Death	10	88															death_chance	10% chance to<LINE>instantly kill<LINE>enemy.
-Rapier	Weapon	Rose	Sword				13																 
+Rapier	Weapon	Rose	Sword				13																
 Shadow Cutter	Weapon	Rose	Sword	Dark			24																Dark-based attack.
-Dancing Dagger	Weapon	Rose	Sword				30																 
+Dancing Dagger	Weapon	Rose	Sword				30																
 Flamberge	Weapon	Rose	Sword		Stun	20	35																20% chance of<LINE>stunning enemy.
 Gladius	Weapon	Rose	Sword		Death	10	40															death_chance	10% chance to<LINE>instantly kill<LINE>enemy.
-Dragon Buster	Weapon	Rose	Sword				100															dragon_buster	 
+Dragon Buster	Weapon	Rose	Sword				100															dragon_buster	
 Demon Stilleto	Weapon	Rose	Sword		Fear	20	18																20% chance of<LINE>frightening enemy.
-Spear	Weapon	Lavitz	Spear				4																 
-Lance	Weapon	Lavitz	Spear				19																 
-Glaive	Weapon	Lavitz	Spear				28																 
+Spear	Weapon	Lavitz	Spear				4																
+Lance	Weapon	Lavitz	Spear				19																
+Glaive	Weapon	Lavitz	Spear				28																
 Spear of Terror	Weapon	Lavitz	Spear		Fear	20	37																20% chance of<LINE>frightening enemy.
-Partisan	Weapon	Lavitz	Spear				45																 
-Halberd	Weapon	Lavitz	Spear				65																 
+Partisan	Weapon	Lavitz	Spear				45																
+Halberd	Weapon	Lavitz	Spear				65																
 Twister Glaive	Weapon	Lavitz	Spear	Wind			28																Wind-based attack.
-Short Bow	Weapon	Shana	Bow				3					20											 
+Short Bow	Weapon	Shana	Bow				3					20											
 Sparkle Arrow	Weapon	Shana	Bow	Light			9					20											Light-based attack.
-Long Bow	Weapon	Shana	Bow				18					30											 
+Long Bow	Weapon	Shana	Bow				18					30											
 Bemusing Arrow	Weapon	Shana	Bow		Confusion	20	24					20											20% chance of<LINE>confusing enemy.
 Virulent Arrow	Weapon	Shana	Bow		Poison	20	30					20											20% chance of<LINE>poisoning enemy.
 Detonate Arrow	Weapon	Shana	Bow				50					20										attack_all	Hits all enemies.
 Arrow of Force	Weapon	Shana	Bow				40					20							sp_multi		50		Attacks generate<LINE>50% more SP.
-Mace	Weapon	Meru	Mace				15																 
-Morning Star	Weapon	Meru	Hammer				20																 
-War Hammer	Weapon	Meru	Hammer				25																 
+Mace	Weapon	Meru	Mace				15																
+Morning Star	Weapon	Meru	Hammer				20																
+War Hammer	Weapon	Meru	Hammer				25																
 Heavy Mace	Weapon	Meru	Hammer		Stun	20	30																20% chance of<LINE>stunning enemy.
-Basher	Weapon	Meru	Hammer				40																 
+Basher	Weapon	Meru	Hammer				40																
 Pretty Hammer	Weapon	Meru	Hammer				15												sp_multi		100		Weak, but<LINE>generates twice<LINE>as much SP.
-Iron Knuckle	Weapon	Haschel	Knuckle				20																 
+Iron Knuckle	Weapon	Haschel	Knuckle				20																
 Beast Fang	Weapon	Haschel	Knuckle				31																20% chance of<LINE>stunning enemy.
-Diamond Claw	Weapon	Haschel	Knuckle				37																 
+Diamond Claw	Weapon	Haschel	Knuckle				37																
 Thunder Fist	Weapon	Haschel	Knuckle	Thunder			49																Thunder-based<LINE>attack.
 Destroyer Mace	Weapon	Haschel	Knuckle				55																Power increases<LINE>inversely to HP.
 Brass Knuckle	Weapon	Haschel	Knuckle		Death	10	43															death_chance	10% chance to<LINE>instantly kill<LINE>enemy.
-Leather Armor	Armor	Dart, Lavitz	Clothes						2	2													 
-Scale Armor	Armor	Dart, Lavitz	Armor						8	8													 
-Chain Mail	Armor	Dart, Lavitz	Armor						20	24													 
-Plate Mail	Armor	Dart, Lavitz	Armor						27	20													 
+Leather Armor	Armor	Dart, Lavitz	Clothes						2	2													
+Scale Armor	Armor	Dart, Lavitz	Armor						8	8													
+Chain Mail	Armor	Dart, Lavitz	Armor						20	24													
+Plate Mail	Armor	Dart, Lavitz	Armor						27	20													
 Saint Armor	Armor	Dart, Lavitz	Armor						34	34									sp_p_hit		20		Gain 20 SP when<LINE>attacked<LINE>physically.
 Red DG Armor	Armor	Dart	Armor						41	40							Fire						Nullifies damage<LINE>from fire-based<LINE>attacks.
 Jade DG Armor	Armor	Lavitz	Armor						54	27							Wind						Nullifies damage<LINE>from wind-based<LINE>attacks.
-Lion Fur	Armor	Kongol	Loincloth						46	20													 
-Breast Plate	Armor	Kongol	Breastplate						59	14													 
+Lion Fur	Armor	Kongol	Loincloth						46	20													
+Breast Plate	Armor	Kongol	Breastplate						59	14													
 Giganto Armor	Armor	Kongol	Armor						75	20									sp_p_hit		20		Gain 20 SP when<LINE>attacked<LINE>physically.
 Gold DG Armor	Armor	Kongol	Armor						88	23							Earth						Nullifies damage<LINE>from earth-based<LINE>attacks.
-Disciple Vest	Armor	Haschel	Warrior Dress						13	8				10									 
-Warrior Dress	Armor	Haschel	Warrior Dress						25	23				20									 
+Disciple Vest	Armor	Haschel	Warrior Dress						13	8				10									
+Warrior Dress	Armor	Haschel	Warrior Dress						25	23				20									
 Master's Vest	Armor	Haschel	Warrior Dress						30	29				10					sp_p_hit		20		Gain 20 SP when<LINE>attacked<LINE>physically.
 Energy Girdle	Armor	Haschel	Warrior Dress						37	26				10					sp_multi		50		Attacks generate<LINE>50% more SP.
 Violet DG Armor	Armor	Haschel	Warrior Dress						45	40				10	10		Thunder						Nullifies damage<LINE>from thunder-based<LINE>attacks.
-Clothes	Armor	Female	Robe						4	5				5	5								 
-Leather Jacket	Armor	Shana, Rose	Robe						7	12				5	5								 
-Silver Vest	Armor	Female	Robe						13	17				10	5								 
+Clothes	Armor	Female	Robe						4	5				5	5								
+Leather Jacket	Armor	Shana, Rose	Robe						7	12				5	5								
+Silver Vest	Armor	Female	Robe						13	17				10	5								
 Sparkle Dress	Armor	Female	Robe						19	45				5	5				sp_p_hit		20		Gain 20 SP when<LINE>attacked<LINE>physically.
 Robe	Armor	Female	Robe						25	35				5	5				sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.
 Silver DG Armor	Armor	Shana	Armor						27	80				5	5		Light						Nullifies damage<LINE>from light-based<LINE>attacks.
@@ -74,34 +74,34 @@ Satori Vest	Armor	Haschel	Warrior Dress						40	31				10				Poison, Stun, Arm Bl
 Rainbow Dress	Armor	Female	Robe						32	55				5	5			Poison, Stun, Arm Blocking					Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.
 Angel Robe	Armor	Female	Robe											5	5					revive	40		40% chance of<LINE>reviving from<LINE>death.
 Armor of Legend	Armor	All	Armor						127					50									Greatly reduces<LINE>damage from<LINE>physical attacks.
-																							 
-Bandana	Helm	Male	Bandana					3				100	100										 
+																							
+Bandana	Helm	Male	Bandana					3				100	100										
 Sallet	Helm	Male	Helm					8				110	100										Increases hit<LINE>chance of physical<LINE>attacks by 10%.
-Armlet	Helm	Male	Helm					23		7		100	100										 
+Armlet	Helm	Male	Helm					23		7		100	100										
 Knight Helm	Helm	Male	Helm					37	5			100	100						sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.
 Giganto Helm	Helm	Kongol	Helm					14	10	5		100	100						sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.
 Soul Headband	Helm	Haschel	Bandana					25	5	5		100	100						sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.
-Felt Hat	Helm	Female	Hat					5				100	100										 
-Cape	Helm	Female	Hat					17				100	100										 
+Felt Hat	Helm	Female	Hat					5				100	100										
+Cape	Helm	Female	Hat					17				100	100										
 Tiara	Helm	Female	Crown					24		5		100	110										Increases hit<LINE>chance of magical<LINE>attacks by 10%.
 Jeweled Crown	Helm	Shana, Meru	Crown					24		5		100	100						sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.
 Rose's Hair Band	Helm	Rose	Bandana					29	5			100	100									death_res	Grants immunity<LINE>to instant death.
-																							 
+																							
 Phoenix Plume	Helm	All	Helm					30	0	10		100	100					Bewitchment, Confusion, Fear, Dispirit					Avoids bewitchment,<LINE>confusion, fear,<LINE>and dispiriting.
 Legend Casque	Helm	All	Helm					50		127		100	100		50								Greatly reduces<LINE>damage from<LINE>magical attacks.
 Dragon Helm	Helm	All	Helm					50	12			100	100							hp_multi	50		Raises maximum<LINE>HP 50%.
 Magical Hat	Helm	All	Hat					50		10		100	100							mp_multi	50		Raises maximum<LINE>MP 50%.
-																							 
-Leather Boots	Boots	Male	Boots																				 
-Iron Kneepiece	Boots	Male	Kneepiece						5														 
+																							
+Leather Boots	Boots	Male	Boots																				
+Iron Kneepiece	Boots	Male	Kneepiece						5														
 Combat Shoes	Boots	Male	Shoes						5					5									Increases escape<LINE>chance from physicalattacks by 5%.
-Leather Shoes	Boots	Female	Shoes																				 
-Soft Boots	Boots	Female	Boots						5														 
+Leather Shoes	Boots	Female	Shoes																				
+Soft Boots	Boots	Female	Boots						5														
 Stardust Boots	Boots	Female	Boots						5						5								Increases escape<LINE>chance from magical<LINE>attacks by 5%.
 Magical Greaves	Boots	All	Kneepiece								10			5	5								Increases escape<LINE>chance from phys./<LINE>mag. attacks by 5%.
 Dancer's Boots	Boots	Female	Boots								20												Raises speed<LINE>by 20.
 Bandit's Shoes	Boots	Male	Shoes								20												Raises speed<LINE>by 20.
-																							 
+																							
 Poison Guard	Accessory	All	Ring															Poison					Grants immunity<LINE>to poison.
 Active Ring	Accessory	All	Ring															Dispirit					Grants immunity<LINE>to dispiriting.
 Protector	Accessory	All	Ring															Arm Blocking					Grants immunity<LINE>to arm blocking.
@@ -110,7 +110,7 @@ Stun Guard	Accessory	All	Ring															Stun					Grants immunity<LINE>to bei
 Bravery Amulet	Accessory	All	Ring															Fear					Grants immunity<LINE>to fear.
 Magic Ego Bell	Accessory	All	Bell															Bewitchment					Grants immunity<LINE>to bewitchment.
 Destone Amulet	Accessory	All	Amulet															Petrification					Grants immunity<LINE>to petrification.
-Power Wrist	Accessory	All	Ring				10																Raises physical<LINE>attack by 10.
+Power Wrist	Accessory	All	Ring				10																Raises physical<LINE>attack by 20.
 Knight Shield	Accessory	All	Ring						10														Raises physical<LINE>defense by 10.
 Magical Ring	Accessory	All	Ring					30															Raises magical<LINE>attack by 30.
 Spiritual Ring	Accessory	All	Ring							30													Raises magical<LINE>defense by 30.
@@ -128,10 +128,10 @@ Therapy Ring	Accessory	All	Ring																	hp_regen	10		Recovers 10% HP<LIN
 Mage Ring	Accessory	All	Ring																	mp_regen	10		Recovers 10% MP<LINE>each turn.
 Wargod's Amulet	Accessory	All	Amulet									20	20										Increases hit rate<LINE>for mag./phys.<LINE>attacks by 20%.
 Talisman	Accessory	All	Amulet																			death_res	Grants immunity<LINE>to instant death.
-																							 
+																							
 Holy Ankh	Accessory	All	Ring																	revive	40		40% chance of<LINE>reviving from<LINE>death.
 Dancer's Ring	Accessory	All	Ring								20												Raises speed<LINE>by 20.
-																							 
+																							
 Bandit's Ring	Accessory	All	Ring								20												Raises speed<LINE>by 20.
 Red-Eye Stone	Accessory	All	Stone													Fire							Halves damage<LINE>from fire-based<LINE>attacks.
 Jade Stone	Accessory	All	Stone													Wind							Halves damage<LINE>from wind-based<LINE>attacks.
@@ -140,24 +140,24 @@ Darkness Stone	Accessory	All	Stone													Dark							Halves damage<LINE>fro
 Blue Sea Stone	Accessory	All	Stone													Water							Halves damage<LINE>from water-based<LINE>attacks.
 Violet Stone	Accessory	All	Stone													Thunder							Halves damage<LINE>from thunder-based<LINE>attacks.
 Golden Stone	Accessory	All	Stone													Earth							Halves damage<LINE>from earth-based<LINE>attacks.
-																							 
+																							
 Ruby Ring	Accessory	All	Ring																sp_m_hit		20		Gain 20 SP when<LINE>damaged magically.
 Sapphire Pin	Accessory	All	Ring																mp_m_hit		10		Gain 10% MP when<LINE>damaged magically.
 Rainbow Earring	Accessory	All	Ring															All					Avoids all<LINE>abnormal status<LINE>ailments.
-																							 
+																							
 Emerald Earring	Accessory	All	Ring																sp_p_hit		20		Gain 20 SP when<LINE>damaged physically.
-																							 
+																							
 Platinum Collar	Accessory	All	Ring																mp_p_hit		10		Gain 10% MP when<LINE>damaged physically.
 Phantom Shield	Accessory	All	Ring																				Halves damage<LINE>from all attacks.
 Dragon Shield	Accessory	All	Ring																				Halves physical<LINE>damage.
 Angel Scarf	Accessory	All	Scarf																				Halves magical<LINE>damage.
-Bracelet	Accessory	All	Bracelet																				 
+Bracelet	Accessory	All	Bracelet																				
 Fake Power Wrist	Accessory	All	Ring				5																Raises physical<LINE>attack by 5.
 Fake Shield	Accessory	All	Ring						5														Raises physical<LINE>defense by 5.
-																							 
+																							
 Wargod Calling	Accessory	All	Ring																				Automatic Addition:<LINE>Half Damage and SP.
 Ultimate Wargod	Accessory	All	Ring																				Automatic Addition:<LINE>Full Damage and SP.
-Sabre	Weapon	Rose	Sword				70																<LINE> 
+Sabre	Weapon	Rose	Sword				70																
 Spirit Eater	Weapon	Dart	Sword				75	50															Uses 35 SP per turn<LINE>unless full.
 Harpoon	Weapon	Lavitz	Spear				100																Powers up Dragoon<LINE>by using more SP.<LINE>Speed down on exit.
 Element Arrow	Weapon	Shana	Bow				50	50															Elemental Shift.<LINE>Adds magic for 100G<LINE>every 3 turns.
@@ -195,7 +195,7 @@ Soa's Shield Ring	Accessory	All	Ring																				Siphons accuracy<LINE>fr
 Detonate Rock																							Detonates and<LINE>attacks all.
 Spark Net																							Thunder-based,<LINE>single-target<LINE>(multi).
 Burn Out																							Fire-based,<LINE>single-target<LINE>(multi).
-																							 
+																							
 Pellet																							Earth-based,<LINE>single-target<LINE>(multi).
 Spear Frost																							Water-based,<LINE>single-target<LINE>(multi).
 Spinning Gale																							Wind-based,<LINE>single-target<LINE>(multi).
@@ -212,20 +212,20 @@ Gushing Magma																							Fire-based,<LINE>targets all<LINE>(multi).
 Dancing Ray																							Light-based,<LINE>targets all<LINE>(multi).
 Spirit Potion																							Recovers 100 pts.<LINE>of SP.
 Panic Bell																							Confuses minor<LINE>enemies.
-																							 
+																							
 Fatal Blizzard																							Water-based,<LINE>targets all<LINE>(multi).
 Stunning Hammer																							Stuns minor<LINE>enemies.
 Black Rain																							Dark-based,<LINE>targets all<LINE>(multi).
 Poison Needle																							Poisons minor<LINE>enemies.
 Midnight Terror																							Frightens minor<LINE>enemies.
-																							 
+																							
 Rave Twister																							Wind-based<LINE>targets all<LINE>(multi).
 Total Vanishing																							Destroys<LINE>minor enemies.
 Angel's Prayer																							Revives and<LINE>recovers half<LINE>of maximum HP.
 Charm Potion																							Reduces encounter<LINE>risk.
 Pandemonium																							Minor enemies only<LINE>attack target for<LINE>3 turns (repeat).
 Recovery Ball																							Generates a random<LINE>recovery item.
-																							 
+																							
 Magic Shield																							Nullifies magical<LINE>attacks for 3 turns<LINE>(repeat).
 Material Shield																							Nullifies physical<LINE>attacks for 3 turns<LINE>(repeat).
 Sun Rhapsody																							Completely<LINE>recovers MP.
@@ -238,7 +238,7 @@ Power Up																							Increases strength<LINE>for 3 turns<LINE>(repeat)
 Power Down																							Weakens enemy<LINE>for 3 turns<LINE>(repeat).
 Speed Up																							Doubles speed<LINE>for 3 turns<LINE>(repeat).
 Speed Down																							Halves speed<LINE>for 3 turns<LINE>(repeat).
-																							 
+																							
 Sachet																							Gives off a<LINE>subtle, pleasant<LINE>aroma.
 Psyche Bomb																							Non-elemental-<LINE>based, targets all<LINE>(multi).
 Burning Wave																							Powerful fire-<LINE>based attack,<LINE>targets all.
@@ -250,8 +250,8 @@ Night Raid																							Powerful dark-<LINE>based attack,<LINE>targets 
 Flash Hall																							Powerful thunder-<LINE>based attack,<LINE>targets all.
 Healing Breeze																							Recovers half of<LINE>maximum HP for all.
 Psyche Bomb X																							Non-elemental-<LINE>based, targets all<LINE>(multi)(repeat).
-																							 
-																							 
-																							 
-																							 
-None																							
+																							
+																							
+																							
+																							
+None																							None

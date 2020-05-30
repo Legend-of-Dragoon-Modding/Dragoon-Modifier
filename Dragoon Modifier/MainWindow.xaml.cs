@@ -1211,6 +1211,7 @@ namespace Dragoon_Modifier {
                         long offset = 0x0;
                         long start = 0x80000000 | Constants.GetAddress("ITEM_DESC");
                         List<dynamic> sortedList = itemList.OrderByDescending(o => o.Description.Length).ToList();
+                        descriptionList = new List<string>();
                         foreach (dynamic item in sortedList) {
                             if (descriptionList.Any(l => l.Contains(item.EncodedDescription)) == true) {
                                 int index = sortedList.IndexOf(sortedList.Find(x => x.EncodedDescription.Contains(item.EncodedDescription)));
@@ -1219,11 +1220,14 @@ namespace Dragoon_Modifier {
                                 descriptionList.Add(item.EncodedDescription);
                                 item.DescriptionPointer = start + offset;
                                 offset += (item.EncodedDescription.Replace(" ", "").Length / 2);
+                                
                             }
+                            Constants.WriteDebug(item.DescriptionPointer - 0x80000000);
                         }
                         offset = 0;
                         start = 0x80000000 | Constants.GetAddress("ITEM_NAME");
                         sortedList = itemList.OrderByDescending(o => o.Name.Length).ToList();
+                        nameList = new List<string>();
                         foreach (dynamic item in sortedList) {
                             if (nameList.Any(l => l.Contains(item.EncodedName)) == true) {
                                 int index = sortedList.IndexOf(sortedList.Find(x => x.EncodedName.Contains(item.EncodedName)));
@@ -1475,8 +1479,8 @@ namespace Dragoon_Modifier {
             int id = 0;
             string name = "<END>";
             string description = "<END>";
-            string encodedName = "FF A0";
-            string encodedDescription = "FF A0";
+            string encodedName = "FF A0 FF A0";
+            string encodedDescription = "FF A0 FF A0";
             long descriptionPointer = 0;
             long namePointer = 0;
             byte icon = 0;
@@ -1665,10 +1669,9 @@ namespace Dragoon_Modifier {
                 short key2 = 0;
                 id = index;
                 name = values[0];
-                if (name == "") {
-                    name = "<END>";
+                if (!(name == "" || name == " ")) {
+                    encodedName = StringEncode(name);
                 }
-                encodedName = StringEncode(name);
                 if (typeDict.TryGetValue(values[1].ToLower(), out key)) {
                     type = key;
                 } else {
@@ -1794,10 +1797,9 @@ namespace Dragoon_Modifier {
                     }
                 }
                 description = values[23];
-                if (description == "") {
-                    description = "<END>";
+                if (!(description == "" || description == " ")) {
+                    encodedDescription = StringEncode(description);
                 }
-                encodedDescription = StringEncode(description);
             }
         }
 
