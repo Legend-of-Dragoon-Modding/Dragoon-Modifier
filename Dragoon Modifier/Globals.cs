@@ -57,6 +57,31 @@ namespace Dragoon_Modifier {
         public static string[] CHARACTER_NAME = new string[3];
         public static bool SHANA_FIX = false;
 
+        #region new CHANGE variables
+
+        public static bool MONSTER_STAT_CHANGE = false;
+        public static bool MONSTER_DROP_CHANGE = false;
+        public static bool MONSTER_EXPGOLD_CHANGE = false;
+
+        public static bool DRAGOON_ADDITION_CHANGE2 = false;
+        public static bool DRAGOON_SPELL_CHANGE = false;
+        public static bool DRAGOON_DESC_CHANGE = false;
+        public static bool DRAGOON_STAT_CHANGE = false;
+
+        /*
+        already present
+        public static bool ADDITION_CHANGE = false;
+        */
+        public static bool ADDITION_LEVEL_CHANGE = false;
+
+        public static bool ITEM_STAT_CHANGE = false;
+        public static bool ITEM_ICON_CHANGE = false;
+        public static bool ITEM_NAMEDESC_CHANGE = false;
+
+        public static bool CHARACTER_STAT_CHANGE = false;
+
+        #endregion
+
         public static void SetM_POINT(long mPoint) {
             M_POINT = mPoint;
             for (int i = 0; i < 5; i++) {

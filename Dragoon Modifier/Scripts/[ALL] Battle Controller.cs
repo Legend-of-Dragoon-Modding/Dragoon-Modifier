@@ -116,7 +116,7 @@ public class BattleController {
                 }
             }
 
-            if (Globals.MONSTER_EXP-GOLD_CHANGE && !Globals.CheckDMScript("btnUltimateBoss")) {
+            if (Globals.MONSTER_EXPGOLD_CHANGE && !Globals.CheckDMScript("btnUltimateBoss")) {
                 for (int monster = 0; monster < Globals.UNIQUE_MONSTERS; monster++) {
                     int ID = Globals.UNIQUE_MONSTER_IDS[monster];
                     emulator.WriteShort("MONSTER_REWARDS", (ushort)Globals.DICTIONARY.StatList[ID].EXP, monster * 0x1A8);
@@ -551,7 +551,7 @@ public class BattleController {
             emulator.WriteAOB(Constants.GetAddress("DRAGOON_DESC"), descr);
         }
 
-        if (Globals.DRAGOON_ADDITION_CHANGE) {
+        if (Globals.DRAGOON_ADDITION_CHANGE2) {
             Constants.WriteOutput("Changing Dragoon Additions...");
             long address = Constants.GetAddress("ADDITION") + GetOffset(emulator)+ 0x300;
             for (int slot = 0; slot < 3; slot++) {
