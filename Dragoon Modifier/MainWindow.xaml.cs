@@ -1946,8 +1946,8 @@ namespace Dragoon_Modifier {
             byte accuracy = 100;
             byte mp = 10;
             byte element = 128;
-            string description = "";
-            string encoded_description = "00 00 FF A0";
+            string description = "<END>";
+            string encoded_description = "FF A0 FF A0";
             long description_pointer = 0x0;
             IDictionary<string, bool> perc = new Dictionary<string, bool> {
                 { "yes", true},

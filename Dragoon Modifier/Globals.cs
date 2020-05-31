@@ -80,6 +80,8 @@ namespace Dragoon_Modifier {
 
         public static bool CHARACTER_STAT_CHANGE = false;
 
+        public static dynamic[] CURRENT_STATS2 = new dynamic[3];
+
         #endregion
 
         public static void SetM_POINT(long mPoint) {
