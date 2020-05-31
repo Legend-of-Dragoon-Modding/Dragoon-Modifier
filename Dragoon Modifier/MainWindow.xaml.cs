@@ -1222,7 +1222,6 @@ namespace Dragoon_Modifier {
                                 offset += (item.EncodedDescription.Replace(" ", "").Length / 2);
                                 
                             }
-                            Constants.WriteDebug(item.DescriptionPointer - 0x80000000);
                         }
                         offset = 0;
                         start = 0x80000000 | Constants.GetAddress("ITEM_NAME");
