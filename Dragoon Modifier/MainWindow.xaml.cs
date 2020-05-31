@@ -6130,7 +6130,7 @@ namespace Dragoon_Modifier {
                         for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
                             if (Globals.MONSTER_TABLE[i].Read("SPEED_DOWN_TRN") > 0) {
                                 doubleRepeatUsed += 1048576;
-                                Globals.CHARACTER_TABLE[i].Write("SPEED_DOWN_TRN", Globals.CHARACTER_TABLE[i].Read("SPEED_DOWN_TRN") + 3);
+                                Globals.MONSTER_TABLE[i].Write("SPEED_DOWN_TRN", Globals.MONSTER_TABLE[i].Read("SPEED_DOWN_TRN") + 3);
                             }
                         }
                     }
