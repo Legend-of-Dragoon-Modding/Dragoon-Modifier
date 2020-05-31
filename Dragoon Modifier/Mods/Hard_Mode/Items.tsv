@@ -121,7 +121,7 @@ Elude Cloak	Accessory	All	Cloak											20									Increases escape<LINE>chanc
 Spirit Cloak	Accessory	All	Cloak												20								Increases escape<LINE>chance from magical<LINE>attacks by 20%.
 Sage's Cloak	Accessory	All	Cloak											20	20								Increases escape<LINE>chance from phys./<LINE>mag. attacks by 20%
 Physical Ring	Accessory	All	Ring																	hp_multi	50		Raises maximum<LINE>HP 50%.
-Amulet	Accessory	All	Amulet																				Doubles<LINE>maximum MP.
+Amulet	Accessory	All	Amulet																	mp_multi	100		Doubles<LINE>maximum MP.
 Wargod's Sash	Accessory	All	Ring																				Attacks generate<LINE>50% more SP.
 Spirit Ring	Accessory	All	Ring																	sp_regen	20		Recovers 20 SP<LINE>each turn.
 Therapy Ring	Accessory	All	Ring																	hp_regen	10		Recovers 10% HP<LINE>each turn.
