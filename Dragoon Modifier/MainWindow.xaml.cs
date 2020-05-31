@@ -3974,7 +3974,7 @@ namespace Dragoon_Modifier {
             if (!Globals.IN_BATTLE && !addSoloPartyMembers) {
                 if (emulator.ReadByte("PARTY_SLOT", 0x4) != 255 || emulator.ReadByte("PARTY_SLOT", 0x8) != 255) {
                     for (int i = 0; i < 8; i++) {
-                        emulator.WriteByte("PARTY_SLOT", i + 0x4, 255);
+                        emulator.WriteByte("PARTY_SLOT", 255, i + 0x4);
                     }
                 }
             }
