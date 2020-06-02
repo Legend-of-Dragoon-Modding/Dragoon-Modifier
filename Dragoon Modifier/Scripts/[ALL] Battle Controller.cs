@@ -271,6 +271,7 @@ public class BattleController {
                 Globals.CHARACTER_TABLE[slot].Write("SP_Regen", Globals.CURRENT_STATS[character].SP_Regen);
                 Globals.CHARACTER_TABLE[slot].Write("MP_Regen", Globals.CURRENT_STATS[character].MP_Regen);
                 Globals.CHARACTER_TABLE[slot].Write("HP_Regen", Globals.CURRENT_STATS[character].HP_Regen);
+                Globals.CHARACTER_TABLE[slot].Write("Element", Globals.CURRENT_STATS[character].Element);
                 Globals.CHARACTER_TABLE[slot].Write("Display_Element", Globals.CURRENT_STATS[character].Element);
                 Globals.CHARACTER_TABLE[slot].Write("MP_M_Hit", Globals.CURRENT_STATS[character].MP_M_Hit);
                 Globals.CHARACTER_TABLE[slot].Write("SP_M_Hit", Globals.CURRENT_STATS[character].SP_M_Hit);
