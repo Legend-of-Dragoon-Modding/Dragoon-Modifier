@@ -71,22 +71,34 @@ namespace Dragoon_Modifier {
                         string[] values = line.Split(',');
                         if (values[0].Equals("Config")) {
                             config = true;
-                            byte value = Convert.ToByte(values[1]);
+                            short value = short.Parse(values[1]);
                             if ((value & (1 << 0)) != 0)
-                                Globals.MONSTER_CHANGE = true;
+                                Globals.MONSTER_STAT_CHANGE = true;
                             if ((value & (1 << 1)) != 0)
-                                Globals.DROP_CHANGE = true;
+                                Globals.MONSTER_DROP_CHANGE = true;
                             if ((value & (1 << 2)) != 0)
-                                Globals.ITEM_CHANGE = true;
+                                Globals.MONSTER_EXPGOLD_CHANGE = true;
                             if ((value & (1 << 3)) != 0)
-                                Globals.CHARACTER_CHANGE = true;
+                                Globals.CHARACTER_STAT_CHANGE = true;
                             if ((value & (1 << 4)) != 0)
                                 Globals.ADDITION_CHANGE = true;
                             if ((value & (1 << 5)) != 0)
-                                Globals.DRAGOON_CHANGE = true;
+                                Globals.ADDITION_LEVEL_CHANGE = true;
                             if ((value & (1 << 6)) != 0)
-                                Globals.DRAGOON_ADDITION_CHANGE = true;
+                                Globals.DRAGOON_STAT_CHANGE = true;
                             if ((value & (1 << 7)) != 0)
+                                Globals.DRAGOON_SPELL_CHANGE = true;
+                            if ((value & (1 << 8)) != 0)
+                                Globals.DRAGOON_ADDITION_CHANGE = true;
+                            if ((value & (1 << 9)) != 0)
+                                Globals.DRAGOON_DESC_CHANGE = true;
+                            if ((value & (1 << 10)) != 0)
+                                Globals.ITEM_STAT_CHANGE = true;
+                            if ((value & (1 << 11)) != 0)
+                                Globals.ITEM_ICON_CHANGE = true;
+                            if ((value & (1 << 12)) != 0)
+                                Globals.ITEM_NAMEDESC_CHANGE = true;
+                            if ((value & (1 << 13)) != 0)
                                 Globals.SHOP_CHANGE = true;
                         } else {
                             if (config) {

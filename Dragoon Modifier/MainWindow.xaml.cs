@@ -1281,8 +1281,9 @@ namespace Dragoon_Modifier {
                         } catch (FileNotFoundException) {
                             string file = cwd + @"Mods\" + Globals.MOD + @"\Monster_Data.tsv";
                             Constants.WriteDebug(file + " not found. Turning off Monster and Drop Changes.");
-                            Globals.MONSTER_CHANGE = false;
-                            Globals.DROP_CHANGE = false;
+                            Globals.MONSTER_STAT_CHANGE = false;
+                            Globals.MONSTER_DROP_CHANGE = false;
+                            Globals.MONSTER_EXPGOLD_CHANGE = false;
                         }
                         try {
                             using (var monsterData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Ultimate_Data.tsv")) {
@@ -1304,8 +1305,9 @@ namespace Dragoon_Modifier {
                     } catch (FileNotFoundException) {
                         string file = cwd + @"Mods\" + Globals.MOD + @"\Items.tsv";
                         Constants.WriteDebug(file + " not found. Turning off Monster and Drop Changes.");
-                        Globals.MONSTER_CHANGE = false;
-                        Globals.DROP_CHANGE = false;
+                        Globals.MONSTER_STAT_CHANGE = false;
+                        Globals.MONSTER_DROP_CHANGE = false;
+                        Globals.MONSTER_EXPGOLD_CHANGE = false;
                     }
                     try {
                         string[] lines = File.ReadAllLines(cwd + @"Mods\" + Globals.MOD + @"\Monster_Script.txt");
@@ -1343,7 +1345,7 @@ namespace Dragoon_Modifier {
                     } catch (FileNotFoundException) {
                         string file = cwd + @"Mods\" + Globals.MOD + @"\Dragoon_Stats.tsv";
                         Constants.WriteDebug(file + " not found. Turning off Dragoon Changes.");
-                        Globals.DRAGOON_CHANGE = false;
+                        Globals.DRAGOON_STAT_CHANGE = false;
                     }
                     for (int i = 0; i < shopList.Length; i++) {
                         shopList[i] = new List<int[]>();
@@ -1402,7 +1404,7 @@ namespace Dragoon_Modifier {
                     } catch (FileNotFoundException) {
                         string file = cwd + @"Mods\" + Globals.MOD + @"\Dragoon_Spells.tsv";
                         Constants.WriteDebug(file + " not found. Turning off Dragoon Changes.");
-                        Globals.DRAGOON_CHANGE = false;
+                        Globals.DRAGOON_SPELL_CHANGE = false;
                     }
                     try {
                         using (var addition = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Additions.tsv")) {
@@ -2414,8 +2416,6 @@ namespace Dragoon_Modifier {
                         ShopChanges();
                     if (Globals.CheckDMScript("btnSaveAnywhere"))
                         SaveAnywhere();
-                    if ((Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) && Globals.ITEM_CHANGE)
-                        IconChanges();
                     if (Globals.CheckDMScript("btnSoloMode"))
                         SoloModeField();
                     if (Globals.CheckDMScript("btnDuoMode"))
@@ -2426,7 +2426,7 @@ namespace Dragoon_Modifier {
                         KillBGMField();
                     if (Globals.CheckDMScript("btnCharmPotion"))
                         AutoCharmPotion();
-                    if ((Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) && Globals.ITEM_CHANGE)
+                    if (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell"))
                         EquipChangesField();
                     if (Globals.CheckDMScript("btnBlackRoom"))
                         BlackRoomField();
@@ -2487,7 +2487,7 @@ namespace Dragoon_Modifier {
                         SoloModeBattle();
                     if (Globals.CheckDMScript("btnDuoMode"))
                         DuoModeBattle();
-                    if ((Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) && !Globals.DRAGOON_CHANGE) {
+                    if (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) {
                         DragoonChanges();
                         if (burnActive) {
                             for (int i = 0; i < 3; i++) {
@@ -2515,8 +2515,6 @@ namespace Dragoon_Modifier {
                         ElementalBomb();
                     if (Globals.CheckDMScript("btnNoDragoon"))
                         NoDragoonMode();
-                    if (Globals.CheckDMScript("btnHalfSP"))
-                        AdditionHalfSPChanges();
                     if (Globals.CheckDMScript("btnSoulEater"))
                         NoHPDecaySoulEater();
                     if (Globals.CheckDMScript("btnHPNames"))
@@ -2531,7 +2529,7 @@ namespace Dragoon_Modifier {
                         ApplyNoEscape();
                     if (Globals.DIFFICULTY_MODE.Equals("Hell"))
                         BossSPLoss();
-                    if ((Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) && Globals.ITEM_CHANGE)
+                    if (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell"))
                         EquipChangesBattle();
                     if (Globals.CheckDMScript("btnRows") && !Globals.DIFFICULTY_MODE.Equals("Hell"))
                         BattleFormationRows();
@@ -3290,118 +3288,6 @@ namespace Dragoon_Modifier {
         }
         #endregion
 
-        #region Icon Changes
-        public void IconChanges() {
-            byte menu = emulator.ReadByte("MENU");
-            if (!Globals.IN_BATTLE && menu == 4 && !wroteIcons) {
-                WriteIcons();
-                wroteIcons = true;
-            } else {
-                if (menu == 125) {
-                    wroteIcons = false;
-                }
-            }
-        }
-
-        public void WriteIcons() {
-            emulator.WriteByte(0x1120DE + IconOffset(), 1);
-            emulator.WriteByte(0x1120FA + IconOffset(), 1);
-            emulator.WriteByte(0x112116 + IconOffset(), 1);
-            emulator.WriteByte(0x112132 + IconOffset(), 1);
-            emulator.WriteByte(0x11214E + IconOffset(), 1);
-            emulator.WriteByte(0x11222E + IconOffset(), 3);
-            emulator.WriteByte(0x11224A + IconOffset(), 3);
-            emulator.WriteByte(0x112266 + IconOffset(), 3);
-            emulator.WriteByte(0x112282 + IconOffset(), 3);
-            emulator.WriteByte(0x11229E + IconOffset(), 3);
-            emulator.WriteByte(0x1122BA + IconOffset(), 3);
-            emulator.WriteByte(0x1122D6 + IconOffset(), 3);
-            emulator.WriteByte(0x1122F2 + IconOffset(), 4);
-            emulator.WriteByte(0x11230E + IconOffset(), 4);
-            emulator.WriteByte(0x11232A + IconOffset(), 4);
-            emulator.WriteByte(0x112346 + IconOffset(), 4);
-            emulator.WriteByte(0x112362 + IconOffset(), 4);
-            emulator.WriteByte(0x11237E + IconOffset(), 4);
-            emulator.WriteByte(0x11239A + IconOffset(), 4);
-            emulator.WriteByte(0x1123B6 + IconOffset(), 2);
-            emulator.WriteByte(0x1123D2 + IconOffset(), 2);
-            emulator.WriteByte(0x1123EE + IconOffset(), 2);
-            emulator.WriteByte(0x11240A + IconOffset(), 2);
-            emulator.WriteByte(0x112426 + IconOffset(), 2);
-            emulator.WriteByte(0x112442 + IconOffset(), 2);
-            emulator.WriteByte(0x11245E + IconOffset(), 7);
-            emulator.WriteByte(0x11247A + IconOffset(), 7);
-            emulator.WriteByte(0x112496 + IconOffset(), 7);
-            emulator.WriteByte(0x1124B2 + IconOffset(), 7);
-            emulator.WriteByte(0x1124CE + IconOffset(), 7);
-            emulator.WriteByte(0x1124EA + IconOffset(), 7);
-            emulator.WriteByte(0x112506 + IconOffset(), 8);
-            emulator.WriteByte(0x1125E6 + IconOffset(), 11);
-            emulator.WriteByte(0x11263A + IconOffset(), 14);
-            emulator.WriteByte(0x112656 + IconOffset(), 14);
-            emulator.WriteByte(0x112672 + IconOffset(), 14);
-            emulator.WriteByte(0x11268E + IconOffset(), 14);
-            emulator.WriteByte(0x1126C6 + IconOffset(), 9);
-            emulator.WriteByte(0x1126E2 + IconOffset(), 9);
-            emulator.WriteByte(0x11271A + IconOffset(), 12);
-            emulator.WriteByte(0x1127C2 + IconOffset(), 14);
-            emulator.WriteByte(0x1127DE + IconOffset(), 12);
-            emulator.WriteByte(0x11292E + IconOffset(), 15);
-            emulator.WriteByte(0x11294A + IconOffset(), 15);
-            emulator.WriteByte(0x11299E + IconOffset(), 17);
-            emulator.WriteByte(0x112A46 + IconOffset(), 20);
-            emulator.WriteByte(0x112A62 + IconOffset(), 19);
-            emulator.WriteByte(0x112A7E + IconOffset(), 19);
-            emulator.WriteByte(0x112AEE + IconOffset(), 19);
-            emulator.WriteByte(0x112B0A + IconOffset(), 19);
-            emulator.WriteByte(0x112B42 + IconOffset(), 26);
-            emulator.WriteByte(0x112B5E + IconOffset(), 26);
-            emulator.WriteByte(0x112B7A + IconOffset(), 26);
-            emulator.WriteByte(0x112B96 + IconOffset(), 26);
-            emulator.WriteByte(0x112BB2 + IconOffset(), 26);
-            emulator.WriteByte(0x112BCE + IconOffset(), 26);
-            emulator.WriteByte(0x112BEA + IconOffset(), 28);
-            emulator.WriteByte(0x112C06 + IconOffset(), 26);
-            emulator.WriteByte(0x112C22 + IconOffset(), 22);
-            emulator.WriteByte(0x112C3E + IconOffset(), 22);
-            emulator.WriteByte(0x112C5A + IconOffset(), 22);
-            emulator.WriteByte(0x112C76 + IconOffset(), 22);
-            emulator.WriteByte(0x112C92 + IconOffset(), 22);
-            emulator.WriteByte(0x112CAE + IconOffset(), 22);
-            emulator.WriteByte(0x112CCA + IconOffset(), 22);
-            emulator.WriteByte(0x112CE6 + IconOffset(), 29);
-            emulator.WriteByte(0x112D02 + IconOffset(), 29);
-            emulator.WriteByte(0x112D1E + IconOffset(), 29);
-            emulator.WriteByte(0x112D56 + IconOffset(), 24);
-            emulator.WriteByte(0x112D72 + IconOffset(), 30);
-            emulator.WriteByte(0x112DE2 + IconOffset(), 24);
-            emulator.WriteByte(0x112DFE + IconOffset(), 24);
-            emulator.WriteByte(0x112E36 + IconOffset(), 27);
-            emulator.WriteByte(0x112EA6 + IconOffset(), 25);
-            emulator.WriteByte(0x112EC2 + IconOffset(), 25);
-            emulator.WriteByte(0x112EDE + IconOffset(), 25);
-            emulator.WriteByte(0x112EFA + IconOffset(), 25);
-            emulator.WriteByte(0x112F16 + IconOffset(), 25);
-            emulator.WriteByte(0x112F32 + IconOffset(), 25);
-            emulator.WriteByte(0x112F4E + IconOffset(), 25);
-            emulator.WriteByte(0x11304A + IconOffset(), 32);
-            emulator.WriteByte(0x113066 + IconOffset(), 32);
-            emulator.WriteByte(0x113082 + IconOffset(), 32);
-            emulator.WriteByte(0x1130BA + IconOffset(), 22);
-            emulator.WriteByte(0x1130D6 + IconOffset(), 22);
-        }
-
-        int IconOffset() {
-            int offset = 0x0;
-            if (Constants.REGION == Region.JPN) {
-                offset = -0x186C;
-            } else if (Constants.REGION == Region.EUR_GER) {
-                offset = 0x23C;
-            }
-            return offset;
-        }
-        #endregion
-
         #region Auto Charm Potion
         public void AutoCharmPotion() {
             if ((emulator.ReadShort("BATTLE_VALUE") > 3850 && emulator.ReadShort("BATTLE_VALUE") < 9999) && emulator.ReadInteger("GOLD") >= 8) {
@@ -3838,7 +3724,7 @@ namespace Dragoon_Modifier {
 
         public void HPCapBreakBattle() {
             if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !hpCapBreakOnBattleEntry && maxHPTableLoaded) {
-                if (!Globals.CHARACTER_CHANGE) {
+                if (!Globals.CHARACTER_STAT_CHANGE) {
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9) {
                             if (hpChangeCheck[i] != 65535 && hpChangeCheck[i] > 9999) {
@@ -4292,7 +4178,7 @@ namespace Dragoon_Modifier {
 
                         if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 159 && Globals.PARTY_SLOT[i] == 0) { //Spirit Eater
                             spiritEaterSP = 35;
-                            if (Globals.CheckDMScript("btnHalfSP")) {
+                            if (Globals.DIFFICULTY_MODE.Equals("Hell")) {
                                 spiritEaterSP = 15;
                             }
                             spiritEaterSaveSP = Globals.CHARACTER_TABLE[i].Read("SP_Regen");
@@ -8549,181 +8435,6 @@ namespace Dragoon_Modifier {
         }
         #endregion
 
-        #region Half SP
-        public void AdditionHalfSPChanges() {
-            if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !halfSPOnBattleEntry) {
-                for (int i = 0; i < 3; i++) {
-                    if (Globals.PARTY_SLOT[i] < 9) {
-                        byte equippedAddition = emulator.ReadByte("EQUIPPED_ADDITION", (Globals.PARTY_SLOT[i] * 0x2C));
-                        byte levelOffset = 0;
-
-                        if (Globals.PARTY_SLOT[i] == 0)
-                            levelOffset = equippedAddition;
-                        else if (Globals.PARTY_SLOT[i] == 1 || Globals.PARTY_SLOT[i] == 5)
-                            levelOffset = (byte) (equippedAddition - 8);
-                        else if (Globals.PARTY_SLOT[i] == 3)
-                            levelOffset = (byte) (equippedAddition - 14);
-                        else if (Globals.PARTY_SLOT[i] == 4)
-                            levelOffset = (byte) (equippedAddition - 29);
-                        else if (Globals.PARTY_SLOT[i] == 6)
-                            levelOffset = (byte) (equippedAddition - 23);
-                        else if (Globals.PARTY_SLOT[i] == 7)
-                            levelOffset = (byte) (equippedAddition - 19);
-
-                        byte additionLevel = emulator.ReadByte("EQUIPPED_ADDITION_LEVEL", 0x2C * (Globals.PARTY_SLOT[i] + levelOffset));
-                        byte totalSP = emulator.ReadByte("EQUIPPED_ADDITION_SP", 0x2C * Globals.PARTY_SLOT[i]);
-                        ushort spMulti = 65535;
-
-                        if (Globals.PARTY_SLOT[i] == 0) {
-                            if (additionLevel == 5) {
-                                if (equippedAddition == 0) {
-                                    spMulti = 65535 - 50 + 1;
-                                } else if (equippedAddition == 1) {
-                                    spMulti = 0;
-                                } else if (equippedAddition == 2) {
-                                    spMulti = 75;
-                                } else if (equippedAddition == 3) {
-                                    spMulti = 0;
-                                } else if (equippedAddition == 4) {
-                                    spMulti = 75;
-                                } else if (equippedAddition == 5) {
-                                    spMulti = 65535 - 50 + 1;
-                                } else if (equippedAddition == 6) {
-                                    spMulti = 65535 - 20 + 1;
-                                }
-                            } else {
-                                spMulti = 65535 - 50 + 1;
-                            }
-                        } else if (Globals.PARTY_SLOT[i] == 1 || Globals.PARTY_SLOT[i] == 5) {
-                            if (additionLevel == 5) {
-                                if (equippedAddition == 8) {
-                                    spMulti = 65535 - 25 + 1;
-                                } else if (equippedAddition == 9) {
-                                    spMulti = 65535 - 50 + 1;
-                                } else if (equippedAddition == 10) {
-                                    spMulti = 75;
-                                } else if (equippedAddition == 11) {
-                                    spMulti = 65535 - 40 + 1;
-                                } else if (equippedAddition == 12) {
-                                    spMulti = 75;
-                                }
-                            } else {
-                                spMulti = 65535 - 50 + 1;
-                                if (equippedAddition == 11) {
-                                    spMulti = 65535 - 40 + 1;
-                                }
-                            }
-                        } else if (Globals.PARTY_SLOT[i] == 2 || Globals.PARTY_SLOT[i] == 8) {
-                            long spScan = emulator.ScanAOB("23 00 00 00 32 00 00 00 46 00 00 00 64", 0xA8660, 0x2A865F);
-                            emulator.WriteByteU(spScan, 17);
-                            emulator.WriteByteU(spScan + 0x4, 25);
-                            emulator.WriteByteU(spScan + 0x8, 35);
-                            emulator.WriteByteU(spScan + 0xC, 50);
-                            emulator.WriteByteU(spScan + 0x10, 75);
-                        } else if (Globals.PARTY_SLOT[i] == 3) {
-                            if (additionLevel == 5) {
-                                if (equippedAddition == 15) {
-                                    spMulti = 75;
-                                } else {
-                                    spMulti = 65535 - 50 + 1;
-                                }
-                            } else {
-                                spMulti = 65535 - 50 + 1;
-                            }
-                        } else if (Globals.PARTY_SLOT[i] == 4) {
-                            if (additionLevel == 5) {
-                                if (equippedAddition == 29) {
-                                    spMulti = 65535 - 25 + 1;
-                                } else if (equippedAddition == 30) {
-                                    spMulti = 65535 - 40 + 1;
-                                } else if (equippedAddition == 31) {
-                                    spMulti = 0;
-                                } else if (equippedAddition == 32) {
-                                    spMulti = 65535 - 20 + 1;
-                                } else if (equippedAddition == 33) {
-                                    spMulti = 65535 - 30 + 1;
-                                } else if (equippedAddition == 34) {
-                                    spMulti = 50;
-                                }
-                            } else {
-                                spMulti = 65535 - 50 + 1;
-                                if (equippedAddition == 30) {
-                                    spMulti = 65535 - 40 + 1;
-                                } else if (equippedAddition == 32) {
-                                    spMulti = 65535 - 40 + 1;
-                                } else if (equippedAddition == 33) {
-                                    spMulti = 65535 - 30 + 1;
-                                }
-                            }
-                        } else if (Globals.PARTY_SLOT[i] == 6) {
-                            if (additionLevel == 5) {
-                                if (equippedAddition == 23) {
-                                    spMulti = 65535 - 10 + 1;
-                                } else if (equippedAddition == 24) {
-                                    spMulti = 0;
-                                } else if (equippedAddition == 25) {
-                                    spMulti = 70;
-                                } else if (equippedAddition == 26) {
-                                    spMulti = 65535 - 10 + 1;
-                                } else if (equippedAddition == 27) {
-                                    spMulti = 65535 - 50 + 1;
-                                }
-                            } else {
-                                spMulti = 65535 - 50 + 1;
-                                if (equippedAddition == 24) {
-                                    spMulti = 65535 - 45 + 1;
-                                } else if (equippedAddition == 25) {
-                                    spMulti = 65535 - 20 + 1;
-                                } else if (equippedAddition == 26) {
-                                    spMulti = 65535 - 10 + 1;
-                                }
-                            }
-                        } else if (Globals.PARTY_SLOT[i] == 7) {
-                            if (additionLevel == 5) {
-                                if (equippedAddition == 19) {
-                                    spMulti = 65535 - 25 + 1;
-                                } else if (equippedAddition == 20) {
-                                    if (Globals.CheckDMScript("btnAdditionChanges")) {
-                                        spMulti = 0;
-                                    } else {
-                                        spMulti = 65535 - 40 + 1;
-                                    }
-                                } else if (equippedAddition == 21) {
-                                    if (Globals.CheckDMScript("btnAdditionChanges")) {
-                                        spMulti = 65535 - 25 + 1;
-                                    } else {
-                                        spMulti = 65535 - 50 + 1;
-                                    }
-                                }
-                            } else {
-                                if (equippedAddition == 19) {
-                                    spMulti = 65535 - 50 + 1;
-                                } else if (equippedAddition == 20) {
-                                    spMulti = 65535 - 40 + 1;
-                                } else if (equippedAddition == 21) {
-                                    if (Globals.CheckDMScript("btnAdditionChanges")) {
-                                        spMulti = 65535 - 20 + 1;
-                                    } else {
-                                        spMulti = 65535 - 50 + 1;
-                                    }
-                                }
-                            }
-                        }
-
-                        if (spMulti != 65535) {
-                            Globals.CHARACTER_TABLE[i].Write("ADD_SP_Multi", spMulti);
-                        }
-                    }
-                }
-                halfSPOnBattleEntry = true;
-            } else {
-                if (!Globals.IN_BATTLE && halfSPOnBattleEntry) {
-                    halfSPOnBattleEntry = false;
-                }
-            }
-        }
-        #endregion
-
         #region Addition Changes
         public void AdditionDamageChanges() {
             if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !damageIncreaseOnBattleEntry) {
@@ -9890,23 +9601,35 @@ namespace Dragoon_Modifier {
                             foreach (string line in text)
                                 presetFile.WriteLine(line.Substring(0, line.Length - 3) + ",1");
 
-                            byte config = 0;
-                            if (Globals.MONSTER_CHANGE)
+                            short config = 0;
+                            if (Globals.MONSTER_STAT_CHANGE)
                                 config |= 1 << 0;
-                            if (Globals.DROP_CHANGE)
+                            if (Globals.MONSTER_DROP_CHANGE)
                                 config |= 1 << 1;
-                            if (Globals.ITEM_CHANGE)
+                            if (Globals.MONSTER_EXPGOLD_CHANGE)
                                 config |= 1 << 2;
-                            if (Globals.CHARACTER_CHANGE)
+                            if (Globals.CHARACTER_STAT_CHANGE)
                                 config |= 1 << 3;
                             if (Globals.ADDITION_CHANGE)
                                 config |= 1 << 4;
-                            if (Globals.DRAGOON_CHANGE)
+                            if (Globals.ADDITION_LEVEL_CHANGE)
                                 config |= 1 << 5;
-                            if (Globals.DRAGOON_ADDITION_CHANGE)
+                            if (Globals.DRAGOON_STAT_CHANGE)
                                 config |= 1 << 6;
-                            if (Globals.SHOP_CHANGE)
+                            if (Globals.DRAGOON_SPELL_CHANGE)
                                 config |= 1 << 7;
+                            if (Globals.DRAGOON_ADDITION_CHANGE)
+                                config |= 1 << 8;
+                            if (Globals.DRAGOON_DESC_CHANGE)
+                                config |= 1 << 9;
+                            if (Globals.ITEM_STAT_CHANGE)
+                                config |= 1 << 10;
+                            if (Globals.ITEM_ICON_CHANGE)
+                                config |= 1 << 11;
+                            if (Globals.ITEM_NAMEDESC_CHANGE)
+                                config |= 1 << 12;
+                            if (Globals.SHOP_CHANGE)
+                                config |= 1 << 13;
                             presetFile.WriteLine("Config," + config);
                             presetFile.WriteLine(Globals.MOD + ",0");
                         }
@@ -9945,42 +9668,72 @@ namespace Dragoon_Modifier {
             } else {
                 InputWindow openModWindow = new InputWindow("Mod Options");
                 ComboBox mod = new ComboBox();
-                CheckBox monster = new CheckBox();
-                CheckBox drop = new CheckBox();
-                CheckBox item = new CheckBox();
-                CheckBox character = new CheckBox();
+                CheckBox monsterStat = new CheckBox();
+                CheckBox monsterDrop = new CheckBox();
+                CheckBox monsterExpGold = new CheckBox();
+                CheckBox characterStat = new CheckBox();
                 CheckBox addition = new CheckBox();
-                CheckBox dragoon = new CheckBox();
+                CheckBox additionLevel = new CheckBox();
+                CheckBox dragoonStats = new CheckBox();
+                CheckBox dragoonSpell = new CheckBox();
                 CheckBox dragoonAddition = new CheckBox();
+                CheckBox dragoonDescription = new CheckBox();
+                CheckBox itemStat = new CheckBox();
+                CheckBox itemIcon = new CheckBox();
+                CheckBox itemNameDescription = new CheckBox();
                 CheckBox shop = new CheckBox();
 
-                monster.Content = "Monster";
-                if (Globals.MONSTER_CHANGE)
-                    monster.IsChecked = true;
+                monsterStat.Content = "Monster Stats";
+                if (Globals.MONSTER_STAT_CHANGE)
+                    monsterStat.IsChecked = true;
 
-                drop.Content = "Drop";
-                if (Globals.DROP_CHANGE)
-                    drop.IsChecked = true;
+                monsterDrop.Content = "Drop";
+                if (Globals.MONSTER_DROP_CHANGE)
+                    monsterDrop.IsChecked = true;
 
-                item.Content = "Item";
-                if (Globals.ITEM_CHANGE)
-                    item.IsChecked = true;
+                monsterExpGold.Content = "Exp + Gold";
+                if (Globals.MONSTER_EXPGOLD_CHANGE)
+                    monsterExpGold.IsChecked = true;
 
-                character.Content = "Character";
-                if (Globals.CHARACTER_CHANGE)
-                    character.IsChecked = true;
+                characterStat.Content = "Character Stats";
+                if (Globals.CHARACTER_STAT_CHANGE)
+                    characterStat.IsChecked = true;
 
                 addition.Content = "Addition";
                 if (Globals.ADDITION_CHANGE)
                     addition.IsChecked = true;
 
-                dragoon.Content = "Dragoon Stats";
-                if (Globals.DRAGOON_CHANGE)
-                    dragoon.IsChecked = true;
+                additionLevel.Content = "Addition Level Unlock";
+                if (Globals.ADDITION_LEVEL_CHANGE)
+                    additionLevel.IsChecked = true;
+
+                dragoonStats.Content = "Dragoon Stats";
+                if (Globals.DRAGOON_STAT_CHANGE)
+                    dragoonStats.IsChecked = true;
+
+                dragoonSpell.Content = "Dragoon Spells";
+                if (Globals.DRAGOON_SPELL_CHANGE)
+                    dragoonSpell.IsChecked = true;
 
                 dragoonAddition.Content = "Dragoon Additions";
                 if (Globals.DRAGOON_ADDITION_CHANGE)
                     dragoonAddition.IsChecked = true;
+
+                dragoonDescription.Content = "Dragoon Descriptions";
+                if (Globals.DRAGOON_DESC_CHANGE)
+                    dragoonDescription.IsChecked = true;
+
+                itemStat.Content = "Item Stats";
+                if (Globals.ITEM_STAT_CHANGE)
+                    itemStat.IsChecked = true;
+
+                itemIcon.Content = "Item Icons";
+                if (Globals.ITEM_ICON_CHANGE)
+                    itemIcon.IsChecked = true;
+
+                itemNameDescription.Content = "Item Names + Descriptions";
+                if (Globals.ITEM_NAMEDESC_CHANGE)
+                    itemNameDescription.IsChecked = true;
 
                 shop.Content = "Shop";
                 if (Globals.SHOP_CHANGE)
@@ -9996,33 +9749,45 @@ namespace Dragoon_Modifier {
                 openModWindow.AddObject(mod);
                 openModWindow.AddTextBlock("Database");
                 openModWindow.AddObject(shop);
+                openModWindow.AddObject(itemNameDescription);
+                openModWindow.AddObject(itemIcon);
+                openModWindow.AddObject(itemStat);
+                openModWindow.AddObject(dragoonDescription);
                 openModWindow.AddObject(dragoonAddition);
-                openModWindow.AddObject(dragoon);
+                openModWindow.AddObject(dragoonSpell);
+                openModWindow.AddObject(dragoonStats);
+                openModWindow.AddObject(additionLevel);
                 openModWindow.AddObject(addition);
-                openModWindow.AddObject(character);
-                openModWindow.AddObject(item);
-                openModWindow.AddObject(drop);
-                openModWindow.AddObject(monster);
+                openModWindow.AddObject(characterStat);
+                openModWindow.AddObject(monsterExpGold);
+                openModWindow.AddObject(monsterDrop);
+                openModWindow.AddObject(monsterStat);
                 openModWindow.AddTextBlock("Please select the mods you want to turn on or off.");
                 openModWindow.ShowDialog();
 
-                Globals.MONSTER_CHANGE = (bool) monster.IsChecked;
-                Globals.DROP_CHANGE = (bool) drop.IsChecked;
-                Globals.ITEM_CHANGE = (bool) item.IsChecked;
-                Globals.CHARACTER_CHANGE = (bool) character.IsChecked;
+                Globals.MONSTER_STAT_CHANGE = (bool) monsterStat.IsChecked;
+                Globals.MONSTER_DROP_CHANGE = (bool) monsterDrop.IsChecked;
+                Globals.MONSTER_EXPGOLD_CHANGE = (bool) monsterExpGold.IsChecked;
+                Globals.CHARACTER_STAT_CHANGE = (bool) characterStat.IsChecked;
                 Globals.ADDITION_CHANGE = (bool) addition.IsChecked;
-                Globals.DRAGOON_CHANGE = (bool) dragoon.IsChecked;
+                Globals.ADDITION_LEVEL_CHANGE = (bool) additionLevel.IsChecked;
+                Globals.DRAGOON_STAT_CHANGE = (bool) dragoonStats.IsChecked;
+                Globals.DRAGOON_SPELL_CHANGE = (bool) dragoonSpell.IsChecked;
                 Globals.DRAGOON_ADDITION_CHANGE = (bool) dragoonAddition.IsChecked;
+                Globals.DRAGOON_DESC_CHANGE = (bool) dragoonDescription.IsChecked;
+                Globals.ITEM_STAT_CHANGE = (bool) itemStat.IsChecked;
+                Globals.ITEM_ICON_CHANGE = (bool) itemIcon.IsChecked;
+                Globals.ITEM_NAMEDESC_CHANGE = (bool) itemNameDescription.IsChecked;
                 Globals.SHOP_CHANGE = (bool) shop.IsChecked;
-
-                if (emulator.ReadShort("BATTLE_VALUE") < 9999)
-                    Globals.STATS_CHANGED = true;
 
                 if (Globals.MOD != (string) mod.SelectedValue) {
                     Globals.MOD = (string) mod.SelectedValue;
                     Globals.DICTIONARY = new LoDDict();
                     Constants.WriteOutput("Changing Mod");
                 }
+
+                if (emulator.ReadShort("BATTLE_VALUE") < 9999)
+                    Globals.STATS_CHANGED = true;
 
                 Constants.WritePLogOutput("Mod directory: " + Globals.MOD);
             }
@@ -10222,13 +9987,19 @@ namespace Dragoon_Modifier {
                 btnHell.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
                 Globals.DIFFICULTY_MODE = "Hard";
                 Globals.MOD = "Hard_Mode";
-                Globals.MONSTER_CHANGE = true;
-                Globals.DROP_CHANGE = true;
-                Globals.ITEM_CHANGE = true;
-                Globals.CHARACTER_CHANGE = false;
+                Globals.MONSTER_STAT_CHANGE = true;
+                Globals.MONSTER_DROP_CHANGE = true;
+                Globals.MONSTER_EXPGOLD_CHANGE = true;
+                Globals.CHARACTER_STAT_CHANGE = false;
                 Globals.ADDITION_CHANGE = true;
-                Globals.DRAGOON_CHANGE = false;
+                Globals.ADDITION_LEVEL_CHANGE = false;
+                Globals.DRAGOON_STAT_CHANGE = false;
+                Globals.DRAGOON_SPELL_CHANGE = false;
+                Globals.DRAGOON_DESC_CHANGE = true;
                 Globals.DRAGOON_ADDITION_CHANGE = false;
+                Globals.ITEM_STAT_CHANGE = true;
+                Globals.ITEM_ICON_CHANGE = true;
+                Globals.ITEM_NAMEDESC_CHANGE = true;
                 Globals.SHOP_CHANGE = true;
             } else if (btn == btnHell) {
                 btn.Background = new SolidColorBrush(Color.FromArgb(255, 168, 211, 255));
@@ -10236,13 +10007,19 @@ namespace Dragoon_Modifier {
                 btnHard.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
                 Globals.DIFFICULTY_MODE = "Hell";
                 Globals.MOD = "Hell_Mode";
-                Globals.MONSTER_CHANGE = true;
-                Globals.DROP_CHANGE = true;
-                Globals.ITEM_CHANGE = true;
-                Globals.CHARACTER_CHANGE = false;
+                Globals.MONSTER_STAT_CHANGE = true;
+                Globals.MONSTER_DROP_CHANGE = true;
+                Globals.MONSTER_EXPGOLD_CHANGE = true;
+                Globals.CHARACTER_STAT_CHANGE = false;
                 Globals.ADDITION_CHANGE = true;
-                Globals.DRAGOON_CHANGE = false;
+                Globals.ADDITION_LEVEL_CHANGE = false;
+                Globals.DRAGOON_STAT_CHANGE = false;
+                Globals.DRAGOON_SPELL_CHANGE = false;
+                Globals.DRAGOON_DESC_CHANGE = true;
                 Globals.DRAGOON_ADDITION_CHANGE = false;
+                Globals.ITEM_STAT_CHANGE = true;
+                Globals.ITEM_ICON_CHANGE = true;
+                Globals.ITEM_NAMEDESC_CHANGE = true;
                 Globals.SHOP_CHANGE = true;
             } else {
                 enrageBoss = enrageBoss ? false : true;

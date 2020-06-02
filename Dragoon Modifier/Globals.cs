@@ -33,15 +33,6 @@ namespace Dragoon_Modifier {
         public static List<dynamic> DRAGOON_SPELLS = new List<dynamic>();
         public static dynamic[] CURRENT_STATS = new dynamic[9];
         public static dynamic DICTIONARY = new System.Dynamic.ExpandoObject();
-        public static bool MONSTER_CHANGE = false;
-        public static bool ULTIMATE = false;
-        public static bool DROP_CHANGE = false;
-        public static bool ITEM_CHANGE = false;
-        public static bool CHARACTER_CHANGE = false;
-        public static bool DRAGOON_CHANGE = false;
-        public static bool DRAGOON_ADDITION_CHANGE = false;
-        public static bool ADDITION_CHANGE = false;
-        public static bool SHOP_CHANGE = false;
         public static Nullable<int> NO_DART = null;
         public static string MOD = "US_Base";
         public static string DIFFICULTY_MODE = "Normal";
@@ -57,31 +48,22 @@ namespace Dragoon_Modifier {
         public static string[] CHARACTER_NAME = new string[3];
         public static bool SHANA_FIX = false;
 
-        #region new CHANGE variables
-
+        #region CHANGE variables
         public static bool MONSTER_STAT_CHANGE = false;
         public static bool MONSTER_DROP_CHANGE = false;
         public static bool MONSTER_EXPGOLD_CHANGE = false;
-
-        public static bool DRAGOON_ADDITION_CHANGE2 = false;
-        public static bool DRAGOON_SPELL_CHANGE = false;
-        public static bool DRAGOON_DESC_CHANGE = false;
-        public static bool DRAGOON_STAT_CHANGE = false;
-
-        /*
-        already present
+        public static bool CHARACTER_STAT_CHANGE = false;
         public static bool ADDITION_CHANGE = false;
-        */
         public static bool ADDITION_LEVEL_CHANGE = false;
-
+        public static bool DRAGOON_STAT_CHANGE = false;
+        public static bool DRAGOON_SPELL_CHANGE = false;
+        public static bool DRAGOON_ADDITION_CHANGE = false;
+        public static bool DRAGOON_DESC_CHANGE = false;
         public static bool ITEM_STAT_CHANGE = false;
         public static bool ITEM_ICON_CHANGE = false;
         public static bool ITEM_NAMEDESC_CHANGE = false;
-
-        public static bool CHARACTER_STAT_CHANGE = false;
-
-        public static dynamic[] CURRENT_STATS2 = new dynamic[3];
-
+        public static bool SHOP_CHANGE = false;
+        public static bool ULTIMATE = false;
         #endregion
 
         public static void SetM_POINT(long mPoint) {
