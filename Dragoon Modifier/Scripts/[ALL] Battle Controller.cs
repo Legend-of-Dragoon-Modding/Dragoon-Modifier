@@ -21,6 +21,14 @@ public class BattleController {
             ShanaFix(emulator);
         }
 
+        if (Globals.IN_BATTLE && Globals.STATS_CHANGED && encounterValue == 41215 && Globals.ADDITION_BATTLE_LEVEL) {
+            AdditionBattleLevel(emulator);
+        }
+
+        if (Globals.IN_BATTLE && Globals.STATS_CHANGED && encounterValue == 41215 && Globals.NO_GUARD) {
+            NoGuard();
+        }
+
         if (Globals.IN_BATTLE && !Globals.STATS_CHANGED && encounterValue == 41215) {
             Constants.WriteOutput("Battle detected. Loading...");
             Globals.UNIQUE_MONSTER_IDS = new List<int>();
@@ -375,6 +383,40 @@ public class BattleController {
                     emulator.WriteShort(address + (slot * 0x100) + 0x60 + 0x8, (ushort) Globals.DICTIONARY.DragoonAddition[character].HIT4);
                     emulator.WriteShort(address + (slot * 0x100) + 0x80 + 0x8, (ushort) Globals.DICTIONARY.DragoonAddition[character].HIT5);
                 }
+            }
+        }
+    }
+
+    public static void AdditionBattleLevel(Emulator emulator) {
+        Dictionary<int, int> additionnum = new Dictionary<int, int> {
+            {0, 0},{1, 1},{2, 2},{3, 3},{4, 4},{5, 5},{6, 6},//Dart
+			{8, 0},{9, 1},{10, 2},{11, 3},{12, 4},           //Lavitz
+			{14, 0},{15, 1},{16, 2},{17, 3},                 //Rose
+			{29, 0},{30, 1},{31, 2},{32, 3},{33, 4},{34, 5}, //Haschel
+			{23, 0},{24, 1},{25, 2},{26, 3},{27, 4},         //Meru
+			{19, 0},{20, 1},{21, 2},                         //Kongol
+			{255, 0}
+        };
+        for (int slot = 0; slot < 3; slot++) {
+            int character = Globals.PARTY_SLOT[slot];
+            if (Globals.PARTY_SLOT[character] < 9) {
+                int addition = additionnum[emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x19)];
+                int level = emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x1A + addition);
+                int newlevel = 1 + emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x22 + addition) / 20;
+                if (newlevel > level) {
+                    Constants.WriteDebug(newlevel);
+                    emulator.WriteByte(Constants.GetAddress("CHAR_TABLE") + (character * 0x2C) + 0x1A + addition, (byte)newlevel);
+                    Globals.CHARACTER_TABLE[slot].Write("ADD_DMG_Multi", Globals.DICTIONARY.AdditionData[character, addition, newlevel].ADD_DMG_Multi);
+                    Globals.CHARACTER_TABLE[slot].Write("ADD_SP_Multi", Globals.DICTIONARY.AdditionData[character, addition, newlevel].ADD_SP_Multi);
+                }
+            }
+        }
+    }
+
+    public static void NoGuard() {
+        for (int slot = 0; slot < 3; slot++) {
+            if (Globals.PARTY_SLOT[slot] < 9) {
+                Globals.CHARACTER_TABLE[slot].Write("Guard", 0);
             }
         }
     }

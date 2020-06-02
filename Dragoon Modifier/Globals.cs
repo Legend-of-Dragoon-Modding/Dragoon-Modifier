@@ -47,6 +47,8 @@ namespace Dragoon_Modifier {
         public static string[] MONSTER_NAME = new string[5];
         public static string[] CHARACTER_NAME = new string[3];
         public static bool SHANA_FIX = false;
+        public static bool ADDITION_BATTLE_LEVEL = true;
+        public static bool NO_GUARD = false;
 
         #region CHANGE variables
         public static bool MONSTER_STAT_CHANGE = false;
