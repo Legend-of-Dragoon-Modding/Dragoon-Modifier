@@ -130,9 +130,9 @@ Wargod's Amulet	Accessory	All	Amulet									20	20										Increases hit rate<L
 Talisman	Accessory	All	Amulet																			death_res	Grants immunity<LINE>to instant death.	500
 																								500
 Holy Ankh	Accessory	All	Ring																	revive	40		40% chance of<LINE>reviving from<LINE>death.	500
-Dancer's Ring	Accessory	All	Ring								20												Raises speed<LINE>by 20.	5000
+Dancer's Ring	Accessory	Female	Ring								20												Raises speed<LINE>by 20.	5000
 																								500
-Bandit's Ring	Accessory	All	Ring								20												Raises speed<LINE>by 20.	5000
+Bandit's Ring	Accessory	Male	Ring								20												Raises speed<LINE>by 20.	5000
 Red-Eye Stone	Accessory	All	Stone													Fire							Halves damage<LINE>from fire-based<LINE>attacks.	500
 Jade Stone	Accessory	All	Stone													Wind							Halves damage<LINE>from wind-based<LINE>attacks.	500
 Silver Stone	Accessory	All	Stone													Light							Halves damage<LINE>from light-based<LINE>attacks.	500
