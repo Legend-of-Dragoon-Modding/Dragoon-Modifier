@@ -399,7 +399,7 @@ public class BattleController {
         };
         for (int slot = 0; slot < 3; slot++) {
             int character = Globals.PARTY_SLOT[slot];
-            if (Globals.PARTY_SLOT[character] < 9) {
+            if (Globals.PARTY_SLOT[slot] < 9) {
                 int addition = additionnum[emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x19)];
                 int level = emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x1A + addition);
                 int newlevel = 1 + emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x22 + addition) / 20;
@@ -641,6 +641,16 @@ public class BattleController {
             foreach (dynamic item in Globals.DICTIONARY.ItemList) {
                 emulator.WriteInteger("ITEM_DESC_PTR", (int) item.DescriptionPointer, i * 0x4);
                 emulator.WriteInteger("ITEM_NAME_PTR", (int) item.NamePointer, i * 0x4);
+                i++;
+            }
+        }
+
+        if (Globals.SHOP_CHANGE) {
+            Constants.WriteOutput("Changing Item Prices...");
+            long address = Constants.GetAddress("SHOP_PRICE");
+            int i = 0;
+            foreach (dynamic item in Globals.DICTIONARY.ItemList) {
+                emulator.WriteShort(address + i * 0x2, (ushort)item.Sell_Price);
                 i++;
             }
         }

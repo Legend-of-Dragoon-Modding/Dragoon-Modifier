@@ -1117,8 +1117,7 @@ namespace Dragoon_Modifier {
             List<string> nameList = new List<string>();
             IDictionary<int, dynamic> statList = new Dictionary<int, dynamic>();
             IDictionary<int, dynamic> ultimateStatList = new Dictionary<int, dynamic>();
-            List<int[]>[] shopList = new List<int[]>[39];
-            byte[][] shopList2 = new byte[39][];
+            byte[][] shopList = new byte[39][];
             dynamic[][] characterStats = new dynamic[9][];
             dynamic[,,] additionData = new dynamic[9, 8, 8];
             List<int> monsterScript = new List<int>();
@@ -1174,8 +1173,7 @@ namespace Dragoon_Modifier {
             public List<string> NameList { get { return nameList; } }
             public IDictionary<int, dynamic> StatList { get { return statList; } }
             public IDictionary<int, dynamic> UltimateStatList { get { return ultimateStatList; } }
-            public List<int[]>[] ShopList { get { return shopList; } }
-            public byte[][] ShopList2 { get { return shopList2; } }
+            public byte[][] ShopList { get { return shopList; } }
             public dynamic[][] CharacterStats { get { return characterStats; } }
             public dynamic[,,] AdditionData { get { return additionData; } }
             public dynamic[] DragoonAddition { get { return dragoonAddition; } }
@@ -1349,8 +1347,9 @@ namespace Dragoon_Modifier {
                         Constants.WriteDebug(file + " not found. Turning off Dragoon Changes.");
                         Globals.DRAGOON_STAT_CHANGE = false;
                     }
-                    for (int i = 0; i < shopList.Length; i++) {
-                        shopList[i] = new List<int[]>();
+                    
+                    for (int shop = 0; shop < 39; shop++) {
+                        shopList[shop] = new byte[] {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
                     }
                     try {
                         int key = 0;
@@ -1358,50 +1357,16 @@ namespace Dragoon_Modifier {
                             var row = 0;
                             while (!shop.EndOfStream) {
                                 var line = shop.ReadLine();
-                                if (row > 1) {
-                                    var values = line.Split('\t').ToArray();
-                                    int column = 0;
-                                    foreach (string number in values) {
-                                        if (column % 2 == 0 && number != "") {
-                                            if (item2num.TryGetValue(number.ToLower(), out key)) {
-                                                var array = new int[] {
-                                    key, Int32.Parse(values[column + 1])
-                                    };
-                                                shopList[column / 2].Add(array);
-                                            } else {
-                                                Constants.WriteDebug("Incorrect item " + number + " in ShopList at Row: " + row + " Column: " + column);
-                                            }
-                                        }
-                                        column++;
-                                    }
-                                }
-                                row++;
-                            }
-                        }
-                    } catch (FileNotFoundException) {
-                        string file = cwd + @"Mods\" + Globals.MOD + @"\Shops.tsv";
-                        Constants.WriteDebug(file + " not found. Turning off Shop Changes.");
-                        Globals.SHOP_CHANGE = false;
-                    }
-                    for (int shop = 0; shop < 39; shop++) {
-                        shopList2[shop] = new byte[] {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
-                    }
-                    try {
-                        int key = 0;
-                        using (var shop = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Shops2.tsv")) {
-                            var row = 0;
-                            while (!shop.EndOfStream) {
-                                var line = shop.ReadLine();
                                 if (row > 0 && row < 17) {
                                     var values = line.Split('\t').ToArray();
                                     for (int column = 0; column < 39; column++) {
                                         if (item2num.TryGetValue(values[column].ToLower(), out key)) {
-                                            shopList2[column][row -1] = (byte)key;
+                                            shopList[column][row -1] = (byte)key;
                                         } else {
                                             if (values[column] != "") {
-                                                Constants.WriteDebug(values[column] + " not found in as item in Shops2.tsv");
+                                                Constants.WriteDebug(values[column] + " not found in as item in Shops.tsv");
                                             }
-                                            shopList2[column][row - 1] = 0xFF;
+                                            shopList[column][row - 1] = 0xFF;
                                         }
                                     }
                                 }
@@ -1412,14 +1377,6 @@ namespace Dragoon_Modifier {
                         string file = cwd + @"Mods\" + Globals.MOD + @"\Shops.tsv";
                         Constants.WriteDebug(file + " not found. Turning off Shop Changes.");
                         Globals.SHOP_CHANGE = false;
-                    }
-                    foreach (byte[] shop in shopList2) {
-                        List<string> templist = new List<string>();
-                        foreach(byte item in shop) {
-                            templist.Add(num2item[item]);
-                        }
-                        string s1 = string.Join(", ", templist);
-                        Constants.WriteDebug(s1);
                     }
                     try {
                         Globals.DRAGOON_SPELLS = new List<dynamic>();
@@ -3290,6 +3247,7 @@ namespace Dragoon_Modifier {
         #endregion
 
         #region Shop Changes
+        /*
         public void ShopChanges() {
             if (!Globals.IN_BATTLE) {
                 if (SHOP_MAPS.Contains((int) Globals.MAP)) {
@@ -3318,6 +3276,35 @@ namespace Dragoon_Modifier {
                         }
                     }
                 }
+            }
+        }
+        */
+        public void ShopChanges() {
+            if (!Globals.IN_BATTLE) {
+                if (SHOP_MAPS.Contains((int) Globals.MAP)) {
+                    if (!SHOP_CHANGED) {
+                        long address = Constants.GetAddress("SHOP_LIST");
+                        int shopcount = 0;
+                        foreach (byte[]shop in Globals.DICTIONARY.ShopList) {
+                            int itemcount = 0;
+                            foreach (byte item in shop) {
+                                if (itemcount == 0) {
+                                    if (item > 192) {
+                                        emulator.WriteByte(address + shopcount * 0x40, 1);
+                                    } else {
+                                        emulator.WriteByte(address + shopcount * 0x40, 0);
+                                    }
+                                }
+                                emulator.WriteByte(address + itemcount * 0x4 + shopcount * 0x40 + 1, item);
+                                itemcount++;
+                            }
+                            shopcount++;
+                        }
+                    }
+                } else if (SHOP_CHANGED) {
+                    SHOP_CHANGED = false;
+                }
+          
             }
         }
 
