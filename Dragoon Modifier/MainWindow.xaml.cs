@@ -1117,7 +1117,7 @@ namespace Dragoon_Modifier {
             List<string> nameList = new List<string>();
             IDictionary<int, dynamic> statList = new Dictionary<int, dynamic>();
             IDictionary<int, dynamic> ultimateStatList = new Dictionary<int, dynamic>();
-            byte[][] shopList = new byte[39][];
+            byte[][] shopList = new byte[44][];
             dynamic[][] characterStats = new dynamic[9][];
             dynamic[,,] additionData = new dynamic[9, 8, 8];
             List<int> monsterScript = new List<int>();
@@ -1348,7 +1348,7 @@ namespace Dragoon_Modifier {
                         Globals.DRAGOON_STAT_CHANGE = false;
                     }
                     
-                    for (int shop = 0; shop < 39; shop++) {
+                    for (int shop = 0; shop < 44; shop++) {
                         shopList[shop] = new byte[] {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
                     }
                     try {
