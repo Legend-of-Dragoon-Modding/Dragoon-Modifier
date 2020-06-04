@@ -1118,6 +1118,7 @@ namespace Dragoon_Modifier {
             IDictionary<int, dynamic> statList = new Dictionary<int, dynamic>();
             IDictionary<int, dynamic> ultimateStatList = new Dictionary<int, dynamic>();
             List<int[]>[] shopList = new List<int[]>[39];
+            byte[][] shopList2 = new byte[39][];
             dynamic[][] characterStats = new dynamic[9][];
             dynamic[,,] additionData = new dynamic[9, 8, 8];
             List<int> monsterScript = new List<int>();
@@ -1174,6 +1175,7 @@ namespace Dragoon_Modifier {
             public IDictionary<int, dynamic> StatList { get { return statList; } }
             public IDictionary<int, dynamic> UltimateStatList { get { return ultimateStatList; } }
             public List<int[]>[] ShopList { get { return shopList; } }
+            public byte[][] ShopList2 { get { return shopList2; } }
             public dynamic[][] CharacterStats { get { return characterStats; } }
             public dynamic[,,] AdditionData { get { return additionData; } }
             public dynamic[] DragoonAddition { get { return dragoonAddition; } }
@@ -1381,6 +1383,44 @@ namespace Dragoon_Modifier {
                         Constants.WriteDebug(file + " not found. Turning off Shop Changes.");
                         Globals.SHOP_CHANGE = false;
                     }
+                    for (int shop = 0; shop < 39; shop++) {
+                        shopList2[shop] = new byte[] {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+                    }
+                    try {
+                        int key = 0;
+                        using (var shop = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Shops2.tsv")) {
+                            var row = 0;
+                            while (!shop.EndOfStream) {
+                                var line = shop.ReadLine();
+                                if (row > 0 && row < 17) {
+                                    var values = line.Split('\t').ToArray();
+                                    for (int column = 0; column < 39; column++) {
+                                        if (item2num.TryGetValue(values[column].ToLower(), out key)) {
+                                            shopList2[column][row -1] = (byte)key;
+                                        } else {
+                                            if (values[column] != "") {
+                                                Constants.WriteDebug(values[column] + " not found in as item in Shops2.tsv");
+                                            }
+                                            shopList2[column][row - 1] = 0xFF;
+                                        }
+                                    }
+                                }
+                                row++;
+                            }
+                        }
+                    } catch (FileNotFoundException) {
+                        string file = cwd + @"Mods\" + Globals.MOD + @"\Shops.tsv";
+                        Constants.WriteDebug(file + " not found. Turning off Shop Changes.");
+                        Globals.SHOP_CHANGE = false;
+                    }
+                    foreach (byte[] shop in shopList2) {
+                        List<string> templist = new List<string>();
+                        foreach(byte item in shop) {
+                            templist.Add(num2item[item]);
+                        }
+                        string s1 = string.Join(", ", templist);
+                        Constants.WriteDebug(s1);
+                    }
                     try {
                         Globals.DRAGOON_SPELLS = new List<dynamic>();
                         using (var spell = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Dragoon_Spells.tsv")) {
@@ -1506,6 +1546,9 @@ namespace Dragoon_Modifier {
             byte special2 = 0;
             short special_ammount = 0;
             byte death_res = 0;
+            short sell_price = 0;
+
+            #region Dictionaries
 
             Dictionary<string, byte> iconDict = new Dictionary<string, byte>() {
                 { "sword", 0 },
@@ -1635,6 +1678,8 @@ namespace Dragoon_Modifier {
                 {"death_res", 128 }
             };
 
+            #endregion
+
             public int ID { get { return id; } }
             public string Name { get { return name; } }
             public string Description { get { return description; } }
@@ -1664,6 +1709,7 @@ namespace Dragoon_Modifier {
             public byte Special2 { get { return special2; } }
             public short Special_Ammount { get { return special_ammount; } }
             public byte Death_Res { get { return death_res; } }
+            public short Sell_Price { get { return sell_price; } }
 
             public ItemList(int index, string[] values) {
                 byte key = 0;
@@ -1800,6 +1846,12 @@ namespace Dragoon_Modifier {
                 description = values[23];
                 if (!(description == "" || description == " ")) {
                     encodedDescription = StringEncode(description);
+                }
+                if (Int16.TryParse(values[24], NumberStyles.AllowLeadingSign, null as IFormatProvider, out key2)) {
+                    float temp = key2 / 2;
+                    sell_price = (short)Math.Round(temp);
+                } else if (values[24] != "") {
+                    Constants.WriteDebug(values[24] + " not found as Price for item: " + name);
                 }
             }
         }
