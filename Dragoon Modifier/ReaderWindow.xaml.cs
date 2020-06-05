@@ -132,53 +132,55 @@ namespace Dragoon_Modifier {
         public void WriteToText() {
             if (Globals.IN_BATTLE && Globals.STATS_CHANGED) {
                 for (int i = 0; i < 3; i++) {
-                    foreach (string field in Constants.READER_CHARACTER_LABEL) {
-                        string location = field + "" + (i + 1);
-                        if (field.Equals("Burn Stack")) {
-                            if (Globals.PARTY_SLOT[i] != 0) {
-                                continue;
-                            } else {
-                                location = "Burn Stack";
+                    if (Globals.PARTY_SLOT[i] < 9) {
+                        foreach (string field in Constants.READER_CHARACTER_LABEL) {
+                            string location = field + "" + (i + 1);
+                            if (field.Equals("Burn Stack")) {
+                                if (Globals.PARTY_SLOT[i] != 0) {
+                                    continue;
+                                } else {
+                                    location = "Burn Stack";
+                                }
+                            } else if (field.Equals("Damage Tracker1")) {
+                                if (i != 0) {
+                                    continue;
+                                } else {
+                                    location = "Damage Tracker1";
+                                }
+                            } else if (field.Equals("Damage Tracker2")) {
+                                if (i != 1) {
+                                    continue;
+                                } else {
+                                    location = "Damage Tracker2";
+                                }
+                            } else if (field.Equals("Damage Tracker3")) {
+                                if (i != 2) {
+                                    continue;
+                                } else {
+                                    location = "Damage Tracker3";
+                                }
                             }
-                        } else if (field.Equals("Damage Tracker1")) {
-                            if (i != 0) {
-                                continue;
+                            StreamWriter writer = new StreamWriter(WRITE_LOCATION + "/Character/" + location + ".txt");
+                            if (field.Equals("Name")) {
+                                if (Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10)
+                                    writer.WriteLine(Globals.CHARACTER_NAME[i] + "*");
+                                else
+                                    writer.WriteLine(Globals.CHARACTER_NAME[i]);
+                            } else if (field.Equals("Max_SP")) {
+                                writer.WriteLine((Globals.CHARACTER_TABLE[i].Read("DLV") * 100).ToString());
+                            } else if (field.Equals("Burn Stack")) {
+                                writer.WriteLine(Globals.GetCustomValue("Burn Stack"));
+                            } else if (field.Equals("Damage Tracker1")) {
+                                writer.WriteLine(Globals.GetCustomValue("Damage Tracker1"));
+                            } else if (field.Equals("Damage Tracker2")) {
+                                writer.WriteLine(Globals.GetCustomValue("Damage Tracker2"));
+                            } else if (field.Equals("Damage Tracker3")) {
+                                writer.WriteLine(Globals.GetCustomValue("Damage Tracker3"));
                             } else {
-                                location = "Damage Tracker1";
+                                writer.WriteLine(Globals.CHARACTER_TABLE[i].Read(field));
                             }
-                        } else if (field.Equals("Damage Tracker2")) {
-                            if (i != 1) {
-                                continue;
-                            } else {
-                                location = "Damage Tracker2";
-                            }
-                        } else if (field.Equals("Damage Tracker3")) {
-                            if (i != 2) {
-                                continue;
-                            } else {
-                                location = "Damage Tracker3";
-                            }
+                            writer.Close();
                         }
-                        StreamWriter writer = new StreamWriter(WRITE_LOCATION + "/Character/" + location + ".txt");
-                        if (field.Equals("Name")) {
-                            if (Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10)
-                                writer.WriteLine(Globals.CHARACTER_NAME[i] + "*");
-                            else
-                                writer.WriteLine(Globals.CHARACTER_NAME[i]);
-                        } else if (field.Equals("Max_SP")) {
-                            writer.WriteLine((Globals.CHARACTER_TABLE[i].Read("DLV") * 100).ToString());
-                        } else if (field.Equals("Burn Stack")) {
-                            writer.WriteLine(Globals.GetCustomValue("Burn Stack"));
-                        } else if (field.Equals("Damage Tracker1")) {
-                            writer.WriteLine(Globals.GetCustomValue("Damage Tracker1"));
-                        } else if (field.Equals("Damage Tracker2")) {
-                            writer.WriteLine(Globals.GetCustomValue("Damage Tracker2"));
-                        } else if (field.Equals("Damage Tracker3")) {
-                            writer.WriteLine(Globals.GetCustomValue("Damage Tracker3"));
-                        } else {
-                            writer.WriteLine(Globals.CHARACTER_TABLE[i].Read(field));
-                        }
-                        writer.Close();
                     }
                 }
 
