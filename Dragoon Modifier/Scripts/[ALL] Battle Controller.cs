@@ -310,6 +310,7 @@ public class BattleController {
                 Globals.CHARACTER_TABLE[slot].Write("OG_MDF", Globals.CURRENT_STATS[character].MDF);
                 Globals.CHARACTER_TABLE[slot].Write("SPD", Globals.CURRENT_STATS[character].SPD);
                 Globals.CHARACTER_TABLE[slot].Write("OG_SPD", Globals.CURRENT_STATS[character].SPD);
+                Globals.CHARACTER_TABLE[slot].Write("Element", Globals.CURRENT_STATS[character].Element);
             }
         }
     }
