@@ -1130,9 +1130,8 @@
                     <ComboBox x:Name="cboFlowerStorm" Grid.Row="9" Grid.Column="3" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
                     <Button x:Name="btnNoDragoon" Grid.Row="3" Grid.Column="2" Content="No Dragoon" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                     <Button x:Name="btnDivineRed" Grid.Row="4" Grid.Column="2" Content="Divine Red-Eye" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-
+                    <Button x:Name="btnAdditionLevel" Grid.Row="6" Grid.Column="2" Content="Addition Level Up" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                     <Button x:Name="btnElementArrow" Grid.Row="10" Grid.Column="2" Content="Element Arrow" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
-                    <Button x:Name="btnBlackRoom" Grid.Row="6" Grid.Column="2" Content="Black Room" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                     <Button x:Name="btnEarlyAdditions" Grid.Row="5" Grid.Column="2" Content="Early Additions" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                     <ComboBox x:Name="cboElement" Grid.Row="11" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
                     <Button x:Name="btnReduceSDEXP" Grid.Row="7" Grid.Column="2" Content="Reduce Solo/Duo EXP" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
@@ -1144,13 +1143,15 @@
                         <RowDefinition />
                         <RowDefinition />
                         <RowDefinition />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <Button x:Name="btnTextSpeed" Grid.Row="0" Grid.Column="0" Content="Text Speed" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                    <Button x:Name="btnBlackRoom" Grid.Row="2" Grid.Column="0" Content="Black Room" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                     <Button x:Name="btnAutoText" Grid.Row="1" Grid.Column="0" Content="Auto Advance Text" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <DockPanel Grid.Row="2" Grid.Column="0" HorizontalAlignment="Stretch" Margin="0">
+                    <DockPanel Grid.Row="3" Grid.Column="0" HorizontalAlignment="Stretch" Margin="0">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition/>
@@ -1197,8 +1198,8 @@
                         <RowDefinition Height="10*"/>
                         <RowDefinition Height="90*"/>
                     </Grid.RowDefinitions>
-                    <ComboBox x:Name="cboHelpTopic" Grid.Row="0" Grid.Column="0" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                    <TextBox x:Name="txtHelp" Grid.Row="1" TextWrapping="Wrap" Text="" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" IsEnabled="True"/>
+                    <ComboBox x:Name="cboHelpTopic" Grid.Row="0" Grid.Column="0" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
+                    <TextBox x:Name="txtHelp" Grid.Row="1" TextWrapping="Wrap" Text="" FontSize="20" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" IsReadOnly="True"/>
                 </Grid>
             </TabItem>
             <TabItem x:Name="tabReader" Header="Reader">

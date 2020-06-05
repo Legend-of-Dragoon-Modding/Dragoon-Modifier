@@ -70,6 +70,7 @@ namespace Dragoon_Modifier {
         public bool checkRoseDamage = false;
         public bool roseEnhanceDragoon = false;
         public bool starChildren = false;
+        public bool trackRainbowBreath = false;
         //HP Cap Break
         public double[] hpChangeCheck = { 65535, 65535, 65535 };
         public byte[] hpChangeSlot = { 255, 255, 255 };
@@ -226,7 +227,7 @@ namespace Dragoon_Modifier {
             70000,   //Spirit Eater
             70000,   //Harpoon
             70000,   //Element Arrow
-            70000,   //Dragon Buster II
+            70000,   //Dragon Beater
             70000,   //Battery Glove
             70000,   //Jeweled Hammer
             70000,   //Giant Axe
@@ -234,7 +235,7 @@ namespace Dragoon_Modifier {
             30000,   //Fake Legend Casque
             120000,  //Soa's Helm
             30000,   //Fake Legend Armor
-            30000,   //Divine DG Armor
+            60000,   //Divine DG Armor
             120000,  //Soa's Armor
             40000,   //Lloyd's Boots
             40000,   //Winged Shoes
@@ -300,7 +301,7 @@ namespace Dragoon_Modifier {
             159, //Spirit Eater
             160, //Harpoon
             161, //Element Arrow
-            162, //Dragon Buster II
+            162, //Dragon Beater
             163, //Battery Glove
             164, //Jeweled Hammer
             165, //Giant Axe
@@ -648,6 +649,19 @@ namespace Dragoon_Modifier {
             cboUltimateBoss.Items.Add("Zone 4 - Zieg");
             cboUltimateBoss.Items.Add("Zone 4 - Melbu Frahma");
 
+            cboHelpTopic.Items.Add("General");
+            cboHelpTopic.Items.Add("Battle Stats Tab");
+            cboHelpTopic.Items.Add("Difficulty Tab");
+            cboHelpTopic.Items.Add("Enhancements Tab I");
+            cboHelpTopic.Items.Add("Enhancements Tab II");
+            cboHelpTopic.Items.Add("Enhancements Tab III");
+            cboHelpTopic.Items.Add("Ultimate Boss");
+            cboHelpTopic.Items.Add("Shop Tab");
+            cboHelpTopic.Items.Add("Reader Tab");
+            cboHelpTopic.Items.Add("Settings Tab");
+            cboHelpTopic.Items.Add("Hotkeys");
+            cboHelpTopic.Items.Add("How To");
+
             lstTicketShop.Items.Add("1 Ticket / 15 G");
             lstTicketShop.Items.Add("5 Tickets / 60 G");
             lstTicketShop.Items.Add("10 Tickets / 100 G");
@@ -655,29 +669,29 @@ namespace Dragoon_Modifier {
             lstHeroShop.Items.Add("Total Vanishing/40 Tickets");
             lstHeroShop.Items.Add("Healing Rain/60 Tickets");
             lstHeroShop.Items.Add("Moon Serenade/100 Tickets");
-            lstUltimateShop.Items.Add("Spirit Eater (SPE) / 70,000 G");
-            lstUltimateShop.Items.Add("Harpoon (HRP) / 70,000 G");
-            lstUltimateShop.Items.Add("Element Arrow (ELA) / 70,000 G");
-            lstUltimateShop.Items.Add("Dragon Buster II (DB2) / 70,000 G");
-            lstUltimateShop.Items.Add("Battery Glove (BGL) / 70,000 G");
-            lstUltimateShop.Items.Add("Jeweled Hammer (JHA) / 70,000 G");
-            lstUltimateShop.Items.Add("Giant Axe (GAX) / 70,000 G");
-            lstUltimateShop.Items.Add("Soa's Light (SLI) / 280,000 G");
-            lstUltimateShop.Items.Add("Fake Legend Casque (FLC) / 30,000 G");
-            lstUltimateShop.Items.Add("Soa's Helm (SHL) / 120,000 G");
-            lstUltimateShop.Items.Add("Fake Legend Armor (FLA) / 30,000 G");
-            lstUltimateShop.Items.Add("Divine DG Armor (DDA) / 30,000 G");
-            lstUltimateShop.Items.Add("Soa's Armor (SAR) / 120,000 G");
-            lstUltimateShop.Items.Add("Lloyd's Boots (LBS) / 40,000 G");
-            lstUltimateShop.Items.Add("Winged Shoes (WGS) / 40,000 G");
-            lstUltimateShop.Items.Add("Soa's Greaves (SGS) / 120,000 G");
-            lstUltimateShop.Items.Add("Heal Ring (HLR) / 20,000 G");
-            lstUltimateShop.Items.Add("Soa's Sash (SSH) / 40,000 G");
-            lstUltimateShop.Items.Add("Soa's Ahnk (SAK) / 50,000 G");
-            lstUltimateShop.Items.Add("Soa's Health Ring (SHR) / 50,000 G");
-            lstUltimateShop.Items.Add("Soa's Mage Ring (SMR) / 50,000 G");
-            lstUltimateShop.Items.Add("Soa's Shield (SSD) / 50,000 G");
-            lstUltimateShop.Items.Add("Soa's Siphon Ring (SSR) / 50,000 G");
+            lstUltimateShop.Items.Add("Spirit Eater / 70,000 G");
+            lstUltimateShop.Items.Add("Harpoon / 70,000 G");
+            lstUltimateShop.Items.Add("Element Arrow / 70,000 G");
+            lstUltimateShop.Items.Add("Dragon Beate / 70,000 G");
+            lstUltimateShop.Items.Add("Battery Glove / 70,000 G");
+            lstUltimateShop.Items.Add("Jeweled Hammer  / 70,000 G");
+            lstUltimateShop.Items.Add("Giant Axe / 70,000 G");
+            lstUltimateShop.Items.Add("Soa's Light / 280,000 G");
+            lstUltimateShop.Items.Add("Fake Legend Casque / 30,000 G");
+            lstUltimateShop.Items.Add("Soa's Helm / 120,000 G");
+            lstUltimateShop.Items.Add("Fake Legend Armor / 30,000 G");
+            lstUltimateShop.Items.Add("Divine DG Armor / 60,000 G");
+            lstUltimateShop.Items.Add("Soa's Armor / 120,000 G");
+            lstUltimateShop.Items.Add("Lloyd's Boots / 40,000 G");
+            lstUltimateShop.Items.Add("Winged Shoes / 40,000 G");
+            lstUltimateShop.Items.Add("Soa's Greaves / 120,000 G");
+            lstUltimateShop.Items.Add("Heal Ring / 20,000 G");
+            lstUltimateShop.Items.Add("Soa's Sash / 40,000 G");
+            lstUltimateShop.Items.Add("Soa's Ahnk / 50,000 G");
+            lstUltimateShop.Items.Add("Soa's Health Ring / 50,000 G");
+            lstUltimateShop.Items.Add("Soa's Mage Ring / 50,000 G");
+            lstUltimateShop.Items.Add("Soa's Shield / 50,000 G");
+            lstUltimateShop.Items.Add("Soa's Siphon Ring / 50,000 G");
             lstUltimateShop.Items.Add("Super Power Up / 100,000 G");
             lstUltimateShop.Items.Add("Super Power Down / 100,000 G");
             lstUltimateShop.Items.Add("Super Speed Up / 100,000 G");
@@ -687,7 +701,7 @@ namespace Dragoon_Modifier {
             lstUltimateShop.Items.Add("Super Magic Stone of Signet / 75,000 G");
             lstUltimateShop.Items.Add("Super Pandemonium / 25,000 G");
             lstUltimateShop.Items.Add("Psychedelic Bomb X / 1,000,000 G");
-            lstUltimateShop.Items.Add("Empty Dragon Crystal / 250,000 G");
+            lstUltimateShop.Items.Add("Empty Dragoon Crystal / 250,000 G");
             lstUltimateShop.Items.Add("Soa's Wargod / 500,000 G");
             lstUltimateShop.Items.Add("Soa's Dragoon Boost / 500,000 G");
 
@@ -705,108 +719,8 @@ namespace Dragoon_Modifier {
             cboReaderUIRemoval.SelectedIndex = 0;
             cboReaderOnHotkey.SelectedIndex = 0;
             cboReaderOffHotkey.SelectedIndex = 0;
+            cboHelpTopic.SelectedIndex = 0;
 
-            txtHelp.Text += "==== 1 ====\r\nGeneral\r\n\r\n" +
-                "Click on the difficulty tab to change your difficulty or use a preset.\r\n" +
-                "Click on enhanments tabs to turn on features.\r\n" +
-                "Click on settings>settings>emulator to change your emulator.\r\n" +
-                "Change on Settings Tab>Settings>Region to change your game region.\r\n\r\n";
-            txtHelp.Text += "==== 2 ====\r\nBattle Stats Tab\r\n\r\n" +
-                "Encounter Value is how close you are to the next battle. If everything is setup correctly with your emulator in battle will display 41215. Enemy ID will display the value that determines what monsters show up in battle. Map ID will display where you are in the game.\r\n" +
-                "The top block will display monster stats, the bottom block will display stats.\r\n" +
-                "Blue: Name\r\nRed: HP\r\nOrange: AT/MAT\r\nGreen: DF/MDF\r\nMagenta: SPD\r\nViolet: Turn Points, Characters have SP\r\nGrey: A-AV/M-AV\r\nTeal: D-AT/D-MAT\r\nBrown: D-DF/D-MDF\r\n" +
-                "Turn Order will display the current Turn Point order of who will go next. Counterattacks are not counted in this calculation.\r\n\r\n";
-            txtHelp.Text += "==== 3 ====\r\nDifficulty Tab\r\n\r\n" +
-                "Presets Hard and Hell mode are plug and play difficulty settings which are locked in. Normal Mode will not do anything unless you have made changes. You can change your current mod loadout and location in Settings Tab>Settings>Mod Options. Hard and Hell Mode have a more detailed changes below.\r\n\r\n" +
-                "Hard Mode\r\nThis preset balances characters, monsters, weapons, additions, boss drops, and is very Dragoon focused. It is intended that you start off with Dragoons using hotkey (CROSS+L1) in starting Map 10. The mod starts off slightly harder than the Japanese version and gets more difficult as you progress through the discs. However you are not meant to grind for EXP in this mode. You can keep everyone at the same level by using Switch EXP in the Enhancements 1 tab up to 80,000 EXP.\r\n\r\n" +
-                "Hell Mode has the same character, weapon, drop, and dragoon adjustments. However incomplete Additions are punished and you gain about 50% SP from them. To encourage Elemental Bomb use the drop rates for magic items are tripled, powerful items are doubled. It is intended for you to start off Hell Mode will all Dragoons with hotkey (CROSS+L1) in Map 10. It is also intended that you use Elemental Bomb, it was left optional as it made Hell Mode easier but it was designed with this turned on. This changes the element of all monsters on the field when a powerful item is used, however you do not have to use this. Monsters are much harder and you may require grinding. You can keep everyone at the same level by using Switch EXP up to 160,000 EXP.\r\n\r\n" +
-                "+\r\nPlus turns on Enrage Mode for bosses only. Originally designed to be a part of Hell Mode but separated for the possibility of being too hard.\r\n\r\nThe sliders will multiply each stat at the bottom. If you choose a preset those stats will be multiplied as well.\r\n\r\n";
-            txtHelp.Text += "==== 4 ====\r\nEnhancements Tab I\r\n\r\n" +
-                "Break 9999 HP Cap\r\nWill break the HP cap and save your HP above 9999 between battles as long as you don't switch characters.\r\n\r\n" +
-                "Remove Damage Caps\r\nThe game's multiple damage caps will be changed to 50,000.\r\n\r\n" +
-                "Elemental Bomb\r\nPowerful items will change the element of all monsters for 5 turns on the field even through a miss.\r\n\r\n" +
-                "Enrage Mode\r\nMonsters will increase stats by 10% when they hit Yellow HP Zone, 25% when they hit Red HP Zone.\r\n\r\n" +
-                "Never Guard\r\nYou can still heal 10% HP when using guard, however you will not guard against attacks.\r\n\r\n" +
-                "Save Anywhere\r\nYou'll be able to save anywhere. The camera may be stuck when reloading on some maps.\r\n\r\n" +
-                "Auto Charm Potion\r\nThis will auto use a charm potion when you hit the red marker, it will automatically remove 8 gold.\r\n\r\n" +
-                "Monsters HPs as Names\r\nIn game the monster name will change to its current HP.\r\n\r\n" +
-                "No HP Decay Soul Eater\r\nTurns off 10% HP damage for Dart when equipped with Soul Eater.\r\n\r\n" +
-                "Extra Turn Battle\r\nBars will appear in the Battle Stats Tab. When the bar is maxed you can use the following hotkeys to gain an extra turn. Monsters will automatically gain a turn. When you gain an extra turn your progress is slowed down for some time.\r\nSlot 1 (SQUARE + UP)\r\nSlot 2 (SQUARE + RIGHT)\r\nSlot 3 (SQUARE + LEFT)\r\n\r\n" +
-                "Action Turn Battle\r\nSame as Extra Turn Battle but without cooldowns. Same hotkeys above.\r\n\r\n" +
-                "Quick Turn Battle\r\nThe Quick Turn Battle Bar is at the top right of the Battle Stats tab. You have a maximum of five points shared by the party. You gain 1 point if a single character is attacked, 2 if 2 or more party members are attacked. You also gain 1 QTB point when the leader takes a normal turn. Monsters will gain turn points when you use this however. The hotkeys are the same as Extra Turn Battle. Select the correct leader in the drop down below the button or you will not get the extra 1 turn when the leader takes a turn.\r\n\r\n" +
-                "Solo Mode/Duo Mode\r\nSolo/Duo Mode will allow you to battle with 1 or 2 characters. For boss battles with cutscenes you need to click \"Add Party Members\". If you are unsure click the \"On\" button beside it to always have it turned on. If you have it turned on you can change which slot the leader is in for Solo Mode. To change Dart out use the \"Switch Slot 1 Character\" button and combobox. You can only switch charaters that are in the party.\r\n\r\n" +
-                "Aspect Ratio/Advanced Camera\r\nAspect Ratio will change your ratio in battle. If you are on the World Map you can use hotkey (KEY + KEY) to change it manually. The Advanced Camera combobox beside this will allow you to change some 3D effects to your aspect ratio, however it can glitch some effects.\r\n\r\n" +
-                "Kill BGM\r\nKills the music in field, battle, or both.\r\n" +
-                "Switch EXP\r\nAllows you to switch EXP with the charters in both comboboxes. They must be in your party. For Normal/Hard Mode you can swap characters up to 80,000 EXP. In Hell Mode it is 160,000 EXP.\r\n\r\n" + 
-                "New Game+\r\nUnfinished and not usable\r\n\r\n";
-            txtHelp.Text += "==== 5 ====\r\nUltimate Boss\r\n\r\n" +
-                "Ultimate Boss\r\nFrom Chapter 4 you can go back to The Forbidden Land to fight tougher versions of bosses. You must be in the correct map per zone and each zone has a reommended level. You can gain lots of Gold from these bosses starting from Zone 3. Each boss is detailed below.\r\n\r\n" +
-                "Zone 1 - Level 30\r\n" +
-                "1. Commander - 64,000 HP\r\nDrops Saber, a +70 AT weapon for Rose.\r\n\r\n" +
-                "2. Fruegel I - 63,000 HP\r\n" +
-                "3. Urobolus - 61,600 HP\r\nDefeating this boss will increase your inventory to 36 Slots.\r\n\r\n" +
-                "Zone 2 - Level 40\r\n" +
-                "4. Sandora Elite - 159,600 HP\r\n" +
-                "5. Drake the Bandit - 148,000 HP\r\n" +
-                "6. Jiango - 204,800 HP\r\nThis boss has Zero SP start.\r\n\r\n" +
-                "7. Fruegel II - 220,000 HP\r\n" +
-                "8. Fire Bird - 281,600 HP\r\nThis boss has Zero SP start. This boss has Guard Break on dive attack. This boss has MP Attack on summon. Defeating this boss will increase your inventory to 40 slots.\r\n\r\n" +
-                "Zone 3 - Level 50\r\n" +
-                "9. Ghost Feyrbrand - 320,000 HP\r\n" +
-                "10. Mappi - 128,000 HP\r\n" +
-                "11. Gehrich - 200,000 HP | Mappi - 128,000 HP\r\nThis boss has Zero SP start.\r\n\r\n" +
-                "12. Ghost Commander - 221,000 HP\r\nThis boss has Wound Damage on slash attack. This boss has Health Steal on life sap attack.\r\n\r\n" +
-                "13. Kamuy - 300,000 HP\r\nThis boss unlocks an used attack.\r\nThis boss does SP damage.\r\n\r\n" +
-                "14. Ghost Regole - 336,000 HP\r\n" +
-                "15. Grand Jewel - 260,000 HP\r\nThis boss has Magic Change every 10%.\r\nThis boss has elemental shift.\r\nThis Boss has Reverse Dragon Block Staff.\r\n\r\n" +
-                "16. Windigo - 700,000 HP\r\nThis boss has Armor Break when heart is damaged.\r\n\r\n" +
-                "17. Polter Armor - 666.666 HP\r\nThis boss has Shared HP.\r\n\r\n" +
-                "18. The Last Kraken - 360,000 HP\r\nThis boss is actually centered.\r\n\r\n" +
-                "19. Vector - 180,000 HP | Selebus - 135,000 HP | Kubila - 157,500 HP\r\n" +
-                "20. Caterpillar - 120,000 HP | Pupa - 180,000 HP | Image - 240,000 HP\r\n" +
-                "21. Zackwell - 360,000 HP\r\n" +
-                "22. Ghost Divine Dragon - 400,000 HP\r\nDefeating this boss will increase your inventory to 48 Slots.\r\n\r\n" +
-                "Zone 4 - Level 60\r\n" +
-                "23. Virage I | Head - 360,000 HP | Body - 360,000 HP | Arm - 60,000  HP\r\n" +
-                "24. Kongol - 420,000 HP\r\n" +
-                "25. Lenus - 525,000 HP\r\nThis boss has magic change every 5%.\r\n\r\n" +
-                "26. Syuveil - 500,000 HP\r\nThis boss has Turn Point damage on all Dragoon magic attacks.\r\n\r\n" +
-                "27. Virage II | Head - 1,280,000 HP | Body - 540,000 HP | Arm - 54,000 HP\r\nThis boss has body damage.\r\n" +
-                "28. Feyrbrand - 288,000 HP | Greham - 210,000 HP\r\nThis boss has Dragoon Bond.\r\nThis boss will remove resistances.\r\n\r\n" +
-                "29. Damia - 360,000 HP\r\nThis boss has a custom status effect, Menu Block on all magic attacks. Will block all menu actions, Dragoons are removed.\r\n\r\n" +
-                "30. Regole - 300,000 HP | Dragoon Lenus - 300,000 HP\r\nThis boss has Dragoon Bond.\r\n\r\n" +
-                "31. Belzac - 608,000 HP\r\nThos bpss has custom status effects, each with a random chance of activation. 30% accuracy loss on Grand Stream. Power Down DF/MDF on Meteor Strike.\r\nSpeed Down on Golden Dragoon.\r\n\r\n" +
-                "32. S Virage I | Head - 320,000 HP | Body - 320,000 HP | Arm - 160,000 HP\r\nThis boss has Gold farming opportunities.\r\nThis boss has countdown changes. For every 40,000 damage, countdown increases. For each countdown increase you get 1,000 Gold each. Kill a body part grants the following gold: 45,000 Gold for the head, 15,000 Gold for the body, 10,000 Gold for the arm.\r\n\r\n" +
-                "33. Kanzas - 396,000 HP\r\nThis boss has Electric Charges, with a maximum of 30 charges. Each charge is released all at once and can be released at any time, each charge grants 5% power on the next attack. Dragoon Addition grants 1 charge. Atmoic Mind grants 3 charges and attack down for 3 turns. Thunder Kid grands 5 charges and defense down for 3 turns. Violet Dragon grans 15 charges and instantly releases all charges for this attack and grants power down for 3 turns.\r\n\r\n" +
-                "34. Emperror Doel - 250,000 HP | Dragoon Doel - 750,000 HP\r\nThis boss has Inventory Refresh.\r\nThis boss has Ultimate Enrage Mode.\r\nThis Boss has Magic Change. Doel can now cast any magic when he is below 75,000 HP and will use elemental weaknesses to his advantage.\r\nThis boss has Enhanced Shield. Doel's Shield when it is about to appear will grant him Damage Immunity. The Shield grants him half damage.\r\nDefeating this boss will increase your inventory to 64 Slots.\r\nIf you are on Hell Mode you will unlock Divine Red-Eyed Dragon mode.\r\n\r\n" +
-                "35. S Virage II | Head - 333,333 HP | Body - 222,222 HP | Arm 666,666\r\nThis boss has a modified Shared HP. Attacking the head heals the arm. Each attack to a body part will do 2x damage. Each part healed will recieve 1x HP. Attacking the arm heals the head. Attacking the head heals the body.\r\nThis boss has an enhanced Final Attack.\r\n\r\n" +
-                "36. Divine Dragon - 10,000 HP\r\nThis boss has Armor Guard.\r\nThis Boss has Reverse Dragon Block Staff.\r\nThis boss has Ultimate Enrage Mode.\r\n\r\n" +
-                "37. Lloyd - 666,666 HP\r\nThis boss has modified Ultimate Enrage Mode. Dying will reset his stats, but each time you die the base stats increase.\r\nThis boss will remove resistances.\r\n\r\n" +
-                "38. Magician Faust - 1,000,000 HP\r\nThis boss has Dragoon Guard.\r\nThis boss has any magic and will play to your weakness and strengths depending on the phase.\r\n\r\n" +
-                "39. Zieg - 720,000 HP\r\nThis boss unlocks unused attacks.\r\nThis boss has enhanced damage on Explosion.\r\n\r\n" +
-                "40. Melbu Frahma - ??? HP - Unfinished.\r\n\r\n" +
-                "Zero SP - Start the battle with zero SP.\r\n" +
-                "Guard Break - Removes guard status on a certain attack.\r\n" +
-                "MP Attack - Removes MP on a certain attack.\r\n" +
-                "Wound Damage - Reduces Max HP on a certain attack. Dying will restore Max HP.\r\n" +
-                "Health Steal - Health Steals on a certain attack.\r\n" +
-                "SP Damage - Damages your SP, dragoons are immune to this damage.\r\n" +
-                "Magic Change - Changes magic based on HP intervals. All magic is applicable, Faust and Melbu are the only bosses that can cast Psyche Bomb.\r\n" +
-                "Elemental Shift - Element changes based on the item used.\r\n" +
-                "Armor Break - Defense drop drastically when a specific monster is targeted.\r\n" +
-                "Shared HP - Attacking one part deals damage to the rest.\r\n" +
-                "Turn Point Damage - Removes turn points on a cetain attack.\r\n" +
-                "Body Damage - Killing one part damages the main part for all of its HP.\r\n" +
-                "Dragoon Bond - Attacking first determines the following. Attack either dragoon or dragon first, the other monster will heal the other for all damage. When one monsters dies the other becomes more powerful. Attacking both dragon and dragoon at the same time both of them become more powerful for a lesser amount.\r\n" +
-                "Remove Resistances - All resistances are removed.\r\n" +
-                "Countdown - Changes countdown mechanics.\r\n" +
-                "Inventory Refresh - Refreshes inventory at a certain point in battle.\r\n" +
-                "Ultimate Enrage Mode - Bosses will increase their stats for every 1% of damage.\r\n" +
-                "Reverse Dragon Block Staff - Dragoons will operate at 80%.\r\n" +
-                "Armor Guard - Significant increase to defenses.\r\n" +
-                "Dragoon Guard - Allows guarding in Dragoon mode for 100 SP.";
-            txtHelp.Text += "";
-            txtHelp.Text += "";
         }
 
         public void LoadKey() {
@@ -2548,6 +2462,8 @@ namespace Dragoon_Modifier {
                         QTB();
                     if (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell"))
                         DoubleRepeat();
+                    if (Globals.CheckDMScript("btnAdditionLevel"))
+                        AdditionLevelUp();
                     if (Globals.CheckDMScript("btnReader") && uiCombo["cboReaderUIRemoval"] > 0)
                         ReaderRemoveUI();
                     if (Globals.CheckDMScript("btnReader") && uiCombo["cboReaderOnHotkey"] > 0 && uiCombo["cboReaderOffHotkey"] > 0)
@@ -2625,6 +2541,15 @@ namespace Dragoon_Modifier {
                         saveFaust = true;
                     }
 
+                    if (Globals.IN_BATTLE && ubSoasWargod) {
+                        emulator.WriteAOB("SOAS_WARGOD", "06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06");
+                    }
+
+                    if (Globals.IN_BATTLE && ubSoasDragoonBoost) {
+                        emulator.WriteShort("SOA_DRAGOON_BOOST_1", 4096);
+                        emulator.WriteShort("SOA_DRAGOON_BOOST_2", 4096);
+                    }
+
                     this.Dispatcher.BeginInvoke(new Action(() => {
                         emulator.WriteShort("ZOOM", (ushort) sldZoom.Value);
                     }), DispatcherPriority.ContextIdle);
@@ -2651,9 +2576,13 @@ namespace Dragoon_Modifier {
             int run = 1;
             while (run == 1 && Constants.RUN) {
                 Globals.CURRENT_TIME = Constants.GetTime();
+                int scriptCount = 0;
                 foreach (SubScript script in lstHotkey.Items) {
-                    if (script.state == ScriptState.DISABLED || Globals.CURRENT_TIME < (Globals.LAST_HOTKEY + 3))
+                    if (script.state == ScriptState.DISABLED)
                         continue;
+                    if (Globals.CURRENT_TIME < (Globals.LAST_HOTKEY + 3) && scriptCount > 0)
+                        continue;
+                    scriptCount++;
                     currentScript = script.ToString();
                     this.Dispatcher.BeginInvoke(new Action(() => {
                         run = script.Run(emulator);
@@ -2793,24 +2722,21 @@ namespace Dragoon_Modifier {
                             } else if (Globals.HOTKEY == (Hotkey.KEY_CIRCLE + Hotkey.KEY_TRIANGLE)) { //Skip Dialog
                                 emulator.WriteByte("SKIP_DIALOG_1", 0);
                                 emulator.WriteByte("SKIP_DIALOG_2", 0);
-                            } else if (Globals.HOTKEY == (Hotkey.KEY_CROSS + Hotkey.KEY_L1)) { //Game Start Setup
-                                if (Globals.MAP == 10 && (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell"))) {
-                                    emulator.WriteByte("DRAGOON_SPIRITS", 127);
-                                    Constants.WriteGLogOutput("All Dragoons added.");
-                                    Globals.LAST_HOTKEY = Constants.GetTime();
-                                }
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_LEFT)) { //Widescreen for World Map
+                                ushort aspectRatio = 4096;
 
-                                if (Globals.MAP == 10 && (Globals.CheckDMScript("btnSoloMode") || Globals.CheckDMScript("btnDuoMode"))) {
-                                    for (int i = 0; i < 9; i++) {
-                                        emulator.WriteInteger("CHAR_TABLE", 0, 0x2C * i); //EXP
-                                        emulator.WriteByte("CHAR_TABLE", 0, 0x2 + 0x2C * i); //Level
-                                        emulator.WriteByte("CHAR_TABLE", 3, 0x4 + 0x2C * i); //In Slot
-                                        emulator.WriteByte("CHAR_TABLE", 0, 0x14 + 0x2C * i); //Weapon
-                                        emulator.WriteByte("CHAR_TABLE", 76, 0x15 + 0x2C * i); //Armor
-                                        emulator.WriteByte("CHAR_TABLE", 46, 0x16 + 0x2C * i); //Helmet
-                                        emulator.WriteByte("CHAR_TABLE", 93, 0x17 + 0x2C * i); //Shoes
-                                    }
-                                }
+                                if (uiCombo["cboAspectRatio"] == 0)
+                                    aspectRatio = 4096;
+                                else if (uiCombo["cboAspectRatio"] == 1)
+                                    aspectRatio = 3072;
+                                else if (uiCombo["cboAspectRatio"] == 2)
+                                    aspectRatio = 3413;
+                                else if (uiCombo["cboAspectRatio"] == 3)
+                                    aspectRatio = 2340;
+                                else if (uiCombo["cboAspectRatio"] == 4)
+                                    aspectRatio = 2048;
+
+                                emulator.WriteShort("ASPECT_RATIO", aspectRatio);
                             }
                         } else { //Battle
                             if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_UP)) { //Exit Dragoon Slot 1
@@ -2895,7 +2821,7 @@ namespace Dragoon_Modifier {
                                     Constants.WriteGLogOutput("Burn stack is already active.");
                                 }
                                 Globals.LAST_HOTKEY = Constants.GetTime();
-                            } else if (Globals.HOTKEY == (Hotkey.KEY_CIRCLE + Hotkey.KEY_RIGHT)) { //Dragon Buster II
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_CIRCLE + Hotkey.KEY_RIGHT)) { //Dragon Beater
                                 bool skip = true;
                                 for (int i = 0; i < 3; i++) {
                                     if (Globals.PARTY_SLOT[i] == 3 && Globals.CHARACTER_TABLE[i].Read("Weapon") == 162) {
@@ -2906,9 +2832,10 @@ namespace Dragoon_Modifier {
                                     if ((Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) && !checkRoseDamage) {
                                         if (roseEnhanceDragoon) {
                                             if (Constants.REGION == Region.USA) {
-                                                emulator.WriteAOB(0x51ADC, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1A 00 1E 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 00 00 30 00 3D 00 3B 00 4E 00 FF A0");
-                                                emulator.WriteAOB(0x51B14, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 18 00 1E 00 1A 00 0F 00 00 00 10 00 00 00 24 00 3D 00 39 00 4A 00 FF A0");
-                                                emulator.WriteAOB(0x51BA8, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 16 00 1B 00 1D 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 00 00 FF A0");
+                                                                                                                                
+                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[15].Description_Pointer - 0x80000000, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1A 00 1E 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 FF A0");
+                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[16].Description_Pointer - 0x80000000, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 18 00 1E 00 1A 00 0F 00 FF A0");
+                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[19].Description_Pointer - 0x80000000, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 16 00 1B 00 1D 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 FF A0");
                                             }
                                             emulator.WriteByte("SPELL_TABLE", 10, 0x7 + (15 * 0xC)); //Astral Drain MP
                                             emulator.WriteByte("SPELL_TABLE", 20, 0x7 + (16 * 0xC)); //Death Dimension MP
@@ -2917,9 +2844,9 @@ namespace Dragoon_Modifier {
                                             Constants.WriteGLogOutput("Rose's dragoon magic has returned to normal.");
                                         } else {
                                             if (Constants.REGION == Region.USA) {
-                                                emulator.WriteAOB(0x51ADC, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1D 00 17 00 1A 00 0F 00 00 00 10 00 00 00 26 00 2E 00 00 00 30 00 3D 00 3B 00 4E 00 FF A0");
-                                                emulator.WriteAOB(0x51B14, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1C 00 1E 00 15 00 0F 00 00 00 10 00 00 00 24 00 3D 00 39 00 4A 00 FF A0");
-                                                emulator.WriteAOB(0x51BA8, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 16 00 16 00 1A 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 FF A0");
+                                               emulator.WriteAOB(Globals.DRAGOON_SPELLS[15].Description_Pointer - 0x80000000, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1D 00 17 00 1A 00 0F 00 00 00 10 00 00 00 26 00 2E 00 FF A0");
+                                               emulator.WriteAOB(Globals.DRAGOON_SPELLS[16].Description_Pointer - 0x80000000, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1C 00 1E 00 1A 00 0F 00 FF A0");
+                                               emulator.WriteAOB(Globals.DRAGOON_SPELLS[19].Description_Pointer - 0x80000000, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 16 00 16 00 1A 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 FF A0");
                                             }
                                             emulator.WriteByte("SPELL_TABLE", 20, 0x7 + (15 * 0xC)); //Astral Drain MP
                                             emulator.WriteByte("SPELL_TABLE", 50, 0x7 + (16 * 0xC)); //Death Dimension MP
@@ -2931,7 +2858,7 @@ namespace Dragoon_Modifier {
                                         Constants.WriteGLogOutput("You can't swap MP modes right now.");
                                     }
                                 } else {
-                                    Constants.WriteGLogOutput("Dragon Buster II not equipped.");
+                                    Constants.WriteGLogOutput("Dragon Beater not equipped.");
                                 }
                                 Globals.LAST_HOTKEY = Constants.GetTime();
                             } else if (Globals.HOTKEY == (Hotkey.KEY_CIRCLE + Hotkey.KEY_DOWN)) { //Jeweled Hammer
@@ -2945,9 +2872,9 @@ namespace Dragoon_Modifier {
                                     if (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) {
                                         if (jeweledHammer) {
                                             if (Constants.REGION == Region.USA) {
-                                                emulator.WriteAOB(0x51CA8, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1A 00 16 00 15 00 0F 00 FF A0");
-                                                emulator.WriteAOB(0x51D3C, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1A 00 18 00 15 00 0F 00 FF A0");
-                                                emulator.WriteAOB(0x51D64, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 16 00 19 00 15 00 15 00 0F 00 FF A0");
+                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[24].Description_Pointer - 0x80000000, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1A 00 16 00 15 00 0F 00 FF A0");
+                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[27].Description_Pointer - 0x80000000, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1A 00 18 00 15 00 0F 00 FF A0");
+                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[28].Description_Pointer - 0x80000000, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 16 00 19 00 15 00 15 00 0F 00 FF A0");
                                             }
                                             emulator.WriteByte("SPELL_TABLE", 10, 0x7 + (24 * 0xC)); //Freezing Ring MP
                                             emulator.WriteByte("SPELL_TABLE", 20, 0x7 + (25 * 0xC)); //Rainbow Breath MP
@@ -2957,9 +2884,9 @@ namespace Dragoon_Modifier {
                                             Constants.WriteGLogOutput("Meru's dragoon magic has returned to normal.");
                                         } else {
                                             if (Constants.REGION == Region.USA) {
-                                                emulator.WriteAOB(0x51CA8, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1D 00 15 00 15 00 0F 00 FF A0");
-                                                emulator.WriteAOB(0x51D3C, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1D 00 1D 00 15 00 0F 00 FF A0");
-                                                emulator.WriteAOB(0x51D64, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 17 00 16 00 15 00 15 00 0F 00 FF A0");
+                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[24].Description_Pointer - 0x80000000, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1D 00 15 00 15 00 0F 00 FF A0");
+                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[27].Description_Pointer - 0x80000000, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1D 00 1D 00 15 00 0F 00 FF A0");
+                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[28].Description_Pointer - 0x80000000, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 17 00 16 00 15 00 15 00 0F 00 FF A0");
                                             }
                                             emulator.WriteByte("SPELL_TABLE", 50, 0x7 + (24 * 0xC)); //Freezing Ring MP
                                             emulator.WriteByte("SPELL_TABLE", 100, 0x7 + (25 * 0xC)); //Rainbow Breath MP
@@ -2975,22 +2902,6 @@ namespace Dragoon_Modifier {
                                     Constants.WriteGLogOutput("Jeweled Hammer not equipped.");
                                 }
                                 Globals.LAST_HOTKEY = Constants.GetTime();
-                            } else if (Globals.HOTKEY == (Hotkey.KEY_L2 + Hotkey.KEY_LEFT)) { //Soa's Wargod
-                                if ((134217728 & ultimateShopLimited) != 0) {
-                                    ubSoasWargod = ubSoasWargod ? false : true;
-                                    Constants.WriteGLogOutput("Soa's Wargod has been " + (ubSoasWargod ? "activated" : "deactivated") + ".");
-                                } else {
-                                    Constants.WriteGLogOutput("You do not have Soa's Wargod.");
-                                }
-                                Globals.LAST_HOTKEY = Constants.GetTime();
-                            } else if (Globals.HOTKEY == (Hotkey.KEY_L2 + Hotkey.KEY_RIGHT)) { //Soa's Dragoon Boost
-                                if ((268435456 & ultimateShopLimited) != 0) {
-                                    ubSoasDragoonBoost = ubSoasDragoonBoost ? false : true;
-                                    Constants.WriteGLogOutput("Soa's Dragoon Boost has been " + (ubSoasDragoonBoost ? "activated" : "deactivated") + ".");
-                                } else {
-                                    Constants.WriteGLogOutput("You do not have Soa's Dragoon Boost.");
-                                }
-                                Globals.LAST_HOTKEY = Constants.GetTime();
                             } else if (Globals.HOTKEY == (Hotkey.KEY_CIRCLE + Hotkey.KEY_R2)) { //Black Room
                                 if (Globals.DIFFICULTY_MODE.Equals("Hell")) {
                                     Constants.WriteGLogOutput("Killing monsters is not available in Hell Mode.");
@@ -3000,6 +2911,7 @@ namespace Dragoon_Modifier {
                                             for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
                                                 Globals.MONSTER_TABLE[i].Write("HP", 0);
                                             }
+                                            Constants.WriteGLogOutput("Monsters killed.");
                                         }
                                         Globals.LAST_HOTKEY = Constants.GetTime();
                                     }
@@ -3008,7 +2920,9 @@ namespace Dragoon_Modifier {
                                 if (emulator.ReadByte("MUSIC_SPEED_BATTLE") != 0) {
                                     saveMusicSpeed = emulator.ReadByte("MUSIC_SPEED_BATTLE");
                                     emulator.WriteByte("MUSIC_SPEED_BATTLE", 0);
+                                    Constants.WriteGLogOutput("Music speed nulled.");
                                 } else {
+                                    Constants.WriteGLogOutput("Music speed returned to normal.");
                                     emulator.WriteByte("MUSIC_SPEED_BATTLE", saveMusicSpeed);
                                 }
                             } else if (Globals.HOTKEY == (Hotkey.KEY_SELECT + Hotkey.KEY_START)) {
@@ -3140,9 +3054,53 @@ namespace Dragoon_Modifier {
                                         Globals.LAST_HOTKEY = Constants.GetTime();
                                     }
                                 }
-                            } else if (Globals.HOTKEY == (Hotkey.KEY_TRIANGLE + Hotkey.KEY_UP)) {
-                                
-                            }
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_L2 + Hotkey.KEY_LEFT)) { //Soa's Wargod
+                                if ((134217728 & ultimateShopLimited) == 134217728) {
+                                    ubSoasWargod = ubSoasWargod ? false : true;
+                                    emulator.WriteAOB("SOAS_WARGOD", "06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06");
+                                    Constants.WriteGLogOutput("Soa's Wargod has been " + (ubSoasWargod ? "activated" : "deactivated") + ".");
+                                } else {
+                                    Constants.WriteGLogOutput("You do not have Soa's Wargod.");
+                                }
+                                Globals.LAST_HOTKEY = Constants.GetTime();
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_L2 + Hotkey.KEY_RIGHT)) { //Soa's Dragoon Boost
+                                if ((268435456 & ultimateShopLimited) == 268435456) {
+                                    ubSoasDragoonBoost = ubSoasDragoonBoost ? false : true;
+                                    emulator.WriteShort("SOA_DRAGOON_BOOST_1", 4096);
+                                    emulator.WriteShort("SOA_DRAGOON_BOOST_2", 4096);
+                                    Constants.WriteGLogOutput("Soa's Dragoon Boost has been " + (ubSoasDragoonBoost ? "activated" : "deactivated") + ".");
+                                } else {
+                                    Constants.WriteGLogOutput("You do not have Soa's Dragoon Boost.");
+                                }
+                                Globals.LAST_HOTKEY = Constants.GetTime();
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_L2 + Hotkey.KEY_UP)) { //Empty Dragoon Crystal
+                                if ((ultimateShopLimited & 67108864) == 67108864) {
+                                    bool pass = true;
+                                    int characterSlot = 255, characterSlots = 255;
+                                    for (int i = 0; i < 3; i++) {
+                                        if (Globals.PARTY_SLOT[i] < 9) {
+                                            if (Globals.CHARACTER_TABLE[i].Read("SP") < 100) {
+                                                pass = false;
+                                            }
+
+                                            if (Globals.CHARACTER_TABLE[i].Read("Menu") == 8)
+                                                characterSlot = i;
+
+                                            characterSlots = i + 1;
+                                        }
+                                    }
+
+                                    if (pass && characterSlots == 3 && characterSlot < 9 && Globals.CHARACTER_TABLE[characterSlot].Read("Menu") < 128) {
+                                        Globals.CHARACTER_TABLE[characterSlot].Write("Menu", Globals.CHARACTER_TABLE[characterSlot].Read("Menu") + 128);
+                                    } else {
+                                        Constants.WriteGLogOutput("You do not meet the requirements to create a special.");
+                                    }
+                                } else {
+                                    Constants.WriteGLogOutput("You do not have an Empty Dragoon Crystal.");
+                                }
+
+                                Globals.LAST_HOTKEY = Constants.GetTime();
+                            } 
                         }
                     }
                 }
@@ -3883,7 +3841,7 @@ namespace Dragoon_Modifier {
         public void KillBGMBattle() {
             if (Globals.IN_BATTLE && !killedBGMBattle && Globals.BATTLE_VALUE > 0) {
                 KillBGM();
-                emulator.WriteShort("MUSIC_SPEED_BATTLE", 0);
+                //emulator.WriteShort("MUSIC_SPEED_BATTLE", 0);
                 killedBGMBattle = true;
             } else {
                 if (killedBGMBattle && !Globals.IN_BATTLE) {
@@ -3966,11 +3924,17 @@ namespace Dragoon_Modifier {
                     Globals.CHARACTER_TABLE[2].Write("POS_FB", 255);
                     Globals.CHARACTER_TABLE[2].Write("POS_UD", 255);
                     Globals.CHARACTER_TABLE[2].Write("POS_RL", 255);
+                    Globals.CHARACTER_TABLE[0].Write("POS_FB", 10);
+                    Globals.CHARACTER_TABLE[0].Write("POS_UD", 0);
+                    Globals.CHARACTER_TABLE[0].Write("POS_RL", 251);
+                    Globals.CHARACTER_TABLE[1].Write("POS_FB", 10);
+                    Globals.CHARACTER_TABLE[1].Write("POS_UD", 0);
+                    Globals.CHARACTER_TABLE[1].Write("POS_RL", 4);
                 }
 
                 if (Globals.CheckDMScript("btnReduceSDEXP")) {
                     for (int i = 0; i < 5; i++) {
-                        emulator.WriteShort("MONSTER_REWARDS_EXP", (ushort) Math.Round((double) (emulator.ReadShort(Constants.GetAddress("MONSTER_REWARDS_EXP") + (i * 0x1A8)) * (2 / 3))), (i * 0x1A8));
+                        emulator.WriteShort("MONSTER_REWARDS_EXP", (ushort) Math.Ceiling((double) (emulator.ReadShort(Constants.GetAddress("MONSTER_REWARDS_EXP") + (i * 0x1A8)) * (2 / 3))), (i * 0x1A8));
                     }
                 }
                 duoModeOnBattleEntry = true;
@@ -4242,7 +4206,7 @@ namespace Dragoon_Modifier {
                             elementArrowTurns = 0;
                         }
 
-                        if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 162 && Globals.PARTY_SLOT[i] == 3) { //Dragon Buster II
+                        if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 162 && Globals.PARTY_SLOT[i] == 3) { //Dragon Beater
                             Globals.CHARACTER_TABLE[i].Write("AT", (Globals.CHARACTER_TABLE[i].Read("AT") + 130));
                         }
 
@@ -4256,18 +4220,6 @@ namespace Dragoon_Modifier {
                         if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 164 && Globals.PARTY_SLOT[i] == 6) { //Jeweled Hammer
                             Globals.CHARACTER_TABLE[i].Write("AT", (Globals.CHARACTER_TABLE[i].Read("AT") + 40));
                             Globals.CHARACTER_TABLE[i].Write("MAT", (Globals.CHARACTER_TABLE[i].Read("MAT") + 40));
-                            if (jeweledHammer) {
-                                if (Constants.REGION == Region.USA) {
-                                    
-                                    emulator.WriteAOB(Globals.DRAGOON_SPELLS[24].Description_Pointer - 0x80000000, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1D 00 15 00 15 00 0F 00 FF A0");
-                                    emulator.WriteAOB(Globals.DRAGOON_SPELLS[27].Description_Pointer - 0x80000000, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1D 00 1D 00 15 00 0F 00 FF A0");
-                                    emulator.WriteAOB(Globals.DRAGOON_SPELLS[28].Description_Pointer - 0x80000000, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 17 00 16 00 15 00 15 00 0F 00 FF A0");
-                                }
-                                emulator.WriteByte("SPELL_TABLE", 50, 0x7 + (24 * 0xC)); //Freezing Ring MP
-                                emulator.WriteByte("SPELL_TABLE", 100, 0x7 + (25 * 0xC)); //Rainbow Breath MP
-                                emulator.WriteByte("SPELL_TABLE", 100, 0x7 + (27 * 0xC)); //Diamond Dust MP
-                                emulator.WriteByte("SPELL_TABLE", 150, 0x7 + (28 * 0xC)); //Blue Sea Dragon
-                            }
                         }
 
                         if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 165 && Globals.PARTY_SLOT[i] == 7) { //Giant Axe
@@ -4558,7 +4510,7 @@ namespace Dragoon_Modifier {
                                     }
                                 }
 
-                                if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 162 && Globals.PARTY_SLOT[i] == 3) { //Dragon Buster II
+                                if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 162 && Globals.PARTY_SLOT[i] == 3) { //Dragon Beater
                                     if (Globals.CHARACTER_TABLE[i].Read("Action") == 136) {
                                         if (emulator.ReadShort("DAMAGE_SLOT1") != 0) {
                                             emulator.WriteShort(p, (ushort) Math.Min(Globals.CHARACTER_TABLE[i].Read("HP") + Math.Round(emulator.ReadShort("DAMAGE_SLOT1") * 0.02) + 2, Globals.CHARACTER_TABLE[i].Read("Max_HP")));
@@ -7819,7 +7771,7 @@ namespace Dragoon_Modifier {
         #region Dragoon Changes
         public void ChangeDragoonDescription() {
             if (emulator.ReadShort("BATTLE_VALUE") == 41215 && Globals.STATS_CHANGED) {
-                if (Globals.CheckDMScript("btnDivineRed") && Globals.PARTY_SLOT[0] == 0 && (Globals.DIFFICULTY_MODE.Equals("Normal") || Globals.DIFFICULTY_MODE.Equals("Hard")) && Globals.PARTY_SLOT[0] == 0) {
+                if (Globals.CheckDMScript("btnDivineRed") && Globals.PARTY_SLOT[0] == 0 && (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) && Globals.PARTY_SLOT[0] == 0) {
                     emulator.WriteAOB(Constants.GetAddress("SLOT1_SPELLS"), "01 02 FF FF FF FF FF FF");
                     emulator.WriteByte("SPELL_TABLE", 50, 0x7 + (1 * 0xC)); //Explosion MP
                     emulator.WriteByte("SPELL_TABLE", 50, 0x7 + (2 * 0xC)); //Final Burst MP
@@ -8231,8 +8183,7 @@ namespace Dragoon_Modifier {
                                                 }
                                             } else if (mp == 100) {
                                                 if (Globals.CHARACTER_TABLE[i].Read("Spell_Cast") == 25) {
-                                                    //trackchp
-                                                    //rainbow breath
+                                                    trackRainbowBreath = true;
                                                 } else {
                                                     Globals.CHARACTER_TABLE[i].Write("DMAT", (350 * multi));
                                                 }
@@ -8240,10 +8191,22 @@ namespace Dragoon_Modifier {
                                                 Globals.CHARACTER_TABLE[i].Write("DMAT", (525 * multi));
                                             }
                                         }
+
                                         previousMP[i] = currentMP[i];
                                     } else {
                                         if (currentMP[i] > previousMP[i]) {
                                             previousMP[i] = currentMP[i];
+                                        } else {
+                                            if (trackRainbowBreath) {
+                                                Console.WriteLine(Globals.CHARACTER_TABLE[i].Read("Action"));
+                                                if (Globals.CHARACTER_TABLE[i].Read("Action") == 2 || Globals.CHARACTER_TABLE[i].Read("Action") == 9) {
+                                                    for (int x = 0; x < 3; x++) {
+                                                        if (Globals.PARTY_SLOT[x] < 9)
+                                                            Globals.CHARACTER_TABLE[x].Write("HP", Math.Min(short.MaxValue, Math.Round(Globals.CHARACTER_TABLE[x].Read("HP") * 1.65)));
+                                                    }
+                                                    trackRainbowBreath = false;
+                                                }
+                                            }
                                         }
                                     }
                                 } else if (Globals.PARTY_SLOT[i] == 7) {
@@ -9186,6 +9149,37 @@ namespace Dragoon_Modifier {
         }
         #endregion
 
+        #region Addition Level Up in Battle
+        public void AdditionLevelUp() {
+            if (Globals.IN_BATTLE && Globals.STATS_CHANGED) {
+                Dictionary<int, int> additionnum = new Dictionary<int, int> {
+                    {0, 0},{1, 1},{2, 2},{3, 3},{4, 4},{5, 5},{6, 6},//Dart
+			        {8, 0},{9, 1},{10, 2},{11, 3},{12, 4},           //Lavitz
+			        {14, 0},{15, 1},{16, 2},{17, 3},                 //Rose
+			        {29, 0},{30, 1},{31, 2},{32, 3},{33, 4},{34, 5}, //Haschel
+			        {23, 0},{24, 1},{25, 2},{26, 3},{27, 4},         //Meru
+			        {19, 0},{20, 1},{21, 2},                         //Kongol
+			        {255, 0}
+                };
+
+                for (int slot = 0; slot < 3; slot++) {
+                    int character = Globals.PARTY_SLOT[slot];
+                    if (Globals.PARTY_SLOT[slot] < 9) {
+                        int addition = additionnum[emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x19)];
+                        int level = emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x1A + addition);
+                        int newlevel = 1 + emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x22 + addition) / 20;
+                        if (newlevel > level) {
+                            Constants.WriteDebug(newlevel);
+                            emulator.WriteByte(Constants.GetAddress("CHAR_TABLE") + (character * 0x2C) + 0x1A + addition, (byte) newlevel);
+                            Globals.CHARACTER_TABLE[slot].Write("ADD_DMG_Multi", Globals.DICTIONARY.AdditionData[character, addition, newlevel].ADD_DMG_Multi);
+                            Globals.CHARACTER_TABLE[slot].Write("ADD_SP_Multi", Globals.DICTIONARY.AdditionData[character, addition, newlevel].ADD_SP_Multi);
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
+
         #region Extras
         public void WipeRewards() {
             for (int i = 0; i < 5; i++) {
@@ -9233,11 +9227,14 @@ namespace Dragoon_Modifier {
                     if (emulator.ReadShort("BATTLE_VALUE") < 9999)
                         Globals.STATS_CHANGED = true;
                     Constants.WritePLogOutput("Attached to " + Constants.EMULATOR_NAME + ".");
+                    miAttach.Header = "Detach";
                 } else {
                     Constants.WritePLogOutput("Program failed to open. Please open " + Constants.EMULATOR_NAME + " then press attach.");
                 }
             } else {
-                Constants.WritePLogOutput("Program is already attached to " + Constants.EMULATOR_NAME + ".");
+                Constants.RUN = false;
+                miAttach.Header = "Attach";
+                Constants.WritePLogOutput("Detached from " + Constants.EMULATOR_NAME + ". Program stopped.");
             }
         }
 
@@ -9940,6 +9937,11 @@ namespace Dragoon_Modifier {
                 emulator.WriteShort("AUTO_TEXT", 12354);
             }
 
+            if (btn.Name.Equals("btnDivineRed") && (Globals.DIFFICULTY_MODE.Equals("Hell") && ultimateBossCompleted < 34)) {
+                Globals.dmScripts[btn.Name] = false;
+                Constants.WriteGLogOutput("You have not complted Ultimate Boss Dragoon Doel.");
+            }
+
             if (!btn.Name.Equals("btnNoDart")) {
                 TurnOnOffButton(ref btn);
             } else {
@@ -10005,6 +10007,10 @@ namespace Dragoon_Modifier {
 
             if (cbo.Name.Equals("cboUltimateBoss")) {
                 UltimateBossFieldSet();
+            }
+
+            if (cbo.Name.Equals("cboHelpTopic")) {
+                HelpTopic();
             }
         }
 
@@ -10088,6 +10094,220 @@ namespace Dragoon_Modifier {
             } else if (sender == sldZoom) {
                 if (Globals.IN_BATTLE)
                     emulator.WriteShort("ZOOM", (ushort) slider.Value);
+            }
+        }
+
+        public void HelpTopic() {
+            if (cboHelpTopic.SelectedIndex == 0) {
+                txtHelp.Text = "Click on the difficulty tab to change your difficulty or use a preset.\r\n" +
+                    "Click on enhancements tabs to turn on features.\r\n" +
+                    "Click on Settings Tab>Settings>Emulator to change your emulator.\r\n" +
+                    "Click on Settings Tab>Settings>Region to change your game region.\r\n" +
+                    "If everything is setup correctly with your emulator the Encounter Value will display 41215 on the Battle Stats tab. When on the field your Encounter Value will increase when you walk.\r\n" +
+                    "Normal Mode sets the program to a read only state with everything turned off. If your inventory is expanded it will extend it however. To avoid this change to an empty save slot.";
+            } else if (cboHelpTopic.SelectedIndex == 1) {
+                txtHelp.Text = "Encounter Value is how close you are to the next battle. Enemy ID will display the value that determines what monsters show up in battle. Map ID will display where you are in the game.\r\n" +
+                    "The top block will display monster stats, the bottom block will display stats.\r\n" +
+                    "Blue: Name\r\nRed: HP\r\nOrange: AT/MAT\r\nGreen: DF/MDF\r\nMagenta: SPD\r\nViolet: Turn Points, Characters have SP\r\nGrey: A-AV/M-AV\r\nTeal: D-AT/D-MAT\r\nBrown: D-DF/D-MDF\r\n" +
+                    "Turn Order will display the current Turn Point order of who will go next. Counterattacks are not counted in this calculation.";
+            } else if (cboHelpTopic.SelectedIndex == 2) {
+                txtHelp.Text = "Presets Hard and Hell mode are plug and play difficulty settings which are locked in. Normal Mode will not do anything unless you have made changes. You can change your current mod loadout and location in Settings Tab>Settings>Mod Options. Hard and Hell Mode have a more detailed changes below.\r\n\r\n" +
+                    "Hard Mode\r\nThis preset balances characters, monsters, weapons, additions, boss drops, and is very Dragoon focused. It is intended that you start off with Dragoons using hotkey (CROSS+L1) in starting Map 10. The mod starts off slightly harder than the Japanese version and gets more difficult as you progress through the discs. However you are not meant to grind for EXP in this mode. You can keep everyone at the same level by using Switch EXP in the Enhancements 1 tab up to 80,000 EXP. Dart as well has new Dragoon enhancements called Burn Stacks (CIRCLE+LEFT). Dart can have up to 6 stacks for 20% each and he gains stacks by using Dragoon magic.\r\n\r\n" +
+                    "Hell Mode has the same character, weapon, drop, and dragoon adjustments. However incomplete Additions are punished and you gain about 50% SP from them. To encourage the use of Elemental Bomb the drop rates for magic items are tripled, powerful items are doubled. It is intended for you to start off Hell Mode will all Dragoons with hotkey (CROSS+L1) in Map 10. It is also intended that you use Elemental Bomb, it was left optional as it made Hell Mode easier but it was designed with this turned on. This changes the element of all monsters on the field when a powerful item is used, however you do not have to use this. Monsters are much harder and you may require grinding. You can keep everyone at the same level by using Switch EXP up to 160,000 EXP.\r\n\r\n" +
+                    "+\r\nPlus turns on Enrage Mode for bosses only. Originally designed to be a part of Hell Mode but separated for the possibility of being too hard.\r\n\r\nThe sliders will multiply each stat at the bottom. If you choose a preset those stats will be multiplied as well.";
+            } else if (cboHelpTopic.SelectedIndex == 3) {
+                txtHelp.Text = "Break 9999 HP Cap\r\nWill break the HP cap and save your HP above 9999 between battles as long as you don't switch characters.\r\n\r\n" +
+                    "Remove Damage Caps\r\nThe game's multiple damage caps will be changed to 50,000.\r\n\r\n" +
+                    "Elemental Bomb\r\nPowerful items will change the element of all monsters for 5 turns on the field even through a miss.\r\n\r\n" +
+                    "Enrage Mode\r\nMonsters will increase stats by 10% when they hit Yellow HP Zone, 25% when they hit Red HP Zone.\r\n\r\n" +
+                    "Never Guard\r\nYou can still heal 10% HP when using guard, however you will not guard against attacks.\r\n\r\n" +
+                    "Save Anywhere\r\nYou'll be able to save anywhere. The camera may be stuck when reloading on some maps.\r\n\r\n" +
+                    "Auto Charm Potion\r\nThis will auto use a charm potion when you hit the red marker, it will automatically remove 8 gold.\r\n\r\n" +
+                    "Monsters HPs as Names\r\nIn battle monster names will change to its current HP.\r\n\r\n" +
+                    "No HP Decay Soul Eater\r\nTurns off 10% HP damage for Dart when equipped with Soul Eater.\r\n\r\n" +
+                    "Extra Turn Battle\r\nBars will appear in the Battle Stats Tab. When the bar is maxed you can use the following hotkeys to gain an extra turn. Monsters will automatically gain a turn. When you gain an extra turn your progress is slowed down for some time.\r\nSlot 1 (SQUARE + UP)\r\nSlot 2 (SQUARE + RIGHT)\r\nSlot 3 (SQUARE + LEFT)\r\n\r\n" +
+                    "Action Turn Battle\r\nSame as Extra Turn Battle but without cooldowns. Same hotkeys above.\r\n\r\n" +
+                    "Quick Turn Battle\r\nThe Quick Turn Battle Bar is at the top right of the Battle Stats tab. You have a maximum of five points shared by the party. You gain 1 point if a single character is attacked, 2 if 2 or more party members are attacked. You also gain 1 QTB point when the leader takes a normal turn. Monsters will gain turn points when you use this however. The hotkeys are the same as Extra Turn Battle. Select the correct leader in the drop down below the button or you will not get the extra 1 turn when the leader takes a turn.\r\n\r\n" +
+                    "Solo Mode/Duo Mode\r\nSolo/Duo Mode will allow you to battle with 1 or 2 characters. For boss battles with cutscenes you need to click \"Add Party Members\". If you are unsure click the \"On\" button beside it to always have it turned on. If you have it turned on you can change which slot the leader is in for Solo Mode. To change Dart out use the \"Switch Slot 1 Character\" button and combobox. You can only switch characters that are in the party.\r\n\r\n" +
+                    "Aspect Ratio/Advanced Camera\r\nAspect Ratio will change your ratio in battle. If you are on the World Map you can use hotkey (L1 + LEFT) to change it manually. The Advanced Camera combobox beside this will allow you to change some 3D effects to your aspect ratio, however it can glitch some effects.\r\n\r\n" +
+                    "Kill BGM\r\nKills the music in field, battle, or both.\r\n\r\n" +
+                    "Switch EXP\r\nAllows you to switch EXP with the charters in both comboboxes. They must be in your party. For Normal/Hard Mode you can swap characters up to 80,000 EXP. In Hell Mode it is 160,000 EXP.\r\n\r\n" +
+                    "New Game+\r\nUnfinished and not usable.";
+            } else if (cboHelpTopic.SelectedIndex == 4) {
+                txtHelp.Text = "Battle Rows\r\nCharacters will get stat changes based on their row. You cannot turn this on for Hell Mode.\r\n" +
+                    "Stay - Attack - AT 110% - DF & MDF 75%\r\n" +
+                    "Stay - Magic - MAT 110% - DF & MDF 75%\r\n" +
+                    "Front - No Boost - AT & MAT 125% - DF & MDF 50%\r\n" +
+                    "Front - Attack - AT 150% - DF & MDF 25%\r\n" +
+                    "Front - Magic - MAT 150% - DF & MDF 25%\r\n" +
+                    "Back - No Boost - AT & MAT 75% - DF & MDF 125%\r\n" +
+                    "Back - Attack - MAT 50% - DF & MDF 110%\r\n" +
+                    "Back - Magic - AT 50% - DF & MDF 110%\r\n\r\n" +
+                    "No Dart will turn on automatically when detected, Dart will switch in battle not in the party menu with three characters. Refer to How To help section for more info.\r\n\r\n" +
+                    "Damage Tracker\r\nTracks your damage throughout a single battle.\r\n\r\n" +
+                    "No Dragoon\r\nRemoves Dragoons in battle.\r\n\r\n" +
+                    "Divine Red-Eye\r\nGives Red Eyed Dragoon the same power as Divine Dragoon in Hard & Hell Mode.\r\n\r\n" +
+                    "Early Additions\r\nChanges Addition unlock levels.\r\n\r\n" +
+                    "Dart\r\nCrush Dance - 13\r\nMadness Hero - 18\r\nMoon Strike - 23\r\nBlazing Dynmao - 29 if all additions are max level.\r\n\r\n" +
+                    "Lavitz/Albert\r\nRod Typhoon - 10\r\nGust of Wind Dance - 16\r\nFlower Storm - 21 if all additions are max level.\r\n\r\n" +
+                    "Rose\r\nMore & More - 8\r\nHard Blade - 15\r\nDemon's Dance - 21 if all additions are max level.\r\n\r\n" +
+                    "Kongol\r\nInferno - 10\r\nBone Crush - 20 if all additioins are max level.\r\n\r\n" +
+                    "Meru\r\nHammer Spin - 6\r\nCool Boogie - 12\r\nCat's Cradle - 18\r\nPerky Step - 22 if all additions are max level.\r\n\r\n" +
+                    "Haschel\r\nFlurry of Styx - 5\r\nSummon 4 Gods - 10\r\n5 Ring Shattering - 16\r\nHex Hammer - 22\r\nOmni-Sweep - 25 if all additions are max level.\r\n\r\n" +
+                    "Addition Level Up\r\nLevels up additions in battle. The addition data is taken from the current Mod location in Settings Tab>Settings>Mod Options.\r\n\r\n" +
+                    "Reduce Solo/Duo EXP\r\nReduces each individual monster's EXP by 33% for Solo Mode and 66% for Duo Mode to prevent over levelling. This value is always rounded up.\r\n\r\n" +
+                    "Flower Storm\r\nChanges the MP usage and turn count for Flower Storm in Hell Mode only.\r\n\r\n" +
+                    "Element Arrow\r\nWhen using the Element Arrow change the type of element the arrow will use.";
+            } else if (cboHelpTopic.SelectedIndex == 5) {
+                txtHelp.Text = "Text Speed\r\nIncreases text scrolling speed.\r\n\r\n" +
+                    "Auto Advance Text\r\nAutomatically advances the first dialog box popup. You still have to press X occasionally.\r\n\r\n" +
+                    "Black Room\r\nIn the forest you can quickly level up additions or practice by using the Black Room. Use hotkey (CIRCLE + R2) to kill monsters in the Black Room. You cannot kill the monsters in Hell mode.\r\n\r\n" +
+                    "Zoom\r\nChanges the Zoom value in battle.";
+            } else if (cboHelpTopic.SelectedIndex == 6) {
+                txtHelp.Text = "Ultimate Boss\r\nFrom Chapter 4 you can go back to The Forbidden Land to fight tougher versions of bosses. You must be in the correct map per zone and each zone has a reommended level. You can gain lots of Gold from these bosses starting from Zone 3. Each boss is detailed below. The equips are for Hard and Hell mode only.\r\n\r\n" +
+                    "\r\n\r\nZone 1 - Level 30\r\n\r\n" +
+                    "1. Commander - 64,000 HP\r\nDrops Sabre, a +70 AT weapon for Rose.\r\n\r\n" +
+                    "2. Fruegel I - 63,000 HP\r\n\r\n" +
+                    "3. Urobolus - 61,600 HP\r\nDefeating this boss will increase your inventory to 36 Slots.\r\n\r\n" +
+                    "\r\n\r\nZone 2 - Level 40\r\n\r\n" +
+                    "4. Sandora Elite - 159,600 HP\r\n\r\n" +
+                    "5. Drake the Bandit - 148,000 HP\r\n\r\n" +
+                    "6. Jiango - 204,800 HP\r\nThis boss has Zero SP start.\r\n\r\n" +
+                    "7. Fruegel II - 220,000 HP\r\n\r\n" +
+                    "8. Fire Bird - 281,600 HP\r\nThis boss has Zero SP start. This boss has Guard Break on dive attack. This boss has MP Attack on summon. Defeating this boss will increase your inventory to 40 slots.\r\n\r\n" +
+                    "\r\n\r\nZone 3 - Level 50\r\n\r\n" +
+                    "9. Ghost Feyrbrand - 320,000 HP\r\n\r\n" +
+                    "10. Mappi - 128,000 HP\r\n\r\n" +
+                    "11. Gehrich - 200,000 HP | Mappi - 128,000 HP\r\nThis boss has Zero SP start.\r\n\r\n" +
+                    "12. Ghost Commander - 221,000 HP\r\nThis boss has Wound Damage on slash attack. This boss has Health Steal on life sap attack.\r\n\r\n" +
+                    "13. Kamuy - 300,000 HP\r\nThis boss unlocks an used attack.\r\nThis boss does SP damage.\r\n\r\n" +
+                    "14. Ghost Regole - 336,000 HP\r\n\r\n" +
+                    "15. Grand Jewel - 260,000 HP\r\nThis boss has Magic Change every 10%.\r\nThis boss has elemental shift.\r\nThis Boss has Reverse Dragon Block Staff.\r\n\r\n" +
+                    "16. Windigo - 700,000 HP\r\nThis boss has Armor Break when heart is damaged.\r\n\r\n" +
+                    "17. Polter Armor - 666.666 HP\r\nThis boss has Shared HP.\r\n\r\n" +
+                    "18. The Last Kraken - 360,000 HP\r\nThis boss is actually centered.\r\n\r\n" +
+                    "19. Vector - 180,000 HP | Selebus - 135,000 HP | Kubila - 157,500 HP\r\n\r\n" +
+                    "20. Caterpillar - 120,000 HP | Pupa - 180,000 HP | Imago - 240,000 HP\r\n\r\n" +
+                    "21. Zackwell - 360,000 HP\r\n\r\n" +
+                    "22. Ghost Divine Dragon - 400,000 HP\r\nDefeating this boss will increase your inventory to 48 Slots.\r\n\r\n" +
+                    "\r\n\r\nZone 4 - Level 60\r\n\r\n" +
+                    "23. Virage I | Head - 360,000 HP | Body - 360,000 HP | Arm - 60,000  HP\r\n\r\n" +
+                    "24. Kongol - 420,000 HP\r\n\r\n" +
+                    "25. Lenus - 525,000 HP\r\nThis boss has magic change every 5%.\r\n\r\n" +
+                    "26. Syuveil - 500,000 HP\r\nThis boss has Turn Point damage on all Dragoon magic attacks.\r\n\r\n" +
+                    "27. Virage II | Head - 1,280,000 HP | Body - 540,000 HP | Arm - 54,000 HP\r\nThis boss has body damage.\r\n\r\n" +
+                    "28. Feyrbrand - 288,000 HP | Greham - 210,000 HP\r\nThis boss has Dragoon Bond.\r\nThis boss will remove resistances.\r\n\r\n" +
+                    "29. Damia - 360,000 HP\r\nThis boss has a custom status effect, Menu Block on all magic attacks. Will block all menu actions, Dragoons are immune.\r\n\r\n" +
+                    "30. Regole - 300,000 HP | Dragoon Lenus - 300,000 HP\r\nThis boss has Dragoon Bond.\r\n\r\n" +
+                    "31. Belzac - 608,000 HP\r\nThis boss has custom status effects, each with a random chance of activation. 30% accuracy loss on Grand Stream. Power Down DF/MDF on Meteor Strike. Speed Down on Golden Dragoon.\r\n\r\n" +
+                    "32. S Virage I | Head - 320,000 HP | Body - 320,000 HP | Arm - 160,000 HP\r\nThis boss has Gold farming opportunities.\r\nThis boss has countdown changes. For every 40,000 damage, countdown increases. For each countdown increase you get 1,000 Gold each. Killing a body part grants the following gold: 45,000 Gold for the head, 15,000 Gold for the body, 10,000 Gold for the arm.\r\n\r\n" +
+                    "33. Kanzas - 396,000 HP\r\nThis boss has Electric Charges, with a maximum of 30 charges. Each charge is released all at once and can be released at any time, each charge grants 5% power on the next attack. Dragoon Addition grants 1 charge. Atomic Mind grants 3 charges and attack down for 3 turns. Thunder Kid grants 5 charges and defense down for 3 turns. Violet Dragon grants 15 charges and instantly releases all charges for this attack and grants power down for 3 turns.\r\n\r\n" +
+                    "34. Emperror Doel - 250,000 HP | Dragoon Doel - 750,000 HP\r\nThis boss has Inventory Refresh.\r\nThis boss has Ultimate Enrage Mode.\r\nThis Boss has Magic Change. Doel can now cast any magic when he is below 75,000 HP and will use elemental weaknesses to his advantage.\r\nThis boss has Enhanced Shield. Doel's Shield when it is about to appear will grant him Damage Immunity. The Shield grants him half damage.\r\nDefeating this boss will increase your inventory to 64 Slots.\r\nIf you are on Hell Mode you will unlock Divine Red-Eyed Dragon mode.\r\n\r\n" +
+                    "35. S Virage II | Head - 333,333 HP | Body - 222,222 HP | Arm 666,666\r\nThis boss has a modified Shared HP. Attacking the head heals the arm. Each attack to a body part will do 2x damage. Each part healed will recieve 1x HP. Attacking the arm heals the head. Attacking the head heals the body.\r\nThis boss has an enhanced Final Attack.\r\n\r\n" +
+                    "36. Divine Dragon - 10,000 HP\r\nThis boss has Armor Guard.\r\nThis Boss has Reverse Dragon Block Staff.\r\nThis boss has Ultimate Enrage Mode.\r\n\r\n" +
+                    "37. Lloyd - 666,666 HP\r\nThis boss has modified Ultimate Enrage Mode. Dying will reset his stats, but each time you die Lloyd's base stats increase.\r\nThis boss will remove resistances.\r\n\r\n" +
+                    "38. Magician Faust - 1,000,000 HP\r\nThis boss has Dragoon Guard.\r\nThis boss has any magic and will play to your weakness and strengths depending on the phase.\r\n\r\n" +
+                    "39. Zieg - 720,000 HP\r\nThis boss unlocks unused attacks.\r\nThis boss has enhanced damage on Explosion.\r\n\r\n" +
+                    "40. Melbu Frahma - ??? HP - Unfinished.\r\n\r\n" +
+                    "Zero SP - Start the battle with zero SP.\r\n" +
+                    "Guard Break - Removes guard status on a certain attack.\r\n" +
+                    "MP Attack - Removes MP on a certain attack.\r\n" +
+                    "Wound Damage - Reduces Max HP on a certain attack. Dying will restore Max HP.\r\n" +
+                    "Health Steal - Health Steals on a certain attack.\r\n" +
+                    "SP Damage - Damages your SP, dragoons are immune to this damage.\r\n" +
+                    "Magic Change - Changes magic based on HP intervals. All magic is applicable, Faust and Melbu are the only bosses that can cast Psyche Bomb.\r\n" +
+                    "Elemental Shift - Element changes based on the item used.\r\n" +
+                    "Armor Break - Defense drop drastically when a specific monster is targeted.\r\n" +
+                    "Shared HP - Attacking one part deals damage to the rest.\r\n" +
+                    "Turn Point Damage - Removes turn points on a cetain attack.\r\n" +
+                    "Body Damage - Killing one part damages the main part for all of its HP.\r\n" +
+                    "Dragoon Bond - Attacking first determines the following. Attack either dragoon or dragon first, the other monster will heal the other for all damage. When one monsters dies the other becomes more powerful. Attacking both dragon and dragoon at the same time both of them become more powerful for a lesser amount.\r\n" +
+                    "Remove Resistances - All resistances are removed.\r\n" +
+                    "Countdown - Changes countdown mechanics.\r\n" +
+                    "Inventory Refresh - Refreshes inventory at a certain point in battle.\r\n" +
+                    "Ultimate Enrage Mode - Bosses will increase their stats for every 1% of damage.\r\n" +
+                    "Reverse Dragon Block Staff - Dragoons will operate at 80%.\r\n" +
+                    "Armor Guard - Significant increase to defenses when Guarding, overwrites Power Up/Down DF/MDF effects.\r\n\r\n" +
+                    "Equips\r\n" +
+                    "Sabre - +70 AT - A weapon for Rose.\r\n" +
+                    "Spirit Eater - +75 AT +50 MAT - A weapon for Dart. Removes 35 SP per turn unless full. Removes 15 SP instead in Hell Mode.\r\n" +
+                    "Harpoon - +100 AT - A weapon for Lavitz/Albert. Triples Dragoon powers at the cost of 300 SP. You can only use this when you have 400 SP or more. Casts Speed Down upon Dragoon exit.\r\n" +
+                    "Element Arrow - +50 AT +50 MAT - A weapon for Shana/Miranda. Changes element and uses 100G to restock that element's single target magic item every 3 turns. Change Element in Enhancements II tab.\r\n" +
+                    "Dragon Beater - +130 AT - A weapon for Rose. Enhances Dragoon magic by using hotkey (CIRCLE + RIGHT) in battle. Rose will consume more MP, do more damage and heal 30% more from Dark Dragon but deal less damage. Return to normal by pressing hotkey (CIRCLE + RIGHT) again.\r\n" +
+                    "Battery Glove - +80 AT +20 MAT - A weapon for Haschel. Charges for an attack that deals 250% physical damage and unleashes it automatically every 7 attacks.\r\n" +
+                    "Jeweled Hammer - +40 AT +40 MAT - A weapon for Meru. Enhances Dragoon magic by using hotkey (CIRCLE + DOWN) in battle. Meru will consume more MP, do more damage and Rainbow Breath will add an additional 65% HP that can go over Max HP. Guarding will remove the additional HP. Return to normal by pressing hotkey (CIRCLE + DOWN) again.\r\n" +
+                    "Giant Axe - +100 AT +10 MAT - A weapon for Kongol. Has a 20% chance to add Guard after attacking.\r\n" +
+                    "Soa's Light - +200 AT +140 MAT +100 SP Regen Per Turn - Reduces other party members defenses by 30%. Removes all SP gain from additions.\r\n" +
+                    "Fake Legend Casque - +30 MDF - Has a 30% chance to add +40 MDF while Guarding.\r\n" +
+                    "Soa's Helm - +200 MDF +20 MP Regen Per Turn - Reduces other party members attack for 30%.\r\n" +
+                    "Fake Legend Armor - +30 DF - Has a 30% chance to add +40 DF while Guarding.\r\n" +
+                    "Divine DG Armor - +50 DF +50 MDF +20 SP on all hits +10 MP on all hits.\r\n" +
+                    "Soa's Armor - +200 DF +20% HP Regen Per Turn - Reduces other party members MAT by 30%.\r\n" +
+                    "Lloyd's Boots - +15 SPD +15 A-AV +15 M-AV\r\n" +
+                    "Winged Shoes - +25 SPD\r\n" +
+                    "Soa's Greaves - +40 SPD - Reduces other party members speed by 25.\r\n" +
+                    "Heal Ring - +7% HP Regen Per Turn, +7 MP Regen Per Turn, +7 SP Regen Per Turn\r\n" +
+                    "Soa's Sash - Double SP Gain - Reduces other party members SP gain by half.\r\n" +
+                    "Soa's Ahnk - 100% Revive - Always revive but kills another party member in the process. Grants 50% revive in Solo Mode.\r\n" +
+                    "Soa's Health Ring - Doubles Max HP - Reduces other party members Max HP by 25%. Max HP is capped at 32767.\r\n" +
+                    "Soa's Mage Ring - Triples Max MP - Reduces other party members Max MP by 50%.\r\n" +
+                    "Soa's Shield Ring - Sets DF/MDF to 1, Sets A-AV and M-AV to 90, overwrites all equips - Reduces other party members hit accuracy by 20%.\r\n" +
+                    "Soa's Siphon Ring - Doubles MAT stats, reduces Dragoon Magic by 70% - Reduces other party members MAT by 20%.";
+            } else if (cboHelpTopic.SelectedIndex == 7) {
+                txtHelp.Text = "Hero Competition Shop\r\nAllows you to buy tickets and purchase items from the Hero Compition anywhere.\r\n\r\n" +
+                    "Ultimate Boss Shop\r\n" +
+                    "Allows you to buy new equips from the shop. This equips are only available for Hard & Hell Mode. You can only buy items starting at Chapter 4.";
+            } else if (cboHelpTopic.SelectedIndex == 8) {
+                txtHelp.Text = "Reader Mode will read stats from battle and display them to a window and or write them to a text file for an external application to use.\r\n\r\n" +
+                    "When you open Dragoon Modifier open Window Config first to load your Reader Mode config. You do not have to do this again once you've done this. Use Add/Change/Delete buttons to add UI elements to the Window, a form will open up to create the display. You can double click items to change them as well, if you can't click the item use Change.\r\n\r\n" +
+                    "Save will save your current Reader Mode window setup and Load will load a previous setup. Reset will wipe the current setup.\r\n\r\n" +
+                    "You can have Dragoon Modifier press a hotkey for you automatically when the Battle UI is open in battle.\r\n\r\n" +
+                    "You have two modes to remove the UI in battle. One is to remove it complete, the other is to remove character display pictures only.";
+            } else if (cboHelpTopic.SelectedIndex == 9) {
+                txtHelp.Text = "Attach/Detach - Attach or Detach Dragoon Modifier from the emulator. Use this when for example you close ePSXe and reopen it. For RetroArch (and other emulators) please reattach when you are in game or at the load save screen.\r\n" +
+                    "Menu - This will wipe, create, or save your current script and mod options. External scripts are in the lists below.\r\n\r\n" +
+                    "Settings - Change your Emulator, Game Region, Save Slot, or Mod Options here. Dragoon Modifier will save progress of certain features to your computer. If you want to delete your progress click Delete Current Save. Preset hotkeys are hotkeys that Dragoon Modifier provides and can be turned off.\r\n\r\n" +
+                    "Mod Options - Mods will be placed in the Mods subfolder of Dragoon Modifier and can be accessed through here.\r\n\r\n" +
+                    "The list of the four columns below contains external scripts for Dragoon Modifier. Dragoon Modifier requires the Field Controller, Battle Controller, and Hotkey controller to run correctly. Scripts are located in the Scripts sub folder. If something should be run when the player is on the Field should be placed in the Field folder and will display in Dragoon Modifier. Developers will release scripts that will add features not provided by Dragoon Modifier by default. You should only get your scripts from trusted sources.";
+            } else if (cboHelpTopic.SelectedIndex == 10) {
+                txtHelp.Text = "Field\r\n\r\n" +
+                    "L2 + SQAURE       - Shana will use Gates of Heaven outside of battle.\r\n" +
+                    "L2 + CROSS        - Miranda will use Gates of Heaven outside of battle.\r\n" +
+                    "L2 + CIRCLE       - Meru will use Rainbow Breath outside of battle.\r\n" +
+                    "SELECT + L3       - Adds Shana when she is not in the party.\r\n" +
+                    "SELECT + R3       - Adds Lavitz when he is not in the party.\r\n" +
+                    "CROSS + L1        - Adds all Dragoons in the opening map 10 when Hard and Hell Mode is on. Sets everyone to level 1 with base equips in the opening map 10 when Solo or Duo mode is on. After Mappi battle it will add Dart's dragoon back regardless of difficulty.\r\n" +
+                    "CROSS + R1        - Before you complete the quest in Furni map 333 press this hotkey, press it again after for extra gold from the quest.\r\n" +
+                    "SQUARE + TRIANGLE - When in Hard Mode (or Hell Mode when you have beaten Ultimate Boss Dragoon Doel) you may switch between Red-Eyed and Divine Dragoon at the Divine Dragon's corpse (map 424) or on the moon (map 736).\r\n" +
+                    "SQUARE + CROSS    - Spawns a slightly modified Faust for EXP and Armor of Legend of Legend Casque (39/40th battle) on the moon (map 732).\r\n" +
+                    "START + L3        - Allows you to warp off the moon to Ulra (maps 729/730/527).\r\n" +
+                    "START + R3        - Allows you to warp back to the moon from Ulra (maps 597/521/524/526/527/729/9).\r\n" +
+                    "CIRCLE + TRIANGLE - Skip dialogs, stop before choice dialog or use Auto Text Advanced in Enhancements III.\r\n" +
+                    "L1 + LEFT         - Sets widescreen for the world map.\r\n\r\n" +
+                    "Battle\r\n\r\n" +
+                    "L1 + UP           - Exit Dragoon Slot 1.\r\n" +
+                    "L1 + RIGHT        - Exit Dragoon Slot 2.\r\n" +
+                    "L1 + LEFT         - Exit Dragoon Slot 3.\r\n" +
+                    "L1 + CIRCLE       - Sets music speed to 0.\r\n" +
+                    "SQUARE + UP       - Starts an extra turn on Slot 1 when a turn battle system is turned on. Try to activate on enemy turns only, may softlock otherwise.\r\n" +
+                    "SQUARE + RIGHT    - Starts an extra turn on Slot 1 when a turn battle system is turned on. Try to activate on enemy turns only, may softlock otherwise.\r\n" +
+                    "SQUARE + LEFT     - Starts an extra turn on Slot 1 when a turn battle system is turned on. Try to activate on enemy turns only, may softlock otherwise.\r\n" +
+                    "CIRCLE + LEFT     - Activates Dart's Burn Stack when Hard or Hell mode is turned on.\r\n" +
+                    "CIRCLE + RIGHT    - Changes Rose's magic when she has the Dragon Beater equipped.\r\n" +
+                    "CIRCLE + DOWN     - Changes Meru's magic when she has the Jeweled Hammer equipped.\r\n" +
+                    "CIRCLE + R2       - Kills monsters when you have entered the black room. Not available on Hell Mode.\r\n" +
+                    "SELECT + START    - Nerfs bosses (Doel, Lenus, Executioners) and the last three bosses of the game suitable for level 50s for Hard Mode.\r\n" +
+                    "SELECT + R3       - Nerfs the last three bosses of the game suitable for level 40s for Hard Mode.\r\n" +
+                    "L2 + LEFT         - Activates Soa's Wargod.\r\n" +
+                    "L2 + RIGHT        - Activates Soa's Dragoon Boost.\r\n" +
+                    "L2 + UP           - Activates Empty Dragoon Crystal.";
+            } else if (cboHelpTopic.SelectedIndex == 11) {
+                txtHelp.Text = "1. No Dart\r\n" +
+                    "When you have three party members use Switch Slot 1 and No Dart should turn on. When you are switching between Solo and Duo Mode or turning them off make sure to turn off No Dart in Enhancements Tab II.\r\n\r\n" +
+                    "2. Solo / Duo Mode - Boss Encounters with Cutscenes\r\n" +
+                    "The game requires you to have three party members for cutscenes. To turn on party members for a single battle press Add Party Members green button in Enhancements Tab I. To turn it on for all battles press Add Party Members green button, and the on button beside it. Extra characters will die on entry and move off screen.\r\n\r\n" +
+                    "3. Reader Mode\r\n" +
+                    "Each time you open Dragoon Modifier open Windows Config first to load your Reader Mode settings.";
             }
         }
 
