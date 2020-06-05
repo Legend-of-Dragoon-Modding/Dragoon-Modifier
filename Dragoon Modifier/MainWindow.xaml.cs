@@ -2483,9 +2483,9 @@ namespace Dragoon_Modifier {
                     SaveSubKey();
                 }
 
-                if (ultimateBossKeepMap && !Globals.IN_BATTLE) {
+                if (ultimateBossKeepMap) {
                     emulator.WriteShort("MAP", ultimateBossMap);
-                    if (Globals.BATTLE_VALUE > 10) {
+                    if (!Globals.IN_BATTLE && Globals.BATTLE_VALUE > 10) {
                         ultimateBossKeepMap = false;
                     }
                 }
@@ -5108,6 +5108,11 @@ namespace Dragoon_Modifier {
 
                 WipeRewards();
 
+                if (Globals.ENCOUNTER_ID == 487) { //Commander II
+                    emulator.WriteByte("MONSTER_REWARDS_CHANCE", 100, +0x1A8);
+                    emulator.WriteByte("MONSTER_REWARDS_DROP", 158, 0x1A8); //Sabre
+                }
+
                 if (Globals.ENCOUNTER_ID == 449 || Globals.ENCOUNTER_ID == 402 || Globals.ENCOUNTER_ID == 403) {
                     if (Globals.ENCOUNTER_ID == 402 || Globals.ENCOUNTER_ID == 403) {
                         emulator.WriteShort("MONSTER_REWARDS", 3000, 0x1A8 + 0x2);
@@ -5817,10 +5822,6 @@ namespace Dragoon_Modifier {
                 Globals.MONSTER_TABLE[i].Write("SPD", Math.Min(65535, Math.Round(Globals.MONSTER_TABLE[i].Read("SPD") * multiplyMode[5])));
             }
 
-            if (Globals.ENCOUNTER_ID == 487) { //Commander II
-                emulator.WriteByte("MONSTER_REWARDS_CHANCE", 100, + 0x1A8);
-                emulator.WriteByte("MONSTER_REWARDS_DROP", 158, 0x1A8); //Sabre
-            }
         }
 
         public void UltimateBossDefeatCheck() {
