@@ -10183,7 +10183,7 @@ namespace Dragoon_Modifier {
                     "12. Ghost Commander - 221,000 HP\r\nThis boss has Wound Damage on slash attack. This boss has Health Steal on life sap attack.\r\n\r\n" +
                     "13. Kamuy - 300,000 HP\r\nThis boss unlocks an used attack.\r\nThis boss does SP damage.\r\n\r\n" +
                     "14. Ghost Regole - 336,000 HP\r\n\r\n" +
-                    "15. Grand Jewel - 260,000 HP\r\nThis boss has Magic Change every 10%.\r\nThis boss has elemental shift.\r\nThis Boss has Reverse Dragon Block Staff.\r\n\r\n" +
+                    "15. Grand Jewel - 260,000 HP\r\nThis boss has a Magic Change every 10%.\r\nThis boss has elemental shift.\r\nThis Boss has Reverse Dragon Block Staff.\r\n\r\n" +
                     "16. Windigo - 700,000 HP\r\nThis boss has Armor Break when heart is damaged.\r\n\r\n" +
                     "17. Polter Armor - 666.666 HP\r\nThis boss has Shared HP.\r\n\r\n" +
                     "18. The Last Kraken - 360,000 HP\r\nThis boss is actually centered.\r\n\r\n" +
@@ -10194,7 +10194,7 @@ namespace Dragoon_Modifier {
                     "\r\n\r\nZone 4 - Level 60\r\n\r\n" +
                     "23. Virage I | Head - 360,000 HP | Body - 360,000 HP | Arm - 60,000  HP\r\n\r\n" +
                     "24. Kongol - 420,000 HP\r\n\r\n" +
-                    "25. Lenus - 525,000 HP\r\nThis boss has magic change every 5%.\r\n\r\n" +
+                    "25. Lenus - 525,000 HP\r\nThis boss has a Magic Change every 5%.\r\n\r\n" +
                     "26. Syuveil - 500,000 HP\r\nThis boss has Turn Point damage on all Dragoon magic attacks.\r\n\r\n" +
                     "27. Virage II | Head - 1,280,000 HP | Body - 540,000 HP | Arm - 54,000 HP\r\nThis boss has body damage.\r\n\r\n" +
                     "28. Feyrbrand - 288,000 HP | Greham - 210,000 HP\r\nThis boss has Dragoon Bond.\r\nThis boss will remove resistances.\r\n\r\n" +
@@ -10203,10 +10203,10 @@ namespace Dragoon_Modifier {
                     "31. Belzac - 608,000 HP\r\nThis boss has custom status effects, each with a random chance of activation. 30% accuracy loss on Grand Stream. Power Down DF/MDF on Meteor Strike. Speed Down on Golden Dragoon.\r\n\r\n" +
                     "32. S Virage I | Head - 320,000 HP | Body - 320,000 HP | Arm - 160,000 HP\r\nThis boss has Gold farming opportunities.\r\nThis boss has countdown changes. For every 40,000 damage, countdown increases. For each countdown increase you get 1,000 Gold each. Killing a body part grants the following gold: 45,000 Gold for the head, 15,000 Gold for the body, 10,000 Gold for the arm.\r\n\r\n" +
                     "33. Kanzas - 396,000 HP\r\nThis boss has Electric Charges, with a maximum of 30 charges. Each charge is released all at once and can be released at any time, each charge grants 5% power on the next attack. Dragoon Addition grants 1 charge. Atomic Mind grants 3 charges and attack down for 3 turns. Thunder Kid grants 5 charges and defense down for 3 turns. Violet Dragon grants 15 charges and instantly releases all charges for this attack and grants power down for 3 turns.\r\n\r\n" +
-                    "34. Emperror Doel - 250,000 HP | Dragoon Doel - 750,000 HP\r\nThis boss has Inventory Refresh.\r\nThis boss has Ultimate Enrage Mode.\r\nThis Boss has Magic Change. Doel can now cast any magic when he is below 75,000 HP and will use elemental weaknesses to his advantage.\r\nThis boss has Enhanced Shield. Doel's Shield when it is about to appear will grant him Damage Immunity. The Shield grants him half damage.\r\nDefeating this boss will increase your inventory to 64 Slots.\r\nIf you are on Hell Mode you will unlock Divine Red-Eyed Dragon mode.\r\n\r\n" +
+                    "34. Emperror Doel - 250,000 HP | Dragoon Doel - 750,000 HP\r\nThis boss has Inventory Refresh.\r\nThis boss has Ultimate Enrage Mode.\r\nThis Boss has a Magic Change. Doel can now cast any magic when he is below 75,000 HP and will use elemental weaknesses to his advantage.\r\nThis boss has Enhanced Shield. Doel's Shield when it is about to appear will grant him Damage Immunity. The Shield grants him half damage.\r\nDefeating this boss will increase your inventory to 64 Slots.\r\nIf you are on Hell Mode you will unlock Divine Red-Eyed Dragon mode.\r\n\r\n" +
                     "35. S Virage II | Head - 333,333 HP | Body - 222,222 HP | Arm 666,666\r\nThis boss has a modified Shared HP. Attacking the head heals the arm. Each attack to a body part will do 2x damage. Each part healed will recieve 1x HP. Attacking the arm heals the head. Attacking the head heals the body.\r\nThis boss has an enhanced Final Attack.\r\n\r\n" +
                     "36. Divine Dragon - 10,000 HP\r\nThis boss has Armor Guard.\r\nThis Boss has Reverse Dragon Block Staff.\r\nThis boss has Ultimate Enrage Mode.\r\n\r\n" +
-                    "37. Lloyd - 666,666 HP\r\nThis boss has modified Ultimate Enrage Mode. Dying will reset his stats, but each time you die Lloyd's base stats increase.\r\nThis boss will remove resistances.\r\n\r\n" +
+                    "37. Lloyd - 666,666 HP\r\nThis boss has modified Ultimate Enrage Mode. Dying will reset his stats, but each time you die Lloyd's base stats increase.\r\nThis boss will remove resistances.\r\nThis boss has a Magic Change every 7%.\r\n\r\n" +
                     "38. Magician Faust - 1,000,000 HP\r\nThis boss has Dragoon Guard.\r\nThis boss has any magic and will play to your weakness and strengths depending on the phase.\r\n\r\n" +
                     "39. Zieg - 720,000 HP\r\nThis boss unlocks unused attacks.\r\nThis boss has enhanced damage on Explosion.\r\n\r\n" +
                     "40. Melbu Frahma - ??? HP - Unfinished.\r\n\r\n" +
