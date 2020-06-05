@@ -56,7 +56,6 @@ namespace Dragoon_Modifier {
         public static bool MONSTER_EXPGOLD_CHANGE = false;
         public static bool CHARACTER_STAT_CHANGE = false;
         public static bool ADDITION_CHANGE = false;
-        public static bool ADDITION_LEVEL_CHANGE = false;
         public static bool DRAGOON_STAT_CHANGE = false;
         public static bool DRAGOON_SPELL_CHANGE = false;
         public static bool DRAGOON_ADDITION_CHANGE = false;

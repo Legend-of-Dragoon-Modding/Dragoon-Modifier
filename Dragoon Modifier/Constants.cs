@@ -83,22 +83,20 @@ namespace Dragoon_Modifier {
                             if ((value & (1 << 4)) != 0)
                                 Globals.ADDITION_CHANGE = true;
                             if ((value & (1 << 5)) != 0)
-                                Globals.ADDITION_LEVEL_CHANGE = true;
-                            if ((value & (1 << 6)) != 0)
                                 Globals.DRAGOON_STAT_CHANGE = true;
-                            if ((value & (1 << 7)) != 0)
+                            if ((value & (1 << 6)) != 0)
                                 Globals.DRAGOON_SPELL_CHANGE = true;
-                            if ((value & (1 << 8)) != 0)
+                            if ((value & (1 << 7)) != 0)
                                 Globals.DRAGOON_ADDITION_CHANGE = true;
-                            if ((value & (1 << 9)) != 0)
+                            if ((value & (1 << 8)) != 0)
                                 Globals.DRAGOON_DESC_CHANGE = true;
-                            if ((value & (1 << 10)) != 0)
+                            if ((value & (1 << 9)) != 0)
                                 Globals.ITEM_STAT_CHANGE = true;
-                            if ((value & (1 << 11)) != 0)
+                            if ((value & (1 << 10)) != 0)
                                 Globals.ITEM_ICON_CHANGE = true;
-                            if ((value & (1 << 12)) != 0)
+                            if ((value & (1 << 11)) != 0)
                                 Globals.ITEM_NAMEDESC_CHANGE = true;
-                            if ((value & (1 << 13)) != 0)
+                            if ((value & (1 << 12)) != 0)
                                 Globals.SHOP_CHANGE = true;
                         } else {
                             if (config) {

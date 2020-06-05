@@ -9649,24 +9649,22 @@ namespace Dragoon_Modifier {
                                 config |= 1 << 3;
                             if (Globals.ADDITION_CHANGE)
                                 config |= 1 << 4;
-                            if (Globals.ADDITION_LEVEL_CHANGE)
-                                config |= 1 << 5;
                             if (Globals.DRAGOON_STAT_CHANGE)
-                                config |= 1 << 6;
+                                config |= 1 << 5;
                             if (Globals.DRAGOON_SPELL_CHANGE)
-                                config |= 1 << 7;
+                                config |= 1 << 6;
                             if (Globals.DRAGOON_ADDITION_CHANGE)
-                                config |= 1 << 8;
+                                config |= 1 << 7;
                             if (Globals.DRAGOON_DESC_CHANGE)
-                                config |= 1 << 9;
+                                config |= 1 << 8;
                             if (Globals.ITEM_STAT_CHANGE)
-                                config |= 1 << 10;
+                                config |= 1 << 9;
                             if (Globals.ITEM_ICON_CHANGE)
-                                config |= 1 << 11;
+                                config |= 1 << 10;
                             if (Globals.ITEM_NAMEDESC_CHANGE)
-                                config |= 1 << 12;
+                                config |= 1 << 11;
                             if (Globals.SHOP_CHANGE)
-                                config |= 1 << 13;
+                                config |= 1 << 12;
                             presetFile.WriteLine("Config," + config);
                             presetFile.WriteLine(Globals.MOD + ",0");
                         }
@@ -9710,7 +9708,6 @@ namespace Dragoon_Modifier {
                 CheckBox monsterExpGold = new CheckBox();
                 CheckBox characterStat = new CheckBox();
                 CheckBox addition = new CheckBox();
-                CheckBox additionLevel = new CheckBox();
                 CheckBox dragoonStats = new CheckBox();
                 CheckBox dragoonSpell = new CheckBox();
                 CheckBox dragoonAddition = new CheckBox();
@@ -9739,10 +9736,6 @@ namespace Dragoon_Modifier {
                 addition.Content = "Addition";
                 if (Globals.ADDITION_CHANGE)
                     addition.IsChecked = true;
-
-                additionLevel.Content = "Addition Level Unlock";
-                if (Globals.ADDITION_LEVEL_CHANGE)
-                    additionLevel.IsChecked = true;
 
                 dragoonStats.Content = "Dragoon Stats";
                 if (Globals.DRAGOON_STAT_CHANGE)
@@ -9793,7 +9786,6 @@ namespace Dragoon_Modifier {
                 openModWindow.AddObject(dragoonAddition);
                 openModWindow.AddObject(dragoonSpell);
                 openModWindow.AddObject(dragoonStats);
-                openModWindow.AddObject(additionLevel);
                 openModWindow.AddObject(addition);
                 openModWindow.AddObject(characterStat);
                 openModWindow.AddObject(monsterExpGold);
@@ -9807,7 +9799,6 @@ namespace Dragoon_Modifier {
                 Globals.MONSTER_EXPGOLD_CHANGE = (bool) monsterExpGold.IsChecked;
                 Globals.CHARACTER_STAT_CHANGE = (bool) characterStat.IsChecked;
                 Globals.ADDITION_CHANGE = (bool) addition.IsChecked;
-                Globals.ADDITION_LEVEL_CHANGE = (bool) additionLevel.IsChecked;
                 Globals.DRAGOON_STAT_CHANGE = (bool) dragoonStats.IsChecked;
                 Globals.DRAGOON_SPELL_CHANGE = (bool) dragoonSpell.IsChecked;
                 Globals.DRAGOON_ADDITION_CHANGE = (bool) dragoonAddition.IsChecked;
@@ -10038,7 +10029,6 @@ namespace Dragoon_Modifier {
                 Globals.MONSTER_EXPGOLD_CHANGE = true;
                 Globals.CHARACTER_STAT_CHANGE = false;
                 Globals.ADDITION_CHANGE = true;
-                Globals.ADDITION_LEVEL_CHANGE = false;
                 Globals.DRAGOON_STAT_CHANGE = false;
                 Globals.DRAGOON_SPELL_CHANGE = false;
                 Globals.DRAGOON_DESC_CHANGE = true;
@@ -10058,7 +10048,6 @@ namespace Dragoon_Modifier {
                 Globals.MONSTER_EXPGOLD_CHANGE = true;
                 Globals.CHARACTER_STAT_CHANGE = false;
                 Globals.ADDITION_CHANGE = true;
-                Globals.ADDITION_LEVEL_CHANGE = false;
                 Globals.DRAGOON_STAT_CHANGE = false;
                 Globals.DRAGOON_SPELL_CHANGE = false;
                 Globals.DRAGOON_DESC_CHANGE = true;
