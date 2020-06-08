@@ -3323,10 +3323,10 @@ namespace Dragoon_Modifier {
         public void EarlyAdditions() {
             if (!Globals.IN_BATTLE && !earlyAdditionsOnFieldEntry) {
                 //Dart
-                emulator.WriteByte(Constants.GetAddress("DART_LEVEL_UNLOCK") * 0xE * 3, 13); //Crush Dance
-                emulator.WriteByte(Constants.GetAddress("DART_LEVEL_UNLOCK") * 0xE * 4, 18); //Madness Hero
-                emulator.WriteByte(Constants.GetAddress("DART_LEVEL_UNLOCK") * 0xE * 5, 23); //Moon Strike
-                emulator.WriteByte(Constants.GetAddress("DART_LEVEL_UNLOCK") * 0xE * 6, 60); //Blazying Dynamo
+                emulator.WriteByte(Constants.GetAddress("DART_LEVEL_UNLOCK") + 0xE * 3, 13); //Crush Dance
+                emulator.WriteByte(Constants.GetAddress("DART_LEVEL_UNLOCK") + 0xE * 4, 18); //Madness Hero
+                emulator.WriteByte(Constants.GetAddress("DART_LEVEL_UNLOCK") + 0xE * 5, 23); //Moon Strike
+                emulator.WriteByte(Constants.GetAddress("DART_LEVEL_UNLOCK") + 0xE * 6, 60); //Blazying Dynamo
                 if (emulator.ReadByte(Constants.GetAddress("DART_ADDITION_TOTAL") + 0) >= 80 &&
                     emulator.ReadByte(Constants.GetAddress("DART_ADDITION_TOTAL") + 1) >= 80 &&
                     emulator.ReadByte(Constants.GetAddress("DART_ADDITION_TOTAL") + 2) >= 80 &&
@@ -3336,9 +3336,9 @@ namespace Dragoon_Modifier {
                     emulator.WriteByte(Constants.GetAddress("DART_LEVEL_UNLOCK") * 0xE * 6, 29); //Blazying Dynamo
                 }
                 //Lavitz
-                emulator.WriteByte(Constants.GetAddress("LAVITZ_LEVEL_UNLOCK") * 0xE * 2, 10); //Rod Typhoon
-                emulator.WriteByte(Constants.GetAddress("LAVITZ_LEVEL_UNLOCK") * 0xE * 3, 16); //Gust of Wind Dance
-                emulator.WriteByte(Constants.GetAddress("LAVITZ_LEVEL_UNLOCK") * 0xE * 4, 60); //Flower Storm
+                emulator.WriteByte(Constants.GetAddress("LAVITZ_LEVEL_UNLOCK") + 0xE * 2, 10); //Rod Typhoon
+                emulator.WriteByte(Constants.GetAddress("LAVITZ_LEVEL_UNLOCK") + 0xE * 3, 16); //Gust of Wind Dance
+                emulator.WriteByte(Constants.GetAddress("LAVITZ_LEVEL_UNLOCK") + 0xE * 4, 60); //Flower Storm
                 if (emulator.ReadByte(Constants.GetAddress("LAVITZ_ADDITION_TOTAL") + 0) >= 80 &&
                     emulator.ReadByte(Constants.GetAddress("LAVITZ_ADDITION_TOTAL") + 1) >= 80 &&
                     emulator.ReadByte(Constants.GetAddress("LAVITZ_ADDITION_TOTAL") + 2) >= 80 &&
@@ -3362,10 +3362,10 @@ namespace Dragoon_Modifier {
                     emulator.WriteByte(Constants.GetAddress("KONGOL_LEVEL_UNLOCK") + 0xE * 2, 20); //Bone Crush
                 }
                 //Meru
-                emulator.WriteByte(Constants.GetAddress("MERU_LEVEL_UNLOCK") * 0xE * 1, 6); //Hammer Spin
-                emulator.WriteByte(Constants.GetAddress("MERU_LEVEL_UNLOCK") * 0xE * 2, 12); //Cool Boogie
-                emulator.WriteByte(Constants.GetAddress("MERU_LEVEL_UNLOCK") * 0xE * 3, 18); //Cat's Cradle
-                emulator.WriteByte(Constants.GetAddress("MERU_LEVEL_UNLOCK") * 0xE * 4, 60); //Perky Step
+                emulator.WriteByte(Constants.GetAddress("MERU_LEVEL_UNLOCK") + 0xE * 1, 6); //Hammer Spin
+                emulator.WriteByte(Constants.GetAddress("MERU_LEVEL_UNLOCK") + 0xE * 2, 12); //Cool Boogie
+                emulator.WriteByte(Constants.GetAddress("MERU_LEVEL_UNLOCK") + 0xE * 3, 18); //Cat's Cradle
+                emulator.WriteByte(Constants.GetAddress("MERU_LEVEL_UNLOCK") + 0xE * 4, 60); //Perky Step
                 if (emulator.ReadByte(Constants.GetAddress("MERU_ADDITION_TOTAL") + 0) >= 80 &&
                     emulator.ReadByte(Constants.GetAddress("MERU_ADDITION_TOTAL") + 1) >= 80 &&
                     emulator.ReadByte(Constants.GetAddress("MERU_ADDITION_TOTAL") + 2) >= 80 &&
@@ -3373,11 +3373,11 @@ namespace Dragoon_Modifier {
                     emulator.WriteByte(Constants.GetAddress("MERU_LEVEL_UNLOCK") * 0xE * 4, 22);  //Perky Step
                 }
                 //Haschel
-                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") * 0xE * 1, 5); // Flurry of Styx
-                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") * 0xE * 2, 10); //Summon 4 Gods
-                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") * 0xE * 3, 16); //5 Ring Shattering
-                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") * 0xE * 4, 22); //Hex Hammer
-                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") * 0xE * 5, 60); //Omni-Sweep        
+                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") + 0xE * 1, 5); // Flurry of Styx
+                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") + 0xE * 2, 10); //Summon 4 Gods
+                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") + 0xE * 3, 16); //5 Ring Shattering
+                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") + 0xE * 4, 22); //Hex Hammer
+                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") + 0xE * 5, 60); //Omni-Sweep        
                 if (emulator.ReadByte(Constants.GetAddress("HASCHEL_ADDITION_TOTAL") + 0) >= 80 &&
                     emulator.ReadByte(Constants.GetAddress("HASCHEL_ADDITION_TOTAL") + 1) >= 80 &&
                     emulator.ReadByte(Constants.GetAddress("HASCHEL_ADDITION_TOTAL") + 2) >= 80 &&
@@ -3421,6 +3421,7 @@ namespace Dragoon_Modifier {
                 emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") * 0xE * 3, 22); //5 Ring Shattering
                 emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") * 0xE * 4, 26); //Hex Hammer
                 emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") * 0xE * 5, 255); //Omni-Sweep   
+                earlyAdditionsOnFieldEntry = false;
             }
         }
         #endregion
