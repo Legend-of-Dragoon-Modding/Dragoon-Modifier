@@ -97,8 +97,31 @@ public class BattleController {
     }
 
     public static int GetOffset(Emulator emulator) {
-        int offset = emulator.ReadShort(0xBDA0C) - 0x8F44;
-        return offset;
+        if (Constants.REGION == Region.USA) {
+            return emulator.ReadShort(0xBDA0C) - 0x8F44;
+        } else {
+            int[] discOffset = { 0xD80, 0x0, 0x1458, 0x1B0 };
+            int[] charOffset = { 0x0, 0x180, -0x180, 0x420, 0x540, 0x180, 0x350, 0x2F0, -0x180 };
+            int[] duoCharOffset = { 0x0, -0x180, 0x180, -0x420, -0x180, -0x540, -0x350, -0x350, -0x2F0 };
+            int[] duoDartOffset = { 0x0, 0x470, 0x170, 0x710, 0x830, 0x470, 0x640, 0x640, 0x170 };
+            int partyOffset = 0;
+
+            if (Globals.PARTY_SLOT[2] == 255 && Globals.PARTY_SLOT[1] < 9) {
+                if (Globals.PARTY_SLOT[0] == 0) {
+                    partyOffset = duoDartOffset[Globals.PARTY_SLOT[1]];
+                } else if (Globals.PARTY_SLOT[1] == 0) {
+                    partyOffset = duoDartOffset[Globals.PARTY_SLOT[0]];
+                } else {
+                    partyOffset = charOffset[Globals.PARTY_SLOT[0]] + charOffset[Globals.PARTY_SLOT[1]];
+                }
+            } else {
+                if (Globals.PARTY_SLOT[0] < 9 && Globals.PARTY_SLOT[1] < 9 && Globals.PARTY_SLOT[2] < 9) {
+                    partyOffset = charOffset[Globals.PARTY_SLOT[1]] + charOffset[Globals.PARTY_SLOT[2]];
+                }
+            }
+
+            return discOffset[Globals.DISC - 1] - partyOffset;
+        }
     }
 
     public static void MonsterChanges(Emulator emulator) {
@@ -327,11 +350,13 @@ public class BattleController {
                 emulator.WriteByte(address + (i * 0xC) + 0x7, Spell.MP);
                 emulator.WriteByte(address + (i * 0xC) + 0x9, Spell.Element);
                 descr += (string) Spell.Encoded_Description + " ";
-                emulator.WriteInteger(Constants.GetAddress("DRAGOON_DESC_PTR") + i * 0x4, (int) Spell.Description_Pointer);
+                if (Constants.REGION == Region.USA)
+                    emulator.WriteInteger(Constants.GetAddress("DRAGOON_DESC_PTR") + i * 0x4, (int) Spell.Description_Pointer);
                 i++;
             }
             descr = descr.Remove(descr.Length - 1);
-            emulator.WriteAOB(Constants.GetAddress("DRAGOON_DESC"), descr);
+            if (Constants.REGION == Region.USA)
+                emulator.WriteAOB(Constants.GetAddress("DRAGOON_DESC"), descr);
             for (int z = 0; z < 3; z++) { // Miranda Hotfix
                 int intValue = (int) emulator.ReadByteU(address + ((z + 65) * 0xC) + 0x2);
                 if (Globals.DRAGOON_SPELLS[z + 10].Percentage == true) {
@@ -348,7 +373,7 @@ public class BattleController {
             }
         }
 
-        if (Globals.DRAGOON_DESC_CHANGE) {
+        if (Globals.DRAGOON_DESC_CHANGE && Constants.REGION == Region.USA) {
             Constants.WriteDebug("Changing Dragoon Spell Descriptions...");
             int i = 0;
             string descr = String.Empty;
@@ -384,12 +409,22 @@ public class BattleController {
     public static void HaschelFix(Emulator emulator) {
         Constants.WriteDebug("Haschel Fix - " + Globals.DISC);
 
-        emulator.WriteAOB(Constants.GetAddress("HASCHEL_FIX" + Globals.DISC), "0x80 0x80 0x80 0x00");
-        emulator.WriteAOB(Constants.GetAddress("HASCHEL_FIX" + Globals.DISC) + 0x4, Globals.DISC == 1 ? "0x90 0xA0" : Globals.DISC == 2 ? "0x10 0x93" : Globals.DISC == 3 ? "0x68 0xA7" : "0xC0 0x94");
-        emulator.WriteAOB(Constants.GetAddress("HASCHEL_FIX" + Globals.DISC) + 0x6, ("0x1E 0x80 0x74 0x12 0x00 0x00 0x02 0x00 0x8C 0x8C 0x4D 0x52 0x47 0x1A 0x04 0x00 0x00 0x00 0x28 0x00" +
-                " 0x00 0x00 0x02 0x00 0x00 0x00 0x2C 0x00 0x00 0x00 0x68 0x00 0x00 0x00 0x94 0x00 0x00 0x00 0xD4 0x11 0x00 0x00 0x68 0x12 0x00 0x00 0xB0 0x05 0x02 0x00 0x00 0x00 0x8C 0x8C 0x00 0x00" +
-                " 0x00 0x01 0x00 0x02 0x00 0x03 0x00 0x04 0x00 0x05 0x00 0x06 0x00 0x07 0x00 0x08 0x00 0x09 0x00 0x0A 0x00 0x0B 0x00 0x0C 0x00 0x0D 0x00 0x0E 0x00 0x0F 0x00 0x10 0x00 0x11 0x00 0x12" +
-                " 0x00 0x13 0x00 0x14 0x00 0x15 0x00 0x16 0x00 0x17 0x00 0x18 0x00 0x19 0x00 0x1A 0x00 0x1B"));
+        if (Constants.REGION == Region.USA) {
+            emulator.WriteAOB(Constants.GetAddress("HASCHEL_FIX" + Globals.DISC), "0x80 0x80 0x80 0x00");
+            emulator.WriteAOB(Constants.GetAddress("HASCHEL_FIX" + Globals.DISC) + 0x4, Globals.DISC == 1 ? "0x90 0xA0" : Globals.DISC == 2 ? "0x10 0x93" : Globals.DISC == 3 ? "0x68 0xA7" : "0xC0 0x94");
+            emulator.WriteAOB(Constants.GetAddress("HASCHEL_FIX" + Globals.DISC) + 0x6, ("0x1E 0x80 0x74 0x12 0x00 0x00 0x02 0x00 0x8C 0x8C 0x4D 0x52 0x47 0x1A 0x04 0x00 0x00 0x00 0x28 0x00" +
+                    " 0x00 0x00 0x02 0x00 0x00 0x00 0x2C 0x00 0x00 0x00 0x68 0x00 0x00 0x00 0x94 0x00 0x00 0x00 0xD4 0x11 0x00 0x00 0x68 0x12 0x00 0x00 0xB0 0x05 0x02 0x00 0x00 0x00 0x8C 0x8C 0x00 0x00" +
+                    " 0x00 0x01 0x00 0x02 0x00 0x03 0x00 0x04 0x00 0x05 0x00 0x06 0x00 0x07 0x00 0x08 0x00 0x09 0x00 0x0A 0x00 0x0B 0x00 0x0C 0x00 0x0D 0x00 0x0E 0x00 0x0F 0x00 0x10 0x00 0x11 0x00 0x12" +
+                    " 0x00 0x13 0x00 0x14 0x00 0x15 0x00 0x16 0x00 0x17 0x00 0x18 0x00 0x19 0x00 0x1A 0x00 0x1B"));
+        } else if (Constants.REGION == Region.JPN) {
+            emulator.WriteAOB(Constants.GetAddress("HASCHEL_FIX" + Globals.DISC), "80 80 80 00");
+            emulator.WriteAOB(Constants.GetAddress("HASCHEL_FIX" + Globals.DISC) + 0x4, Globals.DISC == 1 ? "98 90" : Globals.DISC == 2 ? "18 83" : Globals.DISC == 3 ? "70 97" : "C8 84");
+            emulator.WriteAOB(Constants.GetAddress("HASCHEL_FIX" + Globals.DISC) + 0x6, ("1E 80 74 12 00 00 02 00 00 00 4D 52 47 1A 04 00 00 00 28 00 00 00 02 00 00 00" +
+                    " 2C 00 00 00 68 00 00 00 94 00 00 00 D4 11 00 00 68 12 00 00 B0 05 02 00 00 00 8C 8C 00 00 00 01 00 02 00 03 00 04 00 05 00 06 00 07 00 08 00 09 00 0A 00 0B 00 0C 00 0D 00 0E 00 0F 00 10 00 11" +
+                    " 00 12 00 13 00 14 00 15 00 16 00 17 00 18 00 19 00 1A 00 1B 00 1C 00 1D 00 1E 00 1F 00 20 00 21 00 22 00 23 00 24 00 25 00 26 00 27 00 28 00 29 00 2A 00 2B 00 2C 00 2D 00 2E 00 2F 00 30 00 31" +
+                    " 00 32 00 33 D4 11 00 00 B0 05 02 00 00 00 00 00 53 53 68 64 FF FF FF FF 80 00 00 00 0C 11 00 00 02 01 00 00 B6 07 00 00"));
+        }
+        
     }
 
     public static void ShanaFix(Emulator emulator) {
@@ -578,12 +613,14 @@ public class BattleController {
             long address = Constants.GetAddress("ITEM_TABLE");
             int i = 0;
             foreach (dynamic item in Globals.DICTIONARY.ItemList) {
+                if (i > 157)
+                    break; 
                 emulator.WriteByte(address + i * 0x1C + 0xD, item.Icon);
                 i++;
             }
         }
 
-        if (Globals.ITEM_NAMEDESC_CHANGE) {
+        if (Globals.ITEM_NAMEDESC_CHANGE && (Constants.REGION == Region.USA || Constants.REGION == Region.EUR_ENG)) {
             Constants.WriteOutput("Changing Item Names and Descriptions...");
             if (String.Join("", Globals.DICTIONARY.NameList).Replace(" ", "").Length / 2 < 6423) {
                 emulator.WriteAOB("ITEM_NAME", String.Join(" ", Globals.DICTIONARY.NameList));

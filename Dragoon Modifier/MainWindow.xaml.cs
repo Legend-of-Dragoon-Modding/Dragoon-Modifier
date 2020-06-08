@@ -3057,7 +3057,7 @@ namespace Dragoon_Modifier {
                             } else if (Globals.HOTKEY == (Hotkey.KEY_L2 + Hotkey.KEY_LEFT)) { //Soa's Wargod
                                 if ((134217728 & ultimateShopLimited) == 134217728) {
                                     ubSoasWargod = ubSoasWargod ? false : true;
-                                    emulator.WriteAOB("SOAS_WARGOD", "06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06");
+                                    emulator.WriteAOB("SOA_WARGOD", "06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06");
                                     Constants.WriteGLogOutput("Soa's Wargod has been " + (ubSoasWargod ? "activated" : "deactivated") + ".");
                                 } else {
                                     Constants.WriteGLogOutput("You do not have Soa's Wargod.");
@@ -3187,6 +3187,26 @@ namespace Dragoon_Modifier {
 
                     if (Globals.MONSTER_TABLE[0].Read("Action") == 12)
                         emulator.WriteByte(Globals.M_POINT - 0x50, ubZiegDragoon);
+
+                    if (emulator.ReadByte("TARGET_1") == 254 || emulator.ReadByte("TARGET_2") == 254 || emulator.ReadByte(Globals.M_POINT + 0xAC4) == 254) {
+                        byte lowestHPSlot = 0;
+                        int lowestHP = 65535;
+
+                        for (int i = 0; i < 3; i++) {
+                            if (Globals.PARTY_SLOT[i] < 9) {
+                                int hp = Globals.CHARACTER_TABLE[i].Read("HP");
+                                if (hp < lowestHP && hp > 0) {
+                                    lowestHPSlot = (byte) i;
+                                    lowestHP = hp;
+                                }
+                            }
+                        }
+
+                        emulator.WriteByte("TARGET_1", lowestHPSlot);
+                        emulator.WriteByte("TARGET_2", lowestHPSlot);
+                        emulator.WriteByte(Globals.M_POINT + 0xAC4, lowestHPSlot);
+                    }
+
                     ubTrackMTP[0] = Globals.MONSTER_TABLE[0].Read("Turn");
                 }
                 Thread.Sleep(10);
