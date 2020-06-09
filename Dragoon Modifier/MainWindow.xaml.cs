@@ -35,6 +35,7 @@ namespace Dragoon_Modifier {
         public ProgressBar[] progressCATB = new ProgressBar[3];
         public ReaderWindow readerWindow = new ReaderWindow();
         int oldOffset = 0;
+        int currentIconState = 0;
         #endregion
 
         #region Script Variables
@@ -2369,7 +2370,40 @@ namespace Dragoon_Modifier {
                         Globals.dmScripts["btnReader"] = false;
                         TurnOnOffButton(ref btnReader);
                     }
+
                     FieldUI();
+
+                    if (Globals.IN_BATTLE && currentIconState != 3) {
+                        currentIconState = 3;
+                        System.Drawing.Icon newIcon = Properties.Resources.Icon_Green;
+                        System.Drawing.Bitmap bitmap = newIcon.ToBitmap();
+                        IntPtr hBitmap = bitmap.GetHbitmap();
+                        this.Icon = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, Int32Rect.Empty, System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+                    } 
+
+                    if ((Globals.BATTLE_VALUE > 3840 && Globals.BATTLE_VALUE <= 5120) && currentIconState != 2) {
+                        currentIconState = 2;
+                        System.Drawing.Icon newIcon = Properties.Resources.Icon_Red;
+                        System.Drawing.Bitmap bitmap = newIcon.ToBitmap();
+                        IntPtr hBitmap = bitmap.GetHbitmap();
+                        this.Icon = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, Int32Rect.Empty, System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+                    } 
+                    
+                    if ((Globals.BATTLE_VALUE > 2560 && Globals.BATTLE_VALUE <= 3840) && currentIconState != 1) {
+                        currentIconState = 1;
+                        System.Drawing.Icon newIcon = Properties.Resources.Icon_Yellow;
+                        System.Drawing.Bitmap bitmap = newIcon.ToBitmap();
+                        IntPtr hBitmap = bitmap.GetHbitmap();
+                        this.Icon = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, Int32Rect.Empty, System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+                    } 
+                    
+                    if (Globals.BATTLE_VALUE <= 2560 && currentIconState != 0) {
+                        currentIconState = 0;
+                        System.Drawing.Icon newIcon = Properties.Resources.Icon_Blue;
+                        System.Drawing.Bitmap bitmap = newIcon.ToBitmap();
+                        IntPtr hBitmap = bitmap.GetHbitmap();
+                        this.Icon = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, Int32Rect.Empty, System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+                    }
                 }), DispatcherPriority.ContextIdle);
             }
         }
@@ -3764,7 +3798,7 @@ namespace Dragoon_Modifier {
         }
 
         public void LoadMaxHPTable(bool forceLoad) {
-            if ((!maxHPTableLoaded && !Globals.IN_BATTLE && (emulator.ReadShort("BATTLE_VALUE") > 1 && emulator.ReadShort("BATTLE_VALUE") < 5130)) || forceLoad) {
+            if ((!maxHPTableLoaded && !Globals.IN_BATTLE && (emulator.ReadShort("BATTLE_VALUE") > 1 && emulator.ReadShort("BATTLE_VALUE") <= 5120)) || forceLoad) {
                 byte tableSlot = 0;
                 for (int i = 0; i < 9; i++) {
                     switch (i) {

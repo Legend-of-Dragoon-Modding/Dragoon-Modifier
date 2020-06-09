@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        Icon="4.ico"
+        Icon="5.ico"
         ShowIconOnTitleBar="True"
         ShowTitleBar="True"
         Title="InputWindow" Width="400" MinWidth="400"
