@@ -7663,8 +7663,28 @@ namespace Dragoon_Modifier {
 
         #region Extend Inventory
         public void ExtendInventory() {
-            if (Constants.REGION == Region.USA) { //Temp
-                if (Globals.IN_BATTLE) {
+            if (Globals.IN_BATTLE) {
+                emulator.WriteShort("INVENTORY_CAP_1", 64);
+                emulator.WriteShort("INVENTORY_CAP_2", 64);
+                emulator.WriteShort("INVENTORY_CAP_3", 64);
+                emulator.WriteShort("INVENTORY_CAP_4", 64);
+                emulator.WriteShort("INVENTORY_CAP_MINUS_1", 63);
+                emulator.WriteShort("INVENTORY_CAP_MINUS_2", 63);
+                emulator.WriteShort("INVENTORY_CAP_PLUS_1", 65);
+                emulator.WriteShort("INVENTORY_CAP_PLUS_2", 65);
+                if (emulator.ReadByte("ITEM_LIMIT_1") == 32) {
+                    emulator.WriteShort("ITEM_LIMIT_1", 64);
+                }
+                if (emulator.ReadByte("ITEM_LIMIT_2") == 32) {
+                    emulator.WriteShort("ITEM_LIMIT_2", 64);
+                }
+                if (emulator.ReadByte("ITEM_LIMIT_3") == 32) {
+                    emulator.WriteShort("ITEM_LIMIT_3", 64);
+                }
+                emulator.WriteShort("ITEM_CAP", 808);
+                //WriteByte("INVENTORY_SIZE", 64);
+            } else {
+                if (emulator.ReadByte("MENU") == 19) {
                     emulator.WriteShort("INVENTORY_CAP_1", 64);
                     emulator.WriteShort("INVENTORY_CAP_2", 64);
                     emulator.WriteShort("INVENTORY_CAP_3", 64);
@@ -7673,53 +7693,31 @@ namespace Dragoon_Modifier {
                     emulator.WriteShort("INVENTORY_CAP_MINUS_2", 63);
                     emulator.WriteShort("INVENTORY_CAP_PLUS_1", 65);
                     emulator.WriteShort("INVENTORY_CAP_PLUS_2", 65);
-                    if (emulator.ReadByte("ITEM_LIMIT_1") == 32) {
-                        emulator.WriteShort("ITEM_LIMIT_1", 64);
-                    }
-                    if (emulator.ReadByte("ITEM_LIMIT_2") == 32) {
-                        emulator.WriteShort("ITEM_LIMIT_2", 64);
-                    }
-                    if (emulator.ReadByte("ITEM_LIMIT_3") == 32) {
-                        emulator.WriteShort("ITEM_LIMIT_3", 64);
-                    }
+                    emulator.WriteShort("ITEM_LIMIT_1", 64);
+                    emulator.WriteShort("ITEM_LIMIT_2", (ushort) inventorySize);
+                    emulator.WriteShort("ITEM_LIMIT_3", (ushort) inventorySize);
                     emulator.WriteShort("ITEM_CAP", 808);
-                    //WriteByte("INVENTORY_SIZE", 64);
                 } else {
-                    if (emulator.ReadByte("MENU") == 19) {
-                        emulator.WriteShort("INVENTORY_CAP_1", 64);
-                        emulator.WriteShort("INVENTORY_CAP_2", 64);
-                        emulator.WriteShort("INVENTORY_CAP_3", 64);
-                        emulator.WriteShort("INVENTORY_CAP_4", 64);
-                        emulator.WriteShort("INVENTORY_CAP_MINUS_1", 63);
-                        emulator.WriteShort("INVENTORY_CAP_MINUS_2", 63);
-                        emulator.WriteShort("INVENTORY_CAP_PLUS_1", 65);
-                        emulator.WriteShort("INVENTORY_CAP_PLUS_2", 65);
-                        emulator.WriteShort("ITEM_LIMIT_1", 64);
-                        emulator.WriteShort("ITEM_LIMIT_2", (ushort) inventorySize);
-                        emulator.WriteShort("ITEM_LIMIT_3", (ushort) inventorySize);
-                        emulator.WriteShort("ITEM_CAP", 808);
-                    } else {
-                        emulator.WriteShort("INVENTORY_CAP_1", (ushort) inventorySize);
-                        emulator.WriteShort("INVENTORY_CAP_2", (ushort) inventorySize);
-                        emulator.WriteShort("INVENTORY_CAP_3", (ushort) inventorySize);
-                        emulator.WriteShort("INVENTORY_CAP_4", (ushort) inventorySize);
+                    emulator.WriteShort("INVENTORY_CAP_1", (ushort) inventorySize);
+                    emulator.WriteShort("INVENTORY_CAP_2", (ushort) inventorySize);
+                    emulator.WriteShort("INVENTORY_CAP_3", (ushort) inventorySize);
+                    emulator.WriteShort("INVENTORY_CAP_4", (ushort) inventorySize);
 
-                        emulator.WriteShort("INVENTORY_CAP_MINUS_1", (ushort) (inventorySize - 1));
-                        emulator.WriteShort("INVENTORY_CAP_MINUS_2", (ushort) (inventorySize - 1));
+                    emulator.WriteShort("INVENTORY_CAP_MINUS_1", (ushort) (inventorySize - 1));
+                    emulator.WriteShort("INVENTORY_CAP_MINUS_2", (ushort) (inventorySize - 1));
 
-                        emulator.WriteShort("INVENTORY_CAP_PLUS_1", (ushort) (inventorySize + 1));
-                        emulator.WriteShort("INVENTORY_CAP_PLUS_2", (ushort) (inventorySize + 1));
-                        //if (emulator.ReadByte(Constants.GetAddress("ITEM_LIMIT_1")) == 32) {
-                        emulator.WriteShort("ITEM_LIMIT_1", (ushort) inventorySize);
-                        //}
-                        //if (emulator.ReadByte(Constants.GetAddress("ITEM_LIMIT_2")) == 32) {
-                        emulator.WriteShort("ITEM_LIMIT_2", (ushort) inventorySize);
-                        //}
-                        //if (emulator.ReadByte(Constants.GetAddress("ITEM_LIMIT_3")) == 32) {
-                        emulator.WriteShort("ITEM_LIMIT_3", (ushort) inventorySize);
-                        //}
-                        emulator.WriteShort("ITEM_CAP", 808);
-                    }
+                    emulator.WriteShort("INVENTORY_CAP_PLUS_1", (ushort) (inventorySize + 1));
+                    emulator.WriteShort("INVENTORY_CAP_PLUS_2", (ushort) (inventorySize + 1));
+                    //if (emulator.ReadByte(Constants.GetAddress("ITEM_LIMIT_1")) == 32) {
+                    emulator.WriteShort("ITEM_LIMIT_1", (ushort) inventorySize);
+                    //}
+                    //if (emulator.ReadByte(Constants.GetAddress("ITEM_LIMIT_2")) == 32) {
+                    emulator.WriteShort("ITEM_LIMIT_2", (ushort) inventorySize);
+                    //}
+                    //if (emulator.ReadByte(Constants.GetAddress("ITEM_LIMIT_3")) == 32) {
+                    emulator.WriteShort("ITEM_LIMIT_3", (ushort) inventorySize);
+                    //}
+                    emulator.WriteShort("ITEM_CAP", 808);
                 }
             }
         }
