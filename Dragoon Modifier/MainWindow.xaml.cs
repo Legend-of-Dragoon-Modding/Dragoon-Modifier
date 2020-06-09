@@ -388,13 +388,6 @@ namespace Dragoon_Modifier {
                 Constants.CONSOLE = txtOutput;
                 Constants.GLOG = stsGame;
                 Constants.PLOG = stsProgram;
-                fieldThread = new Thread(FieldController);
-                battleThread = new Thread(BattleController);
-                hotkeyThread = new Thread(HotkeysController);
-                otherThread = new Thread(OtherController);
-                //extra threads
-                ultimateThread = new Thread(UltimateController);
-
                 Constants.Init();
                 InitUI();
                 LoadKey();
@@ -5831,6 +5824,7 @@ namespace Dragoon_Modifier {
                     ubTrackDragoon = true;
                     ubTrackHPChange = true;
                     ubUltimateEnrage = true;
+                    ultimateThread = new Thread(UltimateController);
                     ultimateThread.Start();
                 }
 
@@ -9239,6 +9233,11 @@ namespace Dragoon_Modifier {
                 if (processID > 0) {
                     Constants.RUN = true;
                     emulator.OpenProcess(processID);
+                    fieldThread = new Thread(FieldController);
+                    battleThread = new Thread(BattleController);
+                    hotkeyThread = new Thread(HotkeysController);
+                    otherThread = new Thread(OtherController);
+                    ultimateThread = new Thread(UltimateController);
                     fieldThread.Start();
                     battleThread.Start();
                     hotkeyThread.Start();
@@ -9254,6 +9253,7 @@ namespace Dragoon_Modifier {
             } else {
                 Constants.RUN = false;
                 miAttach.Header = "Attach";
+                emulator.CloseProcess();
                 Constants.WritePLogOutput("Detached from " + Constants.EMULATOR_NAME + ". Program stopped.");
             }
         }
