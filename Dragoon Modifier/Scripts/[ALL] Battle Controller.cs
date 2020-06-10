@@ -180,6 +180,9 @@ public class BattleController {
         for (int character = 0; character < 9; character++) {
             Globals.CURRENT_STATS[character] = new CurrentStats(character, emulator);
         }
+        if (Globals.PARTY_SLOT[1] == Globals.NO_DART || Globals.PARTY_SLOT[2] == Globals.NO_DART) {
+            Globals.NO_DART = null;
+        }
 
         for (int slot = 0; slot < 3; slot++) {
             AdditionsBattleChanges(emulator, slot, false);
@@ -592,7 +595,13 @@ public class BattleController {
                 emulator.WriteByte(address + i * 0x1C + 0x3, item.Element);
                 emulator.WriteByte(address + i * 0x1C + 0x1A, item.Status);
                 emulator.WriteByte(address + i * 0x1C + 0x17, item.Status_Chance);
-                emulator.WriteByte(address + i * 0x1C + 0x9, item.AT);
+                if (item.AT > 255) {
+                    emulator.WriteByte(address + i * 0x1C + 0x9, 255);
+                    emulator.WriteByte(address + i * 0x1C + 0x9, item.AT - 255);
+                } else {
+                    emulator.WriteByte(address + i * 0x1C + 0x9, item.AT);
+                    emulator.WriteByte(address + i * 0x1C + 0x9, 0);
+                }
                 emulator.WriteByte(address + i * 0x1C + 0x10, item.MAT);
                 emulator.WriteByte(address + i * 0x1C + 0x11, item.DF);
                 emulator.WriteByte(address + i * 0x1C + 0x12, item.MDF);
