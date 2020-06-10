@@ -597,10 +597,10 @@ public class BattleController {
                 emulator.WriteByte(address + i * 0x1C + 0x17, item.Status_Chance);
                 if (item.AT > 255) {
                     emulator.WriteByte(address + i * 0x1C + 0x9, 255);
-                    emulator.WriteByte(address + i * 0x1C + 0x9, item.AT - 255);
+                    emulator.WriteByte(address + i * 0x1C + 0xD, item.AT - 255);
                 } else {
                     emulator.WriteByte(address + i * 0x1C + 0x9, item.AT);
-                    emulator.WriteByte(address + i * 0x1C + 0x9, 0);
+                    emulator.WriteByte(address + i * 0x1C + 0xD, 0);
                 }
                 emulator.WriteByte(address + i * 0x1C + 0x10, item.MAT);
                 emulator.WriteByte(address + i * 0x1C + 0x11, item.DF);
