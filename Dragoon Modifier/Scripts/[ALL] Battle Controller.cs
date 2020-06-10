@@ -585,25 +585,25 @@ public class BattleController {
             long address = Constants.GetAddress("ITEM_TABLE");
             int i = 0;
             foreach (dynamic item in Globals.DICTIONARY.ItemList) {
-                if (i < 194) {
-                    emulator.WriteByte(address + i * 0x1C, item.Type);
-                    emulator.WriteByte(address + i * 0x1C + 0x2, item.Equips);
-                    emulator.WriteByte(address + i * 0x1C + 0x3, item.Element);
-                    emulator.WriteByte(address + i * 0x1C + 0x1A, item.Status);
-                    emulator.WriteByte(address + i * 0x1C + 0x17, item.Status_Chance);
-                    emulator.WriteByte(address + i * 0x1C + 0x9, item.AT);
-                    emulator.WriteByte(address + i * 0x1C + 0x10, item.MAT);
-                    emulator.WriteByte(address + i * 0x1C + 0x11, item.DF);
-                    emulator.WriteByte(address + i * 0x1C + 0x12, item.MDF);
-                    emulator.WriteByte(address + i * 0x1C + 0xE, item.SPD);
-                    emulator.WriteByte(address + i * 0x1C + 0x13, item.A_Hit);
-                    emulator.WriteByte(address + i * 0x1C + 0x14, item.M_Hit);
-                    emulator.WriteByte(address + i * 0x1C + 0x15, item.A_AV);
-                    emulator.WriteByte(address + i * 0x1C + 0x16, item.M_AV);
-                    emulator.WriteByte(address + i * 0x1C + 0x5, item.E_Half);
-                    emulator.WriteByte(address + i * 0x1C + 0x6, item.E_Immune);
-                    emulator.WriteByte(address + i * 0x1C + 0x7, item.Stat_Res);
-                }
+                if (i < 157)
+                    break;
+                emulator.WriteByte(address + i * 0x1C, item.Type);
+                emulator.WriteByte(address + i * 0x1C + 0x2, item.Equips);
+                emulator.WriteByte(address + i * 0x1C + 0x3, item.Element);
+                emulator.WriteByte(address + i * 0x1C + 0x1A, item.Status);
+                emulator.WriteByte(address + i * 0x1C + 0x17, item.Status_Chance);
+                emulator.WriteByte(address + i * 0x1C + 0x9, item.AT);
+                emulator.WriteByte(address + i * 0x1C + 0x10, item.MAT);
+                emulator.WriteByte(address + i * 0x1C + 0x11, item.DF);
+                emulator.WriteByte(address + i * 0x1C + 0x12, item.MDF);
+                emulator.WriteByte(address + i * 0x1C + 0xE, item.SPD);
+                emulator.WriteByte(address + i * 0x1C + 0x13, item.A_Hit);
+                emulator.WriteByte(address + i * 0x1C + 0x14, item.M_Hit);
+                emulator.WriteByte(address + i * 0x1C + 0x15, item.A_AV);
+                emulator.WriteByte(address + i * 0x1C + 0x16, item.M_AV);
+                emulator.WriteByte(address + i * 0x1C + 0x5, item.E_Half);
+                emulator.WriteByte(address + i * 0x1C + 0x6, item.E_Immune);
+                emulator.WriteByte(address + i * 0x1C + 0x7, item.Stat_Res);
                 i++;
             }
         }
