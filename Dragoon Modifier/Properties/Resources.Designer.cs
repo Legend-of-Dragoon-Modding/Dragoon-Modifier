@@ -61,6 +61,16 @@ namespace Dragoon_Modifier.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Character_Stats {
+            get {
+                object obj = ResourceManager.GetObject("Character_Stats", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon Icon_Blue {
@@ -107,6 +117,16 @@ namespace Dragoon_Modifier.Properties {
             get {
                 object obj = ResourceManager.GetObject("Icon_Yellow", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Items {
+            get {
+                object obj = ResourceManager.GetObject("Items", resourceCulture);
+                return ((byte[])(obj));
             }
         }
     }

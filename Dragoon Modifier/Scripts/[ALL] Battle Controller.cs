@@ -304,6 +304,21 @@ public class BattleController {
                 Globals.CHARACTER_TABLE[slot].Write("MP_P_Hit", Globals.CURRENT_STATS[character].MP_P_Hit);
                 Globals.CHARACTER_TABLE[slot].Write("SP_P_Hit", Globals.CURRENT_STATS[character].SP_P_Hit);
                 Globals.CHARACTER_TABLE[slot].Write("SP_Multi", Globals.CURRENT_STATS[character].SP_Multi);
+                if (!Globals.CHARACTER_STAT_CHANGE) {
+                    Globals.CHARACTER_TABLE[slot].Write("HP", Math.Min(Globals.CURRENT_STATS[character].HP, Globals.CURRENT_STATS[character].Max_HP));
+                    Globals.CHARACTER_TABLE[slot].Write("Max_HP", Globals.CURRENT_STATS[character].Max_HP);
+                    Globals.CHARACTER_TABLE[slot].Write("AT", Globals.CURRENT_STATS[character].AT);
+                    Globals.CHARACTER_TABLE[slot].Write("OG_AT", Globals.CURRENT_STATS[character].AT);
+                    Globals.CHARACTER_TABLE[slot].Write("MAT", Globals.CURRENT_STATS[character].MAT);
+                    Globals.CHARACTER_TABLE[slot].Write("OG_MAT", Globals.CURRENT_STATS[character].MAT);
+                    Globals.CHARACTER_TABLE[slot].Write("DF", Globals.CURRENT_STATS[character].DF);
+                    Globals.CHARACTER_TABLE[slot].Write("DF", Globals.CURRENT_STATS[character].DF);
+                    Globals.CHARACTER_TABLE[slot].Write("OG_DF", Globals.CURRENT_STATS[character].DF);
+                    Globals.CHARACTER_TABLE[slot].Write("MDF", Globals.CURRENT_STATS[character].MDF);
+                    Globals.CHARACTER_TABLE[slot].Write("OG_MDF", Globals.CURRENT_STATS[character].MDF);
+                    Globals.CHARACTER_TABLE[slot].Write("SPD", Globals.CURRENT_STATS[character].SPD);
+                    Globals.CHARACTER_TABLE[slot].Write("OG_SPD", Globals.CURRENT_STATS[character].SPD);
+                }
             }
         }
     }
@@ -328,7 +343,6 @@ public class BattleController {
                 Globals.CHARACTER_TABLE[slot].Write("OG_MDF", Globals.CURRENT_STATS[character].MDF);
                 Globals.CHARACTER_TABLE[slot].Write("SPD", Globals.CURRENT_STATS[character].SPD);
                 Globals.CHARACTER_TABLE[slot].Write("OG_SPD", Globals.CURRENT_STATS[character].SPD);
-                Globals.CHARACTER_TABLE[slot].Write("Element", Globals.CURRENT_STATS[character].Element);
             }
         }
     }
@@ -1340,15 +1354,45 @@ public class BattleController {
             if ((dragoon_spirits[character] & emulator.ReadByte("DRAGOON_SPIRITS")) > 0) {
                 dlv = emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x13);
             }
-            weapon = Globals.DICTIONARY.ItemList[emulator.ReadByte("CHAR_TABLE", character * 0x2C + 0x14)];
-            armor = Globals.DICTIONARY.ItemList[emulator.ReadByte("CHAR_TABLE", character * 0x2C + 0x15)];
-            helm = Globals.DICTIONARY.ItemList[emulator.ReadByte("CHAR_TABLE", character * 0x2C + 0x16)];
-            boots = Globals.DICTIONARY.ItemList[emulator.ReadByte("CHAR_TABLE", character * 0x2C + 0x17)];
-            accessory = Globals.DICTIONARY.ItemList[emulator.ReadByte("CHAR_TABLE", character * 0x2C + 0x18)];
+
+            if (!Globals.ITEM_STAT_CHANGE) {
+                weapon = Globals.DICTIONARY.OriginalItemList[emulator.ReadByte("CHAR_TABLE", character * 0x2C + 0x14)];
+                armor = Globals.DICTIONARY.OriginalItemList[emulator.ReadByte("CHAR_TABLE", character * 0x2C + 0x15)];
+                helm = Globals.DICTIONARY.OriginalItemList[emulator.ReadByte("CHAR_TABLE", character * 0x2C + 0x16)];
+                boots = Globals.DICTIONARY.OriginalItemList[emulator.ReadByte("CHAR_TABLE", character * 0x2C + 0x17)];
+                accessory = Globals.DICTIONARY.OriginalItemList[emulator.ReadByte("CHAR_TABLE", character * 0x2C + 0x18)];
+            } else {
+                weapon = Globals.DICTIONARY.ItemList[emulator.ReadByte("CHAR_TABLE", character * 0x2C + 0x14)];
+                armor = Globals.DICTIONARY.ItemList[emulator.ReadByte("CHAR_TABLE", character * 0x2C + 0x15)];
+                helm = Globals.DICTIONARY.ItemList[emulator.ReadByte("CHAR_TABLE", character * 0x2C + 0x16)];
+                boots = Globals.DICTIONARY.ItemList[emulator.ReadByte("CHAR_TABLE", character * 0x2C + 0x17)];
+                accessory = Globals.DICTIONARY.ItemList[emulator.ReadByte("CHAR_TABLE", character * 0x2C + 0x18)];
+            }
+
             hp = emulator.ReadShort("CHAR_TABLE", character * 0x2C + 0x8);
-            max_hp = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].Max_HP * (1 + ((weapon.Special2 & 2) >> 1) * (float) (weapon.Special_Ammount) / 100 + ((armor.Special2 & 2) >> 1) * (float) (armor.Special_Ammount) / 100
-                + ((helm.Special2 & 2) >> 1) * (float) (helm.Special_Ammount) / 100 + ((boots.Special2 & 2) >> 1) * (float) (boots.Special_Ammount) / 100 + ((accessory.Special2 & 2) >> 1) * (float) (accessory.Special_Ammount) / 100));
             mp = emulator.ReadShort("CHAR_TABLE", character * 0x2C + 0xA);
+            sp = emulator.ReadShort("CHAR_TABLE", character * 0x2C + 0xC);
+
+            if (!Globals.CHARACTER_STAT_CHANGE) {
+                max_hp = (ushort) (Globals.DICTIONARY.OriginalCharacterStats[character][lv].Max_HP * (1 + ((weapon.Special2 & 2) >> 1) * (float) (weapon.Special_Ammount) / 100 + ((armor.Special2 & 2) >> 1) * (float) (armor.Special_Ammount) / 100
+                       + ((helm.Special2 & 2) >> 1) * (float) (helm.Special_Ammount) / 100 + ((boots.Special2 & 2) >> 1) * (float) (boots.Special_Ammount) / 100 + ((accessory.Special2 & 2) >> 1) * (float) (accessory.Special_Ammount) / 100));
+
+                at = (ushort) (Globals.DICTIONARY.OriginalCharacterStats[character][lv].AT + weapon.AT + armor.AT + helm.AT + boots.AT + accessory.AT);
+                mat = (ushort) (Globals.DICTIONARY.OriginalCharacterStats[character][lv].MAT + weapon.MAT + armor.MAT + helm.MAT + boots.MAT + accessory.MAT);
+                df = (ushort) (Globals.DICTIONARY.OriginalCharacterStats[character][lv].DF + weapon.DF + armor.DF + helm.DF + boots.DF + accessory.DF);
+                mdf = (ushort) (Globals.DICTIONARY.OriginalCharacterStats[character][lv].MDF + weapon.MDF + armor.MDF + helm.MDF + boots.MDF + accessory.MDF);
+                spd = (ushort) (Globals.DICTIONARY.OriginalCharacterStats[character][lv].SPD + weapon.SPD + armor.SPD + helm.SPD + boots.SPD + accessory.SPD);
+            } else {
+                max_hp = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].Max_HP * (1 + ((weapon.Special2 & 2) >> 1) * (float) (weapon.Special_Ammount) / 100 + ((armor.Special2 & 2) >> 1) * (float) (armor.Special_Ammount) / 100
+                       + ((helm.Special2 & 2) >> 1) * (float) (helm.Special_Ammount) / 100 + ((boots.Special2 & 2) >> 1) * (float) (boots.Special_Ammount) / 100 + ((accessory.Special2 & 2) >> 1) * (float) (accessory.Special_Ammount) / 100));
+
+                at = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].AT + weapon.AT + armor.AT + helm.AT + boots.AT + accessory.AT);
+                mat = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].MAT + weapon.MAT + armor.MAT + helm.MAT + boots.MAT + accessory.MAT);
+                df = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].DF + weapon.DF + armor.DF + helm.DF + boots.DF + accessory.DF);
+                mdf = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].MDF + weapon.MDF + armor.MDF + helm.MDF + boots.MDF + accessory.MDF);
+                spd = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].SPD + weapon.SPD + armor.SPD + helm.SPD + boots.SPD + accessory.SPD);
+            }
+
             if (Globals.DRAGOON_STAT_CHANGE) {
                 max_mp = (ushort) (Globals.DICTIONARY.DragoonStats[character][dlv].MP * (1 + (weapon.Special2 & 1) * (float) (weapon.Special_Ammount) / 100 + (armor.Special2 & 1) * (float) (armor.Special_Ammount) / 100
                      + (helm.Special2 & 1) * (float) (helm.Special_Ammount) / 100 + (boots.Special2 & 1) * (float) (boots.Special_Ammount) / 100 + (accessory.Special2 & 1) * (float) (accessory.Special_Ammount) / 100));
@@ -1356,12 +1400,7 @@ public class BattleController {
                 max_mp = (ushort) (dlv * 20 * (1 + (weapon.Special2 & 1) * (float) (weapon.Special_Ammount) / 100 + (armor.Special2 & 1) * (float) (armor.Special_Ammount) / 100
                      + (helm.Special2 & 1) * (float) (helm.Special_Ammount) / 100 + (boots.Special2 & 1) * (float) (boots.Special_Ammount) / 100 + (accessory.Special2 & 1) * (float) (accessory.Special_Ammount) / 100));
             }
-            sp = emulator.ReadShort("CHAR_TABLE", character * 0x2C + 0xC);
-            at = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].AT + weapon.AT + armor.AT + helm.AT + boots.AT + accessory.AT);
-            mat = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].MAT + weapon.MAT + armor.MAT + helm.MAT + boots.MAT + accessory.MAT);
-            df = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].DF + weapon.DF + armor.DF + helm.DF + boots.DF + accessory.DF);
-            mdf = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].MDF + weapon.MDF + armor.MDF + helm.MDF + boots.MDF + accessory.MDF);
-            spd = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].SPD + weapon.SPD + armor.SPD + helm.SPD + boots.SPD + accessory.SPD);
+
             stat_res |= weapon.Stat_Res | armor.Stat_Res | helm.Stat_Res | boots.Stat_Res | accessory.Stat_Res;
             e_half |= weapon.E_Half | armor.E_Half | helm.E_Half | boots.E_Half | accessory.E_Half;
             e_immune |= weapon.E_Immune | armor.E_Immune | helm.E_Immune | boots.E_Immune | accessory.E_Immune;

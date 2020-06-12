@@ -62,7 +62,7 @@ Master's Vest	Armor	Haschel	Warrior Dress						30	29				10					sp_p_hit		20		Gai
 Energy Girdle	Armor	Haschel	Warrior Dress						37	26				10					sp_multi		50		Attacks generate<LINE>50% more SP.	300
 Violet DG Armor	Armor	Haschel	Warrior Dress						45	40				10	10		Thunder						Nullifies damage<LINE>from thunder-based<LINE>attacks.	800
 Clothes	Armor	Female	Robe						4	5				5	5								 	20
-Leather Jacket	Armor	Shana, Rose	Robe						7	12				5	5								 	50
+Leather Jacket	Armor	Female	Robe						7	12				5	5								 	50
 Silver Vest	Armor	Female	Robe						13	27				10	5								 	150
 Sparkle Dress	Armor	Female	Robe						19	45				5	5				sp_p_hit		20		Gain 20 SP when<LINE>attacked<LINE>physically.	200
 Robe	Armor	Female	Robe						25	35				5	5				sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.	300
@@ -83,8 +83,8 @@ Giganto Helm	Helm	Kongol	Helm					14	10	5		100	100						sp_m_hit		20		Gain 20 SP
 Soul Headband	Helm	Haschel	Bandana					25	5	5		100	100						sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.	200
 Felt Hat	Helm	Female	Hat					5				100	100										 	10
 Cape	Helm	Female	Hat					17				100	100										 	60
-Tiara	Helm	Female	Crown					29	5			100	110										Increases hit<LINE>chance of magical<LINE>attacks by 10%.	150
-Jeweled Crown	Helm	Shana, Meru	Crown					42		5		100	100						sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.	200
+Tiara	Helm	Female	Crown					42	5			100	110										Increases hit<LINE>chance of magical<LINE>attacks by 10%.	150
+Jeweled Crown	Helm	Shana, Meru	Crown					24		5		100	100						sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.	200
 Rose's Hair Band	Helm	Rose	Bandana					36				100	100									death_res	Grants immunity<LINE>to instant death.	250
 																							 	2
 Phoenix Plume	Helm	All	Helm					30		10		100	100					Bewitchment, Confusion, Fear, Dispirit					Avoids bewitchment,<LINE>confusion, fear,<LINE>and dispiriting.	600

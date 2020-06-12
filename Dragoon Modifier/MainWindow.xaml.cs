@@ -17,6 +17,9 @@ using Microsoft.Win32;
 using System.Windows.Input;
 using static Dragoon_Modifier.ReaderWindow;
 using Xceed.Wpf.Toolkit.PropertyGrid.Editors;
+using Dragoon_Modifier.Properties;
+using Xceed.Wpf.AvalonDock.Properties;
+using System.Reflection;
 
 namespace Dragoon_Modifier {
     public partial class MainWindow {
@@ -1020,13 +1023,30 @@ namespace Dragoon_Modifier {
 
         #region LoDDict
         public class LoDDict {
+            IEnumerable<string> EnumerateLines(TextReader reader) {
+                string line;
+
+                while ((line = reader.ReadLine()) != null) {
+                    yield return line;
+                }
+            }
+
+            string[] ReadAllResourceLines(byte[] resourceData) {
+                using (Stream stream = new MemoryStream(resourceData))
+                using (StreamReader reader = new StreamReader(stream)) {
+                    return EnumerateLines(reader).ToArray();
+                }
+            }
+
             List<dynamic> itemList = new List<dynamic>();
+            List<dynamic> originalItemList = new List<dynamic>();
             List<string> descriptionList = new List<string>();
             List<string> nameList = new List<string>();
             IDictionary<int, dynamic> statList = new Dictionary<int, dynamic>();
             IDictionary<int, dynamic> ultimateStatList = new Dictionary<int, dynamic>();
             byte[][] shopList = new byte[44][];
             dynamic[][] characterStats = new dynamic[9][];
+            dynamic[][] originalCharacterStats = new dynamic[9][];
             dynamic[,,] additionData = new dynamic[9, 8, 8];
             List<int> monsterScript = new List<int>();
             dynamic[][] dragoonStats = new dynamic[9][];
@@ -1077,12 +1097,14 @@ namespace Dragoon_Modifier {
             };
 
             public List<dynamic> ItemList { get { return itemList; } }
+            public List<dynamic> OriginalItemList { get { return originalItemList; } }
             public List<string> DescriptionList { get { return descriptionList; } }
             public List<string> NameList { get { return nameList; } }
             public IDictionary<int, dynamic> StatList { get { return statList; } }
             public IDictionary<int, dynamic> UltimateStatList { get { return ultimateStatList; } }
             public byte[][] ShopList { get { return shopList; } }
             public dynamic[][] CharacterStats { get { return characterStats; } }
+            public dynamic[][] OriginalCharacterStats { get { return originalCharacterStats; } }
             public dynamic[,,] AdditionData { get { return additionData; } }
             public dynamic[] DragoonAddition { get { return dragoonAddition; } }
             public List<int> MonsterScript { get { return monsterScript; } }
@@ -1095,6 +1117,7 @@ namespace Dragoon_Modifier {
 
             public LoDDict() {
                 string cwd = AppDomain.CurrentDomain.BaseDirectory;
+                int origI = 0;
                 try {
                     try {
                         using (var itemData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Items.tsv")) {
@@ -1145,8 +1168,18 @@ namespace Dragoon_Modifier {
                                 offset += (item.EncodedName.Replace(" ", "").Length / 2);
                             }
                         }
+
+                        foreach (var line in ReadAllResourceLines(Properties.Resources.Items)) {
+                            if (origI > 0) {
+                                var values = line.Split('\t').ToArray();
+                                originalItemList.Add(new ItemList(origI, values));
+                            }
+                            origI++;
+                        }
+
                         for (int i = 0; i < characterStats.Length; i++) {
                             characterStats[i] = new dynamic[61];
+                            originalCharacterStats[i] = new dynamic[61];
                         }
                         try {
                             using (var characterData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Character_Stats.tsv")) {
@@ -1173,6 +1206,25 @@ namespace Dragoon_Modifier {
                             string file = cwd + @"Mods\" + Globals.MOD + @"\Character_Stats.tsv";
                             Constants.WriteDebug(file + " not found. Turning off Stat and Equip Changes.");
                         }
+
+                        origI = 0;
+                        foreach (var line in ReadAllResourceLines(Properties.Resources.Character_Stats)) {
+                            if (origI > 1) {
+                                var values = line.Split('\t').ToArray();
+                                int level = int.Parse(values[0]);
+                                originalCharacterStats[0][level] = new CharacterStats(values[1], values[2], values[3], values[4], values[5], values[6]);
+                                originalCharacterStats[1][level] = new CharacterStats(values[7], values[8], values[9], values[10], values[11], values[12]);
+                                originalCharacterStats[2][level] = new CharacterStats(values[13], values[14], values[15], values[16], values[17], values[18]);
+                                originalCharacterStats[3][level] = new CharacterStats(values[19], values[20], values[21], values[22], values[23], values[24]);
+                                originalCharacterStats[4][level] = new CharacterStats(values[25], values[26], values[27], values[28], values[29], values[30]);
+                                originalCharacterStats[5][level] = new CharacterStats(values[7], values[8], values[9], values[10], values[11], values[12]);
+                                originalCharacterStats[6][level] = new CharacterStats(values[31], values[32], values[33], values[34], values[35], values[36]);
+                                originalCharacterStats[7][level] = new CharacterStats(values[37], values[38], values[39], values[40], values[41], values[42]);
+                                originalCharacterStats[8][level] = new CharacterStats(values[13], values[14], values[15], values[16], values[17], values[18]);
+                            }
+                            origI++;
+                        }
+
                         try {
                             using (var monsterData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Monster_Data.tsv")) {
                                 bool firstline = true;
@@ -1212,10 +1264,13 @@ namespace Dragoon_Modifier {
                         }
                     } catch (FileNotFoundException) {
                         string file = cwd + @"Mods\" + Globals.MOD + @"\Items.tsv";
-                        Constants.WriteDebug(file + " not found. Turning off Monster and Drop Changes.");
+                        Constants.WriteDebug(file + " not found. Turning off Monster, Drop, and Item Changes.");
                         Globals.MONSTER_STAT_CHANGE = false;
                         Globals.MONSTER_DROP_CHANGE = false;
                         Globals.MONSTER_EXPGOLD_CHANGE = false;
+                        Globals.ITEM_ICON_CHANGE = false;
+                        Globals.ITEM_STAT_CHANGE = false;
+                        Globals.ITEM_NAMEDESC_CHANGE = false;
                     }
                     try {
                         string[] lines = File.ReadAllLines(cwd + @"Mods\" + Globals.MOD + @"\Monster_Script.txt");
