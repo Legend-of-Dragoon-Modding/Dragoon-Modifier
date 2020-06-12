@@ -9,14 +9,15 @@ In the settings tab activated scripts are in black text, deactivated scripts are
   
 # For Developers  
 All scripts have the following four methods: Run(), Click(), Open(), and Close(). Run() is executed in the loop thread for that thread. Click() is executed when the user double clicks on the script. Open() is on program open. Close() is on program exit.  
-For organization purposes, if a script is only done on the field/battle it should be in the Field/Battle folder. All hotkeys should go into the Hotkey folder. Anything generic or for multi use in field/battle it should go in Other. If a script is specific for a mod you are making make a sub folder in on other the folders above. Dragoon Modifier will pick up anything labeled with a type of ".cs".  
+For organization purposes, if a script is only done on the field/battle it should be in the Field/Battle folder. All hotkeys should go into the Hotkey folder. Anything generic or for multi use in field/battle it should go in the Other folder. If a script is specific for a mod you are making make a sub folder in on other the folders above. Dragoon Modifier will pick up anything labeled with a type of ".cs" within the Scripts folder.  
+  
 Also all scripts should start with their appropriate region codes. When switching regions scripts incompatible will be disabled.  
   
 [NTA] - North America / Russian Fan Translation  
 [JPN] - Japan  
 [PAL-GER] - PAL - German  
 [PAL-FRN] - PAL - French  
-[PAL-ITL] - PAL - Itlian  
+[PAL-ITL] - PAL - Italian  
 [PAL-SPN] - PAL - Spanish  
 [PAL-ENG] - PAL - UK English  
 [ALL]  
