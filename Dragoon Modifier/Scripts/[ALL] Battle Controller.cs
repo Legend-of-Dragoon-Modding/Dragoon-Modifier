@@ -31,7 +31,7 @@ public class BattleController {
             Globals.MONSTER_SIZE = emulator.ReadByte("MONSTER_SIZE");
             Globals.UNIQUE_MONSTERS = emulator.ReadByte("UNIQUE_MONSTERS");
 
-            if (Constants.REGION == Region.USA) {
+            if (Constants.REGION == Region.NTA) {
                 Globals.SetM_POINT(0x1A439C + emulator.ReadShort("M_POINT"));
             } else {
                 Globals.SetM_POINT(0x1A43B4 + emulator.ReadShort("M_POINT"));
@@ -97,7 +97,7 @@ public class BattleController {
     }
 
     public static int GetOffset(Emulator emulator) {
-        if (Constants.REGION == Region.USA) {
+        if (Constants.REGION == Region.NTA) {
             return emulator.ReadShort(0xBDA0C) - 0x8F44;
         } else {
             int[] discOffset = { 0xD80, 0x0, 0x1458, 0x1B0 };
@@ -367,12 +367,12 @@ public class BattleController {
                 emulator.WriteByte(address + (i * 0xC) + 0x7, Spell.MP);
                 emulator.WriteByte(address + (i * 0xC) + 0x9, Spell.Element);
                 descr += (string) Spell.Encoded_Description + " ";
-                if (Constants.REGION == Region.USA)
+                if (Constants.REGION == Region.NTA)
                     emulator.WriteInteger(Constants.GetAddress("DRAGOON_DESC_PTR") + i * 0x4, (int) Spell.Description_Pointer);
                 i++;
             }
             descr = descr.Remove(descr.Length - 1);
-            if (Constants.REGION == Region.USA)
+            if (Constants.REGION == Region.NTA)
                 emulator.WriteAOB(Constants.GetAddress("DRAGOON_DESC"), descr);
             for (int z = 0; z < 3; z++) { // Miranda Hotfix
                 int intValue = (int) emulator.ReadByteU(address + ((z + 65) * 0xC) + 0x2);
@@ -390,7 +390,7 @@ public class BattleController {
             }
         }
 
-        if (Globals.DRAGOON_DESC_CHANGE && Constants.REGION == Region.USA) {
+        if (Globals.DRAGOON_DESC_CHANGE && Constants.REGION == Region.NTA) {
             Constants.WriteDebug("Changing Dragoon Spell Descriptions...");
             int i = 0;
             string descr = String.Empty;
@@ -426,7 +426,7 @@ public class BattleController {
     public static void HaschelFix(Emulator emulator) {
         Constants.WriteDebug("Haschel Fix - " + Globals.DISC);
 
-        if (Constants.REGION == Region.USA) {
+        if (Constants.REGION == Region.NTA) {
             emulator.WriteAOB(Constants.GetAddress("HASCHEL_FIX" + Globals.DISC), "0x80 0x80 0x80 0x00");
             emulator.WriteAOB(Constants.GetAddress("HASCHEL_FIX" + Globals.DISC) + 0x4, Globals.DISC == 1 ? "0x90 0xA0" : Globals.DISC == 2 ? "0x10 0x93" : Globals.DISC == 3 ? "0x68 0xA7" : "0xC0 0x94");
             emulator.WriteAOB(Constants.GetAddress("HASCHEL_FIX" + Globals.DISC) + 0x6, ("0x1E 0x80 0x74 0x12 0x00 0x00 0x02 0x00 0x8C 0x8C 0x4D 0x52 0x47 0x1A 0x04 0x00 0x00 0x00 0x28 0x00" +
@@ -643,7 +643,7 @@ public class BattleController {
             }
         }
 
-        if (Globals.ITEM_NAMEDESC_CHANGE && (Constants.REGION == Region.USA || Constants.REGION == Region.EUR_ENG)) {
+        if (Globals.ITEM_NAMEDESC_CHANGE && (Constants.REGION == Region.NTA || Constants.REGION == Region.PAL_ENG)) {
             Constants.WriteOutput("Changing Item Names and Descriptions...");
             if (String.Join("", Globals.DICTIONARY.NameList).Replace(" ", "").Length / 2 < 6423) {
                 emulator.WriteAOB("ITEM_NAME", String.Join(" ", Globals.DICTIONARY.NameList));

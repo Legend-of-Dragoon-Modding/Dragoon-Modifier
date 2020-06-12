@@ -17,7 +17,7 @@ namespace Dragoon_Modifier {
         public static TextBlock GLOG;
         public static TextBlock PLOG;
         public static long OFFSET = 0x0;
-        public static Region REGION = Region.USA;
+        public static Region REGION = Region.NTA;
         public static byte EMULATOR = 255;
         public static int SAVE_SLOT = 0;
         public static string EMULATOR_NAME = "None";

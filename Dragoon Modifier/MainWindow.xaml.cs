@@ -2913,7 +2913,7 @@ namespace Dragoon_Modifier {
                                 if (!skip) {
                                     if ((Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) && !checkRoseDamage) {
                                         if (roseEnhanceDragoon) {
-                                            if (Constants.REGION == Region.USA) {
+                                            if (Constants.REGION == Region.NTA) {
                                                                                                                                 
                                                 emulator.WriteAOB(Globals.DRAGOON_SPELLS[15].Description_Pointer - 0x80000000, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1A 00 1E 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 FF A0");
                                                 emulator.WriteAOB(Globals.DRAGOON_SPELLS[16].Description_Pointer - 0x80000000, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 18 00 1E 00 1A 00 0F 00 FF A0");
@@ -2925,7 +2925,7 @@ namespace Dragoon_Modifier {
                                             roseEnhanceDragoon = false;
                                             Constants.WriteGLogOutput("Rose's dragoon magic has returned to normal.");
                                         } else {
-                                            if (Constants.REGION == Region.USA) {
+                                            if (Constants.REGION == Region.NTA) {
                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[15].Description_Pointer - 0x80000000, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1D 00 17 00 1A 00 0F 00 00 00 10 00 00 00 26 00 2E 00 FF A0");
                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[16].Description_Pointer - 0x80000000, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1C 00 1E 00 1A 00 0F 00 FF A0");
                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[19].Description_Pointer - 0x80000000, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 16 00 16 00 1A 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 FF A0");
@@ -2953,7 +2953,7 @@ namespace Dragoon_Modifier {
                                 if (!skip) {
                                     if (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) {
                                         if (jeweledHammer) {
-                                            if (Constants.REGION == Region.USA) {
+                                            if (Constants.REGION == Region.NTA) {
                                                 emulator.WriteAOB(Globals.DRAGOON_SPELLS[24].Description_Pointer - 0x80000000, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1A 00 16 00 15 00 0F 00 FF A0");
                                                 emulator.WriteAOB(Globals.DRAGOON_SPELLS[27].Description_Pointer - 0x80000000, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1A 00 18 00 15 00 0F 00 FF A0");
                                                 emulator.WriteAOB(Globals.DRAGOON_SPELLS[28].Description_Pointer - 0x80000000, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 16 00 19 00 15 00 15 00 0F 00 FF A0");
@@ -2965,7 +2965,7 @@ namespace Dragoon_Modifier {
                                             jeweledHammer = false;
                                             Constants.WriteGLogOutput("Meru's dragoon magic has returned to normal.");
                                         } else {
-                                            if (Constants.REGION == Region.USA) {
+                                            if (Constants.REGION == Region.NTA) {
                                                 emulator.WriteAOB(Globals.DRAGOON_SPELLS[24].Description_Pointer - 0x80000000, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1D 00 15 00 15 00 0F 00 FF A0");
                                                 emulator.WriteAOB(Globals.DRAGOON_SPELLS[27].Description_Pointer - 0x80000000, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1D 00 1D 00 15 00 0F 00 FF A0");
                                                 emulator.WriteAOB(Globals.DRAGOON_SPELLS[28].Description_Pointer - 0x80000000, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 17 00 16 00 15 00 15 00 0F 00 FF A0");
@@ -3380,7 +3380,7 @@ namespace Dragoon_Modifier {
             int offset = 0x0;
             if (Constants.REGION == Region.JPN) {
                 offset -= 0x4D90;
-            } else if (Constants.REGION == Region.EUR_GER) {
+            } else if (Constants.REGION == Region.PAL_GER) {
                 offset += 0x120;
             }
             return offset;
@@ -5250,8 +5250,6 @@ namespace Dragoon_Modifier {
                     emulator.WriteShort("MONSTER_REWARDS", 1000, 0x2);
                 } else if (Globals.ENCOUNTER_ID == 401) {
                     emulator.WriteShort("MONSTER_REWARDS", 45000, 0x2);
-                } else if (Globals.ENCOUNTER_ID == 390) {
-                    emulator.WriteInteger("TOTAL_GOLD", 100000);
                 } else if (Globals.ENCOUNTER_ID == 390) {
                     emulator.WriteInteger("TOTAL_GOLD", 100000);
                 } else if (Globals.ENCOUNTER_ID == 411) {
@@ -10274,38 +10272,38 @@ namespace Dragoon_Modifier {
                     "7. Fruegel II - 220,000 HP\r\n\r\n" +
                     "8. Fire Bird - 281,600 HP\r\nThis boss has Zero SP start. This boss has Guard Break on dive attack. This boss has MP Attack on summon. Defeating this boss will increase your inventory to 40 slots.\r\n\r\n" +
                     "\r\n\r\nZone 3 - Level 50\r\n\r\n" +
-                    "9. Ghost Feyrbrand - 320,000 HP\r\n\r\n" +
-                    "10. Mappi - 128,000 HP\r\n\r\n" +
-                    "11. Gehrich - 200,000 HP | Mappi - 128,000 HP\r\nThis boss has Zero SP start.\r\n\r\n" +
-                    "12. Ghost Commander - 221,000 HP\r\nThis boss has Wound Damage on slash attack. This boss has Health Steal on life sap attack.\r\n\r\n" +
-                    "13. Kamuy - 300,000 HP\r\nThis boss unlocks an used attack.\r\nThis boss does SP damage.\r\n\r\n" +
-                    "14. Ghost Regole - 336,000 HP\r\n\r\n" +
-                    "15. Grand Jewel - 260,000 HP\r\nThis boss has a Magic Change every 10%.\r\nThis boss has elemental shift.\r\nThis Boss has Reverse Dragon Block Staff.\r\n\r\n" +
-                    "16. Windigo - 700,000 HP\r\nThis boss has Armor Break when heart is damaged.\r\n\r\n" +
-                    "17. Polter Armor - 666.666 HP\r\nThis boss has Shared HP.\r\n\r\n" +
-                    "18. The Last Kraken - 360,000 HP\r\nThis boss is actually centered.\r\n\r\n" +
-                    "19. Vector - 180,000 HP | Selebus - 135,000 HP | Kubila - 157,500 HP\r\n\r\n" +
-                    "20. Caterpillar - 120,000 HP | Pupa - 180,000 HP | Imago - 240,000 HP\r\n\r\n" +
-                    "21. Zackwell - 360,000 HP\r\n\r\n" +
-                    "22. Ghost Divine Dragon - 400,000 HP\r\nDefeating this boss will increase your inventory to 48 Slots.\r\n\r\n" +
+                    "9. Ghost Feyrbrand - 320,000 HP | 3,000 Gold\r\n\r\n" +
+                    "10. Mappi - 128,000 HP | 3,000 Gold\r\n\r\n" +
+                    "11. Gehrich - 200,000 HP | Mappi - 128,000 HP | 3,000 Gold\r\nThis boss has Zero SP start.\r\n\r\n" +
+                    "12. Ghost Commander - 221,000 HP | 3,000 Gold\r\nThis boss has Wound Damage on slash attack. This boss has Health Steal on life sap attack.\r\n\r\n" +
+                    "13. Kamuy - 300,000 HP | 3,000 Gold\r\nThis boss unlocks an used attack.\r\nThis boss does SP damage.\r\n\r\n" +
+                    "14. Ghost Regole - 336,000 HP | 3,000 Gold\r\n\r\n" +
+                    "15. Grand Jewel - 260,000 HP | 9,000 Gold\r\nThis boss has a Magic Change every 10%.\r\nThis boss has elemental shift.\r\nThis Boss has Reverse Dragon Block Staff.\r\n\r\n" +
+                    "16. Windigo - 700,000 HP | 9,000 Gold\r\nThis boss has Armor Break when heart is damaged.\r\n\r\n" +
+                    "17. Polter Armor - 666.666 HP | 9,000 Gold\r\nThis boss has Shared HP.\r\n\r\n" +
+                    "18. The Last Kraken - 360,000 HP | 12,000 Gold\r\nThis boss is actually centered.\r\n\r\n" +
+                    "19. Vector - 180,000 HP | Selebus - 135,000 HP | Kubila - 157,500 HP | 12,000 Gold\r\n\r\n" +
+                    "20. Caterpillar - 120,000 HP | Pupa - 180,000 HP | Imago - 240,000 HP | 12,000 Gold\r\n\r\n" +
+                    "21. Zackwell - 360,000 HP | 15,000 Gold\r\n\r\n" +
+                    "22. Ghost Divine Dragon - 400,000 HP | 18,000 Gold\r\nDefeating this boss will increase your inventory to 48 Slots.\r\n\r\n" +
                     "\r\n\r\nZone 4 - Level 60\r\n\r\n" +
-                    "23. Virage I | Head - 360,000 HP | Body - 360,000 HP | Arm - 60,000  HP\r\n\r\n" +
-                    "24. Kongol - 420,000 HP\r\n\r\n" +
-                    "25. Lenus - 525,000 HP\r\nThis boss has a Magic Change every 5%.\r\n\r\n" +
-                    "26. Syuveil - 500,000 HP\r\nThis boss has Turn Point damage on all Dragoon magic attacks.\r\n\r\n" +
-                    "27. Virage II | Head - 1,280,000 HP | Body - 540,000 HP | Arm - 54,000 HP\r\nThis boss has body damage.\r\n\r\n" +
-                    "28. Feyrbrand - 288,000 HP | Greham - 210,000 HP\r\nThis boss has Dragoon Bond.\r\nThis boss will remove resistances.\r\n\r\n" +
-                    "29. Damia - 360,000 HP\r\nThis boss has a custom status effect, Menu Block on all magic attacks. Will block all menu actions, Dragoons are immune.\r\n\r\n" +
-                    "30. Regole - 300,000 HP | Dragoon Lenus - 300,000 HP\r\nThis boss has Dragoon Bond.\r\n\r\n" +
-                    "31. Belzac - 608,000 HP\r\nThis boss has custom status effects, each with a random chance of activation. 30% accuracy loss on Grand Stream. Power Down DF/MDF on Meteor Strike. Speed Down on Golden Dragoon.\r\n\r\n" +
-                    "32. S Virage I | Head - 320,000 HP | Body - 320,000 HP | Arm - 160,000 HP\r\nThis boss has Gold farming opportunities.\r\nThis boss has countdown changes. For every 40,000 damage, countdown increases. For each countdown increase you get 1,000 Gold each. Killing a body part grants the following gold: 45,000 Gold for the head, 15,000 Gold for the body, 10,000 Gold for the arm.\r\n\r\n" +
-                    "33. Kanzas - 396,000 HP\r\nThis boss has Electric Charges, with a maximum of 30 charges. Each charge is released all at once and can be released at any time, each charge grants 5% power on the next attack. Dragoon Addition grants 1 charge. Atomic Mind grants 3 charges and attack down for 3 turns. Thunder Kid grants 5 charges and defense down for 3 turns. Violet Dragon grants 15 charges and instantly releases all charges for this attack and grants power down for 3 turns.\r\n\r\n" +
-                    "34. Emperror Doel - 250,000 HP | Dragoon Doel - 750,000 HP\r\nThis boss has Inventory Refresh.\r\nThis boss has Ultimate Enrage Mode.\r\nThis Boss has a Magic Change. Doel can now cast any magic when he is below 75,000 HP and will use elemental weaknesses to his advantage.\r\nThis boss has Enhanced Shield. Doel's Shield when it is about to appear will grant him Damage Immunity. The Shield grants him half damage.\r\nDefeating this boss will increase your inventory to 64 Slots.\r\nIf you are on Hell Mode you will unlock Divine Red-Eyed Dragon mode.\r\n\r\n" +
-                    "35. S Virage II | Head - 333,333 HP | Body - 222,222 HP | Arm 666,666\r\nThis boss has a modified Shared HP. Attacking the head heals the arm. Each attack to a body part will do 2x damage. Each part healed will recieve 1x HP. Attacking the arm heals the head. Attacking the head heals the body.\r\nThis boss has an enhanced Final Attack.\r\n\r\n" +
-                    "36. Divine Dragon - 10,000 HP\r\nThis boss has Armor Guard.\r\nThis Boss has Reverse Dragon Block Staff.\r\nThis boss has Ultimate Enrage Mode.\r\n\r\n" +
-                    "37. Lloyd - 666,666 HP\r\nThis boss has modified Ultimate Enrage Mode. Dying will reset his stats, but each time you die Lloyd's base stats increase.\r\nThis boss will remove resistances.\r\nThis boss has a Magic Change every 7%.\r\n\r\n" +
-                    "38. Magician Faust - 1,000,000 HP\r\nThis boss has Dragoon Guard.\r\nThis boss has any magic and will play to your weakness and strengths depending on the phase.\r\n\r\n" +
-                    "39. Zieg - 720,000 HP\r\nThis boss unlocks unused attacks.\r\nThis boss has enhanced damage on Explosion.\r\n\r\n" +
+                    "23. Virage I | Head - 360,000 HP | Body - 360,000 HP | Arm - 60,000  HP | 15,000 Gold\r\n\r\n" +
+                    "24. Kongol - 420,000 HP | 20,000 Gold\r\n\r\n" +
+                    "25. Lenus - 525,000 HP | 20,000 Gold\r\nThis boss has a Magic Change every 5%.\r\n\r\n" +
+                    "26. Syuveil - 500,000 HP | 25,000 Gold\r\nThis boss has Turn Point damage on all Dragoon magic attacks.\r\n\r\n" +
+                    "27. Virage II | Head - 1,280,000 HP | Body - 540,000 HP | Arm - 54,000 HP | 30,000 Gold\r\nThis boss has body damage.\r\n\r\n" +
+                    "28. Feyrbrand - 288,000 HP | Greham - 210,000 HP | 35,000 Gold\r\nThis boss has Dragoon Bond.\r\nThis boss will remove resistances.\r\n\r\n" +
+                    "29. Damia - 360,000 HP | 35,000 Gold\r\nThis boss has a custom status effect, Menu Block on all magic attacks. Will block all menu actions, Dragoons are immune.\r\n\r\n" +
+                    "30. Regole - 300,000 HP | Dragoon Lenus - 300,000 HP | 40,000 Gold\r\nThis boss has Dragoon Bond.\r\n\r\n" +
+                    "31. Belzac - 608,000 HP | 40,000 Gold\r\nThis boss has custom status effects, each with a random chance of activation. 30% accuracy loss on Grand Stream. Power Down DF/MDF on Meteor Strike. Speed Down on Golden Dragoon.\r\n\r\n" +
+                    "32. S Virage I | Head - 320,000 HP | Body - 320,000 HP | Arm - 160,000 HP | 1,000 - 75,000 Gold\r\nThis boss has Gold farming opportunities.\r\nThis boss has countdown changes. For every 40,000 damage, countdown increases. For each countdown increase you get 1,000 Gold each. Killing a body part grants the following gold: 45,000 Gold for the head, 15,000 Gold for the body, 10,000 Gold for the arm.\r\n\r\n" +
+                    "33. Kanzas - 396,000 HP | 45,000 Gold\r\nThis boss has Electric Charges, with a maximum of 30 charges. Each charge is released all at once and can be released at any time, each charge grants 5% power on the next attack. Dragoon Addition grants 1 charge. Atomic Mind grants 3 charges and attack down for 3 turns. Thunder Kid grants 5 charges and defense down for 3 turns. Violet Dragon grants 15 charges and instantly releases all charges for this attack and grants power down for 3 turns.\r\n\r\n" +
+                    "34. Emperror Doel - 250,000 HP | Dragoon Doel - 750,000 HP | 100,000 Gold\r\nThis boss has Inventory Refresh.\r\nThis boss has Ultimate Enrage Mode.\r\nThis Boss has a Magic Change. Doel can now cast any magic when he is below 75,000 HP and will use elemental weaknesses to his advantage.\r\nThis boss has Enhanced Shield. Doel's Shield when it is about to appear will grant him Damage Immunity. The Shield grants him half damage.\r\nDefeating this boss will increase your inventory to 64 Slots.\r\nIf you are on Hell Mode you will unlock Divine Red-Eyed Dragon mode.\r\n\r\n" +
+                    "35. S Virage II | Head - 333,333 HP | Body - 222,222 HP | Arm 666,666 | 60,000 Gold\r\nThis boss has a modified Shared HP. Attacking the head heals the arm. Each attack to a body part will do 2x damage. Each part healed will recieve 1x HP. Attacking the arm heals the head. Attacking the head heals the body.\r\nThis boss has an enhanced Final Attack.\r\n\r\n" +
+                    "36. Divine Dragon - 10,000 HP | 70,000 Gold\r\nThis boss has Armor Guard.\r\nThis Boss has Reverse Dragon Block Staff.\r\nThis boss has Ultimate Enrage Mode.\r\n\r\n" +
+                    "37. Lloyd - 666,666 HP | 80,000 Gold\r\nThis boss has modified Ultimate Enrage Mode. Dying will reset his stats, but each time you die Lloyd's base stats increase.\r\nThis boss will remove resistances.\r\nThis boss has a Magic Change every 7%.\r\n\r\n" +
+                    "38. Magician Faust - 1,000,000 HP | 120,000 Gold\r\nThis boss has Dragoon Guard.\r\nThis boss has any magic and will play to your weakness and strengths depending on the phase.\r\n\r\n" +
+                    "39. Zieg - 720,000 HP | 100,000 Gold\r\nThis boss unlocks unused attacks.\r\nThis boss has enhanced damage on Explosion.\r\n\r\n" +
                     "40. Melbu Frahma - ??? HP - Unfinished.\r\n\r\n" +
                     "Zero SP - Start the battle with zero SP.\r\n" +
                     "Guard Break - Removes guard status on a certain attack.\r\n" +
@@ -10405,7 +10403,9 @@ namespace Dragoon_Modifier {
                     "2. Solo / Duo Mode - Boss Encounters with Cutscenes\r\n" +
                     "The game requires you to have three party members for cutscenes. To turn on party members for a single battle press Add Party Members green button in Enhancements Tab I. To turn it on for all battles press Add Party Members green button, and the on button beside it. Extra characters will die on entry and move off screen.\r\n\r\n" +
                     "3. Reader Mode\r\n" +
-                    "Each time you open Dragoon Modifier open Windows Config first to load your Reader Mode settings.";
+                    "Each time you open Dragoon Modifier open Windows Config first to load your Reader Mode settings.\r\n\r\n" +
+                    "4. Scripts\r\n" +
+                    "In the settings tab activated scripts are in black text, deactivated scripts are in red. To activate a script single click the script to select it and then press the grey button on top of the script to change it's state. Some scripts require input, in this case you would double click it. The current script loadout can be saved or loaded by clicking Menu > Save/Load.";
             }
         }
 
