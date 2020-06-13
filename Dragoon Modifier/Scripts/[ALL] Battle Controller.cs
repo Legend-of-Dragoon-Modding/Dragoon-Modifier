@@ -565,6 +565,24 @@ public class BattleController {
                 ItemBattleChanges(emulator, 0, true);
             }
 
+            #region Wargod/Destroyer Mace fix
+            byte special_effect = 0;
+            if (Globals.CURRENT_STATS[character].Weapon.ID == 45) {
+                special_effect |= 1;
+            }
+
+            if (Globals.CURRENT_STATS[character].Accessory.ID == 157) {
+                special_effect |= 2;
+            }
+
+            if (Globals.CURRENT_STATS[character].Accessory.ID == 158) {
+                special_effect |= 6;
+            }
+
+            emulator.WriteByte("WARGOD", special_effect);
+
+            #endregion
+
             while ((emulator.ReadShort("BATTLE_VALUE") > 9999) && (Globals.CHARACTER_TABLE[0].Read("Action") != 8)) {
                 Thread.Sleep(50);
             }
@@ -1348,6 +1366,11 @@ public class BattleController {
         public byte SP_Multi { get { return sp_multi; } }
         public byte Element { get { return element; } }
         public byte Death_Res { get { return death_res; } }
+        public dynamic Weapon { get { return weapon; } }
+        public dynamic Armor { get { return armor; } }
+        public dynamic Helm { get { return helm; } }
+        public dynamic Boots { get { return boots; } }
+        public dynamic Accessory { get { return accessory; } }
 
         public CurrentStats(int character, Emulator emulator) {
             lv = emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x12);
