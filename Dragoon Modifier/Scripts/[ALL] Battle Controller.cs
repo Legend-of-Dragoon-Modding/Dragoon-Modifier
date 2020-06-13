@@ -628,7 +628,7 @@ public class BattleController {
             long address = Constants.GetAddress("ITEM_TABLE");
             int i = 0;
             foreach (dynamic item in Globals.DICTIONARY.ItemList) {
-                if (i < 157)
+                if (i > 185) //hopefully safe ammount
                     break;
                 emulator.WriteByte(address + i * 0x1C, item.Type);
                 emulator.WriteByte(address + i * 0x1C + 0x2, item.Equips);
@@ -662,7 +662,7 @@ public class BattleController {
             long address = Constants.GetAddress("ITEM_TABLE");
             int i = 0;
             foreach (dynamic item in Globals.DICTIONARY.ItemList) {
-                if (i > 157)
+                if (i > 185)
                     break; 
                 emulator.WriteByte(address + i * 0x1C + 0xD, item.Icon);
                 i++;
