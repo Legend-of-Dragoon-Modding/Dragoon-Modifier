@@ -827,6 +827,12 @@ namespace Dragoon_Modifier {
             } else {
                 sldZoom.Value = Double.Parse(Constants.KEY.GetValue("Zoom").ToString());
             }
+
+            if (Constants.KEY.GetValue("Flower Storm") == null) {
+                Constants.KEY.SetValue("Flower Storm", 0);
+            } else {
+                cboFlowerStorm.SelectedIndex = (int) Constants.KEY.GetValue("Flower Storm");
+            }
         }
 
         public void LoadReaderKey() {
@@ -898,8 +904,8 @@ namespace Dragoon_Modifier {
             Constants.KEY.SetValue("Reader Hotkey On", cboReaderOnHotkey.SelectedIndex);
             Constants.KEY.SetValue("Reader Hotkey Off", cboReaderOffHotkey.SelectedIndex);
             Constants.KEY.SetValue("Reader Hotkey Field", cboReaderFieldHotkey.SelectedIndex);
+            Constants.KEY.SetValue("Flower Storm", cboFlowerStorm.SelectedIndex);
             Constants.KEY.SetValue("Zoom", sldZoom.Value);
-            SaveReaderKey();
         }
 
         public void SaveReaderKey() {
@@ -7916,8 +7922,8 @@ namespace Dragoon_Modifier {
                     emulator.WriteByte("SPELL_TABLE", (uiCombo["cboFlowerStorm"] + 1) * 20, 0x7 + (26 * 0xC)); //Albert's Rose storm MP
 
                     if (Constants.REGION == Region.NTA) {
-                        emulator.WriteAOB(Globals.DRAGOON_SPELLS[7].Description_Pointer - 0x80000000, "22 00 39 00 45 00 39 00 3F 00 3D 00 00 00 30 00 3D 00 4B 00 41 00 4B 00 4C 00 00 00 1A 00 15 00 0F 00 00 00 22 00 4D 00 4A 00 00 00 " + (0x15 + (uiCombo["cboFlowerStorm"] + 1)) + " 00 FF A0");
-                        emulator.WriteAOB(Globals.DRAGOON_SPELLS[26].Description_Pointer - 0x80000000, "22 00 39 00 45 00 39 00 3F 00 3D 00 00 00 30 00 3D 00 4B 00 41 00 4B 00 4C 00 00 00 1A 00 15 00 0F 00 00 00 22 00 4D 00 4A 00 00 00 " + (0x15 + (uiCombo["cboFlowerStorm"] + 1)) + " 00 FF A0");
+                        emulator.WriteAOB(Globals.DRAGOON_SPELLS[7].Description_Pointer - 0x80000000, "22 00 39 00 45 00 39 00 3F 00 3D 00 00 00 30 00 3D 00 4B 00 41 00 4B 00 4C 00 00 00 1A 00 15 00 0F 00 00 00 22 00 4D 00 4A 00 00 00 " + Convert.ToString(0x0F + uiCombo["cboFlowerStorm"] + 1).ToUpper() + " 00 FF A0");
+                        emulator.WriteAOB(Globals.DRAGOON_SPELLS[26].Description_Pointer - 0x80000000, "22 00 39 00 45 00 39 00 3F 00 3D 00 00 00 30 00 3D 00 4B 00 41 00 4B 00 4C 00 00 00 1A 00 15 00 0F 00 00 00 22 00 4D 00 4A 00 00 00 " + Convert.ToString(0x0F + uiCombo["cboFlowerStorm"] + 1).ToUpper() + " 00 FF A0");
                     }
 
                     emulator.WriteByte("SPELL_TABLE", 20, 0x7 + (11 * 0xC)); //Shana's Moon Light MP
