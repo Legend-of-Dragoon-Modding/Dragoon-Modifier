@@ -828,10 +828,10 @@ namespace Dragoon_Modifier {
                 sldZoom.Value = Double.Parse(Constants.KEY.GetValue("Zoom").ToString());
             }
 
-            if (Constants.KEY.GetValue("Flower Storm") == null) {
-                Constants.KEY.SetValue("Flower Storm", 0);
+            if (Constants.KEY.GetValue("Flower Storm Turns") == null) {
+                Constants.KEY.SetValue("Flower Storm Turns", 0);
             } else {
-                cboFlowerStorm.SelectedIndex = (int) Constants.KEY.GetValue("Flower Storm");
+                cboFlowerStorm.SelectedIndex = (int) Constants.KEY.GetValue("Flower Storm Turns");
             }
         }
 
@@ -904,7 +904,7 @@ namespace Dragoon_Modifier {
             Constants.KEY.SetValue("Reader Hotkey On", cboReaderOnHotkey.SelectedIndex);
             Constants.KEY.SetValue("Reader Hotkey Off", cboReaderOffHotkey.SelectedIndex);
             Constants.KEY.SetValue("Reader Hotkey Field", cboReaderFieldHotkey.SelectedIndex);
-            Constants.KEY.SetValue("Flower Storm", cboFlowerStorm.SelectedIndex);
+            Constants.KEY.SetValue("Flower Storm Turns", cboFlowerStorm.SelectedIndex);
             Constants.KEY.SetValue("Zoom", sldZoom.Value);
         }
 
