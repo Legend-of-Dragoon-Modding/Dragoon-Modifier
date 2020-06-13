@@ -189,6 +189,10 @@ namespace Dragoon_Modifier {
                         StreamWriter writer = new StreamWriter(WRITE_LOCATION + "/Monster/" + field + "" + (i + 1) + ".txt");
                         if (field.Equals("Name")) {
                             writer.WriteLine(Globals.MONSTER_NAME[i]);
+                        } else if (field.Equals("Drop_Chance")) {
+                            writer.WriteLine(Globals.MONSTER_TABLE[i].Read(field) + "%");
+                        } else if (field.Equals("Drop_Item")) {
+                            writer.WriteLine(Globals.DICTIONARY.Num2Item[Globals.MONSTER_TABLE[i].Read(field)]);
                         } else {
                             writer.WriteLine(Globals.MONSTER_TABLE[i].Read(field));
                         }

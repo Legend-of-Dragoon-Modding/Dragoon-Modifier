@@ -9366,8 +9366,10 @@ namespace Dragoon_Modifier {
                     if (emulator.ReadShort("BATTLE_VALUE") < 9999)
                         Globals.STATS_CHANGED = true;
                     Constants.WritePLogOutput("Attached to " + Constants.EMULATOR_NAME + ".");
+                    AttachEmulator();
                     miAttach.Header = "Detach";
                 } else {
+                    miAttach.Header = "Attach";
                     Constants.WritePLogOutput("Program failed to open. Please open " + Constants.EMULATOR_NAME + " then press attach.");
                 }
             } else {
@@ -9562,6 +9564,135 @@ namespace Dragoon_Modifier {
                 }
 
                 Constants.ProgramInfo();
+            }
+        }
+
+        public void AttachEmulator() {
+            switch (Constants.EMULATOR) {
+                case 0: //ePSXe 1.6.0
+                    Constants.OFFSET = 0x5B6E40;
+                    break;
+                case 1: //ePSXe 1.7.0
+                    Constants.OFFSET = 0x94C020;
+                    break;
+                case 2: //ePSXe 1.8.0
+                    Constants.OFFSET = 0xA52EA0;
+                    break;
+                case 3: //ePSXe 1.9.0
+                    Constants.OFFSET = 0xA579A0;
+                    break;
+                case 4: //ePSXe 1.9.25
+                    Constants.OFFSET = 0xA8B6A0;
+                    break;
+                case 5: //ePSXe 2.0
+                case 6: //ePSXe 2.0.2
+                case 7: //ePSXe 2.0.5
+                    try {
+                        Process emulator = null;
+                        foreach (Process p in Process.GetProcessesByName("ePSXe")) {
+                            emulator = p;
+                        }
+                        ProcessModule emMod = emulator.MainModule;
+
+                        if (Constants.EMULATOR == 5) {
+                            Constants.OFFSET = (int) (emMod.BaseAddress + 0x81A020);
+                        } else if (Constants.EMULATOR == 6) {
+                            Constants.OFFSET = (int) (emMod.BaseAddress + 0x825140);
+                        } else if (Constants.EMULATOR == 7) {
+                            Constants.OFFSET = (int) (emMod.BaseAddress + 0xA82020);
+                        }
+
+                    } catch (Exception ex) {
+                        Constants.WriteOutput("Address calculation failed. Please open ePSXe.");
+                        Constants.RUN = false;
+                    }
+                    break;
+                case 8: //RetroArch Beetle PSX HW
+                    try {
+                        if (!CheckOldOffset()) {
+                            Process em = null;
+                            //ProcessModule dll = null;
+                            foreach (Process p in Process.GetProcessesByName("retroarch")) {
+                                em = p;
+                            }
+                            /*foreach (ProcessModule pm in em.Modules) {
+                                if (pm.ModuleName == "mednafen_psx_hw_libretro.dll") {
+                                    dll = pm;
+                                }
+                            }*/
+
+                            for (int i = 0; i < 16; i++) {
+                                Constants.OFFSET = 0;
+                                var scan = emulator.AoBScan(0x8000000 * i, i == 15 ? 0x7FFF0000 : (0x8000000 * (i + 1)), "50 53 2D 58 20 45 58 45");
+                                scan.Wait();
+                                var results = scan.Result;
+                                long offset = 0;
+                                foreach (var x in results) {
+                                    offset = x;
+                                    Constants.OFFSET = offset - 0xB070;
+                                    if (emulator.ReadInteger("STARTUP_SEARCH") == 320386 || emulator.ReadShort("BATTLE_VALUE") == 32776 || emulator.ReadShort("BATTLE_VALUE") == 41215) {
+                                        Constants.KEY.SetValue("Offset", Constants.OFFSET);
+                                        break;
+                                    } else {
+                                        Constants.OFFSET = 0;
+                                    }
+                                }
+
+                                if (Constants.OFFSET > 0)
+                                    break;
+                            }
+                            if (Constants.OFFSET <= 0) {
+                                Constants.WritePLog("Failed to attach to RetroArch.");
+                                throw new Exception();
+                            }
+                        }
+                    } catch (Exception ex) {
+                        Constants.WriteOutput("Address calculation failed. Please open retroarch with Beetle PSX HW at the Load Game screen before loading a save.");
+                        Constants.RUN = false;
+                    }
+                    break;
+                case 9: //PCSX2
+                    Constants.OFFSET = 0x24000000;
+                    break;
+                case 10:
+                    try {
+                        Constants.EMULATOR_NAME = Constants.KEY.GetValue("Other Emulator").ToString();
+                        if (!CheckOldOffset()) {
+                            Process em = null;
+                            foreach (Process p in Process.GetProcessesByName(Constants.EMULATOR_NAME)) {
+                                em = p;
+                            }
+
+                            for (int i = 0; i < 16; i++) {
+                                Constants.OFFSET = 0;
+                                var scan = emulator.AoBScan(0x8000000 * i, i == 15 ? 0x7FFF0000 : (0x8000000 * (i + 1)), "50 53 2D 58 20 45 58 45");
+                                scan.Wait();
+                                var results = scan.Result;
+                                long offset = 0;
+                                foreach (var x in results) {
+                                    offset = x;
+                                    Constants.OFFSET = offset - 0xB070;
+                                    if (emulator.ReadInteger("STARTUP_SEARCH") == 320386 || emulator.ReadShort("BATTLE_VALUE") == 32776 || emulator.ReadShort("BATTLE_VALUE") == 41215) {
+                                        Constants.KEY.SetValue("Offset", Constants.OFFSET);
+                                        break;
+                                    } else {
+                                        Constants.OFFSET = 0;
+                                    }
+                                }
+
+                                if (Constants.OFFSET > 0)
+                                    break;
+                            }
+                            if (Constants.OFFSET <= 0) {
+                                Constants.WritePLog("Failed to attach to " + Constants.EMULATOR_NAME + ".");
+                                throw new Exception();
+                            }
+                        }
+                    } catch (Exception ex) {
+                        Constants.WriteOutput("Address calculation failed. Please open " + Constants.EMULATOR_NAME + ".");
+                        Constants.RUN = false;
+                    }
+                    break;
             }
         }
 
@@ -11367,7 +11498,7 @@ namespace Dragoon_Modifier {
 
                     if (actions[shanaSlot] == 136 && actions[otherSlot1] == 0 && actions[otherSlot2] == 0) {
                         update = false;
-                    }+-
+                    }
                 }
 
                 for (int i = 0; i < 3; i++) {
