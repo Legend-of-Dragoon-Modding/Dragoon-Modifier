@@ -13,7 +13,7 @@ public class BattleController {
     public static void Run(Emulator emulator) {
         int encounterValue = emulator.ReadShort("BATTLE_VALUE");
 
-        if (Globals.IN_BATTLE && Globals.STATS_CHANGED && encounterValue == 41215 && Globals.PARTY_SLOT[0] == 4 && emulator.ReadByte("HASCHEL_FIX", Globals.DISC) != 0x80) {
+        if (Globals.IN_BATTLE && Globals.STATS_CHANGED && encounterValue == 41215 && Globals.PARTY_SLOT[0] == 4 && emulator.ReadByte("HASCHEL_FIX" + Globals.DISC) != 0x80) {
             HaschelFix(emulator);
         }
 
@@ -177,11 +177,19 @@ public class BattleController {
     }
 
     public static void ChangeParty(Emulator emulator) {
-        for (int character = 0; character < 9; character++) {
-            Globals.CURRENT_STATS[character] = new CurrentStats(character, emulator);
-        }
         if (Globals.PARTY_SLOT[1] == Globals.NO_DART || Globals.PARTY_SLOT[2] == Globals.NO_DART) {
             Globals.NO_DART = null;
+            Globals.PARTY_SLOT[0] = 0;
+        }
+
+        for (int slot = 0; slot < 3; slot++) {
+            int character = Globals.PARTY_SLOT[slot];
+            if (slot == 0 && Globals.NO_DART != null) {
+                character = (int)Globals.NO_DART;
+            }
+            if (character < 9) {
+                Globals.CURRENT_STATS[slot] = new CurrentStats(character, emulator);
+            }
         }
 
         for (int slot = 0; slot < 3; slot++) {
@@ -260,14 +268,14 @@ public class BattleController {
                 character = (int) Globals.NO_DART;
             }
             if (character < 9) {
-                int dlv = Globals.CURRENT_STATS[character].DLV;
-                Globals.CHARACTER_TABLE[slot].Write("DAT", Globals.DICTIONARY.DragoonStats[character][dlv].DAT);
-                Globals.CHARACTER_TABLE[slot].Write("DMAT", Globals.DICTIONARY.DragoonStats[character][dlv].DMAT);
-                Globals.CHARACTER_TABLE[slot].Write("DDF", Globals.DICTIONARY.DragoonStats[character][dlv].DDF);
-                Globals.CHARACTER_TABLE[slot].Write("DMDF", Globals.DICTIONARY.DragoonStats[character][dlv].DMDF);
+                int dlv = Globals.CURRENT_STATS[slot].DLV;
+                Globals.CHARACTER_TABLE[slot].Write("DAT", Globals.DICTIONARY.DragoonStats[slot][dlv].DAT);
+                Globals.CHARACTER_TABLE[slot].Write("DMAT", Globals.DICTIONARY.DragoonStats[slot][dlv].DMAT);
+                Globals.CHARACTER_TABLE[slot].Write("DDF", Globals.DICTIONARY.DragoonStats[slot][dlv].DDF);
+                Globals.CHARACTER_TABLE[slot].Write("DMDF", Globals.DICTIONARY.DragoonStats[slot][dlv].DMDF);
                 if (!Globals.ITEM_STAT_CHANGE) {
-                    Globals.CHARACTER_TABLE[slot].Write("MP", Math.Min(Globals.CURRENT_STATS[character].MP, Globals.CURRENT_STATS[character].Max_MP));
-                    Globals.CHARACTER_TABLE[slot].Write("Max_MP", Globals.CURRENT_STATS[character].Max_MP);
+                    Globals.CHARACTER_TABLE[slot].Write("MP", Math.Min(Globals.CURRENT_STATS[slot].MP, Globals.CURRENT_STATS[slot].Max_MP));
+                    Globals.CHARACTER_TABLE[slot].Write("Max_MP", Globals.CURRENT_STATS[slot].Max_MP);
                 }
             }
         }
@@ -280,44 +288,44 @@ public class BattleController {
                 character = (int) Globals.NO_DART;
             }
             if (Globals.PARTY_SLOT[slot] < 9) {
-                Globals.CHARACTER_TABLE[slot].Write("MP", Math.Min(Globals.CURRENT_STATS[character].MP, Globals.CURRENT_STATS[character].Max_MP));
-                Globals.CHARACTER_TABLE[slot].Write("Max_MP", Globals.CURRENT_STATS[character].Max_MP);
-                Globals.CHARACTER_TABLE[slot].Write("Stat_Res", Globals.CURRENT_STATS[character].Stat_Res);
-                Globals.CHARACTER_TABLE[slot].Write("E_Half", Globals.CURRENT_STATS[character].E_Half);
-                Globals.CHARACTER_TABLE[slot].Write("E_Immune", Globals.CURRENT_STATS[character].E_Immune);
-                Globals.CHARACTER_TABLE[slot].Write("A_AV", Globals.CURRENT_STATS[character].A_AV);
-                Globals.CHARACTER_TABLE[slot].Write("M_AV", Globals.CURRENT_STATS[character].M_AV);
-                Globals.CHARACTER_TABLE[slot].Write("A_HIT", Globals.CURRENT_STATS[character].A_Hit);
-                Globals.CHARACTER_TABLE[slot].Write("M_HIT", Globals.CURRENT_STATS[character].M_Hit);
-                Globals.CHARACTER_TABLE[slot].Write("P_Half", Globals.CURRENT_STATS[character].P_Half);
-                Globals.CHARACTER_TABLE[slot].Write("M_Half", Globals.CURRENT_STATS[character].M_Half);
-                Globals.CHARACTER_TABLE[slot].Write("On_Hit_Status", Globals.CURRENT_STATS[character].Status);
-                Globals.CHARACTER_TABLE[slot].Write("On_Hit_Status_Chance", Globals.CURRENT_STATS[character].Status_Chance);
-                Globals.CHARACTER_TABLE[slot].Write("Revive", Globals.CURRENT_STATS[character].Revive);
-                Globals.CHARACTER_TABLE[slot].Write("SP_Regen", Globals.CURRENT_STATS[character].SP_Regen);
-                Globals.CHARACTER_TABLE[slot].Write("MP_Regen", Globals.CURRENT_STATS[character].MP_Regen);
-                Globals.CHARACTER_TABLE[slot].Write("HP_Regen", Globals.CURRENT_STATS[character].HP_Regen);
-                Globals.CHARACTER_TABLE[slot].Write("Element", Globals.CURRENT_STATS[character].Element);
-                Globals.CHARACTER_TABLE[slot].Write("Display_Element", Globals.CURRENT_STATS[character].Element);
-                Globals.CHARACTER_TABLE[slot].Write("MP_M_Hit", Globals.CURRENT_STATS[character].MP_M_Hit);
-                Globals.CHARACTER_TABLE[slot].Write("SP_M_Hit", Globals.CURRENT_STATS[character].SP_M_Hit);
-                Globals.CHARACTER_TABLE[slot].Write("MP_P_Hit", Globals.CURRENT_STATS[character].MP_P_Hit);
-                Globals.CHARACTER_TABLE[slot].Write("SP_P_Hit", Globals.CURRENT_STATS[character].SP_P_Hit);
-                Globals.CHARACTER_TABLE[slot].Write("SP_Multi", Globals.CURRENT_STATS[character].SP_Multi);
+                Globals.CHARACTER_TABLE[slot].Write("MP", Math.Min(Globals.CURRENT_STATS[slot].MP, Globals.CURRENT_STATS[slot].Max_MP));
+                Globals.CHARACTER_TABLE[slot].Write("Max_MP", Globals.CURRENT_STATS[slot].Max_MP);
+                Globals.CHARACTER_TABLE[slot].Write("Stat_Res", Globals.CURRENT_STATS[slot].Stat_Res);
+                Globals.CHARACTER_TABLE[slot].Write("E_Half", Globals.CURRENT_STATS[slot].E_Half);
+                Globals.CHARACTER_TABLE[slot].Write("E_Immune", Globals.CURRENT_STATS[slot].E_Immune);
+                Globals.CHARACTER_TABLE[slot].Write("A_AV", Globals.CURRENT_STATS[slot].A_AV);
+                Globals.CHARACTER_TABLE[slot].Write("M_AV", Globals.CURRENT_STATS[slot].M_AV);
+                Globals.CHARACTER_TABLE[slot].Write("A_HIT", Globals.CURRENT_STATS[slot].A_Hit);
+                Globals.CHARACTER_TABLE[slot].Write("M_HIT", Globals.CURRENT_STATS[slot].M_Hit);
+                Globals.CHARACTER_TABLE[slot].Write("P_Half", Globals.CURRENT_STATS[slot].P_Half);
+                Globals.CHARACTER_TABLE[slot].Write("M_Half", Globals.CURRENT_STATS[slot].M_Half);
+                Globals.CHARACTER_TABLE[slot].Write("On_Hit_Status", Globals.CURRENT_STATS[slot].Status);
+                Globals.CHARACTER_TABLE[slot].Write("On_Hit_Status_Chance", Globals.CURRENT_STATS[slot].Status_Chance);
+                Globals.CHARACTER_TABLE[slot].Write("Revive", Globals.CURRENT_STATS[slot].Revive);
+                Globals.CHARACTER_TABLE[slot].Write("SP_Regen", Globals.CURRENT_STATS[slot].SP_Regen);
+                Globals.CHARACTER_TABLE[slot].Write("MP_Regen", Globals.CURRENT_STATS[slot].MP_Regen);
+                Globals.CHARACTER_TABLE[slot].Write("HP_Regen", Globals.CURRENT_STATS[slot].HP_Regen);
+                Globals.CHARACTER_TABLE[slot].Write("Element", Globals.CURRENT_STATS[slot].Element);
+                Globals.CHARACTER_TABLE[slot].Write("Display_Element", Globals.CURRENT_STATS[slot].Element);
+                Globals.CHARACTER_TABLE[slot].Write("MP_M_Hit", Globals.CURRENT_STATS[slot].MP_M_Hit);
+                Globals.CHARACTER_TABLE[slot].Write("SP_M_Hit", Globals.CURRENT_STATS[slot].SP_M_Hit);
+                Globals.CHARACTER_TABLE[slot].Write("MP_P_Hit", Globals.CURRENT_STATS[slot].MP_P_Hit);
+                Globals.CHARACTER_TABLE[slot].Write("SP_P_Hit", Globals.CURRENT_STATS[slot].SP_P_Hit);
+                Globals.CHARACTER_TABLE[slot].Write("SP_Multi", Globals.CURRENT_STATS[slot].SP_Multi);
                 if (!Globals.CHARACTER_STAT_CHANGE) {
-                    Globals.CHARACTER_TABLE[slot].Write("HP", Math.Min(Globals.CURRENT_STATS[character].HP, Globals.CURRENT_STATS[character].Max_HP));
-                    Globals.CHARACTER_TABLE[slot].Write("Max_HP", Globals.CURRENT_STATS[character].Max_HP);
-                    Globals.CHARACTER_TABLE[slot].Write("AT", Globals.CURRENT_STATS[character].AT);
-                    Globals.CHARACTER_TABLE[slot].Write("OG_AT", Globals.CURRENT_STATS[character].AT);
-                    Globals.CHARACTER_TABLE[slot].Write("MAT", Globals.CURRENT_STATS[character].MAT);
-                    Globals.CHARACTER_TABLE[slot].Write("OG_MAT", Globals.CURRENT_STATS[character].MAT);
-                    Globals.CHARACTER_TABLE[slot].Write("DF", Globals.CURRENT_STATS[character].DF);
-                    Globals.CHARACTER_TABLE[slot].Write("DF", Globals.CURRENT_STATS[character].DF);
-                    Globals.CHARACTER_TABLE[slot].Write("OG_DF", Globals.CURRENT_STATS[character].DF);
-                    Globals.CHARACTER_TABLE[slot].Write("MDF", Globals.CURRENT_STATS[character].MDF);
-                    Globals.CHARACTER_TABLE[slot].Write("OG_MDF", Globals.CURRENT_STATS[character].MDF);
-                    Globals.CHARACTER_TABLE[slot].Write("SPD", Globals.CURRENT_STATS[character].SPD);
-                    Globals.CHARACTER_TABLE[slot].Write("OG_SPD", Globals.CURRENT_STATS[character].SPD);
+                    Globals.CHARACTER_TABLE[slot].Write("HP", Math.Min(Globals.CURRENT_STATS[slot].HP, Globals.CURRENT_STATS[slot].Max_HP));
+                    Globals.CHARACTER_TABLE[slot].Write("Max_HP", Globals.CURRENT_STATS[slot].Max_HP);
+                    Globals.CHARACTER_TABLE[slot].Write("AT", Globals.CURRENT_STATS[slot].AT);
+                    Globals.CHARACTER_TABLE[slot].Write("OG_AT", Globals.CURRENT_STATS[slot].AT);
+                    Globals.CHARACTER_TABLE[slot].Write("MAT", Globals.CURRENT_STATS[slot].MAT);
+                    Globals.CHARACTER_TABLE[slot].Write("OG_MAT", Globals.CURRENT_STATS[slot].MAT);
+                    Globals.CHARACTER_TABLE[slot].Write("DF", Globals.CURRENT_STATS[slot].DF);
+                    Globals.CHARACTER_TABLE[slot].Write("DF", Globals.CURRENT_STATS[slot].DF);
+                    Globals.CHARACTER_TABLE[slot].Write("OG_DF", Globals.CURRENT_STATS[slot].DF);
+                    Globals.CHARACTER_TABLE[slot].Write("MDF", Globals.CURRENT_STATS[slot].MDF);
+                    Globals.CHARACTER_TABLE[slot].Write("OG_MDF", Globals.CURRENT_STATS[slot].MDF);
+                    Globals.CHARACTER_TABLE[slot].Write("SPD", Globals.CURRENT_STATS[slot].SPD);
+                    Globals.CHARACTER_TABLE[slot].Write("OG_SPD", Globals.CURRENT_STATS[slot].SPD);
                 }
             }
         }
@@ -330,19 +338,19 @@ public class BattleController {
         }
         if (Globals.CHARACTER_STAT_CHANGE || bypass) {
             if (Globals.PARTY_SLOT[slot] < 9) {
-                Globals.CHARACTER_TABLE[slot].Write("HP", Math.Min(Globals.CURRENT_STATS[character].HP, Globals.CURRENT_STATS[character].Max_HP));
-                Globals.CHARACTER_TABLE[slot].Write("Max_HP", Globals.CURRENT_STATS[character].Max_HP);
-                Globals.CHARACTER_TABLE[slot].Write("AT", Globals.CURRENT_STATS[character].AT);
-                Globals.CHARACTER_TABLE[slot].Write("OG_AT", Globals.CURRENT_STATS[character].AT);
-                Globals.CHARACTER_TABLE[slot].Write("MAT", Globals.CURRENT_STATS[character].MAT);
-                Globals.CHARACTER_TABLE[slot].Write("OG_MAT", Globals.CURRENT_STATS[character].MAT);
-                Globals.CHARACTER_TABLE[slot].Write("DF", Globals.CURRENT_STATS[character].DF);
-                Globals.CHARACTER_TABLE[slot].Write("DF", Globals.CURRENT_STATS[character].DF);
-                Globals.CHARACTER_TABLE[slot].Write("OG_DF", Globals.CURRENT_STATS[character].DF);
-                Globals.CHARACTER_TABLE[slot].Write("MDF", Globals.CURRENT_STATS[character].MDF);
-                Globals.CHARACTER_TABLE[slot].Write("OG_MDF", Globals.CURRENT_STATS[character].MDF);
-                Globals.CHARACTER_TABLE[slot].Write("SPD", Globals.CURRENT_STATS[character].SPD);
-                Globals.CHARACTER_TABLE[slot].Write("OG_SPD", Globals.CURRENT_STATS[character].SPD);
+                Globals.CHARACTER_TABLE[slot].Write("HP", Math.Min(Globals.CURRENT_STATS[slot].HP, Globals.CURRENT_STATS[slot].Max_HP));
+                Globals.CHARACTER_TABLE[slot].Write("Max_HP", Globals.CURRENT_STATS[slot].Max_HP);
+                Globals.CHARACTER_TABLE[slot].Write("AT", Globals.CURRENT_STATS[slot].AT);
+                Globals.CHARACTER_TABLE[slot].Write("OG_AT", Globals.CURRENT_STATS[slot].AT);
+                Globals.CHARACTER_TABLE[slot].Write("MAT", Globals.CURRENT_STATS[slot].MAT);
+                Globals.CHARACTER_TABLE[slot].Write("OG_MAT", Globals.CURRENT_STATS[slot].MAT);
+                Globals.CHARACTER_TABLE[slot].Write("DF", Globals.CURRENT_STATS[slot].DF);
+                Globals.CHARACTER_TABLE[slot].Write("DF", Globals.CURRENT_STATS[slot].DF);
+                Globals.CHARACTER_TABLE[slot].Write("OG_DF", Globals.CURRENT_STATS[slot].DF);
+                Globals.CHARACTER_TABLE[slot].Write("MDF", Globals.CURRENT_STATS[slot].MDF);
+                Globals.CHARACTER_TABLE[slot].Write("OG_MDF", Globals.CURRENT_STATS[slot].MDF);
+                Globals.CHARACTER_TABLE[slot].Write("SPD", Globals.CURRENT_STATS[slot].SPD);
+                Globals.CHARACTER_TABLE[slot].Write("OG_SPD", Globals.CURRENT_STATS[slot].SPD);
             }
         }
     }
@@ -567,15 +575,15 @@ public class BattleController {
 
             #region Wargod/Destroyer Mace fix
             byte special_effect = 0;
-            if (Globals.CURRENT_STATS[character].Weapon.ID == 45) {
+            if (Globals.CURRENT_STATS[0].Weapon.ID == 45) {
                 special_effect |= 1;
             }
 
-            if (Globals.CURRENT_STATS[character].Accessory.ID == 157) {
+            if (Globals.CURRENT_STATS[0].Accessory.ID == 157) {
                 special_effect |= 2;
             }
 
-            if (Globals.CURRENT_STATS[character].Accessory.ID == 158) {
+            if (Globals.CURRENT_STATS[0].Accessory.ID == 158) {
                 special_effect |= 6;
             }
 
@@ -600,11 +608,11 @@ public class BattleController {
             while ((emulator.ReadShort("BATTLE_VALUE") > 9999) && (Globals.CHARACTER_TABLE[0].Read("Action") != 9)) {
                 Thread.Sleep(50);
             }
-            Globals.CHARACTER_TABLE[0].Write("DLV", Globals.CURRENT_STATS[character].DLV);
-            Globals.CHARACTER_TABLE[0].Write("SP", Globals.CURRENT_STATS[character].SP);
-            Globals.CHARACTER_TABLE[0].Write("HP_Regen", Globals.CURRENT_STATS[character].HP_Regen);
-            Globals.CHARACTER_TABLE[0].Write("MP_Regen", Globals.CURRENT_STATS[character].MP_Regen);
-            Globals.CHARACTER_TABLE[0].Write("SP_Regen", Globals.CURRENT_STATS[character].SP_Regen);
+            Globals.CHARACTER_TABLE[0].Write("DLV", Globals.CURRENT_STATS[0].DLV);
+            Globals.CHARACTER_TABLE[0].Write("SP", Globals.CURRENT_STATS[0].SP);
+            Globals.CHARACTER_TABLE[0].Write("HP_Regen", Globals.CURRENT_STATS[0].HP_Regen);
+            Globals.CHARACTER_TABLE[0].Write("MP_Regen", Globals.CURRENT_STATS[0].MP_Regen);
+            Globals.CHARACTER_TABLE[0].Write("SP_Regen", Globals.CURRENT_STATS[0].SP_Regen);
             if (dlv == 0) {
                 Globals.CHARACTER_TABLE[0].Write("Dragoon", 0);
             }

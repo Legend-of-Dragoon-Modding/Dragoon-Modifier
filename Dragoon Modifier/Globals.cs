@@ -31,7 +31,7 @@ namespace Dragoon_Modifier {
         public static List<dynamic> MONSTER_TABLE = new List<dynamic>();
         public static List<dynamic> CHARACTER_TABLE = new List<dynamic>();
         public static List<dynamic> DRAGOON_SPELLS = new List<dynamic>();
-        public static dynamic[] CURRENT_STATS = new dynamic[9];
+        public static dynamic[] CURRENT_STATS = new dynamic[3];
         public static dynamic DICTIONARY = new System.Dynamic.ExpandoObject();
         public static Nullable<int> NO_DART = null;
         public static string MOD = "US_Base";
