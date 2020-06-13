@@ -121,6 +121,8 @@ namespace Dragoon_Modifier {
         //Reader Mode
         public bool readerRemoveUIOnBattleEntry = false;
         public bool partyMenu = false;
+        public bool partySecondMenu = false;
+        public bool readerModeOnBattleExit = false;
         //Ultimate Boss
         public int[] ultimateHP = new int[5];
         public int[] ultimateHPSave = new int[5];
@@ -565,10 +567,12 @@ namespace Dragoon_Modifier {
 
             cboReaderOnHotkey.Items.Add("None");
             cboReaderOffHotkey.Items.Add("None");
-            
+            cboReaderFieldHotkey.Items.Add("None");
+
             for (int i = 1; i < 17; i++) {
                 cboReaderOnHotkey.Items.Add("F" + i);
                 cboReaderOffHotkey.Items.Add("F" + i);
+                cboReaderFieldHotkey.Items.Add("F" + i);
             }
 
             battleRow[0] = cboRowDart;
@@ -716,6 +720,7 @@ namespace Dragoon_Modifier {
             cboReaderUIRemoval.SelectedIndex = 0;
             cboReaderOnHotkey.SelectedIndex = 0;
             cboReaderOffHotkey.SelectedIndex = 0;
+            cboReaderFieldHotkey.SelectedIndex = 0;
             cboHelpTopic.SelectedIndex = 0;
 
         }
@@ -811,6 +816,12 @@ namespace Dragoon_Modifier {
                 cboReaderOffHotkey.SelectedIndex = (int) Constants.KEY.GetValue("Reader Hotkey Off");
             }
 
+            if (Constants.KEY.GetValue("Reader Hotkey Field") == null) {
+                Constants.KEY.SetValue("Reader Hotkey Field", 0);
+            } else {
+                cboReaderFieldHotkey.SelectedIndex = (int) Constants.KEY.GetValue("Reader Hotkey Field");
+            }
+
             if (Constants.KEY.GetValue("Zoom") == null) {
                 Constants.KEY.SetValue("Zoom", 4096);
             } else {
@@ -886,6 +897,7 @@ namespace Dragoon_Modifier {
             Constants.KEY.SetValue("Preset Hotkeys", miPresetHotkeys.IsChecked);
             Constants.KEY.SetValue("Reader Hotkey On", cboReaderOnHotkey.SelectedIndex);
             Constants.KEY.SetValue("Reader Hotkey Off", cboReaderOffHotkey.SelectedIndex);
+            Constants.KEY.SetValue("Reader Hotkey Field", cboReaderFieldHotkey.SelectedIndex);
             Constants.KEY.SetValue("Zoom", sldZoom.Value);
             SaveReaderKey();
         }
@@ -2548,7 +2560,7 @@ namespace Dragoon_Modifier {
                         AdditionLevelUp();
                     if (Globals.CheckDMScript("btnReader") && uiCombo["cboReaderUIRemoval"] > 0)
                         ReaderRemoveUI();
-                    if (Globals.CheckDMScript("btnReader") && uiCombo["cboReaderOnHotkey"] > 0 && uiCombo["cboReaderOffHotkey"] > 0)
+                    if (Globals.CheckDMScript("btnReader") && uiCombo["cboReaderOnHotkey"] > 0 && uiCombo["cboReaderOffHotkey"] > 0 && uiCombo["cboReaderFieldHotkey"] > 0)
                         ReaderAutoHotkey();
                 } catch (Exception ex) {
                     Constants.RUN = false;
@@ -2634,6 +2646,12 @@ namespace Dragoon_Modifier {
 
                     this.Dispatcher.BeginInvoke(new Action(() => {
                         emulator.WriteShort("ZOOM", (ushort) sldZoom.Value);
+                        tabBattle.Focus();
+                        tabDifficulty.IsEnabled = false;
+                        tabEnhancements.IsEnabled = false;
+                        tabEnhancements2.IsEnabled = false;
+                        tabShop.IsEnabled = false;
+                        tabSettings.IsEnabled = false;
                     }), DispatcherPriority.ContextIdle);
 
                     keepStats = true;
@@ -2648,8 +2666,17 @@ namespace Dragoon_Modifier {
                     BattleUI();
                 }), DispatcherPriority.ContextIdle);
 
-                if (Globals.EXITING_BATTLE > 0)
+                if (Globals.EXITING_BATTLE > 0) {
                     Globals.EXITING_BATTLE -= 1;
+
+                    this.Dispatcher.BeginInvoke(new Action(() => {
+                        tabDifficulty.IsEnabled = true;
+                        tabEnhancements.IsEnabled = true;
+                        tabEnhancements2.IsEnabled = true;
+                        tabShop.IsEnabled = true;
+                        tabSettings.IsEnabled = true;
+                    }), DispatcherPriority.ContextIdle);
+                }
             }
         }
 
@@ -6096,7 +6123,7 @@ namespace Dragoon_Modifier {
                 if ((ultimateShopLimited & 524288) == 524288) { //Speed Up
                     if ((doubleRepeatUsed & 524288) != 524288) {
                         for (int i = 0; i < 3; i++) {
-                            if (Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[i].Read("SPEED_UP_TRN") > 0) {
+                            if (Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[i].Read("SPEED_UP_TRN") > 0 && Globals.MONSTER_TABLE[i].Read("SPEED_UP_TRN") != 255) {
                                 doubleRepeatUsed += 524288;
                                 Globals.CHARACTER_TABLE[i].Write("SPEED_UP_TRN", Globals.CHARACTER_TABLE[i].Read("SPEED_UP_TRN") + 3);
                             }
@@ -6107,7 +6134,7 @@ namespace Dragoon_Modifier {
                 if ((ultimateShopLimited & 1048576) == 1048576) { //Speed Down
                     if ((doubleRepeatUsed & 1048576) != 1048576) {
                         for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                            if (Globals.MONSTER_TABLE[i].Read("SPEED_DOWN_TRN") > 0) {
+                            if (Globals.MONSTER_TABLE[i].Read("SPEED_DOWN_TRN") > 0 && Globals.MONSTER_TABLE[i].Read("SPEED_DOWN_TRN") != 255) {
                                 doubleRepeatUsed += 1048576;
                                 Globals.MONSTER_TABLE[i].Write("SPEED_DOWN_TRN", Globals.MONSTER_TABLE[i].Read("SPEED_DOWN_TRN") + 3);
                             }
@@ -7887,6 +7914,12 @@ namespace Dragoon_Modifier {
                 if (Globals.DIFFICULTY_MODE.Equals("Hell")) {
                     emulator.WriteByte("SPELL_TABLE", (uiCombo["cboFlowerStorm"] + 1) * 20, 0x7 + (7 * 0xC)); //Lavitz's Blossom Storm MP
                     emulator.WriteByte("SPELL_TABLE", (uiCombo["cboFlowerStorm"] + 1) * 20, 0x7 + (26 * 0xC)); //Albert's Rose storm MP
+
+                    if (Constants.REGION == Region.NTA) {
+                        emulator.WriteAOB(Globals.DRAGOON_SPELLS[7].Description_Pointer - 0x80000000, "22 00 39 00 45 00 39 00 3F 00 3D 00 00 00 30 00 3D 00 4B 00 41 00 4B 00 4C 00 00 00 1A 00 15 00 0F 00 00 00 22 00 4D 00 4A 00 00 00 " + (0x15 + (uiCombo["cboFlowerStorm"] + 1)) + " 00 FF A0");
+                        emulator.WriteAOB(Globals.DRAGOON_SPELLS[26].Description_Pointer - 0x80000000, "22 00 39 00 45 00 39 00 3F 00 3D 00 00 00 30 00 3D 00 4B 00 41 00 4B 00 4C 00 00 00 1A 00 15 00 0F 00 00 00 22 00 4D 00 4A 00 00 00 " + (0x15 + (uiCombo["cboFlowerStorm"] + 1)) + " 00 FF A0");
+                    }
+
                     emulator.WriteByte("SPELL_TABLE", 20, 0x7 + (11 * 0xC)); //Shana's Moon Light MP
                     emulator.WriteByte("SPELL_TABLE", 20, 0x7 + (66 * 0xC)); //???'s Moon Light MP
                     emulator.WriteByte("SPELL_TABLE", 30, 0x7 + (25 * 0xC)); //Rainbow Breath MP
@@ -10207,7 +10240,7 @@ namespace Dragoon_Modifier {
                     "Blue: Name\r\nRed: HP\r\nOrange: AT/MAT\r\nGreen: DF/MDF\r\nMagenta: SPD\r\nViolet: Turn Points, Characters have SP\r\nGrey: A-AV/M-AV\r\nTeal: D-AT/D-MAT\r\nBrown: D-DF/D-MDF\r\n" +
                     "Turn Order will display the current Turn Point order of who will go next. Counterattacks are not counted in this calculation.";
             } else if (cboHelpTopic.SelectedIndex == 2) {
-                txtHelp.Text = "Presets Hard and Hell mode are plug and play difficulty settings which are locked in. Normal Mode will not do anything unless you have made changes. You can change your current mod loadout and location in Settings Tab>Settings>Mod Options. Hard and Hell Mode have a more detailed changes below.\r\n\r\n" +
+                txtHelp.Text = "Presets Hard and Hell mode are plug and play difficulty settings which are locked in. These presets are intended to run on unmodified ISOs. Normal Mode will not do anything unless you have made changes. You can change your current mod loadout and location in Settings Tab>Settings>Mod Options. Hard and Hell Mode have a more detailed changes below.\r\n\r\n" +
                     "Hard Mode\r\nThis preset balances characters, monsters, weapons, additions, boss drops, and is very Dragoon focused. It is intended that you start off with Dragoons using hotkey (CROSS+L1) in starting Map 10. The mod starts off slightly harder than the Japanese version and gets more difficult as you progress through the discs. However you are not meant to grind for EXP in this mode. You can keep everyone at the same level by using Switch EXP in the Enhancements 1 tab up to 80,000 EXP. Dart as well has new Dragoon enhancements called Burn Stacks (CIRCLE+LEFT). Dart can have up to 6 stacks for 20% each and he gains stacks by using Dragoon magic.\r\n\r\n" +
                     "Hell Mode has the same character, weapon, drop, and dragoon adjustments. However incomplete Additions are punished and you gain about 50% SP from them. To encourage the use of Elemental Bomb the drop rates for magic items are tripled, powerful items are doubled. It is intended for you to start off Hell Mode will all Dragoons with hotkey (CROSS+L1) in Map 10. It is also intended that you use Elemental Bomb, it was left optional as it made Hell Mode easier but it was designed with this turned on. This changes the element of all monsters on the field when a powerful item is used, however you do not have to use this. Monsters are much harder and you may require grinding. You can keep everyone at the same level by using Switch EXP up to 160,000 EXP.\r\n\r\n" +
                     "+\r\nPlus turns on Enrage Mode for bosses only. Originally designed to be a part of Hell Mode but separated for the possibility of being too hard.\r\n\r\nThe sliders will multiply each stat at the bottom. If you choose a preset those stats will be multiplied as well.";
@@ -11314,7 +11347,9 @@ namespace Dragoon_Modifier {
                     if (Globals.PARTY_SLOT[i] < 9) {
                         actions[i] = Globals.CHARACTER_TABLE[i].Read("Action");
                         if (actions[i] == 8 || actions[i] == 10 || actions[i] == 136) {
-                            update = true;
+                            if (Globals.CHARACTER_TABLE[i].Read("Menu") >= 15 && Globals.CHARACTER_TABLE[i].Read("Menu") < 250) {
+                                update = true;
+                            }
                         }
                         if (Globals.PARTY_SLOT[i] == 2 || Globals.PARTY_SLOT[i] == 8) {
                             shanaSlot = i;
@@ -11332,6 +11367,27 @@ namespace Dragoon_Modifier {
 
                     if (actions[shanaSlot] == 136 && actions[otherSlot1] == 0 && actions[otherSlot2] == 0) {
                         update = false;
+                    }+-
+                }
+
+                for (int i = 0; i < 3; i++) {
+                    if (Globals.PARTY_SLOT[i] < 9) {
+                        if ((actions[i] == 8 || actions[i] == 10) && Globals.CHARACTER_TABLE[i].Read("Menu") == 0 && !partySecondMenu) {
+                            update = true;
+                            partySecondMenu = true;
+                        }
+                    }
+                }
+
+                if (partySecondMenu) {
+                    partySecondMenu = false;
+                    for (int i = 0; i < 3; i++) {
+                        if (Globals.PARTY_SLOT[i] < 9) {
+                            if ((actions[i] == 8 || actions[i] == 10) && Globals.CHARACTER_TABLE[i].Read("Menu") == 0 && !partySecondMenu) {
+                                update = true;
+                                partySecondMenu = true;
+                            }
+                        }
                     }
                 }
 
@@ -11344,6 +11400,15 @@ namespace Dragoon_Modifier {
                         } else {
                             System.Windows.Forms.SendKeys.SendWait("{" + cboReaderOffHotkey.SelectedValue + "}");
                         }
+                    }), DispatcherPriority.ContextIdle);
+                }
+
+                readerModeOnBattleExit = true;
+            } else {
+                if (readerModeOnBattleExit) {
+                    this.Dispatcher.BeginInvoke(new Action(() => {
+                        System.Windows.Forms.SendKeys.SendWait("{" + cboReaderFieldHotkey.SelectedValue + "}");
+                        readerModeOnBattleExit = false;
                     }), DispatcherPriority.ContextIdle);
                 }
             }
