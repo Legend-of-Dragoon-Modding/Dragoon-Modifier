@@ -11,7 +11,7 @@ namespace Dragoon_Modifier {
     public class Constants {
         public static string VERSION = "3.0";
         public static bool RUN = true;
-        public static bool DEBUG_MODE = true;
+        public static bool DEBUG_MODE = false;
         public static bool BATTLE_UI = false;
         public static TextBox CONSOLE;
         public static TextBlock GLOG;

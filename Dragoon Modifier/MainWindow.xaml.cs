@@ -833,6 +833,12 @@ namespace Dragoon_Modifier {
             } else {
                 cboFlowerStorm.SelectedIndex = (int) Constants.KEY.GetValue("Flower Storm Turns");
             }
+
+            if (Constants.KEY.GetValue("Debug Mode") == null) {
+                Constants.KEY.SetValue("Debug Mode", false);
+            } else {
+                Constants.DEBUG_MODE = bool.Parse(Constants.KEY.GetValue("Debug Mode").ToString());
+            }
         }
 
         public void LoadReaderKey() {
@@ -2652,12 +2658,14 @@ namespace Dragoon_Modifier {
 
                     this.Dispatcher.BeginInvoke(new Action(() => {
                         emulator.WriteShort("ZOOM", (ushort) sldZoom.Value);
-                        tabBattle.Focus();
-                        tabDifficulty.IsEnabled = false;
-                        tabEnhancements.IsEnabled = false;
-                        tabEnhancements2.IsEnabled = false;
-                        tabShop.IsEnabled = false;
-                        tabSettings.IsEnabled = false;
+                        if (!Constants.DEBUG_MODE) {
+                            tabBattle.Focus();
+                            tabDifficulty.IsEnabled = false;
+                            tabEnhancements.IsEnabled = false;
+                            tabEnhancements2.IsEnabled = false;
+                            tabShop.IsEnabled = false;
+                            tabSettings.IsEnabled = false;
+                        }
                     }), DispatcherPriority.ContextIdle);
 
                     keepStats = true;
@@ -2676,11 +2684,13 @@ namespace Dragoon_Modifier {
                     Globals.EXITING_BATTLE -= 1;
 
                     this.Dispatcher.BeginInvoke(new Action(() => {
-                        tabDifficulty.IsEnabled = true;
-                        tabEnhancements.IsEnabled = true;
-                        tabEnhancements2.IsEnabled = true;
-                        tabShop.IsEnabled = true;
-                        tabSettings.IsEnabled = true;
+                        if (!Constants.DEBUG_MODE) {
+                            tabDifficulty.IsEnabled = true;
+                            tabEnhancements.IsEnabled = true;
+                            tabEnhancements2.IsEnabled = true;
+                            tabShop.IsEnabled = true;
+                            tabSettings.IsEnabled = true;
+                        }
                     }), DispatcherPriority.ContextIdle);
                 }
             }
