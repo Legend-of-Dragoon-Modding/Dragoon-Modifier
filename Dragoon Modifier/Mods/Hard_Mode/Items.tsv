@@ -8,7 +8,7 @@ Fairy Sword	Weapon	Dart	Sword				39												sp_multi		50		Attacks generate<LI
 Claymore	Weapon	Dart	Sword				44																	500
 Soul Eater	Weapon	Dart	Sword				75													hp_regen	-10		Powerful, but<LINE>HP decays<LINE>each turn.	450
 Axe	Weapon	Kongol	Axe				45																	200
-Tomahawk	Weapon	Kongol	Axe				59																	300
+Tomahawk	Weapon	Kongol	Axe	Earth			59																	300
 Battle Axe	Weapon	Kongol	Axe				67																	350
 Great Axe	Weapon	Kongol	Axe		Stun	20	79																20% chance of<LINE>stunning enemy.	400
 Indora's Axe	Weapon	Kongol	Axe		Death	10	88															death_chance	10% chance to<LINE>instantly kill<LINE>enemy.	500
@@ -76,14 +76,14 @@ Angel Robe	Armor	Female	Robe						10	20				5	5					revive	40		40% chance of<LINE
 Armor of Legend	Armor	All	Armor						127					50									Greatly reduces<LINE>damage from<LINE>physical attacks.	10000
 																								2
 Bandana	Helm	Male	Bandana					3				100	100											10
-Sallet	Helm	Male	Helm					8				110	100										Increases hit<LINE>chance of physical<LINE>attacks by 10%.	40
+Sallet	Helm	Male	Helm					8				110	110										Increases hit<LINE>chance of physical<LINE>attacks by 10%.	40
 Armlet	Helm	Male	Helm					23		5		100	100											100
 Knight Helm	Helm	Male	Helm					37	5			100	100						sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.	150
 Giganto Helm	Helm	Kongol	Helm					14	10	5		100	100						sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.	200
 Soul Headband	Helm	Haschel	Bandana					25	5	5		100	100						sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.	200
 Felt Hat	Helm	Female	Hat					5				100	100											10
 Cape	Helm	Female	Hat					17				100	100											60
-Tiara	Helm	Female	Crown					29	5			100	110										Increases hit<LINE>chance of magical<LINE>attacks by 10%.	150
+Tiara	Helm	Female	Crown					29	5			110	110										Increases hit<LINE>chance of magical<LINE>attacks by 10%.	150
 Jeweled Crown	Helm	Shana, Meru	Crown					42		5		100	100						sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.	200
 Rose's Hair Band	Helm	Rose	Bandana					36				100	100									death_res	Grants immunity<LINE>to instant death.	250
 																								2
