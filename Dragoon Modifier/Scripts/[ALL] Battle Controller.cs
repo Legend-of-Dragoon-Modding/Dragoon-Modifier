@@ -37,7 +37,7 @@ public class BattleController {
                 Globals.SetM_POINT(0x1A43B4 + emulator.ReadShort("M_POINT"));
             }
             Globals.SetC_POINT((long) (emulator.ReadInteger("C_POINT") - 0x7FFFFEF8));
-
+            
             LoDDictInIt(emulator);
 
             Constants.WriteDebug("Monster Size:        " + Globals.MONSTER_SIZE);
@@ -97,8 +97,8 @@ public class BattleController {
     }
 
     public static int GetOffset(Emulator emulator) {
-        if (Constants.REGION == Region.NTA) {
-            return emulator.ReadShort(0xBDA0C) - 0x8F44;
+        if (Constants.REGION == Region.NTA || Constants.REGION == Region.PAL_ENG) {
+            return emulator.ReadShort("BATTLE_OFFSET") - 0x8F44;
         } else {
             int[] discOffset = { 0xD80, 0x0, 0x1458, 0x1B0 };
             int[] charOffset = { 0x0, 0x180, -0x180, 0x420, 0x540, 0x180, 0x350, 0x2F0, -0x180 };
@@ -669,7 +669,7 @@ public class BattleController {
             }
         }
 
-        if (Globals.ITEM_NAMEDESC_CHANGE && (Constants.REGION == Region.NTA || Constants.REGION == Region.PAL_ENG)) {
+        if (Globals.ITEM_NAMEDESC_CHANGE && Constants.REGION == Region.NTA) {
             Constants.WriteOutput("Changing Item Names and Descriptions...");
             if (String.Join("", Globals.DICTIONARY.NameList).Replace(" ", "").Length / 2 < 6423) {
                 emulator.WriteAOB("ITEM_NAME", String.Join(" ", Globals.DICTIONARY.NameList));

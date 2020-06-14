@@ -1275,7 +1275,7 @@
                                     <MenuItem Header="EUR-FRN" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miRegion_Click" IsEnabled="False"/>
                                     <MenuItem Header="EUR-ITL" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miRegion_Click" IsEnabled="False"/>
                                     <MenuItem Header="EUR-SPN" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miRegion_Click" IsEnabled="False"/>
-                                    <MenuItem Header="EUR-ENG" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miRegion_Click" IsEnabled="False"/>
+                                    <MenuItem Header="EUR-ENG" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miRegion_Click"/>
                                 </MenuItem>
                                 <MenuItem x:Name="miSaveSlot" Header="Save Slot" Background="#FFB6B6B6" Foreground="White">
                                     <MenuItem Header="1" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
