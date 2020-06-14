@@ -188,7 +188,7 @@ public class BattleController {
                 character = (int)Globals.NO_DART;
             }
             if (character < 9) {
-                Globals.CURRENT_STATS[slot] = new CurrentStats(character, emulator);
+                Globals.CURRENT_STATS[slot] = new CurrentStats(character, slot, emulator);
             }
         }
 
@@ -1338,7 +1338,7 @@ public class BattleController {
         byte sp_multi = 0;
         byte element = 0;
         byte death_res = 0;
-        byte[] dragoon_spirits = new byte[] { 1, 4, 32, 64, 16, 4, 2, 8, 32 };
+        byte[] dragoon_spirits = new byte[] { 1, 4, 32, 64, 16, 4, 2, 8, 32, 128 };
 
         public byte LV { get { return lv; } }
         public byte DLV { get { return dlv; } }
@@ -1380,9 +1380,13 @@ public class BattleController {
         public dynamic Boots { get { return boots; } }
         public dynamic Accessory { get { return accessory; } }
 
-        public CurrentStats(int character, Emulator emulator) {
+        public CurrentStats(int character, int slot, Emulator emulator) {
             lv = emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x12);
             if ((dragoon_spirits[character] & emulator.ReadByte("DRAGOON_SPIRITS")) > 0) {
+                dlv = emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x13);
+            }
+
+            if (Globals.CHARACTER_TABLE[slot].Read("Image") == 9 && character == 0 && ((dragoon_spirits[9] & emulator.ReadByte("DRAGOON_SPIRITS")) > 0)) {
                 dlv = emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x13);
             }
 
