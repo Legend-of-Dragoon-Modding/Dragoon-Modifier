@@ -676,20 +676,25 @@ public class BattleController {
             Constants.WriteOutput("Changing Item Names and Descriptions...");
             if (String.Join("", Globals.DICTIONARY.NameList).Replace(" ", "").Length / 2 < 6423) {
                 emulator.WriteAOB("ITEM_NAME", String.Join(" ", Globals.DICTIONARY.NameList));
+                long address = Constants.GetAddress("ITEM_NAME_PTR");
+                int i = 0;
+                foreach (dynamic item in Globals.DICTIONARY.ItemList) {
+                    emulator.WriteInteger(address + i * 0x4, (int)item.NamePointer);
+                    i++;
+                }
             } else {
                 Constants.WriteDebug("Item name character limit exceded! " + Convert.ToString(String.Join("", Globals.DICTIONARY.NameList).Replace(" ", "").Length / 4, 10) + " / 3211 characters.");
             }
             if (String.Join("", Globals.DICTIONARY.DescriptionList).Replace(" ", "").Length / 2 < 13465) {
                 emulator.WriteAOB("ITEM_DESC", String.Join(" ", Globals.DICTIONARY.DescriptionList));
+                long address = Constants.GetAddress("ITEM_DESC_PTR");
+                int i = 0;
+                foreach (dynamic item in Globals.DICTIONARY.ItemList) {
+                    emulator.WriteInteger(address + i * 0x4, (int)item.DescriptionPointer);
+                    i++;
+                }
             } else {
                 Constants.WriteDebug("Item description character limit exceded! " + Convert.ToString(String.Join("", Globals.DICTIONARY.DescriptionList).Replace(" ", "").Length / 4, 10) + " / 6732 characters.");
-            }
-            long address = Constants.GetAddress("ITEM_TABLE");
-            int i = 0;
-            foreach (dynamic item in Globals.DICTIONARY.ItemList) {
-                emulator.WriteInteger("ITEM_DESC_PTR", (int) item.DescriptionPointer, i * 0x4);
-                emulator.WriteInteger("ITEM_NAME_PTR", (int) item.NamePointer, i * 0x4);
-                i++;
             }
         }
 
