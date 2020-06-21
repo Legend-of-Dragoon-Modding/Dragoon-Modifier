@@ -29,7 +29,7 @@ public class BattleController {
             Globals.SHANA_FIX = false;
             Thread.Sleep(4000);
             Globals.MONSTER_SIZE = emulator.ReadByte("MONSTER_SIZE");
-            Globals.UNIQUE_MONSTERS = emulator.ReadByte("UNIQUE_MONSTERS");
+            Globals.UNIQUE_MONSTER_SIZE = emulator.ReadByte("UNIQUE_MONSTER_SIZE");
 
             if (Constants.REGION == Region.NTA) {
                 Globals.SetM_POINT(0x1A439C + emulator.ReadShort("M_POINT"));
@@ -41,7 +41,7 @@ public class BattleController {
             LoDDictInIt(emulator);
 
             Constants.WriteDebug("Monster Size:        " + Globals.MONSTER_SIZE);
-            Constants.WriteDebug("Unique Monsters:     " + Globals.UNIQUE_MONSTERS);
+            Constants.WriteDebug("Unique Monsters:     " + Globals.UNIQUE_MONSTER_SIZE);
             Constants.WriteDebug("Monster Point:       " + Convert.ToString(Globals.M_POINT + Constants.OFFSET, 16).ToUpper());
             Constants.WriteDebug("Character Point:     " + Convert.ToString(Globals.C_POINT + Constants.OFFSET, 16).ToUpper());
             Constants.WriteDebug("Monster IDs:         " + String.Join(", ", Globals.MONSTER_IDS.ToArray()));
@@ -80,7 +80,7 @@ public class BattleController {
         Globals.MONSTER_TABLE = new List<dynamic>();
         Globals.CHARACTER_TABLE = new List<dynamic>();
 
-        for (int monster = 0; monster < Globals.UNIQUE_MONSTERS; monster++) {
+        for (int monster = 0; monster < Globals.UNIQUE_MONSTER_SIZE; monster++) {
             Globals.UNIQUE_MONSTER_IDS.Add(emulator.ReadShort("UNIQUE_SLOT", (monster * 0x1A8)));
         }
         for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
@@ -160,7 +160,7 @@ public class BattleController {
         }
 
         if (Globals.MONSTER_DROP_CHANGE && !Globals.CheckDMScript("btnUltimateBoss")) {
-            for (int monster = 0; monster < Globals.UNIQUE_MONSTERS; monster++) {
+            for (int monster = 0; monster < Globals.UNIQUE_MONSTER_SIZE; monster++) {
                 int ID = Globals.UNIQUE_MONSTER_IDS[monster];
                 emulator.WriteByte("MONSTER_REWARDS", (byte) Globals.DICTIONARY.StatList[ID].Drop_Chance, 0x4 + monster * 0x1A8);
                 emulator.WriteByte("MONSTER_REWARDS", (byte) Globals.DICTIONARY.StatList[ID].Drop_Item, 0x5 + monster * 0x1A8);
@@ -168,7 +168,7 @@ public class BattleController {
         }
 
         if (Globals.MONSTER_EXPGOLD_CHANGE && !Globals.CheckDMScript("btnUltimateBoss")) {
-            for (int monster = 0; monster < Globals.UNIQUE_MONSTERS; monster++) {
+            for (int monster = 0; monster < Globals.UNIQUE_MONSTER_SIZE; monster++) {
                 int ID = Globals.UNIQUE_MONSTER_IDS[monster];
                 emulator.WriteShort("MONSTER_REWARDS", (ushort) Globals.DICTIONARY.StatList[ID].EXP, monster * 0x1A8);
                 emulator.WriteShort("MONSTER_REWARDS", (ushort) Globals.DICTIONARY.StatList[ID].Gold, 0x2 + monster * 0x1A8);
@@ -510,7 +510,7 @@ public class BattleController {
             int dlv = Globals.CURRENT_STATS[0].DLV;
 
             #region Dragoon Magic
-            emulator.WriteByte("DRAGOON_MAGIC", (byte) character); // Magic
+            emulator.WriteByte("DRAGOON_SPELL_SLOT", (byte) character); // Magic
             Dictionary<int, byte> dmagic5 = new Dictionary<int, byte> {
                 {0, 3},{1, 8},{2, 13},{3, 19},{4, 23},{5, 8},{6, 28},{7, 31},{8, 13}
             };
@@ -526,34 +526,34 @@ public class BattleController {
 
             if (dlv == 5) {
                 if (Globals.NO_DART != 7) {
-                    emulator.WriteByte("DRAGOON_MAGIC", dmagic5[character], 4);
-                    emulator.WriteByte("DRAGOON_MAGIC", dmagic3[character], 3);
+                    emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic5[character], 4);
+                    emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic3[character], 3);
                 } else {
-                    emulator.WriteByte("DRAGOON_MAGIC", 0xFF, 4);
-                    emulator.WriteByte("DRAGOON_MAGIC", dmagic5[character], 3);
+                    emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 4);
+                    emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic5[character], 3);
                 }
-                emulator.WriteByte("DRAGOON_MAGIC", dmagic2[character], 2);
-                emulator.WriteByte("DRAGOON_MAGIC", dmagic1[character], 1);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic2[character], 2);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic1[character], 1);
             } else if (dlv > 2) {
-                emulator.WriteByte("DRAGOON_MAGIC", 0xFF, 4);
-                emulator.WriteByte("DRAGOON_MAGIC", dmagic3[character], 3);
-                emulator.WriteByte("DRAGOON_MAGIC", dmagic2[character], 2);
-                emulator.WriteByte("DRAGOON_MAGIC", dmagic1[character], 1);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 4);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic3[character], 3);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic2[character], 2);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic1[character], 1);
             } else if (dlv > 1) {
-                emulator.WriteByte("DRAGOON_MAGIC", 0xFF, 4);
-                emulator.WriteByte("DRAGOON_MAGIC", 0xFF, 3);
-                emulator.WriteByte("DRAGOON_MAGIC", dmagic2[character], 2);
-                emulator.WriteByte("DRAGOON_MAGIC", dmagic1[character], 1);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 4);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 3);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic2[character], 2);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic1[character], 1);
             } else if (dlv > 0) {
-                emulator.WriteByte("DRAGOON_MAGIC", 0xFF, 4);
-                emulator.WriteByte("DRAGOON_MAGIC", 0xFF, 3);
-                emulator.WriteByte("DRAGOON_MAGIC", 0xFF, 2);
-                emulator.WriteByte("DRAGOON_MAGIC", dmagic1[character], 1);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 4);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 3);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 2);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic1[character], 1);
             } else {
-                emulator.WriteByte("DRAGOON_MAGIC", 0xFF, 4);
-                emulator.WriteByte("DRAGOON_MAGIC", 0xFF, 3);
-                emulator.WriteByte("DRAGOON_MAGIC", 0xFF, 2);
-                emulator.WriteByte("DRAGOON_MAGIC", 0xFF, 1);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 4);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 3);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 2);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 1);
             }
             #endregion
 
@@ -948,7 +948,7 @@ public class BattleController {
             gold[0] = Constants.GetAddress("MONSTER_REWARDS") + (int) Constants.OFFSET + 0x2 + Globals.UNIQUE_MONSTER_IDS.IndexOf(ID) * 0x1A8;
             drop_chance[0] = Constants.GetAddress("MONSTER_REWARDS") + (int) Constants.OFFSET + 0x4 + Globals.UNIQUE_MONSTER_IDS.IndexOf(ID) * 0x1A8;
             drop_item[0] = Constants.GetAddress("MONSTER_REWARDS") + (int) Constants.OFFSET + 0x5 + Globals.UNIQUE_MONSTER_IDS.IndexOf(ID) * 0x1A8;
-            special_effect[0] = Constants.GetAddress("UNIQUE_MONSTERS") + monster * 0x20;
+            special_effect[0] = Constants.GetAddress("UNIQUE_MONSTER_SIZE") + monster * 0x20;
         }
 
         public object Read(string attribute) {
@@ -1175,7 +1175,7 @@ public class BattleController {
 
         public CharAddress(long c_point, int character, Emulator emu) {
             emulator = emu;
-            special_effect[0] = Constants.GetAddress("UNIQUE_MONSTERS") + (character + Globals.MONSTER_SIZE) * 0x20;
+            special_effect[0] = Constants.GetAddress("UNIQUE_MONSTER_SIZE") + (character + Globals.MONSTER_SIZE) * 0x20;
             action[0] = c_point - 0xA8 - character * 0x388;
             menu[0] = c_point - 0xA4 - character * 0x388;
             lv[0] = c_point - 0x04 - character * 0x388;

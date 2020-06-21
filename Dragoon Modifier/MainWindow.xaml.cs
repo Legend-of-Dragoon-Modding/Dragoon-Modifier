@@ -3468,67 +3468,67 @@ namespace Dragoon_Modifier {
         public void EarlyAdditions() {
             if (!Globals.IN_BATTLE && !earlyAdditionsOnFieldEntry) {
                 //Dart
-                emulator.WriteByte(Constants.GetAddress("DART_LEVEL_UNLOCK") + 0xE * 3, 13); //Crush Dance
-                emulator.WriteByte(Constants.GetAddress("DART_LEVEL_UNLOCK") + 0xE * 4, 18); //Madness Hero
-                emulator.WriteByte(Constants.GetAddress("DART_LEVEL_UNLOCK") + 0xE * 5, 23); //Moon Strike
-                emulator.WriteByte(Constants.GetAddress("DART_LEVEL_UNLOCK") + 0xE * 6, 60); //Blazying Dynamo
-                if (emulator.ReadByte(Constants.GetAddress("DART_ADDITION_TOTAL") + 0) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("DART_ADDITION_TOTAL") + 1) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("DART_ADDITION_TOTAL") + 2) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("DART_ADDITION_TOTAL") + 3) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("DART_ADDITION_TOTAL") + 4) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("DART_ADDITION_TOTAL") + 5) >= 80) {
-                    emulator.WriteByte(Constants.GetAddress("DART_LEVEL_UNLOCK") * 0xE * 6, 29); //Blazying Dynamo
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 3, 13); //Crush Dance
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 4, 18); //Madness Hero
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 5, 23); //Moon Strike
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 6, 60); //Blazying Dynamo
+                if (emulator.ReadByte(Constants.GetAddress("CHAR_TABLE") + 0x22) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("CHAR_TABLE") + 0x23) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("CHAR_TABLE") + 0x24) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("CHAR_TABLE") + 0x25) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("CHAR_TABLE") + 0x26) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("CHAR_TABLE") + 0x27) >= 80) {
+                    emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 6, 29); //Blazying Dynamo
                 }
                 //Lavitz
-                emulator.WriteByte(Constants.GetAddress("LAVITZ_LEVEL_UNLOCK") + 0xE * 2, 10); //Rod Typhoon
-                emulator.WriteByte(Constants.GetAddress("LAVITZ_LEVEL_UNLOCK") + 0xE * 3, 16); //Gust of Wind Dance
-                emulator.WriteByte(Constants.GetAddress("LAVITZ_LEVEL_UNLOCK") + 0xE * 4, 60); //Flower Storm
-                if (emulator.ReadByte(Constants.GetAddress("LAVITZ_ADDITION_TOTAL") + 0) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("LAVITZ_ADDITION_TOTAL") + 1) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("LAVITZ_ADDITION_TOTAL") + 2) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("LAVITZ_ADDITION_TOTAL") + 3) >= 80) {
-                    emulator.WriteByte(Constants.GetAddress("LAVITZ_LEVEL_UNLOCK") * 0xE * 4, 21); //Flower Storm
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 2 + 0x70, 10); //Rod Typhoon
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 3 + 0x70, 16); //Gust of Wind Dance
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 4 + 0x70, 60); //Flower Storm
+                if (emulator.ReadByte(Constants.GetAddress("CHAR_TABLE") + 0x22 + 0x2C) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("CHAR_TABLE") + 0x23 + 0x2C) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("CHAR_TABLE") + 0x24 + 0x2C) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("CHAR_TABLE") + 0x25 + 0x2C) >= 80) {
+                    emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 4 + 0x70, 21); //Flower Storm
                 }
                 //Rose
-                emulator.WriteByte(Constants.GetAddress("ROSE_LEVEL_UNLOCK") + 0xE * 1, 8); //More & More
-                emulator.WriteByte(Constants.GetAddress("ROSE_LEVEL_UNLOCK") + 0xE * 2, 15); //Hard Blade
-                emulator.WriteByte(Constants.GetAddress("ROSE_LEVEL_UNLOCK") + 0xE * 3, 60); //Demon's Dance
-                if (emulator.ReadByte(Constants.GetAddress("ROSE_ADDITION_TOTAL") + 0) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("ROSE_ADDITION_TOTAL") + 1) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("ROSE_ADDITION_TOTAL") + 2) >= 80) {
-                    emulator.WriteByte(Constants.GetAddress("ROSE_LEVEL_UNLOCK") + 0xE * 3, 21); //Demon's Dance
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 1 + 0xC4, 8); //More & More
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 2 + 0xC4, 15); //Hard Blade
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 3 + 0xC4, 60); //Demon's Dance
+                if (emulator.ReadByte(Constants.GetAddress("CHAR_TABLE") + 0x22 + 0x84) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("CHAR_TABLE") + 0x23 + 0x84) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("CHAR_TABLE") + 0x24 + 0x84) >= 80) {
+                    emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 3 + 0xC4, 21); //Demon's Dance
                 }
                 //Kongol
-                emulator.WriteByte(Constants.GetAddress("KONGOL_LEVEL_UNLOCK") + 0xE * 1, 10); //Inferno
-                emulator.WriteByte(Constants.GetAddress("KONGOL_LEVEL_UNLOCK") + 0xE * 2, 60); //Bone Crush
-                if (emulator.ReadByte(Constants.GetAddress("KONGOL_ADDITION_TOTAL") + 0) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("KONGOL_ADDITION_TOTAL") + 1) >= 80) {
-                    emulator.WriteByte(Constants.GetAddress("KONGOL_LEVEL_UNLOCK") + 0xE * 2, 20); //Bone Crush
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 1 + 0x10A, 10); //Inferno
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 2 + 0x10A, 60); //Bone Crush
+                if (emulator.ReadByte(Constants.GetAddress("CHAR_TABLE") + 0x22 + 0x134) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("CHAR_TABLE") + 0x23 + 0x134) >= 80) {
+                    emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 2 + 0x10A, 20); //Bone Crush
                 }
                 //Meru
-                emulator.WriteByte(Constants.GetAddress("MERU_LEVEL_UNLOCK") + 0xE * 1, 6); //Hammer Spin
-                emulator.WriteByte(Constants.GetAddress("MERU_LEVEL_UNLOCK") + 0xE * 2, 12); //Cool Boogie
-                emulator.WriteByte(Constants.GetAddress("MERU_LEVEL_UNLOCK") + 0xE * 3, 18); //Cat's Cradle
-                emulator.WriteByte(Constants.GetAddress("MERU_LEVEL_UNLOCK") + 0xE * 4, 60); //Perky Step
-                if (emulator.ReadByte(Constants.GetAddress("MERU_ADDITION_TOTAL") + 0) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("MERU_ADDITION_TOTAL") + 1) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("MERU_ADDITION_TOTAL") + 2) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("MERU_ADDITION_TOTAL") + 3) >= 80) {
-                    emulator.WriteByte(Constants.GetAddress("MERU_LEVEL_UNLOCK") * 0xE * 4, 22);  //Perky Step
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 1 + 0x142‬, 6); //Hammer Spin
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 2 + 0x142, 12); //Cool Boogie
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 3 + 0x142, 18); //Cat's Cradle
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 4 + 0x142, 60); //Perky Step
+                if (emulator.ReadByte(Constants.GetAddress("CHAR_TABLE") + 0x22 + 0x108) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("CHAR_TABLE") + 0x23 + 0x108) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("CHAR_TABLE") + 0x24 + 0x108) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("CHAR_TABLE") + 0x25 + 0x108) >= 80) {
+                    emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 4 + 0x142, 22);  //Perky Step
                 }
                 //Haschel
-                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") + 0xE * 1, 5); // Flurry of Styx
-                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") + 0xE * 2, 10); //Summon 4 Gods
-                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") + 0xE * 3, 16); //5 Ring Shattering
-                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") + 0xE * 4, 22); //Hex Hammer
-                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") + 0xE * 5, 60); //Omni-Sweep        
-                if (emulator.ReadByte(Constants.GetAddress("HASCHEL_ADDITION_TOTAL") + 0) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("HASCHEL_ADDITION_TOTAL") + 1) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("HASCHEL_ADDITION_TOTAL") + 2) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("HASCHEL_ADDITION_TOTAL") + 3) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("HASCHEL_ADDITION_TOTAL") + 4) >= 80) {
-                    emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") * 0xE * 5, 25); //Omni-Sweep 
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 1 + 0x196, 5); // Flurry of Styx
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 2 + 0x196, 10); //Summon 4 Gods
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 3 + 0x196, 16); //5 Ring Shattering
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 4 + 0x196, 22); //Hex Hammer
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 5 + 0x196, 60); //Omni-Sweep        
+                if (emulator.ReadByte(Constants.GetAddress("CHAR_TABLE") + 0x22 + 0x30) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("CHAR_TABLE") + 0x23 + 0x30) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("CHAR_TABLE") + 0x24 + 0x30) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("CHAR_TABLE") + 0x25 + 0x30) >= 80 &&
+                    emulator.ReadByte(Constants.GetAddress("CHAR_TABLE") + 0x26 + 0x30) >= 80) {
+                    emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 5 + 0x196, 25); //Omni-Sweep 
                 }
                 earlyAdditionsOnFieldEntry = true;
             } else {
@@ -3540,32 +3540,32 @@ namespace Dragoon_Modifier {
         public void TurnOffEarlyAdditions() {
             if (!Globals.IN_BATTLE) {
                 //Dart
-                emulator.WriteByte(Constants.GetAddress("DART_LEVEL_UNLOCK") * 0xE * 3, 15); //Crush Dance
-                emulator.WriteByte(Constants.GetAddress("DART_LEVEL_UNLOCK") * 0xE * 4, 22); //Madness Hero
-                emulator.WriteByte(Constants.GetAddress("DART_LEVEL_UNLOCK") * 0xE * 5, 29); //Moon Strike
-                emulator.WriteByte(Constants.GetAddress("DART_LEVEL_UNLOCK") * 0xE * 6, 255); //Blazying Dynamo
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 3, 15); //Crush Dance
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 4, 22); //Madness Hero
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 5, 29); //Moon Strike
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 6, 255); //Blazying Dynamo
                 //Lavitz
-                emulator.WriteByte(Constants.GetAddress("LAVITZ_LEVEL_UNLOCK") * 0xE * 2, 7); //Rod Typhoon
-                emulator.WriteByte(Constants.GetAddress("LAVITZ_LEVEL_UNLOCK") * 0xE * 3, 11); //Gust of Wind Dance
-                emulator.WriteByte(Constants.GetAddress("LAVITZ_LEVEL_UNLOCK") * 0xE * 4, 255); //Flower Storm
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 2 + 0x70, 7); //Rod Typhoon
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 3 + 0x70, 11); //Gust of Wind Dance
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 4 + 0x70, 255); //Flower Storm
                 //Rose
-                emulator.WriteByte(Constants.GetAddress("ROSE_LEVEL_UNLOCK") + 0xE * 1, 14); //More & More
-                emulator.WriteByte(Constants.GetAddress("ROSE_LEVEL_UNLOCK") + 0xE * 2, 19); //Hard Blade
-                emulator.WriteByte(Constants.GetAddress("ROSE_LEVEL_UNLOCK") + 0xE * 3, 255); //Demon//s Dance
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 1 + 0xC4, 14); //More & More
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 2 + 0xC4, 19); //Hard Blade
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 3 + 0xC4, 255); //Demon//s Dance
                 //Kongol
-                emulator.WriteByte(Constants.GetAddress("KONGOL_LEVEL_UNLOCK") + 0xE * 1, 23); //Inferno
-                emulator.WriteByte(Constants.GetAddress("KONGOL_LEVEL_UNLOCK") + 0xE * 2, 255); //Bone Crush
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 1 + 0x10A, 23); //Inferno
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 2 + 0x10A, 255); //Bone Crush
                 //Meru
-                emulator.WriteByte(Constants.GetAddress("MERU_LEVEL_UNLOCK") * 0xE * 1, 21); //Hammer Spin
-                emulator.WriteByte(Constants.GetAddress("MERU_LEVEL_UNLOCK") * 0xE * 2, 26); //Cool Boogie
-                emulator.WriteByte(Constants.GetAddress("MERU_LEVEL_UNLOCK") * 0xE * 3, 30); //Cat//s Cradle
-                emulator.WriteByte(Constants.GetAddress("MERU_LEVEL_UNLOCK") * 0xE * 4, 255); //Perky Step
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 1 + 0x142, 21); //Hammer Spin
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 2 + 0x142, 26); //Cool Boogie
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 3 + 0x142, 30); //Cat//s Cradle
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 4 + 0x142, 255); //Perky Step
                 //Haschel
-                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") * 0xE * 1, 14); // Flurry of Styx
-                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") * 0xE * 2, 18); //Summon 4 Gods
-                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") * 0xE * 3, 22); //5 Ring Shattering
-                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") * 0xE * 4, 26); //Hex Hammer
-                emulator.WriteByte(Constants.GetAddress("HASCHEL_LEVEL_UNLOCK") * 0xE * 5, 255); //Omni-Sweep   
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 1 + 0x196, 14); // Flurry of Styx
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 2 + 0x196, 18); //Summon 4 Gods
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 3 + 0x196, 22); //5 Ring Shattering
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 4 + 0x196, 26); //Hex Hammer
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 5 + 0x196, 255); //Omni-Sweep   
                 earlyAdditionsOnFieldEntry = false;
             }
         }
@@ -4207,14 +4207,14 @@ namespace Dragoon_Modifier {
                             double boostAmount = 0.0;
                             byte level = 0;
                             if (Globals.PARTY_SLOT[i] == 2) {
-                                if (emulator.ReadByte("SHANA_LEVEL") >= 10) {
+                                if (emulator.ReadByte("CHAR_TABLE", 0x6A) >= 10) {
                                     boost = true;
-                                    level = emulator.ReadByte("SHANA_LEVEL");
+                                    level = emulator.ReadByte("CHAR_TABLE", 0x6A);
                                 }
                             } else {
-                                if (emulator.ReadByte("MIRANDA_LEVEL") >= 10) {
+                                if (emulator.ReadByte("CHAR_TABLE", 0x172) >= 10) {
                                     boost = true;
-                                    level = emulator.ReadByte("MIRANDA_LEVEL");
+                                    level = emulator.ReadByte("CHAR_TABLE", 0x172);
                                 }
                             }
                             if (boost) {
@@ -4233,19 +4233,19 @@ namespace Dragoon_Modifier {
                             }
                         }
 
-                        if (Globals.PARTY_SLOT[i] == 2 && emulator.ReadByte("SHANA_LEVEL") >= 30) {
+                        if (Globals.PARTY_SLOT[i] == 2 && emulator.ReadByte("CHAR_TABLE", 0x6A) >= 30) {
                             Globals.CHARACTER_TABLE[i].Write("DF", Math.Round(Globals.CHARACTER_TABLE[i].Read("DF") * 1.12));
                         }
 
-                        if (Globals.PARTY_SLOT[i] == 8 && emulator.ReadByte("MIRANDA_LEVEL") >= 30) {
+                        if (Globals.PARTY_SLOT[i] == 8 && emulator.ReadByte("CHAR_TABLE", 0x172) >= 30) {
                             Globals.CHARACTER_TABLE[i].Write("DF", Math.Round(Globals.CHARACTER_TABLE[i].Read("DF") * 1.12));
                         }
 
-                        if (Globals.PARTY_SLOT[i] == 3 && emulator.ReadByte("ROSE_LEVEL") >= 30) {
+                        if (Globals.PARTY_SLOT[i] == 3 && emulator.ReadByte("CHAR_TABLE", 0x96) >= 30) {
                             Globals.CHARACTER_TABLE[i].Write("DF", Math.Round(Globals.CHARACTER_TABLE[i].Read("DF") * 1.1));
                         }
 
-                        if (Globals.PARTY_SLOT[i] == 6 && emulator.ReadByte("MERU_LEVEL") >= 30) {
+                        if (Globals.PARTY_SLOT[i] == 6 && emulator.ReadByte("CHAR_TABLE", 0x11A) >= 30) {
                             Globals.CHARACTER_TABLE[i].Write("DF", Math.Round(Globals.CHARACTER_TABLE[i].Read("DF") * 1.26));
                         }
 
@@ -4540,7 +4540,7 @@ namespace Dragoon_Modifier {
                             if (Globals.PARTY_SLOT[i] < 9) {
                                 long p = Globals.CHAR_ADDRESS[i];
                                 if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 159 && Globals.PARTY_SLOT[i] == 0) { //Spirit Eater
-                                    if (Globals.CHARACTER_TABLE[i].Read("SP") == (emulator.ReadByte("DART_DRAGOON_LEVEL") * 100)) {
+                                    if (Globals.CHARACTER_TABLE[i].Read("SP") == ((emulator.ReadByte("CHAR_TABLE") + 0x13) * 100)) {
                                         Globals.CHARACTER_TABLE[i].Write("SP_Regen", spiritEaterSaveSP);
                                     } else {
                                         if (spiritEaterSaveSP < spiritEaterSP) {
@@ -8532,47 +8532,6 @@ namespace Dragoon_Modifier {
         }
         #endregion
 
-        #region Addition Changes
-        public void AdditionDamageChanges() {
-            if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !damageIncreaseOnBattleEntry) {
-                for (int i = 0; i < 3; i++) {
-                    if (Globals.PARTY_SLOT[i] == 1 || Globals.PARTY_SLOT[i] == 5) {
-                        if (emulator.ReadByte("EQUIPPED_ADDITION", (0x2C * Globals.PARTY_SLOT[i])) == 12) {
-                            Globals.CHARACTER_TABLE[i].Write("ADD_DMG_Multi", (byte) Math.Ceiling(Globals.CHARACTER_TABLE[i].Read("ADD_DMG_Multi") * 2.2285));
-                        }
-                    } else if (Globals.PARTY_SLOT[i] == 3) {
-                        if (emulator.ReadByte("EQUIPPED_ADDITION", (0x2C * Globals.PARTY_SLOT[i])) == 15) {
-                            Globals.CHARACTER_TABLE[i].Write("ADD_DMG_Multi", (byte) (Globals.CHARACTER_TABLE[i].Read("ADD_DMG_Multi") + 60));
-                        } else if (emulator.ReadByte("EQUIPPED_ADDITION", (0x2C * Globals.PARTY_SLOT[i])) == 16) {
-                            Globals.CHARACTER_TABLE[i].Write("ADD_DMG_Multi", (ushort) Math.Ceiling(Globals.CHARACTER_TABLE[i].Read("ADD_DMG_Multi") * 1.4));
-                        } else if (emulator.ReadByte("EQUIPPED_ADDITION", (0x2C * Globals.PARTY_SLOT[i])) == 17) {
-                            Globals.CHARACTER_TABLE[i].Write("ADD_DMG_Multi", (byte) Math.Ceiling(Globals.CHARACTER_TABLE[i].Read("ADD_DMG_Multi") * 1.1666));
-                        }
-                    } else if (Globals.PARTY_SLOT[i] == 6) {
-                        if (emulator.ReadByte("EQUIPPED_ADDITION", (0x2C * Globals.PARTY_SLOT[i])) == 27) {
-                            Globals.CHARACTER_TABLE[i].Write("ADD_DMG_Multi", (byte) Math.Ceiling(Globals.CHARACTER_TABLE[i].Read("ADD_DMG_Multi") * 0.75));
-                        }
-                    } else if (Globals.PARTY_SLOT[i] == 7) {
-                        if (emulator.ReadByte("EQUIPPED_ADDITION", (0x2C * Globals.PARTY_SLOT[i])) == 19) {
-                            Globals.CHARACTER_TABLE[i].Write("ADD_DMG_Multi", (byte) (Globals.CHARACTER_TABLE[i].Read("ADD_DMG_Multi") * 2));
-                        } else if (emulator.ReadByte("EQUIPPED_ADDITION", (0x2C * Globals.PARTY_SLOT[i])) == 20) {
-                            Globals.CHARACTER_TABLE[i].Write("ADD_SP_Multi", 80);
-                            Globals.CHARACTER_TABLE[i].Write("ADD_DMG_Multi", (byte) (Globals.CHARACTER_TABLE[i].Read("ADD_DMG_Multi") * 2));
-                        } else if (emulator.ReadByte("EQUIPPED_ADDITION", (0x2C * Globals.PARTY_SLOT[i])) == 21) {
-                            Globals.CHARACTER_TABLE[i].Write("ADD_SP_Multi", 50);
-                            Globals.CHARACTER_TABLE[i].Write("ADD_DMG_Multi", (ushort) (Globals.CHARACTER_TABLE[i].Read("ADD_DMG_Multi") * 4));
-                        }
-                    }
-                }
-                damageIncreaseOnBattleEntry = true;
-            } else {
-                if (!Globals.IN_BATTLE && damageIncreaseOnBattleEntry) {
-                    damageIncreaseOnBattleEntry = false;
-                }
-            }
-        }
-        #endregion
-
         #region No HP Decay Soul Eater
         public void NoHPDecaySoulEater() {
             if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !noHPDecayOnBattleEntry) {
@@ -8900,7 +8859,7 @@ namespace Dragoon_Modifier {
                 if (!Globals.IN_BATTLE && bossSPLossOnBattleEntry) {
                     if (bossSPLoss != 0) {
                         for (int i = 0; i < 9; i++) {
-                            int currentTotalSP = emulator.ReadShort("TOTAL_SP", (i * 0x2C));
+                            int currentTotalSP = emulator.ReadShort("CHAR_TABLE", (i * 0x2C) + 0xE);
                             int newSP = 0;
                             if (bossSPLoss > 0)
                                 newSP = Math.Max(currentTotalSP - bossSPLoss, 0);
@@ -8915,37 +8874,37 @@ namespace Dragoon_Modifier {
                             else if (bossSPLoss == -5)
                                 newSP = Math.Max(currentTotalSP / 4 - 500, 0);
 
-                            emulator.WriteShort("TOTAL_SP", (ushort) newSP, (i * 0x2C));
+                            emulator.WriteShort("CHAR_TABLE", (ushort) newSP, (i * 0x2C) + 0xE);
 
-                            byte dragoonLevel = emulator.ReadByte("DRAGOON_LEVEL", (i * 0x2C));
+                            byte dragoonLevel = emulator.ReadByte("CHAR_TABLE", (i * 0x2C) + 0x13);
 
                             if (i == 0 || i == 3) {
                                 if (newSP < 20000 && dragoonLevel >= 5)
-                                    emulator.WriteByte("DRAGOON_LEVEL", 4, (i * 0x2C));
+                                    emulator.WriteByte("CHAR_TABLE", 4, (i * 0x2C) + 0x13);
                                 if (newSP < 12000 && dragoonLevel >= 4)
-                                    emulator.WriteByte("DRAGOON_LEVEL", 3, (i * 0x2C));
+                                    emulator.WriteByte("CHAR_TABLE", 3, (i * 0x2C) + 0x13);
                                 if (newSP < 6000 && dragoonLevel >= 3)
-                                    emulator.WriteByte("DRAGOON_LEVEL", 2, (i * 0x2C));
+                                    emulator.WriteByte("CHAR_TABLE", 2, (i * 0x2C) + 0x13);
                                 if (newSP < 1200 && dragoonLevel >= 2)
-                                    emulator.WriteByte("DRAGOON_LEVEL", 1, (i * 0x2C));
+                                    emulator.WriteByte("CHAR_TABLE", 1, (i * 0x2C) + 0x13);
                             } else if (i == 6 || i == 7) {
                                 if (newSP < 20000 && dragoonLevel >= 5)
-                                    emulator.WriteByte("DRAGOON_LEVEL", 4, (i * 0x2C));
+                                    emulator.WriteByte("CHAR_TABLE", 4, (i * 0x2C) + 0x13);
                                 if (newSP < 12000 && dragoonLevel >= 4)
-                                    emulator.WriteByte("DRAGOON_LEVEL", 3, (i * 0x2C));
+                                    emulator.WriteByte("CHAR_TABLE", 3, (i * 0x2C) + 0x13);
                                 if (newSP < 2000 && dragoonLevel >= 3)
-                                    emulator.WriteByte("DRAGOON_LEVEL", 2, (i * 0x2C));
+                                    emulator.WriteByte("CHAR_TABLE", 2, (i * 0x2C) + 0x13);
                                 if (newSP < 1200 && dragoonLevel >= 2)
-                                    emulator.WriteByte("DRAGOON_LEVEL", 1, (i * 0x2C));
+                                    emulator.WriteByte("CHAR_TABLE", 1, (i * 0x2C) + 0x13);
                             } else {
                                 if (newSP < 20000 && dragoonLevel >= 5)
-                                    emulator.WriteByte("DRAGOON_LEVEL", 4, (i * 0x2C));
+                                    emulator.WriteByte("CHAR_TABLE", 4, (i * 0x2C) + 0x13);
                                 if (newSP < 12000 && dragoonLevel >= 4)
-                                    emulator.WriteByte("DRAGOON_LEVEL", 3, (i * 0x2C));
+                                    emulator.WriteByte("CHAR_TABLE", 3, (i * 0x2C) + 0x13);
                                 if (newSP < 6000 && dragoonLevel >= 3)
-                                    emulator.WriteByte("DRAGOON_LEVEL", 2, (i * 0x2C));
+                                    emulator.WriteByte("CHAR_TABLE", 2, (i * 0x2C) + 0x13);
                                 if (newSP < 1000 && dragoonLevel >= 2)
-                                    emulator.WriteByte("DRAGOON_LEVEL", 1, (i * 0x2C));
+                                    emulator.WriteByte("CHAR_TABLE", 1, (i * 0x2C) + 0x13);
                             }
                         }
                     }
