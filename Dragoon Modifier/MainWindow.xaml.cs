@@ -3507,7 +3507,7 @@ namespace Dragoon_Modifier {
                     emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 2 + 0x10A, 20); //Bone Crush
                 }
                 //Meru
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 1 + 0x142‬, 6); //Hammer Spin
+                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 1 + 0x142, 6); //Hammer Spin
                 emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 2 + 0x142, 12); //Cool Boogie
                 emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 3 + 0x142, 18); //Cat's Cradle
                 emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 4 + 0x142, 60); //Perky Step

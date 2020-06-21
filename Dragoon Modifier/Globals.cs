@@ -25,7 +25,7 @@ namespace Dragoon_Modifier {
         public static long[] CHAR_ADDRESS = new long[3];
         public static long[] MONS_ADDRESS = new long[5];
         public static byte MONSTER_SIZE = 0;
-        public static byte UNIQUE_MONSTERS = 0;
+        public static byte UNIQUE_MONSTER_SIZE = 0;
         public static List<int> MONSTER_IDS = new List<int>();
         public static List<int> UNIQUE_MONSTER_IDS = new List<int>();
         public static List<dynamic> MONSTER_TABLE = new List<dynamic>();
