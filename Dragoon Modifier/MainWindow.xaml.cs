@@ -2759,15 +2759,16 @@ namespace Dragoon_Modifier {
                                         Constants.WriteGLogOutput("All Dragoons at Start.");
                                         Globals.LAST_HOTKEY = Constants.GetTime();
                                     }
-                                } else {
-                                    if (Globals.MAP == 232) {
-                                        byte dragoons = emulator.ReadByte("DRAGOON_SPIRITS");
-                                        dragoons |= 1 << 0;
-                                        emulator.WriteByte("DRAGOON_SPIRITS", dragoons);
-                                        Constants.WriteGLogOutput("Added Dart's Dragoon.");
-                                        Globals.LAST_HOTKEY = Constants.GetTime();
-                                    }
                                 }
+
+                                if (Globals.MAP == 232) {
+                                    byte dragoons = emulator.ReadByte("DRAGOON_SPIRITS");
+                                    dragoons |= 1 << 0;
+                                    emulator.WriteByte("DRAGOON_SPIRITS", dragoons);
+                                    Constants.WriteGLogOutput("Added Dart's Dragoon.");
+                                    Globals.LAST_HOTKEY = Constants.GetTime();
+                                }
+                                
                                 if (Globals.CheckDMScript("btnSoloMode") || Globals.CheckDMScript("btnDuoMode")) {
                                     for (int i = 0; i < 9; i++) {
                                         emulator.WriteInteger("CHAR_TABLE", 0, 0x0 + 0x2C * i);  // EXP
@@ -3423,7 +3424,7 @@ namespace Dragoon_Modifier {
             int offset = 0x0;
             if (Constants.REGION == Region.JPN) {
                 offset -= 0x4D90;
-            } else if (Constants.REGION == Region.PAL_GER) {
+            } else if (Constants.REGION == Region.GER) {
                 offset += 0x120;
             }
             return offset;
@@ -8534,7 +8535,7 @@ namespace Dragoon_Modifier {
 
         #region No HP Decay Soul Eater
         public void NoHPDecaySoulEater() {
-            if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !noHPDecayOnBattleEntry) {
+            if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !noHPDecayOnBattleEntry && Globals.STATS_CHANGED) {
                 for (int i = 0; i < 3; i++) {
                     if (Globals.PARTY_SLOT[i] == 0) {
                         if (Globals.CHARACTER_TABLE[i].Read("HP_Regen") == 246) {
