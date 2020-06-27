@@ -37,7 +37,7 @@ public class BattleController {
                 Globals.SetM_POINT(0x1A43B4 + emulator.ReadShort("M_POINT"));
             }
             Globals.SetC_POINT((long) (emulator.ReadInteger("C_POINT") - 0x7FFFFEF8));
-            
+
             LoDDictInIt(emulator);
 
             Constants.WriteDebug("Monster Size:        " + Globals.MONSTER_SIZE);
@@ -97,7 +97,7 @@ public class BattleController {
     }
 
     public static int GetOffset(Emulator emulator) {
-        if (Constants.REGION == Region.NTA || Constants.REGION == Region.PAL_ENG) {
+        if (Constants.REGION == Region.NTA || Constants.REGION == Region.ENG) {
             return emulator.ReadShort("BATTLE_OFFSET") - 0x8F44;
         } else {
             int[] discOffset = { 0xD80, 0x0, 0x1458, 0x1B0 };
