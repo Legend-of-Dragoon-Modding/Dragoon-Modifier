@@ -237,9 +237,9 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="XamlRadialProgressBar.DotNet, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="XamlRadialProgressBar, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\XamlRadialProgressBar.DotNet.dll</HintPath>
+      <HintPath>.\XamlRadialProgressBar.dll</HintPath>
     </Reference>
     <Reference Include="Xceed.Wpf.AvalonDock, Version=3.8.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
       <HintPath>..\packages\Extended.Wpf.Toolkit.3.8.1\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
@@ -279,6 +279,9 @@
     <Compile Include="Region.cs" />
     <Compile Include="ScriptState.cs" />
     <Compile Include="SubScript.cs" />
+    <Compile Include="SubWindow.xaml.cs">
+      <DependentUpon>SubWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UniformTabPanel.cs" />
     <Page Include="InputWindow.xaml">
       <SubType>Designer</SubType>
@@ -301,6 +304,10 @@
     <Page Include="ReaderWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SubWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
