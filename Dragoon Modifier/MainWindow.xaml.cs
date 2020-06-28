@@ -3675,6 +3675,8 @@ namespace Dragoon_Modifier {
 
                         if (ticketCost > 0)
                             emulator.WriteShort("HERO_TICKETS", (ushort) (tickets - ticketCost));
+
+                        break;
                     }
                     address += 1;
                 }
@@ -5930,12 +5932,9 @@ namespace Dragoon_Modifier {
             if (Globals.IN_BATTLE && Globals.STATS_CHANGED) {
                 switch (Globals.ENCOUNTER_ID) {
                     case 386: //Fruegel I
-                        if (Globals.MONSTER_TABLE[0].Read("HP") == 0) {
-                            UltimateBossDefeated();
-                        }
-                        break;
                     case 487: //Commander II
-                        if (Globals.MONSTER_TABLE[0].Read("HP") == 1) {
+                    case 414: //Urobolus
+                        if (Globals.MONSTER_TABLE[0].Read("HP") == 0) {
                             UltimateBossDefeated();
                         }
                         break;
@@ -10082,7 +10081,7 @@ namespace Dragoon_Modifier {
 
         private void miVersion_Click(object sender, RoutedEventArgs e) {
             Constants.WriteOutput("-------------");
-            Constants.WriteOutput("Version 3.1");
+            Constants.WriteOutput("Version 3.1.2");
         }
         #endregion
 
