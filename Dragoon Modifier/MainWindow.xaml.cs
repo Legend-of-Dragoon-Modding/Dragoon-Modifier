@@ -10075,7 +10075,7 @@ namespace Dragoon_Modifier {
 
         private void miVersion_Click(object sender, RoutedEventArgs e) {
             Constants.WriteOutput("-------------");
-            Constants.WriteOutput("Version 3.0 - Revision 1");
+            Constants.WriteOutput("Version 3.1");
         }
         #endregion
 
