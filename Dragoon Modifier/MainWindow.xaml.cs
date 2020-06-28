@@ -373,6 +373,7 @@ namespace Dragoon_Modifier {
         public bool qtbLeaderTurn = false;
         public int[] currentHP = new int[3];
         public int[] playerSpeed = new int[3];
+        public bool[] eatbSound = new bool[3];
         //Hotkeys
         public int goldQuest = 0;
         public bool faustBattle = false;
@@ -839,6 +840,13 @@ namespace Dragoon_Modifier {
             } else {
                 Constants.DEBUG_MODE = bool.Parse(Constants.KEY.GetValue("Debug Mode").ToString());
             }
+
+            if (Constants.KEY.GetValue("EATB Sounds") == null) {
+                Constants.KEY.SetValue("EATB Sounds", false);
+            } else {
+                Constants.EATB_BEEP = bool.Parse(Constants.KEY.GetValue("EATB Sounds").ToString());
+                miEatbSound.IsChecked = Constants.EATB_BEEP;
+            }
         }
 
         public void LoadReaderKey() {
@@ -912,6 +920,7 @@ namespace Dragoon_Modifier {
             Constants.KEY.SetValue("Reader Hotkey Field", cboReaderFieldHotkey.SelectedIndex);
             Constants.KEY.SetValue("Flower Storm Turns", cboFlowerStorm.SelectedIndex);
             Constants.KEY.SetValue("Zoom", sldZoom.Value);
+            Constants.KEY.SetValue("EATB Sounds", miEatbSound.IsChecked);
         }
 
         public void SaveReaderKey() {
@@ -8935,7 +8944,7 @@ namespace Dragoon_Modifier {
                                 }
                                 if (extraTurnBattleC[i] > 6000) {
                                     extraTurnBattleC[i] = 6000;
-                                    //beep
+                                    EatbBeep(i);
                                 }
                                 progressCATB[i].Value = extraTurnBattleC[i];
                             }
@@ -8985,6 +8994,7 @@ namespace Dragoon_Modifier {
         }
 
         public void ExtraTurnBattle(ref int eatbTime, int slot) {
+            eatbSound[slot] = false;
             eatbTime = 0;
             if (Globals.CheckDMScript("btnATB"))
                 cooldowns = 0;
@@ -9199,6 +9209,21 @@ namespace Dragoon_Modifier {
             } else {
                 if (!Globals.IN_BATTLE && atbOnBattleEntry) {
                     atbOnBattleEntry = false;
+                }
+            }
+        }
+
+        public void EatbBeep(int boop) {
+            if (Constants.EATB_BEEP) {
+                if (boop == 0 && !eatbSound[0]) {
+                    eatbSound[0] = true;
+                    System.Console.Beep(500, 1000);
+                } else if (boop == 1 && !eatbSound[1]) {
+                    eatbSound[1] = true;
+                    System.Console.Beep(750, 1000);
+                } else if (boop == 2 && !eatbSound[2]) {
+                    eatbSound[2] = true;
+                    System.Console.Beep(1000, 1000);
                 }
             }
         }
@@ -9882,10 +9907,17 @@ namespace Dragoon_Modifier {
         }
 
         private void miDeleteSave_Click(object sender, RoutedEventArgs e) {
-            stopSave = true;
-            MessageBox.Show("Dragoon Modifier needs to be shut down to delete a save.");
-            Constants.KEY.DeleteSubKey(Constants.SAVE_SLOT.ToString());
-            System.Windows.Application.Current.Shutdown();
+            if (System.Windows.Forms.MessageBox.Show("Are you sure you want to delete the current save?\r\n\r\nFaust: " + faustCount + "\r\nUltimate Bosses Defeated: " + ultimateBossCompleted + "\r\nExtended Inventory: " + inventorySize, "Delete Save", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question, System.Windows.Forms.MessageBoxDefaultButton.Button2) == System.Windows.Forms.DialogResult.Yes) {
+                stopSave = true;
+                MessageBox.Show("Dragoon Modifier needs to be shut down to delete a save.");
+                Constants.KEY.DeleteSubKey(Constants.SAVE_SLOT.ToString());
+                System.Windows.Application.Current.Shutdown();
+            }
+        }
+
+        private void miEatbSound_Click(object sender, RoutedEventArgs e) {
+            miEatbSound.IsChecked = miEatbSound.IsChecked ? false : true;
+            Constants.EATB_BEEP = miEatbSound.IsChecked;
         }
 
         private void miModOptions_Click(object sender, RoutedEventArgs e) {

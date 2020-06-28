@@ -13,6 +13,7 @@ namespace Dragoon_Modifier {
         public static bool RUN = true;
         public static bool DEBUG_MODE = false;
         public static bool BATTLE_UI = false;
+        public static bool EATB_BEEP = false;
         public static TextBox CONSOLE;
         public static TextBlock GLOG;
         public static TextBlock PLOG;
