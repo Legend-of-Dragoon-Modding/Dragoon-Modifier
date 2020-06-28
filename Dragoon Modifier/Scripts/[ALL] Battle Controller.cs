@@ -749,7 +749,7 @@ public class BattleController {
     }
 
     public static void AdditionFieldChanges(Emulator emulator) {
-        if (Globals.ADDITION_CHANGE == true) {
+        if (Globals.ADDITION_CHANGE == true && Constants.REGION != Region.SPN) {
             Constants.WriteOutput("Changing Addition table...");
             int reorderedaddition = 0;
             int character = 0;
