@@ -2449,6 +2449,7 @@ namespace Dragoon_Modifier {
                     Constants.WritePLogOutput("INTERNAL FIELD SCRIPT ERROR");
                     Constants.WriteOutput("Fatal Error. Closing all threads.");
                     Constants.WriteDebug(ex.ToString());
+                    EnableUI();
                 }
 
 
@@ -2589,6 +2590,7 @@ namespace Dragoon_Modifier {
                     Constants.WritePLogOutput("INTERNAL BATTLE SCRIPT ERROR");
                     Constants.WriteOutput("Fatal Error. Closing all threads.");
                     Constants.WriteDebug(ex.ToString());
+                    EnableUI();
                 }
 
                 if (Globals.MAP == 732 && Globals.ENCOUNTER_ID == 420 && Globals.IN_BATTLE && Globals.STATS_CHANGED && Globals.MONSTER_TABLE[0].Read("HP") == 0 && (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) && saveFaust) {
@@ -4462,7 +4464,7 @@ namespace Dragoon_Modifier {
                             Globals.CHARACTER_TABLE[i].Write("Max_MP", (Globals.CHARACTER_TABLE[i].Read("Max_MP") * 3));
                             for (int x = 0; x < 3; x++) {
                                 if (x != i && Globals.PARTY_SLOT[x] < 9) {
-                                    Globals.CHARACTER_TABLE[x].Write("HP" + 0xA, (ushort) Math.Round(Globals.CHARACTER_TABLE[x].Read("Max_MP") * 0.5));
+                                    Globals.CHARACTER_TABLE[x].Write("MP", (ushort) Math.Round(Globals.CHARACTER_TABLE[x].Read("Max_MP") * 0.5));
 
                                     if (Globals.CHARACTER_TABLE[x].Read("MP") > Globals.CHARACTER_TABLE[x].Read("Max_MP")) {
                                         Globals.CHARACTER_TABLE[x].Write("MP", Globals.CHARACTER_TABLE[x].Read("Max_MP"));
@@ -4478,8 +4480,8 @@ namespace Dragoon_Modifier {
                             Globals.CHARACTER_TABLE[i].Write("M_AV", 90);
                             for (int x = 0; x < 3; x++) {
                                 if (x != i && Globals.PARTY_SLOT[x] < 9) {
-                                    Globals.CHARACTER_TABLE[x].Write("HP" + 0x34, Math.Round(Globals.CHARACTER_TABLE[x].Read("A_HIT") * 0.8));
-                                    Globals.CHARACTER_TABLE[x].Write("HP" + 0x36, Math.Round(Globals.CHARACTER_TABLE[x].Read("M_HIT") * 0.8));
+                                    Globals.CHARACTER_TABLE[x].Write("A_HIT", Math.Round(Globals.CHARACTER_TABLE[x].Read("A_HIT") * 0.8));
+                                    Globals.CHARACTER_TABLE[x].Write("M_HIT", Math.Round(Globals.CHARACTER_TABLE[x].Read("M_HIT") * 0.8));
                                 }
                             }
                         }
@@ -4705,12 +4707,12 @@ namespace Dragoon_Modifier {
                                             if (x != i && Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[x].Read("HP") > 0) {
                                                 if (Globals.CHARACTER_TABLE[x].Read("HP") > 0) {
                                                     if (emulator.ReadByte(Globals.CHAR_ADDRESS[x] + 0xC1) > 0) {
-                                                        Globals.CHARACTER_TABLE[x].Write("HP" + 0x2A, (ushort) (originalCharacterStats[x, 5] * 2));
+                                                        Globals.CHARACTER_TABLE[x].Write("SPD", (ushort) (originalCharacterStats[x, 5] * 2));
                                                     } else {
                                                         if (emulator.ReadByte(Globals.CHAR_ADDRESS[x] + 0xC3) > 0) {
-                                                            Globals.CHARACTER_TABLE[x].Write("HP" + 0x2A, (ushort) (originalCharacterStats[x, 5] / 2));
+                                                            Globals.CHARACTER_TABLE[x].Write("SPD", (ushort) (originalCharacterStats[x, 5] / 2));
                                                         } else {
-                                                            Globals.CHARACTER_TABLE[x].Write("HP" + 0x2A, (ushort) (originalCharacterStats[x, 5]));
+                                                            Globals.CHARACTER_TABLE[x].Write("SPD", (ushort) (originalCharacterStats[x, 5]));
                                                         }
                                                     }
                                                 }
@@ -8544,12 +8546,14 @@ namespace Dragoon_Modifier {
 
         #region No HP Decay Soul Eater
         public void NoHPDecaySoulEater() {
-            if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !noHPDecayOnBattleEntry && Globals.STATS_CHANGED) {
+            if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !noHPDecayOnBattleEntry) {
                 for (int i = 0; i < 3; i++) {
                     if (Globals.PARTY_SLOT[i] == 0) {
-                        if (Globals.CHARACTER_TABLE[i].Read("HP_Regen") == 246) {
+                        if (Globals.CHARACTER_TABLE[i].Read("HP_Regen") == 246 || Globals.CHARACTER_TABLE[i].Read("HP_Regen") == 65526) { //Default
                             Globals.CHARACTER_TABLE[i].Write("HP_Regen", 0);
-                        } else if (Globals.CHARACTER_TABLE[i].Read("HP_Regen") == 256) {
+                        } else if (Globals.CHARACTER_TABLE[i].Read("HP_Regen") == 65533) { //Heal Ring
+                            Globals.CHARACTER_TABLE[i].Write("HP_Regen", 7);
+                        } else if (Globals.CHARACTER_TABLE[i].Read("HP_Regen") == 256) { //Therapy Ring
                             Globals.CHARACTER_TABLE[i].Write("HP_Regen", 10);
                         }
                     }
@@ -9672,6 +9676,7 @@ namespace Dragoon_Modifier {
                 Constants.WritePLogOutput("Error loading scripts.");
                 Constants.WriteOutput("Fatal Error. Closing all threads.");
                 Constants.WriteOutput(ex.ToString());
+                EnableUI();
             }
         }
 
@@ -10308,6 +10313,16 @@ namespace Dragoon_Modifier {
                 if (Globals.IN_BATTLE)
                     emulator.WriteShort("ZOOM", (ushort) slider.Value);
             }
+        }
+
+        public void EnableUI() {
+            this.Dispatcher.BeginInvoke(new Action(() => {
+                tabDifficulty.IsEnabled = true;
+                tabEnhancements.IsEnabled = true;
+                tabEnhancements2.IsEnabled = true;
+                tabShop.IsEnabled = true;
+                tabSettings.IsEnabled = true;
+            }), DispatcherPriority.ContextIdle);
         }
 
         public void HelpTopic() {
