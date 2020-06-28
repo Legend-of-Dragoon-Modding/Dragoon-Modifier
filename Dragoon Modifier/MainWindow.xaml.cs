@@ -8553,7 +8553,7 @@ namespace Dragoon_Modifier {
                             Globals.CHARACTER_TABLE[i].Write("HP_Regen", 0);
                         } else if (Globals.CHARACTER_TABLE[i].Read("HP_Regen") == 65533) { //Heal Ring
                             Globals.CHARACTER_TABLE[i].Write("HP_Regen", 7);
-                        } else if (Globals.CHARACTER_TABLE[i].Read("HP_Regen") == 256) { //Therapy Ring
+                        } else if (Globals.CHARACTER_TABLE[i].Read("HP_Regen") == 256 || (Globals.CHARACTER_TABLE[i].Read("HP_Regen") == 0 && Globals.DICTIONARY.OriginalItemList[emulator.ReadByte("CHAR_TABLE", 0 * 0x2C + 0x18)] == 0x7D)) { //Therapy Ring
                             Globals.CHARACTER_TABLE[i].Write("HP_Regen", 10);
                         }
                     }
