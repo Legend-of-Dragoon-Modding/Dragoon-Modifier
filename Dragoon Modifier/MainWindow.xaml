@@ -12,7 +12,7 @@
         Icon="1.ico"
         ShowIconOnTitleBar="True"
         ShowTitleBar="True"
-        Title=" Dragoon Modifier v3.1" Height="750" Width="1075" MinWidth="750" MinHeight="560" WindowStartupLocation="CenterScreen" Background="White">
+        Title=" Dragoon Modifier v3.1.3" Height="750" Width="1075" MinWidth="750" MinHeight="560" WindowStartupLocation="CenterScreen" Background="White">
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Template">

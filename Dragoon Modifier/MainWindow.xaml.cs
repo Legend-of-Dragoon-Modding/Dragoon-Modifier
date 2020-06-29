@@ -9006,7 +9006,7 @@ namespace Dragoon_Modifier {
             else
                 cooldowns = cooldowns + 90;
 
-            if (emulator.ReadByte("DRAGOON_TURNS", 0x4 * slot) > 0)
+            if (emulator.ReadByte("DRAGOON_TURNS", 0x4 * slot) > 0 && emulator.ReadByte("DRAGOON_TURNS", 0x4 * slot) < 6)
                 Globals.CHARACTER_TABLE[slot].Write("Action", 10);
             else
                 Globals.CHARACTER_TABLE[slot].Write("Action", 8);
@@ -10081,7 +10081,7 @@ namespace Dragoon_Modifier {
 
         private void miVersion_Click(object sender, RoutedEventArgs e) {
             Constants.WriteOutput("-------------");
-            Constants.WriteOutput("Version 3.1.2");
+            Constants.WriteOutput("Version 3.1.3");
         }
         #endregion
 

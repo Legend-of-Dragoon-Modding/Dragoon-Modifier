@@ -1394,7 +1394,9 @@ public class BattleController {
                 dlv = emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x13);
             }
 
-            if (Globals.CHARACTER_TABLE[slot].Read("Image") == 9 && character == 0 && ((dragoon_spirits[9] & emulator.ReadByte("DRAGOON_SPIRITS")) > 0)) {
+            Console.WriteLine("Slot: " + slot + " IMG: " + Globals.CHARACTER_TABLE[slot].Read("Image"));
+
+            if (character == 0 && emulator.ReadByte("DRAGOON_SPIRITS") >= 254) {
                 dlv = emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x13);
             }
 
