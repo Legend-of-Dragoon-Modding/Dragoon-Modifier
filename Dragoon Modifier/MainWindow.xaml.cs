@@ -3396,11 +3396,11 @@ namespace Dragoon_Modifier {
         */
         public void ShopChanges() {
             if (!Globals.IN_BATTLE) {
-                if (SHOP_MAPS.Contains((int) Globals.MAP)) {
+                if (SHOP_MAPS.Contains((int)Globals.MAP) && emulator.ReadByte("OVERWORLD") == 1) {
                     if (!SHOP_CHANGED) {
                         long address = Constants.GetAddress("SHOP_LIST");
                         int shopcount = 0;
-                        foreach (byte[]shop in Globals.DICTIONARY.ShopList) {
+                        foreach (byte[] shop in Globals.DICTIONARY.ShopList) {
                             int itemcount = 0;
                             foreach (byte item in shop) {
                                 if (itemcount == 0) {
@@ -3415,11 +3415,13 @@ namespace Dragoon_Modifier {
                             }
                             shopcount++;
                         }
+                        SHOP_CHANGED = true;
+                        Constants.WriteDebug("Shop Changed");
                     }
-                } else if (SHOP_CHANGED) {
+                } else if (SHOP_CHANGED && emulator.ReadByte("OVERWORLD") != 0) {
                     SHOP_CHANGED = false;
                 }
-          
+
             }
         }
 
@@ -10291,6 +10293,7 @@ namespace Dragoon_Modifier {
             }
 
             Globals.DICTIONARY = new LoDDict();
+            SHOP_CHANGED = false;
             Constants.WriteOutput("LOD Dictionary updated.");
             Constants.WritePLogOutput("Mod directory switched to: " + Globals.MOD);
         }
