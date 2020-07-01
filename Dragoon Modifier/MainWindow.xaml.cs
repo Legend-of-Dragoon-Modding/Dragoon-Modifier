@@ -5382,7 +5382,6 @@ namespace Dragoon_Modifier {
                                 }
                             } else if (Globals.ENCOUNTER_ID == 420) { //Magician Faust
                                 double hpDamage = ultimateMaxHP[0] - ultimateHP[0];
-                                Constants.WriteDebug((hpDamage / ultimateMaxHP[0]) * 100 + " >= " + magicChangeTurns);
                                 if ((hpDamage / ultimateMaxHP[0]) * 100 >= magicChangeTurns) {
                                     MagicChange();
                                 }
