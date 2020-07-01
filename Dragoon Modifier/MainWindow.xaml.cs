@@ -1278,22 +1278,14 @@ namespace Dragoon_Modifier {
                             Globals.MONSTER_DROP_CHANGE = false;
                             Globals.MONSTER_EXPGOLD_CHANGE = false;
                         }
-                        try {
-                            using (var monsterData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Ultimate_Data.tsv")) {
-                                bool firstline = true;
-                                while (!monsterData.EndOfStream) {
-                                    var line = monsterData.ReadLine();
-                                    if (firstline == false) {
-                                        var values = line.Split('\t').ToArray();
-                                        ultimateStatList.Add(Int32.Parse(values[0]), new StatList(values, element2num, item2num));
-                                    } else {
-                                        firstline = false;
-                                    }
-                                }
+
+                        origI = 0;
+                        foreach (var line in ReadAllResourceLines(Properties.Resources.Ultimate_Data)) {
+                            if (origI > 1) {
+                                var values = line.Split('\t').ToArray();
+                                ultimateStatList.Add(Int32.Parse(values[0]), new StatList(values, element2num, item2num));
                             }
-                        } catch (FileNotFoundException) {
-                            string file = cwd + @"Mods\" + Globals.MOD + @"\Ultimate_Data.tsv";
-                            Constants.WriteDebug(file + " not found.");
+                            origI++;
                         }
                     } catch (FileNotFoundException) {
                         string file = cwd + @"Mods\" + Globals.MOD + @"\Items.tsv";
@@ -5461,456 +5453,94 @@ namespace Dragoon_Modifier {
                 ultimateHP[i] = 0;
                 ultimateMaxHP[i] = 0;
 
-                double[] multiplyMode = { 1, 1, 1, 1, 1, 1 };
-
-                if (Globals.MONSTER_IDS[i] == 131) { //Sandora Solider
-                    multiplyMode[0] = 300;
-                    multiplyMode[1] = 16;
-                    multiplyMode[2] = 16;
-                } else if (Globals.MONSTER_IDS[i] == 135) { //Commander II
-                    multiplyMode[0] = 500;
-                    multiplyMode[1] = 16;
-                    multiplyMode[2] = 16;
-                } else if (Globals.MONSTER_IDS[i] == 261) { //Fruegel
-                    multiplyMode[0] = 700;
-                    multiplyMode[1] = 40;
-                    multiplyMode[2] = 40;
-                } else if (Globals.MONSTER_IDS[i] == 259) { //Hellena Warden
-                    multiplyMode[0] = 500;
-                    multiplyMode[1] = 35;
-                    multiplyMode[2] = 35;
-                } else if (Globals.MONSTER_IDS[i] == 260) { //Senior Warden
-                    multiplyMode[0] = 500;
-                    multiplyMode[1] = 30;
-                    multiplyMode[2] = 25;
-                } else if (Globals.MONSTER_IDS[i] == 332) { //Urobolus
-                    multiplyMode[0] = 220;
-                    multiplyMode[1] = 22;
-                    multiplyMode[2] = 22;
-                    multiplyMode[3] = 2;
-                    multiplyMode[4] = 2;
+                if (Globals.MONSTER_IDS[i] == 332) { //Urobolus
                     ubGuardBreak = true;
-                } else if (Globals.MONSTER_IDS[i] == 102) { //Sandora Elite
-                    ultimateHP[i] = ultimateMaxHP[i] = 159600;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 7;
-                    multiplyMode[2] = 7;
                 } else if (Globals.MONSTER_IDS[i] == 325) { //Drake the Bandit
-                    ultimateHP[i] = ultimateMaxHP[i] = 148000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 10;
-                    multiplyMode[2] = 10;
                     ubHealingPotion = true;
-                } else if (Globals.MONSTER_IDS[i] == 326) { //Wire
-                    multiplyMode[0] = 80;
-                    multiplyMode[1] = 7;
-                    multiplyMode[2] = 7;
-                } else if (Globals.MONSTER_IDS[i] == 327) { //Bursting Ball
-                    multiplyMode[0] = 160;
-                    multiplyMode[1] = 15;
-                    multiplyMode[2] = 15;
                 } else if (Globals.MONSTER_IDS[i] == 329) { //Jiango
-                    ultimateHP[i] = ultimateMaxHP[i] = 204800;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 8.5;
-                    multiplyMode[2] = 8.5;
                     ubZeroSP = true;
-                } else if (Globals.MONSTER_IDS[i] == 262) { //Fruegel
-                    ultimateHP[i] = ultimateMaxHP[i] = 220000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 10;
-                    multiplyMode[2] = 10;
-                } else if (Globals.MONSTER_IDS[i] == 263) { //Rodriguez
-                    multiplyMode[0] = 120;
-                    multiplyMode[1] = 7.5;
-                    multiplyMode[2] = 7.5;
-                } else if (Globals.MONSTER_IDS[i] == 264) { //Gustaf
-                    multiplyMode[0] = 120;
-                    multiplyMode[1] = 7.5;
-                    multiplyMode[2] = 7.5;
                 } else if (Globals.MONSTER_IDS[i] == 333) { //Fire Bird
-                    ultimateHP[i] = ultimateMaxHP[i] = 281600;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 18.5;
-                    multiplyMode[2] = 18.5;
                     ubGuardBreak = true;
                     ubZeroSP = true;
                     ubMPAttack = true;
-                } else if (Globals.MONSTER_IDS[i] == 334) { //Volcano Ball
-                    multiplyMode[0] = 2500;
-                    multiplyMode[1] = 25;
-                    multiplyMode[2] = 25;
-                } else if (Globals.MONSTER_IDS[i] == 354 || Globals.MONSTER_IDS[i] == 385) { //GhostFB + Dragon Spirit (Feyrbrand)
-                    ultimateHP[i] = ultimateMaxHP[i] = 320000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 2.5;
-                    multiplyMode[2] = 2.5;
-                } else if (Globals.MONSTER_IDS[i] == 299) { //Mappi
-                    ultimateHP[i] = ultimateMaxHP[i] = 128000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 7;
-                    multiplyMode[2] = 7;
-                } else if (Globals.MONSTER_IDS[i] == 274) { //Crafty Thief
-                    ultimateHP[i] = ultimateMaxHP[i] = 96000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 6;
-                    multiplyMode[2] = 6;
-                } else if (Globals.MONSTER_IDS[i] == 300) { //Mappi
-                    ultimateHP[i] = ultimateMaxHP[i] = 128000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 6;
-                    multiplyMode[2] = 6;
                 } else if (Globals.MONSTER_IDS[i] == 301) { //Gehrich
-                    ultimateHP[i] = ultimateMaxHP[i] = 200000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 6.5;
-                    multiplyMode[2] = 6.5;
                     ubZeroSP = true;
                 } else if (Globals.MONSTER_IDS[i] == 340) { //Ghost Commander
-                    ultimateHP[i] = ultimateMaxHP[i] = 221000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 5;
-                    multiplyMode[2] = 7;
                     ubWoundDamage = true;
                     ubHealthSteal = true;
-                } else if (Globals.MONSTER_IDS[i] == 341) { //Ghost Knight
-                    multiplyMode[0] = 0.065;
-                    multiplyMode[1] = 3.5;
-                    multiplyMode[2] = 3.5;
-                    multiplyMode[3] = 0;
-                    multiplyMode[4] = 0;
                 } else if (Globals.MONSTER_IDS[i] == 343) { //Kamuy
-                    ultimateHP[i] = ultimateMaxHP[i] = 300000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 4.5;
-                    multiplyMode[2] = 4.5;
                     ubSPAttack = true;
                     ubMoveChange = true;
-                } else if (Globals.MONSTER_IDS[i] == 353 || Globals.MONSTER_IDS[i] == 384) { //Ghost Regole + Dragon Spirit (Regole)
-                    ultimateHP[i] = ultimateMaxHP[i] = 336000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 2.8;
-                    multiplyMode[2] = 2.8;
                 } else if (Globals.MONSTER_IDS[i] == 335) { //Grand Jewel
-                    ultimateHP[i] = ultimateMaxHP[i] = 260000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 3.9;
-                    multiplyMode[2] = 3.9;
                     ubMagicChange = true;
                     ubElementalShift = true;
                     ubHealingPotion = true;
                 } else if (Globals.MONSTER_IDS[i] == 346) { //Windigo
-                    ultimateHP[i] = ultimateMaxHP[i] = 700000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 4;
-                    multiplyMode[2] = 4;
-                    multiplyMode[3] = 0;
-                    multiplyMode[4] = 0;
                     ubArmorShell = true;
                     ubZeroSP = true;
-                } else if (Globals.MONSTER_IDS[i] == 347) { //Snow Cannon
-                    multiplyMode[0] = 22;
-                    multiplyMode[1] = 3;
-                    multiplyMode[2] = 3;
-                } else if (Globals.MONSTER_IDS[i] == 348) { //Heart
-                    multiplyMode[0] = 333;
                 } else if (Globals.MONSTER_IDS[i] == 349) { //Polter Helm
-                    ultimateHP[i] = ultimateMaxHP[i] = 666666;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 2.5;
-                    multiplyMode[2] = 2.5;
                     ubSharedHP = true;
-                } else if (Globals.MONSTER_IDS[i] == 350) { //Polter Armor
-                    ultimateHP[i] = ultimateMaxHP[i] = 666666;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 2.5;
-                    multiplyMode[2] = 2.25;
-                } else if (Globals.MONSTER_IDS[i] == 351) { //Polter Sword
-                    ultimateHP[i] = ultimateMaxHP[i] = 666666;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 3.5;
-                    multiplyMode[2] = 2.5;
                 } else if (Globals.MONSTER_IDS[i] == 365) { //The Last Kraken
-                    ultimateHP[i] = ultimateMaxHP[i] = 360000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 2.7;
-                    multiplyMode[2] = 2.7;
                     emulator.WriteByte(Globals.MONS_ADDRESS[0] + 0x175, 0);
-                } else if (Globals.MONSTER_IDS[i] == 366) { //Cleone
-                    ultimateHP[i] = ultimateMaxHP[i] = 360000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 2.8;
-                    multiplyMode[2] = 2.8;
-                } else if (Globals.MONSTER_IDS[i] == 360) { //Vector
-                    ultimateHP[i] = ultimateMaxHP[i] = 180000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 2.7;
-                    multiplyMode[2] = 2.7;
-                } else if (Globals.MONSTER_IDS[i] == 361) { //Selebus
-                    ultimateHP[i] = ultimateMaxHP[i] = 135000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 2.7;
-                    multiplyMode[2] = 2.7;
-                } else if (Globals.MONSTER_IDS[i] == 362) { //Kubila
-                    ultimateHP[i] = ultimateMaxHP[i] = 157500;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 2.7;
-                    multiplyMode[2] = 2.7;
-                } else if (Globals.MONSTER_IDS[i] == 369) { //Caterpillar
-                    ultimateHP[i] = ultimateMaxHP[i] = 120000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 2.85;
-                    multiplyMode[2] = 2.85;
-                } else if (Globals.MONSTER_IDS[i] == 370) { //Pupa
-                    ultimateHP[i] = ultimateMaxHP[i] = 180000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 0;
-                    multiplyMode[2] = 0;
-                    multiplyMode[3] = 0.2;
-                    multiplyMode[4] = 0.2;
-                } else if (Globals.MONSTER_IDS[i] == 371) { //Imago
-                    ultimateHP[i] = ultimateMaxHP[i] = 240000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 2.85;
-                    multiplyMode[2] = 2.85;
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] + 0x14, 32);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] + 0x6A, 32);
-                } else if (Globals.MONSTER_IDS[i] == 363) { //Zackwell
-                    ultimateHP[i] = ultimateMaxHP[i] = 360000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 2.5;
-                    multiplyMode[2] = 2.5;
-                } else if (Globals.MONSTER_IDS[i] == 352 || Globals.MONSTER_IDS[i] == 383) { //Divine Dragoon Ghost + Dragon Spirit (Divine Dragon)
-                    ultimateHP[i] = ultimateMaxHP[i] = 400000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 2.35;
-                    multiplyMode[2] = 2.35;
-                } else if (Globals.MONSTER_IDS[i] == 363) { //Zackwell
-                    ultimateHP[i] = ultimateMaxHP[i] = 360000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 2.5;
-                    multiplyMode[2] = 2.5;
                 } else if (Globals.MONSTER_IDS[i] == 308) { //Virage (head)
-                    ultimateHP[i] = ultimateMaxHP[i] = 360000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 24;
-                    multiplyMode[2] = 24;
                     ubRemoveResistances = true;
-                } else if (Globals.MONSTER_IDS[i] == 309) { //Virage (body)
-                    ultimateHP[i] = ultimateMaxHP[i] = 360000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 20;
-                    multiplyMode[2] = 20;
-                } else if (Globals.MONSTER_IDS[i] == 310) { //Virage (arm)
-                    multiplyMode[0] = 1250;
-                    multiplyMode[1] = 20;
-                    multiplyMode[2] = 20;
-                    multiplyMode[3] = 0.7;
-                    multiplyMode[4] = 0.7;
-                } else if (Globals.MONSTER_IDS[i] == 266) { //Kongol II
-                    ultimateHP[i] = ultimateMaxHP[i] = 420000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 13;
-                    multiplyMode[2] = 13;
-                    multiplyMode[3] = 1.5;
-                    multiplyMode[4] = 0.5;
                 } else if (Globals.MONSTER_IDS[i] == 293) { //Lenus
-                    ultimateHP[i] = ultimateMaxHP[i] = 525000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 6.6;
-                    multiplyMode[2] = 6.6;
-                    multiplyMode[3] = 0.8;
-                    multiplyMode[4] = 0.8;
                     ubMagicChange = true;
                 } else if (Globals.MONSTER_IDS[i] == 296) { //Syuveil
-                    ultimateHP[i] = ultimateMaxHP[i] = 500000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 3.2;
-                    multiplyMode[2] = 3.9;
                     ubTPDamage = true;
                     ubTrackHPChange = true;
                 } else if (Globals.MONSTER_IDS[i] == 311) { //Virage(head)
-                    ultimateHP[i] = ultimateMaxHP[i] = 1280000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 14;
-                    multiplyMode[2] = 14;
                     ubBodyDamage = true;
                     ubTrackHPChange = true;
                     ubVirageKilledPart = false;
-                } else if (Globals.MONSTER_IDS[i] == 313) { //Virage(body)
-                    ultimateHP[i] = ultimateMaxHP[i] = 500000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 14;
-                    multiplyMode[2] = 14;
-                    multiplyMode[3] = 0.33;
-                    multiplyMode[4] = 0.33;
-                } else if (Globals.MONSTER_IDS[i] == 312) { //Virage(arm)
-                    multiplyMode[0] = 180;
-                    multiplyMode[1] = 14;
-                    multiplyMode[2] = 14;
-                    multiplyMode[3] = 0.25;
-                    multiplyMode[4] = 0.25;
-                } else if (Globals.MONSTER_IDS[i] == 275) { //Feyrbrand
-                    ultimateHP[i] = ultimateMaxHP[i] = 288000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 20;
-                    multiplyMode[2] = 20;
                 } else if (Globals.MONSTER_IDS[i] == 287) { //Greham
-                    ultimateHP[i] = ultimateMaxHP[i] = 210000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 20;
-                    multiplyMode[2] = 20;
                     ubDragoonBond = true;
                     ubRemoveResistances = true;
                     ubDragoonBondMode = -1;
                 } else if (Globals.MONSTER_IDS[i] == 295) { //Damia
-                    ultimateHP[i] = ultimateMaxHP[i] = 360000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 3.1;
-                    multiplyMode[2] = 3.1;
                     ubDragoonExtras = true;
                     ubTrackHPChange = true;
-                } else if (Globals.MONSTER_IDS[i] == 279) { //Regole
-                    ultimateHP[i] = ultimateMaxHP[i] = 300000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 6;
-                    multiplyMode[2] = 6;
                 } else if (Globals.MONSTER_IDS[i] == 294) { //Dragoon Lenus
-                    ultimateHP[i] = ultimateMaxHP[i] = 300000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 6;
-                    multiplyMode[2] = 6;
                     ubDragoonBond = true;
                     ubDragoonBondMode = -1;
                 } else if (Globals.MONSTER_IDS[i] == 297) { //Belzac
-                    ultimateHP[i] = ultimateMaxHP[i] = 608000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 4;
-                    multiplyMode[2] = 4;
-                    multiplyMode[3] = 0.25;
-                    multiplyMode[4] = 0.25;
                     ubDragoonExtras = true;
                     ubTrackDragoon = true;
                     ubTrackHPChange = true;
                 } else if (Globals.MONSTER_IDS[i] == 316) { //S Virage(head)
-                    ultimateHP[i] = ultimateMaxHP[i] = 320000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 6;
-                    multiplyMode[2] = 15;
                     ubCountdown = true;
-                } else if (Globals.MONSTER_IDS[i] == 317) { //S Virage(body)
-                    ultimateHP[i] = ultimateMaxHP[i] = 320000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 6;
-                    multiplyMode[2] = 6;
-                } else if (Globals.MONSTER_IDS[i] == 318) { //S Virage(arm)
-                    ultimateHP[i] = ultimateMaxHP[i] = 160000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 6;
-                    multiplyMode[2] = 6;
                 } else if (Globals.MONSTER_IDS[i] == 298) { //Kanzas
-                    ultimateHP[i] = ultimateMaxHP[i] = 396000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 2.4;
-                    multiplyMode[2] = 2.4;
                     ubDragoonExtras = true;
                     ubTrackDragoon = true;
                     ubTrackHPChange = true;
                 } else if (Globals.MONSTER_IDS[i] == 267) { //Emperor Doel
-                    ultimateHP[i] = ultimateMaxHP[i] = 250000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 7;
-                    multiplyMode[2] = 7;
-                    multiplyMode[3] = 0.3;
-                    multiplyMode[4] = 0.3;
                     ubZeroSP = true;
                     ubUltimateEnrage = true;
                 } else if (Globals.MONSTER_IDS[i] == 268) { //Dragoon Doel
-                    ultimateHP[i] = ultimateMaxHP[i] = 750000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 7;
-                    multiplyMode[2] = 7;
-                    multiplyMode[3] = 0.3;
-                    multiplyMode[4] = 0.3;
                     ubInventoryRefresh = true;
                     ubMagicChange = true;
                     ubEnhancedShield = true;
                     ubTrackHPChange = true;
                 } else if (Globals.MONSTER_IDS[i] == 320) { //S Virage II (head)
-                    ultimateHP[i] = ultimateMaxHP[i] = 333333;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 3.2;
-                    multiplyMode[2] = 3.2;
-                    multiplyMode[3] = 1.5;
-                    multiplyMode[4] = 1.5;
                     ubBodyProtect = true;
                     ubFinalAttack = true;
                     ubTrackHPChange = true;
-                } else if (Globals.MONSTER_IDS[i] == 321) { //S Virage II (arm)
-                    ultimateHP[i] = ultimateMaxHP[i] = 666666;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 3.2;
-                    multiplyMode[2] = 3.2;
-                    multiplyMode[3] = 0.2;
-                    multiplyMode[4] = 0.2;
-                } else if (Globals.MONSTER_IDS[i] == 322) { //S Virage II (body)
-                    ultimateHP[i] = ultimateMaxHP[i] = 222222;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 3.2;
-                    multiplyMode[2] = 3.2;
-                    multiplyMode[3] = 1.5;
-                    multiplyMode[4] = 1.5;
                 } else if (Globals.MONSTER_IDS[i] == 283) { //Divine Dragon
-                    multiplyMode[0] = 1;
-                    multiplyMode[1] = 5; //attack set by ultimate enrage
-                    multiplyMode[2] = 5;
-                    multiplyMode[3] = 200;
-                    multiplyMode[4] = 400;
                     ubReverseDBS = true;
                     ubUltimateEnrage = true;
                     ubArmorGuard = true;
                     ubTrackHPChange = true;
                     ubMagicChange = true;
-                } else if (Globals.MONSTER_IDS[i] == 284) { //Divine Cannon
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 0;
-                    multiplyMode[2] = 0;
-                    multiplyMode[3] = 100;
-                    multiplyMode[4] = 400;
-                } else if (Globals.MONSTER_IDS[i] == 285) { //Divine Ball
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 0;
-                    multiplyMode[2] = 0;
-                    multiplyMode[3] = 100;
-                    multiplyMode[4] = 400;
                 } else if (Globals.MONSTER_IDS[i] == 270) { //Lloyd
-                    ultimateHP[i] = ultimateMaxHP[i] = 666666;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 4; //stats set by ultimate enrage
-                    multiplyMode[2] = 4;
-                    multiplyMode[3] = 0.8;
-                    multiplyMode[4] = 0.8;
                     ubUltimateEnrage = true;
                     ubTrackHPChange = true;
                     ubRemoveResistances = true;
                     ubMagicChange = true;
                 } else if (Globals.MONSTER_IDS[i] == 344) { //Magician Faust
-                    ultimateHP[i] = ultimateMaxHP[i] = 1000000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 2.52;
-                    multiplyMode[2] = 2.52;
-                    multiplyMode[3] = 1;
-                    multiplyMode[4] = 0.125;
                     ubMagicChange = true;
                     ubDragoonGuard = true;
                     ubGrantMaxHP = true;
                 } else if (Globals.MONSTER_IDS[i] == 387) { //Zieg
-                    ultimateHP[i] = ultimateMaxHP[i] = 720000;
-                    multiplyMode[0] = 65535;
-                    multiplyMode[1] = 3.5;
-                    multiplyMode[2] = 3.5; //mat set be enrage mode
-                    multiplyMode[3] = 1;
-                    multiplyMode[4] = 1;
                     ubDragoonExtras = true;
                     ubTrackDragoon = true;
                     ubTrackHPChange = true;
@@ -5919,15 +5549,26 @@ namespace Dragoon_Modifier {
                     ultimateThread.Start();
                 }
 
-                Globals.MONSTER_TABLE[i].Write("HP", Math.Min(65535, Math.Round(Globals.MONSTER_TABLE[i].Read("HP") * multiplyMode[0])));
-                Globals.MONSTER_TABLE[i].Write("Max_HP", Math.Min(65535, Math.Round(Globals.MONSTER_TABLE[i].Read("Max_HP") * multiplyMode[0])));
-                Globals.MONSTER_TABLE[i].Write("AT", Math.Min(65535, Math.Round(Globals.MONSTER_TABLE[i].Read("AT") * multiplyMode[1])));
-                Globals.MONSTER_TABLE[i].Write("MAT", Math.Min(65535, Math.Round(Globals.MONSTER_TABLE[i].Read("MAT") * multiplyMode[2])));
-                Globals.MONSTER_TABLE[i].Write("DF", Math.Min(65535, Math.Round(Globals.MONSTER_TABLE[i].Read("DF") * multiplyMode[3])));
-                Globals.MONSTER_TABLE[i].Write("MDF", Math.Min(65535, Math.Round(Globals.MONSTER_TABLE[i].Read("MDF") * multiplyMode[4])));
-                Globals.MONSTER_TABLE[i].Write("SPD", Math.Min(65535, Math.Round(Globals.MONSTER_TABLE[i].Read("SPD") * multiplyMode[5])));
-            }
 
+                if (Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].HP > 65535) {
+                    Globals.MONSTER_TABLE[i].Write("HP", (ushort) 65535);
+                    Globals.MONSTER_TABLE[i].Write("Max_HP", (ushort) 65535);
+                    ultimateHP[i] = ultimateMaxHP[i] = Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].HP;
+                } else {
+                    Globals.MONSTER_TABLE[i].Write("HP", (ushort) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].HP);
+                    Globals.MONSTER_TABLE[i].Write("Max_HP", (ushort) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].HP);
+                }
+                Globals.MONSTER_TABLE[i].Write("AT", (short) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].AT);
+                Globals.MONSTER_TABLE[i].Write("OG_AT", (short) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].AT);
+                Globals.MONSTER_TABLE[i].Write("MAT", (short) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].MAT);
+                Globals.MONSTER_TABLE[i].Write("OG_MAT", (short) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].MAT);
+                Globals.MONSTER_TABLE[i].Write("DF", (short) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].DF);
+                Globals.MONSTER_TABLE[i].Write("OG_DF", (short) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].DF);
+                Globals.MONSTER_TABLE[i].Write("MDF", (short) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].MDF);
+                Globals.MONSTER_TABLE[i].Write("OG_MDF", (short) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].MDF);
+                Globals.MONSTER_TABLE[i].Write("SPD", (short) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].SPD);
+                Globals.MONSTER_TABLE[i].Write("OG_SPD", (short) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].SPD);
+            }
         }
 
         public void UltimateBossDefeatCheck() {
@@ -5949,6 +5590,7 @@ namespace Dragoon_Modifier {
                     case 422: //Windigo
                     case 432: //Last Kraken
                     case 431: //Zackwell
+                    case 408: //Virage I
                     case 409: //Virage II
                     case 420: //Magician Faust
                         if (Globals.MONSTER_TABLE[0].Read("HP") == 0 || ultimateHP[0] == 0) {
@@ -10083,7 +9725,7 @@ namespace Dragoon_Modifier {
 
         private void miVersion_Click(object sender, RoutedEventArgs e) {
             Constants.WriteOutput("-------------");
-            Constants.WriteOutput("Version 3.1.3");
+            Constants.WriteOutput("Version π");
         }
         #endregion
 

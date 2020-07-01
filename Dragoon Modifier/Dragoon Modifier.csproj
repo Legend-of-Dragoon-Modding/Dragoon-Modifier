@@ -337,6 +337,7 @@
     </None>
     <None Include="Resources\Character_Stats.tsv" />
     <None Include="Resources\Items.tsv" />
+    <None Include="Resources\Ultimate_Data.tsv" />
     <Resource Include="rpg-icons.ttf" />
     <Resource Include="SegoeWP-Semibold.ttf" />
     <Resource Include="SegoeWP-Black.ttf" />

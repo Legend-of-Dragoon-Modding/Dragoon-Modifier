@@ -129,5 +129,15 @@ namespace Dragoon_Modifier.Properties {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Ultimate_Data {
+            get {
+                object obj = ResourceManager.GetObject("Ultimate_Data", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }
