@@ -164,7 +164,7 @@ namespace Dragoon_Modifier {
         public ushort[] ubTrackHP = new ushort[3];
         public int[] ubTrackEHP = new int[5];
         public ushort[] ubTrackTP = new ushort[3];
-        public ushort[] ubTrackMTP = new ushort[3];
+        public ushort[] ubTrackMTP = new ushort[5];
         public bool ubBodyDamage = false;
         public bool ubVirageKilledPart = false;
         public int ubDragoonBondMode = 0;
@@ -10132,10 +10132,11 @@ namespace Dragoon_Modifier {
                     "Allows you to buy new equips from the shop. This equips are only available for Hard & Hell Mode. You can only buy items starting at Chapter 4.";
             } else if (cboHelpTopic.SelectedIndex == 8) {
                 txtHelp.Text = "Reader Mode will read stats from battle and display them to a window and or write them to a text file for an external application to use.\r\n\r\n" +
-                    "When you open Dragoon Modifier open Window Config first to load your Reader Mode config. You do not have to do this again once you've done this. Use Add/Change/Delete buttons to add UI elements to the Window, a form will open up to create the display. You can double click items to change them as well, if you can't click the item use Change.\r\n\r\n" +
+                    "When you open Dragoon Modifier open Window Config first to load your Reader Mode config. You do not have to do this again once you've done this. Use Add/Change/Delete buttons to add UI elements to the Window, a form will open up to create the display. You can double click items to change them as well, if you can't click the item use Change. On the change windows once you have changed a value, keep it on the same textbox and press enter to update it.\r\n\r\n" +
                     "Save will save your current Reader Mode window setup and Load will load a previous setup. Reset will wipe the current setup.\r\n\r\n" +
                     "You can have Dragoon Modifier press a hotkey for you automatically when the Battle UI is open in battle.\r\n\r\n" +
-                    "You have two modes to remove the UI in battle. One is to remove it complete, the other is to remove character display pictures only.";
+                    "You have two modes to remove the UI in battle. One is to remove it complete, the other is to remove character display pictures only.\r\n\r\n" +
+                    "For the change forms here are the values you can use for Value/Minimum/Maximum\r\nName, Action, Menu, LV, DLV, HP, Max_HP, MP, Max_MP, SP, Max_SP, Element, Display_Element, AT, OG_AT, MAT, OG_MAT, DF, OG_DF, MDF, OG_MDF, SPD, OG_SPD, Turn, A_HIT, M_HIT, A_AV, M_AV, P_Immune, M_Immune, P_Half, M_Half, E_Immune, E_Half, On_Hit_Status, On_Hit_Status_Chance, Stat_Res, Death_Res, SP_P_Hit, SP_M_Hit, MP_P_Hit, MP_M_Hit, HP_Regen, MP_Regen, SP_Regen, SP_Multi, Revive, Unique_Index, Image, DAT, DMAT, DDF, DMDF, Special_Effect, Guard, Dragoon, Spell_Cast, PWR_AT, PWR_AT_TRN, PWR_MAT, PWR_MAT_TRN, PWR_DF, PWR_DF_TRN, PWR_MDF, PWR_MDF_TRN, ADD_SP_Multi, ADD_DMG_Multi, Weapon, Helmet, Armor, Shoes, Accessory, POS_FB, POS_UD, POS_RL, A_HIT_INC, A_HIT_INC_TRN, M_HIT_INC, M_HIT_INC_TRN, PHYSICAL_IMMUNITY, PHYSICAL_IMMUNITY_TRN, ELEMENTAL_IMMUNITY, ELEMENTAL_IMMUNITY_TRN, SPEED_UP_TRN, SPEED_DOWN_TRN, SP_ONHIT_PHYSICAL, SP_ONHIT_PHYSICAL_TRN, MP_ONHIT_PHYSICAL, MP_ONHIT_PHYSICAL_TRN, SP_ONHIT_MAGIC, SP_ONHIT_MAGIC_TRN, MP_ONHIT_MAGIC, MP_ONHIT_MAGIC_TRN, Color_Map, Burn Stack, Damage Tracker1, Damage Tracker2, Damage Tracker3";
             } else if (cboHelpTopic.SelectedIndex == 9) {
                 txtHelp.Text = "Attach/Detach - Attach or Detach Dragoon Modifier from the emulator. Use this when for example you close ePSXe and reopen it. For RetroArch (and other emulators) please reattach when you are in game or at the load save screen.\r\n" +
                     "Menu - This will wipe, create, or save your current script and mod options. External scripts are in the lists below.\r\n\r\n" +
