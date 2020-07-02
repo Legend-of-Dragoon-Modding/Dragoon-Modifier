@@ -961,7 +961,7 @@ public class BattleController {
                     return this.emulator.ReadByteU(address[0]);
                 }
             } catch (Exception e) {
-                Constants.WriteDebug("Monster Read Error - A: " + attribute);
+                Constants.WriteError("Monster Read Error - A: " + attribute);
                 Console.WriteLine("Monster Read Error - A: " + attribute);
                 return 0;
             }
@@ -977,7 +977,7 @@ public class BattleController {
                     this.emulator.WriteByteU(address[0], Convert.ToByte(value));
                 }
             } catch (Exception e) {
-                Constants.WriteDebug("Monster Write Error - A: " + attribute + " V: " + value);
+                Constants.WriteError("Monster Write Error - A: " + attribute + " V: " + value);
                 Console.WriteLine("Monster Write Error - A: " + attribute + " V: " + value);
             }
         }
@@ -1282,7 +1282,7 @@ public class BattleController {
                     return this.emulator.ReadByteU(address[0]);
                 }
             } catch (Exception e) {
-                Constants.WriteDebug("Character Read Error - A: " + attribute);
+                Constants.WriteError("Character Read Error - A: " + attribute);
                 Console.WriteLine("Character Read Error - A: " + attribute);
                 return 0;
             }
@@ -1300,7 +1300,7 @@ public class BattleController {
                     this.emulator.WriteByteU(address[0], Convert.ToByte(value));
                 }
             } catch (Exception e) {
-                Constants.WriteDebug("Character Write Error - A: " + attribute + " V: " + value);
+                Constants.WriteError("Character Write Error - A: " + attribute + " V: " + value);
                 Console.WriteLine("Character Write Error - A: " + attribute + " V: " + value);
             }
         }

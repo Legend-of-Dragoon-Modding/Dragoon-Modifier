@@ -121,7 +121,7 @@ namespace Dragoon_Modifier {
                             cv.Children.Add(bar);
                         }
                     }
-                } catch (Exception e) { Constants.WriteOutput(e.ToString()); }
+                } catch (Exception e) { Constants.WriteError(e.ToString()); }
             }
         }
 
@@ -878,9 +878,9 @@ namespace Dragoon_Modifier {
                             this.Maximum = maxX;
                         } else {
                             if (character) {
-                                if (field.Equals("Max_SP")) {
+                                if (max.Equals("Max_SP")) {
                                     this.Maximum = Globals.CHARACTER_TABLE[slot - 1].Read("DLV") * 100;
-                                } else if (field.Equals("Burn Stack")) {
+                                } else if (max.Equals("Burn Stack")) {
                                     this.Maximum = 6;
                                 } else {
                                     this.Maximum = Globals.CHARACTER_TABLE[slot - 1].Read(max);

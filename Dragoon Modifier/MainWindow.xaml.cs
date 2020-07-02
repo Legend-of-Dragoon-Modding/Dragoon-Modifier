@@ -674,7 +674,7 @@ namespace Dragoon_Modifier {
             lstUltimateShop.Items.Add("Spirit Eater / 70,000 G");
             lstUltimateShop.Items.Add("Harpoon / 70,000 G");
             lstUltimateShop.Items.Add("Element Arrow / 70,000 G");
-            lstUltimateShop.Items.Add("Dragon Beate / 70,000 G");
+            lstUltimateShop.Items.Add("Dragon Beater / 70,000 G");
             lstUltimateShop.Items.Add("Battery Glove / 70,000 G");
             lstUltimateShop.Items.Add("Jeweled Hammer  / 70,000 G");
             lstUltimateShop.Items.Add("Giant Axe / 70,000 G");
@@ -1237,7 +1237,7 @@ namespace Dragoon_Modifier {
                             }
                         } catch (FileNotFoundException) {
                             string file = cwd + @"Mods\" + Globals.MOD + @"\Character_Stats.tsv";
-                            Constants.WriteDebug(file + " not found. Turning off Stat and Equip Changes.");
+                            Constants.WriteError(file + " not found. Turning off Stat and Equip Changes.");
                         }
 
                         origI = 0;
@@ -1273,7 +1273,7 @@ namespace Dragoon_Modifier {
                             }
                         } catch (FileNotFoundException) {
                             string file = cwd + @"Mods\" + Globals.MOD + @"\Monster_Data.tsv";
-                            Constants.WriteDebug(file + " not found. Turning off Monster and Drop Changes.");
+                            Constants.WriteError(file + " not found. Turning off Monster and Drop Changes.");
                             Globals.MONSTER_STAT_CHANGE = false;
                             Globals.MONSTER_DROP_CHANGE = false;
                             Globals.MONSTER_EXPGOLD_CHANGE = false;
@@ -1289,7 +1289,7 @@ namespace Dragoon_Modifier {
                         }
                     } catch (FileNotFoundException) {
                         string file = cwd + @"Mods\" + Globals.MOD + @"\Items.tsv";
-                        Constants.WriteDebug(file + " not found. Turning off Monster, Drop, and Item Changes.");
+                        Constants.WriteError(file + " not found. Turning off Monster, Drop, and Item Changes.");
                         Globals.MONSTER_STAT_CHANGE = false;
                         Globals.MONSTER_DROP_CHANGE = false;
                         Globals.MONSTER_EXPGOLD_CHANGE = false;
@@ -1332,7 +1332,7 @@ namespace Dragoon_Modifier {
                         }
                     } catch (FileNotFoundException) {
                         string file = cwd + @"Mods\" + Globals.MOD + @"\Dragoon_Stats.tsv";
-                        Constants.WriteDebug(file + " not found. Turning off Dragoon Changes.");
+                        Constants.WriteError(file + " not found. Turning off Dragoon Changes.");
                         Globals.DRAGOON_STAT_CHANGE = false;
                     }
                     
@@ -1363,7 +1363,7 @@ namespace Dragoon_Modifier {
                         }
                     } catch (FileNotFoundException) {
                         string file = cwd + @"Mods\" + Globals.MOD + @"\Shops.tsv";
-                        Constants.WriteDebug(file + " not found. Turning off Shop Changes.");
+                        Constants.WriteError(file + " not found. Turning off Shop Changes.");
                         Globals.SHOP_CHANGE = false;
                     }
                     try {
@@ -1388,7 +1388,7 @@ namespace Dragoon_Modifier {
                         }
                     } catch (FileNotFoundException) {
                         string file = cwd + @"Mods\" + Globals.MOD + @"\Dragoon_Spells.tsv";
-                        Constants.WriteDebug(file + " not found. Turning off Dragoon Changes.");
+                        Constants.WriteError(file + " not found. Turning off Dragoon Changes.");
                         Globals.DRAGOON_SPELL_CHANGE = false;
                     }
                     try {
@@ -1416,7 +1416,7 @@ namespace Dragoon_Modifier {
                         }
                     } catch (FileNotFoundException) {
                         string file = cwd + @"Mods\" + Globals.MOD + @"\Additions.tsv";
-                        Constants.WriteDebug(file + " not found. Turning off Addition Changes.");
+                        Constants.WriteError(file + " not found. Turning off Addition Changes.");
                         Globals.ADDITION_CHANGE = false;
                     }
                     try {
@@ -1436,7 +1436,7 @@ namespace Dragoon_Modifier {
                         }
                     } catch (FileNotFoundException) {
                         string file = cwd + @"Mods\" + Globals.MOD + @"\Dragoon_Additions.tsv";
-                        Constants.WriteDebug(file + " not found. Turning off Dragoon Addition Changes.");
+                        Constants.WriteError(file + " not found. Turning off Dragoon Addition Changes.");
                         Globals.DRAGOON_ADDITION_CHANGE = false;
                     }
                 } catch (DirectoryNotFoundException ex) {
@@ -1449,14 +1449,14 @@ namespace Dragoon_Modifier {
                         Constants.WriteGLog("Program stopped.");
                         Constants.WritePLogOutput("LOD Dictionary fatal error, US_BASE not found.");
                         Constants.WriteOutput("Fatal Error. Closing all threads.");
-                        Constants.WriteDebug(ex.ToString());
+                        Constants.WriteError(ex.ToString());
                     }
                 } catch (Exception ex) {
                     Constants.RUN = false;
                     Constants.WriteGLog("Program stopped.");
                     Constants.WritePLogOutput("LOD Dictionary fatal error.");
                     Constants.WriteOutput("Fatal Error. Closing all threads.");
-                    Constants.WriteDebug(ex.ToString());
+                    Constants.WriteError(ex.ToString());
                 }
             }
         }
@@ -2440,7 +2440,7 @@ namespace Dragoon_Modifier {
                     Constants.WriteGLog("Program stopped.");
                     Constants.WritePLogOutput("INTERNAL FIELD SCRIPT ERROR");
                     Constants.WriteOutput("Fatal Error. Closing all threads.");
-                    Constants.WriteDebug(ex.ToString());
+                    Constants.WriteError(ex.ToString());
                     EnableUI();
                 }
 
@@ -2581,7 +2581,7 @@ namespace Dragoon_Modifier {
                     Constants.WriteGLog("Program stopped.");
                     Constants.WritePLogOutput("INTERNAL BATTLE SCRIPT ERROR");
                     Constants.WriteOutput("Fatal Error. Closing all threads.");
-                    Constants.WriteDebug(ex.ToString());
+                    Constants.WriteError(ex.ToString());
                     EnableUI();
                 }
 
@@ -9319,7 +9319,7 @@ namespace Dragoon_Modifier {
                 Constants.WriteGLog("Program stopped.");
                 Constants.WritePLogOutput("Error loading scripts.");
                 Constants.WriteOutput("Fatal Error. Closing all threads.");
-                Constants.WriteOutput(ex.ToString());
+                Constants.WriteError(ex.ToString());
                 EnableUI();
             }
         }

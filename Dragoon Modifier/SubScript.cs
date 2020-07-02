@@ -41,7 +41,7 @@ namespace Dragoon_Modifier {
                 Constants.WriteGLog("Program stopped.");
                 Constants.WritePLogOutput("SCRIPT ERROR: " + ToString());
                 Constants.WriteOutput("Fatal Error. Closing all threads.");
-                Constants.WriteOutput(ex.ToString());
+                Constants.WriteError(ex.ToString());
                 return 0;
             }
         }
@@ -55,7 +55,7 @@ namespace Dragoon_Modifier {
                 Constants.WriteGLog("Program stopped.");
                 Constants.WritePLogOutput("SCRIPT ERROR: " + ToString());
                 Constants.WriteOutput("Fatal Error. Closing all threads.");
-                Constants.WriteOutput(ex.ToString());
+                Constants.WriteError(ex.ToString());
                 return 0;
             }
         }
@@ -69,7 +69,7 @@ namespace Dragoon_Modifier {
                 Constants.WriteGLog("Program stopped.");
                 Constants.WritePLogOutput("SCRIPT ERROR: " + ToString());
                 Constants.WriteOutput("Fatal Error. Closing all threads.");
-                Constants.WriteOutput(ex.ToString());
+                Constants.WriteError(ex.ToString());
                 return 0;
             }
         }
@@ -83,7 +83,7 @@ namespace Dragoon_Modifier {
                 Constants.WriteGLog("Program stopped.");
                 Constants.WritePLogOutput("SCRIPT ERROR: " + ToString());
                 Constants.WriteOutput("Fatal Error. Closing all threads.");
-                Constants.WriteOutput(ex.ToString());
+                Constants.WriteError(ex.ToString());
                 return 0;
             }
         }
