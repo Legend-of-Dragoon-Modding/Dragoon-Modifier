@@ -3408,6 +3408,12 @@ namespace Dragoon_Modifier {
                             shopcount++;
                         }
                         SHOP_CHANGED = true;
+                        address = Constants.GetAddress("SHOP_PRICE");
+                        int i = 0;
+                        foreach (dynamic item in Globals.DICTIONARY.ItemList) {
+                            emulator.WriteShort(address + i * 0x2, (ushort) item.Sell_Price);
+                            i++;
+                        }
                         Constants.WriteDebug("Shop Changed");
                     }
                 } else if (SHOP_CHANGED && emulator.ReadByte("OVERWORLD") != 0) {
