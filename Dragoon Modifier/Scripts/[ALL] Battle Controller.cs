@@ -47,6 +47,12 @@ public class BattleController {
             Constants.WriteDebug("Monster IDs:         " + String.Join(", ", Globals.MONSTER_IDS.ToArray()));
             Constants.WriteDebug("Unique Monster IDs:  " + String.Join(", ", Globals.UNIQUE_MONSTER_IDS.ToArray()));
 
+
+            // in battle model pointers
+            Constants.WriteDebug("Slot1 Address:        " + Convert.ToString(Constants.OFFSET + GetOffset(emulator) + 0x1D95F4,16).ToUpper());
+            Constants.WriteDebug("Slot2 Address:        " + Convert.ToString(Constants.OFFSET + GetOffset(emulator) + 0x1DA88C,16).ToUpper());
+            Constants.WriteDebug("Slot3 Address:        " + Convert.ToString(Constants.OFFSET + GetOffset(emulator) + 0x1DBB24,16).ToUpper());
+
             MonsterChanges(emulator);
             ChangeParty(emulator);
             Constants.WriteOutput("Finished loading.");
@@ -312,6 +318,7 @@ public class BattleController {
                 Globals.CHARACTER_TABLE[slot].Write("MP_P_Hit", Globals.CURRENT_STATS[slot].MP_P_Hit);
                 Globals.CHARACTER_TABLE[slot].Write("SP_P_Hit", Globals.CURRENT_STATS[slot].SP_P_Hit);
                 Globals.CHARACTER_TABLE[slot].Write("SP_Multi", Globals.CURRENT_STATS[slot].SP_Multi);
+                Globals.CHARACTER_TABLE[slot].Write("Death_Res", Globals.CURRENT_STATS[slot].Death_Res);
                 if (!Globals.CHARACTER_STAT_CHANGE) {
                     Globals.CHARACTER_TABLE[slot].Write("HP", Math.Min(Globals.CURRENT_STATS[slot].HP, Globals.CURRENT_STATS[slot].Max_HP));
                     Globals.CHARACTER_TABLE[slot].Write("Max_HP", Globals.CURRENT_STATS[slot].Max_HP);
