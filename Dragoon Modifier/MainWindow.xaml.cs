@@ -1347,7 +1347,7 @@ namespace Dragoon_Modifier {
                                 var line = shop.ReadLine();
                                 if (row > 0 && row < 17) {
                                     var values = line.Split('\t').ToArray();
-                                    for (int column = 0; column < 39; column++) {
+                                    for (int column = 0; column < 44; column++) {
                                         if (item2num.TryGetValue(values[column].ToLower(), out key)) {
                                             shopList[column][row -1] = (byte)key;
                                         } else {
@@ -3440,6 +3440,18 @@ namespace Dragoon_Modifier {
             }
             return offset;
         }
+
+
+        public void ShopAnywhere(byte shop) {
+            if (emulator.ReadByte("OVERWORLD") == 1) {
+                ShopChanges();
+                emulator.WriteByte("SHOP_ID", shop);
+                emulator.WriteByte(0xBDC38, 6);
+                emulator.WriteByte(0xCB430, 13);
+
+            }
+        }
+
         #endregion
 
         #region Auto Charm Potion
