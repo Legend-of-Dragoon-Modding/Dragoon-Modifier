@@ -8,7 +8,7 @@ Fairy Sword	Weapon	Dart	Sword				39												sp_multi		50		Attacks generate<LI
 Claymore	Weapon	Dart	Sword				44																	500
 Soul Eater	Weapon	Dart	Sword				75													hp_regen	-10		Powerful, but<LINE>HP decays<LINE>each turn.	450
 Axe	Weapon	Kongol	Axe				45																	200
-Tomahawk	Weapon	Kongol	Axe	Earth			59																	300
+Tomahawk	Weapon	Kongol	Axe	Earth			59																Earth-based attack.	300
 Battle Axe	Weapon	Kongol	Axe				67																	350
 Great Axe	Weapon	Kongol	Axe		Stun	20	79																20% chance of<LINE>stunning enemy.	400
 Indora's Axe	Weapon	Kongol	Axe		Death	10	88															death_chance	10% chance to<LINE>instantly kill<LINE>enemy.	500
