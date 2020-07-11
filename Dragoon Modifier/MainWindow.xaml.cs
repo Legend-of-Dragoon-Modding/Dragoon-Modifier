@@ -20,6 +20,7 @@ using Xceed.Wpf.Toolkit.PropertyGrid.Editors;
 using Dragoon_Modifier.Properties;
 using Xceed.Wpf.AvalonDock.Properties;
 using System.Reflection;
+using ControlzEx.Standard;
 
 namespace Dragoon_Modifier {
     public partial class MainWindow {
@@ -8642,6 +8643,15 @@ namespace Dragoon_Modifier {
                             }
                         }
                     }
+
+                    Globals.SetCustomValue("EATBC1", extraTurnBattleC[0]);
+                    Globals.SetCustomValue("EATBC2", extraTurnBattleC[1]);
+                    Globals.SetCustomValue("EATBC3", extraTurnBattleC[2]);
+                    Globals.SetCustomValue("EATBM1", extraTurnBattleM[0]);
+                    Globals.SetCustomValue("EATBM2", extraTurnBattleM[1]);
+                    Globals.SetCustomValue("EATBM3", extraTurnBattleM[2]);
+                    Globals.SetCustomValue("EATBM4", extraTurnBattleM[3]);
+                    Globals.SetCustomValue("EATBM5", extraTurnBattleM[4]);
                     eatbOnBattleEntry = true;
                 } else {
                     if (!Globals.IN_BATTLE && eatbOnBattleEntry) {
@@ -8751,6 +8761,7 @@ namespace Dragoon_Modifier {
                 if (qtbTurns > pgrQTB.Maximum)
                     qtbTurns = (byte) pgrQTB.Maximum;
                 pgrQTB.Value = qtbTurns;
+                Globals.SetCustomValue("QTB", qtbTurns);
             }), DispatcherPriority.ContextIdle);
         }
 
@@ -8774,6 +8785,7 @@ namespace Dragoon_Modifier {
                 }
 
                 qtbUsedDuringEnemyTurn = playerTurn ? false : true;
+                Globals.SetCustomValue("QTB", qtbTurns);
                 AddEnemyQTB();
             }), DispatcherPriority.ContextIdle);
         }
@@ -8808,7 +8820,7 @@ namespace Dragoon_Modifier {
         }
 
         public void ATB() {
-            if (Globals.IN_BATTLE && Globals.STATS_CHANGED && Globals.CheckDMScript("btnQTB")) {
+            if (Globals.IN_BATTLE && Globals.STATS_CHANGED && Globals.CheckDMScript("btnATB")) {
                 if (!atbOnBattleEntry) {
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9) {
@@ -8871,6 +8883,9 @@ namespace Dragoon_Modifier {
                     }
                 }), DispatcherPriority.ContextIdle);
 
+                Globals.SetCustomValue("EATBC1", extraTurnBattleC[0]);
+                Globals.SetCustomValue("EATBC2", extraTurnBattleC[1]);
+                Globals.SetCustomValue("EATBC3", extraTurnBattleC[2]);
                 atbOnBattleEntry = true;
             } else {
                 if (!Globals.IN_BATTLE && atbOnBattleEntry) {
@@ -9587,6 +9602,22 @@ namespace Dragoon_Modifier {
             Constants.EATB_BEEP = miEatbSound.IsChecked;
         }
 
+        private void miManualOffset_Click(object sender, RoutedEventArgs e) {
+            InputWindow offsetEntry = new InputWindow("Manual Offset Entry");
+            TextBox input = new TextBox();
+            int newOffset = 0;
+            offsetEntry.AddTextBlockF("Search for the below AOB and subtract 0xB070 from the result and enter it below in integer format. Once done you can try attaching the emulator.\r\n50 53 2D 58 20 45 58 45");
+            offsetEntry.AddObjectF(input);
+            offsetEntry.ShowDialog();
+
+            if (Int32.TryParse(input.Text, out newOffset)) {
+                Constants.KEY.SetValue("Offset", newOffset);
+                Constants.OFFSET = newOffset;
+            } else {
+                Constants.WriteOutput("Invalid input");
+            }
+        }
+
         private void miModOptions_Click(object sender, RoutedEventArgs e) {
             if (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) {
                 Constants.WriteOutput("You can't change Mod Options while using a preset.");
@@ -9742,7 +9773,7 @@ namespace Dragoon_Modifier {
 
         private void miVersion_Click(object sender, RoutedEventArgs e) {
             Constants.WriteOutput("-------------");
-            Constants.WriteOutput("Version π");
+            Constants.WriteOutput("Version 3.1.5");
         }
         #endregion
 

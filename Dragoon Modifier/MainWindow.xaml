@@ -12,7 +12,7 @@
         Icon="1.ico"
         ShowIconOnTitleBar="True"
         ShowTitleBar="True"
-        Title=" Dragoon Modifier v3.1.4" Height="750" Width="1075" MinWidth="750" MinHeight="560" WindowStartupLocation="CenterScreen" Background="White">
+        Title=" Dragoon Modifier v3.1.5" Height="750" Width="1075" MinWidth="750" MinHeight="560" WindowStartupLocation="CenterScreen" Background="White">
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Template">
@@ -1298,6 +1298,7 @@
                                 <MenuItem x:Name="miModOptions" Header="Mod Options" Background="#FFB6B6B6" Foreground="White" Click="miModOptions_Click"/>
                                 <MenuItem x:Name="miPresetHotkeys" Header="Preset Hotkeys" Background="#FFB6B6B6" Foreground="White" Click="miPresetHotkeys_Click"/>
                                 <MenuItem x:Name="miEatbSound" Header="EATB Beeps" Background="#FFB6B6B6" Foreground="White" Click="miEatbSound_Click"/>
+                                <MenuItem x:Name="miManualOffset" Header="Manual Emulator Offset Entry" Background="#FFB6B6B6" Foreground="White" Click="miManualOffset_Click"/>
                                 <MenuItem x:Name="miDeleteSave" Header="Delete Current Save" Background="#FFB6B6B6" Foreground="White" Click="miDeleteSave_Click"/>
                             </MenuItem>
                             <MenuItem Header="About" Background="#FFB6B6B6" Foreground="White">

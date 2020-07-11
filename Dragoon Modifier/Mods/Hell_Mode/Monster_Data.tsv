@@ -10,7 +10,7 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 8	Goblin	Fire	13	5	2	120	120	40	0	0	0	0	0	0	None	None	99	0	4	6	Detonate Rock	10	Goblin
 9	Minotaur	Earth	7680	216	156	160	100	50	0	0	0	0	0	0	None	None	107	16	180	48	Heavy Mace	2	Minotaur
 10	Hyper Skeleton	Dark	7680	200	180	180	80	60	0	0	0	0	0	0	None	None	255	144	204	54	Spear of Terror	2	Hyper Skeleton
-11	Basilisk	Earth	19680	202	202	100	100	50	0	0	0	0	0	0	None	None	99	144	150	51	Depetrifier	8	Basilisk
+11	Basilisk	Earth	19680	202	202	100	100	50	0	0	0	0	0	0	None	None	99	144	2250	255	Depetrifier	8	Basilisk
 12	Flabby Troll	Earth	2940	104	66	60	60	50	0	0	0	0	0	0	None	None	99	16	84	30	Knight Shield	2	Flabby Troll
 13	Evil Spider	Earth	120	15	11	80	60	60	0	0	0	0	0	0	None	None	99	0	12	12	Angel's Prayer	8	Evil Spider
 14	Spider Urchin	Thunder	525	69	62	180	100	60	0	0	0	0	0	0	None	None	99	0	40	18	Poison Needle	8	Spider Urchin
@@ -24,7 +24,7 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 22	Merman	Water	202	16	18	100	80	60	0	0	0	0	0	0	None	None	107	0	15	12	Spear	20	Merman
 23	Glare	Water	1680	66	94	80	120	70	10	0	0	0	0	0	None	None	99	0	70	18	Mind Purifier	8	Glare
 24	Berserk Mouse	Dark	6	3	3	80	120	45	0	0	0	0	0	0	None	None	107	0	3	3	Healing Potion	10	Berserk Mouse
-25	Dragon Soldier	Earth	14640	287	202	160	100	50	0	0	0	0	0	0	None	None	99	0	180	60	Knight Shield	2	Dragon Soldier
+25	Dragon Soldier	Earth	14640	287	202	160	100	50	0	0	0	0	0	0	None	None	99	0	2700	300	Knight Shield	2	Dragon Soldier
 26	Earth Shaker	Earth	1050	74	61	140	60	50	0	0	0	0	0	0	None	None	99	16	48	15	Stunning Hammer	8	Earth Shaker
 27	Vampire Kiwi	Dark	47	8	11	80	120	70	0	0	0	0	0	0	None	None	99	0	8	9	Healing Potion	8	Vampire Kiwi
 28	Myconido	Earth	135	11	20	80	180	80	20	0	0	0	0	0	None	None	227	0	11	8	Body Purifier	10	Myconido
@@ -48,14 +48,14 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 46	Screaming Bat	Dark	48	9	17	80	120	70	20	0	0	0	0	0	None	None	99	0	8	6	Healing Potion	8	Screaming Bat
 47	Succubus	Dark	3520	135	135	100	150	60	0	0	0	0	0	0	None	None	99	0	130	42	Platinum Collar	2	Succubus
 48	Mammoth	Earth	7680	169	126	80	60	50	0	0	0	0	0	0	None	None	99	144	132	45	Stunning Hammer	8	Mammoth
-49	Metal Fang	Thunder	19680	174	247	80	120	70	5	0	0	0	0	0	None	None	99	0	135	42	Beast Fang	2	Metal Fang
+49	Metal Fang	Thunder	19680	174	247	80	120	70	5	0	0	0	0	0	None	None	99	0	2025	210	Beast Fang	2	Metal Fang
 50	Windy Weasel	Wind	2560	112	158	80	100	70	20	0	0	0	0	0	None	None	99	0	96	21	Rave Twister	8	Windy Weasel
 51	Wounded Bear	Earth	3192	112	88	140	40	60	0	0	0	0	0	0	None	None	107	16	96	60	Attack Ball	8	Wounded Bear
 52	Erupting Chick	Wind	630	46	51	80	30	80	20	0	0	0	0	0	None	None	99	0	32	15	Mind Purifier	8	Erupting Chick
 53	Flying Rat	Wind	1482	76	108	80	120	60	20	0	0	0	0	0	None	None	99	0	64	24	Angel's Prayer	8	Flying Rat
 54	Rainbow Bird	Non-Elemental	4	0	0	100	100	120	0	0	1	1	0	0	None	None	251	140	3000	0	Rainbow Dress	10	Rainbow Bird
 55	Living Statue	Earth	230	23	21	160	80	50	0	0	0	0	0	0	None	None	255	0	20	12	Detonate Rock	8	Living Statue
-56	Madman	Earth	31200	202	174	100	80	60	0	0	0	0	0	0	None	None	99	0	165	24	Body Purifier	8	Madman I
+56	Madman	Earth	31200	202	174	100	80	60	0	0	0	0	0	0	None	None	99	0	2475	120	Body Purifier	8	Madman I
 57	Wildman	Thunder	5760	146	130	100	60	50	0	0	0	0	0	0	None	None	99	0	120	36	Giganto Ring	2	Wildman
 58	Gargoyle	Dark	450	26	26	80	160	70	0	0	0	0	0	0	None	None	99	0	17	15	Dark Mist	8	Gargoyle
 59	Crescent Bee	Wind	33	9	9	100	100	60	20	0	0	0	0	0	None	None	99	0	10	6	Spinning Gale	8	Crescent Bee
@@ -69,7 +69,7 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 67	Rocky Turtle	Earth	4480	119	126	200	80	50	0	0	0	0	0	0	None	None	99	16	99	39	Guard Badge	2	Rocky Turtle
 68	Crocodile	Water	144	18	14	160	50	50	0	0	0	0	0	0	None	None	99	0	17	6	Pellet	10	Crocodile
 69	Frilled Lizard	Earth	672	52	61	100	120	80	5	0	0	0	0	0	None	None	99	0	36	21	Healing Potion	8	Frilled Lizard
-70	Magician Bogy	Dark	4200	80	97	80	160	70	0	0	0	0	0	0	None	None	99	16	72	24	Magical Hat	2	Magician Bogy
+70	Magician Bogy	Dark	4200	80	97	80	160	70	0	0	0	0	0	0	None	None	99	16	72	24	Magical Hat	40	Magician Bogy
 71	Triceratops	Earth	28800	362	143	160	100	80	0	0	0	0	0	0	None	None	99	144	2000	120	Gravity Grabber	8	Triceratops
 72	Stern Fish	Water	6848	190	156	160	100	80	0	0	0	0	0	0	None	None	99	16	165	54	Frozen Jet	8	Stern Fish
 73	Forest Runner	Wind	2052	90	88	80	120	80	10	0	0	0	0	0	None	None	99	0	88	30	Recovery Ball	8	Forest Runner

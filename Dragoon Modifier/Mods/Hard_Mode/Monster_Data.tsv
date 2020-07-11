@@ -69,7 +69,7 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 67	Rocky Turtle	Earth	2072	81	84	240	120	50	0	0	0	0	0	0	None	None	99	16	99	39	Guard Badge	2	Rocky Turtle
 68	Crocodile	Water	80	14	13	180	70	50	0	0	0	0	0	0	None	None	99	0	17	6	Pellet	10	Crocodile
 69	Frilled Lizard	Earth	384	41	45	140	160	80	5	0	0	0	0	0	None	None	99	0	36	21	Healing Potion	8	Frilled Lizard
-70	Magician Bogy	Dark	2400	57	64	120	200	70	0	0	0	0	0	0	None	None	99	16	72	24	Magical Hat	2	Magician Bogy
+70	Magician Bogy	Dark	2400	57	64	120	200	70	0	0	0	0	0	0	None	None	99	16	72	24	Magical Hat	40	Magician Bogy
 71	Triceratops	Earth	16000	184	103	220	160	80	0	0	0	0	0	0	None	None	99	144	2000	120	Gravity Grabber	8	Triceratops
 72	Stern Fish	Water	3424	124	110	200	140	80	0	0	0	0	0	0	None	None	99	16	165	54	Frozen Jet	8	Stern Fish
 73	Forest Runner	Wind	1080	68	67	120	160	80	10	0	0	0	0	0	None	None	99	0	88	30	Recovery Ball	8	Forest Runner

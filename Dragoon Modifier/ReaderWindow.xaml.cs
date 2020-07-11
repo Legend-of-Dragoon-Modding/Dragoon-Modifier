@@ -159,7 +159,26 @@ namespace Dragoon_Modifier {
                                 } else {
                                     location = "Damage Tracker3";
                                 }
+                            } else if (field.Equals("EATBC1")) {
+                                if (i != 0) {
+                                    continue;
+                                } else {
+                                    location = "EATBC1";
+                                }
+                            } else if (field.Equals("EATBC2")) {
+                                if (i != 1) {
+                                    continue;
+                                } else {
+                                    location = "EATBC2";
+                                }
+                            } else if (field.Equals("EATBC3")) {
+                                if (i != 2) {
+                                    continue;
+                                } else {
+                                    location = "EATBC3";
+                                }
                             }
+
                             StreamWriter writer = new StreamWriter(WRITE_LOCATION + "/Character/" + location + ".txt");
                             if (field.Equals("Name")) {
                                 if (Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10)
@@ -176,6 +195,14 @@ namespace Dragoon_Modifier {
                                 writer.WriteLine(Globals.GetCustomValue("Damage Tracker2"));
                             } else if (field.Equals("Damage Tracker3")) {
                                 writer.WriteLine(Globals.GetCustomValue("Damage Tracker3"));
+                            } else if (field.Equals("EATBC1")) {
+                                writer.WriteLine(Globals.GetCustomValue("EATBC1"));
+                            } else if (field.Equals("EATBC2")) {
+                                writer.WriteLine(Globals.GetCustomValue("EATBC2"));
+                            } else if (field.Equals("EATBC3")) {
+                                writer.WriteLine(Globals.GetCustomValue("EATBC3"));
+                            } else if (field.Equals("QTB")) {
+                                writer.WriteLine(Globals.GetCustomValue("QTB"));
                             } else {
                                 writer.WriteLine(Globals.CHARACTER_TABLE[i].Read(field));
                             }
@@ -186,13 +213,56 @@ namespace Dragoon_Modifier {
 
                 for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
                     foreach (string field in Constants.READER_MONSTER_LABEL) {
-                        StreamWriter writer = new StreamWriter(WRITE_LOCATION + "/Monster/" + field + "" + (i + 1) + ".txt");
+                        string location = field + "" + (i + 1);
+                        if (field.Equals("EATBM1")) {
+                            if (i != 0) {
+                                continue;
+                            } else {
+                                location = "EATBM1";
+                            }
+                        } else if (field.Equals("EATBM2")) {
+                            if (i != 1) {
+                                continue;
+                            } else {
+                                location = "EATBM2";
+                            }
+                        } else if (field.Equals("EATBM3")) {
+                            if (i != 2) {
+                                continue;
+                            } else {
+                                location = "EATBM3";
+                            }
+                        } else if (field.Equals("EATBM4")) {
+                            if (i != 3) {
+                                continue;
+                            } else {
+                                location = "EATBM4";
+                            }
+                        } else if (field.Equals("EATBM5")) {
+                            if (i != 4) {
+                                continue;
+                            } else {
+                                location = "EATBM5";
+                            }
+                        }
+
+                        StreamWriter writer = new StreamWriter(WRITE_LOCATION + "/Monster/" + location + ".txt");
                         if (field.Equals("Name")) {
                             writer.WriteLine(Globals.MONSTER_NAME[i]);
                         } else if (field.Equals("Drop_Chance")) {
                             writer.WriteLine(Globals.MONSTER_TABLE[i].Read(field) + "%");
                         } else if (field.Equals("Drop_Item")) {
                             writer.WriteLine(Globals.DICTIONARY.Num2Item[Globals.MONSTER_TABLE[i].Read(field)]);
+                        } else if (field.Equals("EATBM1")) {
+                            writer.WriteLine(Globals.GetCustomValue("EATBM1"));
+                        } else if (field.Equals("EATBM2")) {
+                            writer.WriteLine(Globals.GetCustomValue("EATBM2"));
+                        } else if (field.Equals("EATBM3")) {
+                            writer.WriteLine(Globals.GetCustomValue("EATBM3"));
+                        } else if (field.Equals("EATBM4")) {
+                            writer.WriteLine(Globals.GetCustomValue("EATBM4"));
+                        } else if (field.Equals("EATBM5")) {
+                            writer.WriteLine(Globals.GetCustomValue("EATBM5"));
                         } else {
                             writer.WriteLine(Globals.MONSTER_TABLE[i].Read(field));
                         }

@@ -49,6 +49,17 @@ namespace Dragoon_Modifier {
             pnlMain.Children.Insert(0, txtBlock);
         }
 
+        public void AddObjectF(UIElement add) {
+            pnlMain.Children.Insert(pnlMain.Children.Count - 1, add);
+        }
+
+        public void AddTextBlockF(string text) {
+            TextBlock txtBlock = new TextBlock();
+            txtBlock.Text = text;
+            txtBlock.HorizontalAlignment = HorizontalAlignment.Center;
+            pnlMain.Children.Insert(pnlMain.Children.Count - 1, txtBlock);
+        }
+
         public UIElement GetElement(int index) {
             return pnlMain.Children[index];
         }
