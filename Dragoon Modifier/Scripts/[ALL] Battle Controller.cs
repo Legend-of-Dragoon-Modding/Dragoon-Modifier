@@ -305,7 +305,7 @@ public class BattleController {
                 Globals.CHARACTER_TABLE[slot].Write("M_HIT", Globals.CURRENT_STATS[slot].M_Hit);
                 Globals.CHARACTER_TABLE[slot].Write("P_Half", Globals.CURRENT_STATS[slot].P_Half);
                 Globals.CHARACTER_TABLE[slot].Write("M_Half", Globals.CURRENT_STATS[slot].M_Half);
-                Globals.CHARACTER_TABLE[slot].Write("On_Hit_Status", Globals.CURRENT_STATS[slot].Status);
+                Globals.CHARACTER_TABLE[slot].Write("On_Hit_Status", Globals.CURRENT_STATS[slot].On_Hit_Status);
                 Globals.CHARACTER_TABLE[slot].Write("On_Hit_Status_Chance", Globals.CURRENT_STATS[slot].Status_Chance);
                 Globals.CHARACTER_TABLE[slot].Write("Revive", Globals.CURRENT_STATS[slot].Revive);
                 Globals.CHARACTER_TABLE[slot].Write("SP_Regen", Globals.CURRENT_STATS[slot].SP_Regen);
@@ -496,6 +496,8 @@ public class BattleController {
             int current_turn = Globals.CHARACTER_TABLE[0].Read("Turn");
             Globals.CHARACTER_TABLE[0].Write("Turn", 800);
             int character = (int) Globals.NO_DART;
+            byte status = emulator.ReadByte("CHAR_TABLE", character * 0x2C + 0x10);
+            Constants.WriteDebug(status);
             Globals.CHARACTER_TABLE[0].Write("Dragoon", 0x20);
             emulator.WriteByte("PARTY_SLOT", (byte) character);
             emulator.WriteByte("PARTY_SLOT", (byte) character, 0x234E); // Secondary ID
@@ -508,6 +510,7 @@ public class BattleController {
             Dictionary<int, byte> charelement = new Dictionary<int, byte> {
                 {0, 128},{1, 64},{2, 32},{3, 4},{4, 16},{5, 64},{6, 1},{7, 2},{8, 32}
             };
+            Globals.CHARACTER_TABLE[0].Write("Status", 0);
             Globals.CHARACTER_TABLE[0].Write("LV", Globals.CURRENT_STATS[0].LV);
             Globals.CHARACTER_TABLE[0].Write("DLV", 1);
             Globals.CHARACTER_TABLE[0].Write("SP", 100);
@@ -620,6 +623,8 @@ public class BattleController {
             Globals.CHARACTER_TABLE[0].Write("HP_Regen", Globals.CURRENT_STATS[0].HP_Regen);
             Globals.CHARACTER_TABLE[0].Write("MP_Regen", Globals.CURRENT_STATS[0].MP_Regen);
             Globals.CHARACTER_TABLE[0].Write("SP_Regen", Globals.CURRENT_STATS[0].SP_Regen);
+            // so far this doesn't work
+            //Globals.CHARACTER_TABLE[0].Write("Status", status);
             if (dlv == 0) {
                 Globals.CHARACTER_TABLE[0].Write("Dragoon", 0);
             }
@@ -640,7 +645,7 @@ public class BattleController {
                 emulator.WriteByte(address + i * 0x1C, item.Type);
                 emulator.WriteByte(address + i * 0x1C + 0x2, item.Equips);
                 emulator.WriteByte(address + i * 0x1C + 0x3, item.Element);
-                emulator.WriteByte(address + i * 0x1C + 0x1A, item.Status);
+                emulator.WriteByte(address + i * 0x1C + 0x1A, item.On_Hit_Status);
                 emulator.WriteByte(address + i * 0x1C + 0x17, item.Status_Chance);
                 if (item.AT > 255) {
                     emulator.WriteByte(address + i * 0x1C + 0x9, 255);
@@ -1000,6 +1005,7 @@ public class BattleController {
         long[] mp = { 0, 2 };
         long[] max_mp = { 0, 2 };
         long[] sp = { 0, 2 };
+        long[] status = { 0, 1 };
         long[] element = { 0, 2 };
         long[] display_element = { 0, 2 };
         long[] at = { 0, 2 };
@@ -1095,6 +1101,7 @@ public class BattleController {
         public long[] MP { get { return mp; } }
         public long[] Max_MP { get { return max_mp; } }
         public long[] SP { get { return sp; } }
+        public long[] Status { get { return status; } }
         public long[] Element { get { return element; } }
         public long[] Display_Element { get { return display_element; } }
         public long[] AT { get { return at; } }
@@ -1193,6 +1200,7 @@ public class BattleController {
             dragoon[0] = c_point + 0x7 - character * 0x388;
             max_mp[0] = c_point + 0xA - character * 0x388;
             sp[0] = c_point + 0x2 - character * 0x388;
+            status[0] = c_point + 0x6 - character * 0x388;
             element[0] = c_point + 0x14 - character * 0x388;
             at[0] = c_point + 0x2C - character * 0x388;
             og_at[0] = c_point + 0x58 - character * 0x388;
@@ -1340,7 +1348,7 @@ public class BattleController {
         byte e_immune = 0;
         byte p_half = 0;
         byte m_half = 0;
-        byte status = 0;
+        byte on_hit_status = 0;
         byte status_chance = 0;
         byte revive = 0;
         ushort sp_regen = 0;
@@ -1376,7 +1384,7 @@ public class BattleController {
         public byte E_Immune { get { return e_immune; } }
         public byte P_Half { get { return p_half; } }
         public byte M_Half { get { return m_half; } }
-        public byte Status { get { return status; } }
+        public byte On_Hit_Status { get { return on_hit_status; } }
         public byte Status_Chance { get { return status_chance; } }
         public byte Revive { get { return revive; } }
         public ushort SP_Regen { get { return sp_regen; } }
@@ -1422,6 +1430,7 @@ public class BattleController {
             hp = emulator.ReadShort("CHAR_TABLE", character * 0x2C + 0x8);
             mp = emulator.ReadShort("CHAR_TABLE", character * 0x2C + 0xA);
             sp = emulator.ReadShort("CHAR_TABLE", character * 0x2C + 0xC);
+            
 
             if (!Globals.CHARACTER_STAT_CHANGE) {
                 max_hp = (ushort) (Globals.DICTIONARY.OriginalCharacterStats[character][lv].Max_HP * (1 + ((weapon.Special2 & 2) >> 1) * (float) (weapon.Special_Ammount) / 100 + ((armor.Special2 & 2) >> 1) * (float) (armor.Special_Ammount) / 100
@@ -1460,7 +1469,7 @@ public class BattleController {
             m_hit = (byte) (weapon.M_Hit + armor.M_Hit + helm.M_Hit + boots.M_Hit + accessory.M_Hit);
             p_half |= ((weapon.Special1 & 0x20) | (armor.Special1 & 0x20) | (helm.Special1 & 0x20) | (boots.Special1 & 0x20) | (accessory.Special1 & 0x20)) >> 5;
             m_half |= ((weapon.Special2 & 0x4) | (armor.Special2 & 0x4) | (helm.Special2 & 0x4) | (boots.Special2 & 0x4) | (accessory.Special2 & 0x4)) >> 2;
-            status = weapon.Status;
+            on_hit_status = weapon.On_Hit_Status;
             status_chance = weapon.Status_Chance;
             element = weapon.Element;
             revive = (byte) (((weapon.Special2 & 0x8) >> 3) * weapon.Special_Ammount + ((armor.Special2 & 0x8) >> 3) * armor.Special_Ammount + ((helm.Special2 & 0x8) >> 3) * helm.Special_Ammount

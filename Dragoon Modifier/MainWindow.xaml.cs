@@ -1473,7 +1473,7 @@ namespace Dragoon_Modifier {
             byte equips = 0;
             byte type = 0;
             byte element = 0;
-            byte status = 0;
+            byte on_hit_status = 0;
             byte status_chance = 0;
             byte at = 0;
             byte mat = 0;
@@ -1636,7 +1636,7 @@ namespace Dragoon_Modifier {
             public byte Equips { get { return equips; } }
             public byte Type { get { return type; } }
             public byte Element { get { return element; } }
-            public byte Status { get { return status; } }
+            public byte On_Hit_Status { get { return on_hit_status; } }
             public byte Status_Chance { get { return status_chance; } }
             public byte AT { get { return at; } }
             public byte MAT { get { return mat; } }
@@ -1687,7 +1687,7 @@ namespace Dragoon_Modifier {
                     Constants.WriteDebug(values[4] + " not found as element for item: " + name);
                 }
                 if (status2num.TryGetValue(values[5].ToLower(), out key)) {
-                    status = key;
+                    on_hit_status = key;
                 } else {
                     Constants.WriteDebug(values[5] + " not found as Status for item: " + name);
                 }
