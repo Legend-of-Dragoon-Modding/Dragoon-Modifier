@@ -131,8 +131,10 @@ namespace Dragoon_Modifier {
 
         public void WriteToText() {
             if (Globals.IN_BATTLE && Globals.STATS_CHANGED) {
+                int partySize = 0;
                 for (int i = 0; i < 3; i++) {
                     if (Globals.PARTY_SLOT[i] < 9) {
+                        partySize++;
                         foreach (string field in Constants.READER_CHARACTER_LABEL) {
                             string location = field + "" + (i + 1);
                             if (field.Equals("Burn Stack")) {
@@ -179,7 +181,8 @@ namespace Dragoon_Modifier {
                                 }
                             }
 
-                            StreamWriter writer = new StreamWriter(WRITE_LOCATION + "/Character/" + location + ".txt");
+                            FileStream file = new FileStream(WRITE_LOCATION + "/Character/" + location + ".txt", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+                            StreamWriter writer = new StreamWriter(file);
                             if (field.Equals("Name")) {
                                 if (Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10)
                                     writer.WriteLine(Globals.CHARACTER_NAME[i] + "*");
@@ -206,9 +209,19 @@ namespace Dragoon_Modifier {
                             } else {
                                 writer.WriteLine(Globals.CHARACTER_TABLE[i].Read(field));
                             }
+                            writer.Dispose();
                             writer.Close();
+                            file.Dispose();
+                            file.Close();
                         }
                     }
+                    FileStream partyFile = new FileStream(WRITE_LOCATION + "/Character/PartySize.txt", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+                    StreamWriter writePartySize = new StreamWriter(partyFile);
+                    writePartySize.WriteLine(partySize);
+                    writePartySize.Dispose();
+                    writePartySize.Close();
+                    partyFile.Dispose();
+                    partyFile.Close();
                 }
 
                 for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
@@ -245,8 +258,8 @@ namespace Dragoon_Modifier {
                                 location = "EATBM5";
                             }
                         }
-
-                        StreamWriter writer = new StreamWriter(WRITE_LOCATION + "/Monster/" + location + ".txt");
+                        FileStream file = new FileStream(WRITE_LOCATION + "/Monster/" + location + ".txt", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+                        StreamWriter writer = new StreamWriter(file);
                         if (field.Equals("Name")) {
                             writer.WriteLine(Globals.MONSTER_NAME[i]);
                         } else if (field.Equals("Drop_Chance")) {
@@ -266,9 +279,17 @@ namespace Dragoon_Modifier {
                         } else {
                             writer.WriteLine(Globals.MONSTER_TABLE[i].Read(field));
                         }
+                        writer.Dispose();
                         writer.Close();
+                        file.Dispose();
+                        file.Close();
                     }
                 }
+                FileStream monsterWrite = new FileStream(WRITE_LOCATION + "/Monster/MonsterSize.txt", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+                StreamWriter writeMonsterSize = new StreamWriter(monsterWrite);
+                writeMonsterSize.WriteLine(Globals.MONSTER_SIZE);
+                writeMonsterSize.Close();
+                monsterWrite.Close();
             }
         }
 
@@ -626,12 +647,28 @@ namespace Dragoon_Modifier {
                                 this.Content = (Globals.CHARACTER_TABLE[slot - 1].Read("DLV") * 100).ToString();
                         } else if (field.Equals("Burn Stack")) {
                             this.Content = Globals.GetCustomValue("Burn Stack");
-                        } else if (field.Equals("Danage Tracker1")) {
-                            this.Content = Globals.GetCustomValue("Danage Tracker1");
-                        } else if (field.Equals("Danage Tracker2")) {
-                            this.Content = Globals.GetCustomValue("Danage Tracker2");
-                        } else if (field.Equals("Danage Tracker3")) {
-                            this.Content = Globals.GetCustomValue("Danage Tracker3");
+                        } else if (field.Equals("Damage Tracker1")) {
+                            this.Content = Globals.GetCustomValue("Damage Tracker1");
+                        } else if (field.Equals("Damage Tracker2")) {
+                            this.Content = Globals.GetCustomValue("Damage Tracker2");
+                        } else if (field.Equals("Damage Tracker3")) {
+                            this.Content = Globals.GetCustomValue("Damage Tracker3");
+                        } else if (field.Equals("EATBC1")) {
+                            this.Content = Globals.GetCustomValue("EATBC1");
+                        } else if (field.Equals("EATBC2")) {
+                            this.Content = Globals.GetCustomValue("EATBC2");
+                        } else if (field.Equals("EATBC3")) {
+                            this.Content = Globals.GetCustomValue("EATBC3");
+                        } else if (field.Equals("EATBM1")) {
+                            this.Content = Globals.GetCustomValue("EATBM1");
+                        } else if (field.Equals("EATBM2")) {
+                            this.Content = Globals.GetCustomValue("EATBM2");
+                        } else if (field.Equals("EATBM3")) {
+                            this.Content = Globals.GetCustomValue("EATBM3");
+                        } else if (field.Equals("EATBM4")) {
+                            this.Content = Globals.GetCustomValue("EATBM4");
+                        } else if (field.Equals("EATBM5")) {
+                            this.Content = Globals.GetCustomValue("EATBM5");
                         } else if (field.Equals("Name")) { 
                             if (character) {
                                 if (Globals.CHARACTER_TABLE[slot - 1].Read("Action") == 8 || Globals.CHARACTER_TABLE[slot - 1].Read("Action") == 10)
@@ -927,6 +964,28 @@ namespace Dragoon_Modifier {
                             if (character) {
                                 if (field.Equals("Burn Stack")) {
                                     this.Value = Globals.GetCustomValue("Burn Stack");
+                                } else if (field.Equals("Damage Tracker1")) {
+                                    this.Value = Globals.GetCustomValue("Damage Tracker1");
+                                } else if (field.Equals("Damage Tracker2")) {
+                                    this.Value = Globals.GetCustomValue("Damage Tracker2");
+                                } else if (field.Equals("Damage Tracker3")) {
+                                    this.Value = Globals.GetCustomValue("Damage Tracker3");
+                                } else if (field.Equals("EATBC1")) {
+                                    this.Value = Globals.GetCustomValue("EATBC1");
+                                } else if (field.Equals("EATBC2")) {
+                                    this.Value = Globals.GetCustomValue("EATBC2");
+                                } else if (field.Equals("EATBC3")) {
+                                    this.Value = Globals.GetCustomValue("EATBC3");
+                                } else if (field.Equals("EATBM1")) {
+                                    this.Value = Globals.GetCustomValue("EATBM1");
+                                } else if (field.Equals("EATBM2")) {
+                                    this.Value = Globals.GetCustomValue("EATBM2");
+                                } else if (field.Equals("EATBM3")) {
+                                    this.Value = Globals.GetCustomValue("EATBM3");
+                                } else if (field.Equals("EATBM4")) {
+                                    this.Value = Globals.GetCustomValue("EATBM4");
+                                } else if (field.Equals("EATBM5")) {
+                                    this.Value = Globals.GetCustomValue("EATBM5");
                                 } else {
                                     this.Value = Globals.CHARACTER_TABLE[slot - 1].Read(field);
                                 }
