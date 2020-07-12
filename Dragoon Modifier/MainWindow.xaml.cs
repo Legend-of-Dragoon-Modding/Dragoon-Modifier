@@ -1909,7 +1909,7 @@ namespace Dragoon_Modifier {
             public byte DMDF { get { return dmdf; } }
             public ushort MP { get { return mp; } }
 
-            public DragoonStats(string ndat, string ndmat, string nddf, string ndmdf, string nmp) {
+            public DragoonStats(string ndat, string nddf, string ndmat, string ndmdf, string nmp) {
                 byte key = 0;
                 if (Byte.TryParse(ndat, NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
                     dat = key;
