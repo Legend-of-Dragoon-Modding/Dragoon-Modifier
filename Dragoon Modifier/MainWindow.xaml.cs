@@ -1101,6 +1101,7 @@ namespace Dragoon_Modifier {
             IDictionary<string, int> element2num = new Dictionary<string, int>() {
                 {"", 0 },
                 {"none", 0 },
+                {"null", 0 },
                 {"water", 1 },
                 {"earth", 2 },
                 {"dark", 4 },
