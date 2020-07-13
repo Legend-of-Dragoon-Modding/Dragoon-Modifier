@@ -1983,7 +1983,7 @@ namespace Dragoon_Modifier {
                     dmg_base = 0;
                     multi = (byte) Math.Round(damage);
                 } else {
-                    double[] hidden_list = new double[] { 2, 2, 2, 2, 9, 1.11, 1.11, 1.11, 1.11, 9, 2.6, 2.6, 2.6, 2.6, 1.11, 1.55, 1.55, 1.11, 1.55, 1.55, 2, 2, 2, 2, 2.738, 2.738, 1.11, 2.738, 2.738, 1, 1, 1};
+                    double[] hidden_list = new double[] { 2, 2, 2, 2, 2, 1.11, 1.11, 1.11, 1.11, 2, 2.6, 2.6, 2.6, 2.6, 1.11, 1.55, 1.55, 1.11, 1.55, 1.55, 2, 2, 2, 2, 2.738, 2.738, 1.11, 2.738, 2.738, 1, 1, 1};
                     double hidden = hidden_list[spell];
                     double[] bases = new double[] { 800, 600, 500, 400, 300, 200, 150, 100, 50 };
                     byte[] base_table = new byte[] { 0x1, 0x2, 0x4, 0x8, 0x10, 0x20, 0x40, 0, 0x80 };

@@ -3,12 +3,12 @@ Flameshot		255	100	10	Fire	Fire STR 510%
 Explosion		170	100	20	Fire	Fire STR 340%<END>
 Final Burst		382.5	100	30	Fire	Fire STR 765%<END>
 Red-Eye Dragon		510	100	80	Fire	Fire STR 1020%
-Divine Dragon Cannon		600	100	50	Non-Elemental	Void STR 1020%
+Divine Dragon Cannon		765	100	50	Non-Elemental	Void STR 1020%
 Wing Blaster (Albert)		220	100	20	Wind	Wind STR 440%
 Gaspless (Albert)		495	100	30	Wind	Wind STR 990%
 Blossom Storm (Albert)	Yes	0	100	20	Wind	Damage Resist 50% Dur 3
 Jade Dragon		660	100	80	Wind	Wind STR 1320%
-Divine Dragon Ball		400	100	50	Non-Elemental	Void STR 1020%
+Divine Dragon Ball		510	100	50	Non-Elemental	Void STR 1020%
 Star Children		166	100	20	Light	Light STR 330%
 Moon Light	Yes	100	100	10	Light	Ally Single 100% Rev & Rec
 Gates of Heaven	Yes	100	100	30	Light	Ally All 100% Recover
