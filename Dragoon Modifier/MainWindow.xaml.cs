@@ -1376,7 +1376,7 @@ namespace Dragoon_Modifier {
                                 var line = spell.ReadLine();
                                 if (i > 0) {
                                     var values = line.Split('\t').ToArray();
-                                    Globals.DRAGOON_SPELLS.Add(new DragoonSpells(values, element2num));
+                                    Globals.DRAGOON_SPELLS.Add(new DragoonSpells(values, i - 1, element2num));
                                 }
                                 i++;
                             }
@@ -1970,7 +1970,7 @@ namespace Dragoon_Modifier {
             public string Encoded_Description { get { return encoded_description; } }
             public long Description_Pointer { get; set; }
 
-            public DragoonSpells(string[] values, IDictionary<string, int> Element2Num) {
+            public DragoonSpells(string[] values, int spell, IDictionary<string, int> Element2Num) {
                 bool key = new bool();
                 if (perc.TryGetValue(values[1].ToLower(), out key)) {
                     percentage = key;
@@ -1982,32 +1982,34 @@ namespace Dragoon_Modifier {
                     dmg_base = 0;
                     multi = (byte) Math.Round(damage);
                 } else {
-                    double[] bases = new double[] { 800, 600, 500, 400, 300, 200, 100, 75, 50 };
-                    byte[] base_table = new byte[] { 1, 2, 4, 8, 16, 32, 0, 64, 128 };
+                    double[] hidden_list = new double[] { 2, 2, 2, 2, 5, 5, 1.105, 1.105, 5, 1.1, 2.6, 5, 5, 2.6, 5, 5, 5, 5, 5, 5, 2, 2, 2, 2, 5, 5, 5, 5, 5, 1, 1, 1};
+                    double hidden = hidden_list[spell];
+                    double[] bases = new double[] { 800, 600, 500, 400, 300, 200, 150, 100, 50 };
+                    byte[] base_table = new byte[] { 0x1, 0x2, 0x4, 0x8, 0x10, 0x20, 0x40, 0, 0x80 };
                     double[] nearest_list = new double[9];
                     byte[] multi_list = new byte[9];
                     for (int i = 0; i < 9; i++) {
                         if (damage < bases[i]) {
                             nearest_list[i] = bases[i] - damage;
                             multi_list[i] = 0;
-                        } else if (damage > (bases[i] * 2.275)) {
-                            nearest_list[i] = damage - bases[i] * 2.275;
+                        } else if (damage > (bases[i] * (100 * hidden + 255) / hidden / 100)) {
+                            nearest_list[i] = damage - (bases[i] * (100 * hidden + 255) / hidden / 100);
                             multi_list[i] = 255;
                         } else {
-                            double mod = (damage - bases[i]) % (bases[i] / 200);
-                            if (mod < (bases[i] / 400)) {
-                                nearest_list[i] = mod;
-                                multi_list[i] = (byte) Math.Round((damage - bases[i]) / (bases[i] / 200));
-                            } else {
-                                nearest_list[i] = (bases[i] / 200) - mod;
-                                multi_list[i] = (byte) Math.Round((damage - bases[i]) / (bases[i] / 200) + 1);
-                            }
+                            multi_list[i] = (byte) Math.Round((damage - bases[i]) / bases[i] * 100 * hidden);
+                            nearest_list[i] = Math.Abs(damage - (bases[i] * (100 * hidden + multi_list[i]) / hidden / 100));
                         }
                     }
                     int index = Array.IndexOf(nearest_list, nearest_list.Min());
                     dmg_base = base_table[index];
                     multi = multi_list[index];
                 }
+
+                // delete later
+                double[] bases2 = new double[] { 800, 600, 500, 400, 300, 200, 150, 100, 50 };
+                byte[] base_table2 = new byte[] { 1, 2, 4, 8, 16, 32, 0, 64, 128 };
+                Constants.WriteDebug(bases2[Array.IndexOf(base_table2, dmg_base)] + " " + multi);
+                // delete later
                 accuracy = (byte) Convert.ToInt32(values[3]);
                 mp = (byte) Convert.ToInt32(values[4]);
                 element = (byte) Element2Num[values[5].ToLower()];
