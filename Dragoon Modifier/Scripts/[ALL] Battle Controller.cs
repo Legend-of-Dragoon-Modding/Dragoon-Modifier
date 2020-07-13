@@ -497,16 +497,15 @@ public class BattleController {
             Globals.CHARACTER_TABLE[0].Write("Turn", 800);
             int character = (int) Globals.NO_DART;
             byte status = emulator.ReadByte("CHAR_TABLE", character * 0x2C + 0x10);
-            Constants.WriteDebug(status);
             Globals.CHARACTER_TABLE[0].Write("Dragoon", 0x20);
             emulator.WriteByte("PARTY_SLOT", (byte) character);
             emulator.WriteByte("PARTY_SLOT", (byte) character, 0x234E); // Secondary ID
             Globals.CHARACTER_TABLE[0].Write("Image", (byte) Globals.NO_DART);
-            Globals.CHARACTER_TABLE[0].Write("Weapon", emulator.ReadByte("EQUIP_TABLE", ((int) Globals.NO_DART * 0x2C)));
-            Globals.CHARACTER_TABLE[0].Write("Helmet", emulator.ReadByte("EQUIP_TABLE", 1 + ((int) Globals.NO_DART * 0x2C)));
-            Globals.CHARACTER_TABLE[0].Write("Armor", emulator.ReadByte("EQUIP_TABLE", 2 + ((int) Globals.NO_DART * 0x2C)));
-            Globals.CHARACTER_TABLE[0].Write("Shoes", emulator.ReadByte("EQUIP_TABLE", 3 + ((int) Globals.NO_DART * 0x2C)));
-            Globals.CHARACTER_TABLE[0].Write("Accessory", emulator.ReadByte("EQUIP_TABLE", 4 + ((int) Globals.NO_DART * 0x2C)));
+            Globals.CHARACTER_TABLE[0].Write("Weapon", emulator.ReadByte("CHAR_TABLE", 0x14 + ((int) Globals.NO_DART * 0x2C)));
+            Globals.CHARACTER_TABLE[0].Write("Helmet", emulator.ReadByte("CHAR_TABLE", 0x15 + ((int) Globals.NO_DART * 0x2C)));
+            Globals.CHARACTER_TABLE[0].Write("Armor", emulator.ReadByte("CHAR_TABLE", 0x16 + ((int) Globals.NO_DART * 0x2C)));
+            Globals.CHARACTER_TABLE[0].Write("Shoes", emulator.ReadByte("CHAR_TABLE", 0x17 + ((int) Globals.NO_DART * 0x2C)));
+            Globals.CHARACTER_TABLE[0].Write("Accessory", emulator.ReadByte("CHAR_TABLE", 0x18 + ((int) Globals.NO_DART * 0x2C)));
             Dictionary<int, byte> charelement = new Dictionary<int, byte> {
                 {0, 128},{1, 64},{2, 32},{3, 4},{4, 16},{5, 64},{6, 1},{7, 2},{8, 32}
             };
