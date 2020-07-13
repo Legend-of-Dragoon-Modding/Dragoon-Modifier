@@ -2006,11 +2006,11 @@ namespace Dragoon_Modifier {
                     multi = multi_list[index];
                 }
 
-                // delete later
+                /* Dragoon Magic Value Readout
                 double[] bases2 = new double[] { 800, 600, 500, 400, 300, 200, 150, 100, 50 };
                 byte[] base_table2 = new byte[] { 1, 2, 4, 8, 0x10, 0x20, 0x40, 0x0, 0x80 };
                 Constants.WriteDebug(name + " " + bases2[Array.IndexOf(base_table2, dmg_base)] + " " + multi);
-                // delete later
+                */
                 accuracy = (byte) Convert.ToInt32(values[3]);
                 mp = (byte) Convert.ToInt32(values[4]);
                 element = (byte) Element2Num[values[5].ToLower()];
