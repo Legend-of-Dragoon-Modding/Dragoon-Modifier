@@ -780,7 +780,7 @@ public class BattleController {
                     character = 7;
                     reorderedaddition = 0;
                 } else if (addition == 23) {
-                    character = 5;
+                    character = 6;
                     reorderedaddition = 0;
                 } else if (addition == 29) {
                     character = 4;
