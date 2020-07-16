@@ -184,9 +184,9 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 277	Dummy Lloyd	None	0	0	0	50	50	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Dummy Lloyd
 279	Regole	Water	9000	118	74	210	140	45	0	0	0	0	0	0	None	None	255	144	7000	250	Frozen Jet	100	Regole
 280	Tentacle	None	0	0	0	50	50	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Tentacle
-283	Divine Dragon	Non-Elemental	15000	126	111	320	120	60	0	0	1	1	0	0	None	None	255	144	10000	300	Dragon Shield	100	Divine Dragon
+283	Divine Dragon	Non-Elemental	15000	126	111	320	120	60	0	0	0	0	0	0	None	None	255	144	10000	300	Dragon Shield	100	Divine Dragon
 284	Divine Cannon	Non-Elemental	65535	107	126	65535	65535	50	0	0	1	1	0	0	None	None	255	144	0	0	Gravity Grabber	100	Divine Cannon
-285	Divine Ball	Non-Elemental	65535	107	111	65535	65535	50	0	0	0	0	0	0	None	None	255	144	0	0	Flash Hall	100	Divine Ball
+285	Divine Ball	Non-Elemental	65535	107	111	65535	65535	50	0	0	1	1	0	0	None	None	255	144	0	0	Flash Hall	100	Divine Ball
 287	Greham	Wind	1575	25	28	120	100	60	0	0	0	0	0	0	None	None	255	144	1200	100	Plate Mail	100	Greham
 288	Shirley	Light	640	15	15	80	120	50	0	0	0	0	0	0	None	None	255	144	0	0	Silver Stone	100	Shirley
 289	Shana	Light	120	15	15	80	120	55	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Shirley (Shana)
