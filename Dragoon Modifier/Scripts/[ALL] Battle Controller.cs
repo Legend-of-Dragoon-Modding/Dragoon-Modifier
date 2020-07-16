@@ -93,11 +93,11 @@ public class BattleController {
             Globals.MONSTER_IDS.Add(emulator.ReadShort("MONSTER_ID", GetOffset(emulator) + (i * 0x8)));
         }
         for (int monster = 0; monster < Globals.MONSTER_SIZE; monster++) {
-            Globals.MONSTER_TABLE.Add(new MonsterAddress(Globals.M_POINT + Constants.OFFSET, monster, Globals.MONSTER_IDS[monster], Globals.UNIQUE_MONSTER_IDS, emulator));
+            Globals.MONSTER_TABLE.Add(new MonsterAddress(Globals.M_POINT, monster, Globals.MONSTER_IDS[monster], Globals.UNIQUE_MONSTER_IDS, emulator));
         }
         for (int character = 0; character < 3; character++) {
             if (Globals.PARTY_SLOT[character] < 9) {
-                Globals.CHARACTER_TABLE.Add(new CharAddress(Globals.C_POINT + Constants.OFFSET, character, emulator));
+                Globals.CHARACTER_TABLE.Add(new CharAddress(Globals.C_POINT, character, emulator));
             }
         }
     }
@@ -967,9 +967,9 @@ public class BattleController {
                 PropertyInfo property = GetType().GetProperty(attribute);
                 var address = (long[]) property.GetValue(this, null);
                 if (address[1] == 2) {
-                    return this.emulator.ReadShortU(address[0]);
+                    return this.emulator.ReadShort(address[0]);
                 } else {
-                    return this.emulator.ReadByteU(address[0]);
+                    return this.emulator.ReadByte(address[0]);
                 }
             } catch (Exception e) {
                 Constants.WriteError("Monster Read Error - A: " + attribute);
@@ -983,11 +983,12 @@ public class BattleController {
                 PropertyInfo property = GetType().GetProperty(attribute);
                 var address = (long[]) property.GetValue(this, null);
                 if (address[1] == 2) {
-                    this.emulator.WriteShortU(address[0], Convert.ToUInt16(value));
+                    this.emulator.WriteShort(address[0], (ushort)Convert.ToInt32(value));
                 } else {
-                    this.emulator.WriteByteU(address[0], Convert.ToByte(value));
+                    this.emulator.WriteByte(address[0], Convert.ToByte(value));
                 }
             } catch (Exception e) {
+                Constants.WriteError(e);
                 Constants.WriteError("Monster Write Error - A: " + attribute + " V: " + value);
                 Console.WriteLine("Monster Write Error - A: " + attribute + " V: " + value);
             }
@@ -1289,11 +1290,11 @@ public class BattleController {
                 PropertyInfo property = GetType().GetProperty(attribute);
                 var address = (long[]) property.GetValue(this, null);
                 if (address[1] == 4) {
-                    return this.emulator.ReadIntegerU(address[0]);
+                    return this.emulator.ReadInteger(address[0]);
                 } else if (address[1] == 2) {
-                    return this.emulator.ReadShortU(address[0]);
+                    return this.emulator.ReadShort(address[0]);
                 } else {
-                    return this.emulator.ReadByteU(address[0]);
+                    return this.emulator.ReadByte(address[0]);
                 }
             } catch (Exception e) {
                 Constants.WriteError("Character Read Error - A: " + attribute);
@@ -1307,11 +1308,11 @@ public class BattleController {
                 PropertyInfo property = GetType().GetProperty(attribute);
                 var address = (long[]) property.GetValue(this, null);
                 if (address[1] == 4) {
-                    this.emulator.WriteIntegerU(address[0], Convert.ToInt32(value));
+                    this.emulator.WriteInteger(address[0], Convert.ToInt32(value));
                 } else if (address[1] == 2) {
-                    this.emulator.WriteShortU(address[0], Convert.ToUInt16(value));
+                    this.emulator.WriteShort(address[0], (ushort)Convert.ToInt32(value));
                 } else {
-                    this.emulator.WriteByteU(address[0], Convert.ToByte(value));
+                    this.emulator.WriteByte(address[0], Convert.ToByte(value));
                 }
             } catch (Exception e) {
                 Constants.WriteError("Character Write Error - A: " + attribute + " V: " + value);
