@@ -184,8 +184,8 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 277	Dummy Lloyd	None	0	0	0	50	50	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Dummy Lloyd
 279	Regole	Water	9000	118	74	210	140	45	0	0	0	0	0	0	None	None	255	144	7000	250	Frozen Jet	100	Regole
 280	Tentacle	None	0	0	0	50	50	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Tentacle
-283	Divine Dragon	Non-Elemental	15000	126	111	320	120	60	0	0	0	0	0	0	None	None	255	144	10000	300	Dragon Shield	100	Divine Dragon
-284	Divine Cannon	Non-Elemental	65535	107	126	65535	65535	50	0	0	0	0	0	0	None	None	255	144	0	0	Gravity Grabber	100	Divine Cannon
+283	Divine Dragon	Non-Elemental	15000	126	111	320	120	60	0	0	1	1	0	0	None	None	255	144	10000	300	Dragon Shield	100	Divine Dragon
+284	Divine Cannon	Non-Elemental	65535	107	126	65535	65535	50	0	0	1	1	0	0	None	None	255	144	0	0	Gravity Grabber	100	Divine Cannon
 285	Divine Ball	Non-Elemental	65535	107	111	65535	65535	50	0	0	0	0	0	0	None	None	255	144	0	0	Flash Hall	100	Divine Ball
 287	Greham	Wind	1575	25	28	120	100	60	0	0	0	0	0	0	None	None	255	144	1200	100	Plate Mail	100	Greham
 288	Shirley	Light	640	15	15	80	120	50	0	0	0	0	0	0	None	None	255	144	0	0	Silver Stone	100	Shirley
@@ -236,7 +236,7 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 345	Magician Faust	Non-Elemental	64000	315	315	180	480	50	0	20	0	0	0	0	None	None	255	144	0	0	None	0	Magician Faust
 346	Windigo	Water	40000	180	180	200	240	50	0	0	0	0	0	0	None	None	255	144	11000	250	Brass Knuckle	100	Windigo
 347	Snow Cannon	Water	1600	158	158	100	80	50	0	0	0	0	0	0	None	None	255	144	0	0	None	0	Snow Cannon
-348	Heart	Water	196605	143	143	3932100	3932100	50	0	0	0	0	0	0	None	None	255	147	0	0	None	0	Heart
+348	Heart	Water	65535	143	143	65535	65535	50	0	0	1	1	0	0	None	None	255	147	0	0	None	0	Heart
 349	Polter Helm	Dark	19200	160	160	100	160	50	0	0	0	0	0	0	None	None	255	144	6000	200	None	0	Polter Helm
 350	Polter Armor	Dark	32000	160	174	160	140	50	0	0	0	0	0	0	None	None	255	144	0	0	Smoke Ball	100	Polter Armor
 351	Polter Sword	Dark	25600	302	160	120	120	100	0	0	0	0	0	0	None	None	255	144	0	0	Soul Eater	100	Polter Sword
