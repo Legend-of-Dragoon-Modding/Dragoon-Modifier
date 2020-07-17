@@ -607,10 +607,16 @@ public class BattleController {
             while ((emulator.ReadShort("BATTLE_VALUE") > 9999) && (Globals.CHARACTER_TABLE[0].Read("Action") != 8)) {
                 Thread.Sleep(50);
             }
+            Thread.Sleep(300);
+            emulator.WriteShort(Globals.C_POINT - 0xF0, 35116);
+            emulator.WriteShort(Globals.C_POINT - 0xEC, 31432);
+            emulator.WriteInteger(Globals.C_POINT - 0xE8, -2145617740);
+            emulator.WriteByte(Constants.GetAddress("DRAGOON_TURNS"), 1);
+
 
             Globals.CHARACTER_TABLE[0].Write("Turn", current_turn);
-            Thread.Sleep(300);
-            Globals.CHARACTER_TABLE[0].Write("Menu", 16);
+            //Thread.Sleep(300);
+            //Globals.CHARACTER_TABLE[0].Write("Menu", 16);
             while ((emulator.ReadShort("BATTLE_VALUE") > 9999) && (Globals.CHARACTER_TABLE[0].Read("Menu") != 96)) {
                 Thread.Sleep(50);
             }
