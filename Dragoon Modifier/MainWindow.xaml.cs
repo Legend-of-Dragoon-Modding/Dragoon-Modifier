@@ -7731,36 +7731,48 @@ namespace Dragoon_Modifier {
 
                                     if (currentMP[i] != previousMP[i] && currentMP[i] < previousMP[i]) {
                                         mp = previousMP[i] - currentMP[i];
+                                        previousMP[i] = currentMP[i];
                                         if (mp == 20 || mp == 80) {
                                             Globals.CHARACTER_TABLE[i].Write("DMAT", (440 * multi));
                                         } else if (mp == 30) {
                                             Globals.CHARACTER_TABLE[i].Write("DMAT", (330 * multi));
                                         }
+
                                         if ((Globals.CHARACTER_TABLE[i].Read("Spell_Cast") == 7 || Globals.CHARACTER_TABLE[i].Read("Spell_Cast") == 26) && Globals.DIFFICULTY_MODE.Equals("Hell")) {
                                             checkFlowerStorm = true;
+                                            for (int x = 0; x < 3; x++) {
+                                                if (Globals.CHARACTER_TABLE[x].Read("HP") > 0) {
+                                                    Globals.CHARACTER_TABLE[x].Write("PWR_DF_TRN", 0);
+                                                    Globals.CHARACTER_TABLE[x].Write("PWR_MDF_TRN", 0);
+                                                }
+                                            }
                                         }
                                     } else {
                                         if (currentMP[i] > previousMP[i]) {
                                             previousMP[i] = currentMP[i];
-                                        } else {
-                                            if (checkFlowerStorm) {
-                                                byte changed = 0;
-                                                byte partySize = 0;
+                                        }
+
+                                        if (checkFlowerStorm) {
+                                            bool changed = false;
+                                            for (int x = 0; x < 3; x++) {
+                                                if (Globals.PARTY_SLOT[x] < 9) {
+                                                    if (Globals.CHARACTER_TABLE[x].Read("PWR_DF_TRN") != 0) {
+                                                        changed = true;
+                                                    }
+                                                }
+                                            }
+
+                                            if (changed) {
                                                 for (int x = 0; x < 3; x++) {
-                                                    if (Globals.PARTY_SLOT[x] < 9) {
-                                                        partySize++;
-                                                        if (Globals.CHARACTER_TABLE[i].Read("PWR_DF_TRN") != 0) {
-                                                            changed++;
-                                                        }
+                                                    if (Globals.PARTY_SLOT[x] == 1 || Globals.PARTY_SLOT[x] == 5) {
+                                                        Globals.CHARACTER_TABLE[x].Write("PWR_DF_TRN", uiCombo["cboFlowerStorm"] + 2);
+                                                        Globals.CHARACTER_TABLE[x].Write("PWR_MDF_TRN", uiCombo["cboFlowerStorm"] + 2);
+                                                    } else {
+                                                        Globals.CHARACTER_TABLE[x].Write("PWR_DF_TRN", uiCombo["cboFlowerStorm"] + 1);
+                                                        Globals.CHARACTER_TABLE[x].Write("PWR_MDF_TRN", uiCombo["cboFlowerStorm"] + 1);
                                                     }
                                                 }
-                                                if (changed == partySize) {
-                                                    checkFlowerStorm = false;
-                                                    for (int x = 0; x < 3; x++) {
-                                                        Globals.CHARACTER_TABLE[i].Write("PWR_DF_TRN", uiCombo["cboFlowerStorm"]);
-                                                        Globals.CHARACTER_TABLE[i].Write("PWR_MDF_TRN", uiCombo["cboFlowerStorm"]);
-                                                    }
-                                                }
+                                                checkFlowerStorm = false;
                                             }
                                         }
                                     }
@@ -7832,7 +7844,7 @@ namespace Dragoon_Modifier {
                                             Globals.CHARACTER_TABLE[i].Write("DMAT", (295 * multi));
                                             for (int x = 0; x < 3; x++) {
                                                 if (Globals.PARTY_SLOT[x] < 9 && Globals.CHARACTER_TABLE[i].Read("HP") > 0) {
-                                                    Globals.CHARACTER_TABLE[i].Write("HP", (ushort) Math.Min(Globals.CHARACTER_TABLE[i].Read("Max_HP"), Globals.CHARACTER_TABLE[x].Read("HP") + Math.Round(Globals.CHARACTER_TABLE[i].Read("HP") * (emulator.ReadByte("ROSE_DRAGOON_LEVEL") * 0.05))));
+                                                    Globals.CHARACTER_TABLE[x].Write("HP", (ushort) Math.Min(Globals.CHARACTER_TABLE[x].Read("Max_HP"), Globals.CHARACTER_TABLE[x].Read("HP") + Math.Round(Globals.CHARACTER_TABLE[i].Read("HP") * (emulator.ReadByte("ROSE_DRAGOON_LEVEL") * 0.05))));
                                                 }
                                             }
                                         } else if (mp == 20) {
@@ -7841,7 +7853,7 @@ namespace Dragoon_Modifier {
                                             Globals.CHARACTER_TABLE[i].Write("DMAT", (410 * multi));
                                             for (int x = 0; x < 3; x++) {
                                                 if (Globals.PARTY_SLOT[x] < 9 && Globals.CHARACTER_TABLE[i].Read("HP") > 0) {
-                                                    Globals.CHARACTER_TABLE[i].Write("HP", (ushort) Math.Min(Globals.CHARACTER_TABLE[i].Read("Max_HP"), Globals.CHARACTER_TABLE[x].Read("HP") + Math.Round(Globals.CHARACTER_TABLE[i].Read("HP") * (emulator.ReadByte("ROSE_DRAGOON_LEVEL") * 0.04))));
+                                                    Globals.CHARACTER_TABLE[x].Write("HP", (ushort) Math.Min(Globals.CHARACTER_TABLE[x].Read("Max_HP"), Globals.CHARACTER_TABLE[x].Read("HP") + Math.Round(Globals.CHARACTER_TABLE[i].Read("HP") * (emulator.ReadByte("ROSE_DRAGOON_LEVEL") * 0.04))));
                                                 }
                                             }
                                         } else if (mp == 50) {
