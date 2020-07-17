@@ -28,6 +28,10 @@ public class BattleController {
             Globals.MONSTER_IDS = new List<int>();
             Globals.SHANA_FIX = false;
             Thread.Sleep(4000);
+            if (emulator.ReadShort("BATTLE_VALUE") < 5130) {
+                return;
+            }
+            
             Globals.MONSTER_SIZE = emulator.ReadByte("MONSTER_SIZE");
             Globals.UNIQUE_MONSTER_SIZE = emulator.ReadByte("UNIQUE_MONSTER_SIZE");
 
