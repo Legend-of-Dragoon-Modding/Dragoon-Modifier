@@ -6,6 +6,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using System.Linq;
 
 namespace Dragoon_Modifier {
     public class Constants {
@@ -191,12 +192,60 @@ namespace Dragoon_Modifier {
         }
 
         public static int GetAddress(string text) {
-            try {
-                return ADDRESSES[text][(int) REGION];
-            } catch (Exception e) {
-                Constants.WriteOutput("Missing key: " + text);
-                return 0;
+            if (text[0] != '$') {
+                try {
+                    return ADDRESSES[text][(int) REGION];
+                } catch (Exception e) {
+                    Constants.WriteOutput("Missing key: " + text);
+                    return 0;
+                }
+            } else {
+                Dictionary<string, Dictionary<string, int>> master = new Dictionary<string, Dictionary<string, int>>() {
+                    {"CHAR_TABLE",  new Dictionary<string, int>() {
+                            {"DART", 0x0 },
+                            {"LAVITZ", 0x2C },
+                            {"SHANA", 0x58 },
+                            {"ROSE", 0x84 },
+                            {"HASCHEL", 0xB0 },
+                            {"ALBERT", 0xDC },
+                            {"MERU", 0x108 },
+                            {"KONGOL", 0x134 },
+                            {"MIRANDA", 0x160 },
+                            {"HP", 0x8 },
+                            {"MP", 0xA },
+                            {"SP",  0xC},
+                            {"TOTAL_SP", 0xE },
+                            {"STATUS", 0x10 },
+                            {"LV", 0x12 },
+                            {"DLV", 0x13 },
+                            {"WEAPON", 0x14 },
+                            {"HELM", 0x15 },
+                            {"ARMOR", 0x16 },
+                            {"BOOTS", 0x17 },
+                            {"RING", 0x18 },
+                            {"CHOSEN_ADDITION", 0x19 },
+                            {"ADDITION_LEVEL", 0x1A },
+                            {"ADDITION_COUNT", 0x22 },
+
+
+                        }
+                    }
+                };
+                text = text.Substring(1);
+                var sub = text.Split('-').ToArray();
+                try {
+                    int address = ADDRESSES[sub[0]][(int) REGION];
+                    var array = master[sub[0]];
+                    foreach (var category in sub.Skip(1).ToArray()) {
+                        address += array[category];
+                    }
+                    return address;
+                } catch (Exception e) {
+                    Constants.WriteOutput("Missing key: " + text);
+                    return 0;
+                }
             }
+            
         }
 
         public static void ProgramInfo() {

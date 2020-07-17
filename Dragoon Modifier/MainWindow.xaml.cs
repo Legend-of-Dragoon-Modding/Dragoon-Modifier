@@ -3496,68 +3496,70 @@ namespace Dragoon_Modifier {
         #region Early Additions
         public void EarlyAdditions() {
             if (!Globals.IN_BATTLE && !earlyAdditionsOnFieldEntry) {
+                long address = Constants.GetAddress("MENU_ADDITION_TABLE_FLAT");
+                long address2 = Constants.GetAddress("CHAR_TABLE") + 0x22;
                 //Dart
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 3, 13); //Crush Dance
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 4, 18); //Madness Hero
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 5, 23); //Moon Strike
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 6, 60); //Blazying Dynamo
-                if (emulator.ReadByte(Constants.GetAddress("MENU_ADDITION_TOTAL")) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("MENU_ADDITION_TOTAL") + 0x1) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("MENU_ADDITION_TOTAL") + 0x2) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("MENU_ADDITION_TOTAL") + 0x3) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("MENU_ADDITION_TOTAL") + 0x4) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("MENU_ADDITION_TOTAL") + 0x5) >= 80) {
-                    emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 6, 29); //Blazying Dynamo
+                emulator.WriteByte(address + 0xE * 3, 13); //Crush Dance
+                emulator.WriteByte(address + 0xE * 4, 18); //Madness Hero
+                emulator.WriteByte(address + 0xE * 5, 23); //Moon Strike
+                emulator.WriteByte(address + 0xE * 6, 60); //Blazying Dynamo
+                if (emulator.ReadByte(address2) >= 80 &&
+                    emulator.ReadByte(address2 + 0x1) >= 80 &&
+                    emulator.ReadByte(address2 + 0x2) >= 80 &&
+                    emulator.ReadByte(address2 + 0x3) >= 80 &&
+                    emulator.ReadByte(address2 + 0x4) >= 80 &&
+                    emulator.ReadByte(address2 + 0x5) >= 80) {
+                    emulator.WriteByte(address + 0xE * 6, 29); //Blazying Dynamo
                 }
                 //Lavitz
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 2 + 0x70, 10); //Rod Typhoon
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 3 + 0x70, 16); //Gust of Wind Dance
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 4 + 0x70, 60); //Flower Storm
-                if (emulator.ReadByte(Constants.GetAddress("MENU_ADDITION_TOTAL") + 0xDC) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("MENU_ADDITION_TOTAL") + 0xDC + 0x1) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("MENU_ADDITION_TOTAL") + 0xDC + 0x2) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("MENU_ADDITION_TOTAL") + 0xDC + 0x3) >= 80) {
-                    emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 4 + 0x70, 21); //Flower Storm
+                emulator.WriteByte(address + 0xE * 2 + 0x70, 10); //Rod Typhoon
+                emulator.WriteByte(address + 0xE * 3 + 0x70, 16); //Gust of Wind Dance
+                emulator.WriteByte(address + 0xE * 4 + 0x70, 60); //Flower Storm
+                if (emulator.ReadByte(address2 + 0xDC) >= 80 &&
+                    emulator.ReadByte(address2 + 0xDC + 0x1) >= 80 &&
+                    emulator.ReadByte(address2 + 0xDC + 0x2) >= 80 &&
+                    emulator.ReadByte(address2 + 0xDC + 0x3) >= 80) {
+                    emulator.WriteByte(address + 0xE * 4 + 0x70, 21); //Flower Storm
                 }
                 //Rose
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 1 + 0xC4, 8); //More & More
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 2 + 0xC4, 15); //Hard Blade
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 3 + 0xC4, 60); //Demon's Dance
-                if (emulator.ReadByte(Constants.GetAddress("MENU_ADDITION_TOTAL") + 0x84) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("MENU_ADDITION_TOTAL") + 0x84 + 0x1) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("MENU_ADDITION_TOTAL") + 0x84 + 0x2) >= 80) {
-                    emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 3 + 0xC4, 21); //Demon's Dance
+                emulator.WriteByte(address + 0xE * 1 + 0xC4, 8); //More & More
+                emulator.WriteByte(address + 0xE * 2 + 0xC4, 15); //Hard Blade
+                emulator.WriteByte(address + 0xE * 3 + 0xC4, 60); //Demon's Dance
+                if (emulator.ReadByte(address2 + 0x84) >= 80 &&
+                    emulator.ReadByte(address2 + 0x84 + 0x1) >= 80 &&
+                    emulator.ReadByte(address2 + 0x84 + 0x2) >= 80) {
+                    emulator.WriteByte(address + 0xE * 3 + 0xC4, 21); //Demon's Dance
                 }
                 //Kongol
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 1 + 0x10A, 10); //Inferno
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 2 + 0x10A, 60); //Bone Crush
-                if (emulator.ReadByte(Constants.GetAddress("MENU_ADDITION_TOTAL") + 0x134) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("MENU_ADDITION_TOTAL") + 0x134 + 0x1) >= 80) {
-                    emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 2 + 0x10A, 20); //Bone Crush
+                emulator.WriteByte(address + 0xE * 1 + 0x10A, 10); //Inferno
+                emulator.WriteByte(address + 0xE * 2 + 0x10A, 60); //Bone Crush
+                if (emulator.ReadByte(address2 + 0x134) >= 80 &&
+                    emulator.ReadByte(address2 + 0x134 + 0x1) >= 80) {
+                    emulator.WriteByte(address + 0xE * 2 + 0x10A, 20); //Bone Crush
                 }
                 //Meru
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 1 + 0x142, 6); //Hammer Spin
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 2 + 0x142, 12); //Cool Boogie
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 3 + 0x142, 18); //Cat's Cradle
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 4 + 0x142, 60); //Perky Step
-                if (emulator.ReadByte(Constants.GetAddress("MENU_ADDITION_TOTAL") + 0x100) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("MENU_ADDITION_TOTAL") + 0x100 + 0x1) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("MENU_ADDITION_TOTAL") + 0x100 + 0x2) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("MENU_ADDITION_TOTAL") + 0x100 + 0x3) >= 80) {
-                    emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 4 + 0x142, 22);  //Perky Step
+                emulator.WriteByte(address + 0xE * 1 + 0x142, 6); //Hammer Spin
+                emulator.WriteByte(address + 0xE * 2 + 0x142, 12); //Cool Boogie
+                emulator.WriteByte(address + 0xE * 3 + 0x142, 18); //Cat's Cradle
+                emulator.WriteByte(address + 0xE * 4 + 0x142, 60); //Perky Step
+                if (emulator.ReadByte(address2 + 0x108) >= 80 &&
+                    emulator.ReadByte(address2 + 0x108 + 0x1) >= 80 &&
+                    emulator.ReadByte(address2 + 0x108 + 0x2) >= 80 &&
+                    emulator.ReadByte(address2 + 0x108 + 0x3) >= 80) {
+                    emulator.WriteByte(address + 0xE * 4 + 0x142, 22);  //Perky Step
                 }
                 //Haschel
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 1 + 0x196, 5); // Flurry of Styx
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 2 + 0x196, 10); //Summon 4 Gods
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 3 + 0x196, 16); //5 Ring Shattering
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 4 + 0x196, 22); //Hex Hammer
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 5 + 0x196, 60); //Omni-Sweep        
-                if (emulator.ReadByte(Constants.GetAddress("MENU_ADDITION_TOTAL") + 0xB0) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("MENU_ADDITION_TOTAL") + 0xB0 + 0x1) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("MENU_ADDITION_TOTAL") + 0xB0 + 0x2) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("MENU_ADDITION_TOTAL") + 0xB0 + 0x3) >= 80 &&
-                    emulator.ReadByte(Constants.GetAddress("MENU_ADDITION_TOTAL") + 0xB0 + 0x4) >= 80) {
-                    emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 5 + 0x196, 25); //Omni-Sweep 
+                emulator.WriteByte(address + 0xE * 1 + 0x196, 5); // Flurry of Styx
+                emulator.WriteByte(address + 0xE * 2 + 0x196, 10); //Summon 4 Gods
+                emulator.WriteByte(address + 0xE * 3 + 0x196, 16); //5 Ring Shattering
+                emulator.WriteByte(address + 0xE * 4 + 0x196, 22); //Hex Hammer
+                emulator.WriteByte(address + 0xE * 5 + 0x196, 60); //Omni-Sweep        
+                if (emulator.ReadByte(address2 + 0xB0) >= 80 &&
+                    emulator.ReadByte(address2 + 0xB0 + 0x1) >= 80 &&
+                    emulator.ReadByte(address2 + 0xB0 + 0x2) >= 80 &&
+                    emulator.ReadByte(address2 + 0xB0 + 0x3) >= 80 &&
+                    emulator.ReadByte(address2 + 0xB0 + 0x4) >= 80) {
+                    emulator.WriteByte(address + 0xE * 5 + 0x196, 25); //Omni-Sweep 
                 }
                 earlyAdditionsOnFieldEntry = true;
             } else {
@@ -3568,33 +3570,34 @@ namespace Dragoon_Modifier {
 
         public void TurnOffEarlyAdditions() {
             if (!Globals.IN_BATTLE) {
+                long address = Constants.GetAddress("MENU_ADDITION_TABLE_FLAT");
                 //Dart
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 3, 15); //Crush Dance
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 4, 22); //Madness Hero
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 5, 29); //Moon Strike
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 6, 255); //Blazying Dynamo
+                emulator.WriteByte(address * 0xE * 3, 15); //Crush Dance
+                emulator.WriteByte(address * 0xE * 4, 22); //Madness Hero
+                emulator.WriteByte(address * 0xE * 5, 29); //Moon Strike
+                emulator.WriteByte(address * 0xE * 6, 255); //Blazying Dynamo
                 //Lavitz
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 2 + 0x70, 7); //Rod Typhoon
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 3 + 0x70, 11); //Gust of Wind Dance
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 4 + 0x70, 255); //Flower Storm
+                emulator.WriteByte(address * 0xE * 2 + 0x70, 7); //Rod Typhoon
+                emulator.WriteByte(address * 0xE * 3 + 0x70, 11); //Gust of Wind Dance
+                emulator.WriteByte(address * 0xE * 4 + 0x70, 255); //Flower Storm
                 //Rose
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 1 + 0xC4, 14); //More & More
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 2 + 0xC4, 19); //Hard Blade
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 3 + 0xC4, 255); //Demon//s Dance
+                emulator.WriteByte(address + 0xE * 1 + 0xC4, 14); //More & More
+                emulator.WriteByte(address + 0xE * 2 + 0xC4, 19); //Hard Blade
+                emulator.WriteByte(address + 0xE * 3 + 0xC4, 255); //Demon//s Dance
                 //Kongol
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 1 + 0x10A, 23); //Inferno
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") + 0xE * 2 + 0x10A, 255); //Bone Crush
+                emulator.WriteByte(address + 0xE * 1 + 0x10A, 23); //Inferno
+                emulator.WriteByte(address + 0xE * 2 + 0x10A, 255); //Bone Crush
                 //Meru
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 1 + 0x142, 21); //Hammer Spin
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 2 + 0x142, 26); //Cool Boogie
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 3 + 0x142, 30); //Cat//s Cradle
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 4 + 0x142, 255); //Perky Step
+                emulator.WriteByte(address * 0xE * 1 + 0x142, 21); //Hammer Spin
+                emulator.WriteByte(address * 0xE * 2 + 0x142, 26); //Cool Boogie
+                emulator.WriteByte(address * 0xE * 3 + 0x142, 30); //Cat//s Cradle
+                emulator.WriteByte(address * 0xE * 4 + 0x142, 255); //Perky Step
                 //Haschel
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 1 + 0x196, 14); // Flurry of Styx
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 2 + 0x196, 18); //Summon 4 Gods
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 3 + 0x196, 22); //5 Ring Shattering
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 4 + 0x196, 26); //Hex Hammer
-                emulator.WriteByte(Constants.GetAddress("MENU_ADDITION_TABLE_FLAT") * 0xE * 5 + 0x196, 255); //Omni-Sweep   
+                emulator.WriteByte(address * 0xE * 1 + 0x196, 14); // Flurry of Styx
+                emulator.WriteByte(address * 0xE * 2 + 0x196, 18); //Summon 4 Gods
+                emulator.WriteByte(address * 0xE * 3 + 0x196, 22); //5 Ring Shattering
+                emulator.WriteByte(address * 0xE * 4 + 0x196, 26); //Hex Hammer
+                emulator.WriteByte(address * 0xE * 5 + 0x196, 255); //Omni-Sweep   
                 earlyAdditionsOnFieldEntry = false;
             }
         }
