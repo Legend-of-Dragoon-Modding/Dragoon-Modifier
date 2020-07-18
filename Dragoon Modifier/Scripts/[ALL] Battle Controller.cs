@@ -623,7 +623,12 @@ public class BattleController {
             if (Globals.NO_DART == 4) {
                 HaschelFix(emulator);
             }
-            Globals.CHARACTER_TABLE[0].Write("Menu", 16);
+            //Globals.CHARACTER_TABLE[0].Write("Menu", 16);
+            emulator.WriteInteger(Globals.C_POINT - 0xF0, -2145612324);
+            emulator.WriteByte(Globals.C_POINT - 0x4C, 6);
+            emulator.WriteByte(Globals.C_POINT - 0x4A, 0);
+            emulator.WriteByte(Globals.C_POINT - 0x49, 0);
+
             while ((emulator.ReadShort("BATTLE_VALUE") > 9999) && (Globals.CHARACTER_TABLE[0].Read("Action") != 9)) {
                 Thread.Sleep(50);
             }
