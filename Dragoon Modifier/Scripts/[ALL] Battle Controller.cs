@@ -609,33 +609,30 @@ public class BattleController {
             }
             Thread.Sleep(350);
             ushort val = emulator.ReadShort(Globals.C_POINT - 0xF0);
-            val += 3716;
             emulator.WriteByte(Globals.C_POINT - 0xE5, 128);
             emulator.WriteByte(Globals.C_POINT - 0xE6, 28);
             emulator.WriteByte(Globals.C_POINT - 0xE7, emulator.ReadByte(Globals.C_POINT - 0xEB));
             emulator.WriteByte(Globals.C_POINT - 0xE8, emulator.ReadByte(Globals.C_POINT - 0xEC));
             emulator.WriteByte(Globals.C_POINT - 0xEB, emulator.ReadByte(Globals.C_POINT - 0xEF));
             emulator.WriteByte(Globals.C_POINT - 0xEC, emulator.ReadByte(Globals.C_POINT - 0xEC) + 20);
-            emulator.WriteShort(Globals.C_POINT - 0xF0, val);
+            emulator.WriteShort(Globals.C_POINT - 0xF0, (ushort)(val + 0xE84));
             emulator.WriteByte(Constants.GetAddress("DRAGOON_TURNS"), 1);
             
 
             Globals.CHARACTER_TABLE[0].Write("Turn", current_turn);
-            Thread.Sleep(300);
-            Globals.CHARACTER_TABLE[0].Write("Menu", 16);
+            //Thread.Sleep(300);
+            //Globals.CHARACTER_TABLE[0].Write("Menu", 16);
             while ((emulator.ReadShort("BATTLE_VALUE") > 9999) && (Globals.CHARACTER_TABLE[0].Read("Menu") != 96)) {
                 Thread.Sleep(50);
             }
             if (Globals.NO_DART == 4) {
                 HaschelFix(emulator);
             }
-            Globals.CHARACTER_TABLE[0].Write("Menu", 16);
-            /*
-            emulator.WriteInteger(Globals.C_POINT - 0xF0, -2145612324);
-            emulator.WriteByte(Globals.C_POINT - 0x4C, 6);
-            emulator.WriteByte(Globals.C_POINT - 0x4A, 0);
-            emulator.WriteByte(Globals.C_POINT - 0x49, 0);
-            */
+            //Globals.CHARACTER_TABLE[0].Write("Menu", 16);
+            
+            emulator.WriteShort(Globals.C_POINT - 0xF0, (ushort)(val + 0x4478));
+            emulator.WriteByte(Globals.C_POINT - 0xEE, 27);
+            
             while ((emulator.ReadShort("BATTLE_VALUE") > 9999) && (Globals.CHARACTER_TABLE[0].Read("Action") != 9)) {
                 Thread.Sleep(50);
             }
