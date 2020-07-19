@@ -27,7 +27,7 @@ public class BattleController {
             Globals.MONSTER_TABLE = new List<dynamic>();
             Globals.MONSTER_IDS = new List<int>();
             Globals.SHANA_FIX = false;
-            Thread.Sleep(2000);
+            Thread.Sleep(4000);
             if (emulator.ReadShort("BATTLE_VALUE") < 5130) {
                 return;
             }
