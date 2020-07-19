@@ -27,7 +27,7 @@ public class BattleController {
             Globals.MONSTER_TABLE = new List<dynamic>();
             Globals.MONSTER_IDS = new List<int>();
             Globals.SHANA_FIX = false;
-            Thread.Sleep(4000);
+            Thread.Sleep(2000);
             if (emulator.ReadShort("BATTLE_VALUE") < 5130) {
                 return;
             }
@@ -312,9 +312,11 @@ public class BattleController {
                 Globals.CHARACTER_TABLE[slot].Write("On_Hit_Status", Globals.CURRENT_STATS[slot].On_Hit_Status);
                 Globals.CHARACTER_TABLE[slot].Write("On_Hit_Status_Chance", Globals.CURRENT_STATS[slot].Status_Chance);
                 Globals.CHARACTER_TABLE[slot].Write("Revive", Globals.CURRENT_STATS[slot].Revive);
-                Globals.CHARACTER_TABLE[slot].Write("SP_Regen", Globals.CURRENT_STATS[slot].SP_Regen);
-                Globals.CHARACTER_TABLE[slot].Write("MP_Regen", Globals.CURRENT_STATS[slot].MP_Regen);
-                Globals.CHARACTER_TABLE[slot].Write("HP_Regen", Globals.CURRENT_STATS[slot].HP_Regen);
+                if (!bypass) {
+                    Globals.CHARACTER_TABLE[slot].Write("SP_Regen", Globals.CURRENT_STATS[slot].SP_Regen);
+                    Globals.CHARACTER_TABLE[slot].Write("MP_Regen", Globals.CURRENT_STATS[slot].MP_Regen);
+                    Globals.CHARACTER_TABLE[slot].Write("HP_Regen", Globals.CURRENT_STATS[slot].HP_Regen);
+                }
                 Globals.CHARACTER_TABLE[slot].Write("Element", Globals.CURRENT_STATS[slot].Element);
                 Globals.CHARACTER_TABLE[slot].Write("Display_Element", Globals.CURRENT_STATS[slot].Element);
                 Globals.CHARACTER_TABLE[slot].Write("MP_M_Hit", Globals.CURRENT_STATS[slot].MP_M_Hit);
@@ -494,6 +496,10 @@ public class BattleController {
 
     public static void NoDart(Emulator emulator) {
         if (Globals.NO_DART != null) {
+            Globals.CHARACTER_TABLE[0].Write("Status", 0);
+            Globals.CHARACTER_TABLE[0].Write("HP_Regen", 0);
+            Globals.CHARACTER_TABLE[0].Write("SP_Regen", 0);
+            Globals.CHARACTER_TABLE[0].Write("MP_Regen", 0);
             while (emulator.ReadShort("BATTLE_VALUE") > 9999 && (Globals.CHARACTER_TABLE[0].Read("Turn") == 0)) {
                 Thread.Sleep(50);
             }
@@ -513,13 +519,10 @@ public class BattleController {
             Dictionary<int, byte> charelement = new Dictionary<int, byte> {
                 {0, 128},{1, 64},{2, 32},{3, 4},{4, 16},{5, 64},{6, 1},{7, 2},{8, 32}
             };
-            Globals.CHARACTER_TABLE[0].Write("Status", 0);
             Globals.CHARACTER_TABLE[0].Write("LV", Globals.CURRENT_STATS[0].LV);
             Globals.CHARACTER_TABLE[0].Write("DLV", 1);
             Globals.CHARACTER_TABLE[0].Write("SP", 100);
-            Globals.CHARACTER_TABLE[0].Write("HP_Regen", 0);
-            Globals.CHARACTER_TABLE[0].Write("SP_Regen", 0);
-            Globals.CHARACTER_TABLE[0].Write("MP_Regen", 0);
+            
             int dlv = Globals.CURRENT_STATS[0].DLV;
 
             #region Dragoon Magic
@@ -604,35 +607,38 @@ public class BattleController {
 
             #endregion
 
-            while ((emulator.ReadShort("BATTLE_VALUE") > 9999) && (Globals.CHARACTER_TABLE[0].Read("Action") >= 15)) {
+            while ((emulator.ReadShort("BATTLE_VALUE") > 9999) && (Globals.CHARACTER_TABLE[0].Read("Action") != 8)) {
                 Thread.Sleep(50);
             }
-            Thread.Sleep(350);
-            ushort val = emulator.ReadShort(Globals.C_POINT - 0xF0);
-            emulator.WriteByte(Globals.C_POINT - 0xE5, 128);
-            emulator.WriteByte(Globals.C_POINT - 0xE6, 28);
-            emulator.WriteByte(Globals.C_POINT - 0xE7, emulator.ReadByte(Globals.C_POINT - 0xEB));
-            emulator.WriteByte(Globals.C_POINT - 0xE8, emulator.ReadByte(Globals.C_POINT - 0xEC));
-            emulator.WriteByte(Globals.C_POINT - 0xEB, emulator.ReadByte(Globals.C_POINT - 0xEF));
-            emulator.WriteByte(Globals.C_POINT - 0xEC, emulator.ReadByte(Globals.C_POINT - 0xEC) + 20);
-            emulator.WriteShort(Globals.C_POINT - 0xF0, (ushort)(val + 0xE84));
-            emulator.WriteByte(Constants.GetAddress("DRAGOON_TURNS"), 1);
-            
-
+            if (Globals.AUTO_TRANSFORM) {
+                Thread.Sleep(350);
+                ushort val = emulator.ReadShort(Globals.C_POINT - 0xF0);
+                emulator.WriteByte(Globals.C_POINT - 0xE5, 128);
+                emulator.WriteByte(Globals.C_POINT - 0xE6, 28);
+                emulator.WriteByte(Globals.C_POINT - 0xE7, emulator.ReadByte(Globals.C_POINT - 0xEB));
+                emulator.WriteByte(Globals.C_POINT - 0xE8, emulator.ReadByte(Globals.C_POINT - 0xEC));
+                emulator.WriteByte(Globals.C_POINT - 0xEB, emulator.ReadByte(Globals.C_POINT - 0xEF));
+                emulator.WriteByte(Globals.C_POINT - 0xEC, emulator.ReadByte(Globals.C_POINT - 0xEC) + 20);
+                emulator.WriteShort(Globals.C_POINT - 0xF0, (ushort)(val + 0xE84));
+                emulator.WriteByte(Constants.GetAddress("DRAGOON_TURNS"), 1);
+            } else {
+                Thread.Sleep(300);
+                Globals.CHARACTER_TABLE[0].Write("Menu", 16);
+            }
             Globals.CHARACTER_TABLE[0].Write("Turn", current_turn);
-            //Thread.Sleep(300);
-            //Globals.CHARACTER_TABLE[0].Write("Menu", 16);
             while ((emulator.ReadShort("BATTLE_VALUE") > 9999) && (Globals.CHARACTER_TABLE[0].Read("Menu") != 96)) {
                 Thread.Sleep(50);
             }
             if (Globals.NO_DART == 4) {
                 HaschelFix(emulator);
             }
-            //Globals.CHARACTER_TABLE[0].Write("Menu", 16);
-            
-            emulator.WriteShort(Globals.C_POINT - 0xF0, (ushort)(val + 0x4478));
-            emulator.WriteByte(Globals.C_POINT - 0xEE, 27);
-            
+            if (Globals.AUTO_TRANSFORM) {
+                ushort val = emulator.ReadShort(Globals.C_POINT - 0xF0);
+                emulator.WriteShort(Globals.C_POINT - 0xF0, (ushort)(val + 0x4478));
+                emulator.WriteByte(Globals.C_POINT - 0xEE, 27);
+            } else {
+                Globals.CHARACTER_TABLE[0].Write("Menu", 16);
+            }
             while ((emulator.ReadShort("BATTLE_VALUE") > 9999) && (Globals.CHARACTER_TABLE[0].Read("Action") != 9)) {
                 Thread.Sleep(50);
             }
