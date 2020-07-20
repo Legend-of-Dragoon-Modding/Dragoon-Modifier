@@ -1017,7 +1017,17 @@
                     <ComboBox x:Name="cboSwitch1" Grid.Row="10" Grid.Column="2" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" Foreground="Black" SelectionChanged="ComboBox"/>
                     <ComboBox x:Name="cboSwitch2" Grid.Row="10" Grid.Column="3" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" Foreground="Black" SelectionChanged="ComboBox"/>
                     <Button x:Name="btnSwitchSoloChar" Grid.Row="7" Grid.Column="0" Content="Switch Slot 1 Character" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2" Click="GreenButton"/>
-                    <ComboBox x:Name="cboSwitchChar" Grid.Row="7" Grid.Column="2" Grid.ColumnSpan="2" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="Black" SelectionChanged="ComboBox"/>
+                    <DockPanel Grid.Row="7" Grid.Column="2" Grid.ColumnSpan="2" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
+                        <Grid Margin="0"  >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="75*"/>
+                                <ColumnDefinition Width="25*"/>
+                            </Grid.ColumnDefinitions>
+                            <ComboBox x:Name="cboSwitchChar" Grid.Row="0" Grid.Column="0" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="Black" SelectionChanged="ComboBox"/>
+                            <Button x:Name="btnAutoTransform" Grid.Row="0" Grid.Column="1" Content="Auto Transform" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                        </Grid>
+                    </DockPanel>
+                    
 
                     <DockPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
                         <Grid Margin="0"  >

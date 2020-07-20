@@ -9895,6 +9895,9 @@ namespace Dragoon_Modifier {
                 btn.Background = new SolidColorBrush(Color.FromArgb(255, 255, 168, 168));
                 Constants.WritePLogOutput("No Dart turned off.");
             }
+            if (btn.Name.Equals("btnAutoTransform")) {
+                Globals.AUTO_TRANSFORM = !Globals.AUTO_TRANSFORM;
+            }
         }
 
         public void TurnOnOffButton(ref Button sender) {
