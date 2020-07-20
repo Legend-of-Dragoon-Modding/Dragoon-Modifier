@@ -4581,7 +4581,7 @@ namespace Dragoon_Modifier {
                             if (Globals.PARTY_SLOT[i] < 9) {
                                 long p = Globals.CHAR_ADDRESS[i];
                                 if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 159 && Globals.PARTY_SLOT[i] == 0) { //Spirit Eater
-                                    if (Globals.CHARACTER_TABLE[i].Read("SP") == ((emulator.ReadByte("CHAR_TABLE") + 0x13) * 100)) {
+                                    if (Globals.CHARACTER_TABLE[i].Read("SP") == (emulator.ReadByte("CHAR_TABLE", 0x13) * 100)) {
                                         Globals.CHARACTER_TABLE[i].Write("SP_Regen", spiritEaterSaveSP);
                                     } else {
                                         if (spiritEaterSaveSP < spiritEaterSP) {
