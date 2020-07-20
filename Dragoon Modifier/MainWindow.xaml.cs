@@ -1283,7 +1283,7 @@ namespace Dragoon_Modifier {
 
                         origI = 0;
                         foreach (var line in ReadAllResourceLines(Properties.Resources.Ultimate_Data)) {
-                            if (origI > 1) {
+                            if (origI > 0) {
                                 var values = line.Split('\t').ToArray();
                                 ultimateStatList.Add(Int32.Parse(values[0]), new StatList(values, element2num, item2num));
                             }
@@ -2451,6 +2451,13 @@ namespace Dragoon_Modifier {
 
 
                 Thread.Sleep(500);
+
+                if (!Globals.IN_BATTLE) {
+                    if ((Globals.MAP == 735 || Globals.MAP == 736) && Globals.DIFFICULTY_MODE.Equals("Hell") && ultimateBossCompleted < 34) {
+                        emulator.WriteByte("DRAGOON_SPIRITS", 127);
+                    }
+                }
+
                 this.Dispatcher.BeginInvoke(new Action(() => {
                     if (Globals.CheckDMScript("btnReader") && !readerWindow.IsOpen) {
                         Globals.dmScripts["btnReader"] = false;
@@ -5574,7 +5581,6 @@ namespace Dragoon_Modifier {
                     ultimateThread.Start();
                 }
 
-
                 if (Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].HP > 65535) {
                     Globals.MONSTER_TABLE[i].Write("HP", (ushort) 65535);
                     Globals.MONSTER_TABLE[i].Write("Max_HP", (ushort) 65535);
@@ -5630,7 +5636,7 @@ namespace Dragoon_Modifier {
                         }
                         break;
                     case 411: //S Virage II
-                        if (emulator.ReadInteger("TOTAL_EXP") > 0 && (ultimateHP[0] == 0 || ultimateHP[1] == 0)) {
+                        if (ultimateHP[0] == 0 || ultimateHP[1] == 0) {
                             UltimateBossDefeated();
                         }
                         break;
@@ -7330,7 +7336,7 @@ namespace Dragoon_Modifier {
 
             if (ultimateHP[0] == 0 && ubFinalAttack) {
                 ubFinalAttack = false;
-                Globals.MONSTER_TABLE[0].Write("MAT", Math.Round(originalMonsterStats[0, 1] * 21));
+                Globals.MONSTER_TABLE[0].Write("MAT", Math.Round(originalMonsterStats[0, 1] * 18));
             }
         }
 
@@ -8696,6 +8702,8 @@ namespace Dragoon_Modifier {
             else
                 cooldowns = cooldowns + 90;
 
+            Constants.WriteDebugProgram("[EATB] Dragoon Turns: " + emulator.ReadByte("DRAGOON_TURNS", 0x4 * slot) + "/" + emulator.ReadShort("DRAGOON_TURNS", 0x4 * slot) + "/" + emulator.ReadInteger("DRAGOON_TURNS", 0x4 * slot));
+
             if (emulator.ReadByte("DRAGOON_TURNS", 0x4 * slot) > 0 && emulator.ReadByte("DRAGOON_TURNS", 0x4 * slot) < 6)
                 Globals.CHARACTER_TABLE[slot].Write("Action", 10);
             else
@@ -9637,6 +9645,11 @@ namespace Dragoon_Modifier {
             }
         }
 
+        private void miAutoTransform_Click(object sender, RoutedEventArgs e) {
+            miAutoTransform.IsChecked = miAutoTransform.IsChecked ? false : true;
+            Globals.AUTO_TRANSFORM = miAutoTransform.IsChecked;
+        }
+
         private void miModOptions_Click(object sender, RoutedEventArgs e) {
             if (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) {
                 Constants.WriteOutput("You can't change Mod Options while using a preset.");
@@ -9871,7 +9884,7 @@ namespace Dragoon_Modifier {
 
             if (btn.Name.Equals("btnDivineRed") && (Globals.DIFFICULTY_MODE.Equals("Hell") && ultimateBossCompleted < 34)) {
                 Globals.dmScripts[btn.Name] = false;
-                Constants.WriteGLogOutput("You have not complted Ultimate Boss Dragoon Doel.");
+                Constants.WriteGLogOutput("You have not completed Ultimate Boss Dragoon Doel.");
             }
 
             if (!btn.Name.Equals("btnNoDart")) {

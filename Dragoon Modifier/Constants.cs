@@ -152,10 +152,24 @@ namespace Dragoon_Modifier {
             });
         }
 
-        public static void WriteError(object text) {
+        public static void WriteDebugProgram(object text) {
             Application.Current.Dispatcher.Invoke(() => {
                 if (CONSOLE.LineCount == 1 || CONSOLE.LineCount > 2000) {
                     CONSOLE.Text = "-----LOGCUT-----\r\n[DEBUG] " + text.ToString();
+                } else {
+                    CONSOLE.AppendText("\r\n[DEBUG] " + text.ToString());
+                }
+                if (!CONSOLE.IsFocused) {
+                    CONSOLE.ScrollToEnd();
+                }
+                PLOG.Text = "[DEBUG] " + text.ToString();
+            });
+        }
+
+        public static void WriteError(object text) {
+            Application.Current.Dispatcher.Invoke(() => {
+                if (CONSOLE.LineCount == 1 || CONSOLE.LineCount > 2000) {
+                    CONSOLE.Text = "-----LOGCUT-----\r\n[ERROR] " + text.ToString();
                 } else {
                     CONSOLE.AppendText("\r\n[ERROR] " + text.ToString());
                 }
