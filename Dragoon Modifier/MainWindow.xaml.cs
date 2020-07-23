@@ -1942,8 +1942,7 @@ namespace Dragoon_Modifier {
 
         public class DragoonSpells {
             bool percentage = false;
-            byte dmg_base = 0;
-            byte multi = 0;
+            double damage = 0;
             byte accuracy = 100;
             byte mp = 10;
             byte element = 128;
@@ -1961,8 +1960,7 @@ namespace Dragoon_Modifier {
             };
 
             public bool Percentage { get { return percentage; } }
-            public byte DMG_Base { get { return dmg_base; } }
-            public byte Multi { get { return multi; } }
+            public double Damage { get { return damage; } }
             public byte Accuracy { get { return accuracy; } }
             public byte MP { get { return mp; } }
             public byte Element { get { return element; } }
@@ -1978,39 +1976,7 @@ namespace Dragoon_Modifier {
                 } else {
                     Constants.WriteDebug("Incorrect percentage swith " + values[1] + " for spell " + values[0]);
                 }
-                double damage = Convert.ToDouble(values[2]);
-                if (percentage == true) {
-                    dmg_base = 0;
-                    multi = (byte) Math.Round(damage);
-                } else {
-                    double[] hidden_list = new double[] { 2, 2, 2, 2, 2, 1.11, 1.11, 1.11, 1.11, 2, 2.6, 2.6, 2.6, 2.6, 1.11, 1.55, 1.55, 1.11, 1.55, 1.55, 2, 2, 2, 2, 2.738, 2.738, 1.11, 2.738, 2.738, 1, 1, 1};
-                    double hidden = hidden_list[spell];
-                    double[] bases = new double[] { 800, 600, 500, 400, 300, 200, 150, 100, 50 };
-                    byte[] base_table = new byte[] { 0x1, 0x2, 0x4, 0x8, 0x10, 0x20, 0x40, 0, 0x80 };
-                    double[] nearest_list = new double[9];
-                    byte[] multi_list = new byte[9];
-                    for (int i = 0; i < 9; i++) {
-                        if (damage < bases[i]) {
-                            nearest_list[i] = bases[i] - damage;
-                            multi_list[i] = 0;
-                        } else if (damage > (bases[i] * (100 * hidden + 255) / hidden / 100)) {
-                            nearest_list[i] = damage - (bases[i] * (100 * hidden + 255) / hidden / 100);
-                            multi_list[i] = 255;
-                        } else {
-                            multi_list[i] = (byte) Math.Round((damage - bases[i]) / bases[i] * 100 * hidden);
-                            nearest_list[i] = Math.Abs(damage - (bases[i] * (100 * hidden + multi_list[i]) / hidden / 100));
-                        }
-                    }
-                    int index = Array.IndexOf(nearest_list, nearest_list.Min());
-                    dmg_base = base_table[index];
-                    multi = multi_list[index];
-                }
-
-                /* Dragoon Magic Value Readout
-                double[] bases2 = new double[] { 800, 600, 500, 400, 300, 200, 150, 100, 50 };
-                byte[] base_table2 = new byte[] { 1, 2, 4, 8, 0x10, 0x20, 0x40, 0x0, 0x80 };
-                Constants.WriteDebug(name + " " + bases2[Array.IndexOf(base_table2, dmg_base)] + " " + multi);
-                */
+                damage = Convert.ToDouble(values[2]);
                 accuracy = (byte) Convert.ToInt32(values[3]);
                 mp = (byte) Convert.ToInt32(values[4]);
                 element = (byte) Element2Num[values[5].ToLower()];

@@ -369,61 +369,6 @@ public class BattleController {
     }
 
     public static void DragoonBattleChanges(Emulator emulator) {
-        if (Globals.DRAGOON_SPELL_CHANGE) {
-            Constants.WriteDebug("Changing Dragoon SPELLS...");
-            int i = 0;
-            string descr = String.Empty;
-            long address = Constants.GetAddress("SPELL_TABLE");
-            foreach (dynamic Spell in Globals.DRAGOON_SPELLS) {
-                int intValue = (int) emulator.ReadByte("SPELL_TABLE", (i * 0xC) + 0x2);
-                if (Spell.Percentage == true) {
-                    intValue |= 1 << 2;
-                } else {
-                    intValue &= ~(1 << 2);
-                }
-                emulator.WriteByte(address + (i * 0xC) + 0x2, (byte) intValue);
-                emulator.WriteByte(address + (i * 0xC) + 0x4, Spell.DMG_Base);
-                emulator.WriteByte(address + (i * 0xC) + 0x5, Spell.Multi);
-                emulator.WriteByte(address + (i * 0xC) + 0x6, Spell.Accuracy);
-                emulator.WriteByte(address + (i * 0xC) + 0x7, Spell.MP);
-                emulator.WriteByte(address + (i * 0xC) + 0x9, Spell.Element);
-                descr += (string) Spell.Encoded_Description + " ";
-                if (Constants.REGION == Region.NTA)
-                    emulator.WriteInteger(Constants.GetAddress("DRAGOON_DESC_PTR") + i * 0x4, (int) Spell.Description_Pointer);
-                i++;
-            }
-            descr = descr.Remove(descr.Length - 1);
-            if (Constants.REGION == Region.NTA)
-                emulator.WriteAOB(Constants.GetAddress("DRAGOON_DESC"), descr);
-            for (int z = 0; z < 3; z++) { // Miranda Hotfix
-                int intValue = (int) emulator.ReadByteU(address + ((z + 65) * 0xC) + 0x2);
-                if (Globals.DRAGOON_SPELLS[z + 10].Percentage == true) {
-                    intValue |= 1 << 2;
-                } else {
-                    intValue &= ~(1 << 2);
-                }
-                emulator.WriteByteU(address + ((z + 65) * 0xC) + 0x2, (byte) intValue);
-                emulator.WriteByteU(address + ((z + 65) * 0xC) + 0x4, Globals.DRAGOON_SPELLS[z + 10].DMG_Base);
-                emulator.WriteByteU(address + ((z + 65) * 0xC) + 0x5, Globals.DRAGOON_SPELLS[z + 10].Multi);
-                emulator.WriteByteU(address + ((z + 65) * 0xC) + 0x6, Globals.DRAGOON_SPELLS[z + 10].Accuracy);
-                emulator.WriteByteU(address + ((z + 65) * 0xC) + 0x7, Globals.DRAGOON_SPELLS[z + 10].MP);
-                emulator.WriteByteU(address + ((z + 65) * 0xC) + 0x9, Globals.DRAGOON_SPELLS[z + 10].Element);
-            }
-        }
-
-        if (Globals.DRAGOON_DESC_CHANGE && Constants.REGION == Region.NTA) {
-            Constants.WriteDebug("Changing Dragoon Spell Descriptions...");
-            int i = 0;
-            string descr = String.Empty;
-            foreach (dynamic Spell in Globals.DRAGOON_SPELLS) {
-                descr += (string) Spell.Encoded_Description + " ";
-                emulator.WriteInteger(Constants.GetAddress("DRAGOON_DESC_PTR") + i * 0x4, (int) Spell.Description_Pointer);
-                i++;
-            }
-            descr = descr.Remove(descr.Length - 1);
-            emulator.WriteAOB(Constants.GetAddress("DRAGOON_DESC"), descr);
-        }
-
         if (Globals.DRAGOON_ADDITION_CHANGE) {
             Constants.WriteOutput("Changing Dragoon Additions...");
             long address = Constants.GetAddress("ADDITION") + GetOffset(emulator) + 0x300;
@@ -438,6 +383,69 @@ public class BattleController {
                     emulator.WriteShort(address + (slot * 0x100) + 0x40 + 0x8, (ushort) Globals.DICTIONARY.DragoonAddition[character].HIT3);
                     emulator.WriteShort(address + (slot * 0x100) + 0x60 + 0x8, (ushort) Globals.DICTIONARY.DragoonAddition[character].HIT4);
                     emulator.WriteShort(address + (slot * 0x100) + 0x80 + 0x8, (ushort) Globals.DICTIONARY.DragoonAddition[character].HIT5);
+                }
+            }
+        }
+        if (Globals.DRAGOON_SPELL_CHANGE) {
+            Constants.WriteDebug("Changing Dragoon Spells...");
+            long address = Constants.GetAddress("SPELL_TABLE");
+            double[] bases = new double[] { 800, 600, 500, 400, 300, 200, 150, 100, 50 };
+            byte[] base_table = new byte[] { 0x1, 0x2, 0x4, 0x8, 0x10, 0x20, 0x40, 0, 0x80 };
+            byte[][] Spells = new byte[9][] {
+                new byte[] {0, 1, 2, 3, 4, 9 },
+                new byte[]{14, 17, 26, 8 },
+                new byte[]{10, 11, 12, 13 },
+                new byte[]{15, 16, 18, 19 },
+                new byte[]{20, 21, 22, 23 },
+                new byte[]{5, 6, 7, 8 },
+                new byte[]{24, 25, 27, 28 },
+                new byte[]{29, 30, 31 },
+                new byte[]{10, 11, 12, 13 }
+            };
+            for (int slot = 0; slot < 3; slot++) {
+                int character = Globals.PARTY_SLOT[slot];
+                if (slot == 0 && Globals.NO_DART != null) {
+                    character = (int)Globals.NO_DART;
+                }
+                if (character < 9) {
+                    foreach (byte id in Spells[character]) {
+                        byte dmg_base = 0;
+                        byte multi = 0;
+
+                        dynamic Spell = Globals.DRAGOON_SPELLS[id];
+                        int intValue = (int)emulator.ReadByte("SPELL_TABLE", (id * 0xC) + 0x2);
+                        if (Spell.Percentage == true) {
+                            intValue |= 1 << 2;
+                            dmg_base = 0;
+                            multi = (byte)Math.Round(Spell.Damage);
+                        } else {
+                            intValue &= ~(1 << 2);
+                            double stat = (double) Globals.CHARACTER_TABLE[slot].Read("MAT");
+                            double[] nearest_list = new double[9];
+                            byte[] multi_list = new byte[9];
+                            for (int i = 0; i < 9; i++) {
+                                if (Spell.Damage < bases[i]) {
+                                    multi_list[i] = 0;
+                                } else if (Spell.Damage > ((stat + 255) * bases[i]) / stat) {
+                                    multi_list[i] = 255;
+                                } else {
+                                    multi_list[i] = (byte)Math.Round((Spell.Damage * stat - bases[i] * stat) / bases[i]);
+                                }
+                                nearest_list[i] = Math.Abs(Spell.Damage - (stat + multi_list[i]) * bases[i] / stat);
+                            }
+                            int index = Array.IndexOf(nearest_list, nearest_list.Min());
+                            dmg_base = base_table[index];
+                            multi = multi_list[index];
+                        }
+                        emulator.WriteByte(address + (id * 0xC) + 0x2, (byte)intValue);
+                        emulator.WriteByte(address + (id * 0xC) + 0x4, dmg_base);
+                        emulator.WriteByte(address + (id * 0xC) + 0x5, multi);
+                        emulator.WriteByte(address + (id * 0xC) + 0x6, Spell.Accuracy);
+                        emulator.WriteByte(address + (id * 0xC) + 0x7, Spell.MP);
+                        emulator.WriteByte(address + (id * 0xC) + 0x9, Spell.Element);
+                        
+                    }
+                    
                 }
             }
         }
