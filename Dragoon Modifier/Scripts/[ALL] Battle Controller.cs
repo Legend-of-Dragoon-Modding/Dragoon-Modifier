@@ -621,12 +621,19 @@ public class BattleController {
             if (Globals.AUTO_TRANSFORM) {
                 Thread.Sleep(350);
                 ushort val = emulator.ReadShort(Globals.C_POINT - 0xF0);
+                int temp = emulator.ReadByte(Globals.C_POINT - 0xEC) + 20;
                 emulator.WriteByte(Globals.C_POINT - 0xE5, 128);
                 emulator.WriteByte(Globals.C_POINT - 0xE6, 28);
                 emulator.WriteByte(Globals.C_POINT - 0xE7, emulator.ReadByte(Globals.C_POINT - 0xEB));
                 emulator.WriteByte(Globals.C_POINT - 0xE8, emulator.ReadByte(Globals.C_POINT - 0xEC));
-                emulator.WriteByte(Globals.C_POINT - 0xEB, emulator.ReadByte(Globals.C_POINT - 0xEF));
-                emulator.WriteByte(Globals.C_POINT - 0xEC, emulator.ReadByte(Globals.C_POINT - 0xEC) + 20);
+                if (temp > 255) {
+                    emulator.WriteByte(Globals.C_POINT - 0xEB, emulator.ReadByte(Globals.C_POINT - 0xEF) + 1);
+                    emulator.WriteByte(Globals.C_POINT - 0xEC, (byte)((emulator.ReadByte(Globals.C_POINT - 0xEC) + 20) & 255));
+                } else {
+                    emulator.WriteByte(Globals.C_POINT - 0xEB, emulator.ReadByte(Globals.C_POINT - 0xEF));
+                    emulator.WriteByte(Globals.C_POINT - 0xEC, (byte)(emulator.ReadByte(Globals.C_POINT - 0xEC) + 20));
+                }
+                
                 emulator.WriteShort(Globals.C_POINT - 0xF0, (ushort)(val + 0xE84));
                 emulator.WriteByte(Constants.GetAddress("DRAGOON_TURNS"), 1);
             } else {
