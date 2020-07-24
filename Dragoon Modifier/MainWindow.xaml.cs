@@ -2520,8 +2520,6 @@ namespace Dragoon_Modifier {
                         ChangeAspectRatio();
                     if (Globals.CheckDMScript("btnKillBGM") && killBGMBattle)
                         KillBGMBattle();
-                    if (Globals.CheckDMScript("btnElementalBomb"))
-                        ElementalBomb();
                     if (Globals.CheckDMScript("btnNoDragoon"))
                         NoDragoonMode();
                     if (Globals.CheckDMScript("btnSoulEater"))
@@ -2530,6 +2528,8 @@ namespace Dragoon_Modifier {
                         MonsterHPNames();
                     if (Globals.CheckDMScript("btnUltimateBoss") && keepStats)
                         UltimateBossBattle();
+                    if (Globals.CheckDMScript("btnElementalBomb") && keepStats)
+                        ElementalBomb();
                     if (Globals.CheckDMScript("btnDamageTracker"))
                         DamageTracker();
                     if (Globals.CheckDMScript("btnBlackRoom"))
@@ -4054,7 +4054,7 @@ namespace Dragoon_Modifier {
 
                 if (Globals.CheckDMScript("btnReduceSDEXP")) {
                     for (int i = 0; i < 5; i++) {
-                        emulator.WriteShort("MONSTER_REWARDS_EXP", (ushort) Math.Ceiling((double) (emulator.ReadShort(Constants.GetAddress("MONSTER_REWARDS_EXP") + (i * 0x1A8)) / 3)), (i * 0x1A8));
+                        emulator.WriteShort("MONSTER_REWARDS", (ushort) Math.Ceiling((double) (emulator.ReadShort(Constants.GetAddress("MONSTER_REWARDS") + (i * 0x1A8)) / 3)), (i * 0x1A8));
                     }
                 }
                 soloModeOnBattleEntry = true;
@@ -4087,7 +4087,7 @@ namespace Dragoon_Modifier {
 
                 if (Globals.CheckDMScript("btnReduceSDEXP")) {
                     for (int i = 0; i < 5; i++) {
-                        emulator.WriteShort("MONSTER_REWARDS_EXP", (ushort) Math.Ceiling((double) (emulator.ReadShort(Constants.GetAddress("MONSTER_REWARDS_EXP") + (i * 0x1A8)) * (2 / 3))), (i * 0x1A8));
+                        emulator.WriteShort("MONSTER_REWARDS", (ushort) Math.Ceiling((double) (emulator.ReadShort(Constants.GetAddress("MONSTER_REWARDS") + (i * 0x1A8)) * (2 / 3))), (i * 0x1A8));
                     }
                 }
                 duoModeOnBattleEntry = true;
@@ -5204,61 +5204,6 @@ namespace Dragoon_Modifier {
                     }
                 }
 
-                WipeRewards();
-
-                if (Globals.ENCOUNTER_ID == 487) { //Commander II
-                    emulator.WriteByte("MONSTER_REWARDS_CHANCE", 100, +0x1A8);
-                    emulator.WriteByte("MONSTER_REWARDS_DROP", 158, 0x1A8); //Sabre
-                }
-
-                if (Globals.ENCOUNTER_ID == 449 || Globals.ENCOUNTER_ID == 402 || Globals.ENCOUNTER_ID == 403) {
-                    if (Globals.ENCOUNTER_ID == 402 || Globals.ENCOUNTER_ID == 403) {
-                        emulator.WriteShort("MONSTER_REWARDS", 3000, 0x1A8 + 0x2);
-                    } else {
-                        emulator.WriteShort("MONSTER_REWARDS", 3000, 0x2);
-                    }
-                } else if (Globals.ENCOUNTER_ID == 417 || Globals.ENCOUNTER_ID == 418 || Globals.ENCOUNTER_ID == 448) {
-                    if (Globals.ENCOUNTER_ID == 418) {
-                        emulator.WriteShort("MONSTER_REWARDS", 3000, 0x1A8 + 0x2);
-                    } else {
-                        emulator.WriteShort("MONSTER_REWARDS", 3000, 0x2);
-                    }
-                } else if (Globals.ENCOUNTER_ID == 416 || Globals.ENCOUNTER_ID == 422 || Globals.ENCOUNTER_ID == 423) {
-                    emulator.WriteShort("MONSTER_REWARDS", 9000, 0x2);
-                } else if (Globals.ENCOUNTER_ID == 432 || Globals.ENCOUNTER_ID == 430 || Globals.ENCOUNTER_ID == 433) {
-                    emulator.WriteShort("MONSTER_REWARDS", 12000, 0x2);
-                } else if (Globals.ENCOUNTER_ID == 431 || Globals.ENCOUNTER_ID == 408) {
-                    emulator.WriteShort("MONSTER_REWARDS", 15000, 0x1A8 + 0x2);
-                } else if (Globals.ENCOUNTER_ID == 447) {
-                    emulator.WriteShort("MONSTER_REWARDS", 18000, 0x2);
-                } else if (Globals.ENCOUNTER_ID == 389 || Globals.ENCOUNTER_ID == 396) {
-                    emulator.WriteShort("MONSTER_REWARDS", 20000, 0x2);
-                } else if (Globals.ENCOUNTER_ID == 399) {
-                    emulator.WriteShort("MONSTER_REWARDS", 25000, 0x2);
-                } else if (Globals.ENCOUNTER_ID == 409) {
-                    emulator.WriteShort("MONSTER_REWARDS", 30000, 0x2);
-                } else if (Globals.ENCOUNTER_ID == 393 || Globals.ENCOUNTER_ID == 398) {
-                    emulator.WriteShort("MONSTER_REWARDS", 35000, 0x2);
-                } else if (Globals.ENCOUNTER_ID == 397 || Globals.ENCOUNTER_ID == 400) {
-                    emulator.WriteShort("MONSTER_REWARDS", 40000, 0x2);
-                } else if (Globals.ENCOUNTER_ID == 410) {
-                    emulator.WriteShort("MONSTER_REWARDS", 1000, 0x2);
-                } else if (Globals.ENCOUNTER_ID == 401) {
-                    emulator.WriteShort("MONSTER_REWARDS", 45000, 0x2);
-                } else if (Globals.ENCOUNTER_ID == 390) {
-                    emulator.WriteInteger("TOTAL_GOLD", 100000);
-                } else if (Globals.ENCOUNTER_ID == 411) {
-                    emulator.WriteInteger("TOTAL_GOLD", 60000);
-                } else if (Globals.ENCOUNTER_ID == 394) {
-                    emulator.WriteInteger("TOTAL_GOLD", 70000);
-                } else if (Globals.ENCOUNTER_ID == 392) {
-                    emulator.WriteInteger("TOTAL_GOLD", 80000);
-                } else if (Globals.ENCOUNTER_ID == 420) {
-                    emulator.WriteInteger("TOTAL_GOLD", 120000);
-                } else if (Globals.ENCOUNTER_ID == 442) {
-                    emulator.WriteInteger("TOTAL_GOLD", 100000);
-                }
-
                 ultimateBossOnBattleEntry = true;
             } else {
                 if (!Globals.IN_BATTLE && ultimateBossOnBattleEntry) {
@@ -6050,7 +5995,7 @@ namespace Dragoon_Modifier {
 
         public void UltimateHealthPotion(int monsterSlot, byte attack, double heal) {
             if (Globals.MONSTER_TABLE[monsterSlot].Read("Attack_Move") == attack) {
-                ultimateHP[0] += (int) Math.Round(ultimateMaxHP[0] / heal);
+                ultimateHP[monsterSlot] = (int) Math.Min(ultimateMaxHP[monsterSlot], ultimateHP[monsterSlot] + Math.Round(ultimateMaxHP[monsterSlot] / heal));
                 Thread.Sleep(1500);
                 Globals.MONSTER_TABLE[monsterSlot].Write("Attack_Move", 255);
             }
@@ -6557,8 +6502,8 @@ namespace Dragoon_Modifier {
                 Globals.MONSTER_TABLE[0].Write("Element", 16);
                 Globals.MONSTER_TABLE[0].Write("Display_Element", 16);
             } else if (lastItem == 0xC1 || lastItem == 0xF1) {
-                Globals.MONSTER_TABLE[0].Write("Element", 0);
-                Globals.MONSTER_TABLE[0].Write("Display_Element", 0);
+                Globals.MONSTER_TABLE[0].Write("Element", 8);
+                Globals.MONSTER_TABLE[0].Write("Display_Element", 8);
             }
         }
 
@@ -8060,7 +8005,10 @@ namespace Dragoon_Modifier {
 
         #region Elemental Bomb
         public void ElementalBomb() {
-            if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !ubElementalShift && eleBombTurns == 0) {
+            if (ubElementalShift)
+                return;
+
+            if (Globals.IN_BATTLE && Globals.STATS_CHANGED && eleBombTurns == 0) {
                 eleBombItemUsed = emulator.ReadByte(Globals.MONS_ADDRESS[0] + 0xABC);
                 if ((eleBombItemUsed >= 241 && eleBombItemUsed <= 248) || eleBombItemUsed == 250) {
                     if (Globals.PARTY_SLOT[2] < 9) {
@@ -8937,10 +8885,10 @@ namespace Dragoon_Modifier {
         #region Extras
         public void WipeRewards() {
             for (int i = 0; i < 5; i++) {
-                emulator.WriteShortU(Constants.GetAddress("MONSTER_REWARDS") + Constants.OFFSET + i * 0x1A8, 0);
-                emulator.WriteShortU(Constants.GetAddress("MONSTER_REWARDS") + Constants.OFFSET + 0x2 + i * 0x1A8, 0);
-                emulator.WriteByteU(Constants.GetAddress("MONSTER_REWARDS") + Constants.OFFSET + 0x4 + i * 0x1A8, 0);
-                emulator.WriteByteU(Constants.GetAddress("MONSTER_REWARDS") + Constants.OFFSET + 0x5 + i * 0x1A8, 0);
+                emulator.WriteShort("MONSTER_REWARDS", 0, i * 0x1A8);
+                emulator.WriteShort("MONSTER_REWARDS", 0, 0x2 + i * 0x1A8);
+                emulator.WriteByte("MONSTER_REWARDS", 0, 0x4 + i * 0x1A8);
+                emulator.WriteByte("MONSTER_REWARDS", 0, 0x5 + i * 0x1A8);
             }
         }
         #endregion
@@ -9611,10 +9559,6 @@ namespace Dragoon_Modifier {
             }
         }
 
-        private void miAutoTransform_Click(object sender, RoutedEventArgs e) {
-            miAutoTransform.IsChecked = miAutoTransform.IsChecked ? false : true;
-            Globals.AUTO_TRANSFORM = miAutoTransform.IsChecked;
-        }
 
         private void miModOptions_Click(object sender, RoutedEventArgs e) {
             if (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) {
@@ -10036,7 +9980,7 @@ namespace Dragoon_Modifier {
             } else if (cboHelpTopic.SelectedIndex == 2) {
                 txtHelp.Text = "Presets Hard and Hell mode are plug and play difficulty settings which are locked in. These presets are intended to run on unmodified ISOs. Normal Mode will not do anything unless you have made changes. You can change your current mod loadout and location in Settings Tab>Settings>Mod Options. Hard and Hell Mode have a more detailed changes below.\r\n\r\n" +
                     "Hard Mode\r\nThis preset balances characters, monsters, weapons, additions, boss drops, and is very Dragoon focused. It is intended that you start off with Dragoons using hotkey (CROSS+L1) in starting Map 10. The mod starts off slightly harder than the Japanese version and gets more difficult as you progress through the discs. However you are not meant to grind for EXP in this mode. You can keep everyone at the same level by using Switch EXP in the Enhancements 1 tab up to 80,000 EXP. Dart as well has new Dragoon enhancements called Burn Stacks (CIRCLE+LEFT). Dart can have up to 6 stacks for 20% each and he gains stacks by using Dragoon magic.\r\n\r\n" +
-                    "Hell Mode has the same character, weapon, drop, and dragoon adjustments. However incomplete Additions are punished and you gain about 50% SP from them. To encourage the use of Elemental Bomb the drop rates for magic items are tripled, powerful items are doubled. It is intended for you to start off Hell Mode will all Dragoons with hotkey (CROSS+L1) in Map 10. It is also intended that you use Elemental Bomb, it was left optional as it made Hell Mode easier but it was designed with this turned on. This changes the element of all monsters on the field when a powerful item is used, however you do not have to use this. Monsters are much harder and you may require grinding. You can keep everyone at the same level by using Switch EXP up to 160,000 EXP.\r\n\r\n" +
+                    "Hell Mode has the same character, weapon, drop, and dragoon adjustments. However incomplete Additions are punished and you gain about 50% SP from them. To encourage the use of Elemental Bomb the drop rates for magic items are tripled, powerful items are doubled. It is intended for you to start off Hell Mode will all Dragoons with hotkey (CROSS+L1) in Map 10. It is also intended that you use Elemental Bomb, it was left optional as it made Hell Mode easier but it was designed with this turned on. This changes the element of all monsters on the field when a powerful item is used, however you do not have to use this. Monsters are much harder and you may require grinding. You can keep everyone at the same level by using Switch EXP up to 160,000 EXP. In Hell Mode you lose SP after fighting most of the major bosses, if you total SP gained falls below the level threshold you will delevel your Dragoons.\r\n\r\n" +
                     "+\r\nPlus turns on Enrage Mode for bosses only. Originally designed to be a part of Hell Mode but separated for the possibility of being too hard.\r\n\r\nThe sliders will multiply each stat at the bottom. If you choose a preset those stats will be multiplied as well.";
             } else if (cboHelpTopic.SelectedIndex == 3) {
                 txtHelp.Text = "Break 9999 HP Cap\r\nWill break the HP cap and save your HP above 9999 between battles as long as you don't switch characters.\r\n\r\n" +

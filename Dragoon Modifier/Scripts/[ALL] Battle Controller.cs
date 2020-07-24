@@ -27,7 +27,7 @@ public class BattleController {
             Globals.MONSTER_TABLE = new List<dynamic>();
             Globals.MONSTER_IDS = new List<int>();
             Globals.SHANA_FIX = false;
-            Thread.Sleep(4000);
+            Thread.Sleep(2000);
             if (emulator.ReadShort("BATTLE_VALUE") < 5130) {
                 return;
             }
@@ -53,13 +53,18 @@ public class BattleController {
 
 
             // in battle model pointers
-            Constants.WriteDebug("Slot1 Address:        " + Convert.ToString(Constants.OFFSET + GetOffset(emulator) + 0x1D95F4,16).ToUpper());
-            Constants.WriteDebug("Slot2 Address:        " + Convert.ToString(Constants.OFFSET + GetOffset(emulator) + 0x1DA88C,16).ToUpper());
-            Constants.WriteDebug("Slot3 Address:        " + Convert.ToString(Constants.OFFSET + GetOffset(emulator) + 0x1DBB24,16).ToUpper());
+            Constants.WriteDebug("Slot1 Address:       " + Convert.ToString(Constants.OFFSET + GetOffset(emulator) + 0x1D95F4,16).ToUpper());
+            Constants.WriteDebug("Slot2 Address:       " + Convert.ToString(Constants.OFFSET + GetOffset(emulator) + 0x1DA88C,16).ToUpper());
+            Constants.WriteDebug("Slot3 Address:       " + Convert.ToString(Constants.OFFSET + GetOffset(emulator) + 0x1DBB24,16).ToUpper());
 
             MonsterChanges(emulator);
+
+            if (Globals.CheckDMScript("btnUltimateBoss")) {
+                Constants.UltimateBossRewards(emulator);
+            }
+
             ChangeParty(emulator);
-            Constants.WriteOutput("Finished loading.");
+            Constants.WriteOutput("Finished loading. Waiting.");
             Globals.STATS_CHANGED = true;
         } else {
             if (Globals.STATS_CHANGED && encounterValue < 9999) {

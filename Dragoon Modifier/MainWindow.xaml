@@ -1310,7 +1310,6 @@
                                 <MenuItem x:Name="miEatbSound" Header="EATB Beeps" Background="#FFB6B6B6" Foreground="White" Click="miEatbSound_Click"/>
                                 <MenuItem x:Name="miManualOffset" Header="Manual Emulator Offset Entry" Background="#FFB6B6B6" Foreground="White" Click="miManualOffset_Click"/>
                                 <MenuItem x:Name="miDeleteSave" Header="Delete Current Save" Background="#FFB6B6B6" Foreground="White" Click="miDeleteSave_Click"/>
-                                <MenuItem x:Name="miAutoTransform" Header="[Debug] Auto Transform No Dart" Background="#FFB6B6B6" Foreground="White" Click="miAutoTransform_Click"/>
                             </MenuItem>
                             <MenuItem Header="About" Background="#FFB6B6B6" Foreground="White">
                                 <MenuItem x:Name="miAuthor" Background="#FFB6B6B6" Foreground="White" Header="Author" Click="miAuthor_Click"/>
