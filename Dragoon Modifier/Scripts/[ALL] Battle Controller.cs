@@ -448,11 +448,22 @@ public class BattleController {
                         emulator.WriteByte(address + (id * 0xC) + 0x6, Spell.Accuracy);
                         emulator.WriteByte(address + (id * 0xC) + 0x7, Spell.MP);
                         emulator.WriteByte(address + (id * 0xC) + 0x9, Spell.Element);
-                        
                     }
-                    
                 }
             }
+        }
+
+        if (Globals.DRAGOON_DESC_CHANGE && Constants.REGION == Region.NTA) {
+            Constants.WriteDebug("Changing Dragoon Spell Descriptions...");
+            int i = 0;
+            string descr = String.Empty;
+            foreach (dynamic Spell in Globals.DRAGOON_SPELLS) {
+                descr += (string) Spell.Encoded_Description + " ";
+                emulator.WriteInteger(Constants.GetAddress("DRAGOON_DESC_PTR") + i * 0x4, (int) Spell.Description_Pointer);
+                i++;
+            }
+            descr = descr.Remove(descr.Length - 1);
+            emulator.WriteAOB(Constants.GetAddress("DRAGOON_DESC"), descr);
         }
     }
 
