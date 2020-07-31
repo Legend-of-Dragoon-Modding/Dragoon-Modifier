@@ -74,7 +74,7 @@ namespace Dragoon_Modifier {
         public ushort checkRoseDamageSave = 0;
         public bool checkRoseDamage = false;
         public bool roseEnhanceDragoon = false;
-        public bool starChildren = false;
+        public byte starChildren = 0;
         public bool trackRainbowBreath = false;
         //HP Cap Break
         public double[] hpChangeCheck = { 65535, 65535, 65535 };
@@ -5294,6 +5294,9 @@ namespace Dragoon_Modifier {
         }
 
         public void DragoonBond() {
+            if (ultimateHP[0] == 0 && ultimateHP[1] == 0)
+                return;
+
             if (ultimateHP[0] == ultimateMaxHP[0] && ultimateHP[1] == ultimateMaxHP[1])
                 ubDragoonBondMode = -1;
 
@@ -6188,8 +6191,8 @@ namespace Dragoon_Modifier {
                 if (!dragoonChangesOnBattleEntry) {
                     ChangeDragoonDescription();
                     dragoonChangesOnBattleEntry = true;
-                    checkRoseDamage = checkFlowerStorm = burnActive = starChildren = false;
-                    dartBurnStack = 0;
+                    checkRoseDamage = checkFlowerStorm = burnActive = false;
+                    dartBurnStack = starChildren = 0;
                     Globals.SetCustomValue("Burn Stack", 0);
                 } else {
                     if (emulator.ReadShort("BATTLE_VALUE") == 41215) {
@@ -6393,9 +6396,15 @@ namespace Dragoon_Modifier {
                                         }
                                     }
                                 } else if (Globals.PARTY_SLOT[i] == 2 || Globals.PARTY_SLOT[i] == 8) { //Shana
-                                    if (starChildren && Globals.CHARACTER_TABLE[i].Read("Action") == 8) {
-                                        starChildren = false;
-                                        Globals.CHARACTER_TABLE[i].Write("HP_Regen", recoveryRateSave);
+                                    if (starChildren > 0) {
+                                        if (starChildren == 3 && Globals.CHARACTER_TABLE[i].Read("Action") == 0)
+                                            starChildren = 2;
+                                        if (starChildren == 2 && Globals.CHARACTER_TABLE[i].Read("Action") == 8)
+                                            starChildren = 1;
+                                        if (starChildren == 1 && Globals.CHARACTER_TABLE[i].Read("Action") != 8) {
+                                            starChildren = 0;
+                                            Globals.CHARACTER_TABLE[i].Write("HP_Regen", recoveryRateSave);
+                                        }
                                     }
 
                                     if (dragoonSpecialAttack == 2 || dragoonSpecialAttack == 8) {
@@ -6422,8 +6431,10 @@ namespace Dragoon_Modifier {
                                         mp = previousMP[i] - currentMP[i];
                                         if (mp == 20) {
                                             Globals.CHARACTER_TABLE[i].Write("DMAT", (332 * multi));
-                                            Globals.CHARACTER_TABLE[i].Write("HP_Regen", (recoveryRateSave + 20));
-                                            starChildren = true;
+                                            if (Globals.CHARACTER_TABLE[i].Read("Spell_Cast") == 10 || Globals.CHARACTER_TABLE[i].Read("Spell_Cast") == 65) {
+                                                Globals.CHARACTER_TABLE[i].Write("HP_Regen", (recoveryRateSave + 20));
+                                                starChildren = 3;
+                                            }
                                         } else if (mp == 80) {
                                             Globals.CHARACTER_TABLE[i].Write("DMAT", (289 * multi));
                                         }
