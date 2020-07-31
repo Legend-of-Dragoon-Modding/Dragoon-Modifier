@@ -1232,7 +1232,7 @@ namespace Dragoon_Modifier {
                         BlackRoomBattle();
                     if (Globals.DIFFICULTY_MODE.Equals("Hell"))
                         ApplyNoEscape();
-                    if (Globals.DIFFICULTY_MODE.Equals("Hell"))
+                    if (Globals.DIFFICULTY_MODE.Equals("Hell") && !Globals.CheckDMScript("btnUltimateBoss"))
                         BossSPLoss();
                     if (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell"))
                         EquipChangesBattle();
