@@ -1268,8 +1268,13 @@ namespace Dragoon_Modifier {
 
                 if (ultimateBossKeepMap) {
                     emulator.WriteShort("MAP", ultimateBossMap);
-                    if (!Globals.IN_BATTLE && Globals.BATTLE_VALUE > 10) {
+                    if (!Globals.IN_BATTLE) {
                         ultimateBossKeepMap = false;
+
+                        this.Dispatcher.BeginInvoke(new Action(() => {
+                            Globals.dmScripts["btnUltimateBoss"] = false;
+                            TurnOnOffButton(ref btnUltimateBoss);
+                        }), DispatcherPriority.ContextIdle);
                     }
                 }
 
@@ -3327,15 +3332,9 @@ namespace Dragoon_Modifier {
                                                 Globals.CHARACTER_TABLE[i].Write("AT", originalCharacterStats[i, 1]);
                                             }
                                         }
-
-                                        gloveLastAction = Globals.CHARACTER_TABLE[i].Read("Action");
                                     }
 
-                                    //stsProgram.Text = "Glove Charge: " & gloveCharge & " / " & gloveLastAction & " / " & Globals.CHARACTER_TABLE[i].Read("Action") & " / " &
-                                    //    (Globals.CHARACTER_TABLE[i].Read("Action") = 136 Or Globals.CHARACTER_TABLE[i].Read("Action") = 138) & " / " &
-                                    //    (gloveLastAction <> 136 Or gloveLastAction <> 138) & " / " &
-                                    //    ((Globals.CHARACTER_TABLE[i].Read("Action") = 136 Or Globals.CHARACTER_TABLE[i].Read("Action") = 138) And
-                                    //    (gloveLastAction <> 136 And gloveLastAction <> 138))
+                                    gloveLastAction = Globals.CHARACTER_TABLE[i].Read("Action");
                                 }
 
                                 if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 165 && Globals.PARTY_SLOT[i] == 7) { //Giant Axe
@@ -4040,7 +4039,7 @@ namespace Dragoon_Modifier {
                         if (ubBodyDamage)
                             BodyDamage();
 
-                        if (ubDragoonBond)
+                        if (ubDragoonBond && ubDragoonBondMode != 999)
                             DragoonBond();
 
                         if (ubDragoonExtras)
@@ -5294,9 +5293,6 @@ namespace Dragoon_Modifier {
         }
 
         public void DragoonBond() {
-            if (ultimateHP[0] == 0 && ultimateHP[1] == 0)
-                return;
-
             if (ultimateHP[0] == ultimateMaxHP[0] && ultimateHP[1] == ultimateMaxHP[1])
                 ubDragoonBondMode = -1;
 
@@ -5329,7 +5325,6 @@ namespace Dragoon_Modifier {
                             ubDragoonBondMode = 1;
                         }
                     }
-                    DragoonBondEnhance(0);
                 }
             } else if (ubDragoonBondMode == 0) {
                 if (ultimateHP[1] < ultimateMaxHP[1]) {
@@ -5341,6 +5336,7 @@ namespace Dragoon_Modifier {
                     if (ultimateHP[0] < 0)
                         ultimateHP[0] = 0;
                 }
+                DragoonBondEnhance(0);
             } else if (ubDragoonBondMode == 1) {
                 if (ultimateHP[0] < ultimateMaxHP[0]) {
                     if (ultimateHP[1] > 0) {
@@ -5356,7 +5352,7 @@ namespace Dragoon_Modifier {
             }
         }
 
-        public void DragoonBondEnhance(byte slot) {
+        public void DragoonBondEnhance(int slot) {
             if (slot == 0) {
                 if (ultimateHP[0] <= 0) {
                     double[] multiplyMode = { 1, 1 };
@@ -5374,6 +5370,9 @@ namespace Dragoon_Modifier {
                     }
                     Globals.MONSTER_TABLE[1].Write("AT", (int) Math.Round(originalMonsterStats[1, 1] * multiplyMode[0]));
                     Globals.MONSTER_TABLE[1].Write("MAT", (int) Math.Round(originalMonsterStats[1, 2] * multiplyMode[1]));
+                    ultimateHP[0] = 1;
+                    ultimateMaxHP[0] = 1;
+                    Globals.MONSTER_TABLE[0].Write("HP", 0);
                 }
             } else {
                 if (ultimateHP[1] <= 0) {
@@ -5390,8 +5389,11 @@ namespace Dragoon_Modifier {
                         multiplyMode[0] = 7;
                         multiplyMode[1] = 7;
                     }
-                    Globals.MONSTER_TABLE[1].Write("AT", (int) Math.Round(originalMonsterStats[0, 1] * multiplyMode[0]));
-                    Globals.MONSTER_TABLE[1].Write("MAT", (int) Math.Round(originalMonsterStats[0, 2] * multiplyMode[1]));
+                    Globals.MONSTER_TABLE[0].Write("AT", (int) Math.Round(originalMonsterStats[0, 1] * multiplyMode[0]));
+                    Globals.MONSTER_TABLE[0].Write("MAT", (int) Math.Round(originalMonsterStats[0, 2] * multiplyMode[1]));
+                    ultimateHP[1] = 1;
+                    ultimateMaxHP[1] = 1;
+                    Globals.MONSTER_TABLE[1].Write("HP", 0);
                 }
             }
         }
