@@ -573,7 +573,7 @@ public class BattleController {
             Globals.CHARACTER_TABLE[slot].Write("Turn", turn);
             Globals.CHARACTER_TABLE[slot].Write("HP_Regen", HP_reg);
             Globals.CHARACTER_TABLE[slot].Write("MP_Regen", MP_reg);
-            Globals.CHARACTER_TABLE[slot].Write("SP_Regen", SP);
+            Globals.CHARACTER_TABLE[slot].Write("SP_Regen", SP_reg);
             Globals.ADDITION_SWAP = false;
 
         }
