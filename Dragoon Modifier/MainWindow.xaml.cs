@@ -1908,7 +1908,10 @@ namespace Dragoon_Modifier {
                                 }
 
                                 Globals.LAST_HOTKEY = Constants.GetTime();
-                            } 
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_R1) && !Globals.ADDITION_SWAP) {
+                                Globals.ADDITION_SWAP = true;
+                                Globals.LAST_HOTKEY = Constants.GetTime();
+                            }
                         }
                     }
                 }

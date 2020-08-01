@@ -21,6 +21,21 @@ public class BattleController {
             ShanaFix(emulator);
         }
 
+        if (Globals.IN_BATTLE && Globals.STATS_CHANGED && encounterValue == 41215 && Globals.ADDITION_SWAP) {
+            Nullable<byte> character = null;
+            for (byte slot = 0; slot < 3; slot++) {
+                if (Globals.CHARACTER_TABLE[slot].Read("Action") == 8) {
+                    character = slot;
+                    break;
+                }
+            }
+            if (character != null) {
+                AdditionSwap(emulator, (byte)character, 7);
+            }
+            
+
+        }
+
         if (Globals.IN_BATTLE && !Globals.STATS_CHANGED && encounterValue == 41215) {
             Constants.WriteOutput("Battle detected. Loading...");
             Globals.UNIQUE_MONSTER_IDS = new List<int>();
@@ -468,8 +483,12 @@ public class BattleController {
     }
     
     public static void AdditionSwap(Emulator emulator, byte slot, byte additionCount) {
+        
         byte character = Globals.PARTY_SLOT[slot];
         if (additionCount > 1) {
+            ushort SP = Globals.CHARACTER_TABLE[slot].Read("SP");
+            Globals.CHARACTER_TABLE[slot].Write("SP", 100);
+            Constants.WriteDebug(SP);
             int menu = 0;
             byte addition = 0;
             for (int i = 0; i < additionCount; i++) {
@@ -497,7 +516,6 @@ public class BattleController {
                 new byte[]{ 255 }
             };
             byte add = reorderAddition[character][addition];
-            Constants.WriteDebug(add);
             emulator.WriteByte(Constants.GetAddress("CHAR_TABLE") + (character * 0x2C) + 0x19, add);
             Thread.Sleep(200);
             long address = Constants.GetAddress("ADDITION") + GetOffset(emulator);
@@ -536,8 +554,28 @@ public class BattleController {
             if (slot == 0 && Globals.NO_DART == 4) {
                 HaschelFix(emulator);
             }
-            emulator.WriteByte(Constants.GetAddress("DRAGOON_TURNS"), 1);
-            Globals.CHARACTER_TABLE[slot].Write("Menu", 16);
+            emulator.WriteByte("DRAGOON_TURNS", 1, slot * 0x4);
+            ushort turn = Globals.CHARACTER_TABLE[slot].Read("Turn");
+            Globals.CHARACTER_TABLE[slot].Write("Turn", 800);
+            ushort HP_reg = Globals.CHARACTER_TABLE[slot].Read("HP_Regen");
+            Globals.CHARACTER_TABLE[slot].Write("HP_Regen", 0);
+            ushort MP_reg = Globals.CHARACTER_TABLE[slot].Read("MP_Regen");
+            Globals.CHARACTER_TABLE[slot].Write("MP_Regen", 0);
+            ushort SP_reg = Globals.CHARACTER_TABLE[slot].Read("SP_Regen");
+            Globals.CHARACTER_TABLE[slot].Write("SP_Regen", 30);
+            ushort val = emulator.ReadByte(Globals.C_POINT - slot * 0x388 - 0xF0);
+            emulator.WriteByte(Globals.C_POINT - slot * 0x388 - 0xF0, (byte)(val + 0x20));
+            emulator.WriteByte(Globals.C_POINT - slot * 0x388 - 0x4C, 6);
+            while ((emulator.ReadShort("BATTLE_VALUE") > 9999) && (Globals.CHARACTER_TABLE[slot].Read("SP") != 30)) {
+                Thread.Sleep(50);
+            }
+            Globals.CHARACTER_TABLE[slot].Write("SP", SP);
+            Globals.CHARACTER_TABLE[slot].Write("Turn", turn);
+            Globals.CHARACTER_TABLE[slot].Write("HP_Regen", HP_reg);
+            Globals.CHARACTER_TABLE[slot].Write("MP_Regen", MP_reg);
+            Globals.CHARACTER_TABLE[slot].Write("SP_Regen", SP);
+            Globals.ADDITION_SWAP = false;
+
         }
     }
 
