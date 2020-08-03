@@ -1232,7 +1232,7 @@ namespace Dragoon_Modifier {
                         BlackRoomBattle();
                     if (Globals.DIFFICULTY_MODE.Equals("Hell"))
                         ApplyNoEscape();
-                    if (Globals.DIFFICULTY_MODE.Equals("Hell") && !Globals.CheckDMScript("btnUltimateBoss"))
+                    if (Globals.DIFFICULTY_MODE.Equals("Hell"))
                         BossSPLoss();
                     if (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell"))
                         EquipChangesBattle();
@@ -3172,19 +3172,6 @@ namespace Dragoon_Modifier {
                             }
                         }
 
-                        if (Globals.CHARACTER_TABLE[i].Read("Accessory") == 180) { //Soa's Shield Ring
-                            Globals.CHARACTER_TABLE[i].Write("DF", 1);
-                            Globals.CHARACTER_TABLE[i].Write("MDF", 1);
-                            Globals.CHARACTER_TABLE[i].Write("A_AV", 90);
-                            Globals.CHARACTER_TABLE[i].Write("M_AV", 90);
-                            for (int x = 0; x < 3; x++) {
-                                if (x != i && Globals.PARTY_SLOT[x] < 9) {
-                                    Globals.CHARACTER_TABLE[x].Write("A_HIT", Math.Round(Globals.CHARACTER_TABLE[x].Read("A_HIT") * 0.8));
-                                    Globals.CHARACTER_TABLE[x].Write("M_HIT", Math.Round(Globals.CHARACTER_TABLE[x].Read("M_HIT") * 0.8));
-                                }
-                            }
-                        }
-
                         if (Globals.CHARACTER_TABLE[i].Read("Accessory") == 181) { //Soa's Siphon Ring
                             soasSiphonSlot = i;
                             Globals.CHARACTER_TABLE[i].Write("MAT", (Globals.CHARACTER_TABLE[i].Read("MAT") * 2));
@@ -3229,6 +3216,18 @@ namespace Dragoon_Modifier {
                             Globals.CHARACTER_TABLE[i].Write("MDF", (Globals.CHARACTER_TABLE[i].Read("MDF") + 70 - 127));
                         }
 
+                        if (Globals.CHARACTER_TABLE[i].Read("Accessory") == 180) { //Soa's Shield Ring
+                            Globals.CHARACTER_TABLE[i].Write("DF", 10);
+                            Globals.CHARACTER_TABLE[i].Write("MDF", 10);
+                            Globals.CHARACTER_TABLE[i].Write("A_AV", 90);
+                            Globals.CHARACTER_TABLE[i].Write("M_AV", 90);
+                            for (int x = 0; x < 3; x++) {
+                                if (x != i && Globals.PARTY_SLOT[x] < 9) {
+                                    Globals.CHARACTER_TABLE[x].Write("A_HIT", Math.Round(Globals.CHARACTER_TABLE[x].Read("A_HIT") * 0.8));
+                                    Globals.CHARACTER_TABLE[x].Write("M_HIT", Math.Round(Globals.CHARACTER_TABLE[x].Read("M_HIT") * 0.8));
+                                }
+                            }
+                        }
 
                         guardStatusDF[i] = 0;
                         guardStatusMDF[i] = 0;
@@ -4379,9 +4378,13 @@ namespace Dragoon_Modifier {
                 if ((ultimateShopLimited & 524288) == 524288) { //Speed Up
                     if ((doubleRepeatUsed & 524288) != 524288) {
                         for (int i = 0; i < 3; i++) {
-                            if (Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[i].Read("SPEED_UP_TRN") > 0 && Globals.MONSTER_TABLE[i].Read("SPEED_UP_TRN") != 255) {
+                            if (Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[i].Read("SPEED_UP_TRN") > 0) {
                                 doubleRepeatUsed += 524288;
-                                Globals.CHARACTER_TABLE[i].Write("SPEED_UP_TRN", Globals.CHARACTER_TABLE[i].Read("SPEED_UP_TRN") + 3);
+                                if (Globals.CHARACTER_TABLE[i].Read("SPEED_UP_TRN") < 6) {
+                                    Globals.CHARACTER_TABLE[i].Write("SPEED_UP_TRN", Globals.CHARACTER_TABLE[i].Read("SPEED_UP_TRN") + 3);
+                                } else {
+                                    Globals.CHARACTER_TABLE[i].Write("SPEED_UP_TRN", 6);
+                                }
                             }
                         }
                     }
@@ -4390,9 +4393,14 @@ namespace Dragoon_Modifier {
                 if ((ultimateShopLimited & 1048576) == 1048576) { //Speed Down
                     if ((doubleRepeatUsed & 1048576) != 1048576) {
                         for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                            if (Globals.MONSTER_TABLE[i].Read("SPEED_DOWN_TRN") > 0 && Globals.MONSTER_TABLE[i].Read("SPEED_DOWN_TRN") != 255) {
+                            if (Globals.MONSTER_TABLE[i].Read("SPEED_DOWN_TRN") > 0) {
                                 doubleRepeatUsed += 1048576;
-                                Globals.MONSTER_TABLE[i].Write("SPEED_DOWN_TRN", Globals.MONSTER_TABLE[i].Read("SPEED_DOWN_TRN") + 3);
+
+                                if (Globals.MONSTER_TABLE[i].Read("SPEED_DOWN_TRN") < 6) {
+                                    Globals.MONSTER_TABLE[i].Write("SPEED_DOWN_TRN", Globals.MONSTER_TABLE[i].Read("SPEED_DOWN_TRN") + 3);
+                                } else {
+                                    Globals.MONSTER_TABLE[i].Write("SPEED_DOWN_TRN", 6);
+                                }
                             }
                         }
                     }
@@ -7182,6 +7190,9 @@ namespace Dragoon_Modifier {
                 else
                     bossSPLoss = 0;
 
+                if (Globals.CheckDMScript("btnUltimateBoss"))
+                    bossSPLoss = 0;
+
                 bossSPLossOnBattleEntry = true;
             } else {
                 if (!Globals.IN_BATTLE && bossSPLossOnBattleEntry) {
@@ -8784,7 +8795,7 @@ namespace Dragoon_Modifier {
                     "34. Emperror Doel - 250,000 HP | Dragoon Doel - 750,000 HP | 100,000 Gold\r\nThis boss has Inventory Refresh.\r\nThis boss has Ultimate Enrage Mode.\r\nThis Boss has a Magic Change. Doel can now cast any magic when he is below 75,000 HP and will use elemental weaknesses to his advantage.\r\nThis boss has Enhanced Shield. Doel's Shield when it is about to appear will grant him Damage Immunity. The Shield grants him half damage.\r\nDefeating this boss will increase your inventory to 64 Slots.\r\nIf you are on Hell Mode you will unlock Divine Red-Eyed Dragon mode.\r\n\r\n" +
                     "35. S Virage II | Head - 333,333 HP | Body - 222,222 HP | Arm 666,666 | 60,000 Gold\r\nThis boss has a modified Shared HP. Attacking the head heals the arm. Each attack to a body part will do 2x damage. Each part healed will recieve 1x HP. Attacking the arm heals the head. Attacking the head heals the body.\r\nThis boss has an enhanced Final Attack.\r\n\r\n" +
                     "36. Divine Dragon - 10,000 HP | 70,000 Gold\r\nThis boss has Armor Guard.\r\nThis Boss has Reverse Dragon Block Staff.\r\nThis boss has Ultimate Enrage Mode.\r\n\r\n" +
-                    "37. Lloyd - 666,666 HP | 80,000 Gold\r\nThis boss has modified Ultimate Enrage Mode. Dying will reset his stats, but each time you die Lloyd's base stats increase.\r\nThis boss will remove resistances.\r\nThis boss has a Magic Change every 7%.\r\n\r\n" +
+                    "37. Lloyd - 666,666 HP | 80,000 Gold\r\nThis boss has modified Ultimate Enrage Mode, Lloyd will increase his AT/MAT stats but lower his DF/MDF stats. Dying by his Dragoon Buster attack will lower his stats, but each time you die Lloyd's base stats increase.\r\nThis boss will remove resistances.\r\nThis boss has a Magic Change every 7%.\r\n\r\n" +
                     "38. Magician Faust - 1,000,000 HP | 120,000 Gold\r\nThis boss has Dragoon Guard.\r\nThis boss has any magic and will play to your weakness and strengths depending on the phase.\r\n\r\n" +
                     "39. Zieg - 720,000 HP | 100,000 Gold\r\nThis boss unlocks unused attacks.\r\nThis boss has enhanced damage on Explosion.\r\n\r\n" +
                     "40. Melbu Frahma - ??? HP - Unfinished.\r\n\r\n" +

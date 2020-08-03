@@ -1209,7 +1209,7 @@
                         <RowDefinition Height="90*"/>
                     </Grid.RowDefinitions>
                     <ComboBox x:Name="cboHelpTopic" Grid.Row="0" Grid.Column="0" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
-                    <TextBox x:Name="txtHelp" Grid.Row="1" TextWrapping="Wrap" Text="" FontSize="20" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" IsReadOnly="True"/>
+                    <TextBox x:Name="txtHelp" Grid.Row="1" TextWrapping="Wrap" Text="" FontSize="20" FontFamily="Consolas" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" IsReadOnly="True"/>
                 </Grid>
             </TabItem>
             <TabItem x:Name="tabReader" Header="Reader">
