@@ -488,7 +488,6 @@ public class BattleController {
         if (additionCount > 1) {
             ushort SP = Globals.CHARACTER_TABLE[slot].Read("SP");
             Globals.CHARACTER_TABLE[slot].Write("SP", 100);
-            Constants.WriteDebug(SP);
             int menu = 0;
             byte addition = 0;
             for (int i = 0; i < additionCount; i++) {

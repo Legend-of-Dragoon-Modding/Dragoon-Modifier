@@ -105,7 +105,7 @@ namespace Dragoon_Modifier {
             int origI = 0;
             try {
                 try {
-                    using (var itemData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Items.tsv")) {
+                    using (var itemData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Equipment.tsv")) {
                         itemList = new List<dynamic>();
                         bool firstline = true;
                         int i = 0;
@@ -113,7 +113,25 @@ namespace Dragoon_Modifier {
                             var line = itemData.ReadLine();
                             if (firstline == false) {
                                 var values = line.Split('\t').ToArray();
-                                itemList.Add(new ItemList(i, values));
+                                itemList.Add(new Equipment(i, values));
+                                if (values[0] != "") {
+                                    item2num.Add(values[0].ToLower(), i);
+                                    num2item.Add(i, values[0]);
+                                }
+                                i++;
+                            } else {
+                                firstline = false;
+                            }
+                        }
+                    }
+                    using (var itemData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Items.tsv")) {
+                        bool firstline = true;
+                        int i = 192;
+                        while (!itemData.EndOfStream) {
+                            var line = itemData.ReadLine();
+                            if (firstline == false) {
+                                var values = line.Split('\t').ToArray();
+                                itemList.Add(new Item(i, values));
                                 if (values[0] != "") {
                                     item2num.Add(values[0].ToLower(), i);
                                     num2item.Add(i, values[0]);
@@ -157,7 +175,7 @@ namespace Dragoon_Modifier {
                     foreach (var line in ReadAllResourceLines(Properties.Resources.Items)) {
                         if (origI > 0) {
                             var values = line.Split('\t').ToArray();
-                            originalItemList.Add(new ItemList(origI, values));
+                            originalItemList.Add(new Equipment(origI, values));
                         }
                         origI++;
                     }
@@ -526,7 +544,7 @@ namespace Dragoon_Modifier {
 
     }
 
-    public class ItemList {
+    public class Equipment {
         int id = 0;
         string name = "<END>";
         string description = "<END>";
@@ -721,7 +739,7 @@ namespace Dragoon_Modifier {
         public byte Death_Res { get { return death_res; } }
         public short Sell_Price { get { return sell_price; } }
 
-        public ItemList(int index, string[] values) {
+        public Equipment(int index, string[] values) {
             byte key = 0;
             short key2 = 0;
             id = index;
@@ -862,6 +880,267 @@ namespace Dragoon_Modifier {
                 sell_price = (short) Math.Round(temp);
             } else if (values[24] != "") {
                 Constants.WriteDebug(values[24] + " not found as Price for item: " + name);
+            }
+        }
+    }
+
+    public class Item {
+        int id = 0;
+        string name = "<END>";
+        string description = "<END>";
+        string encodedName = "FF A0 FF A0";
+        string encodedDescription = "FF A0 FF A0";
+        long descriptionPointer = 0;
+        long namePointer = 0;
+        byte target = 0;
+        byte element = 0;
+        byte damage = 0;
+        byte special1 = 0;
+        byte special2 = 0;
+        byte uu1 = 0;
+        byte special_ammount = 0;
+        byte icon = 0;
+        byte status = 0;
+        byte percentage = 0;
+        byte uu2 = 0;
+        byte baseSwitch = 0;
+        short sell_price = 0;
+
+
+        #region Dictionaries
+
+        Dictionary<string, byte> iconDict = new Dictionary<string, byte>() {
+                { "sword", 0 },
+                { "axe", 1 },
+                { "hammer", 2 },
+                { "spear", 3 },
+                { "bow", 4 },
+                { "mace", 5 },
+                { "knuckle", 6 },
+                { "boxing glove", 7 },
+                { "clothes", 8 },
+                { "robe", 9 },
+                { "armor", 10 },
+                { "breastplate", 11 },
+                { "red dress", 12 },
+                { "loincloth", 13 },
+                { "warrior dress", 14 },
+                { "crown", 15 },
+                { "hairband", 16 },
+                { "bandana", 16 },
+                { "hat", 17 },
+                { "helm", 18 },
+                { "shoes", 19 },
+                { "kneepiece", 20 },
+                { "boots", 21 },
+                { "bracelet", 22 },
+                { "ring", 23 },
+                { "amulet", 24 },
+                { "stone", 25 },
+                { "jewelery", 26 },
+                { "pin", 27 },
+                { "bell", 28 },
+                { "bag", 29 },
+                { "cloak", 30 },
+                { "scarf", 31 },
+                { "horn", 32 },
+                {"none", 64 },
+                {"", 64 }
+            };
+        Dictionary<string, byte> charDict = new Dictionary<string, byte>() {
+                {"meru", 1 },
+                {"shana", 2 },
+                {"miranda", 2 },
+                {"???", 2 },
+                {"rose", 4 },
+                {"haschel", 16 },
+                {"kongol", 32 },
+                {"lavitz", 64 },
+                {"albert", 64 },
+                {"dart", 128 },
+                {"female", 7 },
+                {"male", 240 },
+                {"all", 247 },
+                {"none", 0 },
+                {"", 0 }
+            };
+        Dictionary<string, byte> typeDict = new Dictionary<string, byte>() {
+                {"weapon", 128 },
+                {"armor", 32 },
+                {"helm", 64 },
+                {"boots", 16 },
+                {"accessory", 8 },
+                {"none", 0},
+                {"", 0 }
+            };
+        Dictionary<string, byte> element2num = new Dictionary<string, byte>() {
+                {"", 0 },
+                {"none", 0 },
+                {"water", 1 },
+                {"earth", 2 },
+                {"dark", 4 },
+                {"non-elemental", 8 },
+                {"thunder", 16 },
+                {"light", 32 },
+                {"wind", 64 },
+                {"fire", 128 }
+            };
+        Dictionary<string, byte> status2num = new Dictionary<string, byte>() {
+                {"", 0 },
+                {"none", 0 },
+                {"death", 0 },
+                {"petrification", 1 },
+                {"pe", 1 },
+                {"bewitchment", 2 },
+                {"be", 2 },
+                {"confusion", 4 },
+                {"cn", 4 },
+                {"fear", 8 },
+                {"fe", 8 },
+                {"stun", 16 },
+                {"st", 16 },
+                {"armblocking", 32 },
+                {"ab", 32 },
+                {"dispirit", 64 },
+                {"ds", 64 },
+                {"poison", 128 },
+                {"po", 128 },
+                {"all", 255 }
+            };
+        Dictionary<string, byte> special12num = new Dictionary<string, byte>() {
+                {"", 0 },
+                {"none", 0 },
+                {"mp_m_hit", 1 },
+                {"sp_m_hit", 2 },
+                {"mp_p_hit", 4 },
+                {"sp_p_hit", 8 },
+                {"sp_multi", 16 },
+                {"p_half", 32 }
+            };
+        Dictionary<string, byte> special22num = new Dictionary<string, byte>() {
+                {"", 0 },
+                {"none", 0 },
+                {"mp_multi", 1 },
+                {"hp_multi", 2 },
+                {"m_half", 4 },
+                {"revive", 8 },
+                {"sp_regen", 16 },
+                {"mp_regen", 32 },
+                {"hp_regen", 64 }
+            };
+        Dictionary<string, byte> death2num = new Dictionary<string, byte>() {
+                {"", 0 },
+                {"none", 0 },
+                {"dragon_buster", 4 },
+                {"attack_all", 8 },
+                {"death_chance", 64 },
+                {"death_res", 128 }
+            };
+
+        #endregion
+
+        public int ID { get { return id; } }
+        public string Name { get { return name; } }
+        public string Description { get { return description; } }
+        public string EncodedName { get { return encodedName; } }
+        public string EncodedDescription { get { return encodedDescription; } }
+        public long DescriptionPointer { get; set; }
+        public long NamePointer { get; set; }
+        public byte Target { get { return target; } }
+        public byte Element { get { return element; } }
+        public byte Damage { get { return damage; } }
+        public byte Special1 { get { return special1; } }
+        public byte Special2 { get { return special2; } }
+        public byte UU1 { get { return uu1; } }
+        public byte Special_Ammount { get { return special_ammount; } }
+        public byte Icon { get { return icon; } }
+        public byte Status { get { return status; } }
+        public byte Percentage { get { return percentage; } }
+        public byte UU2 { get { return uu2; } }
+        public byte BaseSwitch { get { return baseSwitch; } }
+        public short Sell_Price { get { return sell_price; } }
+
+        public Item(int index, string[] values) {
+            byte key = 0;
+            short key2 = 0;
+            id = index;
+            name = values[0];
+            if (!(name == "" || name == " ")) {
+                encodedName = LoDDict.StringEncode(name);
+            }
+            if (Byte.TryParse(values[1], NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+                target = key;
+            } else if (values[1] != "") {
+                Constants.WriteDebug(values[1] + " not found as Target for item: " + name);
+            }
+            if (element2num.TryGetValue(values[2].ToLower(), out key)) {
+                element = key;
+            } else {
+                Constants.WriteDebug(values[2] + " not found as element for item: " + name);
+            }
+            if (Byte.TryParse(values[3], NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+                damage = key;
+            } else if (values[3] != "") {
+                Constants.WriteDebug(values[3] + " not found as Damage for item: " + name);
+            }
+            foreach (string substring in values[4].Replace(" ", "").Split(',')) {
+                if (special12num.TryGetValue(substring.ToLower(), out key)) {
+                    special1 |= key;
+                } else {
+                    Constants.WriteDebug(substring + " not found as Special1 for item:" + name);
+                }
+            }
+            foreach (string substring in values[5].Replace(" ", "").Split(',')) {
+                if (special22num.TryGetValue(substring.ToLower(), out key)) {
+                    special2 |= key;
+                } else {
+                    Constants.WriteDebug(substring + " not found as Special2 for item:" + name);
+                }
+            }
+            if (Byte.TryParse(values[6], NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+                uu1 = key;
+            } else if (values[6] != "") {
+                Constants.WriteDebug(values[6] + " not found as UU1 for item: " + name);
+            }
+            if (Byte.TryParse(values[7], NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+                special_ammount = key;
+            } else if (values[7] != "") {
+                Constants.WriteDebug(values[7] + " not found as Special_Ammount for item: " + name);
+            }
+            if (iconDict.TryGetValue(values[8].ToLower(), out key)) {
+                icon = key;
+            } else {
+                Constants.WriteDebug(values[8] + " not found as icon for item: " + name);
+            }
+            if (status2num.TryGetValue(values[9].ToLower(), out key)) {
+                status = key;
+            } else {
+                Constants.WriteDebug(values[9] + " not found as Status for item: " + name);
+            }
+            if (Byte.TryParse(values[10], NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+                percentage = key;
+            } else if (values[10] != "") {
+                Constants.WriteDebug(values[10] + " not found as Percentage for item: " + name);
+            }
+            if (Byte.TryParse(values[11], NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+                uu2 = key;
+            } else if (values[11] != "") {
+                Constants.WriteDebug(values[11] + " not found as UU2 for item: " + name);
+            }
+            if (Byte.TryParse(values[12], NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+                baseSwitch = key;
+            } else if (values[12] != "") {
+                Constants.WriteDebug(values[12] + " not found as Special_Ammount for item: " + name);
+            }
+            description = values[13];
+            if (!(description == "" || description == " ")) {
+                encodedDescription = LoDDict.StringEncode(description);
+            }
+            if (Int16.TryParse(values[14], NumberStyles.AllowLeadingSign, null as IFormatProvider, out key2)) {
+                float temp = key2 / 2;
+                sell_price = (short) Math.Round(temp);
+            } else if (values[14] != "") {
+                Constants.WriteDebug(values[14] + " not found as Price for item: " + name);
             }
         }
     }

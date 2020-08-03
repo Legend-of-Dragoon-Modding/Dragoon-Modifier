@@ -2072,6 +2072,9 @@ namespace Dragoon_Modifier {
             if (!Globals.IN_BATTLE) {
                 if (SHOP_MAPS.Contains((int)Globals.MAP) && emulator.ReadByte("OVERWORLD") == 1) {
                     if (!SHOP_CHANGED) {
+                        if (emulator.ReadByte(0xCB430) != 12) {
+                            return;
+                        }
                         long address = Constants.GetAddress("SHOP_LIST");
                         int shopcount = 0;
                         foreach (byte[] shop in Globals.DICTIONARY.ShopList) {
@@ -2096,6 +2099,7 @@ namespace Dragoon_Modifier {
                             emulator.WriteShort(address + i * 0x2, (ushort) item.Sell_Price);
                             i++;
                         }
+                        SHOP_CHANGED = true;
                         Constants.WriteDebug("Shop Changed");
                     }
                 } else if (SHOP_CHANGED && emulator.ReadByte("OVERWORLD") != 0) {

@@ -1,0 +1,194 @@
+Item Name	Equip Type	Who equips	Icon	Element	Status	Status Chance	AT	MAT	DF	MDF	SPD	A-Hit	M-Hit	A-AV	M-AV	E_Half	E_Immune	Status_Resist	Special1	Special2	Special_Ammount	Death_Res	Description	Price(even)
+Broad Sword	Weapon	Dart	Sword				2																 	20
+Bastard Sword	Weapon	Dart	Sword				7																 	60
+Heat Blade	Weapon	Dart	Sword	Fire			18																Fire-based attack.	150
+Falchion	Weapon	Dart	Sword				26																 	250
+Mind Crush	Weapon	Dart	Sword		Confusion	20	34																20% chance of<LINE>confusing enemy.	350
+Fairy Sword	Weapon	Dart	Sword				39												sp_multi		50		Attacks generate<LINE>50% more SP.	400
+Claymore	Weapon	Dart	Sword				44																 	500
+Soul Eater	Weapon	Dart	Sword				75													hp_regen	-10		Powerful, but<LINE>HP decays<LINE>each turn.	450
+Axe	Weapon	Kongol	Axe				45																 	200
+Tomahawk	Weapon	Kongol	Axe				59																 	300
+Battle Axe	Weapon	Kongol	Axe				67																 	350
+Great Axe	Weapon	Kongol	Axe		Stun	20	79																20% chance of<LINE>stunning enemy.	400
+Indora's Axe	Weapon	Kongol	Axe		Death	10	88															death_chance	10% chance to<LINE>instantly kill<LINE>enemy.	500
+Rapier	Weapon	Rose	Sword				13																 	60
+Shadow Cutter	Weapon	Rose	Sword	Dark			24																Dark-based attack.	200
+Dancing Dagger	Weapon	Rose	Sword				30																 	300
+Flamberge	Weapon	Rose	Sword		Stun	10	35																20% chance of<LINE>stunning enemy.	350
+Gladius	Weapon	Rose	Sword		Death	10	40															death_chance	10% chance to<LINE>instantly kill<LINE>enemy.	400
+Dragon Buster	Weapon	Rose	Sword				100															dragon_buster	 	500
+Demon Stilleto	Weapon	Rose	Sword		Fear	20	18																20% chance of<LINE>frightening enemy.	160
+Spear	Weapon	Lavitz	Spear				4																 	20
+Lance	Weapon	Lavitz	Spear				19																 	100
+Glaive	Weapon	Lavitz	Spear				28																 	250
+Spear of Terror	Weapon	Lavitz	Spear		Fear	20	37																20% chance of<LINE>frightening enemy.	300
+Partisan	Weapon	Lavitz	Spear				56																 	400
+Halberd	Weapon	Lavitz	Spear				65																 	500
+Twister Glaive	Weapon	Lavitz	Spear	Wind			28																Wind-based attack.	140
+Short Bow	Weapon	Shana	Bow				3					20											 	20
+Sparkle Arrow	Weapon	Shana	Bow	Light			9					20											Light-based attack.	50
+Long Bow	Weapon	Shana	Bow				18					30											 	150
+Bemusing Arrow	Weapon	Shana	Bow		Confusion	20	24					20											20% chance of<LINE>confusing enemy.	250
+Virulent Arrow	Weapon	Shana	Bow		Poison	20	30					20											20% chance of<LINE>poisoning enemy.	350
+Detonate Arrow	Weapon	Shana	Bow				50					20										attack_all	Hits all enemies.	400
+Arrow of Force	Weapon	Shana	Bow				40					20							sp_multi		50		Attacks generate<LINE>50% more SP.	500
+Mace	Weapon	Meru	Mace				15																 	200
+Morning Star	Weapon	Meru	Hammer				20																 	250
+War Hammer	Weapon	Meru	Hammer				25																 	300
+Heavy Mace	Weapon	Meru	Hammer		Stun	20	30																20% chance of<LINE>stunning enemy.	400
+Basher	Weapon	Meru	Hammer				40																 	500
+Pretty Hammer	Weapon	Meru	Hammer				15												sp_multi		100		Weak, but<LINE>generates twice<LINE>as much SP.	400
+Iron Knuckle	Weapon	Haschel	Knuckle				20																 	100
+Beast Fang	Weapon	Haschel	Knuckle		Stun	20	31																20% chance of<LINE>stunning enemy.	250
+Diamond Claw	Weapon	Haschel	Knuckle				37																 	300
+Thunder Fist	Weapon	Haschel	Knuckle	Thunder			49																Thunder-based<LINE>attack.	450
+Destroyer Mace	Weapon	Haschel	Knuckle				55																Power increases<LINE>inversely to HP.	500
+Brass Knuckle	Weapon	Haschel	Knuckle		Death	10	43															death_chance	10% chance to<LINE>instantly kill<LINE>enemy.	350
+Leather Armor	Armor	Dart, Lavitz	Clothes						2	2													 	20
+Scale Armor	Armor	Dart, Lavitz	Armor						8	8													 	50
+Chain Mail	Armor	Dart, Lavitz	Armor						20	24													 	150
+Plate Mail	Armor	Dart, Lavitz	Armor						27	20													 	200
+Saint Armor	Armor	Dart, Lavitz	Armor						34	34									sp_p_hit		20		Gain 20 SP when<LINE>attacked<LINE>physically.	300
+Red DG Armor	Armor	Dart	Armor						41	40							Fire						Nullifies damage<LINE>from fire-based<LINE>attacks.	800
+Jade DG Armor	Armor	Lavitz	Armor						54	27							Wind						Nullifies damage<LINE>from wind-based<LINE>attacks.	800
+Lion Fur	Armor	Kongol	Loincloth						46	20													 	150
+Breast Plate	Armor	Kongol	Breastplate						59	14													 	250
+Giganto Armor	Armor	Kongol	Armor						75	26									sp_p_hit		20		Gain 20 SP when<LINE>attacked<LINE>physically.	400
+Gold DG Armor	Armor	Kongol	Armor						88	23							Earth						Nullifies damage<LINE>from earth-based<LINE>attacks.	800
+Disciple Vest	Armor	Haschel	Warrior Dress						13	8				10									 	60
+Warrior Dress	Armor	Haschel	Warrior Dress						25	23				20									 	150
+Master's Vest	Armor	Haschel	Warrior Dress						30	29				10					sp_p_hit		20		Gain 20 SP when<LINE>attacked<LINE>physically.	250
+Energy Girdle	Armor	Haschel	Warrior Dress						37	26				10					sp_multi		50		Attacks generate<LINE>50% more SP.	300
+Violet DG Armor	Armor	Haschel	Warrior Dress						45	40				10	10		Thunder						Nullifies damage<LINE>from thunder-based<LINE>attacks.	800
+Clothes	Armor	Female	Robe						4	5				5	5								 	20
+Leather Jacket	Armor	Female	Robe						7	12				5	5								 	50
+Silver Vest	Armor	Female	Robe						13	27				10	5								 	150
+Sparkle Dress	Armor	Female	Robe						19	45				5	5				sp_p_hit		20		Gain 20 SP when<LINE>attacked<LINE>physically.	200
+Robe	Armor	Female	Robe						25	35				5	5				sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.	300
+Silver DG Armor	Armor	Shana	Armor						27	80				5	5		Light						Nullifies damage<LINE>from light-based<LINE>attacks.	800
+Dark DG Armor	Armor	Rose	Armor						41	42				5	5		Dark						Nullifies damage<LINE>attacks.	800
+Blue DG Armor	Armor	Meru	Armor						30	54				5	5		Water						Nullifies damage<LINE>from water-based<LINE>attacks.	800
+Armor of Yore	Armor	Dart, Lavitz	Armor						35	35								Poison, Stun, Arm Blocking					Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.	500
+Satori Vest	Armor	Haschel	Warrior Dress						40	31				10				Poison, Stun, Arm Blocking					Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.	500
+Rainbow Dress	Armor	Female	Robe						32	55				5	5			Poison, Stun, Arm Blocking					Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.	500
+Angel Robe	Armor	Shana, Meru	Robe						10	20				5	5					revive	40		40% chance of<LINE>reviving from<LINE>death.	500
+Armor of Legend	Armor	All	Armor						127					50									Greatly reduces<LINE>damage from<LINE>physical attacks.	10000
+																							 	2
+Bandana	Helm	Male	Bandana					3				100	100										 	10
+Sallet	Helm	Male	Helm					8				110	100										Increases hit<LINE>chance of physical<LINE>attacks by 10%.	40
+Armlet	Helm	Male	Helm					23		5		100	100										 	100
+Knight Helm	Helm	Male	Helm					37	5			100	100						sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.	150
+Giganto Helm	Helm	Kongol	Helm					14	10	5		100	100						sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.	200
+Soul Headband	Helm	Haschel	Bandana					25	5	5		100	100						sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.	200
+Felt Hat	Helm	Female	Hat					5				100	100										 	10
+Cape	Helm	Female	Hat					17				100	100										 	60
+Tiara	Helm	Female	Crown					42	5			100	110										Increases hit<LINE>chance of magical<LINE>attacks by 10%.	150
+Jeweled Crown	Helm	Shana, Meru	Crown					24		5		100	100						sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.	200
+Rose's Hair Band	Helm	Rose	Bandana					36				100	100									death_res	Grants immunity<LINE>to instant death.	250
+																							 	2
+Phoenix Plume	Helm	All	Helm					30		10		100	100					Bewitchment, Confusion, Fear, Dispirit					Avoids bewitchment,<LINE>confusion, fear,<LINE>and dispiriting.	600
+Legend Casque	Helm	All	Helm					50		127		100	100		50								Greatly reduces<LINE>damage from<LINE>magical attacks.	10000
+Dragon Helm	Helm	All	Helm					50	10			100	100							hp_multi	50		Raises maximum<LINE>HP 50%.	500
+Magical Hat	Helm	All	Hat					50		10		100	100							mp_multi	50		Raises maximum<LINE>MP 50%.	500
+																							 	2
+Leather Boots	Boots	Male	Boots																				 	10
+Iron Kneepiece	Boots	Male	Kneepiece						5														 	100
+Combat Shoes	Boots	Male	Shoes						5					5									Increases escape<LINE>chance from physicalattacks by 5%.	150
+Leather Shoes	Boots	Female	Shoes																				 	10
+Soft Boots	Boots	Female	Boots						5														 	100
+Stardust Boots	Boots	Female	Boots						5						5								Increases escape<LINE>chance from magical<LINE>attacks by 5%.	150
+Magical Greaves	Boots	All	Kneepiece								10			5	5								Increases escape<LINE>chance from phys./<LINE>mag. attacks by 5%.	300
+Dancer's Boots	Boots	Female	Boots								20												Raises speed<LINE>by 20.	500
+Bandit's Shoes	Boots	Male	Shoes								20												Raises speed<LINE>by 20.	300
+																							 	2
+Poison Guard	Accessory	All	Ring															Poison					Grants immunity<LINE>to poison.	200
+Active Ring	Accessory	All	Ring															Dispirit					Grants immunity<LINE>to dispiriting.	200
+Protector	Accessory	All	Ring															Arm Blocking					Grants immunity<LINE>to arm blocking.	200
+Panic Guard	Accessory	All	Ring															Confusion					Grants immunity<LINE>to confusion.	300
+Stun Guard	Accessory	All	Ring															Stun					Grants immunity<LINE>to being stunned.	200
+Bravery Amulet	Accessory	All	Ring															Fear					Grants immunity<LINE>to fear.	300
+Magic Ego Bell	Accessory	All	Bell															Bewitchment					Grants immunity<LINE>to bewitchment.	300
+Destone Amulet	Accessory	All	Amulet															Petrification					Grants immunity<LINE>to petrification.	400
+Power Wrist	Accessory	All	Ring				10																Raises physical<LINE>attack by 10.	200
+Knight Shield	Accessory	All	Ring						10														Raises physical<LINE>defense by 10.	200
+Magical Ring	Accessory	All	Ring					30															Raises magical<LINE>attack by 30.	600
+Spiritual Ring	Accessory	All	Ring							30													Raises magical<LINE>defense by 30.	600
+Attack Badge	Accessory	All	Ring				20	20															Raises physical<LINE>& magical<LINE>attack by 20.	1000
+Guard Badge	Accessory	All	Ring						20	20													Raises physical<LINE>& magical<LINE>defense by 20.	1000
+Giganto Ring	Accessory	All	Ring				20		20														Raises physical<LINE>attack & defense<LINE>by 20.	1000
+Elude Cloak	Accessory	All	Cloak											20									Increases escape<LINE>chance from phys.<LINE>attacks by 20%.	300
+Spirit Cloak	Accessory	All	Cloak												20								Increases escape<LINE>chance from magical<LINE>attacks by 20%.	300
+Sage's Cloak	Accessory	All	Cloak											20	20								Increases escape<LINE>chance from phys./<LINE>mag. attacks by 20%	600
+Physical Ring	Accessory	All	Ring																	hp_multi	50		Raises maximum<LINE>HP 50%.	1000
+Amulet	Accessory	All	Amulet																	mp_multi	100		Doubles<LINE>maximum MP.	1000
+Wargod's Sash	Accessory	All	Ring																sp_multi		50		Attacks generate<LINE>50% more SP.	1000
+Spirit Ring	Accessory	All	Ring																	sp_regen	20		Recovers 20 SP<LINE>each turn.	500
+Therapy Ring	Accessory	All	Ring																	hp_regen	10		Recovers 10% HP<LINE>each turn.	500
+Mage Ring	Accessory	All	Ring																	mp_regen	10		Recovers 10% MP<LINE>each turn.	500
+Wargod's Amulet	Accessory	All	Amulet									20	20										Increases hit rate<LINE>for mag./phys.<LINE>attacks by 20%.	500
+Talisman	Accessory	All	Amulet																			death_res	Grants immunity<LINE>to instant death.	500
+																							 	500
+Holy Ankh	Accessory	All	Ring																	revive	40		40% chance of<LINE>reviving from<LINE>death.	500
+Dancer's Ring	Accessory	All	Ring								20												Raises speed<LINE>by 20.	500
+																							 	500
+Bandit's Ring	Accessory	All	Ring								20												Raises speed<LINE>by 20.	500
+Red-Eye Stone	Accessory	All	Stone													Fire							Halves damage<LINE>from fire-based<LINE>attacks.	500
+Jade Stone	Accessory	All	Stone													Wind							Halves damage<LINE>from wind-based<LINE>attacks.	500
+Silver Stone	Accessory	All	Stone													Light							Halves damage<LINE>from light-based<LINE>attacks.	500
+Darkness Stone	Accessory	All	Stone													Dark							Halves damage<LINE>from dark-based<LINE>attacks.	500
+Blue Sea Stone	Accessory	All	Stone													Water							Halves damage<LINE>from water-based<LINE>attacks.	500
+Violet Stone	Accessory	All	Stone													Thunder							Halves damage<LINE>from thunder-based<LINE>attacks.	500
+Golden Stone	Accessory	All	Stone													Earth							Halves damage<LINE>from earth-based<LINE>attacks.	500
+																							 	200
+Ruby Ring	Accessory	All	Ring																sp_m_hit		20		Gain 20 SP when<LINE>damaged magically.	1000
+Sapphire Pin	Accessory	All	Pin																mp_m_hit		10		Gain 10% MP when<LINE>damaged magically.	1000
+Rainbow Earring	Accessory	All	Ring															All					Avoids all<LINE>abnormal status<LINE>ailments.	1000
+																							 	2
+Emerald Earring	Accessory	All	Ring																sp_p_hit		20		Gain 20 SP when<LINE>damaged physically.	1000
+																							 	2
+Platinum Collar	Accessory	All	Ring																mp_p_hit		10		Gain 10% MP when<LINE>damaged physically.	1000
+Phantom Shield	Accessory	All	Ring																p_half	m_half			Halves damage<LINE>from all attacks.	10000
+Dragon Shield	Accessory	All	Ring																p_half				Halves physical<LINE>damage.	5000
+Angel Scarf	Accessory	All	Scarf																	m_half			Halves magical<LINE>damage.	5000
+Bracelet	Accessory	All	Bracelet																				 	10
+Fake Power Wrist	Accessory	All	Ring				5																Raises physical<LINE>attack by 5.	100
+Fake Shield	Accessory	All	Ring						5														Raises physical<LINE>defense by 5.	100
+																							 	50
+Wargod Calling	Accessory	All	Ring																				Automatic Addition:<LINE>Half Damage and SP.	1000
+Ultimate Wargod	Accessory	All	Ring																				Automatic Addition:<LINE>Full Damage and SP.	10000
+																								2
+																								2
+																								2
+																								2
+																								2
+																								2
+																								2
+																								2
+																								2
+																								2
+																								2
+																								2
+																								2
+																								2
+																								2
+																								2
+																								2
+																								2
+																								2
+																								2
+																								2
+																								2
+																								2
+																								2
+																								2
+																								2
+																								2
+																								2
+																								2
+																								2
+																								2
+																								2
+																								2
+																								2
+																								4
