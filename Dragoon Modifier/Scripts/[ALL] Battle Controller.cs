@@ -635,6 +635,9 @@ public class BattleController {
             Globals.CHARACTER_TABLE[0].Write("HP_Regen", 0);
             Globals.CHARACTER_TABLE[0].Write("SP_Regen", 0);
             Globals.CHARACTER_TABLE[0].Write("MP_Regen", 0);
+            if (Globals.ENCOUNTER_ID == 413) {
+                Globals.MONSTER_TABLE[0].Write("Action", 12);
+            }
             while (emulator.ReadShort("BATTLE_VALUE") > 9999 && (Globals.CHARACTER_TABLE[0].Read("Turn") == 0)) {
                 Thread.Sleep(50);
             }
