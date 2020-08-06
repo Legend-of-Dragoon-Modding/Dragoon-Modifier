@@ -93,12 +93,12 @@ public class BattleController {
                 Globals.STATS_CHANGED = false;
                 Globals.IN_BATTLE = false;
                 Globals.EXITING_BATTLE = 2;
-            } else {
-                if (Globals.NO_DART != null && (encounterValue > 0 && encounterValue < 9999)) {
-                    if (Globals.PARTY_SLOT[0] != 0 && Globals.PARTY_SLOT[1] < 9 && Globals.PARTY_SLOT[2] < 9) {
-                        emulator.WriteByteU(Constants.GetAddress("PARTY_SLOT") + Constants.OFFSET, 0);
+                if (Globals.NO_DART != null) {
+                    while (emulator.ReadByte("TRANSITION") != 12) {
+                        Thread.Sleep(50);
                     }
                 }
+                Globals.DART_SWITCH = false;
             }
         }
     }
