@@ -2039,7 +2039,7 @@ namespace Dragoon_Modifier {
         
         public void ShopChanges() {
             if (!Globals.IN_BATTLE && SHOP_MAPS.Contains((int) Globals.MAP)) {
-                if (emulator.ReadByte(0x4DD10) == 0) {
+                if (emulator.ReadByte("SHOP_DISC_SWAP") == 0) {
                     SHOP_DISC_SWAP = true;
                 }
                 if (SHOP_DISC_SWAP) {
@@ -2052,26 +2052,35 @@ namespace Dragoon_Modifier {
                     ShopTableChange(false);
                 }
             }
+            if (emulator.ReadByte("OVERWORLD") == 3) {
+                SHOP_CHANGED = false;
+            }
         }
 
         public void ShopContentChange() {
             if (SHOP_CHANGED == false && emulator.ReadByte("SHOP_BUY-SELL") == 3) {
-                byte shop_og_size = emulator.ReadByte(0x11E13C);
-                int shop = emulator.ReadByte("SHOP_ID"); // Shop ID
+                long address = Constants.GetAddress("SHOP_CONTENT");
+                byte shop_og_size = emulator.ReadByte(address + 0x44);
+                int shop = emulator.ReadByte("SHOP_ID");
                 int i = 0;
                 foreach (byte item in Globals.DICTIONARY.ShopList[shop]) {
-                    WriteShop(0x11E0F8 + i * 4, (ushort) item, emulator);
-                    WriteShop(0x11E0F8 + 0x2 + i * 4, (ushort) (Globals.DICTIONARY.ItemList[item].Sell_Price * 2), emulator);
+                    emulator.WriteShort(address + i * 4, (ushort) item);
+                    emulator.WriteShort(address + 0x2 + i * 4, (ushort) (Globals.DICTIONARY.ItemList[item].Sell_Price * 2));
                     i += 1;
                 }
                 byte[] current_shop = Globals.DICTIONARY.ShopList[shop];
                 byte[] filtered_shop = current_shop.Where(x => x != 255).ToArray();
                 int shop_size = filtered_shop.Length;
-                emulator.WriteByte(0x11E13C, shop_size);
+                emulator.WriteByte(address + 0x44, shop_size);
+                if (filtered_shop[0] >= 192) {
+                    emulator.WriteByte(address + 0x45, 1);
+                } else {
+                    emulator.WriteByte(address + 0x45, 0);
+                }
                 if (shop_og_size > shop_size) {
                     for (int z = shop_size; z < 17; z++) {
-                        WriteShop(0x11E0F8 + z * 4, (ushort) 255, emulator);
-                        WriteShop(0x11E0F8 + 2 + z * 4, (ushort) 0, emulator);
+                        emulator.WriteShort(address + z * 4, (ushort) 255);
+                        emulator.WriteShort(address + 2 + z * 4, (ushort) 0);
                     }
                 }
                 Constants.WriteDebug("Contents of Shop " + shop + " Changed");
@@ -2113,8 +2122,6 @@ namespace Dragoon_Modifier {
                     SHOP_CHANGED = true;
                     Constants.WriteDebug("Shop Table and Prices Changed");
                 }
-            } else if (SHOP_CHANGED && emulator.ReadByte("OVERWORLD") != 0) {
-                SHOP_CHANGED = false;
             }
         }
 
