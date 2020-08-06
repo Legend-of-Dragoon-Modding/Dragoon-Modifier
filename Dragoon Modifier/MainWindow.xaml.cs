@@ -2092,7 +2092,7 @@ namespace Dragoon_Modifier {
         public void ShopTableChange(bool bypass) {
             if (emulator.ReadByte("OVERWORLD") == 1) {
                 if (!SHOP_CHANGED || bypass) {
-                    if (!bypass && emulator.ReadByte(0xCB430) != 12) {
+                    if (!bypass && emulator.ReadByte("TRANSITION") != 12) {
                         return;
                     }
                     long address = Constants.GetAddress("SHOP_LIST");
@@ -2148,8 +2148,8 @@ namespace Dragoon_Modifier {
             if (emulator.ReadByte("OVERWORLD") == 1) {
                 ShopChanges();
                 emulator.WriteByte("SHOP_ID", shop);
-                emulator.WriteByte(0xBDC38, 6);
-                emulator.WriteByte(0xCB430, 13);
+                emulator.WriteByte("MENU", 6);
+                emulator.WriteByte("TRANSITION", 13);
 
             }
         }
