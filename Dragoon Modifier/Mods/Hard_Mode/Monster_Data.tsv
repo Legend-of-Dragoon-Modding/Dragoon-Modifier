@@ -1,13 +1,13 @@
 M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-Half	E-Immune	E-Half	Status-Resist	Death-Resist	EXP	Gold	Drop	Drop-Chance	M-extra-name
-0	Mantis	Earth	50	10	8	170	95	50	0	0	0	0	0	0	None	None	99	0	12	6	Pellet	8	Mantis
-1	Scissorhands	Earth	240	48	41	240	90	60	0	0	0	0	0	0	None	None	99	0	40	18	Meteor Fall	8	Scissorhands
+0	Mantis	Earth	50	10	8	170	95	50	0	0	0	0	0	0	None	None	99	0	12	6	Pellet	40	Mantis
+1	Scissorhands	Earth	240	48	41	240	90	60	0	0	0	0	0	0	None	None	99	0	40	18	Meteor Fall	32	Scissorhands
 2	Spinninghead	Non-Elemental	1421	65	82	120	200	60	0	0	0	0	0	0	None	None	255	128	99	30	Mind Purifier	8	Spinninghead
 3	Sandworm	Earth	5760	115	98	120	120	50	0	0	0	0	0	0	None	None	99	16	168	51	Spirit Potion	8	Sandworm
-4	Sea Dragon	Fire	82	12	15	100	140	70	20	0	0	0	0	0	None	None	99	0	14	9	Burn Out	10	Sea Dragon
-5	Land Skater	Water	1154	79	84	140	160	60	10	0	0	0	0	0	None	None	99	0	88	33	Spear Frost	8	Land Skater
+4	Sea Dragon	Fire	82	12	15	100	140	70	20	0	0	0	0	0	None	None	99	0	14	9	Burn Out	40	Sea Dragon
+5	Land Skater	Water	1154	79	84	140	160	60	10	0	0	0	0	0	None	None	99	0	88	33	Spear Frost	32	Land Skater
 6	Beastie Dragon	Wind	1243	91	67	170	130	50	0	0	0	0	0	0	None	None	99	16	110	33	Total Vanishing	8	Beastie Dragon
 7	Manticore	Dark	4800	130	141	210	220	50	0	0	0	0	0	0	None	None	99	16	216	60	Depetrifier	8	Manticore
-8	Goblin	Fire	10	4	3	140	140	40	0	0	0	0	0	0	None	None	99	0	4	6	Detonate Rock	10	Goblin
+8	Goblin	Fire	10	4	3	140	140	40	0	0	0	0	0	0	None	None	99	0	4	6	Detonate Rock	40	Goblin
 9	Minotaur	Earth	3840	135	110	200	140	50	0	0	0	0	0	0	None	None	107	16	180	48	Heavy Mace	2	Minotaur
 10	Hyper Skeleton	Dark	4800	143	120	220	120	60	0	0	0	0	0	0	None	None	255	144	204	54	Spear of Terror	2	Hyper Skeleton
 11	Basilisk	Earth	3280	131	131	160	160	50	0	0	0	0	0	0	None	None	99	144	150	51	Depetrifier	8	Basilisk
@@ -16,7 +16,7 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 14	Spider Urchin	Thunder	300	48	45	220	140	60	0	0	0	0	0	0	None	None	99	0	40	18	Poison Needle	8	Spider Urchin
 15	Strong Man	Earth	200	23	18	140	100	60	0	0	0	0	0	0	None	None	99	0	18	9	Fake Power Wrist	2	Strong Man
 16	Dragonfly	Thunder	888	50	49	160	190	80	0	0	0	0	0	0	None	None	99	0	48	21	Angel's Prayer	8	Dragonfly
-17	Hell Hound	Fire	375	23	34	100	180	60	5	0	0	0	0	0	None	None	99	0	20	9	Burn Out	8	Hell Hound
+17	Hell Hound	Fire	375	23	34	100	180	60	5	0	0	0	0	0	None	None	99	0	20	9	Burn Out	32	Hell Hound
 18	Death	Dark	600	72	57	160	100	50	0	0	0	0	0	0	None	None	127	144	66	30	Total Vanishing	8	Death
 19	Lizard Man	Earth	100	19	17	180	60	50	0	0	0	0	0	0	None	None	99	0	18	15	Beast Fang	2	Lizard Man
 20	White Ape	Earth	2000	113	90	160	120	50	0	0	0	0	0	0	None	None	99	0	144	51	Healing Potion	8	White Ape
@@ -28,16 +28,16 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 26	Earth Shaker	Earth	600	51	45	180	100	50	0	0	0	0	0	0	None	None	99	16	48	15	Stunning Hammer	8	Earth Shaker
 27	Vampire Kiwi	Dark	32	7	9	100	140	70	0	0	0	0	0	0	None	None	99	0	8	9	Healing Potion	8	Vampire Kiwi
 28	Myconido	Earth	75	10	17	100	200	80	20	0	0	0	0	0	None	None	227	0	11	8	Body Purifier	10	Myconido
-29	Roc	Wind	624	45	45	140	70	60	0	0	0	0	0	0	None	None	99	16	44	24	Down Burst	8	Roc
+29	Roc	Wind	624	45	45	140	70	60	0	0	0	0	0	0	None	None	99	16	44	24	Down Burst	24	Roc
 30	Gnome	Earth	947	78	72	200	110	50	0	0	0	0	0	0	Earth	None	255	0	108	42	Healing Potion	8	Gnome
 31	Bowling	Non-Elemental	1600	102	82	200	120	60	0	0	0	0	0	0	None	None	255	0	132	42	Attack Ball	8	Bowling
-32	Freeze Knight	Water	1332	84	96	160	200	50	0	0	0	0	0	0	Water	None	255	16	110	27	Fatal Blizzard	8	Freeze Knight
+32	Freeze Knight	Water	1332	84	96	160	200	50	0	0	0	0	0	0	Water	None	255	16	110	27	Fatal Blizzard	32	Freeze Knight
 33	Fire Spirit	Fire	65	12	17	120	180	60	20	20	0	0	0	0	Fire	None	255	0	13	12	Spirit Cloak	10	Fire Spirit I
-34	Mad Skull	Thunder	3995	157	143	310	160	65	0	0	0	0	0	0	None	None	255	128	400	51	Flash Hall	8	Mad Skull
+34	Mad Skull	Thunder	3995	157	143	310	160	65	0	0	0	0	0	0	None	None	255	128	400	51	Flash Hall	24	Mad Skull
 35	Run Fast	Thunder	160	17	17	120	100	60	0	0	0	0	0	0	None	None	99	0	16	12	Body Purifier	10	Run Fast
 36	Canbria Dayfly	Wind	2080	93	111	140	180	70	10	0	0	0	0	0	None	None	227	0	112	30	Body Purifier	8	Canbria Dayfly
-37	Wyvern	Wind	2013	97	86	200	140	80	20	0	0	0	0	0	None	None	99	0	120	45	Down Burst	8	Wyvern
-38	Trent	Earth	12	4	4	180	60	30	0	0	0	0	0	0	None	None	99	0	4	9	Pellet	10	Trent
+37	Wyvern	Wind	2013	97	86	200	140	80	20	0	0	0	0	0	None	None	99	0	120	45	Down Burst	24	Wyvern
+38	Trent	Earth	12	4	4	180	60	30	0	0	0	0	0	0	None	None	99	0	4	9	Pellet	40	Trent
 39	Spring Hitter	Non-Elemental	1600	99	95	190	120	70	0	0	0	0	0	0	None	None	255	0	117	21	Healing Fog	8	Spring Hitter
 40	Guillotine	Dark	3105	110	128	190	160	60	0	0	0	0	0	0	None	None	255	0	160	39	Healing Breeze	8	Guillotine
 41	Terminator	Non-Elemental	1728	106	86	160	120	80	0	0	0	0	0	0	None	None	255	0	143	30	Total Vanishing	8	Terminator
@@ -49,29 +49,29 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 47	Succubus	Dark	1760	95	95	140	190	60	0	0	0	0	0	0	None	None	99	0	130	42	Platinum Collar	2	Succubus
 48	Mammoth	Earth	4736	103	84	120	100	50	0	0	0	0	0	0	None	None	99	144	132	45	Stunning Hammer	8	Mammoth
 49	Metal Fang	Thunder	3280	119	150	140	180	70	5	0	0	0	0	0	None	None	99	0	135	42	Beast Fang	2	Metal Fang
-50	Windy Weasel	Wind	1280	82	102	120	140	70	20	0	0	0	0	0	None	None	99	0	96	21	Rave Twister	8	Windy Weasel
+50	Windy Weasel	Wind	1280	82	102	120	140	70	20	0	0	0	0	0	None	None	99	0	96	21	Rave Twister	32	Windy Weasel
 51	Wounded Bear	Earth	1680	85	67	180	80	60	0	0	0	0	0	0	None	None	107	16	96	60	Attack Ball	8	Wounded Bear
 52	Erupting Chick	Wind	360	38	40	120	70	80	20	0	0	0	0	0	None	None	99	0	32	15	Mind Purifier	8	Erupting Chick
 53	Flying Rat	Wind	780	61	77	120	160	60	20	0	0	0	0	0	None	None	99	0	64	24	Angel's Prayer	8	Flying Rat
 54	Rainbow Bird	Non-Elemental	4	0	0	100	100	120	0	0	1	1	0	0	None	None	251	140	3000	0	Rainbow Dress	10	Rainbow Bird
-55	Living Statue	Earth	128	19	18	180	100	50	0	0	0	0	0	0	None	None	255	0	20	12	Detonate Rock	8	Living Statue
+55	Living Statue	Earth	128	19	18	180	100	50	0	0	0	0	0	0	None	None	255	0	20	12	Detonate Rock	32	Living Statue
 56	Madman	Earth	5200	131	119	160	140	60	0	0	0	0	0	0	None	None	99	0	165	24	Body Purifier	8	Madman I
 57	Wildman	Thunder	2880	97	90	140	100	50	0	0	0	0	0	0	None	None	99	0	120	36	Giganto Ring	2	Wildman
-58	Gargoyle	Dark	250	21	21	100	180	70	0	0	0	0	0	0	None	None	99	0	17	15	Dark Mist	8	Gargoyle
-59	Crescent Bee	Wind	22	8	8	120	120	60	20	0	0	0	0	0	None	None	99	0	10	6	Spinning Gale	8	Crescent Bee
+58	Gargoyle	Dark	250	21	21	100	180	70	0	0	0	0	0	0	None	None	99	0	17	15	Dark Mist	32	Gargoyle
+59	Crescent Bee	Wind	22	8	8	120	120	60	20	0	0	0	0	0	None	None	99	0	10	6	Spinning Gale	32	Crescent Bee
 60	Jelly	Water	2560	105	124	120	290	70	0	0	0	0	0	0	None	None	99	0	120	24	Healing Fog	10	Jelly
 61	Spiky Beetle	Earth	1920	105	98	200	160	60	0	0	0	0	0	0	None	None	99	0	140	42	Attack Ball	8	Spiky Beetle
 62	Slug	Earth	6000	139	130	160	160	60	0	0	0	0	0	0	None	None	99	0	180	33	Mind Purifier	10	Slug
 63	Witch	Light	1440	86	120	120	240	60	0	5	0	0	0	0	None	None	99	0	104	36	Angel's Prayer	8	Witch
 64	Ugly Balloon	Wind	88	9	9	90	220	60	0	0	0	0	0	0	None	None	99	0	10	9	Poison Guard	2	Ugly Balloon
-65	Maximum Volt	Thunder	2240	120	109	200	100	60	0	0	0	0	0	0	Thunder	None	255	0	156	51	Flash Hall	8	Maximum Volt
+65	Maximum Volt	Thunder	2240	120	109	200	100	60	0	0	0	0	0	0	Thunder	None	255	0	156	51	Flash Hall	24	Maximum Volt
 66	Crystal Golem	Light	400	24	23	140	180	80	0	0	0	0	0	0	None	None	255	144	22	27	Sapphire Pin	2	Crystal Golem
 67	Rocky Turtle	Earth	2072	81	84	240	120	50	0	0	0	0	0	0	None	None	99	16	99	39	Guard Badge	2	Rocky Turtle
-68	Crocodile	Water	80	14	13	180	70	50	0	0	0	0	0	0	None	None	99	0	17	6	Pellet	10	Crocodile
+68	Crocodile	Water	80	14	13	180	70	50	0	0	0	0	0	0	None	None	99	0	17	6	Pellet	40	Crocodile
 69	Frilled Lizard	Earth	384	41	45	140	160	80	5	0	0	0	0	0	None	None	99	0	36	21	Healing Potion	8	Frilled Lizard
 70	Magician Bogy	Dark	2400	57	64	120	200	70	0	0	0	0	0	0	None	None	99	16	72	24	Magical Hat	40	Magician Bogy
-71	Triceratops	Earth	16000	184	103	220	160	80	0	0	0	0	0	0	None	None	99	144	2000	120	Gravity Grabber	8	Triceratops
-72	Stern Fish	Water	3424	124	110	200	140	80	0	0	0	0	0	0	None	None	99	16	165	54	Frozen Jet	8	Stern Fish
+71	Triceratops	Earth	16000	184	103	220	160	80	0	0	0	0	0	0	None	None	99	144	2000	120	Gravity Grabber	24	Triceratops
+72	Stern Fish	Water	3424	124	110	200	140	80	0	0	0	0	0	0	None	None	99	16	165	54	Frozen Jet	24	Stern Fish
 73	Forest Runner	Wind	1080	68	67	120	160	80	10	0	0	0	0	0	None	None	99	0	88	30	Recovery Ball	8	Forest Runner
 74	Magma Fish	Fire	62	13	15	100	140	80	20	0	0	0	0	0	None	None	99	0	10	6	Healing Potion	10	Magma Fish I
 75	Scud Shark	Water	1600	110	110	170	160	60	0	0	0	0	0	0	None	None	99	16	150	39	Body Purifier	8	Scud Shark
@@ -80,9 +80,9 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 78	Loner Knight	Dark	3600	131	120	180	180	60	0	0	0	0	0	0	None	None	255	0	187	48	Soul Eater	2	Loner Knight
 79	Berserker	Dark	1200	58	50	70	90	60	0	0	0	0	0	0	None	None	111	0	55	15	Energy Girdle	2	Berserker
 80	Professor	Wind	3995	103	128	140	220	70	10	0	0	0	0	0	None	None	99	0	176	54	Sage's Cloak	2	Professor
-81	Psyche Druid	Light	10000	103	158	160	220	60	0	5	0	0	0	0	None	None	255	128	638	84	Spectral Flash	8	Psyche Druid
+81	Psyche Druid	Light	10000	103	158	160	220	60	0	5	0	0	0	0	None	None	255	128	638	84	Spectral Flash	24	Psyche Druid
 82	Gangster	Earth	840	54	50	160	140	70	0	0	0	0	0	0	None	None	99	0	60	12	Bandit's Ring	2	Gangster
-83	Crafty Thief	Dark	600	48	45	140	120	80	5	0	0	0	0	0	None	None	99	0	50	18	Pellet	8	Crafty Thief
+83	Crafty Thief	Dark	600	48	45	140	120	80	5	0	0	0	0	0	None	None	99	0	50	18	Pellet	32	Crafty Thief
 84	Undead	Dark	2840	123	120	140	100	70	0	64	0	0	0	0	None	None	127	0	153	39	Mind Purifier	8	Undead
 85	Skeleton	Dark	600	57	57	140	140	60	0	0	0	0	0	0	None	None	99	16	60	21	Broad Sword	2	Skeleton
 86	Will-O'-Wisp	Fire	480	52	64	120	220	80	20	0	0	0	0	0	None	None	99	0	48	12	None	0	Will-O'-Wisp I
@@ -93,7 +93,7 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 91	Mermaid	Water	1200	66	80	120	180	60	0	0	0	0	0	0	None	None	99	0	77	33	Spirit Potion	8	Mermaid
 92	Salamander	Fire	105	15	14	160	80	50	0	0	0	0	0	0	None	None	99	0	17	9	Sun Rhapsody	8	Salamander
 93	Unicorn	Light	6400	126	158	200	220	60	0	0	0	0	0	0	None	None	99	0	380	51	Healing Rain	2	Unicorn
-94	Orc	Dark	60	10	8	140	60	60	0	0	0	0	0	0	None	None	99	0	10	6	Dark Mist	10	Orc
+94	Orc	Dark	60	10	8	140	60	60	0	0	0	0	0	0	None	None	99	0	10	6	Dark Mist	40	Orc
 95	Dark Elf	Dark	1350	65	67	110	220	70	0	0	0	0	0	0	None	None	99	0	80	36	Depetrifier	8	Dark Elf
 96	Baby Dragon	Thunder	888	75	75	180	120	60	0	0	0	0	0	0	None	None	99	0	100	27	Mind Purifier	8	Baby Dragon
 97	Harpy	Wind	3000	121	116	160	200	60	10	0	0	0	0	0	None	None	99	0	192	48	Panic Bell	8	Harpy
@@ -101,7 +101,7 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 99	Arrow Shooter	Earth	504	51	51	140	140	60	0	0	0	0	0	0	None	None	99	0	32	24	Bemusing Arrow	2	Arrow Shooter
 100	Red Hot	Fire	100	13	13	120	120	60	0	0	0	0	0	0	None	None	99	0	14	6	Mind Purifier	8	Red Hot I
 101	Specter	Dark	1330	115	155	140	290	75	50	0	0	0	0	0	None	None	99	0	170	30	Midnight Terror	8	Specter II
-102	Sandora Elite	Dark	1140	33	35	140	160	80	10	0	0	0	0	0	None	None	255	128	30	30	Gushing Magma	8	Sandora Elite II
+102	Sandora Elite	Dark	1140	33	35	140	160	80	10	0	0	0	0	0	None	None	255	128	30	30	Gushing Magma	32	Sandora Elite II
 103	Knight of Sandora	Fire	450	26	26	120	120	50	0	0	0	0	0	0	None	None	99	0	24	15	Healing Potion	20	Knight of Sandora (Black Castle)
 104	Slime	Earth	50	9	8	100	80	50	0	0	0	0	0	0	None	None	99	0	11	6	Body Purifier	10	Slime I
 105	Fowl Fighter	Fire	250	21	24	100	140	60	10	0	0	0	0	0	None	None	99	0	16	9	Mind Purifier	8	Fowl Fighter
@@ -109,9 +109,9 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 107	Plague Rat	Earth	160	17	21	80	140	80	10	0	0	0	0	0	None	None	227	0	14	6	Body Purifier	8	Plague Rat
 108	Stinger	Wind	192	43	45	110	160	70	20	0	0	0	0	0	None	None	227	0	38	12	Body Purifier	8	Stinger
 109	Piggy	Earth	480	43	57	180	100	60	0	0	0	0	0	0	None	None	99	0	40	21	Sachet	2	Piggy
-110	Sea Piranha	Water	840	57	66	100	140	80	20	0	0	0	0	0	None	None	99	0	56	15	Spear Frost	8	Sea Piranha
+110	Sea Piranha	Water	840	57	66	100	140	80	20	0	0	0	0	0	None	None	99	0	56	15	Spear Frost	32	Sea Piranha
 111	Toad Stool	Earth	474	65	82	120	160	80	20	0	0	0	0	0	None	None	227	0	72	18	Body Purifier	8	Toad Stool
-112	Mega Sea Dragon	Fire	651	67	90	160	160	70	10	0	0	0	0	0	None	None	99	0	80	21	Gushing Magma	8	Mega Sea Dragon
+112	Mega Sea Dragon	Fire	651	67	90	160	160	70	10	0	0	0	0	0	None	None	99	0	80	21	Gushing Magma	32	Mega Sea Dragon
 113	Deadly Spider	Earth	1214	85	67	140	100	50	0	0	0	0	0	0	None	None	227	0	90	39	Body Purifier	8	Deadly Spider
 114	Icicle Ball	Water	592	96	76	200	140	60	0	0	0	0	0	0	None	None	99	0	121	21	Spirit Potion	8	Icicle Ball
 115	Tricky Bat	Wind	80	13	20	100	140	70	20	0	0	0	0	0	None	None	99	0	12	6	Mind Purifier	8	Tricky Bat
@@ -119,15 +119,15 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 117	Moss Dresser	Earth	900	71	67	160	120	50	0	0	0	0	0	0	None	None	99	0	72	18	Healing Fog	8	Moss Dresser
 118	Death Purger	Dark	2660	128	103	160	140	50	10	0	0	0	0	0	None	None	127	128	144	24	Total Vanishing	8	Death Purger
 119	Scorpion	Earth	1120	101	89	260	140	60	0	0	0	0	0	0	None	None	99	0	154	21	Poison Needle	8	Scorpion
-120	Trap Plant	Water	8400	130	126	160	240	60	0	0	0	0	0	0	None	None	99	16	304	42	Frozen Jet	8	Trap Plant
+120	Trap Plant	Water	8400	130	126	160	240	60	0	0	0	0	0	0	None	None	99	16	304	42	Frozen Jet	24	Trap Plant
 121	Aqua King	Water	2560	112	110	160	200	70	0	0	0	0	0	0	None	None	99	0	135	30	Angel's Prayer	8	Aqua King
 122	Sky Chaser	Wind	3400	112	112	140	140	60	20	0	0	0	0	0	None	None	99	16	128	30	Body Purifier	8	Sky Chaser
-123	Air Combat	Wind	5400	143	126	220	180	50	5	0	0	0	0	0	None	None	99	0	456	33	Down Burst	8	Air Combat
+123	Air Combat	Wind	5400	143	126	220	180	50	5	0	0	0	0	0	None	None	99	0	456	33	Down Burst	24	Air Combat
 124	Treasure Jar	Non-Elemental	5	0	0	100	100	200	0	0	1	0	0	0	None	None	255	137	0	0	Ruby Ring	100	Treasure Jar
 125	Human Hunter	Non-Elemental	1775	138	120	200	140	70	0	0	0	0	0	0	None	None	255	0	136	24	Recovery Ball	8	Human Hunter
 126	Mountain Ape	Earth	5000	145	114	180	120	50	0	0	0	0	0	0	None	None	99	0	198	42	Angel's Prayer	10	Mountain Ape
-127	Roulette Face	Dark	12000	121	143	180	260	60	0	0	0	0	0	0	None	None	255	128	360	42	Night Raid	8	Roulette Face
-128	Swift Dragon	Fire	4440	116	126	180	180	80	0	0	0	0	0	0	None	None	99	0	228	24	Burning Wave	8	Swift Dragon
+127	Roulette Face	Dark	12000	121	143	180	260	60	0	0	0	0	0	0	None	None	255	128	360	42	Night Raid	24	Roulette Face
+128	Swift Dragon	Fire	4440	116	126	180	180	80	0	0	0	0	0	0	None	None	99	0	228	24	Burning Wave	24	Swift Dragon
 129	Hellena Warden	Fire	300	22	21	120	120	50	0	0	0	0	0	0	None	None	99	0	20	15	Morning Star	2	Hellena Warden II
 130	Sandora Soldier	Fire	100	12	11	120	120	50	0	0	0	0	0	0	None	None	99	0	25	30	Healing Potion	50	Sandora Soldier (Hoax)
 131	Sandora Soldier	Fire	128	13	13	120	120	60	0	0	0	0	0	0	None	None	99	0	14	9	Healing Potion	8	Sandora Soldier (Fire)
