@@ -1172,7 +1172,7 @@ namespace Dragoon_Modifier {
             int run = 1;
             while (run == 1 && Constants.RUN) {
                 foreach (SubScript script in lstBattle.Items) {
-                    if (Globals.BATTLE_VALUE == 41215 && !dualDifficultySwitch) {
+                    if (Globals.BATTLE_VALUE == 41215 && (Globals.DIFFICULTY_MODE.Equals("NormalHard") || Globals.DIFFICULTY_MODE.Equals("HardHell")) && !dualDifficultySwitch) {
                         bool boss = false;
                         string cwd = AppDomain.CurrentDomain.BaseDirectory;
                         string monsterBoss = Globals.DIFFICULTY_MODE.Equals("HardHell") ? "Hell_Mode" : "Hard_Mode";
@@ -1226,6 +1226,7 @@ namespace Dragoon_Modifier {
 
                         mod = boss ? monsterBoss : monsterDefault;
                         Globals.DICTIONARY.SwapMonsterStats(mod);
+                        dualDifficultySwitch = true;
                     } else {
                         if (!Globals.IN_BATTLE && dualDifficultySwitch) {
                             dualDifficultySwitch = false;
@@ -3308,6 +3309,8 @@ namespace Dragoon_Modifier {
                         }
 
                         if (Globals.CHARACTER_TABLE[i].Read("Accessory") == 180) { //Soa's Shield Ring
+                            Globals.CHARACTER_TABLE[i].Write("HP", 1);
+                            Globals.CHARACTER_TABLE[i].Write("Max_HP", 1);
                             Globals.CHARACTER_TABLE[i].Write("DF", 10);
                             Globals.CHARACTER_TABLE[i].Write("MDF", 10);
                             Globals.CHARACTER_TABLE[i].Write("A_AV", 90);
@@ -3317,6 +3320,12 @@ namespace Dragoon_Modifier {
                                     Globals.CHARACTER_TABLE[x].Write("A_HIT", Math.Round(Globals.CHARACTER_TABLE[x].Read("A_HIT") * 0.8));
                                     Globals.CHARACTER_TABLE[x].Write("M_HIT", Math.Round(Globals.CHARACTER_TABLE[x].Read("M_HIT") * 0.8));
                                 }
+                            }
+                        }
+
+                        if (Globals.PARTY_SLOT[i] == 7) { 
+                            if (Globals.CHARACTER_TABLE[i].Read("SPD") >= 40) {
+                                Globals.CHARACTER_TABLE[i].Write("SPD", 30 + Math.Round((double) (Globals.CHARACTER_TABLE[i].Read("SPD") - 30) / 2));
                             }
                         }
 
@@ -6724,7 +6733,7 @@ namespace Dragoon_Modifier {
                                             }
                                         }
                                     }
-                                } else if (Globals.PARTY_SLOT[i] == 7) {
+                                } else if (Globals.PARTY_SLOT[i] == 7) { //Kongol
                                     if (dragoonSpecialAttack == 7) {
                                         Globals.CHARACTER_TABLE[i].Write("DAT", (600 * multi));
                                     } else {
@@ -6734,10 +6743,10 @@ namespace Dragoon_Modifier {
                                     if (multi == 1) {
                                         emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xA9, 0);
                                         emulator.WriteByte(Globals.CHAR_ADDRESS[i] + 0xAB, 0);
-                                        Globals.CHARACTER_TABLE[i].Write("DDF", (130 * multi));
+                                        Globals.CHARACTER_TABLE[i].Write("DDF", (70 * multi));
                                         Globals.CHARACTER_TABLE[i].Write("DMDF", (130 * multi));
                                     } else {
-                                        Globals.CHARACTER_TABLE[i].Write("DDF", (130 * multi));
+                                        Globals.CHARACTER_TABLE[i].Write("DDF", (70 * multi));
                                         Globals.CHARACTER_TABLE[i].Write("DMDF", (130 * multi));
                                     }
 
