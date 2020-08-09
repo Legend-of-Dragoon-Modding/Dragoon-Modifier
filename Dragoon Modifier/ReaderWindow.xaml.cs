@@ -131,83 +131,154 @@ namespace Dragoon_Modifier {
 
         public void WriteToText() {
             if (Globals.IN_BATTLE && Globals.STATS_CHANGED) {
-                int partySize = 0;
-                for (int i = 0; i < 3; i++) {
-                    if (Globals.PARTY_SLOT[i] < 9) {
-                        partySize++;
-                        foreach (string field in Constants.READER_CHARACTER_LABEL) {
+                try {
+                    int partySize = 0;
+                    for (int i = 0; i < 3; i++) {
+                        if (Globals.PARTY_SLOT[i] < 9) {
+                            partySize++;
+                            foreach (string field in Constants.READER_CHARACTER_LABEL) {
+                                string location = field + "" + (i + 1);
+                                if (field.Equals("Burn Stack")) {
+                                    if (Globals.PARTY_SLOT[i] != 0) {
+                                        continue;
+                                    } else {
+                                        location = "Burn Stack";
+                                    }
+                                } else if (field.Equals("Damage Tracker1")) {
+                                    if (i != 0) {
+                                        continue;
+                                    } else {
+                                        location = "Damage Tracker1";
+                                    }
+                                } else if (field.Equals("Damage Tracker2")) {
+                                    if (i != 1) {
+                                        continue;
+                                    } else {
+                                        location = "Damage Tracker2";
+                                    }
+                                } else if (field.Equals("Damage Tracker3")) {
+                                    if (i != 2) {
+                                        continue;
+                                    } else {
+                                        location = "Damage Tracker3";
+                                    }
+                                } else if (field.Equals("EATBC1")) {
+                                    if (i != 0) {
+                                        continue;
+                                    } else {
+                                        location = "EATBC1";
+                                    }
+                                } else if (field.Equals("EATBC2")) {
+                                    if (i != 1) {
+                                        continue;
+                                    } else {
+                                        location = "EATBC2";
+                                    }
+                                } else if (field.Equals("EATBC3")) {
+                                    if (i != 2) {
+                                        continue;
+                                    } else {
+                                        location = "EATBC3";
+                                    }
+                                }
+
+                                FileStream file = new FileStream(WRITE_LOCATION + "/Character/" + location + ".txt", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+                                StreamWriter writer = new StreamWriter(file);
+                                if (field.Equals("Name")) {
+                                    if (Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10)
+                                        writer.WriteLine(Globals.CHARACTER_NAME[i] + "*");
+                                    else
+                                        writer.WriteLine(Globals.CHARACTER_NAME[i]);
+                                } else if (field.Equals("Max_SP")) {
+                                    writer.WriteLine((Globals.CHARACTER_TABLE[i].Read("DLV") * 100).ToString());
+                                } else if (field.Equals("Burn Stack")) {
+                                    writer.WriteLine(Globals.GetCustomValue("Burn Stack"));
+                                } else if (field.Equals("Damage Tracker1")) {
+                                    writer.WriteLine(Globals.GetCustomValue("Damage Tracker1"));
+                                } else if (field.Equals("Damage Tracker2")) {
+                                    writer.WriteLine(Globals.GetCustomValue("Damage Tracker2"));
+                                } else if (field.Equals("Damage Tracker3")) {
+                                    writer.WriteLine(Globals.GetCustomValue("Damage Tracker3"));
+                                } else if (field.Equals("EATBC1")) {
+                                    writer.WriteLine(Globals.GetCustomValue("EATBC1"));
+                                } else if (field.Equals("EATBC2")) {
+                                    writer.WriteLine(Globals.GetCustomValue("EATBC2"));
+                                } else if (field.Equals("EATBC3")) {
+                                    writer.WriteLine(Globals.GetCustomValue("EATBC3"));
+                                } else if (field.Equals("QTB")) {
+                                    writer.WriteLine(Globals.GetCustomValue("QTB"));
+                                } else {
+                                    writer.WriteLine(Globals.CHARACTER_TABLE[i].Read(field));
+                                }
+                                writer.Dispose();
+                                writer.Close();
+                                file.Dispose();
+                                file.Close();
+                            }
+                        }
+                        FileStream partyFile = new FileStream(WRITE_LOCATION + "/Character/PartySize.txt", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+                        StreamWriter writePartySize = new StreamWriter(partyFile);
+                        writePartySize.WriteLine(partySize);
+                        writePartySize.Dispose();
+                        writePartySize.Close();
+                        partyFile.Dispose();
+                        partyFile.Close();
+                    }
+
+                    for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
+                        foreach (string field in Constants.READER_MONSTER_LABEL) {
                             string location = field + "" + (i + 1);
-                            if (field.Equals("Burn Stack")) {
-                                if (Globals.PARTY_SLOT[i] != 0) {
-                                    continue;
-                                } else {
-                                    location = "Burn Stack";
-                                }
-                            } else if (field.Equals("Damage Tracker1")) {
+                            if (field.Equals("EATBM1")) {
                                 if (i != 0) {
                                     continue;
                                 } else {
-                                    location = "Damage Tracker1";
+                                    location = "EATBM1";
                                 }
-                            } else if (field.Equals("Damage Tracker2")) {
+                            } else if (field.Equals("EATBM2")) {
                                 if (i != 1) {
                                     continue;
                                 } else {
-                                    location = "Damage Tracker2";
+                                    location = "EATBM2";
                                 }
-                            } else if (field.Equals("Damage Tracker3")) {
+                            } else if (field.Equals("EATBM3")) {
                                 if (i != 2) {
                                     continue;
                                 } else {
-                                    location = "Damage Tracker3";
+                                    location = "EATBM3";
                                 }
-                            } else if (field.Equals("EATBC1")) {
-                                if (i != 0) {
+                            } else if (field.Equals("EATBM4")) {
+                                if (i != 3) {
                                     continue;
                                 } else {
-                                    location = "EATBC1";
+                                    location = "EATBM4";
                                 }
-                            } else if (field.Equals("EATBC2")) {
-                                if (i != 1) {
+                            } else if (field.Equals("EATBM5")) {
+                                if (i != 4) {
                                     continue;
                                 } else {
-                                    location = "EATBC2";
-                                }
-                            } else if (field.Equals("EATBC3")) {
-                                if (i != 2) {
-                                    continue;
-                                } else {
-                                    location = "EATBC3";
+                                    location = "EATBM5";
                                 }
                             }
-
-                            FileStream file = new FileStream(WRITE_LOCATION + "/Character/" + location + ".txt", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+                            FileStream file = new FileStream(WRITE_LOCATION + "/Monster/" + location + ".txt", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
                             StreamWriter writer = new StreamWriter(file);
                             if (field.Equals("Name")) {
-                                if (Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10)
-                                    writer.WriteLine(Globals.CHARACTER_NAME[i] + "*");
-                                else
-                                    writer.WriteLine(Globals.CHARACTER_NAME[i]);
-                            } else if (field.Equals("Max_SP")) {
-                                writer.WriteLine((Globals.CHARACTER_TABLE[i].Read("DLV") * 100).ToString());
-                            } else if (field.Equals("Burn Stack")) {
-                                writer.WriteLine(Globals.GetCustomValue("Burn Stack"));
-                            } else if (field.Equals("Damage Tracker1")) {
-                                writer.WriteLine(Globals.GetCustomValue("Damage Tracker1"));
-                            } else if (field.Equals("Damage Tracker2")) {
-                                writer.WriteLine(Globals.GetCustomValue("Damage Tracker2"));
-                            } else if (field.Equals("Damage Tracker3")) {
-                                writer.WriteLine(Globals.GetCustomValue("Damage Tracker3"));
-                            } else if (field.Equals("EATBC1")) {
-                                writer.WriteLine(Globals.GetCustomValue("EATBC1"));
-                            } else if (field.Equals("EATBC2")) {
-                                writer.WriteLine(Globals.GetCustomValue("EATBC2"));
-                            } else if (field.Equals("EATBC3")) {
-                                writer.WriteLine(Globals.GetCustomValue("EATBC3"));
-                            } else if (field.Equals("QTB")) {
-                                writer.WriteLine(Globals.GetCustomValue("QTB"));
+                                writer.WriteLine(Globals.MONSTER_NAME[i]);
+                            } else if (field.Equals("Drop_Chance")) {
+                                writer.WriteLine(Globals.MONSTER_TABLE[i].Read(field) + "%");
+                            } else if (field.Equals("Drop_Item")) {
+                                writer.WriteLine(Globals.DICTIONARY.Num2Item[Globals.MONSTER_TABLE[i].Read(field)]);
+                            } else if (field.Equals("EATBM1")) {
+                                writer.WriteLine(Globals.GetCustomValue("EATBM1"));
+                            } else if (field.Equals("EATBM2")) {
+                                writer.WriteLine(Globals.GetCustomValue("EATBM2"));
+                            } else if (field.Equals("EATBM3")) {
+                                writer.WriteLine(Globals.GetCustomValue("EATBM3"));
+                            } else if (field.Equals("EATBM4")) {
+                                writer.WriteLine(Globals.GetCustomValue("EATBM4"));
+                            } else if (field.Equals("EATBM5")) {
+                                writer.WriteLine(Globals.GetCustomValue("EATBM5"));
                             } else {
-                                writer.WriteLine(Globals.CHARACTER_TABLE[i].Read(field));
+                                writer.WriteLine(Globals.MONSTER_TABLE[i].Read(field));
                             }
                             writer.Dispose();
                             writer.Close();
@@ -215,81 +286,12 @@ namespace Dragoon_Modifier {
                             file.Close();
                         }
                     }
-                    FileStream partyFile = new FileStream(WRITE_LOCATION + "/Character/PartySize.txt", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
-                    StreamWriter writePartySize = new StreamWriter(partyFile);
-                    writePartySize.WriteLine(partySize);
-                    writePartySize.Dispose();
-                    writePartySize.Close();
-                    partyFile.Dispose();
-                    partyFile.Close();
-                }
-
-                for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                    foreach (string field in Constants.READER_MONSTER_LABEL) {
-                        string location = field + "" + (i + 1);
-                        if (field.Equals("EATBM1")) {
-                            if (i != 0) {
-                                continue;
-                            } else {
-                                location = "EATBM1";
-                            }
-                        } else if (field.Equals("EATBM2")) {
-                            if (i != 1) {
-                                continue;
-                            } else {
-                                location = "EATBM2";
-                            }
-                        } else if (field.Equals("EATBM3")) {
-                            if (i != 2) {
-                                continue;
-                            } else {
-                                location = "EATBM3";
-                            }
-                        } else if (field.Equals("EATBM4")) {
-                            if (i != 3) {
-                                continue;
-                            } else {
-                                location = "EATBM4";
-                            }
-                        } else if (field.Equals("EATBM5")) {
-                            if (i != 4) {
-                                continue;
-                            } else {
-                                location = "EATBM5";
-                            }
-                        }
-                        FileStream file = new FileStream(WRITE_LOCATION + "/Monster/" + location + ".txt", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
-                        StreamWriter writer = new StreamWriter(file);
-                        if (field.Equals("Name")) {
-                            writer.WriteLine(Globals.MONSTER_NAME[i]);
-                        } else if (field.Equals("Drop_Chance")) {
-                            writer.WriteLine(Globals.MONSTER_TABLE[i].Read(field) + "%");
-                        } else if (field.Equals("Drop_Item")) {
-                            writer.WriteLine(Globals.DICTIONARY.Num2Item[Globals.MONSTER_TABLE[i].Read(field)]);
-                        } else if (field.Equals("EATBM1")) {
-                            writer.WriteLine(Globals.GetCustomValue("EATBM1"));
-                        } else if (field.Equals("EATBM2")) {
-                            writer.WriteLine(Globals.GetCustomValue("EATBM2"));
-                        } else if (field.Equals("EATBM3")) {
-                            writer.WriteLine(Globals.GetCustomValue("EATBM3"));
-                        } else if (field.Equals("EATBM4")) {
-                            writer.WriteLine(Globals.GetCustomValue("EATBM4"));
-                        } else if (field.Equals("EATBM5")) {
-                            writer.WriteLine(Globals.GetCustomValue("EATBM5"));
-                        } else {
-                            writer.WriteLine(Globals.MONSTER_TABLE[i].Read(field));
-                        }
-                        writer.Dispose();
-                        writer.Close();
-                        file.Dispose();
-                        file.Close();
-                    }
-                }
-                FileStream monsterWrite = new FileStream(WRITE_LOCATION + "/Monster/MonsterSize.txt", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
-                StreamWriter writeMonsterSize = new StreamWriter(monsterWrite);
-                writeMonsterSize.WriteLine(Globals.MONSTER_SIZE);
-                writeMonsterSize.Close();
-                monsterWrite.Close();
+                    FileStream monsterWrite = new FileStream(WRITE_LOCATION + "/Monster/MonsterSize.txt", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+                    StreamWriter writeMonsterSize = new StreamWriter(monsterWrite);
+                    writeMonsterSize.WriteLine(Globals.MONSTER_SIZE);
+                    writeMonsterSize.Close();
+                    monsterWrite.Close();
+                } catch (Exception e) { Constants.WriteError(e.ToString()); }
             }
         }
 
