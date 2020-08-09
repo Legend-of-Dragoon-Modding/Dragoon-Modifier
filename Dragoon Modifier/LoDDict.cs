@@ -430,6 +430,32 @@ namespace Dragoon_Modifier {
             }
         }
 
+        public void SwapMonsterStats(string mod) {
+            string cwd = AppDomain.CurrentDomain.BaseDirectory;
+            try {
+                using (var monsterData = new StreamReader(cwd + "Mods/" + mod + "/Monster_Data.tsv")) {
+                    Globals.DICTIONARY.StatList.Clear();
+                    bool firstline = true;
+                    while (!monsterData.EndOfStream) {
+                        var line = monsterData.ReadLine();
+                        if (firstline == false) {
+                            var values = line.Split('\t').ToArray();
+                            Globals.DICTIONARY.StatList.Add(Int32.Parse(values[0]), new StatList(values, element2num, item2num));
+                        } else {
+                            firstline = false;
+                        }
+                    }
+                }
+                Constants.WritePLogOutput("Mod stats swapped to: " + mod);
+            } catch (FileNotFoundException) {
+                string file = cwd + @"Mods\" + Globals.MOD + @"\Monster_Data.tsv";
+                Constants.WriteError(file + " not found. Turning off Monster and Drop Changes.");
+                Globals.MONSTER_STAT_CHANGE = false;
+                Globals.MONSTER_DROP_CHANGE = false;
+                Globals.MONSTER_EXPGOLD_CHANGE = false;
+            }
+        }
+
         public static string StringEncode(string text) {
             IDictionary<string, string> codeDict = new Dictionary<string, string>() {
                 {"<END>", "FF A0" },
@@ -541,7 +567,6 @@ namespace Dragoon_Modifier {
             }
             return String.Join(" ", encoded.ToArray()) + " FF A0";
         }
-
     }
 
     public class Equipment {

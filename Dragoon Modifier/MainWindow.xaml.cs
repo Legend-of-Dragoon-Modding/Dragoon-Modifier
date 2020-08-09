@@ -30,6 +30,7 @@ namespace Dragoon_Modifier {
         public Thread fieldThread, battleThread, hotkeyThread, otherThread, ultimateThread;
         public string preset = "";
         public bool presetHotkeys = true;
+        public bool dualDifficultySwitch = false;
         public static Dictionary<string, int> uiCombo = new Dictionary<string, int>();
 
         public TextBlock[,] monsterDisplay = new TextBlock[5, 6];
@@ -1090,7 +1091,7 @@ namespace Dragoon_Modifier {
                         KillBGMField();
                     if (Globals.CheckDMScript("btnCharmPotion"))
                         AutoCharmPotion();
-                    if (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell"))
+                    if (!Globals.DIFFICULTY_MODE.Equals("Normal"))
                         EquipChangesField();
                     if (Globals.CheckDMScript("btnBlackRoom"))
                         BlackRoomField();
@@ -1118,7 +1119,7 @@ namespace Dragoon_Modifier {
                 Thread.Sleep(500);
 
                 if (!Globals.IN_BATTLE) {
-                    if ((Globals.MAP == 735 || Globals.MAP == 736) && Globals.DIFFICULTY_MODE.Equals("Hell") && ultimateBossCompleted < 34) {
+                    if ((Globals.MAP == 735 || Globals.MAP == 736) && Globals.DIFFICULTY_MODE.Contains("Hell") && ultimateBossCompleted < 34) {
                         emulator.WriteByte("DRAGOON_SPIRITS", 127);
                     }
                 }
@@ -1171,6 +1172,66 @@ namespace Dragoon_Modifier {
             int run = 1;
             while (run == 1 && Constants.RUN) {
                 foreach (SubScript script in lstBattle.Items) {
+                    if (Globals.BATTLE_VALUE == 41215 && !dualDifficultySwitch) {
+                        bool boss = false;
+                        string cwd = AppDomain.CurrentDomain.BaseDirectory;
+                        string monsterBoss = Globals.DIFFICULTY_MODE.Equals("HardHell") ? "Hell_Mode" : "Hard_Mode";
+                        string monsterDefault = monsterBoss.Equals("Hell_Mode") ? "Hard_Mode" : "US_Base";
+                        string mod;
+
+                        if (Globals.ENCOUNTER_ID == 384 || //Commander
+                            Globals.ENCOUNTER_ID == 386 || //Fruegel I
+                            Globals.ENCOUNTER_ID == 414 || //Urobolus
+                            Globals.ENCOUNTER_ID == 385 || //Sandora Elite
+                            Globals.ENCOUNTER_ID == 388 || //Kongol I
+                            Globals.ENCOUNTER_ID == 408 || //Virage I
+                            Globals.ENCOUNTER_ID == 415 || //Fire Bird
+                            Globals.ENCOUNTER_ID == 393 || //Greham + Feyrbrand
+                            Globals.ENCOUNTER_ID == 412 || //Drake the Bandit
+                            Globals.ENCOUNTER_ID == 413 || //Jiango
+                            Globals.ENCOUNTER_ID == 387 || //Fruegel II
+                            Globals.ENCOUNTER_ID == 461 || //Sandora Elite II
+                            Globals.ENCOUNTER_ID == 389 || //Kongol II
+                            Globals.ENCOUNTER_ID == 390 || //Emperor Doel
+                            Globals.ENCOUNTER_ID == 402 || //Mappi
+                            Globals.ENCOUNTER_ID == 409 || //Virage II
+                            Globals.ENCOUNTER_ID == 403 || //Gehrich + Mappi
+                            Globals.ENCOUNTER_ID == 396 || //Lenus
+                            Globals.ENCOUNTER_ID == 417 || //Ghost Commander
+                            Globals.ENCOUNTER_ID == 397 || //Lenus + Regole
+                            Globals.ENCOUNTER_ID == 418 || //Kamuy
+                            Globals.ENCOUNTER_ID == 410 || //S Virage
+                            Globals.ENCOUNTER_ID == 416 || //Grand Jewel
+                            Globals.ENCOUNTER_ID == 394 || //Divine Dragon
+                            Globals.ENCOUNTER_ID == 422 || //Windigo
+                            Globals.ENCOUNTER_ID == 392 || //Lloyd
+                            Globals.ENCOUNTER_ID == 423 || //Polter Set
+                            Globals.ENCOUNTER_ID == 398 || //Damia
+                            Globals.ENCOUNTER_ID == 399 || //Syuveil
+                            Globals.ENCOUNTER_ID == 400 || //Belzac
+                            Globals.ENCOUNTER_ID == 401 || //Kanzas
+                            Globals.ENCOUNTER_ID == 420 || //Magician Faust
+                            Globals.ENCOUNTER_ID == 432 || //Last Kraken
+                            Globals.ENCOUNTER_ID == 430 || //Executioners
+                            Globals.ENCOUNTER_ID == 449 || //Spirit (Feyrbrand)
+                            Globals.ENCOUNTER_ID == 448 || //Spirit (Regole)
+                            Globals.ENCOUNTER_ID == 447 || //Spirit (Divine Dragon)
+                            Globals.ENCOUNTER_ID == 431 || //Zackwell
+                            Globals.ENCOUNTER_ID == 433 || //Imago
+                            Globals.ENCOUNTER_ID == 411 || //S Virage II
+                            Globals.ENCOUNTER_ID == 442 || //Zieg
+                            Globals.ENCOUNTER_ID == 443) { //Melbu Fraahma
+                            boss = true;
+                        }
+
+                        mod = boss ? monsterBoss : monsterDefault;
+                        Globals.DICTIONARY.SwapMonsterStats(mod);
+                    } else {
+                        if (!Globals.IN_BATTLE && dualDifficultySwitch) {
+                            dualDifficultySwitch = false;
+                        }
+                    }
+
                     if (script.state == ScriptState.DISABLED)
                         continue;
                     currentScript = script.ToString();
@@ -1195,7 +1256,7 @@ namespace Dragoon_Modifier {
                         SoloModeBattle();
                     if (Globals.CheckDMScript("btnDuoMode"))
                         DuoModeBattle();
-                    if (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) {
+                    if (!Globals.DIFFICULTY_MODE.Equals("Normal")) {
                         DragoonChanges();
                         if (burnActive) {
                             for (int i = 0; i < 3; i++) {
@@ -1235,17 +1296,17 @@ namespace Dragoon_Modifier {
                         BlackRoomBattle();
                     if (Globals.DIFFICULTY_MODE.Equals("Hell"))
                         ApplyNoEscape();
-                    if (Globals.DIFFICULTY_MODE.Equals("Hell"))
+                    if (Globals.DIFFICULTY_MODE.Contains("Hell"))
                         BossSPLoss();
-                    if (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell"))
+                    if (!Globals.DIFFICULTY_MODE.Equals("Normal"))
                         EquipChangesBattle();
-                    if (Globals.CheckDMScript("btnRows") && !Globals.DIFFICULTY_MODE.Equals("Hell"))
+                    if (Globals.CheckDMScript("btnRows") && !Globals.DIFFICULTY_MODE.Contains("Hell"))
                         BattleFormationRows();
                     if (Globals.CheckDMScript("btnEATB") || Globals.CheckDMScript("btnATB"))
                         EATB();
                     if (Globals.CheckDMScript("btnQTB"))
                         QTB();
-                    if (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell"))
+                    if (!Globals.DIFFICULTY_MODE.Equals("Normal"))
                         DoubleRepeat();
                     if (Globals.CheckDMScript("btnAdditionLevel"))
                         AdditionLevelUp();
@@ -1262,7 +1323,7 @@ namespace Dragoon_Modifier {
                     EnableUI();
                 }
 
-                if (Globals.MAP == 732 && Globals.ENCOUNTER_ID == 420 && Globals.IN_BATTLE && Globals.STATS_CHANGED && Globals.MONSTER_TABLE[0].Read("HP") == 0 && (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) && saveFaust) {
+                if (Globals.MAP == 732 && Globals.ENCOUNTER_ID == 420 && Globals.IN_BATTLE && Globals.STATS_CHANGED && Globals.MONSTER_TABLE[0].Read("HP") == 0 && !Globals.DIFFICULTY_MODE.Equals("Normal") && saveFaust) {
                     faustCount += 1;
                     saveFaust = false;
                     Constants.WriteGLogOutput("Your current Faust count is: " + faustCount);
@@ -1438,7 +1499,7 @@ namespace Dragoon_Modifier {
                                 Constants.WriteGLogOutput("Added Lavitz.");
                                 Globals.LAST_HOTKEY = Constants.GetTime();
                             } else if (Globals.HOTKEY == (Hotkey.KEY_CROSS + Hotkey.KEY_L1)) { //Add Dragoon
-                                if (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) {
+                                if (!Globals.DIFFICULTY_MODE.Equals("Normal")) {
                                     if (Globals.MAP == 10) {
                                         emulator.WriteByte("DRAGOON_SPIRITS", 127);
                                         Constants.WriteGLogOutput("All Dragoons at Start.");
@@ -1483,7 +1544,7 @@ namespace Dragoon_Modifier {
                                 }
                             } else if (Globals.HOTKEY == (Hotkey.KEY_SQUARE + Hotkey.KEY_TRIANGLE)) { //Divine Dragoon
                                 byte dragoonSpirits = emulator.ReadByte("DRAGOON_SPIRITS");
-                                if (Globals.DIFFICULTY_MODE.Equals("Hard")) {
+                                if (!Globals.DIFFICULTY_MODE.Equals("Normal") && ultimateBossCompleted >= 34) {
                                     if (Globals.MAP == 424 || Globals.MAP == 736) {
                                         if (dragoonSpirits == 127) {
                                             emulator.WriteByte("DRAGOON_SPIRITS", 254);
@@ -1494,28 +1555,13 @@ namespace Dragoon_Modifier {
                                             Constants.WriteGLogOutput("Changed to Red-Eyed Dragon mode.");
                                             Globals.LAST_HOTKEY = Constants.GetTime();
                                         } else {
-                                            Constants.WriteGLogOutput("You need all dragoon mode.");
+                                            Constants.WriteGLogOutput("You need all dragoons.");
                                             Globals.LAST_HOTKEY = Constants.GetTime();
                                         }
                                     }
-                                } else if (Globals.DIFFICULTY_MODE.Equals("Hell") && ultimateBossCompleted >= 34) {
-                                    if (Globals.MAP == 424 || Globals.MAP == 736) {
-                                        if (dragoonSpirits == 127) {
-                                            emulator.WriteByte("DRAGOON_SPIRITS", 254);
-                                            Constants.WriteGLogOutput("Change to Divine Dragon mode.");
-                                            Globals.LAST_HOTKEY = Constants.GetTime();
-                                        } else if (dragoonSpirits == 254) {
-                                            emulator.WriteByte("DRAGOON_SPIRITS", 127);
-                                            Constants.WriteGLogOutput("Changed to Red-Eyed Dragon mode.");
-                                            Globals.LAST_HOTKEY = Constants.GetTime();
-                                        } else {
-                                            Constants.WriteGLogOutput("You need all dragoon mode.");
-                                            Globals.LAST_HOTKEY = Constants.GetTime();
-                                        }
-                                    }
-                                }
+                                } 
                             } else if (Globals.HOTKEY == (Hotkey.KEY_SQUARE + Hotkey.KEY_CROSS)) { //Faust Battle
-                                if (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) {
+                                if (!Globals.DIFFICULTY_MODE.Equals("Normal")) {
                                     if (Globals.MAP == 732) {
                                         emulator.WriteShort("BATTLE_FIELD", 78);
                                         emulator.WriteShort("ENCOUNTER_ID", 420);
@@ -1640,7 +1686,7 @@ namespace Dragoon_Modifier {
                                     }
                                 }
                                 if (!skip) {
-                                    if ((Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) && !checkRoseDamage) {
+                                    if (!Globals.DIFFICULTY_MODE.Equals("Normal") && !checkRoseDamage) {
                                         if (roseEnhanceDragoon) {
                                             if (Constants.REGION == Region.NTA) {
                                                                                                                                 
@@ -1680,7 +1726,7 @@ namespace Dragoon_Modifier {
                                     }
                                 }
                                 if (!skip) {
-                                    if (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) {
+                                    if (!Globals.DIFFICULTY_MODE.Equals("Normal")) {
                                         if (jeweledHammer) {
                                             if (Constants.REGION == Region.NTA) {
                                                 emulator.WriteAOB(Globals.DRAGOON_SPELLS[24].Description_Pointer - 0x80000000, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1A 00 16 00 15 00 0F 00 FF A0");
@@ -1737,7 +1783,7 @@ namespace Dragoon_Modifier {
                                     emulator.WriteByte("MUSIC_SPEED_BATTLE", saveMusicSpeed);
                                 }
                             } else if (Globals.HOTKEY == (Hotkey.KEY_SELECT + Hotkey.KEY_START)) {
-                                if (Globals.DIFFICULTY_MODE.Equals("Hard")) {
+                                if (Globals.DIFFICULTY_MODE.Equals("NormalHard") || Globals.DIFFICULTY_MODE.Equals("Hard")) {
                                     if (Globals.ENCOUNTER_ID == 411) {
                                         Globals.MONSTER_TABLE[0].Write("AT", 270);
                                         Globals.MONSTER_TABLE[0].Write("MAT", 235);
@@ -1808,7 +1854,7 @@ namespace Dragoon_Modifier {
                                     }
                                 }
                             } else if (Globals.HOTKEY == (Hotkey.KEY_SELECT + Hotkey.KEY_R3)) {
-                                if (Globals.DIFFICULTY_MODE.Equals("Hard")) {
+                                if (Globals.DIFFICULTY_MODE.Equals("NormalHard") || Globals.DIFFICULTY_MODE.Equals("Hard")) {
                                     if (Globals.ENCOUNTER_ID == 411) {
                                         Globals.MONSTER_TABLE[0].Write("HP", 50000);
                                         Globals.MONSTER_TABLE[0].Write("Max_HP", 50000);
@@ -2172,7 +2218,7 @@ namespace Dragoon_Modifier {
         public void SwitchEXP() {
             long char1 = Constants.GetAddress("CHAR_TABLE") + (0x2C * cboSwitch1.SelectedIndex);
             long char2 = Constants.GetAddress("CHAR_TABLE") + (0x2C * cboSwitch2.SelectedIndex);
-            int maxEXP = Globals.DIFFICULTY_MODE.Equals("Hell") ? 160000 : 80000;
+            int maxEXP = Globals.DIFFICULTY_MODE.Contains("Hell") ? 160000 : 80000;
 
             if (char1 != char2) {
                 if (emulator.ReadByte(char1 + 0x4) != 0 && emulator.ReadByte(char2 + 0x4) != 0) {
@@ -3065,7 +3111,7 @@ namespace Dragoon_Modifier {
 
                         if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 159 && Globals.PARTY_SLOT[i] == 0) { //Spirit Eater
                             spiritEaterSP = 35;
-                            if (Globals.DIFFICULTY_MODE.Equals("Hell")) {
+                            if (Globals.DIFFICULTY_MODE.Contains("Hell")) {
                                 spiritEaterSP = 15;
                             }
                             spiritEaterSaveSP = Globals.CHARACTER_TABLE[i].Read("SP_Regen");
@@ -6214,7 +6260,7 @@ namespace Dragoon_Modifier {
         #region Dragoon Changes
         public void ChangeDragoonDescription() {
             if (emulator.ReadShort("BATTLE_VALUE") == 41215 && Globals.STATS_CHANGED) {
-                if (Globals.CheckDMScript("btnDivineRed") && Globals.PARTY_SLOT[0] == 0 && (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) && Globals.PARTY_SLOT[0] == 0) {
+                if (Globals.CheckDMScript("btnDivineRed") && Globals.PARTY_SLOT[0] == 0 && !Globals.DIFFICULTY_MODE.Equals("Normal") && Globals.PARTY_SLOT[0] == 0) {
                     emulator.WriteAOB(Constants.GetAddress("SLOT1_SPELLS"), "01 02 FF FF FF FF FF FF");
                     emulator.WriteByte("SPELL_TABLE", 50, 0x7 + (1 * 0xC)); //Explosion MP
                     emulator.WriteByte("SPELL_TABLE", 50, 0x7 + (2 * 0xC)); //Final Burst MP
@@ -6226,7 +6272,7 @@ namespace Dragoon_Modifier {
                     }
                 }
 
-                if (Globals.DIFFICULTY_MODE.Equals("Hell")) {
+                if (Globals.DIFFICULTY_MODE.Contains("Hell")) {
                     emulator.WriteByte("SPELL_TABLE", (uiCombo["cboFlowerStorm"] + 1) * 20, 0x7 + (7 * 0xC)); //Lavitz's Blossom Storm MP
                     emulator.WriteByte("SPELL_TABLE", (uiCombo["cboFlowerStorm"] + 1) * 20, 0x7 + (26 * 0xC)); //Albert's Rose storm MP
 
@@ -6415,7 +6461,7 @@ namespace Dragoon_Modifier {
                                             Globals.CHARACTER_TABLE[i].Write("DMAT", (330 * multi));
                                         }
 
-                                        if ((Globals.CHARACTER_TABLE[i].Read("Spell_Cast") == 7 || Globals.CHARACTER_TABLE[i].Read("Spell_Cast") == 26) && Globals.DIFFICULTY_MODE.Equals("Hell")) {
+                                        if ((Globals.CHARACTER_TABLE[i].Read("Spell_Cast") == 7 || Globals.CHARACTER_TABLE[i].Read("Spell_Cast") == 26) && Globals.DIFFICULTY_MODE.Contains("Hell")) {
                                             checkFlowerStorm = true;
                                             for (int x = 0; x < 3; x++) {
                                                 if (Globals.CHARACTER_TABLE[x].Read("HP") > 0) {
@@ -7163,15 +7209,17 @@ namespace Dragoon_Modifier {
 
         #region Apply No Escape
         public void ApplyNoEscape() {
-            if (Globals.CheckDMScript("btnBlackRoom")) {
-                if ((Globals.MAP >= 5 && Globals.MAP <= 7) || (Globals.MAP >= 624 && Globals.MAP <= 625)) { } else {
+            if (Globals.IN_BATTLE && Globals.STATS_CHANGED) {
+                if (Globals.CheckDMScript("btnBlackRoom")) {
+                    if ((Globals.MAP >= 5 && Globals.MAP <= 7) || (Globals.MAP >= 624 && Globals.MAP <= 625)) { } else { //y
+                        for (int i = 0; i < 3; i++) {
+                            emulator.WriteByte("NO_ESCAPE", 8, (Globals.MONSTER_SIZE + i) * 0x20);
+                        }
+                    }
+                } else {
                     for (int i = 0; i < 3; i++) {
                         emulator.WriteByte("NO_ESCAPE", 8, (Globals.MONSTER_SIZE + i) * 0x20);
                     }
-                }
-            } else {
-                for (int i = 0; i < 3; i++) {
-                    emulator.WriteByte("NO_ESCAPE", 8, (Globals.MONSTER_SIZE + i) * 0x20);
                 }
             }
         }
@@ -8329,7 +8377,7 @@ namespace Dragoon_Modifier {
 
 
         private void miModOptions_Click(object sender, RoutedEventArgs e) {
-            if (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) {
+            if (!Globals.DIFFICULTY_MODE.Equals("Normal")) {
                 Constants.WriteOutput("You can't change Mod Options while using a preset.");
             } else {
                 InputWindow openModWindow = new InputWindow("Mod Options");
@@ -8560,7 +8608,7 @@ namespace Dragoon_Modifier {
                 emulator.WriteShort("AUTO_TEXT", 12354);
             }
 
-            if (btn.Name.Equals("btnDivineRed") && (Globals.DIFFICULTY_MODE.Equals("Hell") && ultimateBossCompleted < 34)) {
+            if (btn.Name.Equals("btnDivineRed") && (Globals.DIFFICULTY_MODE.Contains("Hell") && ultimateBossCompleted < 34)) {
                 Globals.dmScripts[btn.Name] = false;
                 Constants.WriteGLogOutput("You have not completed Ultimate Boss Dragoon Doel.");
             }
@@ -8648,13 +8696,51 @@ namespace Dragoon_Modifier {
 
             if (btn == btnNormal) {
                 btn.Background = new SolidColorBrush(Color.FromArgb(255, 168, 211, 255));
+                btnNormalHard.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
                 btnHard.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                btnHardHell.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
                 btnHell.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
                 Globals.DIFFICULTY_MODE = "Normal";
                 Globals.MOD = "US_Base";
+                Globals.MONSTER_STAT_CHANGE = false;
+                Globals.MONSTER_DROP_CHANGE = false;
+                Globals.MONSTER_EXPGOLD_CHANGE = false;
+                Globals.CHARACTER_STAT_CHANGE = false;
+                Globals.ADDITION_CHANGE = false;
+                Globals.DRAGOON_STAT_CHANGE = false;
+                Globals.DRAGOON_SPELL_CHANGE = false;
+                Globals.DRAGOON_DESC_CHANGE = false;
+                Globals.DRAGOON_ADDITION_CHANGE = false;
+                Globals.ITEM_STAT_CHANGE = false;
+                Globals.ITEM_ICON_CHANGE = false;
+                Globals.ITEM_NAMEDESC_CHANGE = false;
+                Globals.SHOP_CHANGE = false;
+            } else if (btn == btnNormalHard) {
+                btn.Background = new SolidColorBrush(Color.FromArgb(255, 168, 211, 255));
+                btnNormal.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));;
+                btnHard.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                btnHardHell.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                btnHell.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                Globals.DIFFICULTY_MODE = "NormalHard";
+                Globals.MOD = "Hard_Mode";
+                Globals.MONSTER_STAT_CHANGE = false;
+                Globals.MONSTER_DROP_CHANGE = false;
+                Globals.MONSTER_EXPGOLD_CHANGE = false;
+                Globals.CHARACTER_STAT_CHANGE = false;
+                Globals.ADDITION_CHANGE = true;
+                Globals.DRAGOON_STAT_CHANGE = false;
+                Globals.DRAGOON_SPELL_CHANGE = false;
+                Globals.DRAGOON_DESC_CHANGE = false;
+                Globals.DRAGOON_ADDITION_CHANGE = false;
+                Globals.ITEM_STAT_CHANGE = true;
+                Globals.ITEM_ICON_CHANGE = true;
+                Globals.ITEM_NAMEDESC_CHANGE = true;
+                Globals.SHOP_CHANGE = false;
             } else if (btn == btnHard) {
                 btn.Background = new SolidColorBrush(Color.FromArgb(255, 168, 211, 255));
                 btnNormal.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                btnNormalHard.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                btnHardHell.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
                 btnHell.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
                 Globals.DIFFICULTY_MODE = "Hard";
                 Globals.MOD = "Hard_Mode";
@@ -8671,10 +8757,33 @@ namespace Dragoon_Modifier {
                 Globals.ITEM_ICON_CHANGE = true;
                 Globals.ITEM_NAMEDESC_CHANGE = true;
                 Globals.SHOP_CHANGE = true;
+            } else if (btn == btnHardHell) {
+                btn.Background = new SolidColorBrush(Color.FromArgb(255, 168, 211, 255));
+                btnNormal.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                btnNormalHard.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                btnHard.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                btnHell.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                Globals.DIFFICULTY_MODE = "HardHell";
+                Globals.MOD = "Hell_Mode";
+                Globals.MONSTER_STAT_CHANGE = true;
+                Globals.MONSTER_DROP_CHANGE = true;
+                Globals.MONSTER_EXPGOLD_CHANGE = true;
+                Globals.CHARACTER_STAT_CHANGE = false;
+                Globals.ADDITION_CHANGE = true;
+                Globals.DRAGOON_STAT_CHANGE = false;
+                Globals.DRAGOON_SPELL_CHANGE = false;
+                Globals.DRAGOON_DESC_CHANGE = true;
+                Globals.DRAGOON_ADDITION_CHANGE = false;
+                Globals.ITEM_STAT_CHANGE = true;
+                Globals.ITEM_ICON_CHANGE = true;
+                Globals.ITEM_NAMEDESC_CHANGE = true;
+                Globals.SHOP_CHANGE = true;
             } else if (btn == btnHell) {
                 btn.Background = new SolidColorBrush(Color.FromArgb(255, 168, 211, 255));
                 btnNormal.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                btnNormalHard.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
                 btnHard.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                btnHardHell.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
                 Globals.DIFFICULTY_MODE = "Hell";
                 Globals.MOD = "Hell_Mode";
                 Globals.MONSTER_STAT_CHANGE = true;
@@ -8749,6 +8858,8 @@ namespace Dragoon_Modifier {
                 txtHelp.Text = "Presets Hard and Hell mode are plug and play difficulty settings which are locked in. These presets are intended to run on unmodified ISOs. Normal Mode will not do anything unless you have made changes. You can change your current mod loadout and location in Settings Tab>Settings>Mod Options. Hard and Hell Mode have a more detailed changes below.\r\n\r\n" +
                     "Hard Mode\r\nThis preset balances characters, monsters, weapons, additions, boss drops, and is very Dragoon focused. It is intended that you start off with Dragoons using hotkey (CROSS+L1) in starting Map 10. The mod starts off slightly harder than the Japanese version and gets more difficult as you progress through the discs. However you are not meant to grind for EXP in this mode. You can keep everyone at the same level by using Switch EXP in the Enhancements 1 tab up to 80,000 EXP. Dart as well has new Dragoon enhancements called Burn Stacks (CIRCLE+LEFT). Dart can have up to 6 stacks for 20% each and he gains stacks by using Dragoon magic.\r\n\r\n" +
                     "Hell Mode has the same character, weapon, drop, and dragoon adjustments. However incomplete Additions are punished and you gain about 50% SP from them. To encourage the use of Elemental Bomb the drop rates for magic items are tripled, powerful items are doubled. It is intended for you to start off Hell Mode will all Dragoons with hotkey (CROSS+L1) in Map 10. It is also intended that you use Elemental Bomb, it was left optional as it made Hell Mode easier but it was designed with this turned on. This changes the element of all monsters on the field when a powerful item is used, however you do not have to use this. Monsters are much harder and you may require grinding. You can keep everyone at the same level by using Switch EXP up to 160,000 EXP. In Hell Mode you lose SP after fighting most of the major bosses, if you total SP gained falls below the level threshold you will delevel your Dragoons.\r\n\r\n" +
+                    "Base + Hard (Bosses) uses Hard Mode enhancements but uses normal monster stats for normal encounters (which makes them easier) and uses Hard Mode stats for bosses only.\r\n" +
+                    "Hard + Hell (Bosses) uses Hell Mode enhancements, but uses Hard Mode monster stats for normal encounters and Hell Mode stats for bosses only.\r\n" +
                     "+\r\nPlus turns on Enrage Mode for bosses only. Originally designed to be a part of Hell Mode but separated for the possibility of being too hard.\r\n\r\nThe sliders will multiply each stat at the bottom. If you choose a preset those stats will be multiplied as well.";
             } else if (cboHelpTopic.SelectedIndex == 3) {
                 txtHelp.Text = "Break 9999 HP Cap\r\nWill break the HP cap and save your HP above 9999 between battles as long as you don't switch characters.\r\n\r\n" +
