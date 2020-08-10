@@ -381,12 +381,6 @@ namespace Dragoon_Modifier {
         public bool faustBattle = false;
         public bool saveFaust = false;
         public int faustCount = 0;
-        //Addition Swap
-        public byte additionSwapMode = 0;
-        public byte additionSwapSlot = 0;
-        public byte additionSwapBlock = 0;
-        public byte additionSwapMenu = 0;
-        public byte additionSwapAddition = 0;
         #endregion
         #endregion
 
@@ -1958,8 +1952,23 @@ namespace Dragoon_Modifier {
                                 }
 
                                 Globals.LAST_HOTKEY = Constants.GetTime();
-                            } else if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_R1) && !Globals.ADDITION_SWAP) {
-                                Globals.ADDITION_SWAP = true;
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_R1) && !Globals.ADDITION_SWAP) { //Addition Swap
+                                for (int i = 0; i < 3; i++) {
+                                    if (Globals.PARTY_SLOT[i] < 9) {
+                                        if (Globals.CHARACTER_TABLE[i].Read("Action") == 8) {
+                                            if (Globals.PARTY_SLOT[i] == 2 || Globals.PARTY_SLOT[i] == 8) {
+                                                Constants.WriteGLogOutput("Bow users don't have additions to swap to.");
+                                            } else {
+                                                if (Globals.CHARACTER_TABLE[i].Read("Status") != 0) {
+                                                    Constants.WriteGLogOutput("You can't addition swap when there is a status effect active.");
+                                                } else {
+                                                    Constants.WriteGLogOutput("Swapping additions...");
+                                                    Globals.ADDITION_SWAP = true;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                                 Globals.LAST_HOTKEY = Constants.GetTime();
                             }
                         }
@@ -2259,6 +2268,16 @@ namespace Dragoon_Modifier {
                     emulator.WriteByte(address + 0xE * 6, 29); //Blazying Dynamo
                 }
                 //Lavitz
+                emulator.WriteByte(address + 0xE * 2 + 0x70, 10); //Rod Typhoon
+                emulator.WriteByte(address + 0xE * 3 + 0x70, 16); //Gust of Wind Dance
+                emulator.WriteByte(address + 0xE * 4 + 0x70, 60); //Flower Storm
+                if (emulator.ReadByte(address2 + 0x2C) >= 80 &&
+                    emulator.ReadByte(address2 + 0x2C + 0x1) >= 80 &&
+                    emulator.ReadByte(address2 + 0x2C + 0x2) >= 80 &&
+                    emulator.ReadByte(address2 + 0x2C + 0x3) >= 80) {
+                    emulator.WriteByte(address + 0xE * 4 + 0x70, 21); //Flower Storm
+                }
+                //Albert
                 emulator.WriteByte(address + 0xE * 2 + 0x70, 10); //Rod Typhoon
                 emulator.WriteByte(address + 0xE * 3 + 0x70, 16); //Gust of Wind Dance
                 emulator.WriteByte(address + 0xE * 4 + 0x70, 60); //Flower Storm
@@ -8867,9 +8886,9 @@ namespace Dragoon_Modifier {
                 txtHelp.Text = "Presets Hard and Hell mode are plug and play difficulty settings which are locked in. These presets are intended to run on unmodified ISOs. Normal Mode will not do anything unless you have made changes. You can change your current mod loadout and location in Settings Tab>Settings>Mod Options. Hard and Hell Mode have a more detailed changes below.\r\n\r\n" +
                     "Hard Mode\r\nThis preset balances characters, monsters, weapons, additions, boss drops, and is very Dragoon focused. It is intended that you start off with Dragoons using hotkey (CROSS+L1) in starting Map 10. The mod starts off slightly harder than the Japanese version and gets more difficult as you progress through the discs. However you are not meant to grind for EXP in this mode. You can keep everyone at the same level by using Switch EXP in the Enhancements 1 tab up to 80,000 EXP. Dart as well has new Dragoon enhancements called Burn Stacks (CIRCLE+LEFT). Dart can have up to 6 stacks for 20% each and he gains stacks by using Dragoon magic.\r\n\r\n" +
                     "Hell Mode has the same character, weapon, drop, and dragoon adjustments. However incomplete Additions are punished and you gain about 50% SP from them. To encourage the use of Elemental Bomb the drop rates for magic items are tripled, powerful items are doubled. It is intended for you to start off Hell Mode will all Dragoons with hotkey (CROSS+L1) in Map 10. It is also intended that you use Elemental Bomb, it was left optional as it made Hell Mode easier but it was designed with this turned on. This changes the element of all monsters on the field when a powerful item is used, however you do not have to use this. Monsters are much harder and you may require grinding. You can keep everyone at the same level by using Switch EXP up to 160,000 EXP. In Hell Mode you lose SP after fighting most of the major bosses, if you total SP gained falls below the level threshold you will delevel your Dragoons.\r\n\r\n" +
-                    "Base + Hard (Bosses) uses Hard Mode enhancements but uses normal monster stats for normal encounters (which makes them easier) and uses Hard Mode stats for bosses only.\r\n" +
-                    "Hard + Hell (Bosses) uses Hell Mode enhancements, but uses Hard Mode monster stats for normal encounters and Hell Mode stats for bosses only.\r\n" +
-                    "+\r\nPlus turns on Enrage Mode for bosses only. Originally designed to be a part of Hell Mode but separated for the possibility of being too hard.\r\n\r\nThe sliders will multiply each stat at the bottom. If you choose a preset those stats will be multiplied as well.";
+                    "Base + Hard (Bosses) uses Hard Mode enhancements but uses normal monster stats for normal encounters (which makes them easier) and uses Hard Mode stats for bosses only.\r\n\r\n" +
+                    "Hard + Hell (Bosses) uses Hell Mode enhancements, but uses Hard Mode monster stats for normal encounters and Hell Mode stats for bosses only.\r\n\r\n" +
+                    "+\r\nPlus turns on Enrage Mode for bosses only. Originally designed as a part of Hell Mode but separated for the possibility of being too hard.\r\n\r\nThe sliders will multiply each stat at the bottom. If you choose a preset those stats will be multiplied as well.";
             } else if (cboHelpTopic.SelectedIndex == 3) {
                 txtHelp.Text = "Break 9999 HP Cap\r\nWill break the HP cap and save your HP above 9999 between battles as long as you don't switch characters.\r\n\r\n" +
                     "Remove Damage Caps\r\nThe game's multiple damage caps will be changed to 50,000.\r\n\r\n" +
@@ -9056,7 +9075,8 @@ namespace Dragoon_Modifier {
                     "SELECT + R3       - Nerfs the last three bosses of the game suitable for level 40s for Hard Mode.\r\n" +
                     "L2 + LEFT         - Activates Soa's Wargod.\r\n" +
                     "L2 + RIGHT        - Activates Soa's Dragoon Boost.\r\n" +
-                    "L2 + UP           - Activates Empty Dragoon Crystal.";
+                    "L2 + UP           - Activates Empty Dragoon Crystal.\r\n" +
+                    "L1 + R1           - Activates Adddition Swap in battle if you have no status effects. The number of dragoon spirits the appear are equal to the number of available additions. The additions are ordered from left to right, for example Dart's third icon would be Burning Rush. Press Dragoon to automatical transform to switch additions.";
             } else if (cboHelpTopic.SelectedIndex == 11) {
                 txtHelp.Text = "1. No Dart\r\n" +
                     "When you have three party members use Switch Slot 1 and No Dart should turn on. When you are switching between Solo and Duo Mode or turning them off make sure to turn off No Dart in Enhancements Tab II.\r\n\r\n" +

@@ -22,18 +22,199 @@ public class BattleController {
         }
 
         if (Globals.IN_BATTLE && Globals.STATS_CHANGED && encounterValue == 41215 && Globals.ADDITION_SWAP) {
-            Nullable<byte> character = null;
+            Nullable<int> character = null;
             for (byte slot = 0; slot < 3; slot++) {
                 if (Globals.CHARACTER_TABLE[slot].Read("Action") == 8) {
-                    character = slot;
-                    break;
+                    character = (int) slot;
                 }
             }
-            if (character != null) {
-                AdditionSwap(emulator, (byte)character, 7);
-            }
-            
 
+            if (character != null) {
+                int slot = (int) character;
+                long additionUnlock = Constants.GetAddress("MENU_ADDITION_TABLE_FLAT");
+                long additionXP = Constants.GetAddress("CHAR_TABLE") + 0x22;
+                byte level = emulator.ReadByte((long) (Constants.GetAddress("CHAR_TABLE") + 0x12 + 0x2C * character));
+                byte swappableAdditions = 1;
+
+                if (Globals.PARTY_SLOT[slot] == (byte) 0) {
+                    if (emulator.ReadByte(additionXP) >= 80 &&
+                        emulator.ReadByte(additionXP + 0x1) >= 80 &&
+                        emulator.ReadByte(additionXP + 0x2) >= 80 &&
+                        emulator.ReadByte(additionXP + 0x3) >= 80 &&
+                        emulator.ReadByte(additionXP + 0x4) >= 80 &&
+                        emulator.ReadByte(additionXP + 0x5) >= 80) {
+                        if (emulator.ReadByte(additionUnlock + 0xE * 6) < 255) {
+                            if (level >= emulator.ReadByte(additionUnlock + 0xE * 6)) {
+                                swappableAdditions = 7;
+                            } else {
+                                swappableAdditions = 6;
+                            }
+                        } else {
+                            swappableAdditions = 7;
+                        }
+                    } else {
+                        if (level >= emulator.ReadByte(additionUnlock + 0xE * 5)) {
+                            swappableAdditions = 6;
+                        } else if (level >= emulator.ReadByte(additionUnlock + 0xE * 4)) {
+                            swappableAdditions = 5;
+                        } else if (level >= emulator.ReadByte(additionUnlock + 0xE * 3)) {
+                            swappableAdditions = 4;
+                        } else if (level >= emulator.ReadByte(additionUnlock + 0xE * 2)) {
+                            swappableAdditions = 3;
+                        } else if (level >= emulator.ReadByte(additionUnlock + 0xE * 1)) {
+                            swappableAdditions = 2;
+                        } else {
+                            swappableAdditions = 1;
+                        }
+                    }
+                } else if (Globals.PARTY_SLOT[slot] == (byte) 1) {
+                    if (emulator.ReadByte(additionXP + 0x2C) >= 80 &&
+                        emulator.ReadByte(additionXP + 0x2C + 0x1) >= 80 &&
+                        emulator.ReadByte(additionXP + 0x2C + 0x2) >= 80 &&
+                        emulator.ReadByte(additionXP + 0x2C + 0x3) >= 80) {
+                        if (emulator.ReadByte(additionUnlock + 0xE * 4 + 0x70) < 255) {
+                            if (level >= emulator.ReadByte(additionUnlock + 0xE * 4 + 0x70)) {
+                                swappableAdditions = 5;
+                            } else {
+                                swappableAdditions = 4;
+                            }
+                        } else {
+                            swappableAdditions = 5;
+                        }
+                    } else {
+                        if (level >= emulator.ReadByte(additionUnlock + 0xE * 4 + 0x70)) {
+                            swappableAdditions = 4;
+                        } else if (level >= emulator.ReadByte(additionUnlock + 0xE * 3 + 0x70)) {
+                            swappableAdditions = 3;
+                        } else if (level >= emulator.ReadByte(additionUnlock + 0xE * 2 + 0x70)) {
+                            swappableAdditions = 2;
+                        } else {
+                            swappableAdditions = 1;
+                        }
+                    }
+                } else if (Globals.PARTY_SLOT[slot] == (byte) 5) {
+                    if (emulator.ReadByte(additionXP + 0xDC) >= 80 &&
+                        emulator.ReadByte(additionXP + 0xDC + 0x1) >= 80 &&
+                        emulator.ReadByte(additionXP + 0xDC + 0x2) >= 80 &&
+                        emulator.ReadByte(additionXP + 0xDC + 0x3) >= 80) {
+                        if (emulator.ReadByte(additionUnlock + 0xE * 4 + 0x70) < 255) {
+                            if (level >= emulator.ReadByte(additionUnlock + 0xE * 4 + 0x70)) {
+                                swappableAdditions = 5;
+                            } else {
+                                swappableAdditions = 4;
+                            }
+                        } else {
+                            swappableAdditions = 5;
+                        }
+                    } else {
+                        if (level >= emulator.ReadByte(additionUnlock + 0xE * 4 + 0x70)) {
+                            swappableAdditions = 4;
+                        } else if (level >= emulator.ReadByte(additionUnlock + 0xE * 3 + 0x70)) {
+                            swappableAdditions = 3;
+                        } else if (level >= emulator.ReadByte(additionUnlock + 0xE * 2 + 0x70)) {
+                            swappableAdditions = 2;
+                        } else {
+                            swappableAdditions = 1;
+                        }
+                    }
+                } else if (Globals.PARTY_SLOT[slot] == (byte) 3) {
+                    if (emulator.ReadByte(additionXP + 0x84) >= 80 &&
+                        emulator.ReadByte(additionXP + 0x84 + 0x1) >= 80 &&
+                        emulator.ReadByte(additionXP + 0x84 + 0x2) >= 80) {
+                        if (emulator.ReadByte(additionUnlock + 0xE * 3 + 0xC4) < 255) {
+                            if (level >= emulator.ReadByte(additionUnlock + 0xE * 3 + 0xC4)) {
+                                swappableAdditions = 4;
+                            } else {
+                                swappableAdditions = 3;
+                            }
+                        } else {
+                            swappableAdditions = 4;
+                        }
+                    } else {
+                        if (level >= emulator.ReadByte(additionUnlock + 0xE * 3 + 0xC4)) {
+                            swappableAdditions = 3;
+                        } else if (level >= emulator.ReadByte(additionUnlock + 0xE * 2 + 0xC4)) {
+                            swappableAdditions = 2;
+                        } else {
+                            swappableAdditions = 1;
+                        }
+                    }
+                } else if (Globals.PARTY_SLOT[slot] == (byte) 7) {
+                    if (emulator.ReadByte(additionXP + 0x134) >= 80 &&
+                        emulator.ReadByte(additionXP + 0x134 + 0x1) >= 80) {
+                        if (emulator.ReadByte(additionUnlock + 0xE * 2 + 0x10A) < 255) {
+                            if (level >= emulator.ReadByte(additionUnlock + 0xE * 2 + 0x10A)) {
+                                swappableAdditions = 3;
+                            } else {
+                                swappableAdditions = 2;
+                            }
+                        } else {
+                            swappableAdditions = 3;
+                        }
+                    } else {
+                        if (level >= emulator.ReadByte(additionUnlock + 0xE * 2 + 0x10A)) {
+                            swappableAdditions = 2;
+                        } else {
+                            swappableAdditions = 1;
+                        }
+                    }
+                } else if (Globals.PARTY_SLOT[slot] == (byte) 6) {
+                    if (emulator.ReadByte(additionXP + 0x108) >= 80 &&
+                        emulator.ReadByte(additionXP + 0x108 + 0x1) >= 80 &&
+                        emulator.ReadByte(additionXP + 0x108 + 0x2) >= 80 &&
+                        emulator.ReadByte(additionXP + 0x108 + 0x3) >= 80) {
+                        if (emulator.ReadByte(additionUnlock + 0xE * 4 + 0x142) < 255) {
+                            if (level >= emulator.ReadByte(additionUnlock + 0xE * 4 + 0x142)) {
+                                swappableAdditions = 5;
+                            } else {
+                                swappableAdditions = 4;
+                            }
+                        } else {
+                            swappableAdditions = 5;
+                        }
+                    } else {
+                        if (level >= emulator.ReadByte(additionUnlock + 0xE * 4 + 0x142)) {
+                            swappableAdditions = 4;
+                        } else if (level >= emulator.ReadByte(additionUnlock + 0xE * 3 + 0x142)) {
+                            swappableAdditions = 3;
+                        } else if (level >= emulator.ReadByte(additionUnlock + 0xE * 2 + 0x142)) {
+                            swappableAdditions = 2;
+                        } else {
+                            swappableAdditions = 1;
+                        }
+                    }
+                } else if (Globals.PARTY_SLOT[slot] == (byte) 4) {
+                    if (emulator.ReadByte(additionXP + 0xB0) >= 80 &&
+                        emulator.ReadByte(additionXP + 0xB0 + 0x1) >= 80 &&
+                        emulator.ReadByte(additionXP + 0xB0 + 0x2) >= 80 &&
+                        emulator.ReadByte(additionXP + 0xB0 + 0x3) >= 80 &&
+                        emulator.ReadByte(additionXP + 0xB0 + 0x4) >= 80) {
+                        if (emulator.ReadByte(additionUnlock + 0xE * 5 + 0x196) < 255) {
+                            if (level >= emulator.ReadByte(additionUnlock + 0xE * 5 + 0x196)) {
+                                swappableAdditions = 6;
+                            } else {
+                                swappableAdditions = 5;
+                            }
+                        } else {
+                            swappableAdditions = 6;
+                        }
+                    } else {
+                        if (level >= emulator.ReadByte(additionUnlock + 0xE * 5 + 0x196)) {
+                            swappableAdditions = 5;
+                        } else if (level >= emulator.ReadByte(additionUnlock + 0xE * 4 + 0x196)) {
+                            swappableAdditions = 4;
+                        } else if (level >= emulator.ReadByte(additionUnlock + 0xE * 3 + 0x196)) {
+                            swappableAdditions = 3;
+                        } else if (level >= emulator.ReadByte(additionUnlock + 0xE * 2 + 0x196)) {
+                            swappableAdditions = 2;
+                        } else {
+                            swappableAdditions = 1;
+                        }
+                    }
+                }
+
+                AdditionSwap(emulator, (byte) character, swappableAdditions);
+            }
         }
 
         if (Globals.IN_BATTLE && !Globals.STATS_CHANGED && encounterValue == 41215) {
@@ -90,6 +271,7 @@ public class BattleController {
                 CharacterFieldChanges(emulator);
                 AdditionFieldChanges(emulator);
 
+                Globals.ADDITION_SWAP = false;
                 Globals.STATS_CHANGED = false;
                 Globals.IN_BATTLE = false;
                 Globals.EXITING_BATTLE = 2;
@@ -483,7 +665,6 @@ public class BattleController {
     }
     
     public static void AdditionSwap(Emulator emulator, byte slot, byte additionCount) {
-        
         byte character = Globals.PARTY_SLOT[slot];
         if (additionCount > 1) {
             ushort SP = Globals.CHARACTER_TABLE[slot].Read("SP");
@@ -574,7 +755,7 @@ public class BattleController {
             Globals.CHARACTER_TABLE[slot].Write("MP_Regen", MP_reg);
             Globals.CHARACTER_TABLE[slot].Write("SP_Regen", SP_reg);
             Globals.ADDITION_SWAP = false;
-
+            Constants.WriteGLogOutput("Addition swap complete.");
         }
     }
 
