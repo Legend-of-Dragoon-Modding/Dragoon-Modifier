@@ -21,6 +21,8 @@ using Dragoon_Modifier.Properties;
 using Xceed.Wpf.AvalonDock.Properties;
 using System.Reflection;
 using ControlzEx.Standard;
+using System.Text.Json;
+using System.Net;
 
 namespace Dragoon_Modifier {
     public partial class MainWindow {
@@ -41,6 +43,8 @@ namespace Dragoon_Modifier {
         public ReaderWindow readerWindow = new ReaderWindow();
         int oldOffset = 0;
         int currentIconState = 0;
+
+        public string current_version = "3.1.6";
         #endregion
 
         #region Script Variables
@@ -395,6 +399,18 @@ namespace Dragoon_Modifier {
                 InitUI();
                 LoadKey();
                 Globals.DICTIONARY = new LoDDict();
+                using (WebClient client = new WebClient()) {
+                    client.Headers.Add("user-agent", "Anything");
+                    string s = client.DownloadString("https://api.github.com/repos/Zychronix/Dragoon-Modifier/releases/latest");
+                    var mod_version = JsonSerializer.Deserialize<MOD_Version>(s);
+                    string new_version = mod_version.name.Replace("v", "");
+                    Version v1 = new Version(new_version);
+                    Version v2 = new Version(current_version);
+                    if (v1.CompareTo(v2) > 0) {
+                        Constants.WriteOutput($"Current version {current_version} is outdated. You can download the version {new_version} at {mod_version.html_url}");
+                    }
+                }
+
 
                 if (Constants.EMULATOR != 255) {
                     SetupEmulator(true);
@@ -10080,5 +10096,10 @@ namespace Dragoon_Modifier {
             SaveSubKey();
         }
         #endregion
+    }
+
+    public class MOD_Version {
+        public string name { get; set; }
+        public string html_url { get; set; }
     }
 }
