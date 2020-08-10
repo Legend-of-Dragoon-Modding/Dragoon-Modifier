@@ -9076,7 +9076,7 @@ namespace Dragoon_Modifier {
                     "L2 + LEFT         - Activates Soa's Wargod.\r\n" +
                     "L2 + RIGHT        - Activates Soa's Dragoon Boost.\r\n" +
                     "L2 + UP           - Activates Empty Dragoon Crystal.\r\n" +
-                    "L1 + R1           - Activates Adddition Swap in battle if you have no status effects. The number of dragoon spirits the appear are equal to the number of available additions. The additions are ordered from left to right, for example Dart's third icon would be Burning Rush. Press Dragoon to automatical transform to switch additions.";
+                    "L1 + R1           - Activates Adddition Swap in battle if you have no status effects. The number of dragoon spirits the appear are equal to the number of available additions. The additions are ordered from left to right, for example Dart's third icon would be Burning Rush. Press Dragoon to automatically transform to switch additions.";
             } else if (cboHelpTopic.SelectedIndex == 11) {
                 txtHelp.Text = "1. No Dart\r\n" +
                     "When you have three party members use Switch Slot 1 and No Dart should turn on. When you are switching between Solo and Duo Mode or turning them off make sure to turn off No Dart in Enhancements Tab II.\r\n\r\n" +
