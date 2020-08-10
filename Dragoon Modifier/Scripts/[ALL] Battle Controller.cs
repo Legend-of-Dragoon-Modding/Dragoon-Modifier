@@ -275,7 +275,7 @@ public class BattleController {
                 Globals.STATS_CHANGED = false;
                 Globals.IN_BATTLE = false;
                 Globals.EXITING_BATTLE = 2;
-                if (Globals.NO_DART != null) {
+                if (Globals.NO_DART > 0) {
                     while (emulator.ReadByte("TRANSITION") != 12) {
                         Thread.Sleep(50);
                     }
@@ -811,7 +811,7 @@ public class BattleController {
     }
 
     public static void NoDart(Emulator emulator) {
-        if (Globals.NO_DART != null) {
+        if (Globals.NO_DART > 0) {
             Globals.CHARACTER_TABLE[0].Write("Status", 0);
             Globals.CHARACTER_TABLE[0].Write("HP_Regen", 0);
             Globals.CHARACTER_TABLE[0].Write("SP_Regen", 0);

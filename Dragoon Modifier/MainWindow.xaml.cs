@@ -2529,7 +2529,7 @@ namespace Dragoon_Modifier {
                 if (Globals.DART_SWITCH) {
                     emulator.WriteByte("PARTY_SLOT", (byte) Globals.NO_DART);
                     emulator.WriteByte("MENU_UNLOCK", 1);
-                    emulator.WriteByte("CHAR_TABLE", 0x43, 0x4);
+                    emulator.WriteByte("CHAR_TABLE", emulator.ReadByte("CHAR_TABLE", 0x4) & 0xDF, 0x4);
                     Globals.DART_SWITCH = false;
                 } 
             } else {
