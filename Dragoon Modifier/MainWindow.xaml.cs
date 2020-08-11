@@ -2963,8 +2963,10 @@ namespace Dragoon_Modifier {
                         Globals.NO_DART = null;
                         emulator.WriteByte("PARTY_SLOT", uiCombo["cboSwitchChar"]);
                     } else {
+                        Globals.DART_SWITCH = true;
                         Globals.NO_DART = uiCombo["cboSwitchChar"];
                         Constants.WritePLogOutput("No Dart has been activated for Slot 1 and will swap to your select character in battle.");
+                        
                     }
                 }
 
