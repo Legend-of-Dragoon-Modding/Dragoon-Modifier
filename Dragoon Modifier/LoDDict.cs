@@ -924,7 +924,7 @@ namespace Dragoon_Modifier {
         byte special2 = 0;
         byte uu1 = 0;
         byte special_ammount = 0;
-        byte icon = 0;
+        byte icon = 0x26;
         byte status = 0;
         byte percentage = 0;
         byte uu2 = 0;
@@ -969,34 +969,22 @@ namespace Dragoon_Modifier {
                 { "cloak", 30 },
                 { "scarf", 31 },
                 { "horn", 32 },
+                { "blue potion", 33 },
+                { "yellow potion", 34 },
+                { "red potion", 35 },
+                { "angel's prayer", 36 },
+                { "green potion", 37 },
+                { "magic", 38 },
+                { "skull", 39 },
+                { "up", 40 },
+                { "down", 41 },
+                { "shield", 42 },
+                { "smoke ball", 43 },
+                { "sig stone", 44 },
+                { "charm", 45 },
+                { "sack", 46 },
                 {"none", 64 },
                 {"", 64 }
-            };
-        Dictionary<string, byte> charDict = new Dictionary<string, byte>() {
-                {"meru", 1 },
-                {"shana", 2 },
-                {"miranda", 2 },
-                {"???", 2 },
-                {"rose", 4 },
-                {"haschel", 16 },
-                {"kongol", 32 },
-                {"lavitz", 64 },
-                {"albert", 64 },
-                {"dart", 128 },
-                {"female", 7 },
-                {"male", 240 },
-                {"all", 247 },
-                {"none", 0 },
-                {"", 0 }
-            };
-        Dictionary<string, byte> typeDict = new Dictionary<string, byte>() {
-                {"weapon", 128 },
-                {"armor", 32 },
-                {"helm", 64 },
-                {"boots", 16 },
-                {"accessory", 8 },
-                {"none", 0},
-                {"", 0 }
             };
         Dictionary<string, byte> element2num = new Dictionary<string, byte>() {
                 {"", 0 },
@@ -1035,32 +1023,43 @@ namespace Dragoon_Modifier {
         Dictionary<string, byte> special12num = new Dictionary<string, byte>() {
                 {"", 0 },
                 {"none", 0 },
-                {"mp_m_hit", 1 },
-                {"sp_m_hit", 2 },
-                {"mp_p_hit", 4 },
-                {"sp_p_hit", 8 },
-                {"sp_multi", 16 },
-                {"p_half", 32 }
+                {"power1", 0x10 },
+                {"power2", 0x20 },
+                {"power3", 0x40 },
+                {"power4", 0x80 }
             };
         Dictionary<string, byte> special22num = new Dictionary<string, byte>() {
                 {"", 0 },
                 {"none", 0 },
-                {"mp_multi", 1 },
-                {"hp_multi", 2 },
-                {"m_half", 4 },
-                {"revive", 8 },
-                {"sp_regen", 16 },
-                {"mp_regen", 32 },
-                {"hp_regen", 64 }
+                {"speed_down", 0x10 },
+                {"speed_up", 0x20 },
+                {"magic_res", 0x40 },
+                {"physical_res", 0x80 }
             };
-        Dictionary<string, byte> death2num = new Dictionary<string, byte>() {
-                {"", 0 },
-                {"none", 0 },
-                {"dragon_buster", 4 },
-                {"attack_all", 8 },
-                {"death_chance", 64 },
-                {"death_res", 128 }
+        Dictionary<string, byte> base_table = new Dictionary<string, byte>() {
+
+            {"", 0x0 },
+            {"none", 0x0 },
+            {"100", 0x0 },
+            {"800", 0x1 },
+            {"600", 0x2 },
+            {"500", 0x4 },
+            {"400", 0x8 },
+            {"300", 0x10 },
+            {"200", 0x20 },
+            {"150", 0x40 },
+            {"50", 0x80 }
             };
+        Dictionary<string, byte> base_dict = new Dictionary<string, byte>() {
+            {"", 0x0 },
+            {"none", 0x0 },
+            {"status_cause", 0x4 },
+            {"status_cure", 0x8 },
+            {"revive", 0x10 },
+            {"sp", 0x20 },
+            {"mp", 0x40 },
+            {"hp", 0x80 }
+        };
 
         #endregion
 
@@ -1101,9 +1100,9 @@ namespace Dragoon_Modifier {
             if (element2num.TryGetValue(values[2].ToLower(), out key)) {
                 element = key;
             } else {
-                Constants.WriteDebug(values[2] + " not found as element for item: " + name);
+                Constants.WriteDebug(values[2] + " not found as Element for item: " + name);
             }
-            if (Byte.TryParse(values[3], NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+            if (base_table.TryGetValue(values[3], out key)) {
                 damage = key;
             } else if (values[3] != "") {
                 Constants.WriteDebug(values[3] + " not found as Damage for item: " + name);
@@ -1127,8 +1126,8 @@ namespace Dragoon_Modifier {
             } else if (values[6] != "") {
                 Constants.WriteDebug(values[6] + " not found as UU1 for item: " + name);
             }
-            if (Byte.TryParse(values[7], NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
-                special_ammount = key;
+            if (Int16.TryParse(values[7], NumberStyles.AllowLeadingSign, null as IFormatProvider, out key2)) {
+                special_ammount = (byte )key2;
             } else if (values[7] != "") {
                 Constants.WriteDebug(values[7] + " not found as Special_Ammount for item: " + name);
             }
@@ -1137,10 +1136,12 @@ namespace Dragoon_Modifier {
             } else {
                 Constants.WriteDebug(values[8] + " not found as icon for item: " + name);
             }
-            if (status2num.TryGetValue(values[9].ToLower(), out key)) {
-                status = key;
-            } else {
-                Constants.WriteDebug(values[9] + " not found as Status for item: " + name);
+            foreach (string substring in values[9].Replace(" ", "").Split(',')) {
+                if (status2num.TryGetValue(substring.ToLower(), out key)) {
+                    status |= key;
+                } else {
+                    Constants.WriteDebug(substring + " not found as Status for item:" + name);
+                }
             }
             if (Byte.TryParse(values[10], NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
                 percentage = key;
@@ -1152,10 +1153,10 @@ namespace Dragoon_Modifier {
             } else if (values[11] != "") {
                 Constants.WriteDebug(values[11] + " not found as UU2 for item: " + name);
             }
-            if (Byte.TryParse(values[12], NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
+            if (base_dict.TryGetValue(values[12].ToLower(), out key)) {
                 baseSwitch = key;
             } else if (values[12] != "") {
-                Constants.WriteDebug(values[12] + " not found as Special_Ammount for item: " + name);
+                Constants.WriteDebug(values[12] + " not found as Base_Switch for item: " + name);
             }
             description = values[13];
             if (!(description == "" || description == " ")) {

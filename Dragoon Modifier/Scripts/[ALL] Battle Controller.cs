@@ -1025,12 +1025,12 @@ public class BattleController {
         if (Globals.ITEM_ICON_CHANGE) {
             Constants.WriteOutput("Changing Item Icons...");
             long address = Constants.GetAddress("ITEM_TABLE");
-            int i = 0;
-            foreach (dynamic item in Globals.DICTIONARY.ItemList) {
-                if (i > 185)
-                    break; 
-                emulator.WriteByte(address + i * 0x1C + 0xD, item.Icon);
-                i++;
+            for (int i = 0; i < 186; i++) {
+                emulator.WriteByte(address + i * 0x1C + 0xD, Globals.DICTIONARY.ItemList[i].Icon);
+            }
+            address = Constants.GetAddress("THROWN_ITEM_TABLE");
+            for (int i = 192; i < 255; i++) {
+                emulator.WriteByte(address + (i - 192) * 0xC + 0x7, Globals.DICTIONARY.ItemList[i].Icon);
             }
         }
 

@@ -1,65 +1,65 @@
 Item Name	Target	Element	Damage	Specail 1	Special 2	UU1	Special Ammount	Icon	Status	Percentage	UU2	Base Switch	Description	Price(even)
-														4
-Detonate Rock													Detonates and<LINE>attacks all.	10
-Spark Net													Thunder-based,<LINE>single-target<LINE>(multi).	10
-Burn Out													Fire-based,<LINE>single-target<LINE>(multi).	10
-													 	2
-Pellet													Earth-based,<LINE>single-target<LINE>(multi).	10
-Spear Frost													Water-based,<LINE>single-target<LINE>(multi).	10
-Spinning Gale													Wind-based,<LINE>single-target<LINE>(multi).	10
-Attack Ball													Generates a random<LINE>attack item.	100
-Trans Light													Light-based,<LINE>single-target<LINE>(multi).	10
-Dark Mist													Dark-based,<LINE>single-target<LINE>(multi).	10
-Healing Potion													Recovers half of<LINE>maximum HP.	10
-Depetrifier													Dissolves<LINE>petrification.	30
-Mind Purifier													Dispels confusion,<LINE>bewitchment, fear,<LINE>and dispiriting.	20
-Body Purifier													Nullifies poison,<LINE>stunning, and<LINE>arm blocking.	10
-Thunderbolt													Thunder-based,<LINE>targets all<LINE>(multi).	20
-Meteor Fall													Earth-based,<LINE>targets all<LINE>(multi).	20
-Gushing Magma													Fire-based,<LINE>targets all<LINE>(multi).	20
-Dancing Ray													Light-based,<LINE>targets all<LINE>(multi).	20
-Spirit Potion													Recovers 100 pts.<LINE>of SP.	20
-Panic Bell													Confuses minor<LINE>enemies.	20
-													 	2
-Fatal Blizzard													Water-based,<LINE>targets all<LINE>(multi).	20
-Stunning Hammer													Stuns minor<LINE>enemies.	20
-Black Rain													Dark-based,<LINE>targets all<LINE>(multi).	20
-Poison Needle													Poisons minor<LINE>enemies.	20
-Midnight Terror													Frightens minor<LINE>enemies.	20
-													 	2
-Rave Twister													Wind-based<LINE>targets all<LINE>(multi).	20
-Total Vanishing													Destroys<LINE>minor enemies.	20
-Angel's Prayer													Revives and<LINE>recovers half<LINE>of maximum HP.	30
-Charm Potion													Reduces encounter<LINE>risk.	4
-Pandemonium													Minor enemies only<LINE>attack target for<LINE>3 turns (repeat).	400
-Recovery Ball													Generates a random<LINE>recovery item.	100
-													 	2
-Magic Shield													Nullifies magical<LINE>attacks for 3 turns<LINE>(repeat).	400
-Material Shield													Nullifies physical<LINE>attacks for 3 turns<LINE>(repeat).	400
-Sun Rhapsody													Completely<LINE>recovers MP.	50
-Smoke Ball													Guaranteed escape<LINE>from minor enemies<LINE>(repeat).	400
-Healing Fog													Completely<LINE>recovers HP.	30
-Magic Sig Stone													Blocks enemy's<LINE>move for 3 turns<LINE>(repeat).	400
-Healing Rain													Completely<LINE>recovers HP<LINE>for all.	120
-Moon Serenade													Completely<LINE>recovers MP<LINE>for all.	200
-Power Up													Increases strength<LINE>for 3 turns<LINE>(repeat).	400
-Power Down													Weakens enemy<LINE>for 3 turns<LINE>(repeat).	400
-Speed Up													Doubles speed<LINE>for 3 turns<LINE>(repeat).	400
-Speed Down													Halves speed<LINE>for 3 turns<LINE>(repeat).	400
-													 	2
-Sachet													Gives off a<LINE>subtle, pleasant<LINE>aroma.	400
-Psyche Bomb													Non-elemental-<LINE>based, targets all<LINE>(multi).	20
-Burning Wave													Powerful fire-<LINE>based attack,<LINE>targets all.	20
-Frozen Jet													Powerful water-<LINE>based attack,<LINE>targets all.	20
-Down Burst													Powerful wind-<LINE>based attack,<LINE>targets all.	20
-Gravity Grabber													Powerful earth-<LINE>based attack,<LINE>targets all.	20
-Spectral Flash													Powerful light-<LINE>based attack,<LINE>targets all.	20
-Night Raid													Powerful dark-<LINE>based attack,<LINE>targets all.	20
-Flash Hall													Powerful thunder-<LINE>based attack,<LINE>targets all.	20
-Healing Breeze													Recovers half of<LINE>maximum HP for all.	50
-Psyche Bomb X													Non-elemental-<LINE>based, targets all<LINE>(multi)(repeat).	400
-													 	0
-													 	0
-													 	0
-													 	0
+	76	None						Magic						4
+Detonate Rock	78	None	100					Magic					Detonates and<LINE>attacks all.	10
+Spark Net	76	Thunder	150					Magic					Thunder-based,<LINE>single-target<LINE>(multi).	10
+Burn Out	76	Fire	150					Magic					Fire-based,<LINE>single-target<LINE>(multi).	10
+		None											 	2
+Pellet	76	Earth	150					Magic					Earth-based,<LINE>single-target<LINE>(multi).	10
+Spear Frost	76	Water	150					Magic					Water-based,<LINE>single-target<LINE>(multi).	10
+Spinning Gale	76	Wind	150					Magic					Wind-based,<LINE>single-target<LINE>(multi).	10
+Attack Ball	76	None						Sack					Generates a random<LINE>attack item.	100
+Trans Light	76	Light	150					Magic					Light-based,<LINE>single-target<LINE>(multi).	10
+Dark Mist	76	Dark	150					Magic					Dark-based,<LINE>single-target<LINE>(multi).	10
+Healing Potion	88	None						Blue Potion		50		HP	Recovers half of<LINE>maximum HP.	10
+Depetrifier	72	None						Green Potion	PE			Status_Cure	Dissolves<LINE>petrification.	30
+Mind Purifier	88	None						Green Potion	BE,CN,FE,DS			Status_Cure	Dispels confusion,<LINE>bewitchment, fear,<LINE>and dispiriting.	20
+Body Purifier	88	None						Green Potion	ST,AB,PO			Status_Cure	Nullifies poison,<LINE>stunning, and<LINE>arm blocking.	10
+Thunderbolt	78	Thunder	100					Magic					Thunder-based,<LINE>targets all<LINE>(multi).	20
+Meteor Fall	78	Earth	100					Magic					Earth-based,<LINE>targets all<LINE>(multi).	20
+Gushing Magma	78	Fire	100					Magic					Fire-based,<LINE>targets all<LINE>(multi).	20
+Dancing Ray	78	Light	100					Magic					Light-based,<LINE>targets all<LINE>(multi).	20
+Spirit Potion	72	None						Red Potion		100		SP	Recovers 100 pts.<LINE>of SP.	20
+Panic Bell	76	None						Skull	CN			Status_Cause	Confuses minor<LINE>enemies.	20
+	90	None								50		HP	 	2
+Fatal Blizzard	78	Water	100					Magic					Water-based,<LINE>targets all<LINE>(multi).	20
+Stunning Hammer	76	None						Skull	ST			Status_Cause	Stuns minor<LINE>enemies.	20
+Black Rain	78	Dark	100					Magic					Dark-based,<LINE>targets all<LINE>(multi).	20
+Poison Needle	76	None						Skull	PO			Status_Cause	Poisons minor<LINE>enemies.	20
+Midnight Terror	76	None						Skull	FE			Status_Cause	Frightens minor<LINE>enemies.	20
+		None											 	2
+Rave Twister	78	Wind	100					Magic					Wind-based<LINE>targets all<LINE>(multi).	20
+Total Vanishing	204	None						Sack					Destroys<LINE>minor enemies.	20
+Angel's Prayer	8	None						Angel's Prayer		32		Revive	Revives and<LINE>recovers half<LINE>of maximum HP.	30
+Charm Potion	80	None						Charm					Reduces encounter<LINE>risk.	4
+Pandemonium	64	None						Charm					Minor enemies only<LINE>attack target for<LINE>3 turns (repeat).	400
+Recovery Ball	64	None						Sack					Generates a random<LINE>recovery item.	100
+	72	None			magic_res,physical_res			Shield					 	2
+Magic Shield	72	None			magic_res			Shield					Nullifies magical<LINE>attacks for 3 turns<LINE>(repeat).	400
+Material Shield	72	None			physical_res			Shield					Nullifies physical<LINE>attacks for 3 turns<LINE>(repeat).	400
+Sun Rhapsody	88	None						Yellow Potion		100		MP	Completely<LINE>recovers MP.	50
+Smoke Ball	72	None						Smoke Ball					Guaranteed escape<LINE>from minor enemies<LINE>(repeat).	400
+Healing Fog	88	None						Blue Potion		100		HP	Completely<LINE>recovers HP.	30
+Magic Sig Stone	76	None						Sig Stone					Blocks enemy's<LINE>move for 3 turns<LINE>(repeat).	400
+Healing Rain	90	None						Blue Potion		100		HP	Completely<LINE>recovers HP<LINE>for all.	120
+Moon Serenade	90	None						Yellow Potion		100		SP	Completely<LINE>recovers MP<LINE>for all.	200
+Power Up	72	None		power1,power2,power3,power4			50	Up					Increases strength<LINE>for 3 turns<LINE>(repeat).	400
+Power Down	76	None		power1,power2,power3,power4			-50	Down					Weakens enemy<LINE>for 3 turns<LINE>(repeat).	400
+Speed Up	72	None			speed_up			Up					Doubles speed<LINE>for 3 turns<LINE>(repeat).	400
+Speed Down	76	None			speed_down			Down					Halves speed<LINE>for 3 turns<LINE>(repeat).	400
+	72	None						Blue Potion		30		HP	 	2
+Sachet	76	None						Sack					Gives off a<LINE>subtle, pleasant<LINE>aroma.	400
+Psyche Bomb	78	Non-Elemental	400					Magic					Non-elemental-<LINE>based, targets all<LINE>(multi).	20
+Burning Wave	78	Fire	300					Magic					Powerful fire-<LINE>based attack,<LINE>targets all.	20
+Frozen Jet	78	Water	300					Magic					Powerful water-<LINE>based attack,<LINE>targets all.	20
+Down Burst	78	Wind	300					Magic					Powerful wind-<LINE>based attack,<LINE>targets all.	20
+Gravity Grabber	78	Earth	300					Magic					Powerful earth-<LINE>based attack,<LINE>targets all.	20
+Spectral Flash	78	Light	300					Magic					Powerful light-<LINE>based attack,<LINE>targets all.	20
+Night Raid	78	Dark	300					Magic					Powerful dark-<LINE>based attack,<LINE>targets all.	20
+Flash Hall	78	Thunder	300					Magic					Powerful thunder-<LINE>based attack,<LINE>targets all.	20
+Healing Breeze	90	None						Blue Potion		50		HP	Recovers half of<LINE>maximum HP for all.	50
+Psyche Bomb X	110	Non-Elemental	200					Magic					Non-elemental-<LINE>based, targets all<LINE>(multi)(repeat).	400
+		None											 	0
+		None											 	0
+		None											 	0
+		None											 	0
 None														0
