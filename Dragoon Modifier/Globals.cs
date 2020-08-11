@@ -65,6 +65,7 @@ namespace Dragoon_Modifier {
         public static bool DRAGOON_ADDITION_CHANGE = false;
         public static bool DRAGOON_DESC_CHANGE = false;
         public static bool ITEM_STAT_CHANGE = false;
+        public static bool THROWN_ITEM_CHANGE = false;
         public static bool ITEM_ICON_CHANGE = false;
         public static bool ITEM_NAMEDESC_CHANGE = false;
         public static bool SHOP_CHANGE = false;
