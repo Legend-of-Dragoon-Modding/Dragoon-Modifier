@@ -10,11 +10,6 @@ using System.Globalization;
 using System.Reflection;
 
 public class BattleController {
-
-    static bool initial_Setup = false;
-    static int NoDart_Setup = 0;
-    static int dlv;
-
     public static void Run(Emulator emulator) {
         int encounterValue = emulator.ReadShort("BATTLE_VALUE");
 
@@ -223,56 +218,51 @@ public class BattleController {
         }
 
         if (Globals.IN_BATTLE && !Globals.STATS_CHANGED && encounterValue == 41215) {
-            if (!initial_Setup) {
-                Constants.WriteOutput("Battle detected. Loading...");
-                Globals.UNIQUE_MONSTER_IDS = new List<int>();
-                Globals.MONSTER_TABLE = new List<dynamic>();
-                Globals.MONSTER_IDS = new List<int>();
-                Globals.SHANA_FIX = false;
-                Thread.Sleep(2000);
-                if (emulator.ReadShort("BATTLE_VALUE") < 5130) {
-                    return;
-                }
-
-                Globals.MONSTER_SIZE = emulator.ReadByte("MONSTER_SIZE");
-                Globals.UNIQUE_MONSTER_SIZE = emulator.ReadByte("UNIQUE_MONSTER_SIZE");
-
-                if (Constants.REGION == Region.NTA) {
-                    Globals.SetM_POINT(0x1A439C + emulator.ReadShort("M_POINT"));
-                } else {
-                    Globals.SetM_POINT(0x1A43B4 + emulator.ReadShort("M_POINT"));
-                }
-                Globals.SetC_POINT((long)(emulator.ReadInteger("C_POINT") - 0x7FFFFEF8));
-
-                LoDDictInIt(emulator);
-
-                Constants.WriteDebug("Monster Size:        " + Globals.MONSTER_SIZE);
-                Constants.WriteDebug("Unique Monsters:     " + Globals.UNIQUE_MONSTER_SIZE);
-                Constants.WriteDebug("Monster Point:       " + Convert.ToString(Globals.M_POINT + Constants.OFFSET, 16).ToUpper());
-                Constants.WriteDebug("Character Point:     " + Convert.ToString(Globals.C_POINT + Constants.OFFSET, 16).ToUpper());
-                Constants.WriteDebug("Monster IDs:         " + String.Join(", ", Globals.MONSTER_IDS.ToArray()));
-                Constants.WriteDebug("Unique Monster IDs:  " + String.Join(", ", Globals.UNIQUE_MONSTER_IDS.ToArray()));
-
-
-                // in battle model pointers
-                Constants.WriteDebug("Slot1 Address:       " + Convert.ToString(Constants.OFFSET + GetOffset(emulator) + 0x1D95F4, 16).ToUpper());
-                Constants.WriteDebug("Slot2 Address:       " + Convert.ToString(Constants.OFFSET + GetOffset(emulator) + 0x1DA88C, 16).ToUpper());
-                Constants.WriteDebug("Slot3 Address:       " + Convert.ToString(Constants.OFFSET + GetOffset(emulator) + 0x1DBB24, 16).ToUpper());
-
-                MonsterChanges(emulator);
-
-                if (Globals.CheckDMScript("btnUltimateBoss")) {
-                    Constants.UltimateBossRewards(emulator);
-                }
-
-                ChangeParty(emulator);
-                initial_Setup = true;
+            Constants.WriteOutput("Battle detected. Loading...");
+            Globals.UNIQUE_MONSTER_IDS = new List<int>();
+            Globals.MONSTER_TABLE = new List<dynamic>();
+            Globals.MONSTER_IDS = new List<int>();
+            Globals.SHANA_FIX = false;
+            Thread.Sleep(2000);
+            if (emulator.ReadShort("BATTLE_VALUE") < 5130) {
+                return;
             }
-            NoDart(emulator);
-            if (NoDart_Setup == 5) {
-                Constants.WriteOutput("Finished loading. Waiting.");
-                Globals.STATS_CHANGED = true;
+
+            Globals.MONSTER_SIZE = emulator.ReadByte("MONSTER_SIZE");
+            Globals.UNIQUE_MONSTER_SIZE = emulator.ReadByte("UNIQUE_MONSTER_SIZE");
+
+            if (Constants.REGION == Region.NTA) {
+                Globals.SetM_POINT(0x1A439C + emulator.ReadShort("M_POINT"));
+            } else {
+                Globals.SetM_POINT(0x1A43B4 + emulator.ReadShort("M_POINT"));
             }
+            Globals.SetC_POINT((long)(emulator.ReadInteger("C_POINT") - 0x7FFFFEF8));
+
+            LoDDictInIt(emulator);
+
+            Constants.WriteDebug("Monster Size:        " + Globals.MONSTER_SIZE);
+            Constants.WriteDebug("Unique Monsters:     " + Globals.UNIQUE_MONSTER_SIZE);
+            Constants.WriteDebug("Monster Point:       " + Convert.ToString(Globals.M_POINT + Constants.OFFSET, 16).ToUpper());
+            Constants.WriteDebug("Character Point:     " + Convert.ToString(Globals.C_POINT + Constants.OFFSET, 16).ToUpper());
+            Constants.WriteDebug("Monster IDs:         " + String.Join(", ", Globals.MONSTER_IDS.ToArray()));
+            Constants.WriteDebug("Unique Monster IDs:  " + String.Join(", ", Globals.UNIQUE_MONSTER_IDS.ToArray()));
+
+
+            // in battle model pointers
+            Constants.WriteDebug("Slot1 Address:       " + Convert.ToString(Constants.OFFSET + GetOffset(emulator) + 0x1D95F4, 16).ToUpper());
+            Constants.WriteDebug("Slot2 Address:       " + Convert.ToString(Constants.OFFSET + GetOffset(emulator) + 0x1DA88C, 16).ToUpper());
+            Constants.WriteDebug("Slot3 Address:       " + Convert.ToString(Constants.OFFSET + GetOffset(emulator) + 0x1DBB24, 16).ToUpper());
+
+            MonsterChanges(emulator);
+
+            if (Globals.CheckDMScript("btnUltimateBoss")) {
+                Constants.UltimateBossRewards(emulator);
+            }
+
+            ChangeParty(emulator);
+            new Thread(delegate () { NoDart(emulator); }).Start();
+            Constants.WriteOutput("Finished loading. Waiting.");
+            Globals.STATS_CHANGED = true;
         } else {
             if (Globals.STATS_CHANGED && encounterValue < 9999) {
                 Constants.WriteOutput("Exiting out of battle.");
@@ -286,8 +276,6 @@ public class BattleController {
                 Globals.STATS_CHANGED = false;
                 Globals.IN_BATTLE = false;
                 Globals.EXITING_BATTLE = 2;
-                initial_Setup = false;
-                NoDart_Setup = 0;
                 if (Globals.NO_DART > 0) {
                     while (emulator.ReadByte("TRANSITION") != 12) {
                         Thread.Sleep(50);
@@ -824,207 +812,168 @@ public class BattleController {
 
     public static void NoDart(Emulator emulator) {
         if (Globals.NO_DART > 0) {
-            if (NoDart_Setup == 0) {
-                Globals.CHARACTER_TABLE[0].Write("Status", 0);
-                Globals.CHARACTER_TABLE[0].Write("HP_Regen", 0);
-                Globals.CHARACTER_TABLE[0].Write("SP_Regen", 0);
-                Globals.CHARACTER_TABLE[0].Write("MP_Regen", 0);
-                if (Globals.ENCOUNTER_ID == 413) {
-                    Globals.MONSTER_TABLE[0].Write("Action", 12);
-                }
-                Globals.CHARACTER_TABLE[0].Write("Action", 8);
-                NoDart_Setup++;
+            Globals.CHARACTER_TABLE[0].Write("Status", 0);
+            Globals.CHARACTER_TABLE[0].Write("HP_Regen", 0);
+            Globals.CHARACTER_TABLE[0].Write("SP_Regen", 0);
+            Globals.CHARACTER_TABLE[0].Write("MP_Regen", 0);
+            if (Globals.ENCOUNTER_ID == 413) {
+                Globals.MONSTER_TABLE[0].Write("Action", 12);
             }
-            if (NoDart_Setup == 1) {
-                if (emulator.ReadShort("BATTLE_VALUE") > 5130) {
-                    if (Globals.CHARACTER_TABLE[0].Read("Turn") != 0) {
-                        int character = (int)Globals.NO_DART;
-                        byte status = emulator.ReadByte("CHAR_TABLE", character * 0x2C + 0x10);
-                        Globals.CHARACTER_TABLE[0].Write("Dragoon", 0x20);
-                        emulator.WriteByte("PARTY_SLOT", (byte)character);
-                        emulator.WriteByte("PARTY_SLOT", (byte)character, 0x234E); // Secondary ID
-                        Globals.CHARACTER_TABLE[0].Write("Image", (byte)Globals.NO_DART);
-                        Globals.CHARACTER_TABLE[0].Write("Weapon", emulator.ReadByte("CHAR_TABLE", 0x14 + ((int)Globals.NO_DART * 0x2C)));
-                        Globals.CHARACTER_TABLE[0].Write("Helmet", emulator.ReadByte("CHAR_TABLE", 0x15 + ((int)Globals.NO_DART * 0x2C)));
-                        Globals.CHARACTER_TABLE[0].Write("Armor", emulator.ReadByte("CHAR_TABLE", 0x16 + ((int)Globals.NO_DART * 0x2C)));
-                        Globals.CHARACTER_TABLE[0].Write("Shoes", emulator.ReadByte("CHAR_TABLE", 0x17 + ((int)Globals.NO_DART * 0x2C)));
-                        Globals.CHARACTER_TABLE[0].Write("Accessory", emulator.ReadByte("CHAR_TABLE", 0x18 + ((int)Globals.NO_DART * 0x2C)));
-                        Dictionary<int, byte> charelement = new Dictionary<int, byte> {
-                        {0, 128},{1, 64},{2, 32},{3, 4},{4, 16},{5, 64},{6, 1},{7, 2},{8, 32}
-                    };
-                        Globals.CHARACTER_TABLE[0].Write("LV", Globals.CURRENT_STATS[0].LV);
-                        Globals.CHARACTER_TABLE[0].Write("DLV", 1);
-                        Globals.CHARACTER_TABLE[0].Write("SP", 100);
+            Globals.CHARACTER_TABLE[0].Write("Action", 8);
+            while (emulator.ReadShort("BATTLE_VALUE") > 9999 && Globals.CHARACTER_TABLE[0].Read("Turn") == 0) {
+                Thread.Sleep(50);
+            }
+            int character = (int)Globals.NO_DART;
+            byte status = emulator.ReadByte("CHAR_TABLE", character * 0x2C + 0x10);
+            Globals.CHARACTER_TABLE[0].Write("Dragoon", 0x20);
+            emulator.WriteByte("PARTY_SLOT", (byte)character);
+            emulator.WriteByte("PARTY_SLOT", (byte)character, 0x234E); // Secondary ID
+            Globals.CHARACTER_TABLE[0].Write("Image", (byte)Globals.NO_DART);
+            Globals.CHARACTER_TABLE[0].Write("Weapon", emulator.ReadByte("CHAR_TABLE", 0x14 + ((int)Globals.NO_DART * 0x2C)));
+            Globals.CHARACTER_TABLE[0].Write("Helmet", emulator.ReadByte("CHAR_TABLE", 0x15 + ((int)Globals.NO_DART * 0x2C)));
+            Globals.CHARACTER_TABLE[0].Write("Armor", emulator.ReadByte("CHAR_TABLE", 0x16 + ((int)Globals.NO_DART * 0x2C)));
+            Globals.CHARACTER_TABLE[0].Write("Shoes", emulator.ReadByte("CHAR_TABLE", 0x17 + ((int)Globals.NO_DART * 0x2C)));
+            Globals.CHARACTER_TABLE[0].Write("Accessory", emulator.ReadByte("CHAR_TABLE", 0x18 + ((int)Globals.NO_DART * 0x2C)));
+            Dictionary<int, byte> charelement = new Dictionary<int, byte> {
+                {0, 128},{1, 64},{2, 32},{3, 4},{4, 16},{5, 64},{6, 1},{7, 2},{8, 32}
+            };
+            Globals.CHARACTER_TABLE[0].Write("LV", Globals.CURRENT_STATS[0].LV);
+            Globals.CHARACTER_TABLE[0].Write("DLV", 1);
+            Globals.CHARACTER_TABLE[0].Write("SP", 100);
 
-                        dlv = Globals.CURRENT_STATS[0].DLV;
+            int dlv = Globals.CURRENT_STATS[0].DLV;
 
-                        #region Dragoon Magic
+            #region Dragoon Magic
+            emulator.WriteByte("DRAGOON_SPELL_SLOT", (byte)character); // Magic
+            Dictionary<int, byte> dmagic5 = new Dictionary<int, byte> {
+                {0, 3},{1, 8},{2, 13},{3, 19},{4, 23},{5, 8},{6, 28},{7, 31},{8, 13}
+            };
+            Dictionary<int, byte> dmagic3 = new Dictionary<int, byte> {
+                {0, 2},{1, 6},{2, 12},{3, 18},{4, 22},{5, 17},{6, 27},{7, 255},{8, 67}
+            };
+            Dictionary<int, byte> dmagic2 = new Dictionary<int, byte> {
+                {0, 1},{1, 7},{2, 10},{3, 16},{4, 21},{5, 26},{6, 25},{7, 30},{8, 65}
+            };
+            Dictionary<int, byte> dmagic1 = new Dictionary<int, byte> {
+                {0, 0},{1, 5},{2, 11},{3, 15},{4, 20},{5, 14},{6, 24},{7, 29},{8, 66}
+            };
 
-                        emulator.WriteByte("DRAGOON_SPELL_SLOT", (byte)character); // Magic
-                        Dictionary<int, byte> dmagic5 = new Dictionary<int, byte> {
-                        {0, 3},{1, 8},{2, 13},{3, 19},{4, 23},{5, 8},{6, 28},{7, 31},{8, 13}
-                    };
-                        Dictionary<int, byte> dmagic3 = new Dictionary<int, byte> {
-                        {0, 2},{1, 6},{2, 12},{3, 18},{4, 22},{5, 17},{6, 27},{7, 255},{8, 67}
-                    };
-                        Dictionary<int, byte> dmagic2 = new Dictionary<int, byte> {
-                        {0, 1},{1, 7},{2, 10},{3, 16},{4, 21},{5, 26},{6, 25},{7, 30},{8, 65}
-                    };
-                        Dictionary<int, byte> dmagic1 = new Dictionary<int, byte> {
-                        {0, 0},{1, 5},{2, 11},{3, 15},{4, 20},{5, 14},{6, 24},{7, 29},{8, 66}
-                    };
-
-                        if (dlv == 5) {
-                            if (Globals.NO_DART != 7) {
-                                emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic5[character], 4);
-                                emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic3[character], 3);
-                            } else {
-                                emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 4);
-                                emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic5[character], 3);
-                            }
-                            emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic2[character], 2);
-                            emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic1[character], 1);
-                        } else if (dlv > 2) {
-                            emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 4);
-                            emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic3[character], 3);
-                            emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic2[character], 2);
-                            emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic1[character], 1);
-                        } else if (dlv > 1) {
-                            emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 4);
-                            emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 3);
-                            emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic2[character], 2);
-                            emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic1[character], 1);
-                        } else if (dlv > 0) {
-                            emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 4);
-                            emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 3);
-                            emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 2);
-                            emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic1[character], 1);
-                        } else {
-                            emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 4);
-                            emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 3);
-                            emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 2);
-                            emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 1);
-                        }
-
-                        #endregion
-
-                        if (!Globals.ADDITION_CHANGE) {
-                            AdditionsBattleChanges(emulator, 0, true);
-                        }
-
-                        if (!Globals.DRAGOON_STAT_CHANGE) {
-                            DragoonStatChanges(emulator, 0, true);
-                        }
-
-                        if (!Globals.CHARACTER_STAT_CHANGE) {
-                            CharacterBattleChanges(emulator, 0, true);
-                        }
-
-                        if (!Globals.ITEM_STAT_CHANGE) {
-                            ItemBattleChanges(emulator, 0, true);
-                        }
-
-                        #region Wargod/Destroyer Mace fix
-
-                        byte special_effect = 0;
-                        if (Globals.CURRENT_STATS[0].Weapon.ID == 45) {
-                            special_effect |= 1;
-                        }
-
-                        if (Globals.CURRENT_STATS[0].Accessory.ID == 157) {
-                            special_effect |= 2;
-                        }
-
-                        if (Globals.CURRENT_STATS[0].Accessory.ID == 158) {
-                            special_effect |= 6;
-                        }
-
-                        emulator.WriteByte("WARGOD", special_effect);
-
-                        #endregion
-
-                        NoDart_Setup++;
-                    }
+            if (dlv == 5) {
+                if (Globals.NO_DART != 7) {
+                    emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic5[character], 4);
+                    emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic3[character], 3);
                 } else {
-                    NoDart_Setup = 5;
-                    return;
+                    emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 4);
+                    emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic5[character], 3);
                 }
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic2[character], 2);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic1[character], 1);
+            } else if (dlv > 2) {
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 4);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic3[character], 3);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic2[character], 2);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic1[character], 1);
+            } else if (dlv > 1) {
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 4);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 3);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic2[character], 2);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic1[character], 1);
+            } else if (dlv > 0) {
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 4);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 3);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 2);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", dmagic1[character], 1);
+            } else {
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 4);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 3);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 2);
+                emulator.WriteByte("DRAGOON_SPELL_SLOT", 0xFF, 1);
             }
-            if (NoDart_Setup == 2) {
-                if (emulator.ReadShort("BATTLE_VALUE") > 5130) {
-                    if (Globals.CHARACTER_TABLE[0].Read("Menu") != 255 && Globals.CHARACTER_TABLE[0].Read("Menu") > 14) {
-                        Constants.WriteDebug("1 executed");
-                        if (Globals.AUTO_TRANSFORM) {
-                            ushort val = emulator.ReadShort(Globals.C_POINT - 0xF0);
-                            int temp = emulator.ReadByte(Globals.C_POINT - 0xEC) + 20;
-                            emulator.WriteByte(Globals.C_POINT - 0xE5, 128);
-                            emulator.WriteByte(Globals.C_POINT - 0xE6, 28);
-                            emulator.WriteByte(Globals.C_POINT - 0xE7, emulator.ReadByte(Globals.C_POINT - 0xEB));
-                            emulator.WriteByte(Globals.C_POINT - 0xE8, emulator.ReadByte(Globals.C_POINT - 0xEC));
-                            if (temp > 255) {
-                                emulator.WriteByte(Globals.C_POINT - 0xEB, emulator.ReadByte(Globals.C_POINT - 0xEF) + 1);
-                                emulator.WriteByte(Globals.C_POINT - 0xEC, (byte)((emulator.ReadByte(Globals.C_POINT - 0xEC) + 20) & 255));
-                            } else {
-                                emulator.WriteByte(Globals.C_POINT - 0xEB, emulator.ReadByte(Globals.C_POINT - 0xEF));
-                                emulator.WriteByte(Globals.C_POINT - 0xEC, (byte)(emulator.ReadByte(Globals.C_POINT - 0xEC) + 20));
-                            }
+            #endregion
 
-                            emulator.WriteShort(Globals.C_POINT - 0xF0, (ushort)(val + 0xE84));
-                            emulator.WriteByte(Constants.GetAddress("DRAGOON_TURNS"), 1);
-                        } else {
-                            Globals.CHARACTER_TABLE[0].Write("Menu", 16);
-                        }
-                        NoDart_Setup++;
-                    }
-                } else {
-                    NoDart_Setup = 5;
-                    return;
-                }
+            if (!Globals.ADDITION_CHANGE) {
+                AdditionsBattleChanges(emulator, 0, true);
             }
-            if (NoDart_Setup == 3) {
-                if (emulator.ReadShort("BATTLE_VALUE") > 5130) {
-                    if (Globals.CHARACTER_TABLE[0].Read("Menu") == 96) {
-                        if (Globals.NO_DART == 4) {
-                            HaschelFix(emulator);
-                        }
-                        if (Globals.AUTO_TRANSFORM) {
-                            ushort val = emulator.ReadShort(Globals.C_POINT - 0xF0);
-                            emulator.WriteShort(Globals.C_POINT - 0xF0, (ushort)(val + 0x4478));
-                            emulator.WriteByte(Globals.C_POINT - 0xEE, 27);
-                        } else {
-                            Globals.CHARACTER_TABLE[0].Write("Menu", 16);
-                        }
-                        Globals.CHARACTER_TABLE[0].Write("HP_Regen", Globals.CURRENT_STATS[0].HP_Regen);
-                        Globals.CHARACTER_TABLE[0].Write("MP_Regen", Globals.CURRENT_STATS[0].MP_Regen);
-                        Globals.CHARACTER_TABLE[0].Write("SP_Regen", Globals.CURRENT_STATS[0].SP_Regen);
-                        NoDart_Setup++;
-                    }
-                } else {
-                    NoDart_Setup = 5;
-                    return;
-                }
+
+            if (!Globals.DRAGOON_STAT_CHANGE) {
+                DragoonStatChanges(emulator, 0, true);
             }
-            if (NoDart_Setup == 4) {
-                if (emulator.ReadShort("BATTLE_VALUE") > 5130) {
-                    if (Globals.CHARACTER_TABLE[0].Read("Action") == 8) {
-                        Globals.CHARACTER_TABLE[0].Write("DLV", Globals.CURRENT_STATS[0].DLV);
-                        Globals.CHARACTER_TABLE[0].Write("SP", Globals.CURRENT_STATS[0].SP);
-                        // so far this doesn't work
-                        //Globals.CHARACTER_TABLE[0].Write("Status", status);
-                        Constants.WriteDebug("Current DLV is: " + Convert.ToString(dlv));
-                        if (dlv == 0) {
-                            Globals.CHARACTER_TABLE[0].Write("Dragoon", 0);
-                        }
-                        Constants.WriteDebug("No Dart Finished");
-                        NoDart_Setup++;
-                    }
-                } else {
-                    NoDart_Setup = 5;
-                    return;
-                }
+
+            if (!Globals.CHARACTER_STAT_CHANGE) {
+                CharacterBattleChanges(emulator, 0, true);
             }
-        } else {
-            NoDart_Setup = 5;
+
+            if (!Globals.ITEM_STAT_CHANGE) {
+                ItemBattleChanges(emulator, 0, true);
+            }
+
+            #region Wargod/Destroyer Mace fix
+            byte special_effect = 0;
+            if (Globals.CURRENT_STATS[0].Weapon.ID == 45) {
+                special_effect |= 1;
+            }
+
+            if (Globals.CURRENT_STATS[0].Accessory.ID == 157) {
+                special_effect |= 2;
+            }
+
+            if (Globals.CURRENT_STATS[0].Accessory.ID == 158) {
+                special_effect |= 6;
+            }
+
+            emulator.WriteByte("WARGOD", special_effect);
+
+            #endregion
+
+            while ((emulator.ReadShort("BATTLE_VALUE") > 9999) && !(Globals.CHARACTER_TABLE[0].Read("Menu") > 14)) {
+                Thread.Sleep(50);
+            }
+            Thread.Sleep(200);
+            if (Globals.AUTO_TRANSFORM) {
+                ushort val = emulator.ReadShort(Globals.C_POINT - 0xF0);
+                int temp = emulator.ReadByte(Globals.C_POINT - 0xEC) + 20;
+                emulator.WriteByte(Globals.C_POINT - 0xE5, 128);
+                emulator.WriteByte(Globals.C_POINT - 0xE6, 28);
+                emulator.WriteByte(Globals.C_POINT - 0xE7, emulator.ReadByte(Globals.C_POINT - 0xEB));
+                emulator.WriteByte(Globals.C_POINT - 0xE8, emulator.ReadByte(Globals.C_POINT - 0xEC));
+                if (temp > 255) {
+                    emulator.WriteByte(Globals.C_POINT - 0xEB, emulator.ReadByte(Globals.C_POINT - 0xEF) + 1);
+                    emulator.WriteByte(Globals.C_POINT - 0xEC, (byte)((emulator.ReadByte(Globals.C_POINT - 0xEC) + 20) & 255));
+                } else {
+                    emulator.WriteByte(Globals.C_POINT - 0xEB, emulator.ReadByte(Globals.C_POINT - 0xEF));
+                    emulator.WriteByte(Globals.C_POINT - 0xEC, (byte)(emulator.ReadByte(Globals.C_POINT - 0xEC) + 20));
+                }
+                emulator.WriteShort(Globals.C_POINT - 0xF0, (ushort)(val + 0xE84));
+                emulator.WriteByte(Constants.GetAddress("DRAGOON_TURNS"), 1);
+            } else {
+                Globals.CHARACTER_TABLE[0].Write("Menu", 16);
+            }
+            while ((emulator.ReadShort("BATTLE_VALUE") > 9999) && (Globals.CHARACTER_TABLE[0].Read("Menu") != 96)) {
+                Thread.Sleep(50);
+            }
+            if (Globals.NO_DART == 4) {
+                HaschelFix(emulator);
+            }
+            if (Globals.AUTO_TRANSFORM) {
+                ushort val = emulator.ReadByte(Globals.C_POINT - 0xF0);
+                emulator.WriteByte(Globals.C_POINT - 0xF0, (byte)(val + 0x20));
+                emulator.WriteByte(Globals.C_POINT - 0x4C, 6);
+            } else {
+                Globals.CHARACTER_TABLE[0].Write("Menu", 16);
+            }
+            while ((emulator.ReadShort("BATTLE_VALUE") > 9999) && (Globals.CHARACTER_TABLE[0].Read("Action") != 9)) {
+                Thread.Sleep(50);
+            }
+            Globals.CHARACTER_TABLE[0].Write("DLV", Globals.CURRENT_STATS[0].DLV);
+            Globals.CHARACTER_TABLE[0].Write("SP", Globals.CURRENT_STATS[0].SP);
+            Globals.CHARACTER_TABLE[0].Write("HP_Regen", Globals.CURRENT_STATS[0].HP_Regen);
+            Globals.CHARACTER_TABLE[0].Write("MP_Regen", Globals.CURRENT_STATS[0].MP_Regen);
+            Globals.CHARACTER_TABLE[0].Write("SP_Regen", Globals.CURRENT_STATS[0].SP_Regen);
+            // so far this doesn't work
+            //Globals.CHARACTER_TABLE[0].Write("Status", status);
+            if (dlv == 0) {
+                Globals.CHARACTER_TABLE[0].Write("Dragoon", 0);
+            }
         }
     }
     #endregion
@@ -1162,7 +1111,7 @@ public class BattleController {
                 int reorderedChar = charReorder[character];
                 for (int level = 0; level < 61; level++) {
                     if (level > 0) {
-                        emulator.WriteShort(address + level * 8 + character * 0x1E8, (ushort) (Globals.DICTIONARY.CharacterStats[reorderedChar][level].Max_HP));
+                        emulator.WriteShort(address + level * 8 + character * 0x1E8, (ushort)(Globals.DICTIONARY.CharacterStats[reorderedChar][level].Max_HP));
                         emulator.WriteByte(address + level * 8 + character * 0x1E8 + 0x3, Globals.DICTIONARY.CharacterStats[reorderedChar][level].SPD);
                         emulator.WriteByte(address + level * 8 + character * 0x1E8 + 0x4, Globals.DICTIONARY.CharacterStats[reorderedChar][level].AT);
                         emulator.WriteByte(address + level * 8 + character * 0x1E8 + 0x5, Globals.DICTIONARY.CharacterStats[reorderedChar][level].MAT);
@@ -1212,12 +1161,12 @@ public class BattleController {
                 ushort sp4 = 0;
                 ushort sp5 = 0;
                 for (int hit = 0; hit < 8; hit++) {
-                    damage += (ushort) Globals.DICTIONARY.AdditionData[character, reorderedaddition, hit].DMG;
-                    sp1 += (ushort) (Globals.DICTIONARY.AdditionData[character, reorderedaddition, hit].SP * (1 + (double) Globals.DICTIONARY.AdditionData[character, reorderedaddition, 1].ADD_SP_Multi / 100));
-                    sp2 += (ushort) (Globals.DICTIONARY.AdditionData[character, reorderedaddition, hit].SP * (1 + (double) Globals.DICTIONARY.AdditionData[character, reorderedaddition, 2].ADD_SP_Multi / 100));
-                    sp3 += (ushort) (Globals.DICTIONARY.AdditionData[character, reorderedaddition, hit].SP * (1 + (double) Globals.DICTIONARY.AdditionData[character, reorderedaddition, 3].ADD_SP_Multi / 100));
-                    sp4 += (ushort) (Globals.DICTIONARY.AdditionData[character, reorderedaddition, hit].SP * (1 + (double) Globals.DICTIONARY.AdditionData[character, reorderedaddition, 4].ADD_SP_Multi / 100));
-                    sp5 += (ushort) (Globals.DICTIONARY.AdditionData[character, reorderedaddition, hit].SP * (1 + (double) Globals.DICTIONARY.AdditionData[character, reorderedaddition, 5].ADD_SP_Multi / 100));
+                    damage += (ushort)Globals.DICTIONARY.AdditionData[character, reorderedaddition, hit].DMG;
+                    sp1 += (ushort)(Globals.DICTIONARY.AdditionData[character, reorderedaddition, hit].SP * (1 + (double)Globals.DICTIONARY.AdditionData[character, reorderedaddition, 1].ADD_SP_Multi / 100));
+                    sp2 += (ushort)(Globals.DICTIONARY.AdditionData[character, reorderedaddition, hit].SP * (1 + (double)Globals.DICTIONARY.AdditionData[character, reorderedaddition, 2].ADD_SP_Multi / 100));
+                    sp3 += (ushort)(Globals.DICTIONARY.AdditionData[character, reorderedaddition, hit].SP * (1 + (double)Globals.DICTIONARY.AdditionData[character, reorderedaddition, 3].ADD_SP_Multi / 100));
+                    sp4 += (ushort)(Globals.DICTIONARY.AdditionData[character, reorderedaddition, hit].SP * (1 + (double)Globals.DICTIONARY.AdditionData[character, reorderedaddition, 4].ADD_SP_Multi / 100));
+                    sp5 += (ushort)(Globals.DICTIONARY.AdditionData[character, reorderedaddition, hit].SP * (1 + (double)Globals.DICTIONARY.AdditionData[character, reorderedaddition, 5].ADD_SP_Multi / 100));
                 }
                 emulator.WriteShort(address + addition * 0xE + 0x2, sp1);
                 emulator.WriteShort(address + addition * 0xE + 0x4, sp2);
@@ -1226,11 +1175,11 @@ public class BattleController {
                 emulator.WriteShort(address + addition * 0xE + 0xA, sp5);
                 emulator.WriteShort(address + addition * 0xE + 0xC, damage);
 
-                emulator.WriteByte(address2 + addition * 0x18, (byte) Globals.DICTIONARY.AdditionData[character, reorderedaddition, 1].ADD_DMG_Multi);
-                emulator.WriteByte(address2 + 0x4 + addition * 0x18, (byte) Globals.DICTIONARY.AdditionData[character, reorderedaddition, 2].ADD_DMG_Multi);
-                emulator.WriteByte(address2 + 0x8 + addition * 0x18, (byte) Globals.DICTIONARY.AdditionData[character, reorderedaddition, 3].ADD_DMG_Multi);
-                emulator.WriteByte(address2 + 0xC + addition * 0x18, (byte) Globals.DICTIONARY.AdditionData[character, reorderedaddition, 4].ADD_DMG_Multi);
-                emulator.WriteByte(address2 + 0x10 + addition * 0x18, (byte) Globals.DICTIONARY.AdditionData[character, reorderedaddition, 5].ADD_DMG_Multi);
+                emulator.WriteByte(address2 + addition * 0x18, (byte)Globals.DICTIONARY.AdditionData[character, reorderedaddition, 1].ADD_DMG_Multi);
+                emulator.WriteByte(address2 + 0x4 + addition * 0x18, (byte)Globals.DICTIONARY.AdditionData[character, reorderedaddition, 2].ADD_DMG_Multi);
+                emulator.WriteByte(address2 + 0x8 + addition * 0x18, (byte)Globals.DICTIONARY.AdditionData[character, reorderedaddition, 3].ADD_DMG_Multi);
+                emulator.WriteByte(address2 + 0xC + addition * 0x18, (byte)Globals.DICTIONARY.AdditionData[character, reorderedaddition, 4].ADD_DMG_Multi);
+                emulator.WriteByte(address2 + 0x10 + addition * 0x18, (byte)Globals.DICTIONARY.AdditionData[character, reorderedaddition, 5].ADD_DMG_Multi);
             }
         }
     }
@@ -1370,17 +1319,17 @@ public class BattleController {
             death_res[0] = m_point + 0xC - monster * 0x388;
             attack_move[0] = m_point + 0xACC - monster * 0x388;
             unique_index[0] = m_point + 0x264 - monster * 0x388;
-            exp[0] = Constants.GetAddress("MONSTER_REWARDS") + (int) Constants.OFFSET + Globals.UNIQUE_MONSTER_IDS.IndexOf(ID) * 0x1A8;
-            gold[0] = Constants.GetAddress("MONSTER_REWARDS") + (int) Constants.OFFSET + 0x2 + Globals.UNIQUE_MONSTER_IDS.IndexOf(ID) * 0x1A8;
-            drop_chance[0] = Constants.GetAddress("MONSTER_REWARDS") + (int) Constants.OFFSET + 0x4 + Globals.UNIQUE_MONSTER_IDS.IndexOf(ID) * 0x1A8;
-            drop_item[0] = Constants.GetAddress("MONSTER_REWARDS") + (int) Constants.OFFSET + 0x5 + Globals.UNIQUE_MONSTER_IDS.IndexOf(ID) * 0x1A8;
+            exp[0] = Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + Globals.UNIQUE_MONSTER_IDS.IndexOf(ID) * 0x1A8;
+            gold[0] = Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + 0x2 + Globals.UNIQUE_MONSTER_IDS.IndexOf(ID) * 0x1A8;
+            drop_chance[0] = Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + 0x4 + Globals.UNIQUE_MONSTER_IDS.IndexOf(ID) * 0x1A8;
+            drop_item[0] = Constants.GetAddress("MONSTER_REWARDS") + (int)Constants.OFFSET + 0x5 + Globals.UNIQUE_MONSTER_IDS.IndexOf(ID) * 0x1A8;
             special_effect[0] = Constants.GetAddress("UNIQUE_MONSTER_SIZE") + monster * 0x20;
         }
 
         public object Read(string attribute) {
             try {
                 PropertyInfo property = GetType().GetProperty(attribute);
-                var address = (long[]) property.GetValue(this, null);
+                var address = (long[])property.GetValue(this, null);
                 if (address[1] == 2) {
                     return this.emulator.ReadShort(address[0]);
                 } else {
@@ -1396,7 +1345,7 @@ public class BattleController {
         public void Write(string attribute, object value) {
             try {
                 PropertyInfo property = GetType().GetProperty(attribute);
-                var address = (long[]) property.GetValue(this, null);
+                var address = (long[])property.GetValue(this, null);
                 if (address[1] == 2) {
                     this.emulator.WriteShort(address[0], (ushort)Convert.ToInt32(value));
                 } else {
@@ -1703,7 +1652,7 @@ public class BattleController {
         public object Read(string attribute) {
             try {
                 PropertyInfo property = GetType().GetProperty(attribute);
-                var address = (long[]) property.GetValue(this, null);
+                var address = (long[])property.GetValue(this, null);
                 if (address[1] == 4) {
                     return this.emulator.ReadInteger(address[0]);
                 } else if (address[1] == 2) {
@@ -1721,7 +1670,7 @@ public class BattleController {
         public void Write(string attribute, object value) {
             try {
                 PropertyInfo property = GetType().GetProperty(attribute);
-                var address = (long[]) property.GetValue(this, null);
+                var address = (long[])property.GetValue(this, null);
                 if (address[1] == 4) {
                     this.emulator.WriteInteger(address[0], Convert.ToInt32(value));
                 } else if (address[1] == 2) {
@@ -1845,65 +1794,65 @@ public class BattleController {
             hp = emulator.ReadShort("CHAR_TABLE", character * 0x2C + 0x8);
             mp = emulator.ReadShort("CHAR_TABLE", character * 0x2C + 0xA);
             sp = emulator.ReadShort("CHAR_TABLE", character * 0x2C + 0xC);
-            
+
 
             if (!Globals.CHARACTER_STAT_CHANGE) {
-                max_hp = (ushort) (Globals.DICTIONARY.OriginalCharacterStats[character][lv].Max_HP * (1 + ((weapon.Special2 & 2) >> 1) * (float) (weapon.Special_Ammount) / 100 + ((armor.Special2 & 2) >> 1) * (float) (armor.Special_Ammount) / 100
-                       + ((helm.Special2 & 2) >> 1) * (float) (helm.Special_Ammount) / 100 + ((boots.Special2 & 2) >> 1) * (float) (boots.Special_Ammount) / 100 + ((accessory.Special2 & 2) >> 1) * (float) (accessory.Special_Ammount) / 100));
+                max_hp = (ushort)(Globals.DICTIONARY.OriginalCharacterStats[character][lv].Max_HP * (1 + ((weapon.Special2 & 2) >> 1) * (float)(weapon.Special_Ammount) / 100 + ((armor.Special2 & 2) >> 1) * (float)(armor.Special_Ammount) / 100
+                       + ((helm.Special2 & 2) >> 1) * (float)(helm.Special_Ammount) / 100 + ((boots.Special2 & 2) >> 1) * (float)(boots.Special_Ammount) / 100 + ((accessory.Special2 & 2) >> 1) * (float)(accessory.Special_Ammount) / 100));
 
-                at = (ushort) (Globals.DICTIONARY.OriginalCharacterStats[character][lv].AT + weapon.AT + armor.AT + helm.AT + boots.AT + accessory.AT);
-                mat = (ushort) (Globals.DICTIONARY.OriginalCharacterStats[character][lv].MAT + weapon.MAT + armor.MAT + helm.MAT + boots.MAT + accessory.MAT);
-                df = (ushort) (Globals.DICTIONARY.OriginalCharacterStats[character][lv].DF + weapon.DF + armor.DF + helm.DF + boots.DF + accessory.DF);
-                mdf = (ushort) (Globals.DICTIONARY.OriginalCharacterStats[character][lv].MDF + weapon.MDF + armor.MDF + helm.MDF + boots.MDF + accessory.MDF);
-                spd = (ushort) (Globals.DICTIONARY.OriginalCharacterStats[character][lv].SPD + weapon.SPD + armor.SPD + helm.SPD + boots.SPD + accessory.SPD);
+                at = (ushort)(Globals.DICTIONARY.OriginalCharacterStats[character][lv].AT + weapon.AT + armor.AT + helm.AT + boots.AT + accessory.AT);
+                mat = (ushort)(Globals.DICTIONARY.OriginalCharacterStats[character][lv].MAT + weapon.MAT + armor.MAT + helm.MAT + boots.MAT + accessory.MAT);
+                df = (ushort)(Globals.DICTIONARY.OriginalCharacterStats[character][lv].DF + weapon.DF + armor.DF + helm.DF + boots.DF + accessory.DF);
+                mdf = (ushort)(Globals.DICTIONARY.OriginalCharacterStats[character][lv].MDF + weapon.MDF + armor.MDF + helm.MDF + boots.MDF + accessory.MDF);
+                spd = (ushort)(Globals.DICTIONARY.OriginalCharacterStats[character][lv].SPD + weapon.SPD + armor.SPD + helm.SPD + boots.SPD + accessory.SPD);
             } else {
-                max_hp = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].Max_HP * (1 + ((weapon.Special2 & 2) >> 1) * (float) (weapon.Special_Ammount) / 100 + ((armor.Special2 & 2) >> 1) * (float) (armor.Special_Ammount) / 100
-                       + ((helm.Special2 & 2) >> 1) * (float) (helm.Special_Ammount) / 100 + ((boots.Special2 & 2) >> 1) * (float) (boots.Special_Ammount) / 100 + ((accessory.Special2 & 2) >> 1) * (float) (accessory.Special_Ammount) / 100));
+                max_hp = (ushort)(Globals.DICTIONARY.CharacterStats[character][lv].Max_HP * (1 + ((weapon.Special2 & 2) >> 1) * (float)(weapon.Special_Ammount) / 100 + ((armor.Special2 & 2) >> 1) * (float)(armor.Special_Ammount) / 100
+                       + ((helm.Special2 & 2) >> 1) * (float)(helm.Special_Ammount) / 100 + ((boots.Special2 & 2) >> 1) * (float)(boots.Special_Ammount) / 100 + ((accessory.Special2 & 2) >> 1) * (float)(accessory.Special_Ammount) / 100));
 
-                at = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].AT + weapon.AT + armor.AT + helm.AT + boots.AT + accessory.AT);
-                mat = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].MAT + weapon.MAT + armor.MAT + helm.MAT + boots.MAT + accessory.MAT);
-                df = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].DF + weapon.DF + armor.DF + helm.DF + boots.DF + accessory.DF);
-                mdf = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].MDF + weapon.MDF + armor.MDF + helm.MDF + boots.MDF + accessory.MDF);
-                spd = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].SPD + weapon.SPD + armor.SPD + helm.SPD + boots.SPD + accessory.SPD);
+                at = (ushort)(Globals.DICTIONARY.CharacterStats[character][lv].AT + weapon.AT + armor.AT + helm.AT + boots.AT + accessory.AT);
+                mat = (ushort)(Globals.DICTIONARY.CharacterStats[character][lv].MAT + weapon.MAT + armor.MAT + helm.MAT + boots.MAT + accessory.MAT);
+                df = (ushort)(Globals.DICTIONARY.CharacterStats[character][lv].DF + weapon.DF + armor.DF + helm.DF + boots.DF + accessory.DF);
+                mdf = (ushort)(Globals.DICTIONARY.CharacterStats[character][lv].MDF + weapon.MDF + armor.MDF + helm.MDF + boots.MDF + accessory.MDF);
+                spd = (ushort)(Globals.DICTIONARY.CharacterStats[character][lv].SPD + weapon.SPD + armor.SPD + helm.SPD + boots.SPD + accessory.SPD);
             }
 
             if (Globals.DRAGOON_STAT_CHANGE) {
-                max_mp = (ushort) (Globals.DICTIONARY.DragoonStats[character][dlv].MP * (1 + (weapon.Special2 & 1) * (float) (weapon.Special_Ammount) / 100 + (armor.Special2 & 1) * (float) (armor.Special_Ammount) / 100
-                     + (helm.Special2 & 1) * (float) (helm.Special_Ammount) / 100 + (boots.Special2 & 1) * (float) (boots.Special_Ammount) / 100 + (accessory.Special2 & 1) * (float) (accessory.Special_Ammount) / 100));
+                max_mp = (ushort)(Globals.DICTIONARY.DragoonStats[character][dlv].MP * (1 + (weapon.Special2 & 1) * (float)(weapon.Special_Ammount) / 100 + (armor.Special2 & 1) * (float)(armor.Special_Ammount) / 100
+                     + (helm.Special2 & 1) * (float)(helm.Special_Ammount) / 100 + (boots.Special2 & 1) * (float)(boots.Special_Ammount) / 100 + (accessory.Special2 & 1) * (float)(accessory.Special_Ammount) / 100));
             } else {
-                max_mp = (ushort) (dlv * 20 * (1 + (weapon.Special2 & 1) * (float) (weapon.Special_Ammount) / 100 + (armor.Special2 & 1) * (float) (armor.Special_Ammount) / 100
-                     + (helm.Special2 & 1) * (float) (helm.Special_Ammount) / 100 + (boots.Special2 & 1) * (float) (boots.Special_Ammount) / 100 + (accessory.Special2 & 1) * (float) (accessory.Special_Ammount) / 100));
+                max_mp = (ushort)(dlv * 20 * (1 + (weapon.Special2 & 1) * (float)(weapon.Special_Ammount) / 100 + (armor.Special2 & 1) * (float)(armor.Special_Ammount) / 100
+                     + (helm.Special2 & 1) * (float)(helm.Special_Ammount) / 100 + (boots.Special2 & 1) * (float)(boots.Special_Ammount) / 100 + (accessory.Special2 & 1) * (float)(accessory.Special_Ammount) / 100));
             }
 
             stat_res |= weapon.Stat_Res | armor.Stat_Res | helm.Stat_Res | boots.Stat_Res | accessory.Stat_Res;
             e_half |= weapon.E_Half | armor.E_Half | helm.E_Half | boots.E_Half | accessory.E_Half;
             e_immune |= weapon.E_Immune | armor.E_Immune | helm.E_Immune | boots.E_Immune | accessory.E_Immune;
-            a_av = (byte) (weapon.A_AV + armor.A_AV + helm.A_AV + boots.A_AV + accessory.A_AV);
-            m_av = (byte) (weapon.M_AV + armor.M_AV + helm.M_AV + boots.M_AV + accessory.M_AV);
-            a_hit = (byte) (weapon.A_Hit + armor.A_Hit + helm.A_Hit + boots.A_Hit + accessory.A_Hit);
-            m_hit = (byte) (weapon.M_Hit + armor.M_Hit + helm.M_Hit + boots.M_Hit + accessory.M_Hit);
+            a_av = (byte)(weapon.A_AV + armor.A_AV + helm.A_AV + boots.A_AV + accessory.A_AV);
+            m_av = (byte)(weapon.M_AV + armor.M_AV + helm.M_AV + boots.M_AV + accessory.M_AV);
+            a_hit = (byte)(weapon.A_Hit + armor.A_Hit + helm.A_Hit + boots.A_Hit + accessory.A_Hit);
+            m_hit = (byte)(weapon.M_Hit + armor.M_Hit + helm.M_Hit + boots.M_Hit + accessory.M_Hit);
             p_half |= ((weapon.Special1 & 0x20) | (armor.Special1 & 0x20) | (helm.Special1 & 0x20) | (boots.Special1 & 0x20) | (accessory.Special1 & 0x20)) >> 5;
             m_half |= ((weapon.Special2 & 0x4) | (armor.Special2 & 0x4) | (helm.Special2 & 0x4) | (boots.Special2 & 0x4) | (accessory.Special2 & 0x4)) >> 2;
             on_hit_status = weapon.On_Hit_Status;
             status_chance = weapon.Status_Chance;
             element = weapon.Element;
-            revive = (byte) (((weapon.Special2 & 0x8) >> 3) * weapon.Special_Ammount + ((armor.Special2 & 0x8) >> 3) * armor.Special_Ammount + ((helm.Special2 & 0x8) >> 3) * helm.Special_Ammount
+            revive = (byte)(((weapon.Special2 & 0x8) >> 3) * weapon.Special_Ammount + ((armor.Special2 & 0x8) >> 3) * armor.Special_Ammount + ((helm.Special2 & 0x8) >> 3) * helm.Special_Ammount
                 + ((boots.Special2 & 0x8) >> 3) * boots.Special_Ammount + ((accessory.Special2 & 0x8) >> 3) * accessory.Special_Ammount);
-            sp_regen = (ushort) (((weapon.Special2 & 0x10) >> 4) * weapon.Special_Ammount + ((armor.Special2 & 0x10) >> 4) * armor.Special_Ammount + ((helm.Special2 & 0x10) >> 4) * helm.Special_Ammount
+            sp_regen = (ushort)(((weapon.Special2 & 0x10) >> 4) * weapon.Special_Ammount + ((armor.Special2 & 0x10) >> 4) * armor.Special_Ammount + ((helm.Special2 & 0x10) >> 4) * helm.Special_Ammount
                 + ((boots.Special2 & 0x10) >> 4) * boots.Special_Ammount + ((accessory.Special2 & 0x10) >> 4) * accessory.Special_Ammount);
-            mp_regen = (ushort) (((weapon.Special2 & 0x20) >> 5) * weapon.Special_Ammount + ((armor.Special2 & 0x20) >> 5) * armor.Special_Ammount + ((helm.Special2 & 0x20) >> 5) * helm.Special_Ammount
+            mp_regen = (ushort)(((weapon.Special2 & 0x20) >> 5) * weapon.Special_Ammount + ((armor.Special2 & 0x20) >> 5) * armor.Special_Ammount + ((helm.Special2 & 0x20) >> 5) * helm.Special_Ammount
                 + ((boots.Special2 & 0x20) >> 5) * boots.Special_Ammount + ((accessory.Special2 & 0x20) >> 5) * accessory.Special_Ammount);
-            hp_regen = (ushort) (((weapon.Special2 & 0x40) >> 6) * weapon.Special_Ammount + ((armor.Special2 & 0x40) >> 6) * armor.Special_Ammount + ((helm.Special2 & 0x40) >> 6) * helm.Special_Ammount
+            hp_regen = (ushort)(((weapon.Special2 & 0x40) >> 6) * weapon.Special_Ammount + ((armor.Special2 & 0x40) >> 6) * armor.Special_Ammount + ((helm.Special2 & 0x40) >> 6) * helm.Special_Ammount
                 + ((boots.Special2 & 0x40) >> 6) * boots.Special_Ammount + ((accessory.Special2 & 0x40) >> 6) * accessory.Special_Ammount);
-            mp_m_hit = (byte) ((weapon.Special1 & 0x1) * weapon.Special_Ammount + (armor.Special1 & 0x1) * armor.Special_Ammount + (helm.Special1 & 0x1) * helm.Special_Ammount
+            mp_m_hit = (byte)((weapon.Special1 & 0x1) * weapon.Special_Ammount + (armor.Special1 & 0x1) * armor.Special_Ammount + (helm.Special1 & 0x1) * helm.Special_Ammount
                 + (boots.Special1 & 0x1) * boots.Special_Ammount + (accessory.Special1 & 0x1) * accessory.Special_Ammount);
-            sp_m_hit = (byte) (((weapon.Special1 & 0x2) >> 1) * weapon.Special_Ammount + ((armor.Special1 & 0x2) >> 1) * armor.Special_Ammount + ((helm.Special1 & 0x2) >> 1) * helm.Special_Ammount
+            sp_m_hit = (byte)(((weapon.Special1 & 0x2) >> 1) * weapon.Special_Ammount + ((armor.Special1 & 0x2) >> 1) * armor.Special_Ammount + ((helm.Special1 & 0x2) >> 1) * helm.Special_Ammount
                 + ((boots.Special1 & 0x2) >> 1) * boots.Special_Ammount + ((accessory.Special1 & 0x2) >> 1) * accessory.Special_Ammount);
-            mp_p_hit = (byte) (((weapon.Special1 & 0x4) >> 2) * weapon.Special_Ammount + ((armor.Special1 & 0x4) >> 2) * armor.Special_Ammount + ((helm.Special1 & 0x4) >> 2) * helm.Special_Ammount
+            mp_p_hit = (byte)(((weapon.Special1 & 0x4) >> 2) * weapon.Special_Ammount + ((armor.Special1 & 0x4) >> 2) * armor.Special_Ammount + ((helm.Special1 & 0x4) >> 2) * helm.Special_Ammount
                 + ((boots.Special1 & 0x4) >> 2) * boots.Special_Ammount + ((accessory.Special1 & 0x4) >> 2) * accessory.Special_Ammount);
-            sp_p_hit = (byte) (((weapon.Special1 & 0x8) >> 3) * weapon.Special_Ammount + ((armor.Special1 & 0x8) >> 3) * armor.Special_Ammount + ((helm.Special1 & 0x8) >> 3) * helm.Special_Ammount
+            sp_p_hit = (byte)(((weapon.Special1 & 0x8) >> 3) * weapon.Special_Ammount + ((armor.Special1 & 0x8) >> 3) * armor.Special_Ammount + ((helm.Special1 & 0x8) >> 3) * helm.Special_Ammount
                 + ((boots.Special1 & 0x8) >> 3) * boots.Special_Ammount + ((accessory.Special1 & 0x8) >> 3) * accessory.Special_Ammount);
-            sp_multi = (byte) (((weapon.Special1 & 0x10) >> 4) * weapon.Special_Ammount + ((armor.Special1 & 0x10) >> 4) * armor.Special_Ammount + ((helm.Special1 & 0x10) >> 4) * helm.Special_Ammount
+            sp_multi = (byte)(((weapon.Special1 & 0x10) >> 4) * weapon.Special_Ammount + ((armor.Special1 & 0x10) >> 4) * armor.Special_Ammount + ((helm.Special1 & 0x10) >> 4) * helm.Special_Ammount
                 + ((boots.Special1 & 0x4) >> 4) * boots.Special_Ammount + ((accessory.Special1 & 0x10) >> 4) * accessory.Special_Ammount);
             death_res |= weapon.Death_Res | armor.Death_Res | helm.Death_Res | boots.Death_Res | accessory.Death_Res;
         }
