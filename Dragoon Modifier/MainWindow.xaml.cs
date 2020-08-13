@@ -23,6 +23,7 @@ using System.Reflection;
 using ControlzEx.Standard;
 using System.Text.Json;
 using System.Net;
+using System.Text.Json.Serialization;
 
 namespace Dragoon_Modifier {
     public partial class MainWindow {
@@ -2534,7 +2535,10 @@ namespace Dragoon_Modifier {
                 } 
             } else {
                 if (!Globals.DART_SWITCH) {
-                    Globals.NO_DART = emulator.ReadByte("PARTY_SLOT");
+                    byte character = emulator.ReadByte("PARTY_SLOT");
+                    if (character != 0) {
+                        Globals.NO_DART = character;
+                    }
                     emulator.WriteByte("PARTY_SLOT", 0);
                     Globals.DART_SWITCH = true;
                 }
