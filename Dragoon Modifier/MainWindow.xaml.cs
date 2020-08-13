@@ -3694,122 +3694,162 @@ namespace Dragoon_Modifier {
                 if (uiCombo["cboUltimateBoss"] == 0 && (Globals.MAP >= 393 && Globals.MAP <= 394)) {
                     emulator.WriteShort("ENCOUNTER_ID", 487);
                     emulator.WriteByte("BATTLE_FIELD", 10);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 1 && (Globals.MAP >= 393 && Globals.MAP <= 394)) {
                     emulator.WriteShort("ENCOUNTER_ID", 386);
                     emulator.WriteByte("BATTLE_FIELD", 3);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 2 && (Globals.MAP >= 393 && Globals.MAP <= 394)) {
                     emulator.WriteShort("ENCOUNTER_ID", 414);
                     emulator.WriteByte("BATTLE_FIELD", 8);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 3 && (Globals.MAP >= 395 && Globals.MAP <= 397)) {
                     emulator.WriteShort("ENCOUNTER_ID", 461);
                     emulator.WriteByte("BATTLE_FIELD", 21);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 4 && (Globals.MAP >= 395 && Globals.MAP <= 397)) {
                     emulator.WriteShort("ENCOUNTER_ID", 412);
                     emulator.WriteByte("BATTLE_FIELD", 16);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 5 && (Globals.MAP >= 395 && Globals.MAP <= 397)) {
                     emulator.WriteShort("ENCOUNTER_ID", 413);
                     emulator.WriteByte("BATTLE_FIELD", 70);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 6 && (Globals.MAP >= 395 && Globals.MAP <= 397)) {
                     emulator.WriteShort("ENCOUNTER_ID", 387);
                     emulator.WriteByte("BATTLE_FIELD", 5);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 7 && (Globals.MAP >= 395 && Globals.MAP <= 397)) {
                     emulator.WriteShort("ENCOUNTER_ID", 415);
                     emulator.WriteByte("BATTLE_FIELD", 12);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 8 && (Globals.MAP >= 398 && Globals.MAP <= 400)) {
                     emulator.WriteShort("ENCOUNTER_ID", 449);
                     emulator.WriteByte("BATTLE_FIELD", 68);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 9 && (Globals.MAP >= 398 && Globals.MAP <= 400)) {
                     emulator.WriteShort("ENCOUNTER_ID", 402);
                     emulator.WriteByte("BATTLE_FIELD", 23);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 10 && (Globals.MAP >= 398 && Globals.MAP <= 400)) {
                     emulator.WriteShort("ENCOUNTER_ID", 403);
                     emulator.WriteByte("BATTLE_FIELD", 29);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 11 && (Globals.MAP >= 398 && Globals.MAP <= 400)) {
                     emulator.WriteShort("ENCOUNTER_ID", 417);
                     emulator.WriteByte("BATTLE_FIELD", 31);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 12 && (Globals.MAP >= 398 && Globals.MAP <= 400)) {
                     emulator.WriteShort("ENCOUNTER_ID", 418);
                     emulator.WriteByte("BATTLE_FIELD", 41);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 13 && (Globals.MAP >= 398 && Globals.MAP <= 400)) {
                     emulator.WriteShort("ENCOUNTER_ID", 448);
                     emulator.WriteByte("BATTLE_FIELD", 68);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 14 && (Globals.MAP >= 398 && Globals.MAP <= 400)) {
                     emulator.WriteShort("ENCOUNTER_ID", 416);
                     emulator.WriteByte("BATTLE_FIELD", 38);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 15 && (Globals.MAP >= 398 && Globals.MAP <= 400)) {
                     emulator.WriteShort("ENCOUNTER_ID", 422);
                     emulator.WriteByte("BATTLE_FIELD", 42);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 16 && (Globals.MAP >= 398 && Globals.MAP <= 400)) {
                     emulator.WriteShort("ENCOUNTER_ID", 423);
                     emulator.WriteByte("BATTLE_FIELD", 47);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 17 && (Globals.MAP >= 398 && Globals.MAP <= 400)) {
                     emulator.WriteShort("ENCOUNTER_ID", 432);
                     emulator.WriteByte("BATTLE_FIELD", 69);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 18 && (Globals.MAP >= 398 && Globals.MAP <= 400)) {
                     emulator.WriteShort("ENCOUNTER_ID", 430);
                     emulator.WriteByte("BATTLE_FIELD", 67);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 19 && (Globals.MAP >= 398 && Globals.MAP <= 400)) {
                     emulator.WriteShort("ENCOUNTER_ID", 433);
                     emulator.WriteByte("BATTLE_FIELD", 56);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 20 && (Globals.MAP >= 398 && Globals.MAP <= 400)) {
                     emulator.WriteShort("ENCOUNTER_ID", 431);
                     emulator.WriteByte("BATTLE_FIELD", 54);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 21 && (Globals.MAP >= 398 && Globals.MAP <= 400)) {
                     emulator.WriteShort("ENCOUNTER_ID", 447);
                     emulator.WriteByte("BATTLE_FIELD", 68);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 22 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
                     emulator.WriteShort("ENCOUNTER_ID", 408);
                     emulator.WriteByte("BATTLE_FIELD", 12);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 23 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
                     emulator.WriteShort("ENCOUNTER_ID", 389);
                     emulator.WriteByte("BATTLE_FIELD", 21);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 24 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
                     emulator.WriteShort("ENCOUNTER_ID", 396);
                     emulator.WriteByte("BATTLE_FIELD", 30);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 25 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
                     emulator.WriteShort("ENCOUNTER_ID", 399);
                     emulator.WriteByte("BATTLE_FIELD", 72);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 26 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
                     emulator.WriteShort("ENCOUNTER_ID", 409);
                     emulator.WriteByte("BATTLE_FIELD", 27);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 27 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
                     emulator.WriteShort("ENCOUNTER_ID", 393);
                     emulator.WriteByte("BATTLE_FIELD", 14);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 28 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
                     emulator.WriteShort("ENCOUNTER_ID", 398);
                     emulator.WriteByte("BATTLE_FIELD", 73);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 29 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
                     emulator.WriteShort("ENCOUNTER_ID", 397);
                     emulator.WriteByte("BATTLE_FIELD", 35);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 30 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
                     emulator.WriteShort("ENCOUNTER_ID", 400);
                     emulator.WriteByte("BATTLE_FIELD", 76);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 31 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
                     emulator.WriteShort("ENCOUNTER_ID", 410);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 32 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
                     emulator.WriteShort("ENCOUNTER_ID", 401);
                     emulator.WriteByte("BATTLE_FIELD", 77);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 33 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
                     emulator.WriteShort("ENCOUNTER_ID", 390);
                     emulator.WriteByte("BATTLE_FIELD", 22);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 34 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
                     emulator.WriteShort("ENCOUNTER_ID", 411);
                     emulator.WriteByte("BATTLE_FIELD", 24);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 35 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
                     emulator.WriteShort("ENCOUNTER_ID", 394);
                     emulator.WriteByte("BATTLE_FIELD", 40);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 36 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
                     emulator.WriteShort("ENCOUNTER_ID", 392);
                     emulator.WriteByte("BATTLE_FIELD", 45);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 37 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
                     emulator.WriteShort("ENCOUNTER_ID", 420);
                     emulator.WriteByte("BATTLE_FIELD", 44);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 38 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
                     emulator.WriteShort("ENCOUNTER_ID", 442);
                     emulator.WriteByte("BATTLE_FIELD", 71);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 39 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
                     emulator.WriteShort("ENCOUNTER_ID", 443);
                     emulator.WriteByte("BATTLE_FIELD", 65);
+                    emulator.WriteByte("TRANSITION", 19);
                 } else {
                     this.Dispatcher.BeginInvoke(new Action(() => {
                         Globals.dmScripts["btnUltimateBoss"] = false;
