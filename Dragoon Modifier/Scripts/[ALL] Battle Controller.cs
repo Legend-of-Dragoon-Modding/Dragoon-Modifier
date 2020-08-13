@@ -265,7 +265,7 @@ public class BattleController {
             Globals.STATS_CHANGED = true;
         } else {
             if (Globals.STATS_CHANGED && encounterValue < 9999) {
-                Constants.WriteOutput("Exiting out of battle.");
+                
 
                 ItemFieldChanges(emulator);
                 DragoonFieldChanges(emulator);
@@ -273,15 +273,21 @@ public class BattleController {
                 AdditionFieldChanges(emulator);
 
                 Globals.ADDITION_SWAP = false;
-                Globals.STATS_CHANGED = false;
-                Globals.IN_BATTLE = false;
-                Globals.EXITING_BATTLE = 2;
                 if (Globals.NO_DART > 0) {
-                    while (emulator.ReadByte("TRANSITION") != 12) {
-                        Thread.Sleep(50);
+                    if (emulator.ReadByte("TRANSITION") == 12) {
+                        Globals.STATS_CHANGED = false;
+                        Globals.IN_BATTLE = false;
+                        Globals.EXITING_BATTLE = 2;
+                        Globals.DART_SWITCH = false;
+                        Constants.WriteOutput("Exiting out of battle.");
                     }
+                } else {
+                    Globals.STATS_CHANGED = false;
+                    Globals.IN_BATTLE = false;
+                    Globals.EXITING_BATTLE = 2;
+                    Constants.WriteOutput("Exiting out of battle.");
                 }
-                Globals.DART_SWITCH = false;
+                
             }
         }
     }
@@ -1095,6 +1101,7 @@ public class BattleController {
                 i++;
             }
         }
+
         if (Globals.THROWN_ITEM_CHANGE) {
             Constants.WriteOutput("Changing Thrown Items...");
             long address = Constants.GetAddress("THROWN_ITEM_TABLE");
