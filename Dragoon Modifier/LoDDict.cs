@@ -143,7 +143,7 @@ namespace Dragoon_Modifier {
                         }
                     }
                     long offset = 0x0;
-                    long start = 0x80000000 | Constants.GetAddress("ITEM_DESC");
+                    long start = Constants.GetAddress("ITEM_DESC");
                     List<dynamic> sortedList = itemList.OrderByDescending(o => o.Description.Length).ToList();
                     descriptionList = new List<string>();
                     foreach (dynamic item in sortedList) {
@@ -158,7 +158,7 @@ namespace Dragoon_Modifier {
                         }
                     }
                     offset = 0;
-                    start = 0x80000000 | Constants.GetAddress("ITEM_NAME");
+                    start = Constants.GetAddress("ITEM_NAME");
                     sortedList = itemList.OrderByDescending(o => o.Name.Length).ToList();
                     nameList = new List<string>();
                     foreach (dynamic item in sortedList) {
@@ -350,7 +350,7 @@ namespace Dragoon_Modifier {
                         }
                     }
                     long offset = 0x0;
-                    long start = 0x80000000 | Constants.GetAddress("DRAGOON_DESC");
+                    long start = Constants.GetAddress("DRAGOON_DESC");
                     foreach (dynamic spell in Globals.DRAGOON_SPELLS) {
                         spell.Description_Pointer = start + offset;
                         offset += (spell.Encoded_Description.Replace(" ", "").Length / 2);

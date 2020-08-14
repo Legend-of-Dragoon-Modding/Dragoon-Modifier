@@ -660,9 +660,11 @@ public class BattleController {
             Constants.WriteDebug("Changing Dragoon Spell Descriptions...");
             int i = 0;
             string descr = String.Empty;
+            long address = Constants.GetAddress("DRAGOON_DESC_PTR");
             foreach (dynamic Spell in Globals.DRAGOON_SPELLS) {
                 descr += (string)Spell.Encoded_Description + " ";
-                emulator.WriteInteger(Constants.GetAddress("DRAGOON_DESC_PTR") + i * 0x4, (int)Spell.Description_Pointer);
+                emulator.WriteInteger(address + i * 0x4, (int)Spell.Description_Pointer);
+                emulator.WriteByte(address + i * 0x4 + 0x3, 0x80);
                 i++;
             }
             descr = descr.Remove(descr.Length - 1);
@@ -1074,6 +1076,7 @@ public class BattleController {
                 int i = 0;
                 foreach (dynamic item in Globals.DICTIONARY.ItemList) {
                     emulator.WriteInteger(address + i * 0x4, (int)item.NamePointer);
+                    emulator.WriteByte(address + i * 0x4 + 0x3, 0x80);
                     i++;
                 }
             } else {
@@ -1085,6 +1088,7 @@ public class BattleController {
                 int i = 0;
                 foreach (dynamic item in Globals.DICTIONARY.ItemList) {
                     emulator.WriteInteger(address + i * 0x4, (int)item.DescriptionPointer);
+                    emulator.WriteByte(address + i * 0x4 + 0x3, 0x80);
                     i++;
                 }
             } else {

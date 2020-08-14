@@ -1702,9 +1702,9 @@ namespace Dragoon_Modifier {
                                         if (roseEnhanceDragoon) {
                                             if (Constants.REGION == Region.NTA) {
                                                                                                                                 
-                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[15].Description_Pointer - 0x80000000, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1A 00 1E 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 FF A0");
-                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[16].Description_Pointer - 0x80000000, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 18 00 1E 00 1A 00 0F 00 FF A0");
-                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[19].Description_Pointer - 0x80000000, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 16 00 1B 00 1D 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 FF A0");
+                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[15].Description_Pointer, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1A 00 1E 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 FF A0");
+                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[16].Description_Pointer, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 18 00 1E 00 1A 00 0F 00 FF A0");
+                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[19].Description_Pointer, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 16 00 1B 00 1D 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 FF A0");
                                             }
                                             emulator.WriteByte("SPELL_TABLE", 10, 0x7 + (15 * 0xC)); //Astral Drain MP
                                             emulator.WriteByte("SPELL_TABLE", 20, 0x7 + (16 * 0xC)); //Death Dimension MP
@@ -1713,9 +1713,9 @@ namespace Dragoon_Modifier {
                                             Constants.WriteGLogOutput("Rose's dragoon magic has returned to normal.");
                                         } else {
                                             if (Constants.REGION == Region.NTA) {
-                                               emulator.WriteAOB(Globals.DRAGOON_SPELLS[15].Description_Pointer - 0x80000000, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1D 00 17 00 1A 00 0F 00 00 00 10 00 00 00 26 00 2E 00 FF A0");
-                                               emulator.WriteAOB(Globals.DRAGOON_SPELLS[16].Description_Pointer - 0x80000000, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1C 00 1E 00 1A 00 0F 00 FF A0");
-                                               emulator.WriteAOB(Globals.DRAGOON_SPELLS[19].Description_Pointer - 0x80000000, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 16 00 16 00 1A 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 FF A0");
+                                               emulator.WriteAOB(Globals.DRAGOON_SPELLS[15].Description_Pointer, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1D 00 17 00 1A 00 0F 00 00 00 10 00 00 00 26 00 2E 00 FF A0");
+                                               emulator.WriteAOB(Globals.DRAGOON_SPELLS[16].Description_Pointer, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1C 00 1E 00 1A 00 0F 00 FF A0");
+                                               emulator.WriteAOB(Globals.DRAGOON_SPELLS[19].Description_Pointer, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 16 00 16 00 1A 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 FF A0");
                                             }
                                             emulator.WriteByte("SPELL_TABLE", 20, 0x7 + (15 * 0xC)); //Astral Drain MP
                                             emulator.WriteByte("SPELL_TABLE", 50, 0x7 + (16 * 0xC)); //Death Dimension MP
@@ -1741,9 +1741,9 @@ namespace Dragoon_Modifier {
                                     if (!Globals.DIFFICULTY_MODE.Equals("Normal")) {
                                         if (jeweledHammer) {
                                             if (Constants.REGION == Region.NTA) {
-                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[24].Description_Pointer - 0x80000000, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1A 00 16 00 15 00 0F 00 FF A0");
-                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[27].Description_Pointer - 0x80000000, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1A 00 18 00 15 00 0F 00 FF A0");
-                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[28].Description_Pointer - 0x80000000, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 16 00 19 00 15 00 15 00 0F 00 FF A0");
+                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[24].Description_Pointer, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1A 00 16 00 15 00 0F 00 FF A0");
+                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[27].Description_Pointer, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1A 00 18 00 15 00 0F 00 FF A0");
+                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[28].Description_Pointer, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 16 00 19 00 15 00 15 00 0F 00 FF A0");
                                             }
                                             emulator.WriteByte("SPELL_TABLE", 10, 0x7 + (24 * 0xC)); //Freezing Ring MP
                                             emulator.WriteByte("SPELL_TABLE", 20, 0x7 + (25 * 0xC)); //Rainbow Breath MP
@@ -1753,9 +1753,9 @@ namespace Dragoon_Modifier {
                                             Constants.WriteGLogOutput("Meru's dragoon magic has returned to normal.");
                                         } else {
                                             if (Constants.REGION == Region.NTA) {
-                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[24].Description_Pointer - 0x80000000, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1D 00 15 00 15 00 0F 00 FF A0");
-                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[27].Description_Pointer - 0x80000000, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1D 00 1D 00 15 00 0F 00 FF A0");
-                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[28].Description_Pointer - 0x80000000, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 17 00 16 00 15 00 15 00 0F 00 FF A0");
+                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[24].Description_Pointer, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1D 00 15 00 15 00 0F 00 FF A0");
+                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[27].Description_Pointer, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1D 00 1D 00 15 00 0F 00 FF A0");
+                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[28].Description_Pointer, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 17 00 16 00 15 00 15 00 0F 00 FF A0");
                                             }
                                             emulator.WriteByte("SPELL_TABLE", 50, 0x7 + (24 * 0xC)); //Freezing Ring MP
                                             emulator.WriteByte("SPELL_TABLE", 100, 0x7 + (25 * 0xC)); //Rainbow Breath MP
@@ -6367,8 +6367,8 @@ namespace Dragoon_Modifier {
                     emulator.WriteByte("SPELL_TABLE", (uiCombo["cboFlowerStorm"] + 1) * 20, 0x7 + (26 * 0xC)); //Albert's Rose storm MP
 
                     if (Constants.REGION == Region.NTA) {
-                        emulator.WriteAOB(Globals.DRAGOON_SPELLS[7].Description_Pointer - 0x80000000, "22 00 39 00 45 00 39 00 3F 00 3D 00 00 00 30 00 3D 00 4B 00 41 00 4B 00 4C 00 00 00 1A 00 15 00 0F 00 00 00 22 00 4D 00 4A 00 00 00 " + Convert.ToString(0x0F + uiCombo["cboFlowerStorm"] + 1).ToUpper() + " 00 FF A0");
-                        emulator.WriteAOB(Globals.DRAGOON_SPELLS[26].Description_Pointer - 0x80000000, "22 00 39 00 45 00 39 00 3F 00 3D 00 00 00 30 00 3D 00 4B 00 41 00 4B 00 4C 00 00 00 1A 00 15 00 0F 00 00 00 22 00 4D 00 4A 00 00 00 " + Convert.ToString(0x0F + uiCombo["cboFlowerStorm"] + 1).ToUpper() + " 00 FF A0");
+                        emulator.WriteAOB(Globals.DRAGOON_SPELLS[7].Description_Pointer, "22 00 39 00 45 00 39 00 3F 00 3D 00 00 00 30 00 3D 00 4B 00 41 00 4B 00 4C 00 00 00 1A 00 15 00 0F 00 00 00 22 00 4D 00 4A 00 00 00 " + Convert.ToString(0x0F + uiCombo["cboFlowerStorm"] + 1).ToUpper() + " 00 FF A0");
+                        emulator.WriteAOB(Globals.DRAGOON_SPELLS[26].Description_Pointer, "22 00 39 00 45 00 39 00 3F 00 3D 00 00 00 30 00 3D 00 4B 00 41 00 4B 00 4C 00 00 00 1A 00 15 00 0F 00 00 00 22 00 4D 00 4A 00 00 00 " + Convert.ToString(0x0F + uiCombo["cboFlowerStorm"] + 1).ToUpper() + " 00 FF A0");
                     }
 
                     emulator.WriteByte("SPELL_TABLE", 20, 0x7 + (11 * 0xC)); //Shana's Moon Light MP
