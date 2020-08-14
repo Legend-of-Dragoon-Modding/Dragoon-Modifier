@@ -8,8 +8,10 @@ using System.IO;
 using Microsoft.CSharp;
 using System.Globalization;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 public class BattleController {
+    static bool exit_init = false;
     public static void Run(Emulator emulator) {
         int encounterValue = emulator.ReadShort("BATTLE_VALUE");
 
@@ -223,6 +225,7 @@ public class BattleController {
             Globals.MONSTER_TABLE = new List<dynamic>();
             Globals.MONSTER_IDS = new List<int>();
             Globals.SHANA_FIX = false;
+            exit_init = false;
             Thread.Sleep(2000);
             if (emulator.ReadShort("BATTLE_VALUE") < 5130) {
                 return;
@@ -265,14 +268,16 @@ public class BattleController {
             Globals.STATS_CHANGED = true;
         } else {
             if (Globals.STATS_CHANGED && encounterValue < 9999) {
+                if (!exit_init) {
+                    ItemFieldChanges(emulator);
+                    DragoonFieldChanges(emulator);
+                    CharacterFieldChanges(emulator);
+                    AdditionFieldChanges(emulator);
+
+                    Globals.ADDITION_SWAP = false;
+                    exit_init = true;
+                }
                 
-
-                ItemFieldChanges(emulator);
-                DragoonFieldChanges(emulator);
-                CharacterFieldChanges(emulator);
-                AdditionFieldChanges(emulator);
-
-                Globals.ADDITION_SWAP = false;
                 if (Globals.NO_DART > 0) {
                     if (emulator.ReadByte("TRANSITION") == 12) {
                         Globals.STATS_CHANGED = false;
@@ -406,270 +411,295 @@ public class BattleController {
             if (slot == 0 && Globals.NO_DART != null) {
                 character = (int)Globals.NO_DART;
             }
-            if (character < 9) {
-                Globals.CURRENT_STATS[slot] = new CurrentStats(character, slot, emulator);
+            if (character > 8) {
+                break;
             }
+            Globals.CURRENT_STATS[slot] = new CurrentStats(character, slot, emulator);
         }
 
-        for (int slot = 0; slot < 3; slot++) {
-            AdditionsBattleChanges(emulator, slot, false);
-            DragoonStatChanges(emulator, slot, false);
-            ItemBattleChanges(emulator, slot, false);
-            CharacterBattleChanges(emulator, slot, false);
-        }
-        DragoonBattleChanges(emulator);
-    }
-
-    public static void AdditionsBattleChanges(Emulator emulator, int slot, bool bypass) {
-        if (Globals.ADDITION_CHANGE || bypass) {
-            Constants.WriteDebug("Changing Additions...");
-            long address = Constants.GetAddress("ADDITION") + GetOffset(emulator);
-            Dictionary<int, int> additionnum = new Dictionary<int, int> {
-                {0, 0},{1, 1},{2, 2},{3, 3},{4, 4},{5, 5},{6, 6},//Dart
-                {8, 0},{9, 1},{10, 2},{11, 3},{12, 4},           //Lavitz
-                {14, 0},{15, 1},{16, 2},{17, 3},                 //Rose
-                {29, 0},{30, 1},{31, 2},{32, 3},{33, 4},{34, 5}, //Haschel
-                {23, 0},{24, 1},{25, 2},{26, 3},{27, 4},         //Meru
-                {19, 0},{20, 1},{21, 2},                         //Kongol
-                {255, 0}
-            };
-            int character = Globals.PARTY_SLOT[slot];
-            if (slot == 0 && Globals.NO_DART != null) {
-                character = (int)Globals.NO_DART;
-            }
-            if (character == 2 || character == 8) {
-                emulator.WriteByte(Globals.M_POINT + 0x148AC, Globals.DICTIONARY.AdditionData[character, 0, 0].SP);
-                emulator.WriteByte(Globals.M_POINT + 0x148AC + 0x4, Globals.DICTIONARY.AdditionData[character, 0, 1].SP);
-                emulator.WriteByte(Globals.M_POINT + 0x148AC + 0x8, Globals.DICTIONARY.AdditionData[character, 0, 2].SP);
-                emulator.WriteByte(Globals.M_POINT + 0x148AC + 0xC, Globals.DICTIONARY.AdditionData[character, 0, 3].SP);
-                emulator.WriteByte(Globals.M_POINT + 0x148AC + 0x10, Globals.DICTIONARY.AdditionData[character, 0, 4].SP);
-            } else if (character < 9) {
-                int addition = additionnum[emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x19)];
-                for (int hit = 0; hit < 8; hit++) {
-                    emulator.WriteShort(address + (slot * 0x100) + (hit * 0x20), (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].UU1);
-                    emulator.WriteShort(address + (slot * 0x100) + (hit * 0x20) + 0x2, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].Next_Hit);
-                    emulator.WriteShort(address + (slot * 0x100) + (hit * 0x20) + 0x4, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].Blue_Time);
-                    emulator.WriteShort(address + (slot * 0x100) + (hit * 0x20) + 0x6, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].Gray_Time);
-                    emulator.WriteShort(address + (slot * 0x100) + (hit * 0x20) + 0x8, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].DMG);
-                    emulator.WriteShort(address + (slot * 0x100) + (hit * 0x20) + 0xA, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].SP);
-                    emulator.WriteShort(address + (slot * 0x100) + (hit * 0x20) + 0xC, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].ID);
-                    emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0xE, Globals.DICTIONARY.AdditionData[character, addition, hit].Final_Hit);
-                    emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0xF, Globals.DICTIONARY.AdditionData[character, addition, hit].UU2);
-                    emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0x10, Globals.DICTIONARY.AdditionData[character, addition, hit].UU3);
-                    emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0x11, Globals.DICTIONARY.AdditionData[character, addition, hit].UU4);
-                    emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0x12, Globals.DICTIONARY.AdditionData[character, addition, hit].UU5);
-                    emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0x13, Globals.DICTIONARY.AdditionData[character, addition, hit].UU6);
-                    emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0x14, Globals.DICTIONARY.AdditionData[character, addition, hit].UU7);
-                    emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0x15, Globals.DICTIONARY.AdditionData[character, addition, hit].UU8);
-                    emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0x16, Globals.DICTIONARY.AdditionData[character, addition, hit].UU9);
-                    emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0x17, Globals.DICTIONARY.AdditionData[character, addition, hit].UU10);
-                    emulator.WriteShort(address + (slot * 0x100) + (hit * 0x20) + 0x18, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].Vertical_Distance);
-                    emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0x1A, Globals.DICTIONARY.AdditionData[character, addition, hit].UU11);
-                    emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0x1B, Globals.DICTIONARY.AdditionData[character, addition, hit].UU12);
-                    emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0x1C, Globals.DICTIONARY.AdditionData[character, addition, hit].UU13);
-                    emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0x1D, Globals.DICTIONARY.AdditionData[character, addition, hit].UU14);
-                    emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0x1E, Globals.DICTIONARY.AdditionData[character, addition, hit].Start_Time);
-                    emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0x1F, Globals.DICTIONARY.AdditionData[character, addition, hit].UU15);
+        if (Globals.ADDITION_CHANGE) {
+            Constants.WriteOutput("Changing Additions...");
+            for (int slot = 0; slot <3; slot++) {
+                int character = Globals.PARTY_SLOT[slot];
+                if (slot == 0 && Globals.NO_DART != null) {
+                    character = (int)Globals.NO_DART;
                 }
-                int addition_level = emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x1A + addition);
-                Globals.CHARACTER_TABLE[slot].Write("ADD_DMG_Multi", Globals.DICTIONARY.AdditionData[character, addition, addition_level].ADD_DMG_Multi);
-                Globals.CHARACTER_TABLE[slot].Write("ADD_SP_Multi", Globals.DICTIONARY.AdditionData[character, addition, addition_level].ADD_SP_Multi);
+                if (character > 8) {
+                    break;
+                }
+                AdditionsBattleChanges(emulator, slot, character);
             }
         }
-    }
 
-    public static void DragoonStatChanges(Emulator emulator, int slot, bool bypass) {
-        if (Globals.DRAGOON_STAT_CHANGE || bypass) {
+        if (Globals.DRAGOON_STAT_CHANGE) {
             Constants.WriteOutput("Changing Dragoon Stats...");
-            int character = Globals.PARTY_SLOT[slot];
-            if (slot == 0 && Globals.NO_DART != null) {
-                character = (int)Globals.NO_DART;
-            }
-            if (character < 9) {
-                int dlv = Globals.CURRENT_STATS[slot].DLV;
-                Globals.CHARACTER_TABLE[slot].Write("DAT", Globals.DICTIONARY.DragoonStats[character][dlv].DAT);
-                Globals.CHARACTER_TABLE[slot].Write("DMAT", Globals.DICTIONARY.DragoonStats[character][dlv].DMAT);
-                Globals.CHARACTER_TABLE[slot].Write("DDF", Globals.DICTIONARY.DragoonStats[character][dlv].DDF);
-                Globals.CHARACTER_TABLE[slot].Write("DMDF", Globals.DICTIONARY.DragoonStats[character][dlv].DMDF);
-                if (!Globals.ITEM_STAT_CHANGE) {
-                    Globals.CHARACTER_TABLE[slot].Write("MP", Math.Min(Globals.CURRENT_STATS[slot].MP, Globals.CURRENT_STATS[slot].Max_MP));
-                    Globals.CHARACTER_TABLE[slot].Write("Max_MP", Globals.CURRENT_STATS[slot].Max_MP);
+            for (int slot = 0; slot < 3; slot++) {
+                int character = Globals.PARTY_SLOT[slot];
+                if (slot == 0 && Globals.NO_DART != null) {
+                    character = (int)Globals.NO_DART;
                 }
-            }
-        }
-    }
-
-    public static void ItemBattleChanges(Emulator emulator, int slot, bool bypass) {
-        if (Globals.ITEM_STAT_CHANGE || bypass) {
-            int character = Globals.PARTY_SLOT[slot];
-            if (slot == 0 && Globals.NO_DART != null) {
-                character = (int)Globals.NO_DART;
-            }
-            if (Globals.PARTY_SLOT[slot] < 9) {
-                Globals.CHARACTER_TABLE[slot].Write("MP", Math.Min(Globals.CURRENT_STATS[slot].MP, Globals.CURRENT_STATS[slot].Max_MP));
-                Globals.CHARACTER_TABLE[slot].Write("Max_MP", Globals.CURRENT_STATS[slot].Max_MP);
-                Globals.CHARACTER_TABLE[slot].Write("Stat_Res", Globals.CURRENT_STATS[slot].Stat_Res);
-                Globals.CHARACTER_TABLE[slot].Write("E_Half", Globals.CURRENT_STATS[slot].E_Half);
-                Globals.CHARACTER_TABLE[slot].Write("E_Immune", Globals.CURRENT_STATS[slot].E_Immune);
-                Globals.CHARACTER_TABLE[slot].Write("A_AV", Globals.CURRENT_STATS[slot].A_AV);
-                Globals.CHARACTER_TABLE[slot].Write("M_AV", Globals.CURRENT_STATS[slot].M_AV);
-                Globals.CHARACTER_TABLE[slot].Write("A_HIT", Globals.CURRENT_STATS[slot].A_Hit);
-                Globals.CHARACTER_TABLE[slot].Write("M_HIT", Globals.CURRENT_STATS[slot].M_Hit);
-                Globals.CHARACTER_TABLE[slot].Write("P_Half", Globals.CURRENT_STATS[slot].P_Half);
-                Globals.CHARACTER_TABLE[slot].Write("M_Half", Globals.CURRENT_STATS[slot].M_Half);
-                Globals.CHARACTER_TABLE[slot].Write("On_Hit_Status", Globals.CURRENT_STATS[slot].On_Hit_Status);
-                Globals.CHARACTER_TABLE[slot].Write("On_Hit_Status_Chance", Globals.CURRENT_STATS[slot].Status_Chance);
-                Globals.CHARACTER_TABLE[slot].Write("Revive", Globals.CURRENT_STATS[slot].Revive);
-                if (!bypass) {
-                    Globals.CHARACTER_TABLE[slot].Write("SP_Regen", Globals.CURRENT_STATS[slot].SP_Regen);
-                    Globals.CHARACTER_TABLE[slot].Write("MP_Regen", Globals.CURRENT_STATS[slot].MP_Regen);
-                    Globals.CHARACTER_TABLE[slot].Write("HP_Regen", Globals.CURRENT_STATS[slot].HP_Regen);
+                if (character > 8) {
+                    break;
                 }
-                Globals.CHARACTER_TABLE[slot].Write("Element", Globals.CURRENT_STATS[slot].Element);
-                Globals.CHARACTER_TABLE[slot].Write("Display_Element", Globals.CURRENT_STATS[slot].Element);
-                Globals.CHARACTER_TABLE[slot].Write("MP_M_Hit", Globals.CURRENT_STATS[slot].MP_M_Hit);
-                Globals.CHARACTER_TABLE[slot].Write("SP_M_Hit", Globals.CURRENT_STATS[slot].SP_M_Hit);
-                Globals.CHARACTER_TABLE[slot].Write("MP_P_Hit", Globals.CURRENT_STATS[slot].MP_P_Hit);
-                Globals.CHARACTER_TABLE[slot].Write("SP_P_Hit", Globals.CURRENT_STATS[slot].SP_P_Hit);
-                Globals.CHARACTER_TABLE[slot].Write("SP_Multi", Globals.CURRENT_STATS[slot].SP_Multi);
-                Globals.CHARACTER_TABLE[slot].Write("Death_Res", Globals.CURRENT_STATS[slot].Death_Res);
-                if (!Globals.CHARACTER_STAT_CHANGE) {
-                    Globals.CHARACTER_TABLE[slot].Write("HP", Math.Min(Globals.CURRENT_STATS[slot].HP, Globals.CURRENT_STATS[slot].Max_HP));
-                    Globals.CHARACTER_TABLE[slot].Write("Max_HP", Globals.CURRENT_STATS[slot].Max_HP);
-                    Globals.CHARACTER_TABLE[slot].Write("AT", Globals.CURRENT_STATS[slot].AT);
-                    Globals.CHARACTER_TABLE[slot].Write("OG_AT", Globals.CURRENT_STATS[slot].AT);
-                    Globals.CHARACTER_TABLE[slot].Write("MAT", Globals.CURRENT_STATS[slot].MAT);
-                    Globals.CHARACTER_TABLE[slot].Write("OG_MAT", Globals.CURRENT_STATS[slot].MAT);
-                    Globals.CHARACTER_TABLE[slot].Write("DF", Globals.CURRENT_STATS[slot].DF);
-                    Globals.CHARACTER_TABLE[slot].Write("DF", Globals.CURRENT_STATS[slot].DF);
-                    Globals.CHARACTER_TABLE[slot].Write("OG_DF", Globals.CURRENT_STATS[slot].DF);
-                    Globals.CHARACTER_TABLE[slot].Write("MDF", Globals.CURRENT_STATS[slot].MDF);
-                    Globals.CHARACTER_TABLE[slot].Write("OG_MDF", Globals.CURRENT_STATS[slot].MDF);
-                    Globals.CHARACTER_TABLE[slot].Write("SPD", Globals.CURRENT_STATS[slot].SPD);
-                    Globals.CHARACTER_TABLE[slot].Write("OG_SPD", Globals.CURRENT_STATS[slot].SPD);
-                }
+                DragoonStatChanges(emulator, slot, character);
             }
         }
-    }
 
-    public static void CharacterBattleChanges(Emulator emulator, int slot, bool bypass) {
-        int character = Globals.PARTY_SLOT[slot];
-        if (slot == 0 && Globals.NO_DART != null) {
-            character = (int)Globals.NO_DART;
-        }
-        if (Globals.CHARACTER_STAT_CHANGE || bypass) {
-            if (Globals.PARTY_SLOT[slot] < 9) {
-                Globals.CHARACTER_TABLE[slot].Write("HP", Math.Min(Globals.CURRENT_STATS[slot].HP, Globals.CURRENT_STATS[slot].Max_HP));
-                Globals.CHARACTER_TABLE[slot].Write("Max_HP", Globals.CURRENT_STATS[slot].Max_HP);
-                Globals.CHARACTER_TABLE[slot].Write("AT", Globals.CURRENT_STATS[slot].AT);
-                Globals.CHARACTER_TABLE[slot].Write("OG_AT", Globals.CURRENT_STATS[slot].AT);
-                Globals.CHARACTER_TABLE[slot].Write("MAT", Globals.CURRENT_STATS[slot].MAT);
-                Globals.CHARACTER_TABLE[slot].Write("OG_MAT", Globals.CURRENT_STATS[slot].MAT);
-                Globals.CHARACTER_TABLE[slot].Write("DF", Globals.CURRENT_STATS[slot].DF);
-                Globals.CHARACTER_TABLE[slot].Write("DF", Globals.CURRENT_STATS[slot].DF);
-                Globals.CHARACTER_TABLE[slot].Write("OG_DF", Globals.CURRENT_STATS[slot].DF);
-                Globals.CHARACTER_TABLE[slot].Write("MDF", Globals.CURRENT_STATS[slot].MDF);
-                Globals.CHARACTER_TABLE[slot].Write("OG_MDF", Globals.CURRENT_STATS[slot].MDF);
-                Globals.CHARACTER_TABLE[slot].Write("SPD", Globals.CURRENT_STATS[slot].SPD);
-                Globals.CHARACTER_TABLE[slot].Write("OG_SPD", Globals.CURRENT_STATS[slot].SPD);
-            }
-        }
-    }
-
-    public static void DragoonBattleChanges(Emulator emulator) {
         if (Globals.DRAGOON_ADDITION_CHANGE) {
             Constants.WriteOutput("Changing Dragoon Additions...");
-            long address = Constants.GetAddress("ADDITION") + GetOffset(emulator) + 0x300;
             for (int slot = 0; slot < 3; slot++) {
                 int character = Globals.PARTY_SLOT[slot];
                 if (slot == 0 && Globals.NO_DART != null) {
                     character = (int)Globals.NO_DART;
                 }
-                if (character < 9) {
-                    emulator.WriteShort(address + (slot * 0x100) + 0x8, (ushort)Globals.DICTIONARY.DragoonAddition[character].HIT1);
-                    emulator.WriteShort(address + (slot * 0x100) + 0x20 + 0x8, (ushort)Globals.DICTIONARY.DragoonAddition[character].HIT2);
-                    emulator.WriteShort(address + (slot * 0x100) + 0x40 + 0x8, (ushort)Globals.DICTIONARY.DragoonAddition[character].HIT3);
-                    emulator.WriteShort(address + (slot * 0x100) + 0x60 + 0x8, (ushort)Globals.DICTIONARY.DragoonAddition[character].HIT4);
-                    emulator.WriteShort(address + (slot * 0x100) + 0x80 + 0x8, (ushort)Globals.DICTIONARY.DragoonAddition[character].HIT5);
+                if (character > 8) {
+                    break;
                 }
+                DragoonAdditionsBattleChanges(emulator, slot, character);
             }
         }
+
         if (Globals.DRAGOON_SPELL_CHANGE) {
-            Constants.WriteDebug("Changing Dragoon Spells...");
-            long address = Constants.GetAddress("SPELL_TABLE");
-            double[] bases = new double[] { 800, 600, 500, 400, 300, 200, 150, 100, 50 };
-            byte[] base_table = new byte[] { 0x1, 0x2, 0x4, 0x8, 0x10, 0x20, 0x40, 0, 0x80 };
-            byte[][] Spells = new byte[9][] {
-                new byte[] {0, 1, 2, 3, 4, 9 },
-                new byte[]{14, 17, 26, 8 },
-                new byte[]{10, 11, 12, 13 },
-                new byte[]{15, 16, 18, 19 },
-                new byte[]{20, 21, 22, 23 },
-                new byte[]{5, 6, 7, 8 },
-                new byte[]{24, 25, 27, 28 },
-                new byte[]{29, 30, 31 },
-                new byte[]{10, 11, 12, 13 }
-            };
+            Constants.WriteOutput("Changing Dragoon Spells...");
             for (int slot = 0; slot < 3; slot++) {
                 int character = Globals.PARTY_SLOT[slot];
                 if (slot == 0 && Globals.NO_DART != null) {
                     character = (int)Globals.NO_DART;
                 }
-                if (character < 9) {
-                    foreach (byte id in Spells[character]) {
-                        byte dmg_base = 0;
-                        byte multi = 0;
-
-                        dynamic Spell = Globals.DRAGOON_SPELLS[id];
-                        int intValue = (int)emulator.ReadByte("SPELL_TABLE", (id * 0xC) + 0x2);
-                        if (Spell.Percentage == true) {
-                            intValue |= 1 << 2;
-                            dmg_base = 0;
-                            multi = (byte)Math.Round(Spell.Damage);
-                        } else {
-                            intValue &= ~(1 << 2);
-                            double stat = (double)Globals.CHARACTER_TABLE[slot].Read("MAT");
-                            double[] nearest_list = new double[9];
-                            byte[] multi_list = new byte[9];
-                            for (int i = 0; i < 9; i++) {
-                                if (Spell.Damage < bases[i]) {
-                                    multi_list[i] = 0;
-                                } else if (Spell.Damage > ((stat + 255) * bases[i]) / stat) {
-                                    multi_list[i] = 255;
-                                } else {
-                                    multi_list[i] = (byte)Math.Round((Spell.Damage * stat - bases[i] * stat) / bases[i]);
-                                }
-                                nearest_list[i] = Math.Abs(Spell.Damage - (stat + multi_list[i]) * bases[i] / stat);
-                            }
-                            int index = Array.IndexOf(nearest_list, nearest_list.Min());
-                            dmg_base = base_table[index];
-                            multi = multi_list[index];
-                        }
-                        emulator.WriteByte(address + (id * 0xC) + 0x2, (byte)intValue);
-                        emulator.WriteByte(address + (id * 0xC) + 0x4, dmg_base);
-                        emulator.WriteByte(address + (id * 0xC) + 0x5, multi);
-                        emulator.WriteByte(address + (id * 0xC) + 0x6, Spell.Accuracy);
-                        emulator.WriteByte(address + (id * 0xC) + 0x7, Spell.MP);
-                        emulator.WriteByte(address + (id * 0xC) + 0x9, Spell.Element);
-                    }
+                if (character > 8) {
+                    break;
                 }
+                DragoonSpellChange(emulator, slot, character);
             }
         }
 
         if (Globals.DRAGOON_DESC_CHANGE && Constants.REGION == Region.NTA) {
-            Constants.WriteDebug("Changing Dragoon Spell Descriptions...");
-            int i = 0;
-            string descr = String.Empty;
-            long address = Constants.GetAddress("DRAGOON_DESC_PTR");
-            foreach (dynamic Spell in Globals.DRAGOON_SPELLS) {
-                descr += (string)Spell.Encoded_Description + " ";
-                emulator.WriteInteger(address + i * 0x4, (int)Spell.Description_Pointer);
-                emulator.WriteByte(address + i * 0x4 + 0x3, 0x80);
-                i++;
-            }
-            descr = descr.Remove(descr.Length - 1);
-            emulator.WriteAOB(Constants.GetAddress("DRAGOON_DESC"), descr);
+            Constants.WriteOutput("Changing Dragoon Spell Descriptions...");
+            DragoonSpellDescriptionChange(emulator);
         }
+
+        if (Globals.ITEM_STAT_CHANGE) {
+            Constants.WriteOutput("Changing Character Stats...");
+            for (int slot = 0; slot < 3; slot++) {
+                int character = Globals.PARTY_SLOT[slot];
+                if (slot == 0 && Globals.NO_DART != null) {
+                    character = (int)Globals.NO_DART;
+                }
+                if (character > 8) {
+                    break;
+                }
+                ItemBattleChanges(emulator, slot);
+            }
+        } else if (Globals.CHARACTER_STAT_CHANGE) {
+            Constants.WriteOutput("Changing Character Stats...");
+            for (int slot = 0; slot < 3; slot++) {
+                int character = Globals.PARTY_SLOT[slot];
+                if (slot == 0 && Globals.NO_DART != null) {
+                    character = (int)Globals.NO_DART;
+                }
+                if (character > 8) {
+                    break;
+                }
+                CharacterBattleChanges(emulator, slot);
+            }
+        }
+    }
+
+    public static void AdditionsBattleChanges(Emulator emulator, int slot, int character) {
+        long address = Constants.GetAddress("ADDITION") + GetOffset(emulator);
+        Dictionary<int, int> additionnum = new Dictionary<int, int> {
+            {0, 0},{1, 1},{2, 2},{3, 3},{4, 4},{5, 5},{6, 6},//Dart
+            {8, 0},{9, 1},{10, 2},{11, 3},{12, 4},           //Lavitz
+            {14, 0},{15, 1},{16, 2},{17, 3},                 //Rose
+            {29, 0},{30, 1},{31, 2},{32, 3},{33, 4},{34, 5}, //Haschel
+            {23, 0},{24, 1},{25, 2},{26, 3},{27, 4},         //Meru
+            {19, 0},{20, 1},{21, 2},                         //Kongol
+            {255, 0}
+        };
+        if (character == 2 || character == 8) {
+            emulator.WriteByte(Globals.M_POINT + 0x148AC, Globals.DICTIONARY.AdditionData[character, 0, 0].SP);
+            emulator.WriteByte(Globals.M_POINT + 0x148AC + 0x4, Globals.DICTIONARY.AdditionData[character, 0, 1].SP);
+            emulator.WriteByte(Globals.M_POINT + 0x148AC + 0x8, Globals.DICTIONARY.AdditionData[character, 0, 2].SP);
+            emulator.WriteByte(Globals.M_POINT + 0x148AC + 0xC, Globals.DICTIONARY.AdditionData[character, 0, 3].SP);
+            emulator.WriteByte(Globals.M_POINT + 0x148AC + 0x10, Globals.DICTIONARY.AdditionData[character, 0, 4].SP);
+        } else {
+            int addition = additionnum[emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x19)];
+            for (int hit = 0; hit < 8; hit++) {
+                emulator.WriteShort(address + (slot * 0x100) + (hit * 0x20), (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].UU1);
+                emulator.WriteShort(address + (slot * 0x100) + (hit * 0x20) + 0x2, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].Next_Hit);
+                emulator.WriteShort(address + (slot * 0x100) + (hit * 0x20) + 0x4, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].Blue_Time);
+                emulator.WriteShort(address + (slot * 0x100) + (hit * 0x20) + 0x6, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].Gray_Time);
+                emulator.WriteShort(address + (slot * 0x100) + (hit * 0x20) + 0x8, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].DMG);
+                emulator.WriteShort(address + (slot * 0x100) + (hit * 0x20) + 0xA, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].SP);
+                emulator.WriteShort(address + (slot * 0x100) + (hit * 0x20) + 0xC, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].ID);
+                emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0xE, Globals.DICTIONARY.AdditionData[character, addition, hit].Final_Hit);
+                emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0xF, Globals.DICTIONARY.AdditionData[character, addition, hit].UU2);
+                emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0x10, Globals.DICTIONARY.AdditionData[character, addition, hit].UU3);
+                emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0x11, Globals.DICTIONARY.AdditionData[character, addition, hit].UU4);
+                emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0x12, Globals.DICTIONARY.AdditionData[character, addition, hit].UU5);
+                emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0x13, Globals.DICTIONARY.AdditionData[character, addition, hit].UU6);
+                emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0x14, Globals.DICTIONARY.AdditionData[character, addition, hit].UU7);
+                emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0x15, Globals.DICTIONARY.AdditionData[character, addition, hit].UU8);
+                emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0x16, Globals.DICTIONARY.AdditionData[character, addition, hit].UU9);
+                emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0x17, Globals.DICTIONARY.AdditionData[character, addition, hit].UU10);
+                emulator.WriteShort(address + (slot * 0x100) + (hit * 0x20) + 0x18, (ushort)Globals.DICTIONARY.AdditionData[character, addition, hit].Vertical_Distance);
+                emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0x1A, Globals.DICTIONARY.AdditionData[character, addition, hit].UU11);
+                emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0x1B, Globals.DICTIONARY.AdditionData[character, addition, hit].UU12);
+                emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0x1C, Globals.DICTIONARY.AdditionData[character, addition, hit].UU13);
+                emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0x1D, Globals.DICTIONARY.AdditionData[character, addition, hit].UU14);
+                emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0x1E, Globals.DICTIONARY.AdditionData[character, addition, hit].Start_Time);
+                emulator.WriteByte(address + (slot * 0x100) + (hit * 0x20) + 0x1F, Globals.DICTIONARY.AdditionData[character, addition, hit].UU15);
+            }
+            int addition_level = emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x1A + addition);
+            Globals.CHARACTER_TABLE[slot].Write("ADD_DMG_Multi", Globals.DICTIONARY.AdditionData[character, addition, addition_level].ADD_DMG_Multi);
+            Globals.CHARACTER_TABLE[slot].Write("ADD_SP_Multi", Globals.DICTIONARY.AdditionData[character, addition, addition_level].ADD_SP_Multi);
+        }
+    }
+
+    public static void DragoonStatChanges(Emulator emulator, int slot, int character) {
+        int dlv = Globals.CURRENT_STATS[slot].DLV;
+        Globals.CHARACTER_TABLE[slot].Write("DAT", Globals.DICTIONARY.DragoonStats[character][dlv].DAT);
+        Globals.CHARACTER_TABLE[slot].Write("DMAT", Globals.DICTIONARY.DragoonStats[character][dlv].DMAT);
+        Globals.CHARACTER_TABLE[slot].Write("DDF", Globals.DICTIONARY.DragoonStats[character][dlv].DDF);
+        Globals.CHARACTER_TABLE[slot].Write("DMDF", Globals.DICTIONARY.DragoonStats[character][dlv].DMDF);
+        if (!Globals.ITEM_STAT_CHANGE) {
+            Globals.CHARACTER_TABLE[slot].Write("MP", Math.Min(Globals.CURRENT_STATS[slot].MP, Globals.CURRENT_STATS[slot].Max_MP));
+            Globals.CHARACTER_TABLE[slot].Write("Max_MP", Globals.CURRENT_STATS[slot].Max_MP);
+        }
+    }
+
+    public static void ItemBattleChanges(Emulator emulator, int slot) {
+        Globals.CHARACTER_TABLE[slot].Write("MP", Math.Min(Globals.CURRENT_STATS[slot].MP, Globals.CURRENT_STATS[slot].Max_MP));
+        Globals.CHARACTER_TABLE[slot].Write("Max_MP", Globals.CURRENT_STATS[slot].Max_MP);
+        Globals.CHARACTER_TABLE[slot].Write("Stat_Res", Globals.CURRENT_STATS[slot].Stat_Res);
+        Globals.CHARACTER_TABLE[slot].Write("E_Half", Globals.CURRENT_STATS[slot].E_Half);
+        Globals.CHARACTER_TABLE[slot].Write("E_Immune", Globals.CURRENT_STATS[slot].E_Immune);
+        Globals.CHARACTER_TABLE[slot].Write("A_AV", Globals.CURRENT_STATS[slot].A_AV);
+        Globals.CHARACTER_TABLE[slot].Write("M_AV", Globals.CURRENT_STATS[slot].M_AV);
+        Globals.CHARACTER_TABLE[slot].Write("A_HIT", Globals.CURRENT_STATS[slot].A_Hit);
+        Globals.CHARACTER_TABLE[slot].Write("M_HIT", Globals.CURRENT_STATS[slot].M_Hit);
+        Globals.CHARACTER_TABLE[slot].Write("P_Half", Globals.CURRENT_STATS[slot].P_Half);
+        Globals.CHARACTER_TABLE[slot].Write("M_Half", Globals.CURRENT_STATS[slot].M_Half);
+        Globals.CHARACTER_TABLE[slot].Write("On_Hit_Status", Globals.CURRENT_STATS[slot].On_Hit_Status);
+        Globals.CHARACTER_TABLE[slot].Write("On_Hit_Status_Chance", Globals.CURRENT_STATS[slot].Status_Chance);
+        Globals.CHARACTER_TABLE[slot].Write("Revive", Globals.CURRENT_STATS[slot].Revive);
+        Globals.CHARACTER_TABLE[slot].Write("SP_Regen", Globals.CURRENT_STATS[slot].SP_Regen);
+        Globals.CHARACTER_TABLE[slot].Write("MP_Regen", Globals.CURRENT_STATS[slot].MP_Regen);
+        Globals.CHARACTER_TABLE[slot].Write("HP_Regen", Globals.CURRENT_STATS[slot].HP_Regen);
+        Globals.CHARACTER_TABLE[slot].Write("Element", Globals.CURRENT_STATS[slot].Element);
+        Globals.CHARACTER_TABLE[slot].Write("Display_Element", Globals.CURRENT_STATS[slot].Element);
+        Globals.CHARACTER_TABLE[slot].Write("MP_M_Hit", Globals.CURRENT_STATS[slot].MP_M_Hit);
+        Globals.CHARACTER_TABLE[slot].Write("SP_M_Hit", Globals.CURRENT_STATS[slot].SP_M_Hit);
+        Globals.CHARACTER_TABLE[slot].Write("MP_P_Hit", Globals.CURRENT_STATS[slot].MP_P_Hit);
+        Globals.CHARACTER_TABLE[slot].Write("SP_P_Hit", Globals.CURRENT_STATS[slot].SP_P_Hit);
+        Globals.CHARACTER_TABLE[slot].Write("SP_Multi", Globals.CURRENT_STATS[slot].SP_Multi);
+        Globals.CHARACTER_TABLE[slot].Write("Death_Res", Globals.CURRENT_STATS[slot].Death_Res);
+        Globals.CHARACTER_TABLE[slot].Write("HP", Math.Min(Globals.CURRENT_STATS[slot].HP, Globals.CURRENT_STATS[slot].Max_HP));
+        Globals.CHARACTER_TABLE[slot].Write("Max_HP", Globals.CURRENT_STATS[slot].Max_HP);
+        Globals.CHARACTER_TABLE[slot].Write("AT", Globals.CURRENT_STATS[slot].AT);
+        Globals.CHARACTER_TABLE[slot].Write("OG_AT", Globals.CURRENT_STATS[slot].AT);
+        Globals.CHARACTER_TABLE[slot].Write("MAT", Globals.CURRENT_STATS[slot].MAT);
+        Globals.CHARACTER_TABLE[slot].Write("OG_MAT", Globals.CURRENT_STATS[slot].MAT);
+        Globals.CHARACTER_TABLE[slot].Write("DF", Globals.CURRENT_STATS[slot].DF);
+        Globals.CHARACTER_TABLE[slot].Write("DF", Globals.CURRENT_STATS[slot].DF);
+        Globals.CHARACTER_TABLE[slot].Write("OG_DF", Globals.CURRENT_STATS[slot].DF);
+        Globals.CHARACTER_TABLE[slot].Write("MDF", Globals.CURRENT_STATS[slot].MDF);
+        Globals.CHARACTER_TABLE[slot].Write("OG_MDF", Globals.CURRENT_STATS[slot].MDF);
+        Globals.CHARACTER_TABLE[slot].Write("SPD", Globals.CURRENT_STATS[slot].SPD);
+        Globals.CHARACTER_TABLE[slot].Write("OG_SPD", Globals.CURRENT_STATS[slot].SPD);
+    }
+
+    public static void CharacterBattleChanges(Emulator emulator, int slot) {
+        Globals.CHARACTER_TABLE[slot].Write("HP", Math.Min(Globals.CURRENT_STATS[slot].HP, Globals.CURRENT_STATS[slot].Max_HP));
+        Globals.CHARACTER_TABLE[slot].Write("Max_HP", Globals.CURRENT_STATS[slot].Max_HP);
+        Globals.CHARACTER_TABLE[slot].Write("AT", Globals.CURRENT_STATS[slot].AT);
+        Globals.CHARACTER_TABLE[slot].Write("OG_AT", Globals.CURRENT_STATS[slot].AT);
+        Globals.CHARACTER_TABLE[slot].Write("MAT", Globals.CURRENT_STATS[slot].MAT);
+        Globals.CHARACTER_TABLE[slot].Write("OG_MAT", Globals.CURRENT_STATS[slot].MAT);
+        Globals.CHARACTER_TABLE[slot].Write("DF", Globals.CURRENT_STATS[slot].DF);
+        Globals.CHARACTER_TABLE[slot].Write("DF", Globals.CURRENT_STATS[slot].DF);
+        Globals.CHARACTER_TABLE[slot].Write("OG_DF", Globals.CURRENT_STATS[slot].DF);
+        Globals.CHARACTER_TABLE[slot].Write("MDF", Globals.CURRENT_STATS[slot].MDF);
+        Globals.CHARACTER_TABLE[slot].Write("OG_MDF", Globals.CURRENT_STATS[slot].MDF);
+        Globals.CHARACTER_TABLE[slot].Write("SPD", Globals.CURRENT_STATS[slot].SPD);
+        Globals.CHARACTER_TABLE[slot].Write("OG_SPD", Globals.CURRENT_STATS[slot].SPD);
+    }
+
+    public static void DragoonAdditionsBattleChanges(Emulator emulator, int slot, int character) {
+        long address = Constants.GetAddress("ADDITION") + GetOffset(emulator) + 0x300;
+        emulator.WriteShort(address + (slot * 0x100) + 0x8, (ushort)Globals.DICTIONARY.DragoonAddition[character].HIT1);
+        emulator.WriteShort(address + (slot * 0x100) + 0x20 + 0x8, (ushort)Globals.DICTIONARY.DragoonAddition[character].HIT2);
+        emulator.WriteShort(address + (slot * 0x100) + 0x40 + 0x8, (ushort)Globals.DICTIONARY.DragoonAddition[character].HIT3);
+        emulator.WriteShort(address + (slot * 0x100) + 0x60 + 0x8, (ushort)Globals.DICTIONARY.DragoonAddition[character].HIT4);
+        emulator.WriteShort(address + (slot * 0x100) + 0x80 + 0x8, (ushort)Globals.DICTIONARY.DragoonAddition[character].HIT5);
+    }
+
+    public static void DragoonSpellChange(Emulator emulator, int slot, int character) {
+        Constants.WriteDebug("Changing Dragoon Spells...");
+        long address = Constants.GetAddress("SPELL_TABLE");
+        double[] bases = new double[] { 800, 600, 500, 400, 300, 200, 150, 100, 50 };
+        byte[] base_table = new byte[] { 0x1, 0x2, 0x4, 0x8, 0x10, 0x20, 0x40, 0, 0x80 };
+        byte[][] Spells = new byte[9][] {
+            new byte[] {0, 1, 2, 3, 4, 9 },
+            new byte[]{14, 17, 26, 8 },
+            new byte[]{10, 11, 12, 13 },
+            new byte[]{15, 16, 18, 19 },
+            new byte[]{20, 21, 22, 23 },
+            new byte[]{5, 6, 7, 8 },
+            new byte[]{24, 25, 27, 28 },
+            new byte[]{29, 30, 31 },
+            new byte[]{10, 11, 12, 13 }
+        };
+        foreach (byte id in Spells[character]) {
+            byte dmg_base = 0;
+            byte multi = 0;
+
+            dynamic Spell = Globals.DRAGOON_SPELLS[id];
+            int intValue = (int)emulator.ReadByte("SPELL_TABLE", (id * 0xC) + 0x2);
+            if (Spell.Percentage == true) {
+                intValue |= 1 << 2;
+                dmg_base = 0;
+                multi = (byte)Math.Round(Spell.Damage);
+            } else {
+                intValue &= ~(1 << 2);
+                double stat = (double)Globals.CURRENT_STATS[slot].MAT;
+                double[] nearest_list = new double[9];
+                byte[] multi_list = new byte[9];
+                for (int i = 0; i < 9; i++) {
+                    if (Spell.Damage < bases[i]) {
+                        multi_list[i] = 0;
+                    } else if (Spell.Damage > ((stat + 255) * bases[i]) / stat) {
+                        multi_list[i] = 255;
+                    } else {
+                        multi_list[i] = (byte)Math.Round((Spell.Damage * stat - bases[i] * stat) / bases[i]);
+                    }
+                    nearest_list[i] = Math.Abs(Spell.Damage - (stat + multi_list[i]) * bases[i] / stat);
+                }
+                int index = Array.IndexOf(nearest_list, nearest_list.Min());
+                dmg_base = base_table[index];
+                multi = multi_list[index];
+            }
+            emulator.WriteByte(address + (id * 0xC) + 0x2, (byte)intValue);
+            emulator.WriteByte(address + (id * 0xC) + 0x4, dmg_base);
+            emulator.WriteByte(address + (id * 0xC) + 0x5, multi);
+            emulator.WriteByte(address + (id * 0xC) + 0x6, Spell.Accuracy);
+            emulator.WriteByte(address + (id * 0xC) + 0x7, Spell.MP);
+            emulator.WriteByte(address + (id * 0xC) + 0x9, Spell.Element);
+        }
+    }
+
+    public static void DragoonSpellDescriptionChange(Emulator emulator) {
+        int i = 0;
+        string descr = String.Empty;
+        long address = Constants.GetAddress("DRAGOON_DESC_PTR");
+        foreach (dynamic Spell in Globals.DRAGOON_SPELLS) {
+            descr += (string)Spell.Encoded_Description + " ";
+            emulator.WriteInteger(address + i * 0x4, (int)Spell.Description_Pointer);
+            emulator.WriteByte(address + i * 0x4 + 0x3, 0x80);
+            i++;
+        }
+        descr = descr.Remove(descr.Length - 1);
+        emulator.WriteAOB(Constants.GetAddress("DRAGOON_DESC"), descr);
     }
 
     public static void AdditionSwap(Emulator emulator, byte slot, byte additionCount) {
@@ -908,22 +938,6 @@ public class BattleController {
             }
             #endregion
 
-            if (!Globals.ADDITION_CHANGE) {
-                AdditionsBattleChanges(emulator, 0, true);
-            }
-
-            if (!Globals.DRAGOON_STAT_CHANGE) {
-                DragoonStatChanges(emulator, 0, true);
-            }
-
-            if (!Globals.CHARACTER_STAT_CHANGE) {
-                CharacterBattleChanges(emulator, 0, true);
-            }
-
-            if (!Globals.ITEM_STAT_CHANGE) {
-                ItemBattleChanges(emulator, 0, true);
-            }
-
             #region Wargod/Destroyer Mace fix
             byte special_effect = 0;
             if (Globals.CURRENT_STATS[0].Weapon.ID == 45) {
@@ -972,6 +986,19 @@ public class BattleController {
             } else {
                 Globals.CHARACTER_TABLE[0].Write("Menu", 16);
             }
+
+            if (!Globals.ADDITION_CHANGE) {
+                AdditionsBattleChanges(emulator, 0, character);
+            }
+
+            if (!Globals.DRAGOON_STAT_CHANGE) {
+                DragoonStatChanges(emulator, 0, character);
+            }
+
+            if (!Globals.ITEM_STAT_CHANGE) {
+                ItemBattleChanges(emulator, 0);
+            }
+
             while (true) {
                 if (emulator.ReadShort("BATTLE_VALUE") < 5130) {
                     return;
