@@ -1097,29 +1097,37 @@ public class BattleController {
 
         if (Globals.ITEM_NAMEDESC_CHANGE && Constants.REGION == Region.NTA) {
             Constants.WriteOutput("Changing Item Names and Descriptions...");
-            if (String.Join("", Globals.DICTIONARY.NameList).Replace(" ", "").Length / 2 < 6423) {
-                emulator.WriteAOB("ITEM_NAME", String.Join(" ", Globals.DICTIONARY.NameList));
-                long address = Constants.GetAddress("ITEM_NAME_PTR");
+            long address = Constants.GetAddress("ITEM_NAME");
+            long address2 = Constants.GetAddress("ITEM_NAME_PTR");
+            int len1 = String.Join("", Globals.DICTIONARY.NameList).Replace(" ", "").Length / 4;
+            int len2 = (int)(address2 - address) / 2;
+            if (len1 < len2) {
+                emulator.WriteAOB(address, String.Join(" ", Globals.DICTIONARY.NameList));
                 int i = 0;
                 foreach (dynamic item in Globals.DICTIONARY.ItemList) {
-                    emulator.WriteInteger(address + i * 0x4, (int)item.NamePointer);
-                    emulator.WriteByte(address + i * 0x4 + 0x3, 0x80);
+                    emulator.WriteInteger(address2 + i * 0x4, (int)item.NamePointer);
+                    emulator.WriteByte(address2 + i * 0x4 + 0x3, 0x80);
                     i++;
                 }
             } else {
-                Constants.WriteDebug("Item name character limit exceded! " + Convert.ToString(String.Join("", Globals.DICTIONARY.NameList).Replace(" ", "").Length / 4, 10) + " / 3211 characters.");
+                string s = String.Format("Item name character limit exceeded! {0} / {1} characters.", len1, len2);
+                Constants.WriteDebug(s);
             }
-            if (String.Join("", Globals.DICTIONARY.DescriptionList).Replace(" ", "").Length / 2 < 13465) {
-                emulator.WriteAOB("ITEM_DESC", String.Join(" ", Globals.DICTIONARY.DescriptionList));
-                long address = Constants.GetAddress("ITEM_DESC_PTR");
+            address = Constants.GetAddress("ITEM_DESC");
+            address2 = Constants.GetAddress("ITEM_DESC_PTR");
+            len1 = String.Join("", Globals.DICTIONARY.DescriptionList).Replace(" ", "").Length / 4;
+            len2 = (int)(address2 - address) / 2;
+            if (len1 < len2) {
+                emulator.WriteAOB(address, String.Join(" ", Globals.DICTIONARY.DescriptionList));
                 int i = 0;
                 foreach (dynamic item in Globals.DICTIONARY.ItemList) {
-                    emulator.WriteInteger(address + i * 0x4, (int)item.DescriptionPointer);
-                    emulator.WriteByte(address + i * 0x4 + 0x3, 0x80);
+                    emulator.WriteInteger(address2 + i * 0x4, (int)item.DescriptionPointer);
+                    emulator.WriteByte(address2 + i * 0x4 + 0x3, 0x80);
                     i++;
                 }
             } else {
-                Constants.WriteDebug("Item description character limit exceded! " + Convert.ToString(String.Join("", Globals.DICTIONARY.DescriptionList).Replace(" ", "").Length / 4, 10) + " / 6732 characters.");
+                string s = String.Format("Item description character limit exceeded! {0} / {1} characters.", len1, len2);
+                Constants.WriteDebug(s);
             }
         }
 
