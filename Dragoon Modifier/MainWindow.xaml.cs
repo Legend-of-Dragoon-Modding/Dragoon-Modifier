@@ -4111,7 +4111,7 @@ namespace Dragoon_Modifier {
                             if (Globals.ENCOUNTER_ID == 412) { //Drake the Bandit
                                 UltimateHealthPotion(0, 3, 3.33333); //Healing Potion
                             } else if (Globals.ENCOUNTER_ID == 416) { //Grand Jewel
-                                UltimateHealthPotion(0, 1, 3.33333); //Heal Fountain
+                                //UltimateHealthPotion(0, 1, 3.33333); //Heal Fountain
                             }
                         }
 
