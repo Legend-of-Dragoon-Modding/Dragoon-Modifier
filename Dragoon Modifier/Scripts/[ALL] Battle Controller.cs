@@ -234,11 +234,7 @@ public class BattleController {
             Globals.MONSTER_SIZE = emulator.ReadByte("MONSTER_SIZE");
             Globals.UNIQUE_MONSTER_SIZE = emulator.ReadByte("UNIQUE_MONSTER_SIZE");
 
-            if (Constants.REGION == Region.NTA) {
-                Globals.SetM_POINT(0x1A439C + emulator.ReadShort("M_POINT"));
-            } else {
-                Globals.SetM_POINT(0x1A43B4 + emulator.ReadShort("M_POINT"));
-            }
+            Globals.SetM_POINT((long)(emulator.ReadInteger("C_POINT", 0x14) - 0x7FFFFEF8));
             Globals.SetC_POINT((long)(emulator.ReadInteger("C_POINT") - 0x7FFFFEF8));
 
             LoDDictInIt(emulator);
