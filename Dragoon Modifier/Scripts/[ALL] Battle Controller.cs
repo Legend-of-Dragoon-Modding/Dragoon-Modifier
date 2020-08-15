@@ -352,21 +352,21 @@ public class BattleController {
 
     public static void MonsterChanges(Emulator emulator) {
         if (Globals.MONSTER_STAT_CHANGE && !Globals.CheckDMScript("btnUltimateBoss")) {
-            Constants.WriteOutput("Changing Monster Stats...")
+            Constants.WriteOutput("Changing Monster Stats...");
             for (int slot = 0; slot < Globals.MONSTER_SIZE; slot++) {
                 MonsterStatChange(emulator, slot);
             }
         }
 
         if (Globals.MONSTER_DROP_CHANGE && !Globals.CheckDMScript("btnUltimateBoss")) {
-            Constants.WriteOutput("Changing Monster Drops...")
+            Constants.WriteOutput("Changing Monster Drops...");
             for (int slot = 0; slot < Globals.UNIQUE_MONSTER_SIZE; slot++) {
                 MonsterDropChange(emulator, slot);
             }
         }
 
         if (Globals.MONSTER_EXPGOLD_CHANGE && !Globals.CheckDMScript("btnUltimateBoss")) {
-            Constants.WriteOutput("Changing Monster Exp and Gold Rewards...")
+            Constants.WriteOutput("Changing Monster Exp and Gold Rewards...");
             for (int slot = 0; slot < Globals.UNIQUE_MONSTER_SIZE; slot++) {
                 MonsterExpGoldChange(emulator, slot);
             }
@@ -381,28 +381,28 @@ public class BattleController {
             resup = HP / 65535;
             HP = 65535;
         }
-        Globals.MONSTER_TABLE[monster].Write("HP", (ushort)Math.Round(HP));
-        Globals.MONSTER_TABLE[monster].Write("Max_HP", (ushort)Math.Round(HP));
-        Globals.MONSTER_TABLE[monster].Write("AT", (short)Math.Round(Globals.DICTIONARY.StatList[ID].AT * Globals.AT_MULTI));
-        Globals.MONSTER_TABLE[monster].Write("OG_AT", (short)Math.Round(Globals.DICTIONARY.StatList[ID].AT * Globals.AT_MULTI));
-        Globals.MONSTER_TABLE[monster].Write("MAT", (short)Math.Round(Globals.DICTIONARY.StatList[ID].MAT * Globals.MAT_MULTI));
-        Globals.MONSTER_TABLE[monster].Write("OG_MAT", (short)Math.Round(Globals.DICTIONARY.StatList[ID].MAT * Globals.MAT_MULTI));
-        Globals.MONSTER_TABLE[monster].Write("DF", (short)Math.Round(Globals.DICTIONARY.StatList[ID].DF * Globals.DF_MULTI * resup));
-        Globals.MONSTER_TABLE[monster].Write("OG_DF", (short)Math.Round(Globals.DICTIONARY.StatList[ID].DF * Globals.DF_MULTI * resup));
-        Globals.MONSTER_TABLE[monster].Write("MDF", (short)Math.Round(Globals.DICTIONARY.StatList[ID].MDF * Globals.MDF_MULTI * resup));
-        Globals.MONSTER_TABLE[monster].Write("OG_MDF", (short)Math.Round(Globals.DICTIONARY.StatList[ID].MDF * Globals.MDF_MULTI * resup));
-        Globals.MONSTER_TABLE[monster].Write("SPD", (short)Math.Round(Globals.DICTIONARY.StatList[ID].SPD * Globals.SPD_MULTI));
-        Globals.MONSTER_TABLE[monster].Write("OG_SPD", (short)Math.Round(Globals.DICTIONARY.StatList[ID].SPD * Globals.SPD_MULTI));
-        Globals.MONSTER_TABLE[monster].Write("A_AV", Globals.DICTIONARY.StatList[ID].A_AV);
-        Globals.MONSTER_TABLE[monster].Write("M_AV", Globals.DICTIONARY.StatList[ID].M_AV);
-        Globals.MONSTER_TABLE[monster].Write("P_Immune", Globals.DICTIONARY.StatList[ID].P_Immune);
-        Globals.MONSTER_TABLE[monster].Write("M_Immune", Globals.DICTIONARY.StatList[ID].M_Immune);
-        Globals.MONSTER_TABLE[monster].Write("P_Half", Globals.DICTIONARY.StatList[ID].P_Half);
-        Globals.MONSTER_TABLE[monster].Write("M_Half", Globals.DICTIONARY.StatList[ID].M_Half);
-        Globals.MONSTER_TABLE[monster].Write("E_Immune", Globals.DICTIONARY.StatList[ID].E_Immune);
-        Globals.MONSTER_TABLE[monster].Write("E_Half", Globals.DICTIONARY.StatList[ID].E_Half);
-        Globals.MONSTER_TABLE[monster].Write("Stat_Res", Globals.DICTIONARY.StatList[ID].Stat_Res);
-        Globals.MONSTER_TABLE[monster].Write("Death_Res", Globals.DICTIONARY.StatList[ID].Death_Res);
+        Globals.MONSTER_TABLE[slot].Write("HP", (ushort)Math.Round(HP));
+        Globals.MONSTER_TABLE[slot].Write("Max_HP", (ushort)Math.Round(HP));
+        Globals.MONSTER_TABLE[slot].Write("AT", (short)Math.Round(Globals.DICTIONARY.StatList[ID].AT * Globals.AT_MULTI));
+        Globals.MONSTER_TABLE[slot].Write("OG_AT", (short)Math.Round(Globals.DICTIONARY.StatList[ID].AT * Globals.AT_MULTI));
+        Globals.MONSTER_TABLE[slot].Write("MAT", (short)Math.Round(Globals.DICTIONARY.StatList[ID].MAT * Globals.MAT_MULTI));
+        Globals.MONSTER_TABLE[slot].Write("OG_MAT", (short)Math.Round(Globals.DICTIONARY.StatList[ID].MAT * Globals.MAT_MULTI));
+        Globals.MONSTER_TABLE[slot].Write("DF", (short)Math.Round(Globals.DICTIONARY.StatList[ID].DF * Globals.DF_MULTI * resup));
+        Globals.MONSTER_TABLE[slot].Write("OG_DF", (short)Math.Round(Globals.DICTIONARY.StatList[ID].DF * Globals.DF_MULTI * resup));
+        Globals.MONSTER_TABLE[slot].Write("MDF", (short)Math.Round(Globals.DICTIONARY.StatList[ID].MDF * Globals.MDF_MULTI * resup));
+        Globals.MONSTER_TABLE[slot].Write("OG_MDF", (short)Math.Round(Globals.DICTIONARY.StatList[ID].MDF * Globals.MDF_MULTI * resup));
+        Globals.MONSTER_TABLE[slot].Write("SPD", (short)Math.Round(Globals.DICTIONARY.StatList[ID].SPD * Globals.SPD_MULTI));
+        Globals.MONSTER_TABLE[slot].Write("OG_SPD", (short)Math.Round(Globals.DICTIONARY.StatList[ID].SPD * Globals.SPD_MULTI));
+        Globals.MONSTER_TABLE[slot].Write("A_AV", Globals.DICTIONARY.StatList[ID].A_AV);
+        Globals.MONSTER_TABLE[slot].Write("M_AV", Globals.DICTIONARY.StatList[ID].M_AV);
+        Globals.MONSTER_TABLE[slot].Write("P_Immune", Globals.DICTIONARY.StatList[ID].P_Immune);
+        Globals.MONSTER_TABLE[slot].Write("M_Immune", Globals.DICTIONARY.StatList[ID].M_Immune);
+        Globals.MONSTER_TABLE[slot].Write("P_Half", Globals.DICTIONARY.StatList[ID].P_Half);
+        Globals.MONSTER_TABLE[slot].Write("M_Half", Globals.DICTIONARY.StatList[ID].M_Half);
+        Globals.MONSTER_TABLE[slot].Write("E_Immune", Globals.DICTIONARY.StatList[ID].E_Immune);
+        Globals.MONSTER_TABLE[slot].Write("E_Half", Globals.DICTIONARY.StatList[ID].E_Half);
+        Globals.MONSTER_TABLE[slot].Write("Stat_Res", Globals.DICTIONARY.StatList[ID].Stat_Res);
+        Globals.MONSTER_TABLE[slot].Write("Death_Res", Globals.DICTIONARY.StatList[ID].Death_Res);
     }
 
     public static void MonsterDropChange(Emulator emulator, int slot) {
