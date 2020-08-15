@@ -1366,7 +1366,13 @@ namespace Dragoon_Modifier {
                             originalCharacterStats[i, 6] = Globals.CHARACTER_TABLE[i].Read("SP_P_Hit"); //SP HEAL PHYSICAL
                             originalCharacterStats[i, 7] = Globals.CHARACTER_TABLE[i].Read("MP_P_Hit"); //MP HEAL PHYSICAL
                             originalCharacterStats[i, 8] = Globals.CHARACTER_TABLE[i].Read("SP_M_Hit"); //SP HEAL MAGIC
-                            originalCharacterStats[i, 9] = Globals.CHARACTER_TABLE[i].Read("MP_M_Hit"); //MP HEAL MAGI
+                            originalCharacterStats[i, 9] = Globals.CHARACTER_TABLE[i].Read("MP_M_Hit"); //MP HEAL MAGIC
+
+                            Globals.CHARACTER_TABLE[i].Write("OG_AT", Globals.CHARACTER_TABLE[i].Read("AT"));
+                            Globals.CHARACTER_TABLE[i].Write("OG_MAT", Globals.CHARACTER_TABLE[i].Read("MAT"));
+                            Globals.CHARACTER_TABLE[i].Write("OG_DF", Globals.CHARACTER_TABLE[i].Read("DF"));
+                            Globals.CHARACTER_TABLE[i].Write("OG_MDF", Globals.CHARACTER_TABLE[i].Read("MDF"));
+                            Globals.CHARACTER_TABLE[i].Write("OG_SPD", Globals.CHARACTER_TABLE[i].Read("SPD"));
                         }
                     }
 
@@ -3524,7 +3530,8 @@ namespace Dragoon_Modifier {
                                     Globals.CHARACTER_TABLE[i].Write("MP_M_Hit", originalCharacterStats[i, 9]);
                                 }
 
-                                if (Globals.CHARACTER_TABLE[i].Read("Shoes") == 172 || Globals.CHARACTER_TABLE[i].Read("Shoes") == 173 || Globals.CHARACTER_TABLE[i].Read("Shoes") == 174) { //Lloyd's Boots/ Winged Shoes / Soa's Greaves
+                                if (Globals.CHARACTER_TABLE[i].Read("Shoes") == 172 || Globals.CHARACTER_TABLE[i].Read("Shoes") == 173 || Globals.CHARACTER_TABLE[i].Read("Shoes") == 174 || //Lloyd's Boots/ Winged Shoes / Soa's Greaves
+                                    Globals.CHARACTER_TABLE[i].Read("Shoes") == 99 || Globals.CHARACTER_TABLE[i].Read("Shoes") == 100 || Globals.CHARACTER_TABLE[i].Read("Shoes") == 101 || Globals.CHARACTER_TABLE[i].Read("Accessory") == 131 || Globals.CHARACTER_TABLE[i].Read("Accessory") == 133) {  //Magical Greaves/Dancer's Shoes/Bandit's Shoes/Dancer's Ring/Bandit's Ring
                                     if (emulator.ReadByte(p + 0xC1) > 0) {
                                         Globals.CHARACTER_TABLE[i].Write("SPD", (originalCharacterStats[i, 5] * 2));
                                     } else {
