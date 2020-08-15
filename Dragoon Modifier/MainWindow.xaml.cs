@@ -408,7 +408,8 @@ namespace Dragoon_Modifier {
                     Version v1 = new Version(new_version);
                     Version v2 = new Version(current_version);
                     if (v1.CompareTo(v2) > 0) {
-                        Constants.WriteOutput($"Current version {current_version} is outdated. You can download the version {new_version} at {mod_version.html_url}");
+                        Constants.WriteOutput($"Current version {current_version} is outdated. You can download version {new_version} at {mod_version.html_url}");
+                        Constants.WriteGLog($"Newer version ({new_version}) available.");
                     }
                 }
 
