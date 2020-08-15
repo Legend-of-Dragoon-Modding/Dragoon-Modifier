@@ -2673,43 +2673,13 @@ namespace Dragoon_Modifier {
 
         #region HP Cap Break
         public void HPCapBreakField() {
-            if (!Globals.IN_BATTLE && (Globals.BATTLE_VALUE > 0 && Globals.BATTLE_VALUE < 9999) && maxHPTableLoaded) {
-                int hp = Constants.GetAddress("CHAR_MAX_HP_START");
-                int level = Constants.GetAddress("CHAR_LEVEL_START");
-                int helmet = Constants.GetAddress("CHAR_HELMET_START");
-                int acc = Constants.GetAddress("CHAR_ACC_START");
-                byte dragon = 0x5A;
-                byte ring = 0x79;
-                byte healthRing = 0xB2;
-
+            if (!Globals.IN_BATTLE && (Globals.BATTLE_VALUE > 0 && Globals.BATTLE_VALUE < 9999)) {
                 for (int i = 0; i < 3; i++) {
                     if (Globals.PARTY_SLOT[i] != hpChangeSlot[i]) {
-                        hpChangeCheck[i] = 65535;
-                        hpChangeSlot[i] = Globals.PARTY_SLOT[i];
                         hpChangeSave[i] = 65535;
-                    }
-                    if (Globals.PARTY_SLOT[i] < 9) {
-                        hpChangeCheck[i] = 1.0;
-                        if (emulator.ReadByte(helmet + (0x2C * hpChangeSlot[i])) == dragon) {
-                            hpChangeCheck[i] += 0.5;
-                        }
-                        if (emulator.ReadByte(acc + (0x2C * hpChangeSlot[i])) == ring) {
-                            hpChangeCheck[i] += 0.5;
-                        }
-                        if (emulator.ReadByte(acc + (0x2C * hpChangeSlot[i])) == healthRing) {
-                            hpChangeCheck[i] += 0.5;
-                        }
-                        if (hpChangeCheck[i] > 1) {
-                            hpChangeCheck[i] = hpChangeCheck[i] * maxHPTable[hpChangeSlot[i], emulator.ReadByte(level + (0x2C * hpChangeSlot[i])) - 1];
-                        } else {
-                            hpChangeCheck[i] = 65535;
-                        }
+                        hpChangeSlot[i] = Globals.PARTY_SLOT[i];
                     }
                 }
-                Constants.WriteDebug("Break HP: " + hpChangeSave[0] + "/" + hpChangeCheck[0] + " | " + hpChangeSave[1] + "/" + hpChangeCheck[1] + " | " + hpChangeSave[2] + "/" + hpChangeCheck[2]);
-            } else {
-                if (!Globals.IN_BATTLE && !maxHPTableLoaded)
-                    Constants.WritePLog("Please open the menu to load the Max HP table.");
             }
         }
 
@@ -2718,9 +2688,8 @@ namespace Dragoon_Modifier {
                 if (!Globals.CHARACTER_STAT_CHANGE) {
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9) {
-                            if (hpChangeCheck[i] != 65535 && hpChangeCheck[i] > 9999) {
-                                Globals.CHARACTER_TABLE[i].Write("Max_HP", hpChangeCheck[i]);
-                                if (hpChangeSave[i] != 65535 && Globals.CHARACTER_TABLE[i].Read("HP") < hpChangeSave[i]) {
+                            if (hpChangeSave[i] != 65535 && hpChangeSave[i] > 9999) {
+                                if (Globals.CHARACTER_TABLE[i].Read("HP") < hpChangeSave[i] && hpChangeSave[i] < Globals.CHARACTER_TABLE[i].Read("Max_HP")) {
                                     Globals.CHARACTER_TABLE[i].Write("HP", hpChangeSave[i]);
                                 }
                             }
@@ -2736,7 +2705,6 @@ namespace Dragoon_Modifier {
                         for (int i = 0; i < 3; i++) {
                             if (Globals.PARTY_SLOT[i] < 9)
                                 hpChangeSave[i] = Globals.CHARACTER_TABLE[i].Read("HP");
-                            //Constants.WriteDebug("xBreak HP: " + hpChangeSave[0] + "/" + hpChangeCheck[0] + " | " + hpChangeSave[1] + "/" + hpChangeCheck[1] + " | " + hpChangeSave[2] + "/" + hpChangeCheck[2]);
                         }
                     }
                 }
@@ -8959,7 +8927,7 @@ namespace Dragoon_Modifier {
                     "Hard + Hell (Bosses) uses Hell Mode enhancements, but uses Hard Mode monster stats for normal encounters and Hell Mode stats for bosses only.\r\n\r\n" +
                     "+\r\nPlus turns on Enrage Mode for bosses only. Originally designed as a part of Hell Mode but separated for the possibility of being too hard.\r\n\r\nThe sliders will multiply each stat at the bottom. If you choose a preset those stats will be multiplied as well.";
             } else if (cboHelpTopic.SelectedIndex == 3) {
-                txtHelp.Text = "Break 9999 HP Cap\r\nWill break the HP cap and save your HP above 9999 between battles as long as you don't switch characters.\r\n\r\n" +
+                txtHelp.Text = "Save >9999 HP\r\nWhen you have characters above 9999 HP this will save their HP between battles.\r\n\r\n" +
                     "Remove Damage Caps\r\nThe game's multiple damage caps will be changed to 50,000.\r\n\r\n" +
                     "Elemental Bomb\r\nPowerful items will change the element of all monsters for 5 turns on the field even through a miss.\r\n\r\n" +
                     "Enrage Mode\r\nMonsters will increase stats by 10% when they hit Yellow HP Zone, 25% when they hit Red HP Zone.\r\n\r\n" +
