@@ -35,9 +35,9 @@ namespace Dragoon_Modifier {
         List<int> monsterScript = new List<int>();
         dynamic[][] dragoonStats = new dynamic[9][];
         dynamic[] dragoonAddition = new dynamic[9];
-        IDictionary<int, string> num2item = new Dictionary<int, string>();
-        IDictionary<string, int> item2num = new Dictionary<string, int>();
-        IDictionary<int, string> num2element = new Dictionary<int, string>() {
+        IDictionary<byte, string> num2item = new Dictionary<byte, string>();
+        IDictionary<string, byte> item2num = new Dictionary<string, byte>();
+        IDictionary<byte, string> num2element = new Dictionary<byte, string>() {
                 {0, "None" },
                 {1, "Water" },
                 {2, "Earth" },
@@ -48,7 +48,7 @@ namespace Dragoon_Modifier {
                 {64, "Wind" },
                 {128, "Fire" }
             };
-        IDictionary<string, int> element2num = new Dictionary<string, int>() {
+        IDictionary<string, byte> element2num = new Dictionary<string, byte>() {
                 {"", 0 },
                 {"none", 0 },
                 {"null", 0 },
@@ -61,7 +61,7 @@ namespace Dragoon_Modifier {
                 {"wind", 64 },
                 {"fire", 128 }
             };
-        IDictionary<string, int> status2num = new Dictionary<string, int>() {
+        IDictionary<string, byte> status2num = new Dictionary<string, byte>() {
                 {"none", 0 },
                 {"petrification", 1 },
                 {"pe", 1 },
@@ -93,11 +93,11 @@ namespace Dragoon_Modifier {
         public dynamic[,,] AdditionData { get { return additionData; } }
         public dynamic[] DragoonAddition { get { return dragoonAddition; } }
         public List<int> MonsterScript { get { return monsterScript; } }
-        public IDictionary<int, string> Num2Item { get { return num2item; } }
-        public IDictionary<string, int> Item2Num { get { return item2num; } }
-        public IDictionary<int, string> Num2Element { get { return num2element; } }
-        public IDictionary<string, int> Element2Num { get { return element2num; } }
-        public IDictionary<string, int> Status2Num { get { return status2num; } }
+        public IDictionary<byte, string> Num2Item { get { return num2item; } }
+        public IDictionary<string, byte> Item2Num { get { return item2num; } }
+        public IDictionary<byte, string> Num2Element { get { return num2element; } }
+        public IDictionary<string, byte> Element2Num { get { return element2num; } }
+        public IDictionary<string, byte> Status2Num { get { return status2num; } }
         public dynamic[][] DragoonStats { get { return dragoonStats; } }
 
         public LoDDict() {
@@ -108,7 +108,7 @@ namespace Dragoon_Modifier {
                     using (var itemData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Equipment.tsv")) {
                         itemList = new List<dynamic>();
                         bool firstline = true;
-                        int i = 0;
+                        byte i = 0;
                         while (!itemData.EndOfStream) {
                             var line = itemData.ReadLine();
                             if (firstline == false) {
@@ -126,7 +126,7 @@ namespace Dragoon_Modifier {
                     }
                     using (var itemData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Items.tsv")) {
                         bool firstline = true;
-                        int i = 192;
+                        byte i = 192;
                         while (!itemData.EndOfStream) {
                             var line = itemData.ReadLine();
                             if (firstline == false) {
@@ -310,7 +310,7 @@ namespace Dragoon_Modifier {
                     shopList[shop] = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
                 }
                 try {
-                    int key = 0;
+                    byte key = 0;
                     using (var shop = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Shops.tsv")) {
                         var row = 0;
                         while (!shop.EndOfStream) {
@@ -319,7 +319,7 @@ namespace Dragoon_Modifier {
                                 var values = line.Split('\t').ToArray();
                                 for (int column = 0; column < 44; column++) {
                                     if (item2num.TryGetValue(values[column].ToLower(), out key)) {
-                                        shopList[column][row - 1] = (byte) key;
+                                        shopList[column][row - 1] = key;
                                     } else {
                                         if (values[column] != "") {
                                             Constants.WriteDebug(values[column] + " not found in as item in Shops.tsv");
@@ -910,7 +910,7 @@ namespace Dragoon_Modifier {
     }
 
     public class Item {
-        int id = 0;
+        byte id = 0;
         string name = "<END>";
         string description = "<END>";
         string encodedName = "FF A0 FF A0";
@@ -1063,7 +1063,7 @@ namespace Dragoon_Modifier {
 
         #endregion
 
-        public int ID { get { return id; } }
+        public byte ID { get { return id; } }
         public string Name { get { return name; } }
         public string Description { get { return description; } }
         public string EncodedName { get { return encodedName; } }
@@ -1084,7 +1084,7 @@ namespace Dragoon_Modifier {
         public byte BaseSwitch { get { return baseSwitch; } }
         public short Sell_Price { get { return sell_price; } }
 
-        public Item(int index, string[] values) {
+        public Item(byte index, string[] values) {
             byte key = 0;
             short key2 = 0;
             id = index;
@@ -1173,71 +1173,121 @@ namespace Dragoon_Modifier {
 
     public class StatList {
         string name = "Monster";
-        int element = 128;
+        byte element = 128;
         int hp = 1;
-        int at = 1;
-        int mat = 1;
-        int df = 1;
-        int mdf = 1;
-        int spd = 1;
-        int a_av = 0;
-        int m_av = 0;
-        int p_immune = 0;
-        int m_immune = 0;
-        int p_half = 0;
-        int m_half = 0;
-        int e_immune = 0;
-        int e_half = 0;
-        int stat_res = 0;
-        int death_res = 0;
-        int exp = 0;
-        int gold = 0;
-        int drop_item = 255;
-        int drop_chance = 0;
+        ushort at = 1;
+        ushort mat = 1;
+        ushort df = 1;
+        ushort mdf = 1;
+        ushort spd = 1;
+        byte a_av = 0;
+        byte m_av = 0;
+        byte p_immune = 0;
+        byte m_immune = 0;
+        byte p_half = 0;
+        byte m_half = 0;
+        byte e_immune = 0;
+        byte e_half = 0;
+        byte stat_res = 0;
+        byte death_res = 0;
+        ushort exp = 0;
+        ushort gold = 0;
+        byte drop_item = 255;
+        byte drop_chance = 0;
 
         public string Name { get { return name; } }
-        public int Element { get { return element; } }
+        public byte Element { get { return element; } }
         public int HP { get { return hp; } }
-        public int AT { get { return at; } }
-        public int MAT { get { return mat; } }
-        public int DF { get { return df; } }
-        public int MDF { get { return mdf; } }
-        public int SPD { get { return spd; } }
-        public int A_AV { get { return a_av; } }
-        public int M_AV { get { return m_av; } }
-        public int P_Immune { get { return p_immune; } }
-        public int M_Immune { get { return m_immune; } }
-        public int P_Half { get { return p_half; } }
-        public int M_Half { get { return m_half; } }
-        public int E_Immune { get { return e_immune; } }
-        public int E_Half { get { return e_half; } }
-        public int Stat_Res { get { return stat_res; } }
-        public int Death_Res { get { return death_res; } }
-        public int EXP { get { return exp; } }
-        public int Gold { get { return gold; } }
-        public int Drop_Item { get { return drop_item; } }
-        public int Drop_Chance { get { return drop_chance; } }
+        public ushort AT { get { return at; } }
+        public ushort MAT { get { return mat; } }
+        public ushort DF { get { return df; } }
+        public ushort MDF { get { return mdf; } }
+        public ushort SPD { get { return spd; } }
+        public byte A_AV { get { return a_av; } }
+        public byte M_AV { get { return m_av; } }
+        public byte P_Immune { get { return p_immune; } }
+        public byte M_Immune { get { return m_immune; } }
+        public byte P_Half { get { return p_half; } }
+        public byte M_Half { get { return m_half; } }
+        public byte E_Immune { get { return e_immune; } }
+        public byte E_Half { get { return e_half; } }
+        public byte Stat_Res { get { return stat_res; } }
+        public byte Death_Res { get { return death_res; } }
+        public ushort EXP { get { return exp; } }
+        public ushort Gold { get { return gold; } }
+        public byte Drop_Item { get { return drop_item; } }
+        public byte Drop_Chance { get { return drop_chance; } }
 
-        public StatList(string[] monster, IDictionary<string, int> element2num, IDictionary<string, int> item2num) {
+        public StatList(string[] monster, IDictionary<string, byte> element2num, IDictionary<string, byte> item2num) {
             name = monster[1];
-            int key = 0;
+            byte key = 0;
+            ushort key2 = 0;
+            int key3 = 0;
             if (element2num.TryGetValue(monster[2].ToLower(), out key)) {
                 element = key;
             } else {
                 Constants.WriteDebug(monster[2] + " not found as element for " + monster[1] + " (ID " + monster[0] + ")");
             }
-            hp = Int32.Parse(monster[3]);
-            at = Int32.Parse(monster[4]);
-            mat = Int32.Parse(monster[5]);
-            df = Int32.Parse(monster[6]);
-            mdf = Int32.Parse(monster[7]);
-            spd = Int32.Parse(monster[8]);
-            a_av = Int32.Parse(monster[9]);
-            m_av = Int32.Parse(monster[10]);
-            p_immune = Int32.Parse(monster[11]);
-            m_immune = Int32.Parse(monster[12]);
-            p_half = Int32.Parse(monster[13]);
-            m_half = Int32.Parse(monster[14]);
+            if (Int32.TryParse(monster[3], out key3)) {
+                hp = key3;
+            } else {
+                Constants.WriteDebug($"{monster[3]} not found as HP for {monster[1]} (ID {monster[0]})");
+            }
+            if (UInt16.TryParse(monster[4], out key2)) {
+                at = key2;
+            } else {
+                Constants.WriteDebug($"{monster[4]} not found as AT for {monster[1]} (ID {monster[0]})");
+            }
+            if (UInt16.TryParse(monster[5], out key2)) {
+                mat = key2;
+            } else {
+                Constants.WriteDebug($"{monster[5]} not found as MAT for {monster[1]} (ID {monster[0]})");
+            }
+            if (UInt16.TryParse(monster[6], out key2)) {
+                df = key2;
+            } else {
+                Constants.WriteDebug($"{monster[6]} not found as DF for {monster[1]} (ID {monster[0]})");
+            }
+            if (UInt16.TryParse(monster[7], out key2)) {
+                mdf = key2;
+            } else {
+                Constants.WriteDebug($"{monster[7]} not found as MDF for {monster[1]} (ID {monster[0]})");
+            }
+            if (UInt16.TryParse(monster[8], out key2)) {
+                spd = key2;
+            } else {
+                Constants.WriteDebug($"{monster[8]} not found as SPD for {monster[1]} (ID {monster[0]})");
+            }
+            if (Byte.TryParse(monster[9], out key)) {
+                a_av = key;
+            } else {
+                Constants.WriteDebug($"{monster[9]} not found as A_AV for {monster[1]} (ID {monster[0]})");
+            }
+            if (Byte.TryParse(monster[10], out key)) {
+                m_av = key;
+            } else {
+                Constants.WriteDebug($"{monster[10]} not found as M_AV for {monster[1]} (ID {monster[0]})");
+            }
+            if (Byte.TryParse(monster[11], out key)) {
+                p_immune = key;
+            } else {
+                Constants.WriteDebug($"{monster[11]} not found as P_Immune for {monster[1]} (ID {monster[0]})");
+            }
+            if (Byte.TryParse(monster[12], out key)) {
+                m_immune = key;
+            } else {
+                Constants.WriteDebug($"{monster[12]} not found as M_Immune for {monster[1]} (ID {monster[0]})");
+            }
+            if (Byte.TryParse(monster[13], out key)) {
+                p_half = key;
+            } else {
+                Constants.WriteDebug($"{monster[13]} not found as P_Half for {monster[1]} (ID {monster[0]})");
+            }
+            if (Byte.TryParse(monster[14], out key)) {
+                a_av = key;
+            } else {
+                Constants.WriteDebug($"{monster[14]} not found as M_Half for {monster[1]} (ID {monster[0]})");
+            }
             foreach (string substring in monster[15].Replace(" ", "").Split(',')) {
                 if (element2num.TryGetValue(substring.ToLower(), out key)) {
                     e_immune |= key;
@@ -1252,16 +1302,36 @@ namespace Dragoon_Modifier {
                     Constants.WriteDebug(substring + " not found as e_half for " + monster[1] + " (ID " + monster[0] + ")");
                 }
             }
-            stat_res = Int32.Parse(monster[17]);
-            death_res = Int32.Parse(monster[18]);
-            exp = Int32.Parse(monster[19]);
-            gold = Int32.Parse(monster[20]);
+            if (Byte.TryParse(monster[17], out key)) {
+                stat_res = key;
+            } else {
+                Constants.WriteDebug($"{monster[17]} not found as Status Resist for {monster[1]} (ID {monster[0]})");
+            }
+            if (Byte.TryParse(monster[18], out key)) {
+                death_res = key;
+            } else {
+                Constants.WriteDebug($"{monster[18]} not found as Death Resist for {monster[1]} (ID {monster[0]})");
+            }
+            if (UInt16.TryParse(monster[19], out key2)) {
+                exp = key2;
+            } else {
+                Constants.WriteDebug($"{monster[19]} not found as EXP for {monster[1]} (ID {monster[0]})");
+            }
+            if (UInt16.TryParse(monster[20], out key2)) {
+                gold = key2;
+            } else {
+                Constants.WriteDebug($"{monster[20]} not found as Gold for {monster[1]} (ID {monster[0]})");
+            }
             if (item2num.TryGetValue(monster[21].ToLower(), out key)) {
                 drop_item = key;
             } else {
                 Constants.WriteDebug(monster[21] + " not found in Item List as drop for " + monster[1] + " (ID " + monster[0] + ")");
             }
-            drop_chance = Int32.Parse(monster[22]);
+            if (Byte.TryParse(monster[22], out key)) {
+                drop_chance = key;
+            } else {
+                Constants.WriteDebug($"{monster[22]} not found as Drop Chance for {monster[1]} (ID {monster[0]})");
+            }
         }
     }
 
@@ -1336,18 +1406,36 @@ namespace Dragoon_Modifier {
         public string Encoded_Description { get { return encoded_description; } }
         public long Description_Pointer { get; set; }
 
-        public DragoonSpells(string[] values, int spell, IDictionary<string, int> Element2Num) {
+        public DragoonSpells(string[] values, int spell, IDictionary<string, byte> Element2Num) {
             bool key = new bool();
+            double dkey = new double();
+            byte bkey = new byte();
             string name = values[0];
             if (perc.TryGetValue(values[1].ToLower(), out key)) {
                 percentage = key;
             } else {
                 Constants.WriteDebug("Incorrect percentage swith " + values[1] + " for spell " + values[0]);
             }
-            damage = Convert.ToDouble(values[2]);
-            accuracy = (byte) Convert.ToInt32(values[3]);
-            mp = (byte) Convert.ToInt32(values[4]);
-            element = (byte) Element2Num[values[5].ToLower()];
+            if (Double.TryParse(values[2], out dkey)) {
+                damage = dkey;
+            } else {
+                Constants.WriteDebug($"{values[2]} couldn't be parsed as damage for spell {values[0]}");
+            }
+            if (Byte.TryParse(values[3], NumberStyles.AllowLeadingSign, null as IFormatProvider, out bkey)) {
+                accuracy = bkey;
+            } else {
+                Constants.WriteDebug($"{values[3]} couldn't be parsed as accuracy for spell {values[0]}");
+            }
+            if (Byte.TryParse(values[4], NumberStyles.AllowLeadingSign, null as IFormatProvider, out bkey)) {
+                mp = bkey;
+            } else {
+                Constants.WriteDebug($"{values[4]} couldn't be parsed as MP for spell {values[0]}");
+            }
+            if (Element2Num.TryGetValue(values[5].ToLower(), out bkey)) {
+                element = bkey;
+            } else {
+                Constants.WriteDebug($"{values[5]} not found as element for spell {values[0]}");
+            }
             description = values[6];
             if (description != "") {
                 encoded_description = LoDDict.StringEncode(description);
@@ -1399,14 +1487,16 @@ namespace Dragoon_Modifier {
     }
 
     public class CharacterStats {
-        short max_hp = 1;
+        ushort max_hp = 1;
         byte spd = 1;
         byte at = 1;
         byte mat = 1;
         byte df = 1;
         byte mdf = 1;
+        byte key = 0;
+        ushort key2 = 0;
 
-        public short Max_HP { get { return max_hp; } }
+        public ushort Max_HP { get { return max_hp; } }
         public byte SPD { get { return spd; } }
         public byte AT { get { return at; } }
         public byte MAT { get { return mat; } }
@@ -1414,12 +1504,24 @@ namespace Dragoon_Modifier {
         public byte MDF { get { return mdf; } }
 
         public CharacterStats(string nmax_hp, string nspd, string nat, string nmat, string ndf, string nmdf) {
-            max_hp = Int16.Parse(nmax_hp);
-            spd = Convert.ToByte(nspd, 10);
-            at = Convert.ToByte(nat, 10);
-            mat = Convert.ToByte(nmat, 10);
-            df = Convert.ToByte(ndf, 10);
-            mdf = Convert.ToByte(nmdf, 10);
+            if (UInt16.TryParse(nmax_hp, out key2)) {
+                max_hp = key2;
+            }
+            if (Byte.TryParse(nspd, out key)) {
+                spd = key;
+            }
+            if (Byte.TryParse(nat, out key)) {
+                at = key;
+            }
+            if (Byte.TryParse(nmat, out key)) {
+                mat = key;
+            }
+            if (Byte.TryParse(ndf, out key)) {
+                df = key;
+            }
+            if (Byte.TryParse(nmdf, out key)) {
+                mdf = key;
+            }
         }
     }
 

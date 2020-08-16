@@ -648,7 +648,6 @@ public class BattleController {
     }
 
     public static void DragoonSpellChange(Emulator emulator, int slot, int character) {
-        Constants.WriteDebug("Changing Dragoon Spells...");
         long address = Constants.GetAddress("SPELL_TABLE");
         double[] bases = new double[] { 800, 600, 500, 400, 300, 200, 150, 100, 50 };
         byte[] base_table = new byte[] { 0x1, 0x2, 0x4, 0x8, 0x10, 0x20, 0x40, 0, 0x80 };
