@@ -1082,7 +1082,7 @@ namespace Dragoon_Modifier {
                     }), DispatcherPriority.ContextIdle);
                 }
 
-                LoadMaxHPTable(false);
+                //LoadMaxHPTable(false);
 
                 if (inventorySize != 32) {
                     ExtendInventory();
@@ -2747,7 +2747,6 @@ namespace Dragoon_Modifier {
                     }
                 }
                 maxHPTableLoaded = true;
-                Constants.WritePLog("Max HP table loaded.");
             }
         }
         #endregion
@@ -4966,7 +4965,7 @@ namespace Dragoon_Modifier {
                 } else {
                     ubMoveChgSet = false;
                     if (Globals.ENCOUNTER_ID == 418) {
-                        Globals.MONSTER_TABLE[monsterSlot].Write("AT", originalMonsterStats[monsterSlot, 1]);
+                        Globals.MONSTER_TABLE[monsterSlot].Write("AT", originalMonsterStats[monsterSlot, 1] * 4.5);
                     }
                 }
             } else {
@@ -4974,7 +4973,7 @@ namespace Dragoon_Modifier {
                     if (new Random().Next(0, 100) < chance) {
                         ubMoveChgSet = true;
                         if (Globals.ENCOUNTER_ID == 418) {
-                            Globals.MONSTER_TABLE[monsterSlot].Write("AT", Math.Round(originalMonsterStats[monsterSlot, 1] * 1.75));
+                            Globals.MONSTER_TABLE[monsterSlot].Write("AT", Math.Round(originalMonsterStats[monsterSlot, 1] * 4.5 * 1.75));
                         }
                         //Constants.WriteDebug("[MOVE CHANGE] Roll success.");
                     } else {
@@ -6001,6 +6000,7 @@ namespace Dragoon_Modifier {
 
                 ubTrackTP[0] = Globals.MONSTER_TABLE[0].Read("Turn");
             } else if (Globals.ENCOUNTER_ID == 442) {
+                double multiAT = 3.5;
                 double multiMAT = 3.5;
 
                 multiMAT *= enragedMode[0] == 0 ? 1 : enragedMode[0] == 1 ? 1.1 : 1.25;
@@ -6011,12 +6011,12 @@ namespace Dragoon_Modifier {
                 Globals.MONSTER_TABLE[0].Write("MAT", Math.Round(originalMonsterStats[0, 2] * multiMAT));
 
                 if ((Globals.MONSTER_TABLE[0].Read("HP") <= (Globals.MONSTER_TABLE[0].Read("Max_HP") / 2)) && enragedMode[0] == 0) {
-                    Globals.MONSTER_TABLE[0].Write("AT", Math.Round(originalMonsterStats[0, 1] * 1.1));
+                    Globals.MONSTER_TABLE[0].Write("AT", Math.Round(originalMonsterStats[0, 1] * multiAT * 1.1));
                     Globals.MONSTER_TABLE[0].Write("DF", Math.Round(originalMonsterStats[0, 3] * 1.1));
                     Globals.MONSTER_TABLE[0].Write("MDF", Math.Round(originalMonsterStats[0, 4] * 1.1));
                     enragedMode[0] = 1;
                 } else if ((Globals.MONSTER_TABLE[0].Read("HP") <= (Globals.MONSTER_TABLE[0].Read("Max_HP") / 4)) && enragedMode[0] == 1) {
-                    Globals.MONSTER_TABLE[0].Write("AT", Math.Round(originalMonsterStats[0, 1] * 1.25));
+                    Globals.MONSTER_TABLE[0].Write("AT", Math.Round(originalMonsterStats[0, 1] * multiAT * 1.25));
                     Globals.MONSTER_TABLE[0].Write("DF", Math.Round(originalMonsterStats[0, 3] * 1.25));
                     Globals.MONSTER_TABLE[0].Write("MDF", Math.Round(originalMonsterStats[0, 4] * 1.25));
                     enragedMode[0] = 2;
@@ -8914,7 +8914,8 @@ namespace Dragoon_Modifier {
                     "Click on Settings Tab>Settings>Emulator to change your emulator.\r\n" +
                     "Click on Settings Tab>Settings>Region to change your game region.\r\n" +
                     "If everything is setup correctly with your emulator the Encounter Value will display 41215 on the Battle Stats tab. When on the field your Encounter Value will increase when you walk.\r\n" +
-                    "Normal Mode sets the program to a read only state with everything turned off. If your inventory is expanded it will extend it however. To avoid this change to an empty save slot.";
+                    "Normal Mode sets the program to a read only state with everything turned off. If your inventory is expanded it will extend it however. To avoid this change to an empty save slot.\r\n" +
+                    "";
             } else if (cboHelpTopic.SelectedIndex == 1) {
                 txtHelp.Text = "Encounter Value is how close you are to the next battle. Enemy ID will display the value that determines what monsters show up in battle. Map ID will display where you are in the game.\r\n" +
                     "The top block will display monster stats, the bottom block will display stats.\r\n" +
