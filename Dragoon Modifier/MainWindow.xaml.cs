@@ -2101,6 +2101,8 @@ namespace Dragoon_Modifier {
                         emulator.WriteByte(Globals.M_POINT + 0xAC4, lowestHPSlot);
                     }
 
+                    emulator.WriteByte("SCREEN_FADE", 2);
+
                     ubTrackMTP[0] = Globals.MONSTER_TABLE[0].Read("Turn");
                 }
                 Thread.Sleep(10);
