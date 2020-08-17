@@ -13,13 +13,13 @@ For organization purposes, if a script is only done on the field/battle it shoul
   
 Also all scripts should start with their appropriate region codes. When switching regions scripts incompatible will be disabled.  
   
-[NTA] - North America / Russian Fan Translation  
-[JPN] - Japan  
-[PAL-GER] - PAL - German  
-[PAL-FRN] - PAL - French  
-[PAL-ITL] - PAL - Italian  
-[PAL-SPN] - PAL - Spanish  
-[PAL-ENG] - PAL - UK English  
+[NTA] - NTSC - North America / Russian Fan Translation  
+[JPN] - NTSC - Japan  
+[GER] - PAL - German  
+[FRN] - PAL - French  
+[ITL] - PAL - Italian  
+[SPN] - PAL - Spanish  
+[ENG] - PAL - UK English  
 [ALL]  
 
 # Credits  
