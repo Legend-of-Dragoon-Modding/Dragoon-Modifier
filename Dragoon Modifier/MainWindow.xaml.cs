@@ -9043,7 +9043,8 @@ namespace Dragoon_Modifier {
                     "Inventory Refresh - Refreshes inventory at a certain point in battle.\r\n" +
                     "Ultimate Enrage Mode - Bosses will increase their stats for every 1% of damage.\r\n" +
                     "Reverse Dragon Block Staff - Dragoons will operate at 80%.\r\n" +
-                    "Armor Guard - Significant increase to defenses when Guarding, overwrites Power Up/Down DF/MDF effects.\r\n\r\n" +
+                    "Armor Guard - Significant increase to defenses when Guarding, overwrites Power Up/Down DF/MDF effects.\r\n" +
+                    "Dragoon Guard - Adds Guard to the menu in Dragoon.\r\n\r\n" +
                     "Equips\r\n" +
                     "Sabre - +70 AT - A weapon for Rose.\r\n" +
                     "Spirit Eater - +75 AT +50 MAT - A weapon for Dart. Removes 35 SP per turn unless full. Removes 15 SP instead in Hell Mode.\r\n" +
@@ -9118,7 +9119,7 @@ namespace Dragoon_Modifier {
                     "L2 + LEFT         - Activates Soa's Wargod.\r\n" +
                     "L2 + RIGHT        - Activates Soa's Dragoon Boost.\r\n" +
                     "L2 + UP           - Activates Empty Dragoon Crystal.\r\n" +
-                    "L1 + R1           - Activates Adddition Swap in battle if you have no status effects. The number of dragoon spirits the appear are equal to the number of available additions. The additions are ordered from left to right, for example Dart's third icon would be Burning Rush. Press Dragoon to automatically transform to switch additions.";
+                    "L1 + R1           - Activates Adddition Swap in battle if you have no status effects. The number of dragoon spirits the appear are equal to the number of available additions. The additions are ordered from left to right (1 - 7 max, same order as how they appear in the menu), for example Dart's third icon would be Burning Rush. Press Dragoon to automatically transform to switch additions.";
             } else if (cboHelpTopic.SelectedIndex == 11) {
                 txtHelp.Text = "1. No Dart\r\n" +
                     "When you have three party members use Switch Slot 1 and No Dart should turn on. When you are switching between Solo and Duo Mode or turning them off make sure to turn off No Dart in Enhancements Tab II.\r\n\r\n" +
