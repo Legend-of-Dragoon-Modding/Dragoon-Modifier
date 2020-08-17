@@ -8599,7 +8599,7 @@ namespace Dragoon_Modifier {
 
         private void miVersion_Click(object sender, RoutedEventArgs e) {
             Constants.WriteOutput("-------------");
-            Constants.WriteOutput("Version 3.1.6");
+            Constants.WriteOutput("Version " + Constants.VERSION);
         }
         #endregion
 
