@@ -400,18 +400,21 @@ namespace Dragoon_Modifier {
                 InitUI();
                 LoadKey();
                 Globals.DICTIONARY = new LoDDict();
-                using (WebClient client = new WebClient()) {
-                    client.Headers.Add("user-agent", "Anything");
-                    string s = client.DownloadString("https://api.github.com/repos/Zychronix/Dragoon-Modifier/releases/latest");
-                    var mod_version = JsonSerializer.Deserialize<MOD_Version>(s);
-                    string new_version = mod_version.tag_name.Replace("v", "");
-                    Version v1 = new Version(new_version);
-                    Version v2 = new Version(current_version);
-                    if (v1.CompareTo(v2) > 0) {
-                        Constants.WriteOutput($"Current version {current_version} is outdated. You can download version {new_version} at {mod_version.html_url}");
-                        Constants.WriteGLog($"Newer version ({new_version}) available.");
+
+                try {
+                    using (WebClient client = new WebClient()) {
+                        client.Headers.Add("user-agent", "Anything");
+                        string s = client.DownloadString("https://api.github.com/repos/Zychronix/Dragoon-Modifier/releases/latest");
+                        var mod_version = JsonSerializer.Deserialize<MOD_Version>(s);
+                        string new_version = mod_version.tag_name.Replace("v", "");
+                        Version v1 = new Version(new_version);
+                        Version v2 = new Version(current_version);
+                        if (v1.CompareTo(v2) > 0) {
+                            Constants.WriteOutput($"Current version {current_version} is outdated. You can download version {new_version} at {mod_version.html_url}");
+                            Constants.WriteGLog($"Newer version ({new_version}) available.");
+                        }
                     }
-                }
+                } catch (Exception e) { }
 
 
                 if (Constants.EMULATOR != 255) {
