@@ -19,7 +19,7 @@ public class BattleController {
             HaschelFix(emulator);
         }
 
-        if (Globals.IN_BATTLE && Globals.STATS_CHANGED && encounterValue == 41215 && new int[] { 414, 408, 387, 409, 392 }.Contains(Globals.ENCOUNTER_ID) && Globals.PARTY_SLOT[0] == 2 && Globals.SHANA_FIX == false) {
+        if (Globals.IN_BATTLE && Globals.STATS_CHANGED && encounterValue == 41215 && new int[] { 414, 408, 387, 409, 392, 431 }.Contains(Globals.ENCOUNTER_ID) && (Globals.PARTY_SLOT[0] == 2 || Globals.PARTY_SLOT[0] == 8) && Globals.SHANA_FIX == false) {
             ShanaFix(emulator);
         }
 

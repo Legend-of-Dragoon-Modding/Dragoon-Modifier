@@ -3029,15 +3029,10 @@ namespace Dragoon_Modifier {
                             bool boost = false;
                             double boostAmount = 0.0;
                             byte level = 0;
-                            if (Globals.PARTY_SLOT[i] == 2) {
-                                if (emulator.ReadByte("CHAR_TABLE", 0x6A) >= 10) {
+                            if (Globals.PARTY_SLOT[i] == 2 || Globals.PARTY_SLOT[i] == 8) {
+                                if (emulator.ReadByte("CHAR_TABLE", 0x12 + (0x2C * i)) >= 10) {
                                     boost = true;
-                                    level = emulator.ReadByte("CHAR_TABLE", 0x6A);
-                                }
-                            } else {
-                                if (emulator.ReadByte("CHAR_TABLE", 0x172) >= 10) {
-                                    boost = true;
-                                    level = emulator.ReadByte("CHAR_TABLE", 0x172);
+                                    level = emulator.ReadByte("CHAR_TABLE", 0x12 + (0x2C * i));
                                 }
                             }
                             if (boost) {
