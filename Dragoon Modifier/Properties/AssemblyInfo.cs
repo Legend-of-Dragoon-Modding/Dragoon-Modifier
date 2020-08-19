@@ -52,8 +52,8 @@ using System.Windows.Markup;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("3.1.7.0")]
-[assembly: AssemblyFileVersion("3.1.7.0")]
+[assembly: AssemblyVersion("3.1.7.1")]
+[assembly: AssemblyFileVersion("3.1.7.1")]
 
 #if DEBUG
 [assembly: XmlnsDefinition("debug-mode", "Namespace")]
