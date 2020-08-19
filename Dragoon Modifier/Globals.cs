@@ -51,8 +51,8 @@ namespace Dragoon_Modifier {
         public static bool NO_GUARD = false;
         public static bool AUTO_TRANSFORM = false;
         public static bool ADDITION_SWAP = false;
-
         public static bool DART_SWITCH = true;
+        public static bool NO_DART_CHANGED = false;
 
         #region CHANGE variables
         public static bool MONSTER_STAT_CHANGE = false;

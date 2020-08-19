@@ -219,12 +219,13 @@ public class BattleController {
             }
         }
 
-        if (Globals.IN_BATTLE && !Globals.STATS_CHANGED && encounterValue == 41215) {
+        if (Globals.IN_BATTLE && !Globals.STATS_CHANGED && encounterValue == 41215 && !Globals.NO_DART_CHANGED) {
             Constants.WriteOutput("Battle detected. Loading...");
             Globals.UNIQUE_MONSTER_IDS = new List<int>();
             Globals.MONSTER_TABLE = new List<dynamic>();
             Globals.MONSTER_IDS = new List<int>();
             Globals.SHANA_FIX = false;
+            Globals.NO_DART_CHANGED = false;
             exit_init = false;
             Thread.Sleep(2000);
             if (emulator.ReadShort("BATTLE_VALUE") < 5130) {
@@ -245,12 +246,12 @@ public class BattleController {
             Constants.WriteDebug("Character Point:     " + Convert.ToString(Globals.C_POINT + Constants.OFFSET, 16).ToUpper());
             Constants.WriteDebug("Monster IDs:         " + String.Join(", ", Globals.MONSTER_IDS.ToArray()));
             Constants.WriteDebug("Unique Monster IDs:  " + String.Join(", ", Globals.UNIQUE_MONSTER_IDS.ToArray()));
-
-
             // in battle model pointers
             Constants.WriteDebug("Slot1 Address:       " + Convert.ToString(Constants.OFFSET + GetOffset(emulator) + 0x1D95F4, 16).ToUpper());
             Constants.WriteDebug("Slot2 Address:       " + Convert.ToString(Constants.OFFSET + GetOffset(emulator) + 0x1DA88C, 16).ToUpper());
             Constants.WriteDebug("Slot3 Address:       " + Convert.ToString(Constants.OFFSET + GetOffset(emulator) + 0x1DBB24, 16).ToUpper());
+
+            Constants.WriteDebug("Addition Table:      " + Convert.ToString(Constants.GetAddress("ADDITION") + GetOffset(emulator) + Constants.OFFSET, 16).ToUpper());
 
             MonsterChanges(emulator);
 
@@ -260,10 +261,13 @@ public class BattleController {
 
             ChangeParty(emulator);
             if (Globals.NO_DART > 0) {
+                Globals.NO_DART_CHANGED = true;
+                Constants.WriteOutput("Finished loading. Waiting for No Dart to complete...");
                 new Thread(delegate () { NoDart(emulator); }).Start();
+            } else {
+                Constants.WriteOutput("Finished loading.");
+                Globals.STATS_CHANGED = true;
             }
-            Constants.WriteOutput("Finished loading. Waiting.");
-            Globals.STATS_CHANGED = true;
         } else {
             if (Globals.STATS_CHANGED && encounterValue < 9999) {
                 if (!exit_init) {
@@ -273,20 +277,33 @@ public class BattleController {
                     AdditionFieldChanges(emulator);
 
                     Globals.ADDITION_SWAP = false;
+                    Globals.NO_DART_CHANGED = false;
                     exit_init = true;
                 }
                 
                 if (Globals.NO_DART > 0) {
                     if (emulator.ReadByte("TRANSITION") == 12) {
+                        ItemFieldChanges(emulator);
+                        DragoonFieldChanges(emulator);
+                        CharacterFieldChanges(emulator);
+                        AdditionFieldChanges(emulator);
+
                         Globals.STATS_CHANGED = false;
                         Globals.IN_BATTLE = false;
                         Globals.EXITING_BATTLE = 2;
                         Globals.DART_SWITCH = false;
+                        Globals.NO_DART_CHANGED = false;
                         Constants.WriteOutput("Exiting out of battle.");
                     }
                 } else {
+                    ItemFieldChanges(emulator);
+                    DragoonFieldChanges(emulator);
+                    CharacterFieldChanges(emulator);
+                    AdditionFieldChanges(emulator);
+
                     Globals.STATS_CHANGED = false;
                     Globals.IN_BATTLE = false;
+                    Globals.NO_DART_CHANGED = false;
                     Globals.EXITING_BATTLE = 2;
                     Constants.WriteOutput("Exiting out of battle.");
                 }
@@ -1050,6 +1067,9 @@ public class BattleController {
         if (dlv == 0) {
             Globals.CHARACTER_TABLE[0].Write("Dragoon", 0);
         }
+        Globals.STATS_CHANGED = true;
+        Globals.NO_DART_CHANGED = false;
+        Constants.WriteOutput("No Dart complete.");
     }
     #endregion
     #endregion
