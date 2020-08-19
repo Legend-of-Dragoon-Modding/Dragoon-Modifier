@@ -886,7 +886,7 @@ public class BattleController {
             Globals.MONSTER_TABLE[0].Write("Action", 12);
             Thread.Sleep(250);
         }
-        Globals.CHARACTER_TABLE[0].Write("Action", 8);
+        Globals.CHARACTER_TABLE[0].Write("Action", 10);
         while (true) {
             if (emulator.ReadShort("BATTLE_VALUE") < 5130) {
                 return;
@@ -983,7 +983,7 @@ public class BattleController {
         emulator.WriteByte("WARGOD", special_effect);
 
         #endregion
-
+        /*
         while (true) {
             if (emulator.ReadShort("BATTLE_VALUE") < 5130) {
                 return;
@@ -1014,6 +1014,7 @@ public class BattleController {
         } else {
             Globals.CHARACTER_TABLE[0].Write("Menu", 16);
         }
+        */
 
         if (!Globals.ADDITION_CHANGE) {
             AdditionsBattleChanges(emulator, 0, character);
@@ -1037,9 +1038,9 @@ public class BattleController {
                 break;
             }
         }
-        if (Globals.NO_DART == 4) {
-            HaschelFix(emulator);
-        }
+
+        emulator.WriteByte(Constants.GetAddress("DRAGOON_TURNS"), 1);
+
         if (Globals.AUTO_TRANSFORM) {
             ushort val = emulator.ReadShort(Globals.C_POINT - 0xF0);
             emulator.WriteShort(Globals.C_POINT - 0xF0, (ushort)(val + 0x4478));

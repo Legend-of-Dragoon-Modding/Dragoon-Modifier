@@ -45,7 +45,6 @@ namespace Dragoon_Modifier {
         int oldOffset = 0;
         int currentIconState = 0;
 
-        public string current_version = "3.1.7";
         #endregion
 
         #region Script Variables
@@ -408,9 +407,9 @@ namespace Dragoon_Modifier {
                         var mod_version = JsonSerializer.Deserialize<MOD_Version>(s);
                         string new_version = mod_version.tag_name.Replace("v", "");
                         Version v1 = new Version(new_version);
-                        Version v2 = new Version(current_version);
+                        Version v2 = new Version(Constants.VERSION);
                         if (v1.CompareTo(v2) > 0) {
-                            Constants.WriteOutput($"Current version {current_version} is outdated. You can download version {new_version} at {mod_version.html_url}");
+                            Constants.WriteOutput($"Current version {Constants.VERSION} is outdated. You can download version {new_version} at {mod_version.html_url}");
                             Constants.WriteGLog($"Newer version ({new_version}) available.");
                         }
                     }
