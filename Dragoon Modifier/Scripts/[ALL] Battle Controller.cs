@@ -913,10 +913,23 @@ public class BattleController {
         Globals.CHARACTER_TABLE[0].Write("MP_Regen", 0);
         if (Globals.ENCOUNTER_ID == 413) {
             Globals.MONSTER_TABLE[0].Write("Action", 12);
-            Thread.Sleep(1000);
+            Thread.Sleep(1500);
         }
         Globals.CHARACTER_TABLE[0].Write("Action", 10);
-        Thread.Sleep(500);
+
+        while (true) {
+            if (emulator.ReadShort("BATTLE_VALUE") < 5130) {
+                return;
+            }
+            if (Globals.CHARACTER_TABLE[0].Read("Menu") != 96) {
+                Thread.Sleep(50);
+            } else {
+                break;
+            }
+        }
+
+        emulator.WriteByte(Constants.GetAddress("DRAGOON_TURNS"), 1);
+
         Globals.CHARACTER_TABLE[0].Write("Dragoon", 0x20);
         emulator.WriteByte("PARTY_SLOT", character);
         emulator.WriteByte("PARTY_SLOT", character, 0x234E); // Secondary ID
@@ -1045,18 +1058,7 @@ public class BattleController {
             ItemBattleChanges(emulator, 0);
         }
 
-        while (true) {
-            if (emulator.ReadShort("BATTLE_VALUE") < 5130) {
-                return;
-            }
-            if (Globals.CHARACTER_TABLE[0].Read("Menu") != 96) {
-                Thread.Sleep(50);
-            } else {
-                break;
-            }
-        }
-
-        emulator.WriteByte(Constants.GetAddress("DRAGOON_TURNS"), 1);
+        
 
         if (Globals.AUTO_TRANSFORM) {
             ushort val = emulator.ReadShort(Globals.C_POINT - 0xF0);
@@ -1067,7 +1069,8 @@ public class BattleController {
         }
         while (true) {
             if (emulator.ReadShort("BATTLE_VALUE") < 5130) {
-                Globals.NO_DART_CHANGED = true;
+                Globals.STATS_CHANGED = true;
+                Globals.NO_DART_CHANGED = false;
                 return;
             }
             if (Globals.CHARACTER_TABLE[0].Read("Action") != 9) {
