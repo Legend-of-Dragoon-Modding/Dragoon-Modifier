@@ -913,9 +913,10 @@ public class BattleController {
         Globals.CHARACTER_TABLE[0].Write("MP_Regen", 0);
         if (Globals.ENCOUNTER_ID == 413) {
             Globals.MONSTER_TABLE[0].Write("Action", 12);
-            Thread.Sleep(250);
+            Thread.Sleep(1000);
         }
         Globals.CHARACTER_TABLE[0].Write("Action", 10);
+        Thread.Sleep(500);
         Globals.CHARACTER_TABLE[0].Write("Dragoon", 0x20);
         emulator.WriteByte("PARTY_SLOT", character);
         emulator.WriteByte("PARTY_SLOT", character, 0x234E); // Secondary ID
@@ -1066,6 +1067,7 @@ public class BattleController {
         }
         while (true) {
             if (emulator.ReadShort("BATTLE_VALUE") < 5130) {
+                Globals.NO_DART_CHANGED = true;
                 return;
             }
             if (Globals.CHARACTER_TABLE[0].Read("Action") != 9) {
