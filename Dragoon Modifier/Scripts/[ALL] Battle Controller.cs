@@ -908,9 +908,6 @@ public class BattleController {
     public static void NoDart(Emulator emulator) {
         byte character = (byte)Globals.NO_DART;
         Globals.CHARACTER_TABLE[0].Write("Status", emulator.ReadByte("CHAR_TABLE", character * 0x2C + 0x10));
-        Globals.CHARACTER_TABLE[0].Write("HP_Regen", 0);
-        Globals.CHARACTER_TABLE[0].Write("SP_Regen", 0);
-        Globals.CHARACTER_TABLE[0].Write("MP_Regen", 0);
         if (Globals.ENCOUNTER_ID == 413) {
             Globals.MONSTER_TABLE[0].Write("Action", 12);
             Thread.Sleep(1500);
@@ -919,6 +916,8 @@ public class BattleController {
 
         while (true) {
             if (emulator.ReadShort("BATTLE_VALUE") < 5130) {
+                Globals.STATS_CHANGED = true;
+                Globals.NO_DART_CHANGED = false;
                 return;
             }
             if (Globals.CHARACTER_TABLE[0].Read("Menu") != 96) {
@@ -1080,10 +1079,7 @@ public class BattleController {
             }
         }
         Globals.CHARACTER_TABLE[0].Write("DLV", Globals.CURRENT_STATS[0].DLV);
-        Globals.CHARACTER_TABLE[0].Write("SP", Globals.CURRENT_STATS[0].SP);
-        Globals.CHARACTER_TABLE[0].Write("HP_Regen", Globals.CURRENT_STATS[0].HP_Regen);
-        Globals.CHARACTER_TABLE[0].Write("MP_Regen", Globals.CURRENT_STATS[0].MP_Regen);
-        Globals.CHARACTER_TABLE[0].Write("SP_Regen", Globals.CURRENT_STATS[0].SP_Regen);
+        Globals.CHARACTER_TABLE[0].Write("SP", Globals.CURRENT_STATS[0].SP); 
         if (dlv == 0) {
             Globals.CHARACTER_TABLE[0].Write("Dragoon", 0);
         }
