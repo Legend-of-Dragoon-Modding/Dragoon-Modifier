@@ -44,7 +44,6 @@ namespace Dragoon_Modifier {
         public ReaderWindow readerWindow = new ReaderWindow();
         int oldOffset = 0;
         int currentIconState = 0;
-
         #endregion
 
         #region Script Variables
@@ -6198,36 +6197,36 @@ namespace Dragoon_Modifier {
         #region Extend Inventory
         public void ExtendInventory() {
             if (Globals.IN_BATTLE) {
-                emulator.WriteShort("INVENTORY_CAP_1", 64);
-                emulator.WriteShort("INVENTORY_CAP_2", 64);
-                emulator.WriteShort("INVENTORY_CAP_3", 64);
-                emulator.WriteShort("INVENTORY_CAP_4", 64);
-                emulator.WriteShort("INVENTORY_CAP_MINUS_1", 63);
-                emulator.WriteShort("INVENTORY_CAP_MINUS_2", 63);
-                emulator.WriteShort("INVENTORY_CAP_PLUS_1", 65);
-                emulator.WriteShort("INVENTORY_CAP_PLUS_2", 65);
+                emulator.WriteShort("INVENTORY_CAP_1", (ushort) inventorySize);
+                emulator.WriteShort("INVENTORY_CAP_2", (ushort) inventorySize);
+                emulator.WriteShort("INVENTORY_CAP_3", (ushort) inventorySize);
+                emulator.WriteShort("INVENTORY_CAP_4", (ushort) inventorySize);
+                emulator.WriteShort("INVENTORY_CAP_MINUS_1", (ushort) (inventorySize - 1));
+                emulator.WriteShort("INVENTORY_CAP_MINUS_2", (ushort) (inventorySize - 1));
+                emulator.WriteShort("INVENTORY_CAP_PLUS_1", (ushort) (inventorySize + 1));
+                emulator.WriteShort("INVENTORY_CAP_PLUS_2", (ushort) (inventorySize + 1));
                 if (emulator.ReadByte("ITEM_LIMIT_1") == 32) {
-                    emulator.WriteShort("ITEM_LIMIT_1", 64);
+                    emulator.WriteShort("ITEM_LIMIT_1", (ushort) inventorySize);
                 }
                 if (emulator.ReadByte("ITEM_LIMIT_2") == 32) {
-                    emulator.WriteShort("ITEM_LIMIT_2", 64);
+                    emulator.WriteShort("ITEM_LIMIT_2", (ushort) inventorySize);
                 }
                 if (emulator.ReadByte("ITEM_LIMIT_3") == 32) {
-                    emulator.WriteShort("ITEM_LIMIT_3", 64);
+                    emulator.WriteShort("ITEM_LIMIT_3", (ushort) inventorySize);
                 }
                 emulator.WriteShort("ITEM_CAP", 808);
-                //WriteByte("INVENTORY_SIZE", 64);
+                //WriteByte("INVENTORY_SIZE", (ushort) inventorySize);
             } else {
                 if (emulator.ReadByte("MENU") == 19) {
-                    emulator.WriteShort("INVENTORY_CAP_1", 64);
-                    emulator.WriteShort("INVENTORY_CAP_2", 64);
-                    emulator.WriteShort("INVENTORY_CAP_3", 64);
-                    emulator.WriteShort("INVENTORY_CAP_4", 64);
-                    emulator.WriteShort("INVENTORY_CAP_MINUS_1", 63);
-                    emulator.WriteShort("INVENTORY_CAP_MINUS_2", 63);
-                    emulator.WriteShort("INVENTORY_CAP_PLUS_1", 65);
-                    emulator.WriteShort("INVENTORY_CAP_PLUS_2", 65);
-                    emulator.WriteShort("ITEM_LIMIT_1", 64);
+                    emulator.WriteShort("INVENTORY_CAP_1", (ushort) inventorySize);
+                    emulator.WriteShort("INVENTORY_CAP_2", (ushort) inventorySize);
+                    emulator.WriteShort("INVENTORY_CAP_3", (ushort) inventorySize);
+                    emulator.WriteShort("INVENTORY_CAP_4", (ushort) inventorySize);
+                    emulator.WriteShort("INVENTORY_CAP_MINUS_1", (ushort) (inventorySize - 1));
+                    emulator.WriteShort("INVENTORY_CAP_MINUS_2", (ushort) (inventorySize - 1));
+                    emulator.WriteShort("INVENTORY_CAP_PLUS_1", (ushort) (inventorySize + 1));
+                    emulator.WriteShort("INVENTORY_CAP_PLUS_2", (ushort) (inventorySize + 1));
+                    emulator.WriteShort("ITEM_LIMIT_1", (ushort) inventorySize);
                     emulator.WriteShort("ITEM_LIMIT_2", (ushort) inventorySize);
                     emulator.WriteShort("ITEM_LIMIT_3", (ushort) inventorySize);
                     emulator.WriteShort("ITEM_CAP", 808);
@@ -8912,9 +8911,10 @@ namespace Dragoon_Modifier {
                     "Click on enhancements tabs to turn on features.\r\n" +
                     "Click on Settings Tab>Settings>Emulator to change your emulator.\r\n" +
                     "Click on Settings Tab>Settings>Region to change your game region.\r\n" +
-                    "If everything is setup correctly with your emulator the Encounter Value will display 41215 on the Battle Stats tab. When on the field your Encounter Value will increase when you walk.\r\n" +
+                    "If everything is setup correctly with your emulator the Encounter Value will display 41215 on the Battle Stats tab. When on the field your Encounter Value will increase when you walk. On the load screen the map id should display 675.\r\n" +
+                    "Please note on emulators ePSXe 2.0 and above, and any other emulator you should follow these addition steps. Open emulator, open game, before you load your save, open Dragoon Modifier. You do not have to do this for ePSXe 1.9.25 and below.\r\n" +
                     "Normal Mode sets the program to a read only state with everything turned off. If your inventory is expanded it will extend it however. To avoid this change to an empty save slot.\r\n" +
-                    "";
+                    "Dragoon Modifier timers are built on the game running at full speed. Please make sure your game is running at full speed, not faster or slower to prevent issues.";
             } else if (cboHelpTopic.SelectedIndex == 1) {
                 txtHelp.Text = "Encounter Value is how close you are to the next battle. Enemy ID will display the value that determines what monsters show up in battle. Map ID will display where you are in the game.\r\n" +
                     "The top block will display monster stats, the bottom block will display stats.\r\n" +
