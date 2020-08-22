@@ -6196,63 +6196,18 @@ namespace Dragoon_Modifier {
 
         #region Extend Inventory
         public void ExtendInventory() {
-            if (Globals.IN_BATTLE) {
-                emulator.WriteShort("INVENTORY_CAP_1", (ushort) inventorySize);
-                emulator.WriteShort("INVENTORY_CAP_2", (ushort) inventorySize);
-                emulator.WriteShort("INVENTORY_CAP_3", (ushort) inventorySize);
-                emulator.WriteShort("INVENTORY_CAP_4", (ushort) inventorySize);
-                emulator.WriteShort("INVENTORY_CAP_MINUS_1", (ushort) (inventorySize - 1));
-                emulator.WriteShort("INVENTORY_CAP_MINUS_2", (ushort) (inventorySize - 1));
-                emulator.WriteShort("INVENTORY_CAP_PLUS_1", (ushort) (inventorySize + 1));
-                emulator.WriteShort("INVENTORY_CAP_PLUS_2", (ushort) (inventorySize + 1));
-                if (emulator.ReadByte("ITEM_LIMIT_1") == 32) {
-                    emulator.WriteShort("ITEM_LIMIT_1", (ushort) inventorySize);
-                }
-                if (emulator.ReadByte("ITEM_LIMIT_2") == 32) {
-                    emulator.WriteShort("ITEM_LIMIT_2", (ushort) inventorySize);
-                }
-                if (emulator.ReadByte("ITEM_LIMIT_3") == 32) {
-                    emulator.WriteShort("ITEM_LIMIT_3", (ushort) inventorySize);
-                }
-                emulator.WriteShort("ITEM_CAP", 808);
-                //WriteByte("INVENTORY_SIZE", (ushort) inventorySize);
-            } else {
-                if (emulator.ReadByte("MENU") == 19) {
-                    emulator.WriteShort("INVENTORY_CAP_1", (ushort) inventorySize);
-                    emulator.WriteShort("INVENTORY_CAP_2", (ushort) inventorySize);
-                    emulator.WriteShort("INVENTORY_CAP_3", (ushort) inventorySize);
-                    emulator.WriteShort("INVENTORY_CAP_4", (ushort) inventorySize);
-                    emulator.WriteShort("INVENTORY_CAP_MINUS_1", (ushort) (inventorySize - 1));
-                    emulator.WriteShort("INVENTORY_CAP_MINUS_2", (ushort) (inventorySize - 1));
-                    emulator.WriteShort("INVENTORY_CAP_PLUS_1", (ushort) (inventorySize + 1));
-                    emulator.WriteShort("INVENTORY_CAP_PLUS_2", (ushort) (inventorySize + 1));
-                    emulator.WriteShort("ITEM_LIMIT_1", (ushort) inventorySize);
-                    emulator.WriteShort("ITEM_LIMIT_2", (ushort) inventorySize);
-                    emulator.WriteShort("ITEM_LIMIT_3", (ushort) inventorySize);
-                    emulator.WriteShort("ITEM_CAP", 808);
-                } else {
-                    emulator.WriteShort("INVENTORY_CAP_1", (ushort) inventorySize);
-                    emulator.WriteShort("INVENTORY_CAP_2", (ushort) inventorySize);
-                    emulator.WriteShort("INVENTORY_CAP_3", (ushort) inventorySize);
-                    emulator.WriteShort("INVENTORY_CAP_4", (ushort) inventorySize);
-
-                    emulator.WriteShort("INVENTORY_CAP_MINUS_1", (ushort) (inventorySize - 1));
-                    emulator.WriteShort("INVENTORY_CAP_MINUS_2", (ushort) (inventorySize - 1));
-
-                    emulator.WriteShort("INVENTORY_CAP_PLUS_1", (ushort) (inventorySize + 1));
-                    emulator.WriteShort("INVENTORY_CAP_PLUS_2", (ushort) (inventorySize + 1));
-                    //if (emulator.ReadByte(Constants.GetAddress("ITEM_LIMIT_1")) == 32) {
-                    emulator.WriteShort("ITEM_LIMIT_1", (ushort) inventorySize);
-                    //}
-                    //if (emulator.ReadByte(Constants.GetAddress("ITEM_LIMIT_2")) == 32) {
-                    emulator.WriteShort("ITEM_LIMIT_2", (ushort) inventorySize);
-                    //}
-                    //if (emulator.ReadByte(Constants.GetAddress("ITEM_LIMIT_3")) == 32) {
-                    emulator.WriteShort("ITEM_LIMIT_3", (ushort) inventorySize);
-                    //}
-                    emulator.WriteShort("ITEM_CAP", 808);
-                }
-            }
+            emulator.WriteShort("INVENTORY_CAP_1", (ushort) inventorySize);
+            emulator.WriteShort("INVENTORY_CAP_2", (ushort) inventorySize);
+            emulator.WriteShort("INVENTORY_CAP_3", (ushort) inventorySize);
+            emulator.WriteShort("INVENTORY_CAP_4", (ushort) inventorySize);
+            emulator.WriteShort("INVENTORY_CAP_MINUS_1", (ushort) inventorySize);
+            emulator.WriteShort("INVENTORY_CAP_MINUS_2", (ushort) inventorySize);
+            emulator.WriteShort("INVENTORY_CAP_PLUS_1", (ushort) inventorySize);
+            emulator.WriteShort("INVENTORY_CAP_PLUS_2", (ushort) inventorySize);
+            emulator.WriteShort("ITEM_LIMIT_1", (ushort) inventorySize);
+            emulator.WriteShort("ITEM_LIMIT_2", (ushort) inventorySize);
+            emulator.WriteShort("ITEM_LIMIT_3", (ushort) inventorySize);
+            emulator.WriteShort("ITEM_CAP", 808);
         }
         #endregion
         #endregion
@@ -9073,7 +9028,7 @@ namespace Dragoon_Modifier {
                     "Allows you to buy new equips from the shop. This equips are only available for Hard & Hell Mode. You can only buy items starting at Chapter 4.";
             } else if (cboHelpTopic.SelectedIndex == 8) {
                 txtHelp.Text = "Reader Mode will read stats from battle and display them to a window and or write them to a text file for an external application to use.\r\n\r\n" +
-                    "When you open Dragoon Modifier open Window Config first to load your Reader Mode config. You do not have to do this again once you've done this. Use Add/Change/Delete buttons to add UI elements to the Window, a form will open up to create the display. You can double click items to change them as well, if you can't click the item use Change. On the change windows once you have changed a value, keep it on the same textbox and press enter to update it.\r\n\r\n" +
+                    "When you open Dragoon Modifier opent Window Config first to load your Reader Mode config. You do not have to do this again once you've done this. Use Add/Change/Delete buttons to add UI elements to the Window, a form will open up to create the display. You can double click items to change them as well, if you can't click the item use Change. On the change windows once you have changed a value, keep it on the same textbox and press enter to update it.\r\n\r\n" +
                     "Save will save your current Reader Mode window setup and Load will load a previous setup. Reset will wipe the current setup.\r\n\r\n" +
                     "You can have Dragoon Modifier press a hotkey for you automatically when the Battle UI is open in battle.\r\n\r\n" +
                     "You have two modes to remove the UI in battle. One is to remove it complete, the other is to remove character display pictures only.\r\n\r\n" +
