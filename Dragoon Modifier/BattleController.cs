@@ -17,6 +17,9 @@ namespace Dragoon_Modifier {
                 if (Globals.GAME_STATE == 1) {          // Battle
                     if (!Globals.STATS_CHANGED) {
                         Setup(emulator);
+                        if (!Globals.DIFFICULTY_MODE.Equals("Normal")) {
+                            HardHellModeSetup(emulator);
+                        }
                     } else {
                         if (Globals.PARTY_SLOT[0] == 4 && emulator.ReadByte("HASCHEL_FIX" + Globals.DISC) != 0x80) {
                             HaschelFix(emulator);
@@ -47,7 +50,7 @@ namespace Dragoon_Modifier {
                         Globals.STATS_CHANGED = false;
                     }
                     if (Globals.PARTY_SLOT[2] < 9 && Globals.PARTY_SLOT[0] != 0) {
-                        
+
                         Globals.NO_DART = Globals.PARTY_SLOT[0];
                         emulator.WriteByte("PARTY_SLOT", 0);
                     }
@@ -66,6 +69,7 @@ namespace Dragoon_Modifier {
                     stopWatch.Stop();
                     return;
                 }
+                Thread.Sleep(50);
             }
             stopWatch.Stop();
 
@@ -1337,6 +1341,33 @@ namespace Dragoon_Modifier {
                 }
             }
         }
+        #endregion
+
+        #endregion
+
+        #region Hard/Hell Mode specific
+
+        public static void HardHellModeSetup(Emulator emulator) {
+            if (Globals.DIFFICULTY_MODE.Equals("Hell")) {
+                ApplyNoEscape(emulator);
+            }
+        }
+
+        #region Apply No Escape
+        public static void ApplyNoEscape(Emulator emulator) {
+            if (Globals.CheckDMScript("btnBlackRoom")) {
+                if (!((Globals.MAP >= 5 && Globals.MAP <= 7) || (Globals.MAP >= 624 && Globals.MAP <= 625))) {
+                    for (int i = 0; i < 3; i++) {
+                        emulator.WriteByte("NO_ESCAPE", 8, (Globals.MONSTER_SIZE + i) * 0x20);
+                    }
+                }
+            } else {
+                for (int i = 0; i < 3; i++) {
+                    emulator.WriteByte("NO_ESCAPE", 8, (Globals.MONSTER_SIZE + i) * 0x20);
+                }
+            }
+        }
+
         #endregion
 
         #endregion
