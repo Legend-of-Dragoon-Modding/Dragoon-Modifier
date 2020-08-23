@@ -30,7 +30,7 @@ namespace Dragoon_Modifier {
         #region Variables
         #region Program Variables
         public static Emulator emulator = new Emulator();
-        public Thread fieldThread, battleThread, hotkeyThread, otherThread, ultimateThread;
+        public Thread globalThread, newBattleThread, fieldThread, battleThread, hotkeyThread, otherThread, ultimateThread;
         public string preset = "";
         public bool presetHotkeys = true;
         public bool dualDifficultySwitch = false;
@@ -1180,7 +1180,7 @@ namespace Dragoon_Modifier {
             }
         }
 
-        public void BattleController() {
+        public void BattleController1() {
             string currentScript = "";
             int run = 1;
             while (run == 1 && Constants.RUN) {
@@ -7756,11 +7756,15 @@ namespace Dragoon_Modifier {
                 if (processID > 0) {
                     Constants.RUN = true;
                     emulator.OpenProcess(processID);
+                    globalThread = new Thread(delegate () { GlobalController.Run(emulator); });
+                    newBattleThread = new Thread(delegate () { BattleController.Run(emulator); });
                     fieldThread = new Thread(FieldController);
-                    battleThread = new Thread(BattleController);
+                    battleThread = new Thread(BattleController1);
                     hotkeyThread = new Thread(HotkeysController);
                     otherThread = new Thread(OtherController);
                     ultimateThread = new Thread(UltimateController);
+                    new Thread(delegate () { BattleController.Run(emulator); }).Start();
+                    globalThread.Start();
                     fieldThread.Start();
                     battleThread.Start();
                     hotkeyThread.Start();
