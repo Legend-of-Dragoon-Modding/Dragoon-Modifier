@@ -1106,8 +1106,6 @@ namespace Dragoon_Modifier {
                         AutoCharmPotion();
                     if (!Globals.DIFFICULTY_MODE.Equals("Normal"))
                         EquipChangesField();
-                    if (Globals.CheckDMScript("btnBlackRoom"))
-                        BlackRoomField();
                     if (Globals.CheckDMScript("btnEarlyAdditions"))
                         EarlyAdditions();
                     if (Globals.CheckDMScript("btnUltimateBoss"))
@@ -1306,8 +1304,6 @@ namespace Dragoon_Modifier {
                         ElementalBomb();
                     if (Globals.CheckDMScript("btnDamageTracker"))
                         DamageTracker();
-                    if (Globals.CheckDMScript("btnBlackRoom"))
-                        BlackRoomBattle();
                     if (Globals.DIFFICULTY_MODE.Contains("Hell"))
                         BossSPLoss();
                     if (!Globals.DIFFICULTY_MODE.Equals("Normal"))
@@ -1779,6 +1775,7 @@ namespace Dragoon_Modifier {
                                 if (Globals.DIFFICULTY_MODE.Equals("Hell")) {
                                     Constants.WriteGLogOutput("Killing monsters is not available in Hell Mode.");
                                 } else {
+                                    /*
                                     if (Globals.CheckDMScript("btnBlackRoom")) {
                                         if ((Globals.MAP >= 5 && Globals.MAP <= 7) || (Globals.MAP >= 624 && Globals.MAP <= 625)) {
                                             for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
@@ -1788,6 +1785,7 @@ namespace Dragoon_Modifier {
                                         }
                                         Globals.LAST_HOTKEY = Constants.GetTime();
                                     }
+                                    */
                                 }
                             } else if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_CIRCLE)) { //Music Speed
                                 if (emulator.ReadByte("MUSIC_SPEED_BATTLE") != 0) {
@@ -6260,18 +6258,6 @@ namespace Dragoon_Modifier {
         }
         #endregion
 
-        #region Never Guard
-        public void ApplyNeverGuard() {
-            if (emulator.ReadShort("BATTLE_VALUE") == 41215 && Globals.STATS_CHANGED) {
-                for (int i = 0; i < 3; i++) {
-                    if (Globals.PARTY_SLOT[i] < 9) {
-                        Globals.CHARACTER_TABLE[i].Write("Guard", 0);
-                    }
-                }
-            }
-        }
-        #endregion
-
         #region Dragoon Changes
         public void ChangeDragoonDescription() {
             if (emulator.ReadShort("BATTLE_VALUE") == 41215 && Globals.STATS_CHANGED) {
@@ -7191,55 +7177,6 @@ namespace Dragoon_Modifier {
         }
         #endregion
 
-        #region Black Room
-        public void BlackRoomField() {
-            if ((Globals.MAP >= 5 && Globals.MAP <= 7) || (Globals.MAP >= 624 && Globals.MAP <= 625)) {
-                emulator.WriteByte("BATTLE_FIELD", 96);
-            }
-        }
-
-        public void BlackRoomBattle() {
-            if ((Globals.MAP >= 5 && Globals.MAP <= 7) || (Globals.MAP >= 624 && Globals.MAP <= 625)) {
-                if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !blackRoomOnBattleEntry) {
-                    WipeRewards();
-                    for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                        Globals.MONSTER_TABLE[i].Write("HP", 65535);
-                        Globals.MONSTER_TABLE[i].Write("Max_HP", 65535);
-                        Globals.MONSTER_TABLE[i].Write("SPD", 0);
-                        Globals.MONSTER_TABLE[i].Write("AT", 0);
-                        Globals.MONSTER_TABLE[i].Write("MAT", 0);
-                        Globals.MONSTER_TABLE[i].Write("DF", 65535);
-                        Globals.MONSTER_TABLE[i].Write("MDF", 65535);
-                        Globals.MONSTER_TABLE[i].Write("Turn", 0);
-                    }
-                    blackRoomOnBattleEntry = true;
-                } else {
-                    if (!Globals.IN_BATTLE && blackRoomOnBattleEntry) {
-                        blackRoomOnBattleEntry = false;
-                    }
-                }
-            }
-        }
-        #endregion
-
-        #region Apply No Escape
-        public void ApplyNoEscape() {
-            if (Globals.IN_BATTLE && Globals.STATS_CHANGED) {
-                if (Globals.CheckDMScript("btnBlackRoom")) {
-                    if ((Globals.MAP >= 5 && Globals.MAP <= 7) || (Globals.MAP >= 624 && Globals.MAP <= 625)) { } else { //y
-                        for (int i = 0; i < 3; i++) {
-                            emulator.WriteByte("NO_ESCAPE", 8, (Globals.MONSTER_SIZE + i) * 0x20);
-                        }
-                    }
-                } else {
-                    for (int i = 0; i < 3; i++) {
-                        emulator.WriteByte("NO_ESCAPE", 8, (Globals.MONSTER_SIZE + i) * 0x20);
-                    }
-                }
-            }
-        }
-        #endregion
-
         #region Boss SP Loss
         public void BossSPLoss() {
             if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !bossSPLossOnBattleEntry) {
@@ -7360,6 +7297,7 @@ namespace Dragoon_Modifier {
             }
         }
         #endregion
+
 
         #region * Turn Battle
         public void EATB() {

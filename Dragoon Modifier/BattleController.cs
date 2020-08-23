@@ -20,6 +20,8 @@ namespace Dragoon_Modifier {
                         if (!Globals.DIFFICULTY_MODE.Equals("Normal")) {
                             HardHellModeSetup(emulator);
                         }
+                        if (Globals.CheckDMScript("btnBlackRoom"))
+                            BlackRoomBattle(emulator);
                     } else {
                         if (Globals.PARTY_SLOT[0] == 4 && emulator.ReadByte("HASCHEL_FIX" + Globals.DISC) != 0x80) {
                             HaschelFix(emulator);
@@ -35,6 +37,9 @@ namespace Dragoon_Modifier {
                         }
                         if (Globals.CheckDMScript("btnAdditionLevel")) {
                             AdditionLevelUp(emulator);
+                        }
+                        if (Globals.CheckDMScript("btnNeverGuard")) {
+                            NeverGuard(emulator);
                         }
                     }
                 } else if (Globals.GAME_STATE == 7) {   // Battle result screen
@@ -1343,6 +1348,46 @@ namespace Dragoon_Modifier {
         }
         #endregion
 
+        #region Black Room
+
+        public static void BlackRoomField(Emulator emulator) {
+            if ((Globals.MAP >= 5 && Globals.MAP <= 7) || (Globals.MAP >= 624 && Globals.MAP <= 625)) {
+                emulator.WriteByte("BATTLE_FIELD", 96);
+            }
+        }
+
+        public static void BlackRoomBattle(Emulator emulator) {
+            if ((Globals.MAP >= 5 && Globals.MAP <= 7) || (Globals.MAP >= 624 && Globals.MAP <= 625)) {
+                WipeRewards(emulator);
+                for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
+                    Globals.MONSTER_TABLE[i].Write("HP", 65535);
+                    Globals.MONSTER_TABLE[i].Write("Max_HP", 65535);
+                    Globals.MONSTER_TABLE[i].Write("SPD", 0);
+                    Globals.MONSTER_TABLE[i].Write("AT", 0);
+                    Globals.MONSTER_TABLE[i].Write("MAT", 0);
+                    Globals.MONSTER_TABLE[i].Write("DF", 65535);
+                    Globals.MONSTER_TABLE[i].Write("MDF", 65535);
+                    Globals.MONSTER_TABLE[i].Write("P_Immune", 1);
+                    Globals.MONSTER_TABLE[i].Write("M_Immune", 1);
+                    Globals.MONSTER_TABLE[i].Write("Turn", 0);
+                }
+            }
+        }
+
+        #endregion
+
+        #region Never Guard
+        public static void NeverGuard(Emulator emulator) {
+            for (int i = 0; i < 3; i++) {
+                if (Globals.PARTY_SLOT[i] > 8) {
+                    break;
+                }
+                Globals.CHARACTER_TABLE[i].Write("Guard", 0);
+            }
+        }
+
+        #endregion
+
         #endregion
 
         #region Hard/Hell Mode specific
@@ -1370,6 +1415,17 @@ namespace Dragoon_Modifier {
 
         #endregion
 
+        #endregion
+
+        #region Extras
+        public static void WipeRewards(Emulator emulator) {
+            for (int i = 0; i < Globals.UNIQUE_MONSTER_SIZE; i++) {
+                emulator.WriteShort("MONSTER_REWARDS", 0, i * 0x1A8);
+                emulator.WriteShort("MONSTER_REWARDS", 0, 0x2 + i * 0x1A8);
+                emulator.WriteByte("MONSTER_REWARDS", 0, 0x4 + i * 0x1A8);
+                emulator.WriteByte("MONSTER_REWARDS", 0, 0x5 + i * 0x1A8);
+            }
+        }
         #endregion
     }
 
