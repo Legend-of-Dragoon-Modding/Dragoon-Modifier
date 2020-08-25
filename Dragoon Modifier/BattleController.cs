@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
@@ -12,6 +13,10 @@ namespace Dragoon_Modifier {
         static byte[] sharanda = new byte[] { 0x2, 0x8 };
         static ushort[] slot1FinalBlow = new ushort[] { 414, 408, 409, 392, 431 };      // Urobolus, Wounded Virage, Complete Virage, Lloyd, Zackwell
         static ushort[] slot2FinalBlow = new ushort[] { 387, 403 };                     // Fruegel II, Gehrich
+
+        static bool firstDamageCapRemoval = false;
+        static int lastItemUsedDamageCap = 0;
+
         public static void Run(Emulator emulator) {
             while (true) {
                 if (Globals.GAME_STATE == 1) {          // Battle
@@ -40,6 +45,9 @@ namespace Dragoon_Modifier {
                         }
                         if (Globals.CheckDMScript("btnNeverGuard")) {
                             NeverGuard(emulator);
+                        }
+                        if (Globals.CheckDMScript("btnRemoveCaps")) {
+                            RemoveDamageCap(emulator);
                         }
                     }
                 } else if (Globals.GAME_STATE == 7) {   // Battle result screen
@@ -101,6 +109,9 @@ namespace Dragoon_Modifier {
                     Globals.CHARACTER_TABLE.Add(new CharAddress(Globals.C_POINT, character, emulator));
                 }
             }
+
+            firstDamageCapRemoval = false;
+            lastItemUsedDamageCap = 0;
 
             Constants.WriteDebug("Monster Size:        " + Globals.MONSTER_SIZE);
             Constants.WriteDebug("Unique Monsters:     " + Globals.UNIQUE_MONSTER_SIZE);
@@ -1383,6 +1394,57 @@ namespace Dragoon_Modifier {
                     break;
                 }
                 Globals.CHARACTER_TABLE[i].Write("Guard", 0);
+            }
+        }
+
+        #endregion
+
+        #region Damage Cap Removal
+        public static void RemoveDamageCap(Emulator emulator) {
+            if (Globals.IN_BATTLE && Globals.STATS_CHANGED) {
+                if (!firstDamageCapRemoval) {
+                    emulator.WriteInteger("DAMAGE_CAP", 50000);
+                    emulator.WriteInteger("DAMAGE_CAP", 50000, 0x8);
+                    emulator.WriteInteger("DAMAGE_CAP", 50000, 0x14);
+                    DamageCapScan(emulator);
+                    firstDamageCapRemoval = true;
+                } else {
+                    ushort currentItem = emulator.ReadShort(Globals.M_POINT + 0xABC);
+                    if (lastItemUsedDamageCap != currentItem) {
+                        lastItemUsedDamageCap = currentItem;
+                        if ((lastItemUsedDamageCap >= 0xC1 && lastItemUsedDamageCap <= 0xCA) || (lastItemUsedDamageCap >= 0xCF && lastItemUsedDamageCap <= 0xD2) || lastItemUsedDamageCap == 0xD6 || lastItemUsedDamageCap == 0xD8 || lastItemUsedDamageCap == 0xDC || (lastItemUsedDamageCap >= 0xF1 && lastItemUsedDamageCap <= 0xF8) || lastItemUsedDamageCap == 0xFA) {
+                            DamageCapScan(emulator);
+                        }
+                    }
+                    for (int i = 0; i < 3; i++) {
+                        if (Globals.PARTY_SLOT[i] < 9) {
+                            if (Globals.CHARACTER_TABLE[i].Read("Action") == 24) {
+                                DamageCapScan(emulator);
+                            }
+                        }
+                    }
+                    for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
+                        if (Globals.MONSTER_TABLE[i].Read("Action") == 28) { //Most used, not all monsters use action code 28 for item spells
+                            DamageCapScan(emulator);
+                        }
+                    }
+                }
+            } else {
+                firstDamageCapRemoval = false;
+                lastItemUsedDamageCap = 0;
+            }
+        }
+
+        public static void DamageCapScan(Emulator emulator) {
+            ArrayList damageCapScan = emulator.ScanAllAOB("0F 27", 0xA8660, 0x2A865F);
+            long lastAddress = 0;
+            foreach (var address in damageCapScan) {
+                long capAddress = (long) address;
+                if (emulator.ReadShortU(capAddress) == 9999 && (lastAddress + 0x10) == capAddress) {
+                    emulator.WriteIntegerU(capAddress, 50000);
+                    emulator.WriteIntegerU(lastAddress, 50000);
+                }
+                lastAddress = capAddress;
             }
         }
 
