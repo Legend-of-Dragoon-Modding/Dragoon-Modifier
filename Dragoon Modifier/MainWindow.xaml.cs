@@ -1114,9 +1114,6 @@ namespace Dragoon_Modifier {
                         IncreaseTextSpeed();
                     if (Globals.CheckDMScript("btnAutoText"))
                         AutoText();
-                    if (Globals.NO_DART != null) {
-                        NoDartHandeler();
-                    }
                 } catch (Exception ex) {
                     Constants.RUN = false;
                     Constants.WriteGLog("Program stopped.");
@@ -2526,29 +2523,7 @@ namespace Dragoon_Modifier {
         }
         #endregion
 
-        #region No Dart Handeler
-        public void NoDartHandeler() {
-            if (emulator.ReadByte("MENU") == 4) {
-                if (Globals.DART_SWITCH) {
-                    emulator.WriteByte("PARTY_SLOT", (byte) Globals.NO_DART);
-                    emulator.WriteByte("MENU_UNLOCK", 1);
-                    emulator.WriteByte("CHAR_TABLE", emulator.ReadByte("CHAR_TABLE", 0x4) & 0xDF, 0x4);
-                    Globals.DART_SWITCH = false;
-                } 
-            } else {
-                if (!Globals.DART_SWITCH) {
-                    byte character = emulator.ReadByte("PARTY_SLOT");
-                    if (character != 0) {
-                        Globals.NO_DART = character;
-                    }
-                    emulator.WriteByte("PARTY_SLOT", 0);
-                    Globals.DART_SWITCH = true;
-                }
-                
-            }
-            
-        }
-        #endregion
+       
 
         #endregion
 

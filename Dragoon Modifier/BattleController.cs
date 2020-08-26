@@ -17,6 +17,8 @@ namespace Dragoon_Modifier {
         static bool firstDamageCapRemoval = false;
         static int lastItemUsedDamageCap = 0;
 
+        static bool dartSwitcheroo = false;
+
         public static void Run(Emulator emulator) {
             while (true) {
                 if (Globals.GAME_STATE == 1) {          // Battle
@@ -66,6 +68,17 @@ namespace Dragoon_Modifier {
 
                         Globals.NO_DART = Globals.PARTY_SLOT[0];
                         emulator.WriteByte("PARTY_SLOT", 0);
+                        dartSwitcheroo = true;
+                    }
+                } else if (Globals.GAME_STATE == 2) {
+                    if (Globals.NO_DART != null) {
+                        emulator.WriteByte("MENU_UNLOCK", 1);
+                        if (dartSwitcheroo) {
+                            emulator.WriteByte("PARTY_SLOT", (byte) Globals.NO_DART);
+                            dartSwitcheroo = false;
+                            Thread.Sleep(200);
+                        }
+                        Globals.NO_DART = Globals.PARTY_SLOT[0];
                     }
                 }
                 Thread.Sleep(250);
