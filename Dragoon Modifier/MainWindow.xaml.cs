@@ -6210,19 +6210,33 @@ namespace Dragoon_Modifier {
 
         #region Extend Inventory
         public void ExtendInventory() {
-            if (inventorySize > 32 && emulator.ReadShort("INVENTORY_CAP_1") != inventorySize) {
-                emulator.WriteShort("INVENTORY_CAP_1", (ushort) inventorySize);
-                emulator.WriteShort("INVENTORY_CAP_2", (ushort) inventorySize);
-                emulator.WriteShort("INVENTORY_CAP_3", (ushort) inventorySize);
-                emulator.WriteShort("INVENTORY_CAP_4", (ushort) inventorySize);
-                emulator.WriteShort("INVENTORY_CAP_MINUS_1", (ushort) inventorySize);
-                emulator.WriteShort("INVENTORY_CAP_MINUS_2", (ushort) inventorySize);
-                emulator.WriteShort("INVENTORY_CAP_PLUS_1", (ushort) inventorySize);
-                emulator.WriteShort("INVENTORY_CAP_PLUS_2", (ushort) inventorySize);
-                emulator.WriteShort("ITEM_LIMIT_1", (ushort) inventorySize);
-                emulator.WriteShort("ITEM_LIMIT_2", (ushort) inventorySize);
-                emulator.WriteShort("ITEM_LIMIT_3", (ushort) inventorySize);
-                emulator.WriteShort("ITEM_CAP", 808);
+            if (inventorySize > 32) {
+                if (emulator.ReadShort("INVENTORY_CAP_1") != inventorySize || emulator.ReadShort("INVENTORY_CAP_2") != inventorySize || emulator.ReadShort("INVENTORY_CAP_3") != inventorySize || emulator.ReadShort("INVENTORY_CAP_4") != inventorySize) {
+                    emulator.WriteShort("INVENTORY_CAP_1", (ushort) inventorySize);
+                    emulator.WriteShort("INVENTORY_CAP_2", (ushort) inventorySize);
+                    emulator.WriteShort("INVENTORY_CAP_3", (ushort) inventorySize);
+                    emulator.WriteShort("INVENTORY_CAP_4", (ushort) inventorySize);
+                    emulator.WriteShort("ITEM_CAP", 808);
+                }
+                
+                if (emulator.ReadShort("INVENTORY_CAP_MINUS_1") != inventorySize || emulator.ReadShort("INVENTORY_CAP_MINUS_2") != inventorySize) {
+                    emulator.WriteShort("INVENTORY_CAP_MINUS_1", (ushort) inventorySize);
+                    emulator.WriteShort("INVENTORY_CAP_MINUS_2", (ushort) inventorySize);
+                    emulator.WriteShort("ITEM_CAP", 808);
+                }
+
+                if (emulator.ReadShort("INVENTORY_CAP_PLUS_1") != inventorySize || emulator.ReadShort("INVENTORY_CAP_PLUS_2") != inventorySize) {
+                    emulator.WriteShort("INVENTORY_CAP_PLUS_1", (ushort) inventorySize);
+                    emulator.WriteShort("INVENTORY_CAP_PLUS_2", (ushort) inventorySize);
+                    emulator.WriteShort("ITEM_CAP", 808);
+                }
+
+                if (emulator.ReadShort("ITEM_LIMIT_1") != inventorySize || emulator.ReadShort("ITEM_LIMIT_2") != inventorySize || emulator.ReadShort("ITEM_LIMIT_3") != inventorySize) {
+                    emulator.WriteShort("ITEM_LIMIT_1", (ushort) inventorySize);
+                    emulator.WriteShort("ITEM_LIMIT_2", (ushort) inventorySize);
+                    emulator.WriteShort("ITEM_LIMIT_3", (ushort) inventorySize);
+                    emulator.WriteShort("ITEM_CAP", 808);
+                }
             }
         }
         #endregion
