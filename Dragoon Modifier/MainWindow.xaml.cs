@@ -194,6 +194,7 @@ namespace Dragoon_Modifier {
         public bool ubInventoryRefresh = false;
         public byte inventoryRefreshSize = 0;
         public byte[] inventoryRefresh = new byte[64];
+        public int inventoryRefreshStage = 0;
         public bool ubEnhancedShield = false;
         public short shieldTurnsTaken = 0;
         public short enhancedShieldTurns = 0;
@@ -4037,6 +4038,7 @@ namespace Dragoon_Modifier {
                                 inventoryRefresh[i] = emulator.ReadByte("INVENTORY", i);
                             }
                         }
+                        ubInventoryRefresh = false;
                     }
                 }
 
