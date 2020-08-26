@@ -227,7 +227,7 @@ public class BattleController {
             Globals.SHANA_FIX = false;
             Globals.NO_DART_CHANGED = false;
             exit_init = false;
-            Thread.Sleep(2000);
+            Thread.Sleep(3500);
             if (emulator.ReadShort("BATTLE_VALUE") < 5130) {
                 return;
             }
