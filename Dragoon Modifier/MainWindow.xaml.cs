@@ -6210,7 +6210,7 @@ namespace Dragoon_Modifier {
 
         #region Extend Inventory
         public void ExtendInventory() {
-            if (inventorySize > 32 && emulator.ReadShort("INVENTORY_CAP_1") != 32) {
+            if (inventorySize > 32 && emulator.ReadShort("INVENTORY_CAP_1") != inventorySize) {
                 emulator.WriteShort("INVENTORY_CAP_1", (ushort) inventorySize);
                 emulator.WriteShort("INVENTORY_CAP_2", (ushort) inventorySize);
                 emulator.WriteShort("INVENTORY_CAP_3", (ushort) inventorySize);
