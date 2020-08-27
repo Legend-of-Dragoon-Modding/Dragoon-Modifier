@@ -70,7 +70,7 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 320	S Virage(head)	Non-Elemental	333333	352	240	150	150	50	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	S Virage(head)
 321	S Virage(arm)	Non-Elemental	666666	288	240	28	24	60	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	S Virage(arm)
 322	S Virage(body)	Non-Elemental	222222	288	240	270	180	40	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	S Virage(body)
-283	Divine Dragon	Non-Elemental	5000	60	53	32000	24000	60	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Divine Dragon
+283	Divine Dragon	Non-Elemental	10000	60	53	32000	24000	60	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Divine Dragon
 284	Divine Cannon	Non-Elemental	65535	0	0	16000	24000	50	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Divine Cannon
 285	Divine Ball	Non-Elemental	65535	0	0	16000	24000	50	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Divine Ball
 270	Lloyd	Non-Elemental	666666	80	65	80	120	65	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Lloyd
