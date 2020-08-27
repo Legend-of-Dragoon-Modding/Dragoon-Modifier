@@ -90,6 +90,9 @@ namespace Dragoon_Modifier {
 
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
+            if (Globals.DIFFICULTY_MODE.Equals("NormalHard") || Globals.DIFFICULTY_MODE.Equals("HardHell")) {
+                SwitchDualDifficulty(emulator);
+            }
             while (stopWatch.ElapsedMilliseconds < 3500) {
                 if (Globals.GAME_STATE != 1) {
                     stopWatch.Stop();
@@ -1468,6 +1471,9 @@ namespace Dragoon_Modifier {
         #region Hard/Hell Mode specific
 
         public static void HardHellModeSetup(Emulator emulator) {
+            if (Globals.DIFFICULTY_MODE.Contains("Hell")) {
+                HellDragoonChanges(emulator);
+            }
             if (Globals.DIFFICULTY_MODE.Equals("Hell")) {
                 ApplyNoEscape(emulator);
             }
@@ -1486,6 +1492,86 @@ namespace Dragoon_Modifier {
                     emulator.WriteByte("NO_ESCAPE", 8, (Globals.MONSTER_SIZE + i) * 0x20);
                 }
             }
+        }
+
+        #endregion
+
+        #region Hell Mode Dragoon Changes
+
+        public static void HellDragoonChanges(Emulator emulator) {
+            //emulator.WriteByte("SPELL_TABLE", (uiCombo["cboFlowerStorm"] + 1) * 20, 0x7 + (7 * 0xC)); //Lavitz's Blossom Storm MP
+            //emulator.WriteByte("SPELL_TABLE", (uiCombo["cboFlowerStorm"] + 1) * 20, 0x7 + (26 * 0xC)); //Albert's Rose storm MP
+
+            if (Constants.REGION == Region.NTA) {
+                //emulator.WriteByte(Globals.DRAGOON_SPELLS[7].Description_Pointer + 44, 0x0F + uiCombo["cboFlowerStorm"] + 1);
+                //emulator.WriteByte(Globals.DRAGOON_SPELLS[26].Description_Pointer + 44, 0x0F + uiCombo["cboFlowerStorm"] + 1);
+            }
+
+            emulator.WriteByte("SPELL_TABLE", 20, 0x7 + (11 * 0xC)); //Shana's Moon Light MP
+            emulator.WriteByte("SPELL_TABLE", 20, 0x7 + (66 * 0xC)); //???'s Moon Light MP
+            emulator.WriteByte("SPELL_TABLE", 30, 0x7 + (25 * 0xC)); //Rainbow Breath MP
+            emulator.WriteByte("SPELL_TABLE", 40, 0x7 + (12 * 0xC)); //Shana's Gates of Heaven MP
+            emulator.WriteByte("SPELL_TABLE", 40, 0x7 + (67 * 0xC)); //???'s Gates of Heaven MP
+        }
+
+        #endregion
+
+        #region Dual Difficulty
+
+        public static void SwitchDualDifficulty(Emulator emulator) {
+            bool boss = false;
+            string cwd = AppDomain.CurrentDomain.BaseDirectory;
+            string monsterBoss = Globals.DIFFICULTY_MODE.Equals("HardHell") ? "Hell_Mode" : "Hard_Mode";
+            string monsterDefault = monsterBoss.Equals("Hell_Mode") ? "Hard_Mode" : "US_Base";
+            string mod;
+
+            if (Globals.ENCOUNTER_ID == 384 || //Commander
+                Globals.ENCOUNTER_ID == 386 || //Fruegel I
+                Globals.ENCOUNTER_ID == 414 || //Urobolus
+                Globals.ENCOUNTER_ID == 385 || //Sandora Elite
+                Globals.ENCOUNTER_ID == 388 || //Kongol I
+                Globals.ENCOUNTER_ID == 408 || //Virage I
+                Globals.ENCOUNTER_ID == 415 || //Fire Bird
+                Globals.ENCOUNTER_ID == 393 || //Greham + Feyrbrand
+                Globals.ENCOUNTER_ID == 412 || //Drake the Bandit
+                Globals.ENCOUNTER_ID == 413 || //Jiango
+                Globals.ENCOUNTER_ID == 387 || //Fruegel II
+                Globals.ENCOUNTER_ID == 461 || //Sandora Elite II
+                Globals.ENCOUNTER_ID == 389 || //Kongol II
+                Globals.ENCOUNTER_ID == 390 || //Emperor Doel
+                Globals.ENCOUNTER_ID == 402 || //Mappi
+                Globals.ENCOUNTER_ID == 409 || //Virage II
+                Globals.ENCOUNTER_ID == 403 || //Gehrich + Mappi
+                Globals.ENCOUNTER_ID == 396 || //Lenus
+                Globals.ENCOUNTER_ID == 417 || //Ghost Commander
+                Globals.ENCOUNTER_ID == 397 || //Lenus + Regole
+                Globals.ENCOUNTER_ID == 418 || //Kamuy
+                Globals.ENCOUNTER_ID == 410 || //S Virage
+                Globals.ENCOUNTER_ID == 416 || //Grand Jewel
+                Globals.ENCOUNTER_ID == 394 || //Divine Dragon
+                Globals.ENCOUNTER_ID == 422 || //Windigo
+                Globals.ENCOUNTER_ID == 392 || //Lloyd
+                Globals.ENCOUNTER_ID == 423 || //Polter Set
+                Globals.ENCOUNTER_ID == 398 || //Damia
+                Globals.ENCOUNTER_ID == 399 || //Syuveil
+                Globals.ENCOUNTER_ID == 400 || //Belzac
+                Globals.ENCOUNTER_ID == 401 || //Kanzas
+                Globals.ENCOUNTER_ID == 420 || //Magician Faust
+                Globals.ENCOUNTER_ID == 432 || //Last Kraken
+                Globals.ENCOUNTER_ID == 430 || //Executioners
+                Globals.ENCOUNTER_ID == 449 || //Spirit (Feyrbrand)
+                Globals.ENCOUNTER_ID == 448 || //Spirit (Regole)
+                Globals.ENCOUNTER_ID == 447 || //Spirit (Divine Dragon)
+                Globals.ENCOUNTER_ID == 431 || //Zackwell
+                Globals.ENCOUNTER_ID == 433 || //Imago
+                Globals.ENCOUNTER_ID == 411 || //S Virage II
+                Globals.ENCOUNTER_ID == 442 || //Zieg
+                Globals.ENCOUNTER_ID == 443) { //Melbu Fraahma
+                boss = true;
+            }
+
+            mod = boss ? monsterBoss : monsterDefault;
+            Globals.DICTIONARY.SwapMonsterStats(mod);
         }
 
         #endregion
