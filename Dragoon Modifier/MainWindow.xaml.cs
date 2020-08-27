@@ -6233,7 +6233,7 @@ namespace Dragoon_Modifier {
                     emulator.WriteShort("ITEM_CAP", 808);
                 }
 
-                if (emulator.ReadShort("ITEM_LIMIT_1") != inventorySize || emulator.ReadShort("ITEM_LIMIT_2") != inventorySize || emulator.ReadShort("ITEM_LIMIT_3") != inventorySize) {
+                if (emulator.ReadShort("ITEM_LIMIT_1") == 32 || emulator.ReadShort("ITEM_LIMIT_2") == 32 || emulator.ReadShort("ITEM_LIMIT_3") == 32) {
                     emulator.WriteShort("ITEM_LIMIT_1", (ushort) inventorySize);
                     emulator.WriteShort("ITEM_LIMIT_2", (ushort) inventorySize);
                     emulator.WriteShort("ITEM_LIMIT_3", (ushort) inventorySize);
