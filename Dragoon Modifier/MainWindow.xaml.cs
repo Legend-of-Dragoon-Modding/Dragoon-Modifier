@@ -1222,8 +1222,6 @@ namespace Dragoon_Modifier {
                     }
                     if (Globals.CheckDMScript("btnHPCapBreak"))
                         HPCapBreakBattle();
-                    if (Globals.CheckDMScript("btnAspectRatio"))
-                        ChangeAspectRatio();
                     if (Globals.CheckDMScript("btnKillBGM") && killBGMBattle)
                         KillBGMBattle();
                     if (Globals.CheckDMScript("btnNoDragoon"))
@@ -6136,22 +6134,6 @@ namespace Dragoon_Modifier {
                         recoveryRateSave = Globals.CHARACTER_TABLE[i].Read("HP_Regen");
                     }
                 }
-
-                if (Globals.DIFFICULTY_MODE.Contains("Hell")) {
-                    emulator.WriteByte("SPELL_TABLE", (uiCombo["cboFlowerStorm"] + 1) * 20, 0x7 + (7 * 0xC)); //Lavitz's Blossom Storm MP
-                    emulator.WriteByte("SPELL_TABLE", (uiCombo["cboFlowerStorm"] + 1) * 20, 0x7 + (26 * 0xC)); //Albert's Rose storm MP
-
-                    if (Constants.REGION == Region.NTA) {
-                        emulator.WriteAOB(Globals.DRAGOON_SPELLS[7].Description_Pointer, "22 00 39 00 45 00 39 00 3F 00 3D 00 00 00 30 00 3D 00 4B 00 41 00 4B 00 4C 00 00 00 1A 00 15 00 0F 00 00 00 22 00 4D 00 4A 00 00 00 " + Convert.ToString(0x0F + uiCombo["cboFlowerStorm"] + 1).ToUpper() + " 00 FF A0");
-                        emulator.WriteAOB(Globals.DRAGOON_SPELLS[26].Description_Pointer, "22 00 39 00 45 00 39 00 3F 00 3D 00 00 00 30 00 3D 00 4B 00 41 00 4B 00 4C 00 00 00 1A 00 15 00 0F 00 00 00 22 00 4D 00 4A 00 00 00 " + Convert.ToString(0x0F + uiCombo["cboFlowerStorm"] + 1).ToUpper() + " 00 FF A0");
-                    }
-
-                    emulator.WriteByte("SPELL_TABLE", 20, 0x7 + (11 * 0xC)); //Shana's Moon Light MP
-                    emulator.WriteByte("SPELL_TABLE", 20, 0x7 + (66 * 0xC)); //???'s Moon Light MP
-                    emulator.WriteByte("SPELL_TABLE", 30, 0x7 + (25 * 0xC)); //Rainbow Breath MP
-                    emulator.WriteByte("SPELL_TABLE", 40, 0x7 + (12 * 0xC)); //Shana's Gates of Heaven MP
-                    emulator.WriteByte("SPELL_TABLE", 40, 0x7 + (67 * 0xC)); //???'s Gates of Heaven MP
-                }
             }
         }
 
@@ -6646,36 +6628,6 @@ namespace Dragoon_Modifier {
             dartBurnStack = (dartBurnStack + amount) > 6 ? 6 : (dartBurnStack + amount);
             Globals.SetCustomValue("Burn Stack", dartBurnStack);
             Constants.WriteGLogOutput("Dart's Burn Stack Count: " + dartBurnStack);
-        }
-        #endregion
-
-        #region Aspect Ratio
-        public void ChangeAspectRatio() {
-            if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !aspectRatioOnBattleEntry) {
-                ushort aspectRatio = 4096;
-
-                if (uiCombo["cboAspectRatio"] == 0)
-                    aspectRatio = 4096;
-                else if (uiCombo["cboAspectRatio"] == 1)
-                    aspectRatio = 3072;
-                else if (uiCombo["cboAspectRatio"] == 2)
-                    aspectRatio = 3413;
-                else if (uiCombo["cboAspectRatio"] == 3)
-                    aspectRatio = 2340;
-                else if (uiCombo["cboAspectRatio"] == 4)
-                    aspectRatio = 2048;
-
-                emulator.WriteShort("ASPECT_RATIO", aspectRatio);
-
-                if (uiCombo["cboCamera"] == 1)
-                    emulator.WriteShort("ADVANCED_CAMERA", aspectRatio);
-
-                aspectRatioOnBattleEntry = true;
-            } else {
-                if (!Globals.IN_BATTLE && aspectRatioOnBattleEntry) {
-                    aspectRatioOnBattleEntry = false;
-                }
-            }
         }
         #endregion
 
@@ -7524,13 +7476,13 @@ namespace Dragoon_Modifier {
                     Constants.RUN = true;
                     emulator.OpenProcess(processID);
                     globalThread = new Thread(delegate () { GlobalController.Run(emulator); });
-                    newBattleThread = new Thread(delegate () { BattleController.Run(emulator); });
+                    newBattleThread = new Thread(delegate () { BattleController.Run(emulator, uiCombo); });
                     fieldThread = new Thread(FieldController);
                     battleThread = new Thread(BattleController1);
                     hotkeyThread = new Thread(HotkeysController);
                     otherThread = new Thread(OtherController);
                     ultimateThread = new Thread(UltimateController);
-                    new Thread(delegate () { BattleController.Run(emulator); }).Start();
+                    newBattleThread.Start();
                     globalThread.Start();
                     fieldThread.Start();
                     battleThread.Start();
