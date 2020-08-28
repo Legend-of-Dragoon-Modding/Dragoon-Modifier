@@ -8432,8 +8432,6 @@ namespace Dragoon_Modifier {
 
         public void DifficultyButton(object sender, EventArgs e) {
             Button btn = (Button) sender;
-            if (emulator.ReadShort("BATTLE_VALUE") < 9999)
-                Globals.STATS_CHANGED = true;
             equipChangesOnFieldEntry = false;
 
             if (btn == btnNormal) {
@@ -8548,6 +8546,9 @@ namespace Dragoon_Modifier {
 
             Globals.DICTIONARY = new LoDDict();
             SHOP_CHANGED = false;
+            if (emulator.ReadShort("BATTLE_VALUE") < 9999) {
+                Globals.STATS_CHANGED = true;
+            }
             Constants.WriteOutput("LOD Dictionary updated.");
             Constants.WritePLogOutput("Mod directory switched to: " + Globals.MOD);
         }
