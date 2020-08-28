@@ -23,25 +23,14 @@ namespace Dragoon_Modifier {
         static string difficulty = "Normal";
         static int aspectRatioOption = 0;
         static int cameraOption = 0;
+        static int killBGM = 0;
 
         public static void Run(Emulator emulator, Dictionary<string, int> uiCombo) {
             while (Constants.RUN) {
                 try {
                     if (Globals.GAME_STATE == 1) {          // Battle
-                        if (!Globals.STATS_CHANGED) {
-                            flowerStorm = (byte) (uiCombo["cboFlowerStorm"] + 1);
-                            difficulty = (string) Globals.DIFFICULTY_MODE;
-                            aspectRatioOption = uiCombo["cboAspectRatio"];
-                            cameraOption = uiCombo["cboCamera"];
-                            if (Globals.CheckDMScript("btnAspectRatio")) {
-                                ChangeAspectRatio(emulator);
-                            }
-                            Setup(emulator);
-                            if (difficulty != "Normal") {
-                                HardHellModeSetup(emulator);
-                            }
-                            if (Globals.CheckDMScript("btnBlackRoom"))
-                                BlackRoomBattle(emulator);
+                        if (!Globals.STATS_CHANGED) { 
+                            Setup(emulator, uiCombo);
                         } else {
                             if (Globals.PARTY_SLOT[0] == 4 && emulator.ReadByte("HASCHEL_FIX" + Globals.DISC) != 0x80) {
                                 HaschelFix(emulator);
@@ -108,11 +97,22 @@ namespace Dragoon_Modifier {
             }
         }
 
-        public static void Setup(Emulator emulator) {
+        public static void Setup(Emulator emulator, Dictionary<string, int> uiCombo) {
             Constants.WriteOutput("Battle detected. Loading...");
 
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
+            flowerStorm = (byte) (uiCombo["cboFlowerStorm"] + 1);
+            difficulty = (string) Globals.DIFFICULTY_MODE;
+            aspectRatioOption = uiCombo["cboAspectRatio"];
+            cameraOption = uiCombo["cboCamera"];
+            killBGM = uiCombo["cboKillBGM"];
+            if (Globals.CheckDMScript("btnAspectRatio")) {
+                ChangeAspectRatio(emulator);
+            }
+            if (Globals.CheckDMScript("btnKillBGM") && killBGM != 0) {
+                KillBGM(emulator);
+            }
             if (difficulty == "NormalHard" || difficulty == "HardHell") {
                 SwitchDualDifficulty(emulator);
             }
@@ -170,6 +170,15 @@ namespace Dragoon_Modifier {
             if (Globals.NO_DART > 0) {
                 Constants.WriteOutput("Finished loading. Waiting for No Dart to complete...");
                 NoDart(emulator);
+            }
+            if (Globals.CheckDMScript("btnBlackRoom")) {
+                BlackRoomBattle(emulator);
+            }
+            if (Globals.CheckDMScript("btnNoDragoon")) {
+                NoDragoonMode();
+            }
+            if (difficulty != "Normal") {
+                HardHellModeSetup(emulator);
             }
             Constants.WriteOutput("Finished loading.");
             Globals.STATS_CHANGED = true;
@@ -1369,29 +1378,27 @@ namespace Dragoon_Modifier {
 
         #region Addition Level Up in Battle
         public static void AdditionLevelUp(Emulator emulator) {
-            if (Globals.IN_BATTLE && Globals.STATS_CHANGED) {
-                Dictionary<int, int> additionnum = new Dictionary<int, int> {
-                    {0, 0},{1, 1},{2, 2},{3, 3},{4, 4},{5, 5},{6, 6},//Dart
-			        {8, 0},{9, 1},{10, 2},{11, 3},{12, 4},           //Lavitz
-			        {14, 0},{15, 1},{16, 2},{17, 3},                 //Rose
-			        {29, 0},{30, 1},{31, 2},{32, 3},{33, 4},{34, 5}, //Haschel
-			        {23, 0},{24, 1},{25, 2},{26, 3},{27, 4},         //Meru
-			        {19, 0},{20, 1},{21, 2},                         //Kongol
-			        {255, 0}
-                };
+            Dictionary<int, int> additionnum = new Dictionary<int, int> {
+                {0, 0},{1, 1},{2, 2},{3, 3},{4, 4},{5, 5},{6, 6},//Dart
+			    {8, 0},{9, 1},{10, 2},{11, 3},{12, 4},           //Lavitz
+			    {14, 0},{15, 1},{16, 2},{17, 3},                 //Rose
+			    {29, 0},{30, 1},{31, 2},{32, 3},{33, 4},{34, 5}, //Haschel
+			    {23, 0},{24, 1},{25, 2},{26, 3},{27, 4},         //Meru
+			    {19, 0},{20, 1},{21, 2},                         //Kongol
+			    {255, 0}
+            };
 
-                for (int slot = 0; slot < 3; slot++) {
-                    int character = Globals.PARTY_SLOT[slot];
-                    if (Globals.PARTY_SLOT[slot] < 9) {
-                        int addition = additionnum[emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x19)];
-                        int level = emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x1A + addition);
-                        int newlevel = 1 + emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x22 + addition) / 20;
-                        if (newlevel > level) {
-                            Constants.WriteDebug(newlevel);
-                            emulator.WriteByte(Constants.GetAddress("CHAR_TABLE") + (character * 0x2C) + 0x1A + addition, (byte) newlevel);
-                            Globals.CHARACTER_TABLE[slot].Write("ADD_DMG_Multi", Globals.DICTIONARY.AdditionData[character, addition, newlevel].ADD_DMG_Multi);
-                            Globals.CHARACTER_TABLE[slot].Write("ADD_SP_Multi", Globals.DICTIONARY.AdditionData[character, addition, newlevel].ADD_SP_Multi);
-                        }
+            for (int slot = 0; slot < 3; slot++) {
+                int character = Globals.PARTY_SLOT[slot];
+                if (Globals.PARTY_SLOT[slot] < 9) {
+                    int addition = additionnum[emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x19)];
+                    int level = emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x1A + addition);
+                    int newlevel = 1 + emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x22 + addition) / 20;
+                    if (newlevel > level) {
+                        Constants.WriteDebug(newlevel);
+                        emulator.WriteByte(Constants.GetAddress("CHAR_TABLE") + (character * 0x2C) + 0x1A + addition, (byte) newlevel);
+                        Globals.CHARACTER_TABLE[slot].Write("ADD_DMG_Multi", Globals.DICTIONARY.AdditionData[character, addition, newlevel].ADD_DMG_Multi);
+                        Globals.CHARACTER_TABLE[slot].Write("ADD_SP_Multi", Globals.DICTIONARY.AdditionData[character, addition, newlevel].ADD_SP_Multi);
                     }
                 }
             }
@@ -1440,37 +1447,32 @@ namespace Dragoon_Modifier {
 
         #region Damage Cap Removal
         public static void RemoveDamageCap(Emulator emulator) {
-            if (Globals.IN_BATTLE && Globals.STATS_CHANGED) {
-                if (!firstDamageCapRemoval) {
-                    emulator.WriteInteger("DAMAGE_CAP", 50000);
-                    emulator.WriteInteger("DAMAGE_CAP", 50000, 0x8);
-                    emulator.WriteInteger("DAMAGE_CAP", 50000, 0x14);
-                    DamageCapScan(emulator);
-                    firstDamageCapRemoval = true;
-                } else {
-                    ushort currentItem = emulator.ReadShort(Globals.M_POINT + 0xABC);
-                    if (lastItemUsedDamageCap != currentItem) {
-                        lastItemUsedDamageCap = currentItem;
-                        if ((lastItemUsedDamageCap >= 0xC1 && lastItemUsedDamageCap <= 0xCA) || (lastItemUsedDamageCap >= 0xCF && lastItemUsedDamageCap <= 0xD2) || lastItemUsedDamageCap == 0xD6 || lastItemUsedDamageCap == 0xD8 || lastItemUsedDamageCap == 0xDC || (lastItemUsedDamageCap >= 0xF1 && lastItemUsedDamageCap <= 0xF8) || lastItemUsedDamageCap == 0xFA) {
-                            DamageCapScan(emulator);
-                        }
+            if (!firstDamageCapRemoval) {
+                emulator.WriteInteger("DAMAGE_CAP", 50000);
+                emulator.WriteInteger("DAMAGE_CAP", 50000, 0x8);
+                emulator.WriteInteger("DAMAGE_CAP", 50000, 0x14);
+                DamageCapScan(emulator);
+                firstDamageCapRemoval = true;
+            } else {
+                ushort currentItem = emulator.ReadShort(Globals.M_POINT + 0xABC);
+                if (lastItemUsedDamageCap != currentItem) {
+                    lastItemUsedDamageCap = currentItem;
+                    if ((lastItemUsedDamageCap >= 0xC1 && lastItemUsedDamageCap <= 0xCA) || (lastItemUsedDamageCap >= 0xCF && lastItemUsedDamageCap <= 0xD2) || lastItemUsedDamageCap == 0xD6 || lastItemUsedDamageCap == 0xD8 || lastItemUsedDamageCap == 0xDC || (lastItemUsedDamageCap >= 0xF1 && lastItemUsedDamageCap <= 0xF8) || lastItemUsedDamageCap == 0xFA) {
+                        DamageCapScan(emulator);
                     }
-                    for (int i = 0; i < 3; i++) {
-                        if (Globals.PARTY_SLOT[i] < 9) {
-                            if (Globals.CHARACTER_TABLE[i].Read("Action") == 24) {
-                                DamageCapScan(emulator);
-                            }
-                        }
-                    }
-                    for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                        if (Globals.MONSTER_TABLE[i].Read("Action") == 28) { //Most used, not all monsters use action code 28 for item spells
+                }
+                for (int i = 0; i < 3; i++) {
+                    if (Globals.PARTY_SLOT[i] < 9) {
+                        if (Globals.CHARACTER_TABLE[i].Read("Action") == 24) {
                             DamageCapScan(emulator);
                         }
                     }
                 }
-            } else {
-                firstDamageCapRemoval = false;
-                lastItemUsedDamageCap = 0;
+                for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
+                    if (Globals.MONSTER_TABLE[i].Read("Action") == 28) { //Most used, not all monsters use action code 28 for item spells
+                        DamageCapScan(emulator);
+                    }
+                }
             }
         }
 
@@ -1511,6 +1513,32 @@ namespace Dragoon_Modifier {
                 emulator.WriteShort("ADVANCED_CAMERA", aspectRatio);
         }
 
+        #endregion
+
+        #region Kill BGM
+
+        public static void KillBGM(Emulator emulator) {
+            ArrayList bgmScan = emulator.ScanAllAOB("53 53 73 71", 0xA8660, 0x2A865F);
+            foreach (var address in bgmScan) {
+                for (int i = 0; i <= 255; i++) {
+                    emulator.WriteByteU((long) address + i, 0);
+                    Thread.Sleep(10);
+                }
+            }
+            Constants.WriteGLogOutput("Killed BGM.");
+        }
+
+        #endregion
+
+        #region No Dragoon
+        public static void NoDragoonMode() {
+            for (int slot = 0; slot < 3; slot++) {
+                if (Globals.PARTY_SLOT[slot] > 8) {
+                    break;
+                }
+                Globals.CHARACTER_TABLE[slot].Write("Dragoon", 0);
+            }
+        }
         #endregion
 
         #endregion

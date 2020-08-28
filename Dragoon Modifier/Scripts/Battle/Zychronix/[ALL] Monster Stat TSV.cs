@@ -8,7 +8,7 @@ public class MonsterStatTSV {
 	static bool UPDATE_MODE = false;
 
     public static void Run(Emulator emulator) {
-		if (Globals.IN_BATTLE && Globals.STATS_CHANGED && !WRITE) {
+		if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED && !WRITE) {
 			List<string> tsvData = new List<string>();
 			List<int> mid = new List<int>();
 			string line;
@@ -51,7 +51,7 @@ public class MonsterStatTSV {
 
 			WRITE = true;
 		} else {
-			if (!Globals.IN_BATTLE) {
+			if (Globals.GAME_STATE != 1) {
 				WRITE = false;
             }
         }

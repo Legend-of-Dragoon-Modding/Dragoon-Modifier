@@ -24,13 +24,10 @@ namespace Dragoon_Modifier {
                     Globals.GAME_STATE = 6;
                 } else if (menu == 29) {
                     Globals.GAME_STATE = 7;     // Battle result screen
-                    Globals.IN_BATTLE = false;
                 } else if (battleValue == 41215) {
                     Globals.GAME_STATE = 1;     // Battle
-                    Globals.IN_BATTLE = true;
                 } else if (menu == 0) {
                     Globals.GAME_STATE = 0;     // Field
-                    Globals.IN_BATTLE = false;
                 }
                 Globals.DISC = emulator.ReadByte("DISC");
                 Globals.CHAPTER = (byte)(emulator.ReadByte("CHAPTER") + 1);

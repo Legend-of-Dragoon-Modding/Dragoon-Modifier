@@ -130,7 +130,7 @@ namespace Dragoon_Modifier {
         }
 
         public void WriteToText() {
-            if (Globals.IN_BATTLE && Globals.STATS_CHANGED) {
+            if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED) {
                 try {
                     int partySize = 0;
                     for (int i = 0; i < 3; i++) {
@@ -643,7 +643,7 @@ namespace Dragoon_Modifier {
 
             public void UpdateLabel(Object source, ElapsedEventArgs e) {
                 this.Dispatcher.BeginInvoke(new Action(() => {
-                    if (Globals.IN_BATTLE && Globals.STATS_CHANGED) {
+                    if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED) {
                         if (field.Equals("Max_SP")) {
                             if (character)
                                 this.Content = (Globals.CHARACTER_TABLE[slot - 1].Read("DLV") * 100).ToString();
@@ -958,7 +958,7 @@ namespace Dragoon_Modifier {
 
             public void UpdateBar(Object source, ElapsedEventArgs e) {
                 this.Dispatcher.BeginInvoke(new Action(() => {
-                    if (Globals.IN_BATTLE && Globals.STATS_CHANGED) {
+                    if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED) {
                         double minX, maxX, valueX;
                         if (Double.TryParse(field, out valueX)) {
                             this.Value = valueX;
@@ -1347,7 +1347,7 @@ namespace Dragoon_Modifier {
 
             public void UpdateBar(Object source, ElapsedEventArgs e) {
                 this.Dispatcher.BeginInvoke(new Action(() => {
-                    if (Globals.IN_BATTLE && Globals.STATS_CHANGED) {
+                    if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED) {
                         double minX, maxX, valueX;
                         if (Double.TryParse(field, out valueX)) {
                             this.Value = valueX;
