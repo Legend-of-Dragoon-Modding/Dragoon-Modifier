@@ -59,9 +59,6 @@ namespace Dragoon_Modifier {
         287, 309, 329, 332, 349, 357, 384, 435, 479, 515, 530, 564, 619, 624}; // Some maps missing??
         //Icon Changes
         public bool wroteIcons = false;
-        //Damage Cap
-        public bool firstDamageCapRemoval = false;
-        public int lastItemUsedDamageCap = 0;
         //Solo/Duo Mode
         public bool addSoloPartyMembers = false;
         public bool alwaysAddSoloPartyMembers = false;
@@ -87,8 +84,6 @@ namespace Dragoon_Modifier {
         public bool hpCapBreakOnBattleEntry = false;
         public bool maxHPTableLoaded = false;
         public ushort[,] maxHPTable = new ushort[9, 60];
-        //Aspect Ratio
-        public bool aspectRatioOnBattleEntry = false;
         //Kill BGM
         public bool killBGMField = false;
         public bool killBGMBattle = false;
@@ -103,10 +98,6 @@ namespace Dragoon_Modifier {
         public byte eleBombElement = 0;
         public bool eleBombChange = false;
         public ushort[] eleBombOldElement = { 0, 0, 0, 0, 0 };
-        //No Dragoon Mode
-        public bool noDragoonModeOnBattleEntry = false;
-        //Half SP
-        public bool halfSPOnBattleEntry = false;
         //Addition Changes
         public bool damageIncreaseOnBattleEntry = false;
         //No HP Decay Soul Eater
@@ -122,7 +113,6 @@ namespace Dragoon_Modifier {
         public bool[] lGuardStateMDF = new bool[3];
         public bool[] sGuardStatusDF = new bool[3];
         public bool[] sGuardStatusMDF = new bool[3];
-        public int bossSPLoss = 0;
         //Reader Mode
         public bool readerRemoveUIOnBattleEntry = false;
         public bool partyMenu = false;
@@ -359,12 +349,6 @@ namespace Dragoon_Modifier {
         public ComboBox[] battleRow = new ComboBox[9];
         public ComboBox[] battleRowBoost = new ComboBox[9];
         public bool battleRowsOnBattleEntry = false;
-        //Black Room
-        public bool blackRoomOnBattleEntry = false;
-        //No Escape
-        public bool noEscapeOnBattleEntry = false;
-        //Hell Mode SP Reduction
-        public bool bossSPLossOnBattleEntry = false;
         // * Turn Battle
         public bool eatbOnBattleEntry = false;
         public bool qtbOnBattleEntry = false;
@@ -1232,8 +1216,6 @@ namespace Dragoon_Modifier {
                         ElementalBomb();
                     if (Globals.CheckDMScript("btnDamageTracker"))
                         DamageTracker();
-                    if (Globals.DIFFICULTY_MODE.Contains("Hell"))
-                        BossSPLoss();
                     if (!Globals.DIFFICULTY_MODE.Equals("Normal"))
                         EquipChangesBattle();
                     if (Globals.CheckDMScript("btnRows") && !Globals.DIFFICULTY_MODE.Contains("Hell"))
@@ -2034,7 +2016,9 @@ namespace Dragoon_Modifier {
         #endregion
 
         #region Scripts
+
         #region Field
+
         #region Save Anywhere
         public void SaveAnywhere() {
             if (Globals.GAME_STATE != 1) {
@@ -2461,6 +2445,7 @@ namespace Dragoon_Modifier {
         #endregion
 
         #region Both
+
         #region Battle Stats Display
         public void FieldUI() {
             lblEncounter.Text = "Encounter Value: " + Globals.BATTLE_VALUE;
@@ -3551,6 +3536,7 @@ namespace Dragoon_Modifier {
         #endregion
 
         #region Ultimate Boss
+
         #region Field
         public void UltimateBossField() {
             if ((Globals.MAP >= 393 && Globals.MAP <= 405) && Globals.CHAPTER == 4 && !ultimateBossOnBattleEntry) {
@@ -6100,11 +6086,12 @@ namespace Dragoon_Modifier {
             emulator.WriteShort("ITEM_CAP", 808);
         }
         #endregion
+
         #endregion
+
         #endregion
 
         #region Battle
-       
 
         #region Dragoon Changes
         public void ChangeDragoonDescription() {
@@ -6962,128 +6949,6 @@ namespace Dragoon_Modifier {
         }
         #endregion
 
-        #region Boss SP Loss
-        public void BossSPLoss() {
-            if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED && !bossSPLossOnBattleEntry) {
-                if (Globals.ENCOUNTER_ID == 384) //Marsh Commander
-                    bossSPLoss = 500;
-                else if (Globals.ENCOUNTER_ID == 386) //Fruegel I
-                    bossSPLoss = 250;
-                else if (Globals.ENCOUNTER_ID == 414) //Urobolus
-                    bossSPLoss = 750;
-                else if (Globals.ENCOUNTER_ID == 388) //Kongol I
-                    bossSPLoss = 2000;
-                else if (Globals.ENCOUNTER_ID == 408) //Virage I
-                    bossSPLoss = 250;
-                else if (Globals.ENCOUNTER_ID == 415) //Fire Bird
-                    bossSPLoss = 1000;
-                else if (Globals.ENCOUNTER_ID == 393) //Greham + Ferybrand
-                    bossSPLoss = 1500;
-                else if (Globals.ENCOUNTER_ID == 412) //Drake the Bandit
-                    bossSPLoss = -3;
-                else if (Globals.ENCOUNTER_ID == 413) //Jiango
-                    bossSPLoss = 500;
-                else if (Globals.ENCOUNTER_ID == 387) //Fruegel II
-                    bossSPLoss = 1500;
-                else if (Globals.ENCOUNTER_ID == 390) //Dragoon Doel
-                    bossSPLoss = -4;
-                else if (Globals.ENCOUNTER_ID == 402) //Mappi + Craft Theif
-                    bossSPLoss = 1000;
-                else if (Globals.ENCOUNTER_ID == 409) //Virage II
-                    bossSPLoss = 1000;
-                else if (Globals.ENCOUNTER_ID == 403) //Gehrich + Mappi
-                    bossSPLoss = 2000;
-                else if (Globals.ENCOUNTER_ID == 396) //Lenus
-                    bossSPLoss = -2;
-                else if (Globals.ENCOUNTER_ID == 417) //Ghost Commander
-                    bossSPLoss = 1000;
-                else if (Globals.ENCOUNTER_ID == 397) //Lenus II
-                    bossSPLoss = -4;
-                else if (Globals.ENCOUNTER_ID == 410) //S Virage I
-                    bossSPLoss = 2000;
-                else if (Globals.ENCOUNTER_ID == 416) //Grand Jewel
-                    bossSPLoss = 1000;
-                else if (Globals.ENCOUNTER_ID == 394) //Divine Dragon
-                    bossSPLoss = -2;
-                else if (Globals.ENCOUNTER_ID == 392) //Lloyd
-                    bossSPLoss = -5;
-                else if (Globals.ENCOUNTER_ID == 423) //Polter Set
-                    bossSPLoss = 500;
-                else if (Globals.ENCOUNTER_ID == 432) //Last Kraken
-                    bossSPLoss = -1;
-                else if (Globals.ENCOUNTER_ID == 430) //Executioners
-                    bossSPLoss = 1000;
-                else if (Globals.ENCOUNTER_ID == 431) //Zackwell
-                    bossSPLoss = 1000;
-                else if (Globals.ENCOUNTER_ID == 433) //Imago
-                    bossSPLoss = 1000;
-                else
-                    bossSPLoss = 0;
-
-                if (Globals.CheckDMScript("btnUltimateBoss"))
-                    bossSPLoss = 0;
-
-                bossSPLossOnBattleEntry = true;
-            } else {
-                if (Globals.GAME_STATE != 1 && bossSPLossOnBattleEntry) {
-                    if (bossSPLoss != 0) {
-                        for (int i = 0; i < 9; i++) {
-                            int currentTotalSP = emulator.ReadShort("CHAR_TABLE", (i * 0x2C) + 0xE);
-                            int newSP = 0;
-                            if (bossSPLoss > 0)
-                                newSP = Math.Max(currentTotalSP - bossSPLoss, 0);
-                            else if (bossSPLoss == -1)
-                                newSP = (int) Math.Max(Math.Round(currentTotalSP / 1.2), 0);
-                            else if (bossSPLoss == -2)
-                                newSP = Math.Max(currentTotalSP / 2, 0);
-                            else if (bossSPLoss == -3)
-                                newSP = Math.Max(currentTotalSP / 2 - 500, 0);
-                            else if (bossSPLoss == -4)
-                                newSP = Math.Max(currentTotalSP / 4, 0);
-                            else if (bossSPLoss == -5)
-                                newSP = Math.Max(currentTotalSP / 4 - 500, 0);
-
-                            emulator.WriteShort("CHAR_TABLE", (ushort) newSP, (i * 0x2C) + 0xE);
-
-                            byte dragoonLevel = emulator.ReadByte("CHAR_TABLE", (i * 0x2C) + 0x13);
-
-                            if (i == 0 || i == 3) {
-                                if (newSP < 20000 && dragoonLevel >= 5)
-                                    emulator.WriteByte("CHAR_TABLE", 4, (i * 0x2C) + 0x13);
-                                if (newSP < 12000 && dragoonLevel >= 4)
-                                    emulator.WriteByte("CHAR_TABLE", 3, (i * 0x2C) + 0x13);
-                                if (newSP < 6000 && dragoonLevel >= 3)
-                                    emulator.WriteByte("CHAR_TABLE", 2, (i * 0x2C) + 0x13);
-                                if (newSP < 1200 && dragoonLevel >= 2)
-                                    emulator.WriteByte("CHAR_TABLE", 1, (i * 0x2C) + 0x13);
-                            } else if (i == 6 || i == 7) {
-                                if (newSP < 20000 && dragoonLevel >= 5)
-                                    emulator.WriteByte("CHAR_TABLE", 4, (i * 0x2C) + 0x13);
-                                if (newSP < 12000 && dragoonLevel >= 4)
-                                    emulator.WriteByte("CHAR_TABLE", 3, (i * 0x2C) + 0x13);
-                                if (newSP < 2000 && dragoonLevel >= 3)
-                                    emulator.WriteByte("CHAR_TABLE", 2, (i * 0x2C) + 0x13);
-                                if (newSP < 1200 && dragoonLevel >= 2)
-                                    emulator.WriteByte("CHAR_TABLE", 1, (i * 0x2C) + 0x13);
-                            } else {
-                                if (newSP < 20000 && dragoonLevel >= 5)
-                                    emulator.WriteByte("CHAR_TABLE", 4, (i * 0x2C) + 0x13);
-                                if (newSP < 12000 && dragoonLevel >= 4)
-                                    emulator.WriteByte("CHAR_TABLE", 3, (i * 0x2C) + 0x13);
-                                if (newSP < 6000 && dragoonLevel >= 3)
-                                    emulator.WriteByte("CHAR_TABLE", 2, (i * 0x2C) + 0x13);
-                                if (newSP < 1000 && dragoonLevel >= 2)
-                                    emulator.WriteByte("CHAR_TABLE", 1, (i * 0x2C) + 0x13);
-                            }
-                        }
-                    }
-                    bossSPLossOnBattleEntry = false;
-                }
-            }
-        }
-        #endregion
-
-
         #region * Turn Battle
         public void EATB() {
             this.Dispatcher.BeginInvoke(new Action(() => {
@@ -7415,7 +7280,9 @@ namespace Dragoon_Modifier {
             }
         }
         #endregion
+
         #endregion
+
         #endregion
 
         #region Settings
