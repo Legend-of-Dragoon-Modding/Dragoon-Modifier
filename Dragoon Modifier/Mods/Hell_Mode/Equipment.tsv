@@ -50,30 +50,30 @@ Scale Armor	Armor	Dart, Lavitz	Armor						8	8														50
 Chain Mail	Armor	Dart, Lavitz	Armor						20	24														150
 Plate Mail	Armor	Dart, Lavitz	Armor						27	20														200
 Saint Armor	Armor	Dart, Lavitz	Armor						34	34									sp_p_hit		20		Gain 20 SP when<LINE>attacked<LINE>physically.	300
-Red DG Armor	Armor	Dart	Armor						41	40							Fire						Nullifies damage<LINE>from fire-based<LINE>attacks.	800
-Jade DG Armor	Armor	Lavitz	Armor						54	27							Wind						Nullifies damage<LINE>from wind-based<LINE>attacks.	800
+Red DG Armor	Armor	Dart	Armor						41	40						Fire							Nullifies damage<LINE>from fire-based<LINE>attacks.	800
+Jade DG Armor	Armor	Lavitz	Armor						54	27						Wind							Nullifies damage<LINE>from wind-based<LINE>attacks.	800
 Lion Fur	Armor	Kongol	Loincloth						46	20														150
 Breast Plate	Armor	Kongol	Breastplate						59	14														250
 Giganto Armor	Armor	Kongol	Armor						75	26									sp_p_hit		20		Gain 20 SP when<LINE>attacked<LINE>physically.	400
-Gold DG Armor	Armor	Kongol	Armor						88	23							Earth						Nullifies damage<LINE>from earth-based<LINE>attacks.	800
+Gold DG Armor	Armor	Kongol	Armor						88	23						Earth							Nullifies damage<LINE>from earth-based<LINE>attacks.	800
 Disciple Vest	Armor	Haschel	Warrior Dress						13	8				10										60
 Warrior Dress	Armor	Haschel	Warrior Dress						25	23				20										150
 Master's Vest	Armor	Haschel	Warrior Dress						30	29				10					sp_p_hit		20		Gain 20 SP when<LINE>attacked<LINE>physically.	250
 Energy Girdle	Armor	Haschel	Warrior Dress						37	26				10					sp_multi		50		Attacks generate<LINE>50% more SP.	300
-Violet DG Armor	Armor	Haschel	Warrior Dress						45	40				10	10		Thunder						Nullifies damage<LINE>from thunder-based<LINE>attacks.	800
+Violet DG Armor	Armor	Haschel	Warrior Dress						45	40				10	10	Thunder							Nullifies damage<LINE>from thunder-based<LINE>attacks.	800
 Clothes	Armor	Female	Robe						4	5				5	5									20
 Leather Jacket	Armor	Female	Robe						7	12				5	5									50
 Silver Vest	Armor	Female	Robe						13	27				10	5									150
 Sparkle Dress	Armor	Female	Robe						19	45				5	5				sp_p_hit		20		Gain 20 SP when<LINE>attacked<LINE>physically.	200
 Robe	Armor	Female	Robe						25	35				5	5				sp_m_hit		20		Gain 20 SP when<LINE>magically attacked.	300
-Silver DG Armor	Armor	Shana	Armor						27	80				5	5		Light						Nullifies damage<LINE>from light-based<LINE>attacks.	800
-Dark DG Armor	Armor	Rose	Armor						41	42				5	5		Dark						Nullifies damage<LINE>attacks.	800
-Blue DG Armor	Armor	Meru	Armor						30	54				5	5		Water						Nullifies damage<LINE>from water-based<LINE>attacks.	800
+Silver DG Armor	Armor	Shana	Armor						27	80				5	5	Light							Nullifies damage<LINE>from light-based<LINE>attacks.	800
+Dark DG Armor	Armor	Rose	Armor						41	42				5	5	Dark							Nullifies damage<LINE>attacks.	800
+Blue DG Armor	Armor	Meru	Armor						30	54				5	5	Water							Nullifies damage<LINE>from water-based<LINE>attacks.	800
 Armor of Yore	Armor	Dart, Lavitz	Armor						35	35								Poison, Stun, Arm Blocking					Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.	500
 Satori Vest	Armor	Haschel	Warrior Dress						40	31				10				Poison, Stun, Arm Blocking					Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.	500
 Rainbow Dress	Armor	Female	Robe						32	55				5	5			Poison, Stun, Arm Blocking					Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.	500
 Angel Robe	Armor	Female	Robe						10	20				5	5					revive	40		40% chance of<LINE>reviving from<LINE>death.	500
-Armor of Legend	Armor	All	Armor						127					50									Greatly reduces<LINE>damage from<LINE>physical attacks.	10000
+Armor of Legend	Armor	All	Armor						127														Greatly reduces<LINE>damage from<LINE>physical attacks.	10000
 																								2
 Bandana	Helm	Male	Bandana					3				100	100											10
 Sallet	Helm	Male	Helm					8				110	110										Increases hit<LINE>chance of physical<LINE>attacks by 10%.	40
@@ -88,7 +88,7 @@ Jeweled Crown	Helm	Shana, Meru	Crown					42		5		100	100						sp_m_hit		20		Gain 
 Rose's Hair Band	Helm	Rose	Bandana					36				100	100									death_res	Grants immunity<LINE>to instant death.	250
 																								2
 Phoenix Plume	Helm	All	Helm					30		10		100	100					Bewitchment, Confusion, Fear, Dispirit					Avoids bewitchment,<LINE>confusion, fear,<LINE>and dispiriting.	600
-Legend Casque	Helm	All	Helm					50		127		100	100		50								Greatly reduces<LINE>damage from<LINE>magical attacks.	10000
+Legend Casque	Helm	All	Helm					50		70		100	100										Greatly reduces<LINE>damage from<LINE>magical attacks.	10000
 Dragon Helm	Helm	All	Helm					50	10			100	100							hp_multi	50		Raises maximum<LINE>HP 50%.	7500
 Magical Hat	Helm	All	Hat					50		10		100	100							mp_multi	50		Raises maximum<LINE>MP 50%.	500
 																								2
@@ -161,22 +161,22 @@ Sabre	Weapon	Rose	Sword				70																	2
 Spirit Eater	Weapon	Dart	Sword				75	50															Uses 35 SP per turn<LINE>unless full.	2
 Harpoon	Weapon	Lavitz	Spear				100																Powers up Dragoon<LINE>by using more SP.<LINE>Speed down on exit.	2
 Element Arrow	Weapon	Shana	Bow				50	50															Elemental Shift.<LINE>Adds magic for 100G<LINE>every 3 turns.	2
-Dragon Beater	Weapon	Rose	Sword				127																Enhances Dragoon<LINE>magic.	2
+Dragon Beater	Weapon	Rose	Sword				130																Enhances Dragoon<LINE>magic.	2
 Battery Glove	Weapon	Haschel	Boxing Glove				80	20															Unleashes powerful<LINE>physical attack<LINE>every 7 turns.	2
 Jeweled Hammer	Weapon	Meru	Hammer				40	40															Enhances Dragoon<LINE>magic.	2
 Giant Axe	Weapon	Kongol	Axe				100	10															Casts guard<LINE>periodically.	2
-Soa's Light	Weapon	All	Bag				127	127															Siphons DF & MDF<LINE>from others. 100 SP per turn only. 	2
+Soa's Light	Weapon	All	Bag				190	140															Siphons DF & MDF<LINE>from others. 100 SP per turn only. 	2
 Fake Legend Casque	Helm	All	Helm							30		100	100										30% Chance to add 40MDF when guarding.	2
-Soa's Helm	Helm	All	Helm					127				100	100										Siphons AT from <LINE>others. Recovers 20%MP.	2
+Soa's Helm	Helm	All	Helm							200		100	100							mp_regen	20		Siphons AT from <LINE>others. Recovers 20%MP.	2
 Fake Legend Armor	Armor	All	Armor						30														30% Chance to add 40DF when guarding.	2
 Divine DG Armor	Armor	All	Armor						50	50													20 SP and 10 MP on<LINE>all hits.	2
-Soa's Armor	Armor	All	Armor				127																Siphons MAT from<LINE>others. Recovers 20%HP. 	2
+Soa's Armor	Armor	All	Armor						190											hp_regen	20		Siphons MAT from<LINE>others. Recovers 20%HP. 	2
 Lloyd's Boots	Boots	All	Boots								15			15	15								Lloyd's favorite<LINE>pair of boots.	2
 Winged Shoes	Boots	All	Shoes								25												Shoes with wings.	2
 Soa's Greaves	Boots	All	Kneepiece								40			40	40								Siphons SPD from<LINE>others.	2
-Heal Ring	Accessory	All	Ring																				Heals 7% HP/MP and<LINE>7 SP.	2
-Soa's Sash	Accessory	All	Ring																				Siphons SP gain fromothers.	2
-Soa's Ahnk	Accessory	All	Pin																				Revives always but<LINE>sacrifies another<LINE>party member.	2
+Heal Ring	Accessory	All	Ring																	hp_regen, mp_regen, sp_regen	7		Heals 7% HP/MP and<LINE>7 SP.	2
+Soa's Sash	Accessory	All	Ring																sp_multi		100		Siphons SP gain fromothers.	2
+Soa's Ahnk	Accessory	All	Pin																	revive	100		Revives always but<LINE>sacrifies another<LINE>party member.	2
 Soa's Health Ring	Accessory	All	Ring																				Siphons Max HP from<LINE>others but doubles<LINE>own.	2
 Soa's Mage Ring	Accessory	All	Ring																				Siphons Max MP from<LINE>others but triples<LINE>own.	2
 Soa's Shield Ring	Accessory	All	Ring																				Siphons accuracy<LINE>from others. Dies onhit.	2
