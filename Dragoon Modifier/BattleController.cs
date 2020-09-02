@@ -34,6 +34,22 @@ namespace Dragoon_Modifier {
         static int shadowCutterBuff = 9;
         static int morningStarBuff = -20;
 
+        // Equipment variables
+        static byte spiritEaterSlot = 0;
+        static bool spiritEaterCheck = false;
+        static byte harpoonSlot = 0;
+        static bool harpoonCheck = false;
+        static byte dragonBeaterSlot = 0;
+        static byte batteryGloveSlot = 0;
+        static byte batteryGloveLastAction = 0;
+        static byte batteryGloveCharge = 0;
+        static byte giantAxeSlot = 0;
+        static byte giantAxeLastAction = 0;
+        static byte fakeLegendCasqueSlot = 0;
+        static bool[] fakeLegendCasqueCheck = { false, false, false };
+        static byte fakeLegendArmorSlot = 0;
+        static bool[] fakeLegendArmorCheck = { false, false, false };
+
         public static void Run(Emulator emulator, Dictionary<string, int> uiCombo) {
             while (Constants.RUN) {
                 try {
@@ -62,12 +78,18 @@ namespace Dragoon_Modifier {
                             if (Globals.CheckDMScript("btnRemoveCaps")) {
                                 RemoveDamageCap(emulator);
                             }
+                            if (difficulty != "Normal") {
+                                EquipRun(emulator);
+                            }
                         }
                     } else if (Globals.GAME_STATE == 7) {   // Battle result screen
                         if (Globals.STATS_CHANGED) {
                             ReduceSP(emulator);
                             ItemFieldChanges(emulator);
                             CharacterFieldChanges(emulator);
+                            if (Globals.DIFFICULTY_MODE != "Normal" && Globals.CHAPTER >= 3) {
+
+                            }
                             Globals.STATS_CHANGED = false;
                         }
                     } else if (Globals.GAME_STATE == 0) {   // Field
@@ -129,7 +151,7 @@ namespace Dragoon_Modifier {
             } else {
                 bossSPLoss = 0;
             }
-            while (stopWatch.ElapsedMilliseconds < 3500) {
+            while (stopWatch.ElapsedMilliseconds < 4500) {
                 if (Globals.GAME_STATE != 1) {
                     stopWatch.Stop();
                     return;
@@ -1559,10 +1581,11 @@ namespace Dragoon_Modifier {
         #region Hard/Hell Mode specific
 
         public static void HardHellModeSetup(Emulator emulator) {
+            EquipChangesSetup(emulator);
             if (difficulty.Contains("Hell")) {
                 HellDragoonChanges(emulator);
             }
-            if (difficulty == "Hell") {
+            if (difficulty.Equals("Hell")) {
                 ApplyNoEscape(emulator);
             }
         }
@@ -1572,12 +1595,16 @@ namespace Dragoon_Modifier {
             if (Globals.CheckDMScript("btnBlackRoom")) {
                 if (!((Globals.MAP >= 5 && Globals.MAP <= 7) || (Globals.MAP >= 624 && Globals.MAP <= 625))) {
                     for (int i = 0; i < 3; i++) {
-                        emulator.WriteByte("NO_ESCAPE", 8, (Globals.MONSTER_SIZE + i) * 0x20);
+                        byte noEscape = emulator.ReadByte("NO_ESCAPE", (Globals.MONSTER_SIZE + i) * 0x20);
+                        noEscape |= 1 << 3;
+                        emulator.WriteByte("NO_ESCAPE", noEscape, (Globals.MONSTER_SIZE + i) * 0x20);
                     }
                 }
             } else {
                 for (int i = 0; i < 3; i++) {
-                    emulator.WriteByte("NO_ESCAPE", 8, (Globals.MONSTER_SIZE + i) * 0x20);
+                    byte noEscape = emulator.ReadByte("NO_ESCAPE", (Globals.MONSTER_SIZE + i) * 0x20);
+                    noEscape |= 1 << 3;
+                    emulator.WriteByte("NO_ESCAPE", noEscape, (Globals.MONSTER_SIZE + i) * 0x20);
                 }
             }
         }
@@ -1799,18 +1826,22 @@ namespace Dragoon_Modifier {
                 if (Globals.CHAPTER >= 3) {
                     if (Globals.CHARACTER_TABLE[slot].Read("Weapon") == 28) { //Sparkle Arrow
                         Globals.CHARACTER_TABLE[slot].Write("AT", (Globals.CHARACTER_TABLE[slot].Read("AT") + 8));
+                        Globals.CHARACTER_TABLE[slot].Write("OG_AT", (Globals.CHARACTER_TABLE[slot].Read("AT")));
                     }
 
                     if (Globals.CHARACTER_TABLE[slot].Read("Weapon") == 2) { //Heat Blade
                         Globals.CHARACTER_TABLE[slot].Write("AT", (Globals.CHARACTER_TABLE[slot].Read("AT") + 7));
+                        Globals.CHARACTER_TABLE[slot].Write("OG_AT", (Globals.CHARACTER_TABLE[slot].Read("AT")));
                     }
 
                     if (Globals.CHARACTER_TABLE[slot].Read("Weapon") == 14) { //Shadow Cutter
                         Globals.CHARACTER_TABLE[slot].Write("AT", (Globals.CHARACTER_TABLE[slot].Read("AT") + 9));
+                        Globals.CHARACTER_TABLE[slot].Write("OG_AT", (Globals.CHARACTER_TABLE[slot].Read("AT")));
                     }
 
                     if (Globals.CHARACTER_TABLE[slot].Read("Weapon") == 35) { //Morning Star
                         Globals.CHARACTER_TABLE[slot].Write("AT", (Globals.CHARACTER_TABLE[slot].Read("AT") - 20));
+                        Globals.CHARACTER_TABLE[slot].Write("OG_AT", (Globals.CHARACTER_TABLE[slot].Read("AT")));
                         Globals.CHARACTER_TABLE[slot].Write("Element", 1);
                     }
                 }
@@ -1854,165 +1885,170 @@ namespace Dragoon_Modifier {
         }
 
         public static void SpecialEquipSetup(Emulator emulator) {
-            soasSiphonSlot = -1;
-            for (int i = 0; i < 3; i++) {
-                if (Globals.PARTY_SLOT[i] < 9) {
-                    long p = Globals.CHAR_ADDRESS[i];
+            //soasSiphonSlot = -1;
+            spiritEaterSlot = 0;
+            spiritEaterCheck = false;
+            harpoonSlot = 0;
+            harpoonCheck = false;
+            dragonBeaterSlot = 0;
+            batteryGloveSlot = 0;
+            batteryGloveLastAction = 0;
+            batteryGloveCharge = 0;
+            giantAxeSlot = 0;
+            giantAxeLastAction = 0;
+            fakeLegendCasqueSlot = 0;
+            fakeLegendCasqueCheck = new bool[] { false, false, false };
+            fakeLegendArmorSlot = 0;
+            fakeLegendArmorCheck = new bool[] { false, false, false };
+
+            for (int slot = 0; slot < 3; slot++) {
+                if (Globals.PARTY_SLOT[slot] > 8) {
+                    break;
+                }
+                if (Globals.PARTY_SLOT[slot] < 9) {
+                    long p = Globals.CHAR_ADDRESS[slot];
                     int s = 0;
-                    if (Globals.CHARACTER_TABLE[i].Read("Accessory") == 149) { //Phantom Shield
-                        s = Globals.CHARACTER_TABLE[i].Read("DF");
-                        if (Globals.CHARACTER_TABLE[i].Read("Armor") == 74) {
-                            Globals.CHARACTER_TABLE[i].Write("DF", (Math.Ceiling(s * 1.1)));
+                    if (Globals.CHARACTER_TABLE[slot].Read("Accessory") == 149) { //Phantom Shield
+                        s = Globals.CHARACTER_TABLE[slot].Read("DF");
+                        if (Globals.CHARACTER_TABLE[slot].Read("Armor") == 74) {
+                            Globals.CHARACTER_TABLE[slot].Write("DF", (Math.Ceiling(s * 1.1)));
+                            Globals.CHARACTER_TABLE[slot].Write("OG_DF", (Math.Ceiling(s * 1.1)));
                         } else {
-                            Globals.CHARACTER_TABLE[i].Write("DF", (Math.Ceiling(s * 0.7)));
+                            Globals.CHARACTER_TABLE[slot].Write("DF", (Math.Ceiling(s * 0.7)));
+                            Globals.CHARACTER_TABLE[slot].Write("OG_DF", (Math.Ceiling(s * 0.7)));
                         }
-                        s = Globals.CHARACTER_TABLE[i].Read("MDF");
-                        if (Globals.CHARACTER_TABLE[i].Read("Helmet") == 89) {
-                            Globals.CHARACTER_TABLE[i].Write("MDF", (Math.Ceiling(s * 1.1)));
+                        s = Globals.CHARACTER_TABLE[slot].Read("MDF");
+                        if (Globals.CHARACTER_TABLE[slot].Read("Helmet") == 89) {
+                            Globals.CHARACTER_TABLE[slot].Write("MDF", (Math.Ceiling(s * 1.1)));
+                            Globals.CHARACTER_TABLE[slot].Write("OG_MDF", (Math.Ceiling(s * 1.1)));
                         } else {
-                            Globals.CHARACTER_TABLE[i].Write("MDF", (Math.Ceiling(s * 0.7)));
+                            Globals.CHARACTER_TABLE[slot].Write("MDF", (Math.Ceiling(s * 0.7)));
+                            Globals.CHARACTER_TABLE[slot].Write("OG_MDF", (Math.Ceiling(s * 0.7)));
                         }
                     }
 
-                    if (Globals.CHARACTER_TABLE[i].Read("Accessory") == 150) { //Dragon Shield
-                        s = Globals.CHARACTER_TABLE[i].Read("DF");
-                        if (Globals.CHARACTER_TABLE[i].Read("Armor") == 74) {
-                            Globals.CHARACTER_TABLE[i].Write("DF", (Math.Ceiling(s * 1.2)));
+                    if (Globals.CHARACTER_TABLE[slot].Read("Accessory") == 150) { //Dragon Shield
+                        s = Globals.CHARACTER_TABLE[slot].Read("DF");
+                        if (Globals.CHARACTER_TABLE[slot].Read("Armor") == 74) {
+                            Globals.CHARACTER_TABLE[slot].Write("DF", (Math.Ceiling(s * 1.2)));
+                            Globals.CHARACTER_TABLE[slot].Write("OG_DF", (Math.Ceiling(s * 1.2)));
                         } else {
-                            Globals.CHARACTER_TABLE[i].Write("DF", (Math.Ceiling(s * 0.7)));
+                            Globals.CHARACTER_TABLE[slot].Write("DF", (Math.Ceiling(s * 0.7)));
+                            Globals.CHARACTER_TABLE[slot].Write("OG_DF", (Math.Ceiling(s * 0.7)));
                         }
                     }
 
-                    if (Globals.CHARACTER_TABLE[i].Read("Accessory") == 151) { //Angel Scarf
-                        s = Globals.CHARACTER_TABLE[i].Read("MDF");
-                        if (Globals.CHARACTER_TABLE[i].Read("Helmet") == 89) {
-                            Globals.CHARACTER_TABLE[i].Write("MDF", (Math.Ceiling(s * 1.2)));
+                    if (Globals.CHARACTER_TABLE[slot].Read("Accessory") == 151) { //Angel Scarf
+                        s = Globals.CHARACTER_TABLE[slot].Read("MDF");
+                        if (Globals.CHARACTER_TABLE[slot].Read("Helmet") == 89) {
+                            Globals.CHARACTER_TABLE[slot].Write("MDF", (Math.Ceiling(s * 1.2)));
+                            Globals.CHARACTER_TABLE[slot].Write("OG_MDF", (Math.Ceiling(s * 1.2)));
                         } else {
-                            Globals.CHARACTER_TABLE[i].Write("MDF", (Math.Ceiling(s * 0.7)));
+                            Globals.CHARACTER_TABLE[slot].Write("MDF", (Math.Ceiling(s * 0.7)));
+                            Globals.CHARACTER_TABLE[slot].Write("OG_MDF", (Math.Ceiling(s * 0.7)));
                         }
                     }
 
-                    if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 159 && Globals.PARTY_SLOT[i] == 0) { //Spirit Eater
-                        spiritEaterSP = 35;
-                        if (Globals.DIFFICULTY_MODE.Contains("Hell")) {
-                            spiritEaterSP = 15;
-                        }
-                        spiritEaterSaveSP = Globals.CHARACTER_TABLE[i].Read("SP_Regen");
-                        if (spiritEaterSaveSP < spiritEaterSP) {
-                            Globals.CHARACTER_TABLE[i].Write("SP_Regen", (65536 - (spiritEaterSP - spiritEaterSaveSP)));
-                        } else {
-                            Globals.CHARACTER_TABLE[i].Write("SP_Regen", (spiritEaterSaveSP - spiritEaterSP));
-                        }
+                    if (Globals.CHARACTER_TABLE[slot].Read("Weapon") == 159 && Globals.PARTY_SLOT[slot] == 0) { //Spirit Eater
+                        spiritEaterSlot |= (byte) (1 << slot);
                     }
 
-                    if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 161 && (Globals.PARTY_SLOT[i] == 2 || Globals.PARTY_SLOT[i] == 8)) { //Element Arrow
-                        Globals.CHARACTER_TABLE[i].Write("Element", elementArrowElement);
-                        elementArrowLastAction = 255;
-                        elementArrowTurns = 0;
+                    // Element Arrow
+
+                    if (Globals.CHARACTER_TABLE[slot].Read("Weapon") == 162 && Globals.PARTY_SLOT[slot] == 3) { //Dragon Beater
+                        dragonBeaterSlot |= (byte) (1 << slot);
                     }
 
-                    if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 163 && Globals.PARTY_SLOT[i] == 4) { //Battery Glove
-                        gloveLastAction = 0;
-                        gloveCharge = 0;
+                    if (Globals.CHARACTER_TABLE[slot].Read("Weapon") == 163 && Globals.PARTY_SLOT[slot] == 4) { //Battery Glove
+                        batteryGloveSlot |= (byte) (1 << slot);
+                        batteryGloveLastAction = 0;
+                        batteryGloveCharge = 0;
                     }
 
-                    if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 165 && Globals.PARTY_SLOT[i] == 7) { //Giant Axe
-                        axeLastAction = 0;
+                    if (Globals.CHARACTER_TABLE[slot].Read("Weapon") == 165 && Globals.PARTY_SLOT[slot] == 7) { //Giant Axe
+                        giantAxeSlot |= (byte) (1 << slot);
+                        giantAxeLastAction = 0;
                     }
 
-                    if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 166) { //Soa's Light
-                        Globals.CHARACTER_TABLE[i].Write("SP_Multi", 65436);
-                        Globals.CHARACTER_TABLE[i].Write("SP_Regen", 100);
+                    if (Globals.CHARACTER_TABLE[slot].Read("Weapon") == 166) { //Soa's Light
+                        Globals.CHARACTER_TABLE[slot].Write("SP_Multi", 65436);
+                        Globals.CHARACTER_TABLE[slot].Write("SP_Regen", 100);
                         for (int x = 0; x < 3; x++) {
-                            if (x != i && Globals.PARTY_SLOT[x] < 9) {
-                                Globals.CHARACTER_TABLE[x].Write("DF", Math.Round(Globals.CHARACTER_TABLE[i].Read("DF") * 0.7));
-                                Globals.CHARACTER_TABLE[x].Write("MDF", Math.Round(Globals.CHARACTER_TABLE[i].Read("MDF") * 0.7));
+                            if (x != slot && Globals.PARTY_SLOT[x] < 9) {
+                                Globals.CHARACTER_TABLE[x].Write("DF", Math.Round(Globals.CHARACTER_TABLE[slot].Read("DF") * 0.7));
+                                Globals.CHARACTER_TABLE[x].Write("OG_DF", Globals.CHARACTER_TABLE[slot].Read("DF"));
+                                Globals.CHARACTER_TABLE[x].Write("MDF", Math.Round(Globals.CHARACTER_TABLE[slot].Read("MDF") * 0.7));
+                                Globals.CHARACTER_TABLE[x].Write("OG_MDF", Globals.CHARACTER_TABLE[slot].Read("MDF"));
                             }
                         }
                     }
 
-                    if (Globals.CHARACTER_TABLE[i].Read("Helmet") == 168) { //Soa's Helm
+                    if (Globals.CHARACTER_TABLE[slot].Read("Helmet") == 168) { //Soa's Helm
                         for (int x = 0; x < 3; x++) {
-                            if (x != i && Globals.PARTY_SLOT[x] < 9) {
+                            if (x != slot && Globals.PARTY_SLOT[x] < 9) {
                                 Globals.CHARACTER_TABLE[x].Write("AT", Math.Round(Globals.CHARACTER_TABLE[x].Read("AT") * 0.7));
+                                Globals.CHARACTER_TABLE[x].Write("OG_AT", Globals.CHARACTER_TABLE[x].Read("AT"));
                             }
                         }
                     }
 
-                    if (Globals.CHARACTER_TABLE[i].Read("Armor") == 170) { //Divine DG Armor
-                        Globals.CHARACTER_TABLE[i].Write("SP_P_Hit", (Globals.CHARACTER_TABLE[i].Read("SP_P_Hit") + 20));
-                        Globals.CHARACTER_TABLE[i].Write("MP_P_Hit", (Globals.CHARACTER_TABLE[i].Read("MP_P_Hit") + 10));
-                        Globals.CHARACTER_TABLE[i].Write("SP_M_Hit", (Globals.CHARACTER_TABLE[i].Read("SP_M_Hit") + 20));
-                        Globals.CHARACTER_TABLE[i].Write("MP_M_Hit", (Globals.CHARACTER_TABLE[i].Read("MP_M_Hit") + 10));
+                    if (Globals.CHARACTER_TABLE[slot].Read("Armor") == 170) { //Divine DG Armor
+                        Globals.CHARACTER_TABLE[slot].Write("SP_P_Hit", (Globals.CHARACTER_TABLE[slot].Read("SP_P_Hit") + 20));
+                        Globals.CHARACTER_TABLE[slot].Write("MP_P_Hit", (Globals.CHARACTER_TABLE[slot].Read("MP_P_Hit") + 10));
+                        Globals.CHARACTER_TABLE[slot].Write("SP_M_Hit", (Globals.CHARACTER_TABLE[slot].Read("SP_M_Hit") + 20));
+                        Globals.CHARACTER_TABLE[slot].Write("MP_M_Hit", (Globals.CHARACTER_TABLE[slot].Read("MP_M_Hit") + 10));
                     }
 
-                    if (Globals.CHARACTER_TABLE[i].Read("Armor") == 171) { //Soa's Armor
+                    if (Globals.CHARACTER_TABLE[slot].Read("Armor") == 171) { //Soa's Armor
                         for (int x = 0; x < 3; x++) {
-                            if (x != i && Globals.PARTY_SLOT[x] < 9) {
+                            if (x != slot && Globals.PARTY_SLOT[x] < 9) {
                                 Globals.CHARACTER_TABLE[x].Write("MAT", Math.Round(Globals.CHARACTER_TABLE[x].Read("MAT") * 0.7));
+                                Globals.CHARACTER_TABLE[x].Write("OG_MAT", Globals.CHARACTER_TABLE[x].Read("MAT"));
                             }
                         }
                     }
 
-                    if (Globals.CHARACTER_TABLE[i].Read("Shoes") == 174) { //Soa's Greaves
+                    if (Globals.CHARACTER_TABLE[slot].Read("Shoes") == 174) { //Soa's Greaves
                         for (int x = 0; x < 3; x++) {
-                            if (x != i && Globals.PARTY_SLOT[x] < 9) {
+                            if (x != slot && Globals.PARTY_SLOT[x] < 9) {
                                 Globals.CHARACTER_TABLE[x].Write("SPD", (Globals.CHARACTER_TABLE[x].Read("SPD") - 25));
+                                Globals.CHARACTER_TABLE[x].Write("OG_SPD", Globals.CHARACTER_TABLE[x].Read("SPD"));
                             }
                         }
                     }
 
-                    if (Globals.CHARACTER_TABLE[i].Read("Accessory") == 175) { //Heal Ring
-                        if (Globals.PARTY_SLOT[i] == 2 || Globals.PARTY_SLOT[i] == 8) {
-                            recoveryRateSave = Globals.CHARACTER_TABLE[i].Read("HP_Regen");
-                        }
-                    }
+                    // Heal Ring
 
-                    if (Globals.CHARACTER_TABLE[i].Read("Accessory") == 176) { //Soa's Sash
+                    if (Globals.CHARACTER_TABLE[slot].Read("Accessory") == 176) { //Soa's Sash
                         for (int x = 0; x < 3; x++) {
-                            if (x != i && Globals.PARTY_SLOT[x] < 9) {
+                            if (x != slot && Globals.PARTY_SLOT[x] < 9) {
                                 ushort spMulti = Globals.CHARACTER_TABLE[x].Read("SP_Multi");
-                                if (spMulti == 0) {
-                                    Globals.CHARACTER_TABLE[x].Write("SP_Multi", 65486);
-                                } else {
-                                    Globals.CHARACTER_TABLE[x].Write("SP_Multi", (Globals.CHARACTER_TABLE[x].Read("SP_Multi") - 50));
-                                }
+                                Globals.CHARACTER_TABLE[x].Write("SP_Multi", (Globals.CHARACTER_TABLE[x].Read("SP_Multi") - 50));
                             }
                         }
                     }
 
-                    if (Globals.CHARACTER_TABLE[i].Read("Accessory") == 177) { //Soa's Ahnk
+                    if (Globals.CHARACTER_TABLE[slot].Read("Accessory") == 177) { //Soa's Ahnk
                         if (Globals.CheckDMScript("btnSoloMode")) {
-                            Globals.CHARACTER_TABLE[i].Write("Revive", (Globals.CHARACTER_TABLE[i].Read("Revive") - 50));
+                            Globals.CHARACTER_TABLE[slot].Write("Revive", (Globals.CHARACTER_TABLE[slot].Read("Revive") - 50));
                         }
                     }
 
-                    if (Globals.CHARACTER_TABLE[i].Read("Accessory") == 178) { //Soa's Health Ring
+                    if (Globals.CHARACTER_TABLE[slot].Read("Accessory") == 178) { //Soa's Health Ring
                         for (int x = 0; x < 3; x++) {
-                            if (x != i && Globals.PARTY_SLOT[x] < 9) {
+                            if (x != slot && Globals.PARTY_SLOT[x] < 9) {
                                 Globals.CHARACTER_TABLE[x].Write("Max_HP", Math.Round(Globals.CHARACTER_TABLE[x].Read("Max_HP") * 0.75));
 
                                 if (Globals.CHARACTER_TABLE[x].Read("HP") > Globals.CHARACTER_TABLE[x].Read("Max_HP")) {
                                     Globals.CHARACTER_TABLE[x].Write("HP", Globals.CHARACTER_TABLE[x].Read("Max_HP"));
                                 }
-                            } else {
-                                if (Globals.PARTY_SLOT[x] < 9) {
-                                    ushort maxhp = Globals.CHARACTER_TABLE[x].Read("Max_HP") * 2;
-                                    Globals.CHARACTER_TABLE[x].Write("HP", Globals.CHARACTER_TABLE[x].Read("HP") * 2);
-                                    Globals.CHARACTER_TABLE[x].Write("Max_HP", Math.Min(short.MaxValue, maxhp));
-                                    if (Globals.CHARACTER_TABLE[x].Read("HP") > Globals.CHARACTER_TABLE[x].Read("Max_HP")) {
-                                        Globals.CHARACTER_TABLE[x].Write("HP", Globals.CHARACTER_TABLE[x].Read("Max_HP"));
-                                    }
-                                }
                             }
                         }
                     }
 
-                    if (Globals.CHARACTER_TABLE[i].Read("Accessory") == 179) { //Soa's Mage Ring
-                        Globals.CHARACTER_TABLE[i].Write("MP", (Globals.CHARACTER_TABLE[i].Read("MP") * 3));
-                        Globals.CHARACTER_TABLE[i].Write("Max_MP", (Globals.CHARACTER_TABLE[i].Read("Max_MP") * 3));
+                    if (Globals.CHARACTER_TABLE[slot].Read("Accessory") == 179) { //Soa's Mage Ring
                         for (int x = 0; x < 3; x++) {
-                            if (x != i && Globals.PARTY_SLOT[x] < 9) {
+                            if (x != slot && Globals.PARTY_SLOT[x] < 9) {
                                 Globals.CHARACTER_TABLE[x].Write("MP", (ushort) Math.Round(Globals.CHARACTER_TABLE[x].Read("Max_MP") * 0.5));
 
                                 if (Globals.CHARACTER_TABLE[x].Read("MP") > Globals.CHARACTER_TABLE[x].Read("Max_MP")) {
@@ -2022,354 +2058,180 @@ namespace Dragoon_Modifier {
                         }
                     }
 
-                    if (Globals.CHARACTER_TABLE[i].Read("Accessory") == 181) { //Soa's Siphon Ring
-                        soasSiphonSlot = i;
-                        Globals.CHARACTER_TABLE[i].Write("MAT", (Globals.CHARACTER_TABLE[i].Read("MAT") * 2));
-                        Globals.CHARACTER_TABLE[i].Write("DMAT", Math.Round(Globals.CHARACTER_TABLE[i].Read("DMAT") * 0.3));
+                    if (Globals.CHARACTER_TABLE[slot].Read("Accessory") == 181) { //Soa's Siphon Ring
+                        //soasSiphonSlot = slot;
+                        Globals.CHARACTER_TABLE[slot].Write("MAT", (Globals.CHARACTER_TABLE[slot].Read("MAT") * 2));
+                        Globals.CHARACTER_TABLE[slot].Write("OG_MAT", Globals.CHARACTER_TABLE[slot].Read("MAT"));
+                        Globals.CHARACTER_TABLE[slot].Write("DMAT", Math.Round(Globals.CHARACTER_TABLE[slot].Read("DMAT") * 0.3));
                         for (int x = 0; x < 3; x++) {
-                            if (x != i && Globals.PARTY_SLOT[x] < 9) {
+                            if (x != slot && Globals.PARTY_SLOT[x] < 9) {
                                 Globals.CHARACTER_TABLE[x].Write("MAT", Math.Round(Globals.CHARACTER_TABLE[x].Read("MAT") * 0.8));
+                                Globals.CHARACTER_TABLE[x].Write("OG_MAT", Globals.CHARACTER_TABLE[x].Read("MAT"));
                             }
                         }
                     }
 
-                    if (Globals.CHARACTER_TABLE[i].Read("Armor") == 74) { //Armor of Legend
-                        if (Globals.PARTY_SLOT[i] == 0) {
-                            Globals.CHARACTER_TABLE[i].Write("DF", (Globals.CHARACTER_TABLE[i].Read("DF") + 41 - 127));
-                            Globals.CHARACTER_TABLE[i].Write("MDF", (Globals.CHARACTER_TABLE[i].Read("MDF") + 40));
-                        } else if (Globals.PARTY_SLOT[i] == 1 || Globals.PARTY_SLOT[i] == 5) {
-                            Globals.CHARACTER_TABLE[i].Write("DF", (Globals.CHARACTER_TABLE[i].Read("DF") + 54 - 127));
-                            Globals.CHARACTER_TABLE[i].Write("MDF", (Globals.CHARACTER_TABLE[i].Read("MDF") + 27));
-                        } else if (Globals.PARTY_SLOT[i] == 2 || Globals.PARTY_SLOT[i] == 8) {
-                            Globals.CHARACTER_TABLE[i].Write("DF", (Globals.CHARACTER_TABLE[i].Read("DF") + 27 - 127));
-                            Globals.CHARACTER_TABLE[i].Write("MDF", (Globals.CHARACTER_TABLE[i].Read("MDF") + 80));
-                        } else if (Globals.PARTY_SLOT[i] == 3) {
-                            Globals.CHARACTER_TABLE[i].Write("DF", (Globals.CHARACTER_TABLE[i].Read("DF") + 41 - 127));
-                            Globals.CHARACTER_TABLE[i].Write("MDF", (Globals.CHARACTER_TABLE[i].Read("MDF") + 42));
-                        } else if (Globals.PARTY_SLOT[i] == 4) {
-                            Globals.CHARACTER_TABLE[i].Write("DF", (Globals.CHARACTER_TABLE[i].Read("DF") + 45 - 127));
-                            Globals.CHARACTER_TABLE[i].Write("MDF", (Globals.CHARACTER_TABLE[i].Read("MDF") + 40));
-                        } else if (Globals.PARTY_SLOT[i] == 6) {
-                            Globals.CHARACTER_TABLE[i].Write("DF", (Globals.CHARACTER_TABLE[i].Read("DF") + 30 - 127));
-                            Globals.CHARACTER_TABLE[i].Write("MDF", (Globals.CHARACTER_TABLE[i].Read("MDF") + 54));
-                        } else if (Globals.PARTY_SLOT[i] == 7) {
-                            Globals.CHARACTER_TABLE[i].Write("DF", (Globals.CHARACTER_TABLE[i].Read("DF") + 88 - 127));
-                            Globals.CHARACTER_TABLE[i].Write("MDF", (Globals.CHARACTER_TABLE[i].Read("MDF") + 23));
+                    if (Globals.CHARACTER_TABLE[slot].Read("Armor") == 74) { //Armor of Legend
+                        if (Globals.PARTY_SLOT[slot] == 0) {
+                            Globals.CHARACTER_TABLE[slot].Write("DF", (Globals.CHARACTER_TABLE[slot].Read("DF") + 41 - 127));
+                            Globals.CHARACTER_TABLE[slot].Write("MDF", (Globals.CHARACTER_TABLE[slot].Read("MDF") + 40));
+                        } else if (Globals.PARTY_SLOT[slot] == 1 || Globals.PARTY_SLOT[slot] == 5) {
+                            Globals.CHARACTER_TABLE[slot].Write("DF", (Globals.CHARACTER_TABLE[slot].Read("DF") + 54 - 127));
+                            Globals.CHARACTER_TABLE[slot].Write("MDF", (Globals.CHARACTER_TABLE[slot].Read("MDF") + 27));
+                        } else if (Globals.PARTY_SLOT[slot] == 2 || Globals.PARTY_SLOT[slot] == 8) {
+                            Globals.CHARACTER_TABLE[slot].Write("DF", (Globals.CHARACTER_TABLE[slot].Read("DF") + 27 - 127));
+                            Globals.CHARACTER_TABLE[slot].Write("MDF", (Globals.CHARACTER_TABLE[slot].Read("MDF") + 80));
+                        } else if (Globals.PARTY_SLOT[slot] == 3) {
+                            Globals.CHARACTER_TABLE[slot].Write("DF", (Globals.CHARACTER_TABLE[slot].Read("DF") + 41 - 127));
+                            Globals.CHARACTER_TABLE[slot].Write("MDF", (Globals.CHARACTER_TABLE[slot].Read("MDF") + 42));
+                        } else if (Globals.PARTY_SLOT[slot] == 4) {
+                            Globals.CHARACTER_TABLE[slot].Write("DF", (Globals.CHARACTER_TABLE[slot].Read("DF") + 45 - 127));
+                            Globals.CHARACTER_TABLE[slot].Write("MDF", (Globals.CHARACTER_TABLE[slot].Read("MDF") + 40));
+                        } else if (Globals.PARTY_SLOT[slot] == 6) {
+                            Globals.CHARACTER_TABLE[slot].Write("DF", (Globals.CHARACTER_TABLE[slot].Read("DF") + 30 - 127));
+                            Globals.CHARACTER_TABLE[slot].Write("MDF", (Globals.CHARACTER_TABLE[slot].Read("MDF") + 54));
+                        } else if (Globals.PARTY_SLOT[slot] == 7) {
+                            Globals.CHARACTER_TABLE[slot].Write("DF", (Globals.CHARACTER_TABLE[slot].Read("DF") + 88 - 127));
+                            Globals.CHARACTER_TABLE[slot].Write("MDF", (Globals.CHARACTER_TABLE[slot].Read("MDF") + 23));
                         }
+                        Globals.CHARACTER_TABLE[slot].Write("OG_DF", Globals.CHARACTER_TABLE[slot].Read("DF"));
+                        Globals.CHARACTER_TABLE[slot].Write("OG_MDF", Globals.CHARACTER_TABLE[slot].Read("MDF"));
                     }
 
-                    if (Globals.CHARACTER_TABLE[i].Read("Accessory") == 180) { //Soa's Shield Ring
-                        Globals.CHARACTER_TABLE[i].Write("HP", 1);
-                        Globals.CHARACTER_TABLE[i].Write("Max_HP", 1);
-                        Globals.CHARACTER_TABLE[i].Write("DF", 10);
-                        Globals.CHARACTER_TABLE[i].Write("MDF", 10);
-                        Globals.CHARACTER_TABLE[i].Write("A_AV", 90);
-                        Globals.CHARACTER_TABLE[i].Write("M_AV", 90);
+                    if (Globals.CHARACTER_TABLE[slot].Read("Accessory") == 180) { //Soa's Shield Ring
+                        Globals.CHARACTER_TABLE[slot].Write("HP", 1);
+                        Globals.CHARACTER_TABLE[slot].Write("Max_HP", 1);
+                        Globals.CHARACTER_TABLE[slot].Write("DF", 10);
+                        Globals.CHARACTER_TABLE[slot].Write("MDF", 10);
+                        Globals.CHARACTER_TABLE[slot].Write("A_AV", 90);
+                        Globals.CHARACTER_TABLE[slot].Write("M_AV", 90);
                         for (int x = 0; x < 3; x++) {
-                            if (x != i && Globals.PARTY_SLOT[x] < 9) {
+                            if (x != slot && Globals.PARTY_SLOT[x] < 9) {
                                 Globals.CHARACTER_TABLE[x].Write("A_HIT", Math.Round(Globals.CHARACTER_TABLE[x].Read("A_HIT") * 0.8));
                                 Globals.CHARACTER_TABLE[x].Write("M_HIT", Math.Round(Globals.CHARACTER_TABLE[x].Read("M_HIT") * 0.8));
                             }
                         }
                     }
 
-                    if (Globals.PARTY_SLOT[i] == 7) {
-                        if (Globals.CHARACTER_TABLE[i].Read("SPD") >= 40) {
-                            Globals.CHARACTER_TABLE[i].Write("SPD", 30 + Math.Round((double) (Globals.CHARACTER_TABLE[i].Read("SPD") - 30) / 2));
+                    if (Globals.PARTY_SLOT[slot] == 7) {
+                        if (Globals.CHARACTER_TABLE[slot].Read("SPD") >= 40) {
+                            Globals.CHARACTER_TABLE[slot].Write("SPD", 30 + Math.Round((double) (Globals.CHARACTER_TABLE[slot].Read("SPD") - 30) / 2));
                         }
                     }
-
-                    guardStatusDF[i] = 0;
-                    guardStatusMDF[i] = 0;
-                    lGuardStatusDF[i] = 0;
-                    lGuardStatusMDF[i] = 0;
-                    lGuardStateDF[i] = false;
-                    lGuardStateMDF[i] = false;
-                    sGuardStatusDF[i] = false;
-                    sGuardStatusMDF[i] = false;
                 }
             }
         }
 
         public static void EquipRun(Emulator emulator) {
-            if (emulator.ReadShort("BATTLE_VALUE") == 41215 && Globals.STATS_CHANGED /*&& equipChangesLoop*/) { //Battle Loop
-                for (int i = 0; i < 3; i++) {
-                    if (Globals.PARTY_SLOT[i] < 9) {
-                        long p = Globals.CHAR_ADDRESS[i];
-                        if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 159 && Globals.PARTY_SLOT[i] == 0) { //Spirit Eater
-                            if (Globals.CHARACTER_TABLE[i].Read("SP") == (emulator.ReadByte("CHAR_TABLE", 0x13) * 100)) {
-                                Globals.CHARACTER_TABLE[i].Write("SP_Regen", spiritEaterSaveSP);
-                            } else {
-                                if (spiritEaterSaveSP < spiritEaterSP) {
-                                    Globals.CHARACTER_TABLE[i].Write("SP_Regen", (65536 - (spiritEaterSP - spiritEaterSaveSP)));
-                                } else {
-                                    Globals.CHARACTER_TABLE[i].Write("SP_Regen", (spiritEaterSaveSP - spiritEaterSP));
-                                }
-                            }
+            for (int slot = 0; slot < 3; slot++) {
+                if (Globals.PARTY_SLOT[slot] > 8) {
+                    break;
+                }
+                if ((spiritEaterSlot & ( 1 << slot)) != 0) {
+                    if (Globals.CHARACTER_TABLE[slot].Read("SP") == Globals.CURRENT_STATS[slot].DLV * 100) {
+                        Globals.CHARACTER_TABLE[slot].Write("SP_Regen", Globals.CURRENT_STATS[slot].SP_Regen - Globals.DICTIONARY.ItemList[159].Special_Ammount);
+                        spiritEaterCheck = true;
+                    } else if (spiritEaterCheck) {
+                        Globals.CHARACTER_TABLE[slot].Write("SP_Regen", Globals.CURRENT_STATS[slot].SP_Regen);
+                        spiritEaterCheck = false;
+                    }
+                }
+
+                if ((harpoonSlot & (1 << slot)) != 0) {
+                    ushort sp = Globals.CHARACTER_TABLE[slot].Read("SP");
+                    if (Globals.CHARACTER_TABLE[slot].Read("Action") == 10 && sp >= 400) {
+                        harpoonCheck = true;
+                        if (sp == 500) {
+                            emulator.WriteAOB(Globals.C_POINT - 0x388 * slot + 0xC0, "00 00 00 04");
+                            Globals.CHARACTER_TABLE[slot].Write("SP", 200);
+                            emulator.WriteByte("DRAGOON_TURNS", 2, slot * 4);
+                        } else {
+                            emulator.WriteAOB(Globals.C_POINT - 0x388 * slot + 0xC0, "00 00 00 03");
+                            Globals.CHARACTER_TABLE[slot].Write("SP", 100);
+                            emulator.WriteByte("DRAGOON_TURNS", 1, slot * 4);
                         }
+                    }
 
-                        if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 160 && (Globals.PARTY_SLOT[i] == 1 || Globals.PARTY_SLOT[i] == 5)) { //Harpoon
-                            if (Globals.CHARACTER_TABLE[i].Read("Action") == 10 && Globals.CHARACTER_TABLE[i].Read("SP") >= 400) {
-                                checkHarpoon = true;
-                                if (Globals.CHARACTER_TABLE[i].Read("SP") == 500) {
-                                    emulator.WriteAOB(p + 0xC0, "00 00 00 04");
-                                    Globals.CHARACTER_TABLE[i].Write("SP", 200);
-                                    emulator.WriteByte("DRAGOON_TURNS", 2, i * 4);
-                                } else {
-                                    emulator.WriteAOB(p + 0xC0, "00 00 00 03");
-                                    Globals.CHARACTER_TABLE[i].Write("SP", 100);
-                                    emulator.WriteByte("DRAGOON_TURNS", 1, i * 4);
-                                }
-                            }
+                    if (harpoonCheck && emulator.ReadByte("DRAGOON_TRUNS", slot * 4) == 0) {
+                        harpoonCheck = false;
+                    }
+                }
 
-                            if (emulator.ReadByte("DRAGOON_TURNS", i * 4) == 0) {
-                                checkHarpoon = false;
-                            }
-                        }
+                // Element Arrow
 
-                        if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 161 && (Globals.PARTY_SLOT[i] == 2 || Globals.PARTY_SLOT[i] == 8)) { //Element Arrow
-                            if (elementArrowLastAction != Globals.CHARACTER_TABLE[i].Read("Action")) {
-                                if (elementArrowLastAction == 8 && Globals.CHARACTER_TABLE[i].Read("Action") == 136) {
-                                    //old method ...
-                                } else {
-                                    elementArrowLastAction = Globals.CHARACTER_TABLE[i].Read("Action");
-                                    if (elementArrowLastAction == 8) {
-                                        Globals.CHARACTER_TABLE[i].Write("Element", elementArrowElement);
-                                        elementArrowTurns += 1;
-                                    } else {
-                                        if (elementArrowLastAction == 10) {
-                                            Globals.CHARACTER_TABLE[i].Write("Element", 0);
-                                        }
-                                        if (elementArrowTurns == 4) {
-                                            elementArrowTurns = 0;
-                                            if (emulator.ReadInteger("GOLD") >= 100) {
-                                                for (int x = 0; x < inventorySize; x++) {
-                                                    if (emulator.ReadByte("INVENTORY", x) == 255) {
-                                                        emulator.WriteByte("INVENTORY", elementArrowItem, x);
-                                                        emulator.WriteByte("INVENTORY_SIZE", emulator.ReadByte("INVENTORY_SIZE") + 1);
-                                                        emulator.WriteInteger("GOLD", emulator.ReadInteger("GOLD") - 100);
-                                                        break;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 162 && Globals.PARTY_SLOT[i] == 3) { //Dragon Beater
-                            if (Globals.CHARACTER_TABLE[i].Read("Action") == 136) {
-                                if (emulator.ReadShort("DAMAGE_SLOT1") != 0) {
-                                    emulator.WriteShort(p, (ushort) Math.Min(Globals.CHARACTER_TABLE[i].Read("HP") + Math.Round(emulator.ReadShort("DAMAGE_SLOT1") * 0.02) + 2, Globals.CHARACTER_TABLE[i].Read("Max_HP")));
-                                    emulator.WriteShort("DAMAGE_SLOT1", 0);
-                                    /*} else {
-                                        emulator.WriteShort("DAMAGE_SLOT1", 0);*/
-                                }
-                            }
-                        }
-
-                        if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 163 && Globals.PARTY_SLOT[i] == 4) { //Battery Glove
-                            if ((Globals.CHARACTER_TABLE[i].Read("Action") == 136 || Globals.CHARACTER_TABLE[i].Read("Action") == 26) &&
-                            (gloveLastAction != 136 && gloveLastAction != 26)) {
-                                gloveCharge += 1;
-                                if (gloveCharge == 7) {
-                                    Globals.CHARACTER_TABLE[i].Write("AT", Math.Round(originalCharacterStats[i, 1] * 2.5));
-                                } else {
-                                    if (gloveCharge > 7) {
-                                        gloveCharge = 1;
-                                        Globals.CHARACTER_TABLE[i].Write("AT", originalCharacterStats[i, 1]);
-                                    }
-                                }
-                            }
-
-                            gloveLastAction = Globals.CHARACTER_TABLE[i].Read("Action");
-                        }
-
-                        if (Globals.CHARACTER_TABLE[i].Read("Weapon") == 165 && Globals.PARTY_SLOT[i] == 7) { //Giant Axe
-                            if (Globals.CHARACTER_TABLE[i].Read("Action") == 136 && axeLastAction != Globals.CHARACTER_TABLE[i].Read("Action")) {
-                                axeLastAction = Globals.CHARACTER_TABLE[i].Read("Action");
-                                if (new Random().Next(0, 9) < 2) {
-                                    Globals.CHARACTER_TABLE[i].Write("Guard", 1);
-                                }
-                            } else {
-                                axeLastAction = Globals.CHARACTER_TABLE[i].Read("Action");
-                            }
-                        }
-
-                        if (Globals.CHARACTER_TABLE[i].Read("Helmet") == 167) { //Fake Legend Casque
-                            if (Globals.CHARACTER_TABLE[i].Read("Guard") == 1 && guardStatusMDF[i] == 0) {
-                                if (new Random().Next(0, 9) < 3) {
-                                    Globals.CHARACTER_TABLE[i].Write("MDF", (Globals.CHARACTER_TABLE[i].Read("MDF") + 40));
-                                    guardStatusMDF[i] = 1;
-                                }
-                            }
-                            if ((Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10) && guardStatusMDF[i] == 1) {
-                                Globals.CHARACTER_TABLE[i].Write("MDF", originalCharacterStats[i, 4]);
-                                guardStatusMDF[i] = 0;
-                            }
-                        }
-
-                        if (Globals.CHARACTER_TABLE[i].Read("Armor") == 169) { //Fake Legend Armor
-                            if (Globals.CHARACTER_TABLE[i].Read("Guard") == 1 && guardStatusDF[i] == 0) {
-                                if (new Random().Next(0, 9) < 3) {
-                                    Globals.CHARACTER_TABLE[i].Write("DF", (Globals.CHARACTER_TABLE[i].Read("DF") + 40));
-                                    guardStatusDF[i] = 1;
-                                }
-                            }
-                            if ((Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10) && guardStatusDF[i] == 1) {
-                                Globals.CHARACTER_TABLE[i].Write("DF", originalCharacterStats[i, 3]);
-                                guardStatusDF[i] = 0;
-                            }
-                        }
-
-                        if (Globals.CHARACTER_TABLE[i].Read("Armor") == 170) { //Divine DG Armor
-                            Globals.CHARACTER_TABLE[i].Write("SP_P_Hit", originalCharacterStats[i, 6]);
-                            Globals.CHARACTER_TABLE[i].Write("MP_P_Hit", originalCharacterStats[i, 7]);
-                            Globals.CHARACTER_TABLE[i].Write("SP_M_Hit", originalCharacterStats[i, 8]);
-                            Globals.CHARACTER_TABLE[i].Write("MP_M_Hit", originalCharacterStats[i, 9]);
-                        }
-
-                        if (Globals.CHARACTER_TABLE[i].Read("Shoes") == 172 || Globals.CHARACTER_TABLE[i].Read("Shoes") == 173 || Globals.CHARACTER_TABLE[i].Read("Shoes") == 174 || //Lloyd's Boots/ Winged Shoes / Soa's Greaves
-                            Globals.CHARACTER_TABLE[i].Read("Shoes") == 99 || Globals.CHARACTER_TABLE[i].Read("Shoes") == 100 || Globals.CHARACTER_TABLE[i].Read("Shoes") == 101 || Globals.CHARACTER_TABLE[i].Read("Accessory") == 131 || Globals.CHARACTER_TABLE[i].Read("Accessory") == 133) {  //Magical Greaves/Dancer's Shoes/Bandit's Shoes/Dancer's Ring/Bandit's Ring
-                            if (emulator.ReadByte(p + 0xC1) > 0) {
-                                Globals.CHARACTER_TABLE[i].Write("SPD", (originalCharacterStats[i, 5] * 2));
-                            } else {
-                                if (emulator.ReadByte(p + 0xC3) > 0) {
-                                    Globals.CHARACTER_TABLE[i].Write("SPD", (originalCharacterStats[i, 5] / 2));
-                                } else {
-                                    Globals.CHARACTER_TABLE[i].Write("SPD", (originalCharacterStats[i, 5]));
-                                }
-                            }
-
-                            if (Globals.CHARACTER_TABLE[i].Read("Shoes") == 174) {
-                                for (int x = 0; x < 3; x++) {
-                                    if (x != i && Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[x].Read("HP") > 0) {
-                                        if (Globals.CHARACTER_TABLE[x].Read("HP") > 0) {
-                                            if (emulator.ReadByte(Globals.CHAR_ADDRESS[x] + 0xC1) > 0) {
-                                                Globals.CHARACTER_TABLE[x].Write("SPD", (ushort) (originalCharacterStats[x, 5] * 2));
-                                            } else {
-                                                if (emulator.ReadByte(Globals.CHAR_ADDRESS[x] + 0xC3) > 0) {
-                                                    Globals.CHARACTER_TABLE[x].Write("SPD", (ushort) (originalCharacterStats[x, 5] / 2));
-                                                } else {
-                                                    Globals.CHARACTER_TABLE[x].Write("SPD", (ushort) (originalCharacterStats[x, 5]));
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        if (Globals.CHARACTER_TABLE[i].Read("Accessory") == 177) { //Soa's Ahnk
-                            bool alive = false;
-                            int kill = -1;
-                            int lastPartyID = -1;
-                            if (Globals.CHARACTER_TABLE[i].Read("HP") == 0) {
-                                for (int x = 0; x < 3; x++) {
-                                    if (x != i && Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[x].Read("HP") > 0) {
-                                        alive = true;
-                                    }
-                                }
-
-                                if (alive) {
-                                    for (int x = 0; x < 3; x++) {
-                                        if (kill == -1 && new Random().Next(0, 9) < 5 && Globals.CHARACTER_TABLE[x].Read("HP") > 0) {
-                                            kill = x;
-                                        } else {
-                                            lastPartyID = x;
-                                        }
-                                    }
-                                }
-
-                                if (kill != -1) {
-                                    Globals.CHARACTER_TABLE[kill].Write("HP", 0);
-                                    Globals.CHARACTER_TABLE[kill].Write("Action", 192);
-                                } else {
-                                    Globals.CHARACTER_TABLE[lastPartyID].Write("HP", 0);
-                                    Globals.CHARACTER_TABLE[lastPartyID].Write("Action", 192);
-                                }
-                                Globals.CHARACTER_TABLE[i].Write("HP", 1);
-                            } else {
-                                Globals.CHARACTER_TABLE[i].Write("MAX_HP", 0);
-                                Globals.CHARACTER_TABLE[i].Write("Revive", 0);
-                                Globals.CHARACTER_TABLE[i].Write("Action", 192);
-                            }
-                        }
-
-                        if (Globals.CHARACTER_TABLE[i].Read("Armor") == 74) { //Armor of Legend
-                            if (lGuardStateDF[i] == false) {
-                                if (Globals.CHARACTER_TABLE[i].Read("Guard") == 1 && guardStatusDF[i] == 0) {
-                                    guardStatusDF[i] = 1;
-                                    lGuardStatusDF[i] += 1;
-                                }
-                                if ((Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10) && guardStatusDF[i] == 1 && Globals.CHARACTER_TABLE[i].Read("Guard") == 0) {
-                                    guardStatusDF[i] = 0;
-                                }
-                                if (lGuardStatusDF[i] >= 3) {
-                                    lGuardStatusDF[i] = 0;
-                                    guardStatusDF[i] = 1;
-                                    lGuardStateDF[i] = true;
-                                    emulator.WriteByte(p + 0xB5, 4);
-                                    Globals.CHARACTER_TABLE[i].Write("DF", Math.Round(originalCharacterStats[i, 3] * 1.2));
-                                }
-                            } else {
-                                if (emulator.ReadByte(p + 0xB5) == 0) {
-                                    Globals.CHARACTER_TABLE[i].Write("DF", originalCharacterStats[i, 3]);
-                                    lGuardStateDF[i] = false;
-                                }
-                            }
-                            if (!sGuardStatusDF[i]) {
-                                if (Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10) {
-                                    if (new Random().Next(0, 100) <= 10) {
-                                        emulator.WriteByte(Constants.GetAddress("SPECIAL_EFFECT") + ((Globals.MONSTER_SIZE + i) * 0x20), emulator.ReadByte("SPECIAL_EFFECT", ((Globals.MONSTER_SIZE + i) * 0x20)) + 1);
-                                    }
-                                    sGuardStatusDF[i] = true;
-                                }
-                            } else {
-                                if (Globals.CHARACTER_TABLE[i].Read("Action") != 8 && Globals.CHARACTER_TABLE[i].Read("Action") != 10) {
-                                    sGuardStatusDF[i] = false;
-                                }
-                            }
-                        }
-
-                        if (Globals.CHARACTER_TABLE[i].Read("Helmet") == 89) { //Legend Casque
-                            if (!lGuardStateMDF[i]) {
-                                if (Globals.CHARACTER_TABLE[i].Read("Guard") == 1 && guardStatusMDF[i] == 0) {
-                                    guardStatusMDF[i] = 1;
-                                    lGuardStatusMDF[i] += 1;
-                                }
-                                if ((Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10) && guardStatusMDF[i] == 1 && Globals.CHARACTER_TABLE[i].Read("Guard") == 0) {
-                                    guardStatusMDF[i] = 0;
-                                }
-                                if (lGuardStatusMDF[i] >= 3) {
-                                    lGuardStatusMDF[i] = 0;
-                                    guardStatusMDF[i] = 1;
-                                    lGuardStateMDF[i] = true;
-                                    emulator.WriteByte(p + 0xB7, 4);
-                                    Globals.CHARACTER_TABLE[i].Write("MDF", Math.Round(originalCharacterStats[i, 4] * 1.2));
-                                }
-                            } else {
-                                if (emulator.ReadByte(p + 0xB7) == 0) {
-                                    Globals.CHARACTER_TABLE[i].Write("MDF", originalCharacterStats[i, 4]);
-                                    lGuardStateMDF[i] = false;
-                                }
-                            }
-                            if (!sGuardStatusMDF[i]) {
-                                if (Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10) {
-                                    if (new Random().Next(0, 100) <= 10) {
-                                        emulator.WriteByte(Constants.GetAddress("SPECIAL_EFFECT") + ((Globals.MONSTER_SIZE + i) * 0x20), emulator.ReadByte("SPECIAL_EFFECT", ((Globals.MONSTER_SIZE + i) * 0x20)) + 4);
-                                    }
-                                    sGuardStatusMDF[i] = true;
-                                }
-                            } else {
-                                if (Globals.CHARACTER_TABLE[i].Read("Action") != 8 && Globals.CHARACTER_TABLE[i].Read("Action") != 10) {
-                                    sGuardStatusMDF[i] = false;
-                                }
-                            }
+                if ((dragonBeaterSlot & (1 << slot)) != 0) {
+                    if (Globals.CHARACTER_TABLE[slot].Read("Action") == 136) {
+                        ushort damageSlot = emulator.ReadShort("DAMAGE_SLOT1");
+                        if (damageSlot != 0) {
+                            ushort HP = Globals.CHARACTER_TABLE[slot].Read("HP");
+                            Globals.CHARACTER_TABLE[slot].Write("HP", (ushort) Math.Min(HP + Math.Round(damageSlot * 0.02) + 2, HP));
+                            emulator.WriteShort("DAMAGE_SLOT", 0);
                         }
                     }
                 }
+
+                if ((batteryGloveSlot & (1 << slot)) != 0) {
+                    if ((Globals.CHARACTER_TABLE[slot].Read("Action") == 136 || Globals.CHARACTER_TABLE[slot].Read("Action") == 26) &&
+                        (batteryGloveLastAction != 136 && batteryGloveLastAction != 26)) {
+                        batteryGloveCharge += 1;
+                        if (batteryGloveCharge == 7) {
+                            Globals.CHARACTER_TABLE[slot].Write("AT", Math.Round(Globals.CHARACTER_TABLE[slot].Read("AT") * 2.5));
+                        } else {
+                            if (batteryGloveCharge > 7) {
+                                batteryGloveCharge = 1;
+                                Globals.CHARACTER_TABLE[slot].Write("AT", Globals.CHARACTER_TABLE[slot].Read("OG_AT"));
+                            }
+                        }
+                    }
+
+                    batteryGloveLastAction = Globals.CHARACTER_TABLE[slot].Read("Action");
+                }
+
+                if ((giantAxeSlot & (1 << slot)) != 0) {
+                    byte action = Globals.CHARACTER_TABLE[slot].Read("Action");
+                    if (action == 136 && giantAxeLastAction != action) {
+                        if (new Random().Next(0, 9) < 2) {
+                            Globals.CHARACTER_TABLE[slot].Write("Guard", 1);
+                        }
+                    }
+                    giantAxeLastAction = action;
+                }
+
+                if ((fakeLegendCasqueSlot & (1 << slot)) != 0) {
+                    if (fakeLegendCasqueCheck[slot] && Globals.CHARACTER_TABLE[slot].Read("Guard") == 1) {
+                        if (new Random().Next(0, 9) < 3) {
+                            Globals.CHARACTER_TABLE[slot].Write("MDF", Globals.CHARACTER_TABLE[slot].Read("MDF") + 40);
+                        }
+                        fakeLegendCasqueCheck[slot] = false;
+                    }
+                    if (!fakeLegendCasqueCheck[slot] && Globals.CHARACTER_TABLE[slot].Read("Action") & 8 != 0) {
+                        Globals.CHARACTER_TABLE[slot].Write("MDF", Globals.CHARACTER_TABLE[slot].Read("OG_MDF"));
+                        fakeLegendCasqueCheck[slot] = true;
+                    }
+                }
+
+                if ((fakeLegendArmorSlot & (1 << slot)) != 0) {
+                    if (fakeLegendArmorCheck[slot] && Globals.CHARACTER_TABLE[slot].Read("Guard") == 1) {
+                        if (new Random().Next(0, 9) < 3) {
+                            Globals.CHARACTER_TABLE[slot].Write("DF", Globals.CHARACTER_TABLE[slot].Read("DF") + 40);
+                        }
+                        fakeLegendArmorCheck[slot] = false;
+                    }
+                    if (!fakeLegendArmorCheck[slot] && Globals.CHARACTER_TABLE[slot].Read("Action") & 8 != 0) {
+                        Globals.CHARACTER_TABLE[slot].Write("DF", Globals.CHARACTER_TABLE[slot].Read("OG:DF"));
+                        fakeLegendArmorCheck[slot] = true;
+                    }
+                }
+
+                // Divine DG Armor
+
+                // Boots ???
+
+                // Soa's Anhk
+
+                // Armor of Legend
+
+                // Legend Casque
             }
         }
 
