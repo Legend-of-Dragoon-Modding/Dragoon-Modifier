@@ -34,7 +34,7 @@ Virulent Arrow	Weapon	Shana	Bow		Poison	20	30					20											20% chance of<LIN
 Detonate Arrow	Weapon	Shana	Bow				50					20										attack_all	Hits all enemies.	400
 Arrow of Force	Weapon	Shana	Bow				40					20							sp_multi		50		Attacks generate<LINE>50% more SP.	500
 Mace	Weapon	Meru	Mace				15																	200
-Morning Star	Weapon	Meru	Hammer				20																	250
+Morning Star	Weapon	Meru	Hammer				20																Water-based attack.	250
 War Hammer	Weapon	Meru	Hammer				25																	300
 Heavy Mace	Weapon	Meru	Hammer		Stun	20	30																20% chance of<LINE>stunning enemy.	400
 Basher	Weapon	Meru	Hammer				40																	500
@@ -158,7 +158,7 @@ Fake Shield	Accessory	All	Ring						5														Raises physical<LINE>defense 
 Wargod Calling	Accessory	All	Ring																				Automatic Addition:<LINE>Half Damage and SP.	1000
 Ultimate Wargod	Accessory	All	Ring																				Automatic Addition:<LINE>Full Damage and SP.	10000
 Sabre	Weapon	Rose	Sword				70																	2
-Spirit Eater	Weapon	Dart	Sword				75	50															Uses 35 SP per turn<LINE>unless full.	2
+Spirit Eater	Weapon	Dart	Sword				75	50												sp_regen	-15		Uses 35 SP per turn<LINE>unless full.	2
 Harpoon	Weapon	Lavitz	Spear				100																Powers up Dragoon<LINE>by using more SP.<LINE>Speed down on exit.	2
 Element Arrow	Weapon	Shana	Bow				50	50															Elemental Shift.<LINE>Adds magic for 100G<LINE>every 3 turns.	2
 Dragon Beater	Weapon	Rose	Sword				130																Enhances Dragoon<LINE>magic.	2
@@ -177,8 +177,8 @@ Soa's Greaves	Boots	All	Kneepiece								40			40	40								Siphons SPD from<LINE
 Heal Ring	Accessory	All	Ring																	hp_regen, mp_regen, sp_regen	7		Heals 7% HP/MP and<LINE>7 SP.	2
 Soa's Sash	Accessory	All	Ring																sp_multi		100		Siphons SP gain fromothers.	2
 Soa's Ahnk	Accessory	All	Pin																	revive	100		Revives always but<LINE>sacrifies another<LINE>party member.	2
-Soa's Health Ring	Accessory	All	Ring																				Siphons Max HP from<LINE>others but doubles<LINE>own.	2
-Soa's Mage Ring	Accessory	All	Ring																				Siphons Max MP from<LINE>others but triples<LINE>own.	2
+Soa's Health Ring	Accessory	All	Ring																	hp_multi	100		Siphons Max HP from<LINE>others but doubles<LINE>own.	2
+Soa's Mage Ring	Accessory	All	Ring																	mp_multi	200		Siphons Max MP from<LINE>others but triples<LINE>own.	2
 Soa's Shield Ring	Accessory	All	Ring																				Siphons accuracy<LINE>from others. Dies onhit.	2
 																								2
 																								2

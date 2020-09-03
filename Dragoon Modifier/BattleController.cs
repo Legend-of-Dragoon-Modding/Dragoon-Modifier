@@ -20,7 +20,6 @@ namespace Dragoon_Modifier {
 
         static bool dartSwitcheroo = false;
 
-        static byte flowerStorm = 3;
         static string difficulty = "Normal";
         static int aspectRatioOption = 0;
         static int cameraOption = 0;
@@ -49,6 +48,13 @@ namespace Dragoon_Modifier {
         static bool[] fakeLegendCasqueCheck = { false, false, false };
         static byte fakeLegendArmorSlot = 0;
         static bool[] fakeLegendArmorCheck = { false, false, false };
+        static byte soasSiphonRingSlot = 0;
+
+        // Dragoon Changes variables
+        static ushort[] previousMP = { 0, 0, 0 };
+        static ushort[] currentMP = { 0, 0, 0 };
+        static byte flowerStorm = 3;
+        static bool checkFlowerStorm = false;
 
         public static void Run(Emulator emulator, Dictionary<string, int> uiCombo) {
             while (Constants.RUN) {
@@ -80,6 +86,7 @@ namespace Dragoon_Modifier {
                             }
                             if (difficulty != "Normal") {
                                 EquipRun(emulator);
+                                HardDragoonRun(emulator);
                             }
                         }
                     } else if (Globals.GAME_STATE == 7) {   // Battle result screen
@@ -87,19 +94,19 @@ namespace Dragoon_Modifier {
                             ReduceSP(emulator);
                             ItemFieldChanges(emulator);
                             CharacterFieldChanges(emulator);
-                            if (Globals.DIFFICULTY_MODE != "Normal" && Globals.CHAPTER >= 3) {
-
-                            }
+                            PostBattleChapter3Buffs(emulator);
                             Globals.STATS_CHANGED = false;
                         }
                     } else if (Globals.GAME_STATE == 0) {   // Field
                         if (Globals.STATS_CHANGED) {
                             ItemFieldChanges(emulator);
                             CharacterFieldChanges(emulator);
+                            if (Globals.DIFFICULTY_MODE != "Normal") {
+                                PostBattleChapter3Buffs(emulator);
+                            }
                             Globals.STATS_CHANGED = false;
                         }
                         if (Globals.PARTY_SLOT[2] < 9 && Globals.PARTY_SLOT[0] != 0) {
-
                             Globals.NO_DART = Globals.PARTY_SLOT[0];
                             emulator.WriteByte("PARTY_SLOT", 0);
                             dartSwitcheroo = true;
@@ -1629,6 +1636,332 @@ namespace Dragoon_Modifier {
             emulator.WriteByte("SPELL_TABLE", 40, 0x7 + (67 * 0xC)); //???'s Gates of Heaven MP
         }
 
+        public static void HardDragoonRun(Emulator emulator) {
+            byte dragoonSpecialAttack = emulator.ReadByte("DRAGOON_SPECIAL_ATTACK");
+            for (int slot = 0; slot < 3; slot++) {
+                if (Globals.PARTY_SLOT[slot] > 8) {
+                    break;
+                }
+                double multi = 1;
+                if (Globals.ENCOUNTER_ID == 416 || Globals.ENCOUNTER_ID == 394 || Globals.ENCOUNTER_ID == 443) {
+                    if (emulator.ReadByte("DRAGON_BLOCK_STAFF") == 1) {
+                        multi = 8;
+                    } else {
+                        multi = 1;
+                    }
+                }
+
+                /*
+                if (ubReverseDBS) {
+                    multi = 20;
+                }
+                */
+
+                if (Globals.PARTY_SLOT[slot] == 3 && (dragonBeaterSlot & (1 << slot)) != 0) {
+                    multi *= 1.1;
+                }
+
+                Globals.CHARACTER_TABLE[slot].Write("DDF", (Globals.DICTIONARY.DragoonStats[Globals.PARTY_SLOT[slot]][5].DDF * multi));
+                Globals.CHARACTER_TABLE[slot].Write("DMDF", (Globals.DICTIONARY.DragoonStats[Globals.PARTY_SLOT[slot]][5].DMDF * multi));
+
+                currentMP[slot] = Globals.CHARACTER_TABLE[slot].Read("MP");
+
+                if (Globals.PARTY_SLOT[slot] == 0) {    // Dart
+                    if (dragoonSpecialAttack == 0 || dragoonSpecialAttack == 9) {
+                        if (Globals.DRAGOON_SPIRITS >= 254) {
+                            Globals.CHARACTER_TABLE[slot].Write("DAT", (306 * multi));
+                        } else {
+                            if (Globals.CheckDMScript("btnDivineRed")) {
+                                Globals.CHARACTER_TABLE[slot].Write("DAT", (612 * multi));
+                            } else {
+                                Globals.CHARACTER_TABLE[slot].Write("DAT", (422 * multi));
+                            }
+                        }
+                    } else {
+                        if (Globals.DRAGOON_SPIRITS >= 254) {
+                            Globals.CHARACTER_TABLE[slot].Write("DAT", (204 * multi));
+                        } else {
+                            if (Globals.CheckDMScript("btnDivineRed")) {
+                                Globals.CHARACTER_TABLE[slot].Write("DAT", (408 * multi));
+                            } else {
+                                Globals.CHARACTER_TABLE[slot].Write("DAT", (281 * multi));
+                            }
+                        }
+                    }
+
+                    if ((soasSiphonRingSlot & (1 << slot)) != 0) { //Soa's Siphon Ring
+                        multi *= 0.3;
+                    }
+
+                    if (currentMP[slot] != previousMP[slot] && currentMP[slot] < previousMP[slot]) {
+                        int mp = previousMP[slot] - currentMP[slot];
+                        if (Globals.CheckDMScript("btnDivineRed")) {
+                            if (Globals.CHARACTER_TABLE[slot].Read("Spell_Cast") == 1) {
+                                Globals.CHARACTER_TABLE[slot].Write("DMAT", (1020 * multi));
+                            } else {
+                                Globals.CHARACTER_TABLE[slot].Write("DMAT", (510 * multi));
+                            }
+                        } else {
+                            if (mp == 10) {
+                                Globals.CHARACTER_TABLE[slot].Write("DMAT", (255 * multi));
+                                //AddBurnStack(1);
+                            } else if (mp == 20) {
+                                Globals.CHARACTER_TABLE[slot].Write("DMAT", (340 * multi));
+                                //AddBurnStack(1);
+                            } else if (mp == 30) {
+                                Globals.CHARACTER_TABLE[slot].Write("DMAT", (255 * multi));
+                                //AddBurnStack(2);
+                            } else if (mp == 50) {
+                                Globals.CHARACTER_TABLE[slot].Write("DMAT", (255 * multi));
+                            } else if (mp == 80) {
+                                Globals.CHARACTER_TABLE[slot].Write("DMAT", (340 * multi));
+                                //AddBurnStack(3);
+                            }
+                        }
+                        previousMP[slot] = currentMP[slot];
+                    } else {
+                        if (currentMP[slot] > previousMP[slot]) {
+                            previousMP[slot] = currentMP[slot];
+                        }
+                    }
+                } else if (Globals.PARTY_SLOT[slot] == 1 ||  Globals.PARTY_SLOT[slot] == 5) {   // Lavitz / Albert
+                    if (harpoonCheck) {
+                        multi *= 3;
+                    }
+
+                    if (dragoonSpecialAttack == 1 || dragoonSpecialAttack == 5) {
+                        Globals.CHARACTER_TABLE[slot].Write("DAT", (495 * multi));
+                    } else {
+                        Globals.CHARACTER_TABLE[slot].Write("DAT", (330 * multi));
+                    }
+
+                    if ((soasSiphonRingSlot & (1 << slot)) != 0) { //Soa's Siphon Ring
+                        multi *= 0.3;
+                    }
+
+                    if (currentMP[slot] != previousMP[slot] && currentMP[slot] < previousMP[slot]) {
+                        int mp = previousMP[slot] - currentMP[slot];
+                        previousMP[slot] = currentMP[slot];
+                        if (mp == 20 || mp == 80) {
+                            Globals.CHARACTER_TABLE[slot].Write("DMAT", (440 * multi));
+                        } else if (mp == 30) {
+                            Globals.CHARACTER_TABLE[slot].Write("DMAT", (330 * multi));
+                        }
+
+                        if (Globals.DIFFICULTY_MODE.Contains("Hell") && (Globals.CHARACTER_TABLE[slot].Read("Spell_Cast") == 7 || Globals.CHARACTER_TABLE[slot].Read("Spell_Cast") == 26)) {
+                            checkFlowerStorm = true;
+                            for (int x = 0; x < 3; x++) {
+                                if (Globals.CHARACTER_TABLE[x].Read("HP") > 0) {
+                                    Globals.CHARACTER_TABLE[x].Write("PWR_DF_TRN", 0);
+                                    Globals.CHARACTER_TABLE[x].Write("PWR_MDF_TRN", 0);
+                                }
+                            }
+                        }
+                    } else {
+                        if (currentMP[slot] > previousMP[slot]) {
+                            previousMP[slot] = currentMP[slot];
+                        }
+
+                        if (checkFlowerStorm) {
+                            bool changed = false;
+                            for (int x = 0; x < 3; x++) {
+                                if (Globals.PARTY_SLOT[x] < 9) {
+                                    if (Globals.CHARACTER_TABLE[x].Read("PWR_DF_TRN") != 0) {
+                                        changed = true;
+                                    }
+                                }
+                            }
+
+                            if (changed) {
+                                for (int x = 0; x < 3; x++) {
+                                    if (Globals.PARTY_SLOT[x] == 1 || Globals.PARTY_SLOT[x] == 5) {
+                                        Globals.CHARACTER_TABLE[x].Write("PWR_DF_TRN", flowerStorm + 1);
+                                        Globals.CHARACTER_TABLE[x].Write("PWR_MDF_TRN", flowerStorm + 1);
+                                    } else {
+                                        Globals.CHARACTER_TABLE[x].Write("PWR_DF_TRN", flowerStorm);
+                                        Globals.CHARACTER_TABLE[x].Write("PWR_MDF_TRN", flowerStorm);
+                                    }
+                                }
+                                checkFlowerStorm = false;
+                            }
+                        }
+                    }
+                } else if (Globals.PARTY_SLOT[slot] == 2 || Globals.PARTY_SLOT[slot] == 8) {  // Shana / Miranda
+                    /*
+                    if (starChildren > 0) {
+                        if (starChildren == 3 && Globals.CHARACTER_TABLE[slot].Read("Action") == 0)
+                            starChildren = 2;
+                        if (starChildren == 2 && Globals.CHARACTER_TABLE[slot].Read("Action") == 8)
+                            starChildren = 1;
+                        if (starChildren == 1 && Globals.CHARACTER_TABLE[slot].Read("Action") != 8) {
+                            starChildren = 0;
+                            Globals.CHARACTER_TABLE[slot].Write("HP_Regen", recoveryRateSave);
+                        }
+                    }
+                    */
+
+                    if (dragoonSpecialAttack == 2 || dragoonSpecialAttack == 8) {
+                        Globals.CHARACTER_TABLE[slot].Write("DAT", (510 * multi));
+                    } else {
+                        Globals.CHARACTER_TABLE[slot].Write("DAT", (365 * multi));
+                    }
+
+                    if ((soasSiphonRingSlot & (1 << slot)) != 0) { //Soa's Siphon Ring
+                        multi *= 0.3;
+                    }
+
+                    if (currentMP[slot] != previousMP[slot] && currentMP[slot] < previousMP[slot]) {
+                        int mp = previousMP[slot] - currentMP[slot];
+                        if (mp == 20) {
+                            Globals.CHARACTER_TABLE[slot].Write("DMAT", (332 * multi));
+                            if (Globals.CHARACTER_TABLE[slot].Read("Spell_Cast") == 10 || Globals.CHARACTER_TABLE[slot].Read("Spell_Cast") == 65) {
+                                // Globals.CHARACTER_TABLE[slot].Write("HP_Regen", (recoveryRateSave + 20));
+                                // starChildren = 3;
+                            }
+                        } else if (mp == 80) {
+                            Globals.CHARACTER_TABLE[slot].Write("DMAT", (289 * multi));
+                        }
+                        previousMP[slot] = currentMP[slot];
+                    } else {
+                        if (currentMP[slot] > previousMP[slot]) {
+                            previousMP[slot] = currentMP[slot];
+                        }
+                    }
+                } else if (Globals.PARTY_SLOT[slot] == 3) {
+                    if (dragoonSpecialAttack == 3) {
+                        Globals.CHARACTER_TABLE[slot].Write("DAT", (495 * multi));
+                    } else {
+                        Globals.CHARACTER_TABLE[slot].Write("DAT", (330 * multi));
+                    }
+
+                    if ((soasSiphonRingSlot & (1 << slot)) != 0) { //Soa's Siphon Ring
+                        multi *= 0.3;
+                    }
+
+                    if (currentMP[slot] != previousMP[slot] && currentMP[slot] < previousMP[slot]) {
+                        int mp = previousMP[slot] - currentMP[slot];
+                        if (mp == 10) {
+                            Globals.CHARACTER_TABLE[slot].Write("DMAT", (295 * multi));
+                            for (int x = 0; x < 3; x++) {
+                                if (Globals.PARTY_SLOT[x] < 9 && Globals.CHARACTER_TABLE[slot].Read("HP") > 0) {
+                                    Globals.CHARACTER_TABLE[x].Write("HP", (ushort) Math.Min(Globals.CHARACTER_TABLE[x].Read("Max_HP"), Globals.CHARACTER_TABLE[x].Read("HP") + Math.Round(Globals.CHARACTER_TABLE[slot].Read("HP") * (emulator.ReadByte("ROSE_DRAGOON_LEVEL") * 0.05))));
+                                }
+                            }
+                        } else if (mp == 20) {
+                            Globals.CHARACTER_TABLE[slot].Write("DMAT", (395 * multi));
+                        } else if (mp == 25) {
+                            Globals.CHARACTER_TABLE[slot].Write("DMAT", (410 * multi));
+                            for (int x = 0; x < 3; x++) {
+                                if (Globals.PARTY_SLOT[x] < 9 && Globals.CHARACTER_TABLE[slot].Read("HP") > 0) {
+                                    Globals.CHARACTER_TABLE[x].Write("HP", (ushort) Math.Min(Globals.CHARACTER_TABLE[x].Read("Max_HP"), Globals.CHARACTER_TABLE[x].Read("HP") + Math.Round(Globals.CHARACTER_TABLE[slot].Read("HP") * (emulator.ReadByte("ROSE_DRAGOON_LEVEL") * 0.04))));
+                                }
+                            }
+                        } else if (mp == 50) {
+                            Globals.CHARACTER_TABLE[slot].Write("DMAT", (790 * multi));
+                        } else if (mp == 80) {
+                            Globals.CHARACTER_TABLE[slot].Write("DMAT", (420 * multi));
+                            /*
+                            checkRoseDamage = true;
+                            checkRoseDamageSave = emulator.ReadShort("DAMAGE_SLOT1");
+                            */
+                        } else if (mp == 100) {
+                            Globals.CHARACTER_TABLE[slot].Write("DMAT", (290 * multi));
+                            /*
+                            checkRoseDamage = true;
+                            checkRoseDamageSave = emulator.ReadShort("DAMAGE_SLOT1");
+                            */
+                        }
+                        previousMP[slot] = currentMP[slot];
+                    } else {
+                        if (currentMP[slot] > previousMP[slot]) {
+                            previousMP[slot] = currentMP[slot];
+                        } else {
+                            /*
+                            if (checkRoseDamage && emulator.ReadShort("DAMAGE_SLOT1") != checkRoseDamageSave) {
+                                checkRoseDamage = false;
+                                if (roseEnhanceDragoon) {
+                                    Globals.CHARACTER_TABLE[slot].Write("HP", (ushort) Math.Min(Globals.CHARACTER_TABLE[slot].Read("HP") + (emulator.ReadShort("DAMAGE_SLOT1") * 0.4), Globals.CHARACTER_TABLE[slot].Read("Max_HP")));
+                                } else {
+                                    Globals.CHARACTER_TABLE[slot].Write("HP", (ushort) Math.Min(Globals.CHARACTER_TABLE[slot].Read("HP") + (emulator.ReadShort("DAMAGE_SLOT1") * 0.1), Globals.CHARACTER_TABLE[slot].Read("Max_HP")));
+                                }
+                            }
+                            */
+                        }
+                    }
+                } else if (Globals.PARTY_SLOT[slot] == 4) {
+                    if (dragoonSpecialAttack == 4) {
+                        Globals.CHARACTER_TABLE[slot].Write("DAT", (422 * multi));
+                    } else {
+                        Globals.CHARACTER_TABLE[slot].Write("DAT", (281 * multi));
+                    }
+
+
+                    if ((soasSiphonRingSlot & (1 << slot)) != 0) { //Soa's Siphon Ring
+                        multi *= 0.3;
+                    }
+
+                    /*
+                    if (eleBombTurns > 0 && eleBombElement == 16) {
+                        multi *= 3;
+                    }
+                    */
+
+                    if (currentMP[slot] != previousMP[slot] && currentMP[slot] < previousMP[slot]) {
+                        int mp = previousMP[slot] - currentMP[slot];
+                        if (mp == 10 || mp == 20 || mp == 30) {
+                            Globals.CHARACTER_TABLE[slot].Write("DMAT", (330 * multi));
+                        } else if (mp == 80) {
+                            Globals.CHARACTER_TABLE[slot].Write("DMAT", (374 * multi));
+                        }
+                        previousMP[slot] = currentMP[slot];
+                    } else {
+                        if (currentMP[slot] > previousMP[slot]) {
+                            previousMP[slot] = currentMP[slot];
+                        }
+                    }
+                } else if (Globals.PARTY_SLOT[slot] == 6) {
+                    if (dragoonSpecialAttack == 6) {
+                        Globals.CHARACTER_TABLE[slot].Write("DAT", (495 * multi));
+                    } else {
+                        Globals.CHARACTER_TABLE[slot].Write("DAT", (330 * multi));
+                    }
+
+                    if ((soasSiphonRingSlot & (1 << slot)) != 0) { //Soa's Siphon Ring
+                        multi *= 0.3;
+                    }
+
+                    // Magic
+
+                } else if (Globals.PARTY_SLOT[slot] == 7) {
+                    if (dragoonSpecialAttack == 7) {
+                        Globals.CHARACTER_TABLE[slot].Write("DAT", (600 * multi));
+                    } else {
+                        Globals.CHARACTER_TABLE[slot].Write("DAT", (500 * multi));
+                    }
+
+                    if ((soasSiphonRingSlot & (1 << slot)) != 0) { //Soa's Siphon Ring
+                        multi *= 0.3;
+                    }
+
+                    if (currentMP[slot] != previousMP[slot] && currentMP[slot] < previousMP[slot]) {
+                        int mp = previousMP[slot] - currentMP[slot];
+                        if (mp == 20) {
+                            Globals.CHARACTER_TABLE[slot].Write("DMAT", (450 * multi));
+                        } else if (mp == 30) {
+                            Globals.CHARACTER_TABLE[slot].Write("DMAT", (560 * multi));
+                        } else if (mp == 80) {
+                            Globals.CHARACTER_TABLE[slot].Write("DMAT", (740 * multi));
+                        }
+                        previousMP[slot] = currentMP[slot];
+                    } else {
+                        if (currentMP[slot] > previousMP[slot]) {
+                            previousMP[slot] = currentMP[slot];
+                        }
+                    }
+                }
+            }
+        }
+
         #endregion
 
         #region Dual Difficulty
@@ -1825,26 +2158,38 @@ namespace Dragoon_Modifier {
                 }
                 if (Globals.CHAPTER >= 3) {
                     if (Globals.CHARACTER_TABLE[slot].Read("Weapon") == 28) { //Sparkle Arrow
-                        Globals.CHARACTER_TABLE[slot].Write("AT", (Globals.CHARACTER_TABLE[slot].Read("AT") + 8));
+                        Globals.CHARACTER_TABLE[slot].Write("AT", (Globals.CHARACTER_TABLE[slot].Read("AT") + sparkleArrowBuff));
                         Globals.CHARACTER_TABLE[slot].Write("OG_AT", (Globals.CHARACTER_TABLE[slot].Read("AT")));
                     }
 
                     if (Globals.CHARACTER_TABLE[slot].Read("Weapon") == 2) { //Heat Blade
-                        Globals.CHARACTER_TABLE[slot].Write("AT", (Globals.CHARACTER_TABLE[slot].Read("AT") + 7));
+                        Globals.CHARACTER_TABLE[slot].Write("AT", (Globals.CHARACTER_TABLE[slot].Read("AT") + heatBladeBuff));
                         Globals.CHARACTER_TABLE[slot].Write("OG_AT", (Globals.CHARACTER_TABLE[slot].Read("AT")));
                     }
 
                     if (Globals.CHARACTER_TABLE[slot].Read("Weapon") == 14) { //Shadow Cutter
-                        Globals.CHARACTER_TABLE[slot].Write("AT", (Globals.CHARACTER_TABLE[slot].Read("AT") + 9));
+                        Globals.CHARACTER_TABLE[slot].Write("AT", (Globals.CHARACTER_TABLE[slot].Read("AT") + shadowCutterBuff));
                         Globals.CHARACTER_TABLE[slot].Write("OG_AT", (Globals.CHARACTER_TABLE[slot].Read("AT")));
                     }
 
                     if (Globals.CHARACTER_TABLE[slot].Read("Weapon") == 35) { //Morning Star
-                        Globals.CHARACTER_TABLE[slot].Write("AT", (Globals.CHARACTER_TABLE[slot].Read("AT") - 20));
+                        Globals.CHARACTER_TABLE[slot].Write("AT", (byte)(Globals.CHARACTER_TABLE[slot].Read("AT") + morningStarBuff));
                         Globals.CHARACTER_TABLE[slot].Write("OG_AT", (Globals.CHARACTER_TABLE[slot].Read("AT")));
                         Globals.CHARACTER_TABLE[slot].Write("Element", 1);
                     }
                 }
+            }
+        }
+
+        public static void PostBattleChapter3Buffs(Emulator emulator) {
+            if (Globals.CHAPTER >= 3) {
+                long address = Constants.GetAddress("ITEM_TABLE");
+                emulator.WriteByte(address + 28 * 0x1C + 0x9, emulator.ReadByte(address + 28 * 0x1C + 0x9) + sparkleArrowBuff);
+                emulator.WriteByte(address + 2 * 0x1C + 0x9, emulator.ReadByte(address + 2 * 0x1C + 0x9) + heatBladeBuff);
+                emulator.WriteByte(address + 14 * 0x1C + 0x9, emulator.ReadByte(address + 14 * 0x1C + 0x9) + shadowCutterBuff);
+                emulator.WriteByte(address + 35 * 0x1C + 0x9, emulator.ReadByte(address + 35 * 0x1C + 0x9) + morningStarBuff);
+            } else {
+                emulator.WriteAOB(Globals.DICTIONARY.ItemList[35].DescriptionPointer, "FF A0 FF A0");
             }
         }
 
@@ -1854,9 +2199,8 @@ namespace Dragoon_Modifier {
                     break;
                 }
 
-                if ((Globals.PARTY_SLOT[slot] == 2 || Globals.PARTY_SLOT[slot] == 8) && emulator.ReadByte("CHAR_TABLE", 0x6A) >= 30) {
-                    Globals.CHARACTER_TABLE[slot].Write("DF", Math.Round(Globals.CHARACTER_TABLE[slot].Read("DF") * 1.12));
-                    byte level = emulator.ReadByte("CHAR_TABLE", 0x12 + (0x2C * slot));
+                byte level = emulator.ReadByte("CHAR_TABLE", 0x12 + (0x2C * slot));
+                if ((Globals.PARTY_SLOT[slot] == 2 || Globals.PARTY_SLOT[slot] == 8)) {
                     double boost = 1;
                     if (Globals.CHARACTER_TABLE[slot].Read("Weapon") == 32) {
                         boost = 1.4;
@@ -1868,24 +2212,26 @@ namespace Dragoon_Modifier {
                         boost = 1.6;
                     }
                     Globals.CHARACTER_TABLE[slot].Write("AT", Math.Round(Globals.CHARACTER_TABLE[slot].Read("AT") * boost));
+                    Globals.CHARACTER_TABLE[slot].Write("OG_AT", Globals.CHARACTER_TABLE[slot].Read("AT"));
+
+                    if (level >= 30) {
+                        Globals.CHARACTER_TABLE[slot].Write("DF", Math.Round(Globals.CHARACTER_TABLE[slot].Read("DF") * 1.12));
+                        Globals.CHARACTER_TABLE[slot].Write("OG_DF", Globals.CHARACTER_TABLE[slot].Read("DF"));
+                    }
                 }
 
-                if (Globals.PARTY_SLOT[slot] == 8 && emulator.ReadByte("CHAR_TABLE", 0x172) >= 30) {
-                    Globals.CHARACTER_TABLE[slot].Write("DF", Math.Round(Globals.CHARACTER_TABLE[slot].Read("DF") * 1.12));
-                }
-
-                if (Globals.PARTY_SLOT[slot] == 3 && emulator.ReadByte("CHAR_TABLE", 0x96) >= 30) {
+                if (Globals.PARTY_SLOT[slot] == 3 && level >= 30) {
                     Globals.CHARACTER_TABLE[slot].Write("DF", Math.Round(Globals.CHARACTER_TABLE[slot].Read("DF") * 1.1));
                 }
 
-                if (Globals.PARTY_SLOT[slot] == 6 && emulator.ReadByte("CHAR_TABLE", 0x11A) >= 30) {
+                if (Globals.PARTY_SLOT[slot] == 6 && level >= 30) {
                     Globals.CHARACTER_TABLE[slot].Write("DF", Math.Round(Globals.CHARACTER_TABLE[slot].Read("DF") * 1.26));
                 }
             }
         }
 
         public static void SpecialEquipSetup(Emulator emulator) {
-            //soasSiphonSlot = -1;
+            soasSiphonRingSlot = 0;
             spiritEaterSlot = 0;
             spiritEaterCheck = false;
             harpoonSlot = 0;
@@ -2059,7 +2405,7 @@ namespace Dragoon_Modifier {
                     }
 
                     if (Globals.CHARACTER_TABLE[slot].Read("Accessory") == 181) { //Soa's Siphon Ring
-                        //soasSiphonSlot = slot;
+                        soasSiphonRingSlot = (byte) (1 << slot);
                         Globals.CHARACTER_TABLE[slot].Write("MAT", (Globals.CHARACTER_TABLE[slot].Read("MAT") * 2));
                         Globals.CHARACTER_TABLE[slot].Write("OG_MAT", Globals.CHARACTER_TABLE[slot].Read("MAT"));
                         Globals.CHARACTER_TABLE[slot].Write("DMAT", Math.Round(Globals.CHARACTER_TABLE[slot].Read("DMAT") * 0.3));
