@@ -57,6 +57,8 @@ namespace Dragoon_Modifier {
         static ushort[] currentMP = { 0, 0, 0 };
         static byte flowerStorm = 3;
         static bool checkFlowerStorm = false;
+        static byte starChildren = 0;
+        static ushort recoveryRateSave = 0;
         static bool checkRoseDamage = false;
         static ushort checkRoseDamageSave = 0;
         static bool roseEnhanceDragoon = false;
@@ -1692,6 +1694,15 @@ namespace Dragoon_Modifier {
             if (difficulty.Equals("Hell")) {
                 ApplyNoEscape(emulator);
             }
+            if (Globals.PARTY_SLOT.Contains((byte) 2)) {
+                int index = Array.IndexOf(Globals.PARTY_SLOT, (byte) 2);
+                starChildren = 0;
+                recoveryRateSave = Globals.CHARACTER_TABLE[index].Read("HP_Regen");
+            } else if (Globals.PARTY_SLOT.Contains((byte) 8)) {
+                int index = Array.IndexOf(Globals.PARTY_SLOT, (byte) 8);
+                starChildren = 0;
+                recoveryRateSave = Globals.CHARACTER_TABLE[index].Read("HP_Regen");
+            }
         }
 
         #region Apply No Escape
@@ -1886,7 +1897,6 @@ namespace Dragoon_Modifier {
                         }
                     }
                 } else if (Globals.PARTY_SLOT[slot] == 2 || Globals.PARTY_SLOT[slot] == 8) {  // Shana / Miranda
-                    /*
                     if (starChildren > 0) {
                         if (starChildren == 3 && Globals.CHARACTER_TABLE[slot].Read("Action") == 0)
                             starChildren = 2;
@@ -1897,7 +1907,6 @@ namespace Dragoon_Modifier {
                             Globals.CHARACTER_TABLE[slot].Write("HP_Regen", recoveryRateSave);
                         }
                     }
-                    */
 
                     if (dragoonSpecialAttack == 2 || dragoonSpecialAttack == 8) {
                         Globals.CHARACTER_TABLE[slot].Write("DAT", (shanaSpecialDAT * multi));
@@ -1913,8 +1922,8 @@ namespace Dragoon_Modifier {
                         byte spell = Globals.CHARACTER_TABLE[slot].Read("Spell_Cast");
                         if (spell == 10 || spell == 65) {
                             Globals.CHARACTER_TABLE[slot].Write("DMAT", starChildrenDMAT * multi);
-                            // Globals.CHARACTER_TABLE[slot].Write("HP_Regen", (recoveryRateSave + 20));
-                            // starChildren = 3;
+                            Globals.CHARACTER_TABLE[slot].Write("HP_Regen", (recoveryRateSave + 20));
+                            starChildren = 3;
                         } else if (spell == 13) {
                             Globals.CHARACTER_TABLE[slot].Write("DMAT", wSilverDragonDMAT * multi);
                         }
@@ -2745,19 +2754,19 @@ namespace Dragoon_Modifier {
 
         public static void BattleHotkeys(Emulator emulator) {
             if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_UP)) { //Exit Dragoon Slot 1
-                if (emulator.ReadByte("DRAGOON_TURNS") > 0) {
+                if (emulator.ReadByte("DRAGOON_TURNS") > 1) {
                     emulator.WriteByte("DRAGOON_TURNS", 1);
                     Constants.WriteGLogOutput("Slot 1 will exit Dragoon after next action.");
                     Globals.LAST_HOTKEY = Constants.GetTime();
                 }
             } else if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_RIGHT)) { //Exit Dragoon Slot 2
-                if (emulator.ReadByte("DRAGOON_TURNS", 0x4) > 0) {
+                if (emulator.ReadByte("DRAGOON_TURNS", 0x4) > 1) {
                     emulator.WriteByte("DRAGOON_TURNS", 1, 0x4);
                     Constants.WriteGLogOutput("Slot 2 will exit Dragoon after next action.");
                     Globals.LAST_HOTKEY = Constants.GetTime();
                 }
             } else if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_LEFT)) { //Exit Dragoon Slot 3
-                if (emulator.ReadByte("DRAGOON_TURNS", 0x8) > 0) {
+                if (emulator.ReadByte("DRAGOON_TURNS", 0x8) > 1) {
                     emulator.WriteByte("DRAGOON_TURNS", 1, 0x8);
                     Constants.WriteGLogOutput("Slot 3 will exit Dragoon after next action.");
                     Globals.LAST_HOTKEY = Constants.GetTime();

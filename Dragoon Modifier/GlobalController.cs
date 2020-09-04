@@ -8,7 +8,7 @@ using System.Threading;
 namespace Dragoon_Modifier {
     class GlobalController {
         public static void Run(Emulator emulator) {
-            while (true) {
+            while (Constants.RUN) {
                 ushort battleValue = emulator.ReadShort("BATTLE_VALUE");
                 Globals.BATTLE_VALUE = battleValue;
                 byte menu = emulator.ReadByte("MENU");
