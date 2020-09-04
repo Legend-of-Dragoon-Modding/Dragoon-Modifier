@@ -1518,25 +1518,7 @@ namespace Dragoon_Modifier {
                                 emulator.WriteShort("ASPECT_RATIO", aspectRatio);
                             }
                         } else { //Battle
-                            if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_UP)) { //Exit Dragoon Slot 1
-                                if (emulator.ReadByte("DRAGOON_TURNS") > 0) {
-                                    emulator.WriteByte("DRAGOON_TURNS", 1);
-                                    Constants.WriteGLogOutput("Slot 1 will exit Dragoon after next action.");
-                                    Globals.LAST_HOTKEY = Constants.GetTime();
-                                }
-                            } else if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_RIGHT)) { //Exit Dragoon Slot 2
-                                if (emulator.ReadByte("DRAGOON_TURNS", 0x4) > 0) {
-                                    emulator.WriteByte("DRAGOON_TURNS", 1, 0x4);
-                                    Constants.WriteGLogOutput("Slot 2 will exit Dragoon after next action.");
-                                    Globals.LAST_HOTKEY = Constants.GetTime();
-                                }
-                            } else if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_LEFT)) { //Exit Dragoon Slot 3
-                                if (emulator.ReadByte("DRAGOON_TURNS", 0x8) > 0) {
-                                    emulator.WriteByte("DRAGOON_TURNS", 1, 0x8);
-                                    Constants.WriteGLogOutput("Slot 3 will exit Dragoon after next action.");
-                                    Globals.LAST_HOTKEY = Constants.GetTime();
-                                }
-                            } else if (Globals.HOTKEY == (Hotkey.KEY_SQUARE + Hotkey.KEY_UP)) { //*TB Slot 1
+                            if (Globals.HOTKEY == (Hotkey.KEY_SQUARE + Hotkey.KEY_UP)) { //*TB Slot 1
                                 if (extraTurnBattleC[0] >= 6000) {
                                     ExtraTurnBattle(ref extraTurnBattleC[0], 0);
                                     Globals.LAST_HOTKEY = Constants.GetTime();
@@ -1598,87 +1580,6 @@ namespace Dragoon_Modifier {
                                     }
                                 } else {
                                     Constants.WriteGLogOutput("Burn stack is already active.");
-                                }
-                                Globals.LAST_HOTKEY = Constants.GetTime();
-                            } else if (Globals.HOTKEY == (Hotkey.KEY_CIRCLE + Hotkey.KEY_RIGHT)) { //Dragon Beater
-                                bool skip = true;
-                                for (int i = 0; i < 3; i++) {
-                                    if (Globals.PARTY_SLOT[i] == 3 && Globals.CHARACTER_TABLE[i].Read("Weapon") == 162) {
-                                        skip = false;
-                                    }
-                                }
-                                if (!skip) {
-                                    if (!Globals.DIFFICULTY_MODE.Equals("Normal") && !checkRoseDamage) {
-                                        if (roseEnhanceDragoon) {
-                                            if (Constants.REGION == Region.NTA) {
-                                                                                                                                
-                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[15].Description_Pointer, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1A 00 1E 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 FF A0");
-                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[16].Description_Pointer, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 18 00 1E 00 1A 00 0F 00 FF A0");
-                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[19].Description_Pointer, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 16 00 1B 00 1D 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 FF A0");
-                                            }
-                                            emulator.WriteByte("SPELL_TABLE", 10, 0x7 + (15 * 0xC)); //Astral Drain MP
-                                            emulator.WriteByte("SPELL_TABLE", 20, 0x7 + (16 * 0xC)); //Death Dimension MP
-                                            emulator.WriteByte("SPELL_TABLE", 80, 0x7 + (19 * 0xC)); //Dark Dragon MP
-                                            roseEnhanceDragoon = false;
-                                            Constants.WriteGLogOutput("Rose's dragoon magic has returned to normal.");
-                                        } else {
-                                            if (Constants.REGION == Region.NTA) {
-                                               emulator.WriteAOB(Globals.DRAGOON_SPELLS[15].Description_Pointer, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1D 00 17 00 1A 00 0F 00 00 00 10 00 00 00 26 00 2E 00 FF A0");
-                                               emulator.WriteAOB(Globals.DRAGOON_SPELLS[16].Description_Pointer, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1C 00 1E 00 1A 00 0F 00 FF A0");
-                                               emulator.WriteAOB(Globals.DRAGOON_SPELLS[19].Description_Pointer, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 16 00 16 00 1A 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 FF A0");
-                                            }
-                                            emulator.WriteByte("SPELL_TABLE", 20, 0x7 + (15 * 0xC)); //Astral Drain MP
-                                            emulator.WriteByte("SPELL_TABLE", 50, 0x7 + (16 * 0xC)); //Death Dimension MP
-                                            emulator.WriteByte("SPELL_TABLE", 100, 0x7 + (19 * 0xC)); //Dark Dragon MP
-                                            roseEnhanceDragoon = true;
-                                            Constants.WriteGLogOutput("Rose will now consume more MP for bonus effects.");
-                                        }
-                                    } else {
-                                        Constants.WriteGLogOutput("You can't swap MP modes right now.");
-                                    }
-                                } else {
-                                    Constants.WriteGLogOutput("Dragon Beater not equipped.");
-                                }
-                                Globals.LAST_HOTKEY = Constants.GetTime();
-                            } else if (Globals.HOTKEY == (Hotkey.KEY_CIRCLE + Hotkey.KEY_DOWN)) { //Jeweled Hammer
-                                bool skip = true;
-                                for (int i = 0; i < 3; i++) {
-                                    if (Globals.PARTY_SLOT[i] == 6 && Globals.CHARACTER_TABLE[i].Read("Weapon") == 164) {
-                                        skip = false;
-                                    }
-                                }
-                                if (!skip) {
-                                    if (!Globals.DIFFICULTY_MODE.Equals("Normal")) {
-                                        if (jeweledHammer) {
-                                            if (Constants.REGION == Region.NTA) {
-                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[24].Description_Pointer, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1A 00 16 00 15 00 0F 00 FF A0");
-                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[27].Description_Pointer, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1A 00 18 00 15 00 0F 00 FF A0");
-                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[28].Description_Pointer, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 16 00 19 00 15 00 15 00 0F 00 FF A0");
-                                            }
-                                            emulator.WriteByte("SPELL_TABLE", 10, 0x7 + (24 * 0xC)); //Freezing Ring MP
-                                            emulator.WriteByte("SPELL_TABLE", 20, 0x7 + (25 * 0xC)); //Rainbow Breath MP
-                                            emulator.WriteByte("SPELL_TABLE", 80, 0x7 + (27 * 0xC)); //Diamond Dust MP
-                                            emulator.WriteByte("SPELL_TABLE", 80, 0x7 + (28 * 0xC)); //Blue Sea Dragon MP
-                                            jeweledHammer = false;
-                                            Constants.WriteGLogOutput("Meru's dragoon magic has returned to normal.");
-                                        } else {
-                                            if (Constants.REGION == Region.NTA) {
-                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[24].Description_Pointer, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1D 00 15 00 15 00 0F 00 FF A0");
-                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[27].Description_Pointer, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1D 00 1D 00 15 00 0F 00 FF A0");
-                                                emulator.WriteAOB(Globals.DRAGOON_SPELLS[28].Description_Pointer, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 17 00 16 00 15 00 15 00 0F 00 FF A0");
-                                            }
-                                            emulator.WriteByte("SPELL_TABLE", 50, 0x7 + (24 * 0xC)); //Freezing Ring MP
-                                            emulator.WriteByte("SPELL_TABLE", 100, 0x7 + (25 * 0xC)); //Rainbow Breath MP
-                                            emulator.WriteByte("SPELL_TABLE", 100, 0x7 + (27 * 0xC)); //Diamond Dust MP
-                                            emulator.WriteByte("SPELL_TABLE", 150, 0x7 + (28 * 0xC)); //Blue Sea Dragon MP
-                                            jeweledHammer = true;
-                                            Constants.WriteGLogOutput("Meru will now consume more MP for bonus effects.");
-                                        }
-                                    } else {
-                                        Constants.WriteGLogOutput("You can't swap MP modes right now.");
-                                    }
-                                } else {
-                                    Constants.WriteGLogOutput("Jeweled Hammer not equipped.");
                                 }
                                 Globals.LAST_HOTKEY = Constants.GetTime();
                             } else if (Globals.HOTKEY == (Hotkey.KEY_CIRCLE + Hotkey.KEY_R2)) { //Black Room
