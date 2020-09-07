@@ -187,6 +187,7 @@ namespace Dragoon_Modifier {
                                 HardDragoonRun(emulator);
                             }
                             BattleHotkeys(emulator);
+                            KeepSPD();
                         }
                     } else if (Globals.GAME_STATE == 7) {   // Battle result screen
                         if (Globals.STATS_CHANGED) {
@@ -1682,6 +1683,29 @@ namespace Dragoon_Modifier {
         }
         #endregion
 
+        #region Keep SPD
+
+        static void KeepSPD() {
+            for (int slot = 0; slot < 3; slot++) {
+                if (Globals.PARTY_SLOT[slot] > 8) {
+                    break;
+                }
+                bool speedUp = Globals.CHARACTER_TABLE[slot].Read("SPEED_UP_TRN") != 0 ? true : false;
+                bool speedDown = Globals.CHARACTER_TABLE[slot].Read("SPEED_DOWN_TRN") != 0 ? true : false;
+                if (speedUp != speedDown) {
+                    if (speedUp) {
+                        Globals.CHARACTER_TABLE[slot].Write("SPD", Globals.CHARACTER_TABLE[slot].Read("OG_SPD") * 2);
+                    } else {
+                        Globals.CHARACTER_TABLE[slot].Write("SPD", Math.Round((double) Globals.CHARACTER_TABLE[slot].Read("OG_SPD") / 2));
+                    } 
+                } else {
+                    Globals.CHARACTER_TABLE[slot].Write("SPD", Globals.CHARACTER_TABLE[slot].Read("OG_SPD"));
+                }
+            }
+        }
+
+        #endregion
+
         #endregion
 
         #region Hard/Hell Mode specific
@@ -2616,6 +2640,7 @@ namespace Dragoon_Modifier {
                     if (Globals.PARTY_SLOT[slot] == 7) {
                         if (Globals.CHARACTER_TABLE[slot].Read("SPD") >= 40) {
                             Globals.CHARACTER_TABLE[slot].Write("SPD", 30 + Math.Round((double) (Globals.CHARACTER_TABLE[slot].Read("SPD") - 30) / 2));
+                            Globals.CHARACTER_TABLE[slot].Write("OG_SPD", Globals.CHARACTER_TABLE[slot].Read("SPD"));
                         }
                     }
                 }
