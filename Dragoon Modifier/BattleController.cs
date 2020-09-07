@@ -64,6 +64,7 @@ namespace Dragoon_Modifier {
         static bool[] armorOfLegendCheckDF = { false, false, false };
         static bool[] armorOfLegendCheckShield = { false, false, false };
         static byte soasSiphonRingSlot = 0;
+        static byte soasAnkhSlot = 0;
 
         // Dragoon Changes variables
         static ushort[] previousMP = { 0, 0, 0 };
@@ -95,8 +96,8 @@ namespace Dragoon_Modifier {
         static ushort explosionDREDMAT = 1020;
         static ushort finalBurstDREMAT = 510;
 
-        static ushort lavitzDAT = 0;
-        static ushort lavitzSpecialDAT = 0;
+        static ushort lavitzDAT = 330;
+        static ushort lavitzSpecialDAT = 495;
 
         static ushort wingBlasterDMAT = 440;
         static byte blossomStormTurnMP = 20;
@@ -1964,9 +1965,9 @@ namespace Dragoon_Modifier {
                     }
                 } else if (Globals.PARTY_SLOT[slot] == 3) {
                     if (dragoonSpecialAttack == 3) {
-                        Globals.CHARACTER_TABLE[slot].Write("DAT", (495 * multi));
+                        Globals.CHARACTER_TABLE[slot].Write("DAT", (roseSpecialDAT * multi));
                     } else {
-                        Globals.CHARACTER_TABLE[slot].Write("DAT", (330 * multi));
+                        Globals.CHARACTER_TABLE[slot].Write("DAT", (roseDAT * multi));
                     }
 
                     if ((soasSiphonRingSlot & (1 << slot)) != 0) { //Soa's Siphon Ring
@@ -2425,6 +2426,15 @@ namespace Dragoon_Modifier {
             fakeLegendCasqueCheck = new bool[] { false, false, false };
             fakeLegendArmorSlot = 0;
             fakeLegendArmorCheck = new bool[] { false, false, false };
+            legendCasqueSlot = 0;
+            legendCasqueCount = new byte[] { 0, 0, 0 };
+            legendCasqueCheckMDF = new bool[] { false, false, false };
+            legendCasqueCheckShield = new bool[] { false, false, false };
+            armorOfLegendSlot = 0;
+            armorOfLegendCount = new byte[] { 0, 0, 0 };
+            armorOfLegendCheckDF = new bool[] { false, false, false };
+            armorOfLegendCheckShield = new bool[] { false, false, false };
+            soasAnkhSlot = 0;
 
             for (int slot = 0; slot < 3; slot++) {
                 if (Globals.PARTY_SLOT[slot] > 8) {
@@ -2568,10 +2578,11 @@ namespace Dragoon_Modifier {
                         }
                     }
 
-                    if (Globals.CHARACTER_TABLE[slot].Read("Accessory") == 177) { //Soa's Ahnk
+                    if (Globals.CHARACTER_TABLE[slot].Read("Accessory") == 177) { //Soa's Ankh
                         if (Globals.CheckDMScript("btnSoloMode")) {
                             Globals.CHARACTER_TABLE[slot].Write("Revive", (Globals.CHARACTER_TABLE[slot].Read("Revive") - 50));
                         }
+                        soasAnkhSlot |= (byte) (1 << slot);
                     }
 
                     if (Globals.CHARACTER_TABLE[slot].Read("Accessory") == 178) { //Soa's Health Ring
@@ -2611,6 +2622,10 @@ namespace Dragoon_Modifier {
                         }
                     }
 
+                    if (Globals.CHARACTER_TABLE[slot].Read("Helmet") == 89) {  //Legend Casque
+                        legendCasqueSlot |= (byte) (1 << slot);
+                    }
+
                     if (Globals.CHARACTER_TABLE[slot].Read("Armor") == 74) { //Armor of Legend
                         if (Globals.PARTY_SLOT[slot] == 0) {
                             Globals.CHARACTER_TABLE[slot].Write("DF", (Globals.CHARACTER_TABLE[slot].Read("DF") + 41 - 127));
@@ -2636,6 +2651,7 @@ namespace Dragoon_Modifier {
                         }
                         Globals.CHARACTER_TABLE[slot].Write("OG_DF", Globals.CHARACTER_TABLE[slot].Read("DF"));
                         Globals.CHARACTER_TABLE[slot].Write("OG_MDF", Globals.CHARACTER_TABLE[slot].Read("MDF"));
+                        armorOfLegendSlot |=  (byte) (1 << slot);
                     }
 
                     if (Globals.CHARACTER_TABLE[slot].Read("Accessory") == 180) { //Soa's Shield Ring
@@ -2792,7 +2808,41 @@ namespace Dragoon_Modifier {
                     }
                 }
 
-                // Soa's Anhk
+                if ((soasAnkhSlot & (1 << slot)) != 0) {
+                    bool alive = false;
+                    int kill = -1;
+                    int lastPartyID = -1;
+                    if (Globals.CHARACTER_TABLE[slot].Read("HP") == 0) {
+                        for (int x = 0; x < 3; x++) {
+                            if (x != slot && Globals.PARTY_SLOT[slot] < 9 && Globals.CHARACTER_TABLE[x].Read("HP") > 0) {
+                                alive = true;
+                            }
+                        }
+
+                        if (alive) {
+                            for (int x = 0; x < 3; x++) {
+                                if (kill == -1 && new Random().Next(0, 9) < 5 && Globals.CHARACTER_TABLE[x].Read("HP") > 0) {
+                                    kill = x;
+                                } else {
+                                    lastPartyID = x;
+                                }
+                            }
+                        }
+
+                        if (kill != -1) {
+                            Globals.CHARACTER_TABLE[kill].Write("HP", 0);
+                            Globals.CHARACTER_TABLE[kill].Write("Action", 192);
+                        } else {
+                            Globals.CHARACTER_TABLE[lastPartyID].Write("HP", 0);
+                            Globals.CHARACTER_TABLE[lastPartyID].Write("Action", 192);
+                        }
+                        Globals.CHARACTER_TABLE[slot].Write("HP", 1);
+                    } else {
+                        Globals.CHARACTER_TABLE[slot].Write("MAX_HP", 0);
+                        Globals.CHARACTER_TABLE[slot].Write("Revive", 0);
+                        Globals.CHARACTER_TABLE[slot].Write("Action", 192);
+                    }
+                }
 
                 if ((legendCasqueSlot & (1 << slot)) != 0) {
                     if (legendCasqueCheckMDF[slot] && Globals.CHARACTER_TABLE[slot].Read("Guard") == 1) {
