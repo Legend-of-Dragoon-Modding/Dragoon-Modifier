@@ -39,6 +39,11 @@ namespace Dragoon_Modifier {
         static bool spiritEaterCheck = false;
         static byte harpoonSlot = 0;
         static bool harpoonCheck = false;
+        static byte elementArrowSlot = 0;
+        static byte elementArrowElement = 0x80;
+        static byte elementArrowItem = 0xC3;
+        static byte elementArrowLastAction = 255;
+        static byte elementArrowTurns = 0;
         static byte dragonBeaterSlot = 0;
         static byte batteryGloveSlot = 0;
         static byte batteryGloveLastAction = 0;
@@ -50,6 +55,14 @@ namespace Dragoon_Modifier {
         static bool[] fakeLegendCasqueCheck = { false, false, false };
         static byte fakeLegendArmorSlot = 0;
         static bool[] fakeLegendArmorCheck = { false, false, false };
+        static byte legendCasqueSlot = 0;
+        static byte[] legendCasqueCount = { 0, 0, 0 };
+        static bool[] legendCasqueCheckMDF = { false, false, false };
+        static bool[] legendCasqueCheckShield = { false, false, false };
+        static byte armorOfLegendSlot = 0;
+        static byte[] armorOfLegendCount = { 0, 0, 0 };
+        static bool[] armorOfLegendCheckDF = { false, false, false };
+        static bool[] armorOfLegendCheckShield = { false, false, false };
         static byte soasSiphonRingSlot = 0;
 
         // Dragoon Changes variables
@@ -319,7 +332,7 @@ namespace Dragoon_Modifier {
                 NoDragoonMode();
             }
             if (difficulty != "Normal") {
-                HardHellModeSetup(emulator);
+                HardHellModeSetup(emulator, uiCombo);
             }
             Constants.WriteOutput("Finished loading.");
             Globals.STATS_CHANGED = true;
@@ -1701,8 +1714,8 @@ namespace Dragoon_Modifier {
 
         #region Hard/Hell Mode specific
 
-        public static void HardHellModeSetup(Emulator emulator) {
-            EquipChangesSetup(emulator);
+        public static void HardHellModeSetup(Emulator emulator, Dictionary<string, int> uiCombo) {
+            EquipChangesSetup(emulator, uiCombo);
             if (difficulty.Contains("Hell")) {
                 HellDragoonChanges(emulator);
             }
@@ -2309,10 +2322,10 @@ namespace Dragoon_Modifier {
 
         #region Equipment Changes
 
-        public static void EquipChangesSetup(Emulator emulator) {
+        public static void EquipChangesSetup(Emulator emulator, Dictionary<string, int> uiCombo) {
             Chapter3buffs();
             PercBuffs(emulator);
-            SpecialEquipSetup(emulator);
+            SpecialEquipSetup(emulator, uiCombo);
         }
 
         public static void Chapter3buffs() {
@@ -2394,12 +2407,13 @@ namespace Dragoon_Modifier {
             }
         }
 
-        public static void SpecialEquipSetup(Emulator emulator) {
+        public static void SpecialEquipSetup(Emulator emulator, Dictionary<string, int> uiCombo) {
             soasSiphonRingSlot = 0;
             spiritEaterSlot = 0;
             spiritEaterCheck = false;
             harpoonSlot = 0;
             harpoonCheck = false;
+            elementArrowSlot = 0;
             dragonBeaterSlot = 0;
             batteryGloveSlot = 0;
             batteryGloveLastAction = 0;
@@ -2465,6 +2479,13 @@ namespace Dragoon_Modifier {
                     }
 
                     // Element Arrow
+                    if ((Globals.PARTY_SLOT[slot] == 2 || Globals.PARTY_SLOT[slot] == 8) && Globals.CHARACTER_TABLE[slot].Read("Weapon") == 161) {  //Element Arrow
+                        elementArrowSlot |= (byte) (1 << slot);
+                        ElementArrowSetup(uiCombo);
+                        elementArrowLastAction = 255;
+                        elementArrowTurns = 0;
+                        Globals.CHARACTER_TABLE[slot].Write("Element", elementArrowElement);
+                    }
 
                     if (Globals.PARTY_SLOT[slot] == 3 && Globals.CHARACTER_TABLE[slot].Read("Weapon") == 162) { //Dragon Beater
                         dragonBeaterSlot |= (byte) (1 << slot);
@@ -2476,7 +2497,7 @@ namespace Dragoon_Modifier {
                         batteryGloveCharge = 0;
                     }
 
-                    if (Globals.PARTY_SLOT[slot] == 6 && Globals.CHARACTER_TABLE[slot].Read("Weapon") == 164) { //
+                    if (Globals.PARTY_SLOT[slot] == 6 && Globals.CHARACTER_TABLE[slot].Read("Weapon") == 164) { //Jeweled Hammer
                         jeweledHammerSlot |= (byte) (1 << slot);
                     }
 
@@ -2537,8 +2558,6 @@ namespace Dragoon_Modifier {
                             }
                         }
                     }
-
-                    // Heal Ring
 
                     if (Globals.CHARACTER_TABLE[slot].Read("Accessory") == 176) { //Soa's Sash
                         for (int x = 0; x < 3; x++) {
@@ -2679,7 +2698,35 @@ namespace Dragoon_Modifier {
                     }
                 }
 
-                // Element Arrow
+                if ((elementArrowSlot & (1 << slot)) != 0) {
+                    byte current_action = Globals.CHARACTER_TABLE[slot].Read("Action");
+                    if (elementArrowLastAction != current_action) {
+                        elementArrowLastAction = current_action;
+                        if (elementArrowLastAction == 8) {
+                            Globals.CHARACTER_TABLE[slot].Write("Element", elementArrowElement);
+                            elementArrowTurns += 1;
+                        } else {
+                            if (elementArrowLastAction == 10) {
+                                Globals.CHARACTER_TABLE[slot].Write("Element", 0);
+                            }
+                            if (elementArrowTurns == 4) {
+                                elementArrowTurns = 0;
+                                if (emulator.ReadInteger("GOLD") >= 100) {
+                                    /*
+                                    for (int x = 0; x < inventorySize; x++) {
+                                        if (emulator.ReadByte("INVENTORY", x) == 255) {
+                                            emulator.WriteByte("INVENTORY", elementArrowItem, x);
+                                            emulator.WriteByte("INVENTORY_SIZE", emulator.ReadByte("INVENTORY_SIZE") + 1);
+                                            emulator.WriteInteger("GOLD", emulator.ReadInteger("GOLD") - 100);
+                                            break;
+                                        }
+                                    }
+                                    */
+                                }
+                            }
+                        }
+                    }
+                }
 
                 if ((dragonBeaterSlot & (1 << slot)) != 0) {
                     if (Globals.CHARACTER_TABLE[slot].Read("Action") == 136) {
@@ -2740,20 +2787,88 @@ namespace Dragoon_Modifier {
                         fakeLegendArmorCheck[slot] = false;
                     }
                     if (!fakeLegendArmorCheck[slot] && Globals.CHARACTER_TABLE[slot].Read("Action") & 8 != 0) {
-                        Globals.CHARACTER_TABLE[slot].Write("DF", Globals.CHARACTER_TABLE[slot].Read("OG:DF"));
+                        Globals.CHARACTER_TABLE[slot].Write("DF", Globals.CHARACTER_TABLE[slot].Read("OG_DF"));
                         fakeLegendArmorCheck[slot] = true;
                     }
                 }
 
-                // Divine DG Armor
-
-                // Boots ???
-
                 // Soa's Anhk
 
-                // Armor of Legend
+                if ((legendCasqueSlot & (1 << slot)) != 0) {
+                    if (legendCasqueCheckMDF[slot] && Globals.CHARACTER_TABLE[slot].Read("Guard") == 1) {
+                        if (legendCasqueCount[slot] >= 3) {
+                            Globals.CHARACTER_TABLE[slot].Write("MDF", Math.Ceiling((int)Globals.CHARACTER_TABLE[slot].Read("MDF") * 1.2));
+                            legendCasqueCount[slot] = 0;
+                        } else {
+                            legendCasqueCount[slot] += 1;
+                        }
+                        legendCasqueCheckMDF[slot] = false;
+                    }
+                    if (legendCasqueCheckShield[slot] && Globals.CHARACTER_TABLE[slot].Read("Guard") == 0 && (Globals.CHARACTER_TABLE[slot].Read("Action") & 8) == 0) {
+                        if (new Random().Next(0, 9) < 1) {
+                            Globals.CHARACTER_TABLE[slot].Write("Special_Effect", Globals.CHARACTER_TABLE[slot].Read("Special_Effect") | 4);
+                        }
+                        legendCasqueCheckShield[slot] = false;
+                    }
+                    if ((legendCasqueCheckMDF[slot] || legendCasqueCheckShield[slot]) && (Globals.CHARACTER_TABLE[slot].Read("Action") & 8) != 0) {
+                        if (!legendCasqueCheckMDF[slot] && legendCasqueCount[slot] == 0) {
+                            Globals.CHARACTER_TABLE[slot].Write("MDF", Globals.CHARACTER_TABLE[slot].Read("OG_MDF"));
+                        }
+                        legendCasqueCheckMDF[slot] = true;
+                        legendCasqueCheckShield[slot] = true;
+                    }
+                }
 
-                // Legend Casque
+                if ((armorOfLegendSlot & (1 << slot)) != 0) {
+                    if (armorOfLegendCheckDF[slot] && Globals.CHARACTER_TABLE[slot].Read("Guard") == 1) {
+                        if (armorOfLegendCount[slot] >= 3) {
+                            Globals.CHARACTER_TABLE[slot].Write("DF", Math.Ceiling((int) Globals.CHARACTER_TABLE[slot].Read("DF") * 1.2));
+                            armorOfLegendCount[slot] = 0;
+                        } else {
+                            armorOfLegendCount[slot] += 1;
+                        }
+                        armorOfLegendCheckDF[slot] = false;
+                    }
+                    if (armorOfLegendCheckShield[slot] && Globals.CHARACTER_TABLE[slot].Read("Guard") == 0 && (Globals.CHARACTER_TABLE[slot].Read("Action") & 8) == 0) {
+                        if (new Random().Next(0, 9) < 1) {
+                            Globals.CHARACTER_TABLE[slot].Write("Special_Effect", Globals.CHARACTER_TABLE[slot].Read("Special_Effect") | 1);
+                        }
+                        armorOfLegendCheckShield[slot] = false;
+                    }
+                    if ((armorOfLegendCheckDF[slot] || armorOfLegendCheckShield[slot]) && (Globals.CHARACTER_TABLE[slot].Read("Action") & 8) != 0) {
+                        if (!armorOfLegendCheckDF[slot] && armorOfLegendCount[slot] == 0) {
+                            Globals.CHARACTER_TABLE[slot].Write("DF", Globals.CHARACTER_TABLE[slot].Read("OG_DF"));
+                        }
+                        armorOfLegendCheckDF[slot] = true;
+                        armorOfLegendCheckShield[slot] = true;
+                    }
+                }
+                
+            }
+        }
+
+        public static void ElementArrowSetup(Dictionary<string, int> uiCombo) {
+            if (uiCombo["cboElement"] == 0) {
+                elementArrowElement = 128;
+                elementArrowItem = 0xC3;
+            } else if (uiCombo["cboElement"] == 1) {
+                elementArrowElement = 1;
+                elementArrowItem = 0xC6;
+            } else if (uiCombo["cboElement"] == 2) {
+                elementArrowElement = 64;
+                elementArrowItem = 0xC7;
+            } else if (uiCombo["cboElement"] == 3) {
+                elementArrowElement = 2;
+                elementArrowItem = 0xC5;
+            } else if (uiCombo["cboElement"] == 4) {
+                elementArrowElement = 4;
+                elementArrowItem = 0xCA;
+            } else if (uiCombo["cboElement"] == 5) {
+                elementArrowElement = 32;
+                elementArrowItem = 0xC9;
+            } else if (uiCombo["cboElement"] == 6) {
+                elementArrowElement = 16;
+                elementArrowItem = 0xC2;
             }
         }
 
