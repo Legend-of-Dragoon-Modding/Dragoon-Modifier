@@ -187,7 +187,6 @@ namespace Dragoon_Modifier {
                                 HardDragoonRun(emulator);
                             }
                             BattleHotkeys(emulator);
-                            KeepSPD();
                         }
                     } else if (Globals.GAME_STATE == 7) {   // Battle result screen
                         if (Globals.STATS_CHANGED) {
@@ -595,6 +594,10 @@ namespace Dragoon_Modifier {
         }
 
         public static void ItemBattleChanges(Emulator emulator, int slot) {
+            byte character = Globals.PARTY_SLOT[slot];
+            if (slot == 0 && Globals.NO_DART != null) {
+                character = (byte) Globals.NO_DART;
+            }
             Globals.CHARACTER_TABLE[slot].Write("MP", Math.Min(Globals.CURRENT_STATS[slot].MP, Globals.CURRENT_STATS[slot].Max_MP));
             Globals.CHARACTER_TABLE[slot].Write("Max_MP", Globals.CURRENT_STATS[slot].Max_MP);
             Globals.CHARACTER_TABLE[slot].Write("Stat_Res", Globals.CURRENT_STATS[slot].Stat_Res);
@@ -618,6 +621,10 @@ namespace Dragoon_Modifier {
             Globals.CHARACTER_TABLE[slot].Write("SP_M_Hit", Globals.CURRENT_STATS[slot].SP_M_Hit);
             Globals.CHARACTER_TABLE[slot].Write("MP_P_Hit", Globals.CURRENT_STATS[slot].MP_P_Hit);
             Globals.CHARACTER_TABLE[slot].Write("SP_P_Hit", Globals.CURRENT_STATS[slot].SP_P_Hit);
+            emulator.WriteShort("SECONDARY_CHARACTER_TABLE", Globals.CURRENT_STATS[slot].SP_P_Hit, character * 0xA0 + 0x4E);
+            emulator.WriteShort("SECONDARY_CHARACTER_TABLE", Globals.CURRENT_STATS[slot].MP_P_Hit, character * 0xA0 + 0x50);
+            emulator.WriteShort("SECONDARY_CHARACTER_TABLE", Globals.CURRENT_STATS[slot].SP_M_Hit, character * 0xA0 + 0x52);
+            emulator.WriteShort("SECONDARY_CHARACTER_TABLE", Globals.CURRENT_STATS[slot].MP_M_Hit, character * 0xA0 + 0x54);
             Globals.CHARACTER_TABLE[slot].Write("SP_Multi", Globals.CURRENT_STATS[slot].SP_Multi);
             Globals.CHARACTER_TABLE[slot].Write("Death_Res", Globals.CURRENT_STATS[slot].Death_Res);
             Globals.CHARACTER_TABLE[slot].Write("HP", Math.Min(Globals.CURRENT_STATS[slot].HP, Globals.CURRENT_STATS[slot].Max_HP));
@@ -633,9 +640,15 @@ namespace Dragoon_Modifier {
             Globals.CHARACTER_TABLE[slot].Write("OG_MDF", Globals.CURRENT_STATS[slot].MDF);
             Globals.CHARACTER_TABLE[slot].Write("SPD", Globals.CURRENT_STATS[slot].SPD);
             Globals.CHARACTER_TABLE[slot].Write("OG_SPD", Globals.CURRENT_STATS[slot].SPD);
+            emulator.WriteShort("SECONDARY_CHARACTER_TABLE", Globals.CURRENT_STATS[slot].Body_SPD, character * 0xA0 + 0x69);
+            emulator.WriteShort("SECONDARY_CHARACTER_TABLE", Globals.CURRENT_STATS[slot].Equip_SPD, character * 0xA0 + 0x86);
         }
 
         public static void CharacterBattleChanges(Emulator emulator, int slot) {
+            byte character = Globals.PARTY_SLOT[slot];
+            if (slot == 0 && Globals.NO_DART != null) {
+                character = (byte) Globals.NO_DART;
+            }
             Globals.CHARACTER_TABLE[slot].Write("HP", Math.Min(Globals.CURRENT_STATS[slot].HP, Globals.CURRENT_STATS[slot].Max_HP));
             Globals.CHARACTER_TABLE[slot].Write("Max_HP", Globals.CURRENT_STATS[slot].Max_HP);
             Globals.CHARACTER_TABLE[slot].Write("AT", Globals.CURRENT_STATS[slot].AT);
@@ -648,6 +661,7 @@ namespace Dragoon_Modifier {
             Globals.CHARACTER_TABLE[slot].Write("MDF", Globals.CURRENT_STATS[slot].MDF);
             Globals.CHARACTER_TABLE[slot].Write("OG_MDF", Globals.CURRENT_STATS[slot].MDF);
             Globals.CHARACTER_TABLE[slot].Write("SPD", Globals.CURRENT_STATS[slot].SPD);
+            emulator.WriteShort("SECONDARY_CHARACTER_TABLE", Globals.CURRENT_STATS[slot].Body_SPD, character * 0xA0 + 0x69);
             Globals.CHARACTER_TABLE[slot].Write("OG_SPD", Globals.CURRENT_STATS[slot].SPD);
         }
 
@@ -1683,29 +1697,6 @@ namespace Dragoon_Modifier {
         }
         #endregion
 
-        #region Keep SPD
-
-        static void KeepSPD() {
-            for (int slot = 0; slot < 3; slot++) {
-                if (Globals.PARTY_SLOT[slot] > 8) {
-                    break;
-                }
-                bool speedUp = Globals.CHARACTER_TABLE[slot].Read("SPEED_UP_TRN") != 0 ? true : false;
-                bool speedDown = Globals.CHARACTER_TABLE[slot].Read("SPEED_DOWN_TRN") != 0 ? true : false;
-                if (speedUp != speedDown) {
-                    if (speedUp) {
-                        Globals.CHARACTER_TABLE[slot].Write("SPD", Globals.CHARACTER_TABLE[slot].Read("OG_SPD") * 2);
-                    } else {
-                        Globals.CHARACTER_TABLE[slot].Write("SPD", Math.Round((double) Globals.CHARACTER_TABLE[slot].Read("OG_SPD") / 2));
-                    } 
-                } else {
-                    Globals.CHARACTER_TABLE[slot].Write("SPD", Globals.CHARACTER_TABLE[slot].Read("OG_SPD"));
-                }
-            }
-        }
-
-        #endregion
-
         #endregion
 
         #region Hard/Hell Mode specific
@@ -2521,6 +2512,10 @@ namespace Dragoon_Modifier {
                         Globals.CHARACTER_TABLE[slot].Write("MP_P_Hit", (Globals.CHARACTER_TABLE[slot].Read("MP_P_Hit") + 10));
                         Globals.CHARACTER_TABLE[slot].Write("SP_M_Hit", (Globals.CHARACTER_TABLE[slot].Read("SP_M_Hit") + 20));
                         Globals.CHARACTER_TABLE[slot].Write("MP_M_Hit", (Globals.CHARACTER_TABLE[slot].Read("MP_M_Hit") + 10));
+                        emulator.WriteShort("SECONDARY_CHARACTER_TABLE", Globals.CHARACTER_TABLE[slot].Read("SP_P_Hit"), Globals.PARTY_SLOT[slot] * 0xA0 + 0x4E);
+                        emulator.WriteShort("SECONDARY_CHARACTER_TABLE", Globals.CHARACTER_TABLE[slot].Read("MP_P_Hit"), Globals.PARTY_SLOT[slot] * 0xA0 + 0x50);
+                        emulator.WriteShort("SECONDARY_CHARACTER_TABLE", Globals.CHARACTER_TABLE[slot].Read("SP_M_Hit"), Globals.PARTY_SLOT[slot] * 0xA0 + 0x52);
+                        emulator.WriteShort("SECONDARY_CHARACTER_TABLE", Globals.CHARACTER_TABLE[slot].Read("MP_M_Hit"), Globals.PARTY_SLOT[slot] * 0xA0 + 0x54);
                     }
 
                     if (Globals.CHARACTER_TABLE[slot].Read("Armor") == 171) { //Soa's Armor
@@ -2537,6 +2532,8 @@ namespace Dragoon_Modifier {
                             if (x != slot && Globals.PARTY_SLOT[x] < 9) {
                                 Globals.CHARACTER_TABLE[x].Write("SPD", (Globals.CHARACTER_TABLE[x].Read("SPD") - 25));
                                 Globals.CHARACTER_TABLE[x].Write("OG_SPD", Globals.CHARACTER_TABLE[x].Read("SPD"));
+                                byte base_spd = (byte) (emulator.ReadByte("SECONDARY_CHARACTER_TABLE", Globals.PARTY_SLOT[slot] * 0xA0 + 0x69) - 25);
+                                emulator.WriteByte("SECONDARY_CHARACTER_TABLE", base_spd, Globals.PARTY_SLOT[slot] * 0xA0 + 0x69);
                             }
                         }
                     }
@@ -2638,10 +2635,10 @@ namespace Dragoon_Modifier {
                     }
 
                     if (Globals.PARTY_SLOT[slot] == 7) {
-                        if (Globals.CHARACTER_TABLE[slot].Read("SPD") >= 40) {
-                            Globals.CHARACTER_TABLE[slot].Write("SPD", 30 + Math.Round((double) (Globals.CHARACTER_TABLE[slot].Read("SPD") - 30) / 2));
-                            Globals.CHARACTER_TABLE[slot].Write("OG_SPD", Globals.CHARACTER_TABLE[slot].Read("SPD"));
-                        }
+                        ushort equip_spd = (ushort) Math.Round((double) emulator.ReadShort("SECONDARY_CHARACTER_TABLE", 7 * 0xA0 + 0x86) / 2);
+                        emulator.WriteShort("SECONDARY_CHARACTER_TABLE", equip_spd, 7 * 0xA0 + 0x86);
+                        Globals.CHARACTER_TABLE[slot].Write("SPD", Globals.CHARACTER_TABLE[slot].Read("SPD") - equip_spd);
+                        Globals.CHARACTER_TABLE[slot].Write("OG_SPD", Globals.CHARACTER_TABLE[slot].Read("SPD"));
                     }
                 }
             }
@@ -3388,6 +3385,8 @@ namespace Dragoon_Modifier {
         ushort df = 1;
         ushort mdf = 1;
         ushort spd = 1;
+        ushort equip_spd = 0;
+        ushort body_spd = 1;
         byte a_av = 0;
         byte m_av = 0;
         byte a_hit = 0;
@@ -3424,6 +3423,8 @@ namespace Dragoon_Modifier {
         public ushort DF { get { return df; } }
         public ushort MDF { get { return mdf; } }
         public ushort SPD { get { return spd; } }
+        public ushort Body_SPD { get { return body_spd; } }
+        public ushort Equip_SPD { get { return equip_spd; } }
         public byte A_AV { get { return a_av; } }
         public byte M_AV { get { return m_av; } }
         public byte A_Hit { get { return a_hit; } }
@@ -3489,7 +3490,9 @@ namespace Dragoon_Modifier {
                 mat = (ushort) (Globals.DICTIONARY.OriginalCharacterStats[character][lv].MAT + weapon.MAT + armor.MAT + helm.MAT + boots.MAT + accessory.MAT);
                 df = (ushort) (Globals.DICTIONARY.OriginalCharacterStats[character][lv].DF + weapon.DF + armor.DF + helm.DF + boots.DF + accessory.DF);
                 mdf = (ushort) (Globals.DICTIONARY.OriginalCharacterStats[character][lv].MDF + weapon.MDF + armor.MDF + helm.MDF + boots.MDF + accessory.MDF);
-                spd = (ushort) (Globals.DICTIONARY.OriginalCharacterStats[character][lv].SPD + weapon.SPD + armor.SPD + helm.SPD + boots.SPD + accessory.SPD);
+                body_spd = (ushort) (Globals.DICTIONARY.OriginalCharacterStats[character][lv].SPD);
+                equip_spd = (ushort) (weapon.SPD + armor.SPD + helm.SPD + boots.SPD + accessory.SPD);
+                spd = (ushort) (body_spd + equip_spd);
             } else {
                 max_hp = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].Max_HP * (1 + ((weapon.Special2 & 2) >> 1) * (float) (weapon.Special_Ammount) / 100 + ((armor.Special2 & 2) >> 1) * (float) (armor.Special_Ammount) / 100
                        + ((helm.Special2 & 2) >> 1) * (float) (helm.Special_Ammount) / 100 + ((boots.Special2 & 2) >> 1) * (float) (boots.Special_Ammount) / 100 + ((accessory.Special2 & 2) >> 1) * (float) (accessory.Special_Ammount) / 100));
@@ -3498,7 +3501,9 @@ namespace Dragoon_Modifier {
                 mat = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].MAT + weapon.MAT + armor.MAT + helm.MAT + boots.MAT + accessory.MAT);
                 df = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].DF + weapon.DF + armor.DF + helm.DF + boots.DF + accessory.DF);
                 mdf = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].MDF + weapon.MDF + armor.MDF + helm.MDF + boots.MDF + accessory.MDF);
-                spd = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].SPD + weapon.SPD + armor.SPD + helm.SPD + boots.SPD + accessory.SPD);
+                body_spd = (ushort) Globals.DICTIONARY.CharacterStats[character][lv].SPD;
+                equip_spd = (ushort) (weapon.SPD + armor.SPD + helm.SPD + boots.SPD + accessory.SPD);
+                spd = (ushort) (body_spd + equip_spd);
             }
 
             if (Globals.DRAGOON_STAT_CHANGE) {
