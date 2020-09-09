@@ -163,7 +163,7 @@ namespace Dragoon_Modifier {
 
         #endregion
 
-        public static void Run(Emulator emulator, Dictionary<string, int> uiCombo) {
+        public static void Run(Emulator emulator, Dictionary<string, int> uiCombo, byte eleBombTurns, byte eleBombElement, bool reverseDBS, int inventorySize) {
             while (Constants.RUN) {
                 try {
                     if (Globals.GAME_STATE == 1) {          // Battle
@@ -192,13 +192,13 @@ namespace Dragoon_Modifier {
                                 RemoveDamageCap(emulator);
                             }
                             if (difficulty != "Normal") {
-                                EquipRun(emulator);
+                                EquipRun(emulator, inventorySize);
                                 checkFlowerStorm = false;
                                 checkRoseDamage = false;
                                 roseEnhanceDragoon = false;
                                 meruEnhanceDragoon = false;
                                 trackRainbowBreath = false;
-                                HardDragoonRun(emulator);
+                                HardDragoonRun(emulator, eleBombTurns, eleBombElement, reverseDBS);
                             }
                             BattleHotkeys(emulator);
                         }
@@ -1773,7 +1773,7 @@ namespace Dragoon_Modifier {
             emulator.WriteByte("SPELL_TABLE", gatesOfHeavenMP, 0x7 + (67 * 0xC)); //???'s Gates of Heaven MP
         }
 
-        public static void HardDragoonRun(Emulator emulator) {
+        public static void HardDragoonRun(Emulator emulator, byte eleBombTurns, byte eleBombElement, bool reverseDBS) {
             byte dragoonSpecialAttack = emulator.ReadByte("DRAGOON_SPECIAL_ATTACK");
             for (int slot = 0; slot < 3; slot++) {
                 if (Globals.PARTY_SLOT[slot] > 8) {
@@ -1788,11 +1788,9 @@ namespace Dragoon_Modifier {
                     }
                 }
 
-                /*
-                if (ubReverseDBS) {
+                if (reverseDBS) {
                     multi = 20;
                 }
-                */
 
                 if (Globals.PARTY_SLOT[slot] == 3 && (dragonBeaterSlot & (1 << slot)) != 0) {
                     multi *= 1.1;
@@ -2035,11 +2033,9 @@ namespace Dragoon_Modifier {
                         multi *= 0.3;
                     }
 
-                    /*
                     if (eleBombTurns > 0 && eleBombElement == 16) {
                         multi *= 3;
                     }
-                    */
 
                     if (currentMP[slot] < previousMP[slot]) {
                         byte spell = Globals.CHARACTER_TABLE[slot].Read("Spell_Cast");
@@ -2679,7 +2675,7 @@ namespace Dragoon_Modifier {
             }
         }
 
-        public static void EquipRun(Emulator emulator) {
+        public static void EquipRun(Emulator emulator, int inventorySize) {
             for (int slot = 0; slot < 3; slot++) {
                 if (Globals.PARTY_SLOT[slot] > 8) {
                     break;
@@ -2728,7 +2724,6 @@ namespace Dragoon_Modifier {
                             if (elementArrowTurns == 4) {
                                 elementArrowTurns = 0;
                                 if (emulator.ReadInteger("GOLD") >= 100) {
-                                    /*
                                     for (int x = 0; x < inventorySize; x++) {
                                         if (emulator.ReadByte("INVENTORY", x) == 255) {
                                             emulator.WriteByte("INVENTORY", elementArrowItem, x);
@@ -2737,7 +2732,6 @@ namespace Dragoon_Modifier {
                                             break;
                                         }
                                     }
-                                    */
                                 }
                             }
                         }

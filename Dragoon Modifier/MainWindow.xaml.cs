@@ -1186,7 +1186,6 @@ namespace Dragoon_Modifier {
                         DuoModeBattle();
                     /*
                     if (!Globals.DIFFICULTY_MODE.Equals("Normal")) {
-                        DragoonChanges();
                         if (burnActive) {
                             for (int i = 0; i < 3; i++) {
                                 if (Globals.PARTY_SLOT[i] == 0) {
@@ -1216,8 +1215,6 @@ namespace Dragoon_Modifier {
                         ElementalBomb();
                     if (Globals.CheckDMScript("btnDamageTracker"))
                         DamageTracker();
-                    if (!Globals.DIFFICULTY_MODE.Equals("Normal"))
-                        EquipChangesBattle();
                     if (Globals.CheckDMScript("btnRows") && !Globals.DIFFICULTY_MODE.Contains("Hell"))
                         BattleFormationRows();
                     if (Globals.CheckDMScript("btnEATB") || Globals.CheckDMScript("btnATB"))
@@ -1266,17 +1263,6 @@ namespace Dragoon_Modifier {
                             originalCharacterStats[i, 2] = Globals.CHARACTER_TABLE[i].Read("MAT"); //MAT
                             originalCharacterStats[i, 3] = Globals.CHARACTER_TABLE[i].Read("DF"); //DF
                             originalCharacterStats[i, 4] = Globals.CHARACTER_TABLE[i].Read("MDF"); //MDF
-                            originalCharacterStats[i, 5] = Globals.CHARACTER_TABLE[i].Read("SPD"); //SPD
-                            originalCharacterStats[i, 6] = Globals.CHARACTER_TABLE[i].Read("SP_P_Hit"); //SP HEAL PHYSICAL
-                            originalCharacterStats[i, 7] = Globals.CHARACTER_TABLE[i].Read("MP_P_Hit"); //MP HEAL PHYSICAL
-                            originalCharacterStats[i, 8] = Globals.CHARACTER_TABLE[i].Read("SP_M_Hit"); //SP HEAL MAGIC
-                            originalCharacterStats[i, 9] = Globals.CHARACTER_TABLE[i].Read("MP_M_Hit"); //MP HEAL MAGIC
-
-                            Globals.CHARACTER_TABLE[i].Write("OG_AT", Globals.CHARACTER_TABLE[i].Read("AT"));
-                            Globals.CHARACTER_TABLE[i].Write("OG_MAT", Globals.CHARACTER_TABLE[i].Read("MAT"));
-                            Globals.CHARACTER_TABLE[i].Write("OG_DF", Globals.CHARACTER_TABLE[i].Read("DF"));
-                            Globals.CHARACTER_TABLE[i].Write("OG_MDF", Globals.CHARACTER_TABLE[i].Read("MDF"));
-                            Globals.CHARACTER_TABLE[i].Write("OG_SPD", Globals.CHARACTER_TABLE[i].Read("SPD"));
                         }
                     }
 
@@ -6101,7 +6087,7 @@ namespace Dragoon_Modifier {
                     Constants.RUN = true;
                     emulator.OpenProcess(processID);
                     globalThread = new Thread(delegate () { GlobalController.Run(emulator); });
-                    newBattleThread = new Thread(delegate () { BattleController.Run(emulator, uiCombo); });
+                    newBattleThread = new Thread(delegate () { BattleController.Run(emulator, uiCombo, eleBombTurns, eleBombElement, ubReverseDBS, inventorySize); });
                     fieldThread = new Thread(FieldController);
                     battleThread = new Thread(BattleController1);
                     hotkeyThread = new Thread(HotkeysController);
