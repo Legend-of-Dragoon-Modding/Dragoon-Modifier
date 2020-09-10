@@ -184,6 +184,7 @@ namespace Dragoon_Modifier {
         public bool ubInventoryRefresh = false;
         public byte inventoryRefreshSize = 0;
         public byte[] inventoryRefresh = new byte[64];
+        public int inventoryRefreshStage = 0;
         public bool ubEnhancedShield = false;
         public short shieldTurnsTaken = 0;
         public short enhancedShieldTurns = 0;
@@ -1070,7 +1071,7 @@ namespace Dragoon_Modifier {
                 //LoadMaxHPTable(false);
 
                 if (inventorySize != 32) {
-                    //ExtendInventory();
+                    ExtendInventory();
                 }
 
                 try {
@@ -1502,6 +1503,20 @@ namespace Dragoon_Modifier {
                                     aspectRatio = 2048;
 
                                 emulator.WriteShort("ASPECT_RATIO", aspectRatio);
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_SQUARE + Hotkey.KEY_UP)) {
+                                emulator.WriteByte("MENU", 16);
+                                emulator.WriteByte("TRANSITION", 13);
+                                Globals.LAST_HOTKEY = Constants.GetTime();
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_SQUARE + Hotkey.KEY_DOWN)) {
+                                emulator.WriteByte("TRANSITION", 11);
+                                Globals.LAST_HOTKEY = Constants.GetTime();
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_SQUARE + Hotkey.KEY_LEFT)) {
+                                emulator.WriteByte("MENU", 16);
+                                emulator.WriteByte("OVERWORLD", 4);
+                                Globals.LAST_HOTKEY = Constants.GetTime();
+                            } else if (Globals.HOTKEY == (Hotkey.KEY_SQUARE + Hotkey.KEY_RIGHT)) {
+                                emulator.WriteByte("TRANSITION", 4);
+                                Globals.LAST_HOTKEY = Constants.GetTime();
                             }
                         } else { //Battle
                             if (Globals.HOTKEY == (Hotkey.KEY_SQUARE + Hotkey.KEY_UP)) { //*TB Slot 1
@@ -3173,6 +3188,7 @@ namespace Dragoon_Modifier {
                                 inventoryRefresh[i] = emulator.ReadByte("INVENTORY", i);
                             }
                         }
+                        ubInventoryRefresh = false;
                     }
                 }
 
@@ -3619,25 +3635,25 @@ namespace Dragoon_Modifier {
 
                 if (ultimateBossCompleted == 3) {
                     inventorySize = 36;
-                    //ExtendInventory();
+                    ExtendInventory();
                     Constants.WritePLog("On how to extend inventory please see the output log in the settings tab.");
                     Constants.WriteGLogOutput("Ultimate Boss Zone 1 completed! Inventory expanded to 36 slots.");
                     Constants.WriteOutput("Please note Extended Inventory must be applied at the Save Slot screen once per emulator session to avoid loss of items. To do this simply open up Dragoon Modifier right before you load your save.");
                 } else if (ultimateBossCompleted == 8) {
                     inventorySize = 40;
-                    //ExtendInventory();
+                    ExtendInventory();
                     Constants.WritePLog("On how to extend inventory please see the output log in the settings tab.");
                     Constants.WriteGLogOutput("Ultimate Boss Zone 2 completed! Inventory expanded to 40 slots.");
                     Constants.WriteOutput("Please note Extended Inventory must be applied at the Save Slot screen once per emulator session to avoid loss of items. To do this simply open up Dragoon Modifier right before you load your save.");
                 } else if (ultimateBossCompleted == 22) {
                     inventorySize = 48;
-                    //ExtendInventory();
+                    ExtendInventory();
                     Constants.WritePLog("On how to extend inventory please see the output log in the settings tab.");
                     Constants.WriteGLogOutput("Ultimate Boss Zone 3 completed! Inventory expanded to 48 slots.");
                     Constants.WriteOutput("Please note Extended Inventory must be applied at the Save Slot screen once per emulator session to avoid loss of items. To do this simply open up Dragoon Modifier right before you load your save.");
                 } else if (ultimateBossCompleted == 34) {
                     inventorySize = 64;
-                    //ExtendInventory();
+                    ExtendInventory();
                     Constants.WritePLog("On how to extend inventory please see the output log in the settings tab.");
                     Constants.WriteGLogOutput("Ultimate Boss Zone 4 midboss completed! Inventory expanded to 64 slots.");
                     Constants.WriteOutput("Please note Extended Inventory must be applied at the Save Slot screen once per emulator session to avoid loss of items. To do this simply open up Dragoon Modifier right before you load your save.");
@@ -5346,18 +5362,34 @@ namespace Dragoon_Modifier {
 
         #region Extend Inventory
         public void ExtendInventory() {
-            emulator.WriteShort("INVENTORY_CAP_1", (ushort) inventorySize);
-            emulator.WriteShort("INVENTORY_CAP_2", (ushort) inventorySize);
-            emulator.WriteShort("INVENTORY_CAP_3", (ushort) inventorySize);
-            emulator.WriteShort("INVENTORY_CAP_4", (ushort) inventorySize);
-            emulator.WriteShort("INVENTORY_CAP_MINUS_1", (ushort) inventorySize);
-            emulator.WriteShort("INVENTORY_CAP_MINUS_2", (ushort) inventorySize);
-            emulator.WriteShort("INVENTORY_CAP_PLUS_1", (ushort) inventorySize);
-            emulator.WriteShort("INVENTORY_CAP_PLUS_2", (ushort) inventorySize);
-            emulator.WriteShort("ITEM_LIMIT_1", (ushort) inventorySize);
-            emulator.WriteShort("ITEM_LIMIT_2", (ushort) inventorySize);
-            emulator.WriteShort("ITEM_LIMIT_3", (ushort) inventorySize);
-            emulator.WriteShort("ITEM_CAP", 808);
+            if (inventorySize > 32) {
+                if (emulator.ReadShort("INVENTORY_CAP_1") != inventorySize || emulator.ReadShort("INVENTORY_CAP_2") != inventorySize || emulator.ReadShort("INVENTORY_CAP_3") != inventorySize || emulator.ReadShort("INVENTORY_CAP_4") != inventorySize) {
+                    emulator.WriteShort("INVENTORY_CAP_1", (ushort) inventorySize);
+                    emulator.WriteShort("INVENTORY_CAP_2", (ushort) inventorySize);
+                    emulator.WriteShort("INVENTORY_CAP_3", (ushort) inventorySize);
+                    emulator.WriteShort("INVENTORY_CAP_4", (ushort) inventorySize);
+                    emulator.WriteShort("ITEM_CAP", 808);
+                }
+
+                if (emulator.ReadShort("INVENTORY_CAP_MINUS_1") != inventorySize || emulator.ReadShort("INVENTORY_CAP_MINUS_2") != inventorySize) {
+                    emulator.WriteShort("INVENTORY_CAP_MINUS_1", (ushort) inventorySize);
+                    emulator.WriteShort("INVENTORY_CAP_MINUS_2", (ushort) inventorySize);
+                    emulator.WriteShort("ITEM_CAP", 808);
+                }
+
+                if (emulator.ReadShort("INVENTORY_CAP_PLUS_1") != inventorySize || emulator.ReadShort("INVENTORY_CAP_PLUS_2") != inventorySize) {
+                    emulator.WriteShort("INVENTORY_CAP_PLUS_1", (ushort) inventorySize);
+                    emulator.WriteShort("INVENTORY_CAP_PLUS_2", (ushort) inventorySize);
+                    emulator.WriteShort("ITEM_CAP", 808);
+                }
+
+                if (emulator.ReadShort("ITEM_LIMIT_1") == 32 || emulator.ReadShort("ITEM_LIMIT_2") == 32 || emulator.ReadShort("ITEM_LIMIT_3") == 32) {
+                    emulator.WriteShort("ITEM_LIMIT_1", (ushort) inventorySize);
+                    emulator.WriteShort("ITEM_LIMIT_2", (ushort) inventorySize);
+                    emulator.WriteShort("ITEM_LIMIT_3", (ushort) inventorySize);
+                    emulator.WriteShort("ITEM_CAP", 808);
+                }
+            }
         }
         #endregion
 
@@ -5368,9 +5400,9 @@ namespace Dragoon_Modifier {
         #region Battle
 
         #region Dragoon Changes
-        
 
-        
+
+
 
         public void AddBurnStack(int amount) {
             dartBurnStack = (dartBurnStack + amount) > 6 ? 6 : (dartBurnStack + amount);
@@ -7203,6 +7235,7 @@ namespace Dragoon_Modifier {
                     "Click on Settings Tab>Settings>Region to change your game region.\r\n" +
                     "If everything is setup correctly with your emulator the Encounter Value will display 41215 on the Battle Stats tab. When on the field your Encounter Value will increase when you walk. On the load screen the map id should display 675.\r\n" +
                     "Please note on emulators ePSXe 2.0 and above, and any other emulator you should follow these addition steps. Open emulator, open game, before you load your save, open Dragoon Modifier. You do not have to do this for ePSXe 1.9.25 and below.\r\n" +
+                    "Please also note to NOT pause the game or speed up the emulator during battle transition to avoid crashing. Let Dragoon Modifier finish the battle setup, you can tell when it is complete when the icon turns green.\r\n" +
                     "Normal Mode sets the program to a read only state with everything turned off. If your inventory is expanded it will extend it however. To avoid this change to an empty save slot.\r\n" +
                     "Dragoon Modifier timers are built on the game running at full speed. Please make sure your game is running at full speed, not faster or slower to prevent issues.";
             } else if (cboHelpTopic.SelectedIndex == 1) {
@@ -7216,7 +7249,8 @@ namespace Dragoon_Modifier {
                     "Hell Mode has the same character, weapon, drop, and dragoon adjustments. However incomplete Additions are punished and you gain about 50% SP from them. To encourage the use of Elemental Bomb the drop rates for magic items are tripled, powerful items are doubled. It is intended for you to start off Hell Mode will all Dragoons with hotkey (CROSS+L1) in Map 10. It is also intended that you use Elemental Bomb, it was left optional as it made Hell Mode easier but it was designed with this turned on. This changes the element of all monsters on the field when a powerful item is used, however you do not have to use this. Monsters are much harder and you may require grinding. You can keep everyone at the same level by using Switch EXP up to 160,000 EXP. In Hell Mode you lose SP after fighting most of the major bosses, if you total SP gained falls below the level threshold you will delevel your Dragoons.\r\n\r\n" +
                     "Base + Hard (Bosses) uses Hard Mode enhancements but uses normal monster stats for normal encounters (which makes them easier) and uses Hard Mode stats for bosses only.\r\n\r\n" +
                     "Hard + Hell (Bosses) uses Hell Mode enhancements, but uses Hard Mode monster stats for normal encounters and Hell Mode stats for bosses only.\r\n\r\n" +
-                    "+\r\nPlus turns on Enrage Mode for bosses only. Originally designed as a part of Hell Mode but separated for the possibility of being too hard.\r\n\r\nThe sliders will multiply each stat at the bottom. If you choose a preset those stats will be multiplied as well.";
+                    "+\r\nPlus turns on Enrage Mode for bosses only. Originally designed as a part of Hell Mode but separated for the possibility of being too hard.\r\n\r\n" +
+                    "The sliders will multiply each stat at the bottom. If you choose a preset those stats will be multiplied as well. You must have Monster Changes on from Settings>Settings>Mod Options>Monster Changes to use the sliders.";
             } else if (cboHelpTopic.SelectedIndex == 3) {
                 txtHelp.Text = "Save >9999 HP\r\nWhen you have characters above 9999 HP this will save their HP between battles.\r\n\r\n" +
                     "Remove Damage Caps\r\nThe game's multiple damage caps will be changed to 50,000.\r\n\r\n" +
@@ -7409,7 +7443,7 @@ namespace Dragoon_Modifier {
                     "L1 + R1           - Activates Adddition Swap in battle if you have no status effects. The number of dragoon spirits the appear are equal to the number of available additions. The additions are ordered from left to right (1 - 7 max, same order as how they appear in the menu), for example Dart's third icon would be Burning Rush. Press Dragoon to automatically transform to switch additions.";
             } else if (cboHelpTopic.SelectedIndex == 11) {
                 txtHelp.Text = "1. No Dart\r\n" +
-                    "When you have three party members use Switch Slot 1 and No Dart should turn on. When you are switching between Solo and Duo Mode or turning them off make sure to turn off No Dart in Enhancements Tab II.\r\n\r\n" +
+                    "When you have three party members use Switch Slot 1 and No Dart should turn on. When you are switching between Solo and Duo Mode or turning them off make sure to turn off No Dart in Enhancements Tab II. To turn off No Dart click the No Dart Mode button in Enhancements Tab 3.\r\n\r\n" +
                     "2. Solo / Duo Mode - Boss Encounters with Cutscenes\r\n" +
                     "The game requires you to have three party members for cutscenes. To turn on party members for a single battle press Add Party Members green button in Enhancements Tab I. To turn it on for all battles press Add Party Members green button, and the on button beside it. Extra characters will die on entry and move off screen.\r\n\r\n" +
                     "3. Reader Mode\r\n" +
