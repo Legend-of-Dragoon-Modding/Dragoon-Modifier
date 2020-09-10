@@ -180,7 +180,7 @@ Soa's Ahnk	Accessory	All	Pin																	revive	100		Revives always but<LINE
 Soa's Health Ring	Accessory	All	Ring																	hp_multi	100		Siphons Max HP from<LINE>others but doubles<LINE>own.	2
 Soa's Mage Ring	Accessory	All	Ring																	mp_multi	200		Siphons Max MP from<LINE>others but triples<LINE>own.	2
 Soa's Shield Ring	Accessory	All	Ring																				Siphons accuracy<LINE>from others. Dies onhit.	2
-																								2
+Soa's Siphon Ring	Accessory	All	Ring																				Siphons dragoon<LINE>magic for more MAT.	2
 																								2
 																								2
 																								2
