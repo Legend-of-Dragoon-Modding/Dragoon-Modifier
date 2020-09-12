@@ -542,6 +542,10 @@ namespace Dragoon_Modifier {
                     CharacterBattleChanges(emulator, slot);
                 }
             }
+
+            if (Globals.ITEM_NAMEDESC_CHANGE && Constants.REGION == Region.NTA) {
+                ItemBattleNameDescChange(emulator);
+            }
         }
 
         public static void AdditionsBattleChanges(Emulator emulator, int slot, int character) {
@@ -753,6 +757,60 @@ namespace Dragoon_Modifier {
             }
             descr = descr.Remove(descr.Length - 1);
             emulator.WriteAOB(Constants.GetAddress("DRAGOON_DESC"), descr);
+        }
+
+        #endregion
+
+        #region Item Changes
+
+        public static void ItemBattleNameDescChange(Emulator emulator) {
+            Constants.WriteOutput("Changing Item Names and Descriptions...");
+            long address = Constants.GetAddress("ITEM_BTL_NAME");
+            long address2 = Constants.GetAddress("ITEM_BTL_NAME_PTR");
+            int len1 = String.Join("", Globals.DICTIONARY.BattleNameList).Replace(" ", "").Length / 4;
+            int len2 = (int) (address2 - address) / 2;
+            if (len1 < len2) {
+                emulator.WriteAOB(address, String.Join(" ", Globals.DICTIONARY.BattleNameList));
+                int i = 0;
+                foreach (dynamic item in Globals.DICTIONARY.ItemList) {
+                    if (i < 192) {
+                        i++;
+                        continue;
+                    }
+                    if (i == 255) {
+                        break;
+                    }
+                    emulator.WriteInteger(address2 + (i - 192) * 0x4, (int) item.BattleNamePointer);
+                    emulator.WriteByte(address2 + (i - 192) * 0x4 + 0x3, 0x80);
+                    i++;
+                }
+            } else {
+                string s = String.Format("Item name character limit exceeded! {0} / {1} characters.", len1, len2);
+                Constants.WriteDebug(s);
+            }
+            address = Constants.GetAddress("ITEM_BTL_DESC");
+            address2 = Constants.GetAddress("ITEM_BTL_DESC_PTR");
+            len1 = String.Join("", Globals.DICTIONARY.BattleDescriptionList).Replace(" ", "").Length / 4;
+            len2 = (int) (address2 - address) / 2;
+            if (len1 < len2) {
+                emulator.WriteAOB(address, String.Join(" ", Globals.DICTIONARY.BattleDescriptionList));
+                int i = 0;
+                foreach (dynamic item in Globals.DICTIONARY.ItemList) {
+                    if (i < 192) {
+                        i++;
+                        continue;
+                    }
+                    if (i == 255) {
+                        break;
+                    }
+                    emulator.WriteInteger(address2 + (i - 192) * 0x4, (int) item.BattleDescriptionPointer);
+                    emulator.WriteByte(address2 + (i - 192) * 0x4 + 0x3, 0x80);
+                    i++;
+                }
+            } else {
+                string s = String.Format("Item description character limit exceeded! {0} / {1} characters.", len1, len2);
+                Constants.WriteDebug(s);
+            }
         }
 
         #endregion

@@ -25,7 +25,9 @@ namespace Dragoon_Modifier {
         List<dynamic> itemList = new List<dynamic>();
         List<dynamic> originalItemList = new List<dynamic>();
         List<string> descriptionList = new List<string>();
+        List<string> battleDescriptionList = new List<string>();
         List<string> nameList = new List<string>();
+        List<string> battleNameList = new List<string>();
         IDictionary<int, dynamic> statList = new Dictionary<int, dynamic>();
         IDictionary<int, dynamic> ultimateStatList = new Dictionary<int, dynamic>();
         byte[][] shopList = new byte[44][];
@@ -84,7 +86,9 @@ namespace Dragoon_Modifier {
         public List<dynamic> ItemList { get { return itemList; } }
         public List<dynamic> OriginalItemList { get { return originalItemList; } }
         public List<string> DescriptionList { get { return descriptionList; } }
+        public List<string> BattleDescriptionList { get { return battleDescriptionList; } }
         public List<string> NameList { get { return nameList; } }
+        public List<string> BattleNameList { get { return battleNameList; } }
         public IDictionary<int, dynamic> StatList { get { return statList; } }
         public IDictionary<int, dynamic> UltimateStatList { get { return ultimateStatList; } }
         public byte[][] ShopList { get { return shopList; } }
@@ -157,6 +161,25 @@ namespace Dragoon_Modifier {
 
                         }
                     }
+
+                    offset = 0x0;
+                    start = Constants.GetAddress("ITEM_BTL_DESC");
+                    var tempList = itemList.GetRange(193, 63);
+                    sortedList = tempList.OrderByDescending(o => o.BattleDescription.Length).ToList();
+                    battleDescriptionList = new List<string>();
+                    foreach (dynamic item in sortedList) {
+                        if (battleDescriptionList.Any(l => l.Contains(item.EncodedBattleDescription)) == true) {
+                            int index = sortedList.IndexOf(sortedList.Find(x => x.EncodedBattleDescription.Contains(item.EncodedBattleDescription)));
+                            item.BattleDescriptionPointer = sortedList[index].BattleDescriptionPointer + (sortedList[index].BattleDescription.Length - item.BattleDescription.Length) * 2;
+                        } else {
+                            battleDescriptionList.Add(item.EncodedBattleDescription);
+                            item.BattleDescriptionPointer = start + offset;
+                            offset += (item.EncodedBattleDescription.Replace(" ", "").Length / 2);
+
+                        }
+                    }
+
+
                     offset = 0;
                     start = Constants.GetAddress("ITEM_NAME");
                     sortedList = itemList.OrderByDescending(o => o.Name.Length).ToList();
@@ -170,6 +193,24 @@ namespace Dragoon_Modifier {
                             item.NamePointer = start + (int) offset;
                             offset += (item.EncodedName.Replace(" ", "").Length / 2);
                         }
+                    }
+
+                    offset = 0;
+                    start = Constants.GetAddress("ITEM_BTL_NAME");
+                    sortedList = itemList.GetRange(193, 63).OrderByDescending(o => o.Name.Length).ToList();
+                    battleNameList = new List<string>();
+                    foreach (dynamic item in sortedList) {
+                        if (battleNameList.Any(l => l.Contains(item.EncodedName)) == true) {
+                            int index = sortedList.IndexOf(sortedList.Find(x => x.EncodedName.Contains(item.EncodedName)));
+                            item.BattleNamePointer = sortedList[index].BattleNamePointer + (sortedList[index].Name.Length - item.Name.Length) * 2;
+                        } else {
+                            battleNameList.Add(item.EncodedName);
+                            item.BattleNamePointer = start + (int) offset;
+                            offset += (item.EncodedName.Replace(" ", "").Length / 2);
+                        }
+                    }
+                    foreach(dynamic item in sortedList) {
+                        Constants.WriteDebug(item.Name);
                     }
 
                     foreach (var line in ReadAllResourceLines(Properties.Resources.Items)) {
@@ -915,8 +956,12 @@ namespace Dragoon_Modifier {
         string description = "<END>";
         string encodedName = "FF A0 FF A0";
         string encodedDescription = "FF A0 FF A0";
+        string battleDescription = "<END>";
+        string encondedBattleDescription = "FF A0 FF A0";
         long descriptionPointer = 0;
         long namePointer = 0;
+        long battleDescriptionPointer = 0;
+        long battleNamePointer = 0;
         byte target = 0;
         byte element = 0;
         byte damage = 0;
@@ -1066,10 +1111,14 @@ namespace Dragoon_Modifier {
         public byte ID { get { return id; } }
         public string Name { get { return name; } }
         public string Description { get { return description; } }
+        public string BattleDescription { get { return battleDescription; } }
         public string EncodedName { get { return encodedName; } }
         public string EncodedDescription { get { return encodedDescription; } }
+        public string EncodedBattleDescription { get { return encondedBattleDescription; } }
         public long DescriptionPointer { get; set; }
         public long NamePointer { get; set; }
+        public long BattleDescriptionPointer { get; set; }
+        public long BattleNamePointer { get; set; }
         public byte Target { get { return target; } }
         public byte Element { get { return element; } }
         public byte Damage { get { return damage; } }
@@ -1169,6 +1218,10 @@ namespace Dragoon_Modifier {
                 sell_price = (short) Math.Round(temp);
             } else if (values[14] != "") {
                 Constants.WriteDebug(values[14] + " not found as Price for item: " + name);
+            }
+            battleDescription = values[15];
+            if (!(battleDescription == "" || battleDescription == " ")) {
+                encondedBattleDescription = LoDDict.StringEncode(battleDescription);
             }
         }
     }
