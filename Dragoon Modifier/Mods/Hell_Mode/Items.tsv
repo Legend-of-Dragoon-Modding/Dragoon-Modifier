@@ -20,7 +20,7 @@ Gushing Magma	78	Fire	100					Magic					Fire-based,<LINE>targets all<LINE>(multi
 Dancing Ray	78	Light	100					Magic					Light-based,<LINE>targets all<LINE>(multi).	20
 Spirit Potion	72	None						Red Potion		100		SP	Recovers 100 pts.<LINE>of SP.	20
 Panic Bell	76	None						Skull	CN			Status_Cause	Confuses minor<LINE>enemies.	20
-	90	None								50		HP	 	2
+Rock Firefly	90	None						Blue Potion		100		HP, MP	Completely<LINE>recovers HP and MP<LINE>for all.	200
 Fatal Blizzard	78	Water	100					Magic					Water-based,<LINE>targets all<LINE>(multi).	20
 Stunning Hammer	76	None						Skull	ST			Status_Cause	Stuns minor<LINE>enemies.	20
 Black Rain	78	Dark	100					Magic					Dark-based,<LINE>targets all<LINE>(multi).	20

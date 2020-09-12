@@ -1153,10 +1153,12 @@ namespace Dragoon_Modifier {
             } else if (values[11] != "") {
                 Constants.WriteDebug(values[11] + " not found as UU2 for item: " + name);
             }
-            if (base_dict.TryGetValue(values[12].ToLower(), out key)) {
-                baseSwitch = key;
-            } else if (values[12] != "") {
-                Constants.WriteDebug(values[12] + " not found as Base_Switch for item: " + name);
+            foreach (string substring in values[12].Replace(" ", "").Split(',')) {
+                if (base_dict.TryGetValue(substring.ToLower(), out key)) {
+                    baseSwitch |= key;
+                } else {
+                    Constants.WriteDebug(substring + " not found as Base_Switch for item:" + name);
+                }
             }
             description = values[13];
             if (!(description == "" || description == " ")) {
