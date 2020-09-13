@@ -37,6 +37,7 @@ namespace Dragoon_Modifier {
                 Globals.PARTY_SLOT[1] = emulator.ReadByte("PARTY_SLOT", 4);
                 Globals.PARTY_SLOT[2] = emulator.ReadByte("PARTY_SLOT", 8);
                 Globals.DRAGOON_SPIRITS = emulator.ReadByte("DRAGOON_SPIRITS");
+                Globals.HOTKEY = emulator.ReadShort("HOTKEY");
                 Thread.Sleep(100);
             }
         }

@@ -6477,10 +6477,6 @@ namespace Dragoon_Modifier {
 
         public void SetupScripts() {
             try {
-                lstField.Items.Add(new SubScript(Directory.GetFiles("Scripts", "[ALL] Field Controller*")[0], ScriptState.LOCKED, emulator));
-                lstBattle.Items.Add(new SubScript(Directory.GetFiles("Scripts", "[ALL] Battle Controller*")[0], ScriptState.LOCKED, emulator));
-                lstHotkey.Items.Add(new SubScript(Directory.GetFiles("Scripts", "[ALL] Hotkey Controller*")[0], ScriptState.LOCKED, emulator));
-
                 foreach (string file in Directory.GetFiles("Scripts\\Field", "*.cs", SearchOption.AllDirectories).OrderBy(f => f))
                     lstField.Items.Add(new SubScript(file, emulator));
                 foreach (string file in Directory.GetFiles("Scripts\\Battle", "*.cs", SearchOption.AllDirectories).OrderBy(f => f))
