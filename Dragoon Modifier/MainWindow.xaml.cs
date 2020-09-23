@@ -2387,7 +2387,7 @@ namespace Dragoon_Modifier {
                         characterDisplay[i, 1].Text = " " + Globals.CHARACTER_TABLE[i].Read("HP") + "/" + Globals.CHARACTER_TABLE[i].Read("Max_HP") + "\r\n\r\n " + Globals.CHARACTER_TABLE[i].Read("MP") + "/" + Globals.CHARACTER_TABLE[i].Read("Max_MP");
                         characterDisplay[i, 2].Text = " " + Globals.CHARACTER_TABLE[i].Read("AT") + "\r\n\r\n " + Globals.CHARACTER_TABLE[i].Read("MAT");
                         characterDisplay[i, 3].Text = " " + Globals.CHARACTER_TABLE[i].Read("DF") + "\r\n\r\n " + Globals.CHARACTER_TABLE[i].Read("MDF");
-                        characterDisplay[i, 4].Text = " " + Globals.CHARACTER_TABLE[i].Read("A_HIT") + "/" + Globals.CHARACTER_TABLE[i].Read("M_HIT") + "\r\n\r\n " + Globals.CHARACTER_TABLE[i].Read("A_AV") + "/" + Globals.CHARACTER_TABLE[i].Read("M_AV");
+                        characterDisplay[i, 4].Text = " " + Globals.CHARACTER_TABLE[i].Read("A_Hit") + "/" + Globals.CHARACTER_TABLE[i].Read("M_Hit") + "\r\n\r\n " + Globals.CHARACTER_TABLE[i].Read("A_AV") + "/" + Globals.CHARACTER_TABLE[i].Read("M_AV");
                         characterDisplay[i, 5].Text = " " + Globals.CHARACTER_TABLE[i].Read("DAT") + "\r\n\r\n " + Globals.CHARACTER_TABLE[i].Read("DMAT");
                         characterDisplay[i, 6].Text = " " + Globals.CHARACTER_TABLE[i].Read("DDF") + "\r\n\r\n " + Globals.CHARACTER_TABLE[i].Read("DMDF");
                         characterDisplay[i, 7].Text = " " + Globals.CHARACTER_TABLE[i].Read("SPD") + "\r\n\r\n " + Globals.CHARACTER_TABLE[i].Read("SP");

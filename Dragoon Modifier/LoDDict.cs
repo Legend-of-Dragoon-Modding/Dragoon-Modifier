@@ -209,9 +209,6 @@ namespace Dragoon_Modifier {
                             offset += (item.EncodedName.Replace(" ", "").Length / 2);
                         }
                     }
-                    foreach(dynamic item in sortedList) {
-                        Constants.WriteDebug(item.Name);
-                    }
 
                     foreach (var line in ReadAllResourceLines(Properties.Resources.Items)) {
                         if (origI > 0) {
