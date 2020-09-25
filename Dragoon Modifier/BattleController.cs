@@ -593,10 +593,12 @@ namespace Dragoon_Modifier {
             Globals.CHARACTER_TABLE[slot].Write("DMAT", Globals.DICTIONARY.DragoonStats[character][dlv].DMAT);
             Globals.CHARACTER_TABLE[slot].Write("DDF", Globals.DICTIONARY.DragoonStats[character][dlv].DDF);
             Globals.CHARACTER_TABLE[slot].Write("DMDF", Globals.DICTIONARY.DragoonStats[character][dlv].DMDF);
-            if (!Globals.ITEM_STAT_CHANGE) {
-                Globals.CHARACTER_TABLE[slot].Write("MP", Math.Min(Globals.CURRENT_STATS[slot].MP, Globals.CURRENT_STATS[slot].Max_MP));
-                Globals.CHARACTER_TABLE[slot].Write("Max_MP", Globals.CURRENT_STATS[slot].Max_MP);
-            }
+            double MP_base = Globals.DICTIONARY.DragoonStats[character][dlv].MP;
+            double MP_multi = 1 + emulator.ReadByte("SECONDARY_CHARACTER_TABLE", character * 0xA0 + 0x64) / 100;
+            ushort MP = (ushort) (MP_base * MP_multi);
+            Globals.CHARACTER_TABLE[slot].Write("MP", emulator.ReadShort("CHAR_TABLE", character * 0x2C + 0xA));
+            Globals.CHARACTER_TABLE[slot].Write("Max_MP", MP);
+            emulator.WriteShort("SECONDARY_CHARACTER_TABLE", MP, character * 0xA0 + 0x6E);
         }
 
         public static void ItemBattleChanges(Emulator emulator, int slot) {
@@ -674,6 +676,20 @@ namespace Dragoon_Modifier {
         public static void SetCharacterStats(Emulator emulator, int slot, int character) {
             int lv = emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x12);
             long address = Constants.GetAddress("SECONDARY_CHARACTER_TABLE");
+            ushort base_HP = 0;
+            byte hp_multi = 0;
+            if (Globals.CHARACTER_STAT_CHANGE) {
+                emulator.WriteByte("SECONDARY_CHARACTER_TABLE", Globals.DICTIONARY.CharacterStats[character][lv].SPD, character * 0xA0 + 0x69);
+                emulator.WriteByte("SECONDARY_CHARACTER_TABLE", Globals.DICTIONARY.CharacterStats[character][lv].AT, character * 0xA0 + 0x6A);
+                emulator.WriteByte("SECONDARY_CHARACTER_TABLE", Globals.DICTIONARY.CharacterStats[character][lv].MAT, character * 0xA0 + 0x6B);
+                emulator.WriteByte("SECONDARY_CHARACTER_TABLE", Globals.DICTIONARY.CharacterStats[character][lv].DF, character * 0xA0 + 0x6C);
+                emulator.WriteByte("SECONDARY_CHARACTER_TABLE", Globals.DICTIONARY.CharacterStats[character][lv].MDF, character * 0xA0 + 0x6D);
+                base_HP = Globals.DICTIONARY.CharacterStats[character][lv].Max_HP;
+            } else {
+                double calc = emulator.ReadShort("SECONDARY_CHARACTER_TABLE", character * 0xA0 + 0x66);
+                double divide = 1 + emulator.ReadByte("SECONDARY_CHARACTER_TABLE", character * 0xA0 + 0x62) / 100;
+                base_HP = (ushort) Math.Round(calc / divide);
+            }
             if (Globals.ITEM_STAT_CHANGE) {
                 dynamic weapon = Globals.DICTIONARY.ItemList[emulator.ReadByte("CHAR_TABLE", character * 0x2C + 0x14)];
                 dynamic armor = Globals.DICTIONARY.ItemList[emulator.ReadByte("CHAR_TABLE", character * 0x2C + 0x15)];
@@ -719,7 +735,7 @@ namespace Dragoon_Modifier {
                 Globals.CHARACTER_TABLE[slot].Write("On_Hit_Status", on_hit_status);
                 byte status_chance = weapon.Status_Chance;
                 emulator.WriteByte(address + character * 0xA0 + 0x98, status_chance);
-                Globals.CHARACTER_TABLE[slot].Write("Status_Chance", status_chance);
+                Globals.CHARACTER_TABLE[slot].Write("On_Hit_Status_Chance", status_chance);
                 byte revive = (byte) (((weapon.Special2 & 0x8) >> 3) * weapon.Special_Ammount + ((armor.Special2 & 0x8) >> 3) * armor.Special_Ammount + ((helm.Special2 & 0x8) >> 3) * helm.Special_Ammount
                 + ((boots.Special2 & 0x8) >> 3) * boots.Special_Ammount + ((accessory.Special2 & 0x8) >> 3) * accessory.Special_Ammount);
                 emulator.WriteByte(address + character * 0xA0 + 0x5E, revive);
@@ -762,17 +778,24 @@ namespace Dragoon_Modifier {
                 byte weapon_element = (byte) weapon.Element;
                 emulator.WriteByte(address + character * 0xA0 + 0x7A, weapon_element);
                 Globals.CHARACTER_TABLE[slot].Write("Display_Element", weapon_element);
-                //hp
+
+                hp_multi = (byte) (weapon.Special_Ammount * ((weapon.Special2 & 2) >> 1) + armor.Special_Ammount * ((armor.Special2 & 2) >> 1) + helm.Special_Ammount * ((helm.Special2 & 2) >> 1)
+                    + boots.Special_Ammount * ((boots.Special2 & 2) >> 1) + accessory.Special_Ammount * ((accessory.Special2 & 2) >> 1));
+                emulator.WriteByte(address + character * 0xA0 + 0x62, hp_multi);
+
                 //mp
+                double mp_calc = emulator.ReadShort("SECONDARY_CHARACTER_TABLE", character * 0xA0 + 0x6E);
+                double mp_divide = 1 + emulator.ReadByte("SECONDARY_CHARACTER_TABLE", character * 0xA0 + 0x64) / 100;
+                ushort mp_base = (ushort) Math.Round(mp_calc / mp_divide);
+
+                byte mp_multi = (byte) (weapon.Special_Ammount * (weapon.Special2 & 1) + armor.Special_Ammount * (armor.Special2 & 1) + helm.Special_Ammount * (helm.Special2 & 1)
+                    + boots.Special_Ammount * (boots.Special2 & 1) + accessory.Special_Ammount * (accessory.Special2 & 1));
+                emulator.WriteByte(address + character * 0xA0 + 0x64, mp_multi);
+                Globals.CHARACTER_TABLE[slot].Write("MP", emulator.ReadShort("CHAR_TABLE", character * 0x2C + 0xA));
+                Globals.CHARACTER_TABLE[slot].Write("Max_MP", (ushort) (mp_base * (1 + mp_multi / 100)));
                 //sp
             }
-            if (Globals.CHARACTER_STAT_CHANGE) {
-                emulator.WriteByte("SECONDARY_CHARACTER_TABLE", Globals.DICTIONARY.CharacterStats[character][lv].SPD, character * 0xA0 + 0x69);
-                emulator.WriteByte("SECONDARY_CHARACTER_TABLE", Globals.DICTIONARY.CharacterStats[character][lv].AT, character * 0xA0 + 0x6A);
-                emulator.WriteByte("SECONDARY_CHARACTER_TABLE", Globals.DICTIONARY.CharacterStats[character][lv].MAT, character * 0xA0 + 0x6B);
-                emulator.WriteByte("SECONDARY_CHARACTER_TABLE", Globals.DICTIONARY.CharacterStats[character][lv].DF, character * 0xA0 + 0x6C);
-                emulator.WriteByte("SECONDARY_CHARACTER_TABLE", Globals.DICTIONARY.CharacterStats[character][lv].MDF, character * 0xA0 + 0x6D);
-            }
+            
             ushort spd = (ushort) (emulator.ReadByte("SECONDARY_CHARACTER_TABLE", character * 0xA0 + 0x69) + emulator.ReadShort("SECONDARY_CHARACTER_TABLE", character * 0xA0 + 0x86));
             Globals.CHARACTER_TABLE[slot].Write("SPD", spd);
             Globals.CHARACTER_TABLE[slot].Write("OG_SPD", spd);
@@ -788,6 +811,9 @@ namespace Dragoon_Modifier {
             ushort mdf = (ushort) (emulator.ReadByte("SECONDARY_CHARACTER_TABLE", character * 0xA0 + 0x6D) + emulator.ReadShort("SECONDARY_CHARACTER_TABLE", character * 0xA0 + 0x8E));
             Globals.CHARACTER_TABLE[slot].Write("MDF", mdf);
             Globals.CHARACTER_TABLE[slot].Write("OG_MDF", mdf);
+
+            Globals.CHARACTER_TABLE[slot].Write("HP", emulator.ReadShort("CHAR_TABLE", character * 0x2C + 0x8));
+            Globals.CHARACTER_TABLE[slot].Write("Max_HP", (ushort) (base_HP * (1 + hp_multi / 100)));
         }
 
         public static void DragoonAdditionsBattleChanges(Emulator emulator, int slot, int character) {
