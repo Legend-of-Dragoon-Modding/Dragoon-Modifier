@@ -596,8 +596,8 @@ namespace Dragoon_Modifier {
             double MP_base = Globals.DICTIONARY.DragoonStats[character][dlv].MP;
             double MP_multi = 1 + emulator.ReadByte("SECONDARY_CHARACTER_TABLE", character * 0xA0 + 0x64) / 100;
             ushort MP = (ushort) (MP_base * MP_multi);
-            Globals.CHARACTER_TABLE[slot].Write("MP", emulator.ReadShort("CHAR_TABLE", character * 0x2C + 0xA));
             Globals.CHARACTER_TABLE[slot].Write("Max_MP", MP);
+            Globals.CHARACTER_TABLE[slot].Write("MP", Math.Min(emulator.ReadShort("CHAR_TABLE", character * 0x2C + 0xA), MP));
             emulator.WriteShort("SECONDARY_CHARACTER_TABLE", MP, character * 0xA0 + 0x6E);
         }
 
@@ -791,8 +791,10 @@ namespace Dragoon_Modifier {
                 byte mp_multi = (byte) (weapon.Special_Ammount * (weapon.Special2 & 1) + armor.Special_Ammount * (armor.Special2 & 1) + helm.Special_Ammount * (helm.Special2 & 1)
                     + boots.Special_Ammount * (boots.Special2 & 1) + accessory.Special_Ammount * (accessory.Special2 & 1));
                 emulator.WriteByte(address + character * 0xA0 + 0x64, mp_multi);
-                Globals.CHARACTER_TABLE[slot].Write("MP", emulator.ReadShort("CHAR_TABLE", character * 0x2C + 0xA));
-                Globals.CHARACTER_TABLE[slot].Write("Max_MP", (ushort) (mp_base * (1 + mp_multi / 100)));
+
+                ushort mp_max = (ushort) (mp_base * (1 + (double) mp_multi / 100));
+                Globals.CHARACTER_TABLE[slot].Write("Max_MP", mp_max);
+                Globals.CHARACTER_TABLE[slot].Write("MP", Math.Min(emulator.ReadShort("CHAR_TABLE", character * 0x2C + 0xA), mp_max));
                 //sp
             }
             
@@ -812,8 +814,9 @@ namespace Dragoon_Modifier {
             Globals.CHARACTER_TABLE[slot].Write("MDF", mdf);
             Globals.CHARACTER_TABLE[slot].Write("OG_MDF", mdf);
 
-            Globals.CHARACTER_TABLE[slot].Write("HP", emulator.ReadShort("CHAR_TABLE", character * 0x2C + 0x8));
+            ushort hp_max = (ushort) (base_HP * (1 + (double) hp_multi / 100));
             Globals.CHARACTER_TABLE[slot].Write("Max_HP", (ushort) (base_HP * (1 + hp_multi / 100)));
+            Globals.CHARACTER_TABLE[slot].Write("HP", Math.Min(emulator.ReadShort("CHAR_TABLE", character * 0x2C + 0x8), hp_max));
         }
 
         public static void DragoonAdditionsBattleChanges(Emulator emulator, int slot, int character) {
