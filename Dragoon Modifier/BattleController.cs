@@ -2933,6 +2933,10 @@ namespace Dragoon_Modifier {
                         armorOfLegendSlot |=  (byte) (1 << slot);
                     }
 
+                    if (Globals.CHARACTER_TABLE[slot].Read("Accessory") == 130 && Globals.CHARACTER_TABLE[slot].Read("Armor") == 73) { //Holy Ahnk + Angel Robe nerf
+                        Globals.CHARACTER_TABLE[slot].Write("Revive", (Globals.CHARACTER_TABLE[slot].Read("Revive") - 20));
+                    }
+
                     if (Globals.CHARACTER_TABLE[slot].Read("Accessory") == 180) { //Soa's Shield Ring
                         Globals.CHARACTER_TABLE[slot].Write("HP", 1);
                         Globals.CHARACTER_TABLE[slot].Write("Max_HP", 1);
