@@ -69,7 +69,7 @@ namespace Dragoon_Modifier {
         // Dragoon Changes variables
         static ushort[] previousMP = { 0, 0, 0 };
         static ushort[] currentMP = { 0, 0, 0 };
-        static byte flowerStorm = 3;
+        static byte flowerStorm = 2;
         static bool checkFlowerStorm = false;
         static byte starChildren = 0;
         static ushort recoveryRateSave = 0;
@@ -81,6 +81,18 @@ namespace Dragoon_Modifier {
 
         #region Dragoon Stats
 
+        #region Burn Stacks
+        static int dartBurnStacks = 0;
+        static int burnStackFlameshot = 1;
+        static int burnStackExplosion = 2;
+        static int burnStackFinalBurst = 2;
+        static int burnStackRedEye = 3;
+        static int dartMaxBurnStacks = 6;
+        static double damagePerBurn = 0.2;
+        static bool burnStackSelected = false;
+        static bool resetBurnStack = false;
+        #endregion
+
         static ushort dartDAT = 281;
         static ushort dartSpecialDAT = 422;
         static ushort dartDivineDAT = 204;
@@ -88,7 +100,7 @@ namespace Dragoon_Modifier {
         static ushort dartDREDAT = 408;
         static ushort dartDRESpecialDAT = 612;
 
-        static ushort flameShotDMAT = 255;
+        static ushort flameshotDMAT = 255;
         static ushort explosionDMAT = 340;
         static ushort finalBurstDMAT = 255;
         static ushort redEyeDMAT = 340;
@@ -193,12 +205,8 @@ namespace Dragoon_Modifier {
                             }
                             if (difficulty != "Normal") {
                                 EquipRun(emulator, inventorySize);
-                                checkFlowerStorm = false;
-                                checkRoseDamage = false;
-                                roseEnhanceDragoon = false;
-                                meruEnhanceDragoon = false;
-                                trackRainbowBreath = false;
                                 HardDragoonRun(emulator, eleBombTurns, eleBombElement, reverseDBS);
+                                DartBurnStackHandler(emulator);
                             }
                             BattleHotkeys(emulator);
                         }
@@ -243,16 +251,24 @@ namespace Dragoon_Modifier {
                     Constants.WriteOutput("Fatal Error. Closing all threads.");
                     Constants.WriteError(ex.ToString());
                 }
-            
             }
         }
 
         public static void Setup(Emulator emulator, Dictionary<string, int> uiCombo) {
             Constants.WriteOutput("Battle detected. Loading...");
 
+            checkFlowerStorm = false;
+            checkRoseDamage = false;
+            roseEnhanceDragoon = false;
+            meruEnhanceDragoon = false;
+            trackRainbowBreath = false;
+            burnStackSelected = false;
+            resetBurnStack = false;
+            dartBurnStacks = 0;
+
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
-            flowerStorm = (byte) (uiCombo["cboFlowerStorm"] + 1);
+            flowerStorm = (byte) (uiCombo["cboFlowerStorm"] + 2);
             difficulty = Globals.DIFFICULTY_MODE;
             aspectRatioOption = uiCombo["cboAspectRatio"];
             cameraOption = uiCombo["cboCamera"];
@@ -792,9 +808,11 @@ namespace Dragoon_Modifier {
                     + boots.Special_Ammount * (boots.Special2 & 1) + accessory.Special_Ammount * (accessory.Special2 & 1));
                 emulator.WriteByte(address + character * 0xA0 + 0x64, mp_multi);
 
-                ushort mp_max = (ushort) (mp_base * (1 + (double) mp_multi / 100));
+                /*ushort mp_max = (ushort) (mp_base * (1 + (double) mp_multi / 100));
                 Globals.CHARACTER_TABLE[slot].Write("Max_MP", mp_max);
-                Globals.CHARACTER_TABLE[slot].Write("MP", Math.Min(emulator.ReadShort("CHAR_TABLE", character * 0x2C + 0xA), mp_max));
+                Globals.CHARACTER_TABLE[slot].Write("MP", Math.Min(emulator.ReadShort("CHAR_TABLE", character * 0x2C + 0xA), mp_max));*/
+                Globals.CHARACTER_TABLE[slot].Write("MP", Math.Min(Globals.CURRENT_STATS[slot].MP, Globals.CURRENT_STATS[slot].Max_MP));
+                Globals.CHARACTER_TABLE[slot].Write("Max_MP", Globals.CURRENT_STATS[slot].Max_MP);
                 //sp
             }
             
@@ -815,8 +833,10 @@ namespace Dragoon_Modifier {
             Globals.CHARACTER_TABLE[slot].Write("OG_MDF", mdf);
 
             ushort hp_max = (ushort) (base_HP * (1 + (double) hp_multi / 100));
-            Globals.CHARACTER_TABLE[slot].Write("Max_HP", (ushort) (base_HP * (1 + hp_multi / 100)));
-            Globals.CHARACTER_TABLE[slot].Write("HP", Math.Min(emulator.ReadShort("CHAR_TABLE", character * 0x2C + 0x8), hp_max));
+            //Globals.CHARACTER_TABLE[slot].Write("Max_HP", (ushort) (base_HP * (1 + hp_multi / 100)));
+            //Globals.CHARACTER_TABLE[slot].Write("HP", Math.Min(emulator.ReadShort("CHAR_TABLE", character * 0x2C + 0x8), hp_max));
+            Globals.CHARACTER_TABLE[slot].Write("HP", Math.Min(Globals.CURRENT_STATS[slot].HP, Globals.CURRENT_STATS[slot].Max_HP));
+            Globals.CHARACTER_TABLE[slot].Write("Max_HP", Globals.CURRENT_STATS[slot].Max_HP);
         }
 
         public static void DragoonAdditionsBattleChanges(Emulator emulator, int slot, int character) {
@@ -2003,6 +2023,9 @@ namespace Dragoon_Modifier {
                             if (Globals.CheckDMScript("btnDivineRed")) {
                                 Globals.CHARACTER_TABLE[slot].Write("DAT", (dartDRESpecialDAT * multi));
                             } else {
+                                if (burnStackSelected) {
+                                    multi *= 1 + (dartBurnStacks * damagePerBurn);
+                                }
                                 Globals.CHARACTER_TABLE[slot].Write("DAT", (dartSpecialDAT * multi));
                             }
                         }
@@ -2013,6 +2036,9 @@ namespace Dragoon_Modifier {
                             if (Globals.CheckDMScript("btnDivineRed")) {
                                 Globals.CHARACTER_TABLE[slot].Write("DAT", (dartDREDAT * multi));
                             } else {
+                                if (burnStackSelected) {
+                                    multi *= 1 + (dartBurnStacks * damagePerBurn);
+                                }
                                 Globals.CHARACTER_TABLE[slot].Write("DAT", (dartDAT * multi));
                             }
                         }
@@ -2032,17 +2058,17 @@ namespace Dragoon_Modifier {
                             }
                         } else {
                             if (spell == 0) {
-                                Globals.CHARACTER_TABLE[slot].Write("DMAT", (flameShotDMAT * multi));
-                                //AddBurnStack(1);
+                                Globals.CHARACTER_TABLE[slot].Write("DMAT", (flameshotDMAT * multi));
+                                AddBurnStacks(burnStackFlameshot);
                             } else if (spell == 1) {
                                 Globals.CHARACTER_TABLE[slot].Write("DMAT", (explosionDMAT * multi));
-                                //AddBurnStack(1);
+                                AddBurnStacks(burnStackExplosion);
                             } else if (spell == 2) {
                                 Globals.CHARACTER_TABLE[slot].Write("DMAT", (finalBurstDMAT * multi));
-                                //AddBurnStack(2);
+                                AddBurnStacks(burnStackFinalBurst);
                             } else if (spell == 3) {
                                 Globals.CHARACTER_TABLE[slot].Write("DMAT", (redEyeDMAT * multi));
-                                //AddBurnStack(3);
+                                AddBurnStacks(burnStackRedEye);
                             } else if (spell == 4 || spell == 9) {
                                 Globals.CHARACTER_TABLE[slot].Write("DMAT", (divineDMAT * multi));
                             }
@@ -2330,6 +2356,69 @@ namespace Dragoon_Modifier {
             }
         }
 
+        public static void AddBurnStacks(int stacks) {
+            dartBurnStacks = Math.Min(dartMaxBurnStacks, dartBurnStacks + stacks);
+            Constants.WriteGLogOutput("Dart Burn Stacks: " + dartBurnStacks + " / " + dartMaxBurnStacks);
+        }
+
+        public static void DartBurnStackHandler(Emulator emulator) {
+            for (int i = 0; i < 3; i++) {
+                if (Globals.PARTY_SLOT[i] == 0) {
+                    if (resetBurnStack) {
+                        if (Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10) {
+                            dartBurnStacks = 0;
+                            emulator.WriteText(Globals.DRAGOON_SPELLS[0].Description_Pointer + 0x1E, "1.0");
+                            emulator.WriteText(Globals.DRAGOON_SPELLS[1].Description_Pointer + 0x1E, "1.0");
+                            emulator.WriteText(Globals.DRAGOON_SPELLS[2].Description_Pointer + 0x1E, "1.0");
+                            emulator.WriteText(Globals.DRAGOON_SPELLS[3].Description_Pointer + 0x20, "1.0");
+                            burnStackSelected = false;
+                            Constants.WriteGLogOutput("Dart Burn Stacks: " + dartBurnStacks + " / " + dartMaxBurnStacks);
+                        }
+                    }
+                    if (dartBurnStacks > 0) {
+                        if (Globals.CHARACTER_TABLE[i].Read("Action") == 10) {
+                            int menu = Globals.CHARACTER_TABLE[i].Read("Menu");
+
+                            if (menu == 96 || menu == 98) {
+                                byte[] icons = { 1, 4, 9, 3, 3 };
+                                Globals.CHARACTER_TABLE[i].Write("Menu", 225 - (96 - Globals.CHARACTER_TABLE[i].Read("Menu")));
+                                Thread.Sleep(60);
+                                for (int x = menu == 96 ? 1 : 0; x < icons.Length; x++) {
+                                    emulator.WriteByte(Globals.M_POINT + 0xD34 + (x - (menu == 96 ? 1 : 0)) * 0x2, icons[x]);
+                                }
+                            }
+
+                            int iconCount = emulator.ReadByte(Globals.M_POINT + 0xD32);
+                            int iconSelected = emulator.ReadByte(Globals.M_POINT + 0xD46);
+
+                            if (burnStackSelected) {
+                                if ((iconCount == 4 && (iconSelected == 0 || iconSelected == 2)) || (iconCount == 5 && (iconSelected == 1 || iconSelected == 3))) {
+                                    burnStackSelected = false;
+                                    double burnAmount = 1 + (dartBurnStacks * damagePerBurn);
+                                    emulator.WriteText(Globals.DRAGOON_SPELLS[0].Description_Pointer + 0x1E, "1.0");
+                                    emulator.WriteText(Globals.DRAGOON_SPELLS[1].Description_Pointer + 0x1E, "1.0");
+                                    emulator.WriteText(Globals.DRAGOON_SPELLS[2].Description_Pointer + 0x1E, "1.0");
+                                    emulator.WriteText(Globals.DRAGOON_SPELLS[3].Description_Pointer + 0x20, "1.0");
+                                }
+                            } else {
+                                if ((iconCount == 4 && (iconSelected == 1 || iconSelected == 3)) || (iconCount == 5 && (iconSelected == 2 || iconSelected == 4))) {
+                                    burnStackSelected = true;
+                                    double burnAmount = 1 + (dartBurnStacks * damagePerBurn);
+                                    emulator.WriteText(Globals.DRAGOON_SPELLS[0].Description_Pointer + 0x1E, Convert.ToString(burnAmount).Substring(0, 3));
+                                    emulator.WriteText(Globals.DRAGOON_SPELLS[1].Description_Pointer + 0x1E, Convert.ToString(burnAmount).Substring(0, 3));
+                                    emulator.WriteText(Globals.DRAGOON_SPELLS[2].Description_Pointer + 0x1E, Convert.ToString(burnAmount).Substring(0, 3));
+                                    emulator.WriteText(Globals.DRAGOON_SPELLS[3].Description_Pointer + 0x20, Convert.ToString(burnAmount).Substring(0, 3));
+                                }
+                            }
+                        } else if (Globals.CHARACTER_TABLE[i].Read("Action") == 26) {
+                            if (burnStackSelected) {
+                                resetBurnStack = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
         #endregion
 
         #region Dual Difficulty

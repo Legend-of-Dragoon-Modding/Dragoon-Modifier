@@ -50,6 +50,14 @@ namespace Dragoon_Modifier {
             }
         }
 
+        public void WriteText(long address, string text) {
+            char[] textArray = text.ToCharArray();
+            for (int i = 0; i < textArray.Length; i++) {
+                WriteByte(address + (i * 2), GetCharacterByChar(textArray[i]));
+                WriteByte(address + ((i * 2) + 1), 0);
+            }
+        }
+
         public byte ReadByte(long address, string file = "") {
             return (byte) ReadByte("0x" + (address + Constants.OFFSET).ToString("x8"), file);
         }

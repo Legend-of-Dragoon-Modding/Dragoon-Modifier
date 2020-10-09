@@ -8,7 +8,7 @@ Fairy Sword	Weapon	Dart	Sword				39												sp_multi		50		Attacks generate<LI
 Claymore	Weapon	Dart	Sword				44																	500
 Soul Eater	Weapon	Dart	Sword				75													hp_regen	-10		Powerful, but<LINE>HP decays<LINE>each turn.	450
 Axe	Weapon	Kongol	Axe				45																	200
-Tomahawk	Weapon	Kongol	Axe	Earth			59																Earth-based attack.	300
+Tomahawk	Weapon	Kongol	Axe				59																Earth-based attack.	300
 Battle Axe	Weapon	Kongol	Axe				67																	350
 Great Axe	Weapon	Kongol	Axe		Stun	20	79																20% chance of<LINE>stunning enemy.	400
 Indora's Axe	Weapon	Kongol	Axe		Death	10	88															death_chance	10% chance to<LINE>instantly kill<LINE>enemy.	500
@@ -176,14 +176,14 @@ Winged Shoes	Boots	All	Shoes								25												Shoes with wings.	2
 Soa's Greaves	Boots	All	Kneepiece								40			40	40								Siphons SPD from<LINE>others.	2
 Heal Ring	Accessory	All	Ring																	hp_regen, mp_regen, sp_regen	7		Heals 7% HP/MP and<LINE>7 SP.	2
 Soa's Sash	Accessory	All	Ring																sp_multi		100		Siphons SP gain fromothers.	2
-Soa's Ahnk	Accessory	All	Pin																	revive	100		Revives always but<LINE>sacrifies another<LINE>party member.	2
+Soa's Ankh	Accessory	All	Ankh																	revive	100		Revives always but<LINE>sacrifies another<LINE>party member.	2
 Soa's Health Ring	Accessory	All	Ring																	hp_multi	100		Siphons Max HP from<LINE>others but doubles<LINE>own.	2
 Soa's Mage Ring	Accessory	All	Ring																	mp_multi	200		Siphons Max MP from<LINE>others but triples<LINE>own.	2
 Soa's Shield Ring	Accessory	All	Ring																				Siphons accuracy<LINE>from others. Dies onhit.	2
 Soa's Siphon Ring	Accessory	All	Ring																				Siphons dragoon<LINE>magic for more MAT.	2
-																								2
-																								2
-																								2
+Stone Axe	Weapon	Kongol	Axe	Earth			31																Earth-based attack.	1500
+Attack Horn	Accessory	All	Horn				30	30															Raises physical<LINE>& magical<LINE>attack by 30.	4000
+Defense Horn	Accessory	All	Horn						30	30													Raises physical<LINE>& magical<LINE>defense by 30.	4000
 																								2
 																								2
 																								2

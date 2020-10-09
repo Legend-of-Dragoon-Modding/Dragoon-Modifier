@@ -266,6 +266,7 @@ namespace Dragoon_Modifier {
             WriteOutput("Region:    " + Constants.REGION);
             WriteOutput("Emulator:  " + Constants.EMULATOR_NAME);
             WriteOutput("Save Slot: " + (Constants.SAVE_SLOT + 1));
+            WriteDebug("Offset:    " + Convert.ToString(Constants.OFFSET, 16).ToUpper());
         }
 
         public static string GetCharName(byte partySlot) {

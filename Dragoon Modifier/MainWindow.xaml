@@ -12,7 +12,7 @@
         Icon="1.ico"
         ShowIconOnTitleBar="True"
         ShowTitleBar="True"
-        Title=" Dragoon Modifier v3.1.7.4" Height="750" Width="1075" MinWidth="750" MinHeight="560" WindowStartupLocation="CenterScreen" Background="White">
+        Title=" Dragoon Modifier v3.2" Height="750" Width="1075" MinWidth="750" MinHeight="560" WindowStartupLocation="CenterScreen" Background="White">
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Template">
@@ -1140,7 +1140,7 @@
                     <Button x:Name="btnNoDart" Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" Content="No Dart Mode" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                     <Button x:Name="btnDamageTracker" Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="2" Content="Damage Tracker" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
 
-                    <Button x:Name="btnFlowerStorm" Grid.Row="8" Grid.Column="3" Content="Flower Storm" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
+                    <Button x:Name="btnFlowerStorm" Grid.Row="8" Grid.Column="3" Content="Hell Mode - Flower Storm" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
                     <ComboBox x:Name="cboFlowerStorm" Grid.Row="9" Grid.Column="3" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
                     <Button x:Name="btnNoDragoon" Grid.Row="3" Grid.Column="2" Content="No Dragoon" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                     <Button x:Name="btnDivineRed" Grid.Row="4" Grid.Column="2" Content="Divine Red-Eye" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
@@ -1279,7 +1279,9 @@
                                     <MenuItem Header="ePSXe 2.0.2" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
                                     <MenuItem Header="ePSXe 2.0.5" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
                                     <MenuItem Header="RetroArch" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
+                                    <MenuItem Header="RetroArch (Old)" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
                                     <MenuItem Header="PCSX2" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
+                                    <MenuItem Header="DuckStation" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
                                     <MenuItem Header="Other" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
                                 </MenuItem>
                                 <MenuItem x:Name="miRegion" Header="Region" Background="#FFB6B6B6" Foreground="White">

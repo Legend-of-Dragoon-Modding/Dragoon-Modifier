@@ -24,6 +24,7 @@ using ControlzEx.Standard;
 using System.Text.Json;
 using System.Net;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 namespace Dragoon_Modifier {
     public partial class MainWindow {
@@ -42,7 +43,7 @@ namespace Dragoon_Modifier {
         public ProgressBar[] progressMATB = new ProgressBar[5];
         public ProgressBar[] progressCATB = new ProgressBar[3];
         public ReaderWindow readerWindow = new ReaderWindow();
-        int oldOffset = 0;
+        long oldOffset = 0;
         int currentIconState = 0;
         #endregion
 
@@ -68,7 +69,6 @@ namespace Dragoon_Modifier {
         public ushort[] currentMP = { 0, 0, 0 };
         public ushort[] previousMP = { 0, 0, 0 };
         public ushort recoveryRateSave = 0;
-        public int dartBurnStack = 0;
         public bool burnActive = false;
         public bool dragoonChangesOnBattleEntry = false;
         public bool checkFlowerStorm = false;
@@ -399,7 +399,6 @@ namespace Dragoon_Modifier {
                     }
                 } catch (Exception e) { }
 
-
                 if (Constants.EMULATOR != 255) {
                     SetupEmulator(true);
                 } else {
@@ -556,7 +555,6 @@ namespace Dragoon_Modifier {
             cboQTB.Items.Add("Kongol");
             cboQTB.Items.Add("Miranda");
 
-            cboFlowerStorm.Items.Add("1 Turn (20 MP)");
             cboFlowerStorm.Items.Add("2 Turns (40 MP)");
             cboFlowerStorm.Items.Add("3 Turns (60 MP)");
             cboFlowerStorm.Items.Add("4 Turns (80 MP)");
@@ -802,7 +800,7 @@ namespace Dragoon_Modifier {
             if (Constants.KEY.GetValue("Offset") == null) {
                 Constants.KEY.SetValue("Offset", 0);
             } else {
-                oldOffset = Int32.Parse(Constants.KEY.GetValue("Offset").ToString());
+                oldOffset = Int64.Parse(Constants.KEY.GetValue("Offset").ToString());
             }
 
             if (Constants.KEY.GetValue("Reader Hotkey On") == null) {
@@ -1185,25 +1183,6 @@ namespace Dragoon_Modifier {
                         SoloModeBattle();
                     if (Globals.CheckDMScript("btnDuoMode"))
                         DuoModeBattle();
-                    /*
-                    if (!Globals.DIFFICULTY_MODE.Equals("Normal")) {
-                        if (burnActive) {
-                            for (int i = 0; i < 3; i++) {
-                                if (Globals.PARTY_SLOT[i] == 0) {
-                                    byte action = Globals.CHARACTER_TABLE[i].Read("Action");
-                                    if (action == 0 || action == 2) {
-                                        Globals.CHARACTER_TABLE[i].Write("AT", originalCharacterStats[i, 1]);
-                                        Globals.CHARACTER_TABLE[i].Write("MAT", originalCharacterStats[i, 2]);
-                                        dartBurnStack = 0;
-                                        Globals.SetCustomValue("Burn Stack", 0);
-                                        burnActive = false;
-                                        Constants.WriteGLogOutput("Burn stack deactivated.");
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    */
                     if (Globals.CheckDMScript("btnHPCapBreak"))
                         HPCapBreakBattle();
                     if (Globals.CheckDMScript("btnSoulEater"))
@@ -1567,22 +1546,6 @@ namespace Dragoon_Modifier {
                                         Globals.LAST_HOTKEY = Constants.GetTime();
                                     }
                                 }
-                            } else if (Globals.HOTKEY == (Hotkey.KEY_CIRCLE + Hotkey.KEY_LEFT)) { //Burn Stack
-                                if (!burnActive) {
-                                    for (int i = 0; i < 3; i++) {
-                                        if (Globals.PARTY_SLOT[i] == 0) {
-                                            byte action = Globals.CHARACTER_TABLE[i].Read("Action");
-                                            if (action == 8 || action == 10) {
-                                                Globals.CHARACTER_TABLE[i].Write("AT", Math.Round(originalCharacterStats[i, 1] * (1 + (dartBurnStack * 0.2)))); Globals.CHARACTER_TABLE[i].Write("MAT", Math.Round(originalCharacterStats[i, 2] * (1 + (dartBurnStack * 0.2))));
-                                                burnActive = true;
-                                                Constants.WriteGLogOutput("Burn stack activated.");
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    Constants.WriteGLogOutput("Burn stack is already active.");
-                                }
-                                Globals.LAST_HOTKEY = Constants.GetTime();
                             } else if (Globals.HOTKEY == (Hotkey.KEY_CIRCLE + Hotkey.KEY_R2)) { //Black Room
                                 if (Globals.DIFFICULTY_MODE.Equals("Hell")) {
                                     Constants.WriteGLogOutput("Killing monsters is not available in Hell Mode.");
@@ -2341,9 +2304,6 @@ namespace Dragoon_Modifier {
             }
         }
         #endregion
-
-       
-
         #endregion
 
         #region Both
@@ -5337,8 +5297,8 @@ namespace Dragoon_Modifier {
         public void DragoonGuard() {
             for (int i = 0; i < 3; i++) {
                 if (Globals.PARTY_SLOT[i] < 9) {
-                    if (Globals.CHARACTER_TABLE[i].Read("Action") == 10 && Globals.CHARACTER_TABLE[i].Read("Menu") == 96) {
-                        Globals.CHARACTER_TABLE[i].Write("Menu", 98);
+                    if (Globals.CHARACTER_TABLE[i].Read("Action") == 10 && (Globals.CHARACTER_TABLE[i].Read("Menu") == 96 || Globals.CHARACTER_TABLE[i].Read("Menu") == 225)) {
+                        Globals.CHARACTER_TABLE[i].Write("Menu", Globals.CHARACTER_TABLE[i].Read("Menu") + 2);
                     }
                 }
             }
@@ -5400,15 +5360,6 @@ namespace Dragoon_Modifier {
         #region Battle
 
         #region Dragoon Changes
-
-
-
-
-        public void AddBurnStack(int amount) {
-            dartBurnStack = (dartBurnStack + amount) > 6 ? 6 : (dartBurnStack + amount);
-            Globals.SetCustomValue("Burn Stack", dartBurnStack);
-            Constants.WriteGLogOutput("Dart's Burn Stack Count: " + dartBurnStack);
-        }
         #endregion
 
         #region Elemental Bomb
@@ -5873,7 +5824,7 @@ namespace Dragoon_Modifier {
                                 if (Globals.CHARACTER_TABLE[i].Read("Accessory") == 125) {
                                     healAmount = 20;
                                 }
-                                if (Globals.CHARACTER_TABLE[i].Read("HP") + 1 <= (currentHP[i] + Math.Round(Globals.CHARACTER_TABLE[i].Read("Max_HP") / healAmount) + 2)) {
+                                if (Globals.CHARACTER_TABLE[i].Read("HP") + 1 <= (double) (currentHP[i] + Math.Round((double) Globals.CHARACTER_TABLE[i].Read("Max_HP") / healAmount) + 2)) {
                                     AddQTB();
                                     currentHP[i] = Globals.CHARACTER_TABLE[i].Read("HP");
                                 }
@@ -5944,7 +5895,7 @@ namespace Dragoon_Modifier {
 
                 bool playerTurn = false;
                 for (int i = 0; i < 3; i++) {
-                    if (Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[i].Read("HP")) {
+                    if (Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[i].Read("HP") > 0) {
                         if (Globals.CHARACTER_TABLE[i].Read("Action") == 24 || Globals.CHARACTER_TABLE[i].Read("Action") == 26 | Globals.CHARACTER_TABLE[i].Read("Action") == 136) {
                             playerTurn = true;
                         }
@@ -6113,7 +6064,27 @@ namespace Dragoon_Modifier {
 
         private void miAttach_Click(object sender, RoutedEventArgs e) {
             if (!Constants.RUN) {
-                int processID = emulator.GetProcIdFromName(Constants.EMULATOR_NAME);
+                if (Constants.EMULATOR == 8 || Constants.EMULATOR == 9) {
+                    Constants.EMULATOR_NAME = "RetroArch";
+                } else if (Constants.EMULATOR == 10) {
+                    Constants.EMULATOR_NAME = "pcsx2";
+                } else if (Constants.EMULATOR == 11) {
+                    Constants.EMULATOR_NAME = "DuckStation";
+                } else if (Constants.EMULATOR == 12) {
+                    Constants.EMULATOR_NAME = "Other";
+                } else {
+                    Constants.EMULATOR_NAME = "ePSXe";
+                }
+
+                int processID = 0;
+                if (Constants.EMULATOR_NAME.Equals("DuckStation")) {
+                    processID = emulator.GetProcIdFromName("duckstation-qt-x64-ReleaseLTCG.exe");
+                    if (processID == 0) {
+                        processID = emulator.GetProcIdFromName("duckstation-sdl-x64-ReleaseLTCG.exe");
+                    }
+                } else {
+                    processID = emulator.GetProcIdFromName(Constants.EMULATOR_NAME);
+                }
 
                 if (processID > 0) {
                     Constants.RUN = true;
@@ -6135,10 +6106,12 @@ namespace Dragoon_Modifier {
                     if (emulator.ReadShort("BATTLE_VALUE") < 9999)
                         Globals.STATS_CHANGED = true;
                     Constants.WritePLogOutput("Attached to " + Constants.EMULATOR_NAME + ".");
-                    AttachEmulator();
                     miAttach.Header = "Detach";
+                    AttachEmulator();
                 } else {
+                    Constants.RUN = false;
                     miAttach.Header = "Attach";
+                    emulator.CloseProcess();
                     Constants.WritePLogOutput("Program failed to open. Please open " + Constants.EMULATOR_NAME + " then press attach.");
                 }
             } else {
@@ -6165,11 +6138,13 @@ namespace Dragoon_Modifier {
 
         public void SetupEmulator(bool onOpen) {
             string oldEmulator = Constants.EMULATOR_NAME;
-            if (Constants.EMULATOR == 8) {
+            if (Constants.EMULATOR == 8 || Constants.EMULATOR == 9) {
                 Constants.EMULATOR_NAME = "RetroArch";
-            } else if (Constants.EMULATOR == 9) {
-                Constants.EMULATOR_NAME = "pcsx2";
             } else if (Constants.EMULATOR == 10) {
+                Constants.EMULATOR_NAME = "pcsx2";
+            } else if (Constants.EMULATOR == 11) {
+                Constants.EMULATOR_NAME = "DuckStation";
+            } else if (Constants.EMULATOR == 12) {
                 Constants.EMULATOR_NAME = "Other";
             } else {
                 Constants.EMULATOR_NAME = "ePSXe";
@@ -6184,7 +6159,7 @@ namespace Dragoon_Modifier {
                     if (ofg.ShowDialog() == true) {
                         Constants.EMULATOR_NAME = System.IO.Path.GetFileNameWithoutExtension(ofg.FileName);
                     } else {
-                        Constants.EMULATOR = 10;
+                        Constants.EMULATOR = 12;
                     }
                 }
                 System.Windows.Application.Current.Shutdown();
@@ -6192,146 +6167,9 @@ namespace Dragoon_Modifier {
                 if (!this.IsLoaded) {
                     Constants.RUN = false;
                     Thread.Sleep(2000);
-                }
-
-                switch (Constants.EMULATOR) {
-                    case 0: //ePSXe 1.6.0
-                        Constants.OFFSET = 0x5B6E40;
-                        break;
-                    case 1: //ePSXe 1.7.0
-                        Constants.OFFSET = 0x94C020;
-                        break;
-                    case 2: //ePSXe 1.8.0
-                        Constants.OFFSET = 0xA52EA0;
-                        break;
-                    case 3: //ePSXe 1.9.0
-                        Constants.OFFSET = 0xA579A0;
-                        break;
-                    case 4: //ePSXe 1.9.25
-                        Constants.OFFSET = 0xA8B6A0;
-                        break;
-                    case 5: //ePSXe 2.0
-                    case 6: //ePSXe 2.0.2
-                    case 7: //ePSXe 2.0.5
-                        try {
-                            Process emulator = null;
-                            foreach (Process p in Process.GetProcessesByName("ePSXe")) {
-                                emulator = p;
-                            }
-                            ProcessModule emMod = emulator.MainModule;
-
-                            if (Constants.EMULATOR == 5) {
-                                Constants.OFFSET = (int) (emMod.BaseAddress + 0x81A020);
-                            } else if (Constants.EMULATOR == 6) {
-                                Constants.OFFSET = (int) (emMod.BaseAddress + 0x825140);
-                            } else if (Constants.EMULATOR == 7) {
-                                Constants.OFFSET = (int) (emMod.BaseAddress + 0xA82020);
-                            }
-
-                        } catch (Exception ex) {
-                            Constants.WriteOutput("Address calculation failed. Please open ePSXe.");
-                            Constants.RUN = false;
-                        }
-                        break;
-                    case 8: //RetroArch Beetle PSX HW
-                        try {
-                            miAttach_Click(null, null);
-                            if (!CheckOldOffset()) {
-                                Process em = null;
-                                //ProcessModule dll = null;
-                                foreach (Process p in Process.GetProcessesByName("retroarch")) {
-                                    em = p;
-                                }
-                                /*foreach (ProcessModule pm in em.Modules) {
-                                    if (pm.ModuleName == "mednafen_psx_hw_libretro.dll") {
-                                        dll = pm;
-                                    }
-                                }*/
-
-                                for (int i = 0; i < 16; i++) {
-                                    Constants.OFFSET = 0;
-                                    var scan = emulator.AoBScan(0x8000000 * i, i == 15 ? 0x7FFF0000 : (0x8000000 * (i + 1)), "50 53 2D 58 20 45 58 45");
-                                    scan.Wait();
-                                    var results = scan.Result;
-                                    long offset = 0;
-                                    foreach (var x in results) {
-                                        offset = x;
-                                        Constants.OFFSET = offset - 0xB070;
-                                        if (emulator.ReadInteger("STARTUP_SEARCH") == 320386 || emulator.ReadShort("BATTLE_VALUE") == 32776 || emulator.ReadShort("BATTLE_VALUE") == 41215) {
-                                            Constants.KEY.SetValue("Offset", Constants.OFFSET);
-                                            break;
-                                        } else {
-                                            Constants.OFFSET = 0;
-                                        }
-                                    }
-
-                                    Constants.WriteDebug("[RetroArch] " + Convert.ToString(Constants.OFFSET, 16).ToUpper()); Constants.WriteDebug("[RetroArch] " + Convert.ToString(Constants.OFFSET, 16).ToUpper());
-
-                                    if (Constants.OFFSET > 0)
-                                        break;
-                                }
-                                if (Constants.OFFSET <= 0) {
-                                    Constants.WritePLog("Failed to attach to RetroArch.");
-                                    throw new Exception();
-                                }
-                            }
-                        } catch (Exception ex) {
-                            Constants.WriteOutput("Address calculation failed. Please open retroarch with Beetle PSX HW at the Load Game screen before loading a save.");
-                            Constants.RUN = false;
-                        }
-                        break;
-                    case 9: //PCSX2
-                        miAttach_Click(null, null);
-                        Constants.OFFSET = 0x24000000;
-                        break;
-                    case 10:
-                        try {
-                            Constants.EMULATOR_NAME = Constants.KEY.GetValue("Other Emulator").ToString();
-                            miAttach_Click(null, null);
-                            if (!CheckOldOffset()) {
-                                Process em = null;
-                                foreach (Process p in Process.GetProcessesByName(Constants.EMULATOR_NAME)) {
-                                    em = p;
-                                }
-
-                                for (int i = 0; i < 16; i++) {
-                                    Constants.OFFSET = 0;
-                                    var scan = emulator.AoBScan(0x8000000 * i, i == 15 ? 0x7FFF0000 : (0x8000000 * (i + 1)), "50 53 2D 58 20 45 58 45");
-                                    scan.Wait();
-                                    var results = scan.Result;
-                                    long offset = 0;
-                                    foreach (var x in results) {
-                                        offset = x;
-                                        Constants.OFFSET = offset - 0xB070;
-                                        if (emulator.ReadInteger("STARTUP_SEARCH") == 320386 || emulator.ReadShort("BATTLE_VALUE") == 32776 || emulator.ReadShort("BATTLE_VALUE") == 41215) {
-                                            Constants.KEY.SetValue("Offset", Constants.OFFSET);
-                                            break;
-                                        } else {
-                                            Constants.OFFSET = 0;
-                                        }
-                                    }
-
-                                    Constants.WriteDebug("[" + Constants.EMULATOR_NAME + "] " + Convert.ToString(Constants.OFFSET, 16).ToUpper());
-
-                                    if (Constants.OFFSET > 0)
-                                        break;
-                                }
-                                if (Constants.OFFSET <= 0) {
-                                    Constants.WritePLog("Failed to attach to " + Constants.EMULATOR_NAME + ".");
-                                    throw new Exception();
-                                }
-                            }
-                        } catch (Exception ex) {
-                            Constants.WriteOutput("Address calculation failed. Please open " + Constants.EMULATOR_NAME + ".");
-                            Constants.RUN = false;
-                        }
-                        break;
-                }
-
-                if (Constants.EMULATOR <= 7) {
-                    miAttach_Click(null, null);
-                }
-
+                } 
+                
+                miAttach_Click(null, null);
                 Constants.ProgramInfo();
             }
         }
@@ -6372,11 +6210,17 @@ namespace Dragoon_Modifier {
                         }
 
                     } catch (Exception ex) {
-                        Constants.WriteOutput("Address calculation failed. Please open ePSXe.");
                         Constants.RUN = false;
+                        miAttach.Header = "Attach";
+                        emulator.CloseProcess();
+                        Constants.WritePLog("Failed to attach to selected emulator.");
+                        Constants.WriteOutput("Address calculation failed. Please open ePSXe.");
                     }
                     break;
                 case 8: //RetroArch Beetle PSX HW
+                    Constants.OFFSET = 0x40000000;
+                    break;
+                case 9: //RetroArch (Old)
                     try {
                         if (!CheckOldOffset()) {
                             Process em = null;
@@ -6416,14 +6260,68 @@ namespace Dragoon_Modifier {
                             }
                         }
                     } catch (Exception ex) {
-                        Constants.WriteOutput("Address calculation failed. Please open retroarch with Beetle PSX HW at the Load Game screen before loading a save.");
                         Constants.RUN = false;
+                        miAttach.Header = "Attach";
+                        emulator.CloseProcess();
+                        Constants.WritePLog("Failed to attach to selected emulator.");
+                        Constants.WriteOutput("Address calculation failed. Please open retroarch with Beetle PSX HW at the Load Game screen before loading a save.");
                     }
                     break;
-                case 9: //PCSX2
+                case 10: //PCSX2
                     Constants.OFFSET = 0x24000000;
                     break;
-                case 10:
+                case 11: //DuckStation
+                    try {
+                        if (!CheckOldOffset()) {
+                            Process em = null;
+                            foreach (Process p in Process.GetProcessesByName("duckstation-qt-x64-ReleaseLTCG")) {
+                                em = p;
+                            }
+
+                            if (em == null) {
+                                foreach (Process p in Process.GetProcessesByName("duckstation-sdl-x64-ReleaseLTCG")) {
+                                    em = p;
+                                }
+                                if (em == null) {
+                                    throw new Exception();
+                                }
+                            }
+
+                            for (int i = 0; i < 32; i++) {
+                                Constants.OFFSET = 0;
+                                var scan = emulator.AoBScan(0x7FF700000000 + ((long) 0x8000000 * i), 0x7FF700000000 + ((long) 0x8000000 * (i + 1)), "50 53 2D 58 20 45 58 45");
+                                scan.Wait();
+                                var results = scan.Result;
+                                long offset = 0;
+                                foreach (var x in results) {
+                                    offset = x;
+                                    Constants.OFFSET = offset - 0xB070;
+                                    if (emulator.ReadInteger("STARTUP_SEARCH") == 320386 || emulator.ReadShort("BATTLE_VALUE") == 32776 || emulator.ReadShort("BATTLE_VALUE") == 41215) {
+                                        Constants.KEY.SetValue("Offset", Constants.OFFSET);
+                                        break;
+                                    } else {
+                                        Constants.OFFSET = 0;
+                                    }
+                                }
+                                scan.Dispose();
+
+                                if (Constants.OFFSET > 0)
+                                    break;
+                            }
+                            if (Constants.OFFSET <= 0) {
+                                Constants.WritePLog("Failed to attach to DuckStation.");
+                                throw new Exception();
+                            }
+                        }
+                    } catch (Exception ex) {
+                        Constants.RUN = false;
+                        miAttach.Header = "Attach";
+                        emulator.CloseProcess();
+                        Constants.WritePLog("Failed to attach to selected emulator.");
+                        Constants.WriteOutput("Address calculation failed. Please open DuckStation at the load select screen.");
+                    }
+                    break;
+                case 12: //Other Emulator
                     try {
                         Constants.EMULATOR_NAME = Constants.KEY.GetValue("Other Emulator").ToString();
                         if (!CheckOldOffset()) {
@@ -6458,8 +6356,11 @@ namespace Dragoon_Modifier {
                             }
                         }
                     } catch (Exception ex) {
-                        Constants.WriteOutput("Address calculation failed. Please open " + Constants.EMULATOR_NAME + ".");
                         Constants.RUN = false;
+                        miAttach.Header = "Attach";
+                        emulator.CloseProcess();
+                        Constants.WritePLog("Failed to attach to selected emulator.");
+                        Constants.WriteOutput("Address calculation failed. Please open " + Constants.EMULATOR_NAME + " at the load select screen.");
                     }
                     break;
             }
@@ -6743,12 +6644,12 @@ namespace Dragoon_Modifier {
         private void miManualOffset_Click(object sender, RoutedEventArgs e) {
             InputWindow offsetEntry = new InputWindow("Manual Offset Entry");
             TextBox input = new TextBox();
-            int newOffset = 0;
+            long newOffset = 0;
             offsetEntry.AddTextBlockF("Search for the below AOB and subtract 0xB070 from the result and enter it below in integer format. Once done you can try attaching the emulator.\r\n50 53 2D 58 20 45 58 45");
             offsetEntry.AddObjectF(input);
             offsetEntry.ShowDialog();
 
-            if (Int32.TryParse(input.Text, out newOffset)) {
+            if (Int64.TryParse(input.Text, out newOffset)) {
                 Constants.KEY.SetValue("Offset", newOffset);
                 Constants.OFFSET = newOffset;
             } else {
@@ -7102,19 +7003,19 @@ namespace Dragoon_Modifier {
                 btnHell.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
                 Globals.DIFFICULTY_MODE = "NormalHard";
                 Globals.MOD = "Hard_Mode";
-                Globals.MONSTER_STAT_CHANGE = false;
-                Globals.MONSTER_DROP_CHANGE = false;
-                Globals.MONSTER_EXPGOLD_CHANGE = false;
+                Globals.MONSTER_STAT_CHANGE = true;
+                Globals.MONSTER_DROP_CHANGE = true;
+                Globals.MONSTER_EXPGOLD_CHANGE = true;
                 Globals.CHARACTER_STAT_CHANGE = false;
                 Globals.ADDITION_CHANGE = true;
                 Globals.DRAGOON_STAT_CHANGE = false;
                 Globals.DRAGOON_SPELL_CHANGE = false;
-                Globals.DRAGOON_DESC_CHANGE = false;
+                Globals.DRAGOON_DESC_CHANGE = true;
                 Globals.DRAGOON_ADDITION_CHANGE = false;
                 Globals.ITEM_STAT_CHANGE = true;
                 Globals.ITEM_ICON_CHANGE = true;
                 Globals.ITEM_NAMEDESC_CHANGE = true;
-                Globals.SHOP_CHANGE = false;
+                Globals.SHOP_CHANGE = true;
             } else if (btn == btnHard) {
                 btn.Background = new SolidColorBrush(Color.FromArgb(255, 168, 211, 255));
                 btnNormal.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
@@ -7241,7 +7142,7 @@ namespace Dragoon_Modifier {
                     "Turn Order will display the current Turn Point order of who will go next. Counterattacks are not counted in this calculation.";
             } else if (cboHelpTopic.SelectedIndex == 2) {
                 txtHelp.Text = "Presets Hard and Hell mode are plug and play difficulty settings which are locked in. These presets are intended to run on unmodified ISOs. Normal Mode will not do anything unless you have made changes. You can change your current mod loadout and location in Settings Tab>Settings>Mod Options. Hard and Hell Mode have a more detailed changes below.\r\n\r\n" +
-                    "Hard Mode\r\nThis preset balances characters, monsters, weapons, additions, boss drops, and is very Dragoon focused. It is intended that you start off with Dragoons using hotkey (CROSS+L1) in starting Map 10. The mod starts off slightly harder than the Japanese version and gets more difficult as you progress through the discs. However you are not meant to grind for EXP in this mode. You can keep everyone at the same level by using Switch EXP in the Enhancements 1 tab up to 80,000 EXP. Dart as well has new Dragoon enhancements called Burn Stacks (CIRCLE+LEFT). Dart can have up to 6 stacks for 20% each and he gains stacks by using Dragoon magic.\r\n\r\n" +
+                    "Hard Mode\r\nThis preset balances characters, monsters, weapons, additions, boss drops, and is very Dragoon focused. It is intended that you start off with Dragoons using hotkey (CROSS+L1) in starting Map 10. The mod starts off slightly harder than the Japanese version and gets more difficult as you progress through the discs. However you are not meant to grind for EXP in this mode. You can keep everyone at the same level by using Switch EXP in the Enhancements 1 tab up to 80,000 EXP. Dart as well has new Dragoon enhancements called Burn Stacks. Dart can have up to 6 stacks for 20% each and he gains stacks by using Dragoon magic. Select the second red attack icon or the second magic icon to activate a burn stack attack.\r\n\r\n" +
                     "Hell Mode has the same character, weapon, drop, and dragoon adjustments. However incomplete Additions are punished and you gain about 50% SP from them. To encourage the use of Elemental Bomb the drop rates for magic items are tripled, powerful items are doubled. It is intended for you to start off Hell Mode will all Dragoons with hotkey (CROSS+L1) in Map 10. It is also intended that you use Elemental Bomb, it was left optional as it made Hell Mode easier but it was designed with this turned on. This changes the element of all monsters on the field when a powerful item is used, however you do not have to use this. Monsters are much harder and you may require grinding. You can keep everyone at the same level by using Switch EXP up to 160,000 EXP. In Hell Mode you lose SP after fighting most of the major bosses, if you total SP gained falls below the level threshold you will delevel your Dragoons.\r\n\r\n" +
                     "Base + Hard (Bosses) uses Hard Mode enhancements but uses normal monster stats for normal encounters (which makes them easier) and uses Hard Mode stats for bosses only.\r\n\r\n" +
                     "Hard + Hell (Bosses) uses Hell Mode enhancements, but uses Hard Mode monster stats for normal encounters and Hell Mode stats for bosses only.\r\n\r\n" +
@@ -7402,7 +7303,7 @@ namespace Dragoon_Modifier {
                 txtHelp.Text = "Attach/Detach - Attach or Detach Dragoon Modifier from the emulator. Use this when for example you close ePSXe and reopen it. For RetroArch (and other emulators) please reattach when you are in game or at the load save screen.\r\n" +
                     "Menu - This will wipe, create, or save your current script and mod options. External scripts are in the lists below.\r\n\r\n" +
                     "Settings - Change your Emulator, Game Region, Save Slot, or Mod Options here. Dragoon Modifier will save progress of certain features to your computer. If you want to delete your progress click Delete Current Save. Preset hotkeys are hotkeys that Dragoon Modifier provides and can be turned off.\r\n\r\n" +
-                    "Mod Options - Mods will be placed in the Mods subfolder of Dragoon Modifier and can be accessed through here.\r\n\r\n" +
+                    "Mod Options - Mods will be placed in the Mods subfolder of Dragoon Modifier and can be accessed through here. You can turn on or off specfic changes.\r\nMonster StatsChanges monster stats.\r\nDrop - Changes what monsters drop.\r\nExp + Gold - Changes the exp and gold rewards for monsters.\r\nAddition - Changes addition damage / sp per hit.\r\nDragoon Stats - Changes stats of dragoons per level.\r\nDragoon Spells - Changes the damage of dragoon spells.\r\nDragoon Additions - Changes the damage of dragoon additions.\r\nItem Stats - Changes the stats of items.\r\nItem Icons - Changes the icons of items on the fields.\r\nItem Names + Descriptions - Changes the name and description of items.\r\nShop - Changes what is displayed in the shop.The item prices are controlled by items spreadsheet.\r\n\r\n\r\n" +
                     "The list of the four columns below contains external scripts for Dragoon Modifier. Dragoon Modifier requires the Field Controller, Battle Controller, and Hotkey controller to run correctly. Scripts are located in the Scripts sub folder. If something should be run when the player is on the Field should be placed in the Field folder and will display in Dragoon Modifier. Developers will release scripts that will add features not provided by Dragoon Modifier by default. You should only get your scripts from trusted sources.";
             } else if (cboHelpTopic.SelectedIndex == 10) {
                 txtHelp.Text = "Field\r\n\r\n" +
@@ -7425,9 +7326,8 @@ namespace Dragoon_Modifier {
                     "L1 + LEFT         - Exit Dragoon Slot 3.\r\n" +
                     "L1 + CIRCLE       - Sets music speed to 0.\r\n" +
                     "SQUARE + UP       - Starts an extra turn on Slot 1 when a turn battle system is turned on. Try to activate on enemy turns only, may softlock otherwise.\r\n" +
-                    "SQUARE + RIGHT    - Starts an extra turn on Slot 1 when a turn battle system is turned on. Try to activate on enemy turns only, may softlock otherwise.\r\n" +
-                    "SQUARE + LEFT     - Starts an extra turn on Slot 1 when a turn battle system is turned on. Try to activate on enemy turns only, may softlock otherwise.\r\n" +
-                    "CIRCLE + LEFT     - Activates Dart's Burn Stack when Hard or Hell mode is turned on.\r\n" +
+                    "SQUARE + RIGHT    - Starts an extra turn on Slot 2 when a turn battle system is turned on. Try to activate on enemy turns only, may softlock otherwise.\r\n" +
+                    "SQUARE + LEFT     - Starts an extra turn on Slot 3 when a turn battle system is turned on. Try to activate on enemy turns only, may softlock otherwise.\r\n" +
                     "CIRCLE + RIGHT    - Changes Rose's magic when she has the Dragon Beater equipped.\r\n" +
                     "CIRCLE + DOWN     - Changes Meru's magic when she has the Jeweled Hammer equipped.\r\n" +
                     "CIRCLE + R2       - Kills monsters when you have entered the black room. Not available on Hell Mode.\r\n" +
@@ -7445,7 +7345,9 @@ namespace Dragoon_Modifier {
                     "3. Reader Mode\r\n" +
                     "Each time you open Dragoon Modifier open Windows Config first to load your Reader Mode settings.\r\n\r\n" +
                     "4. Scripts\r\n" +
-                    "In the settings tab activated scripts are in black text, deactivated scripts are in red. To activate a script single click the script to select it and then press the grey button on top of the script to change it's state. Some scripts require input, in this case you would double click it. The current script loadout can be saved or loaded by clicking Menu > Save/Load.";
+                    "In the settings tab activated scripts are in black text, deactivated scripts are in red. To activate a script single click the script to select it and then press the grey button on top of the script to change it's state. Some scripts require input, in this case you would double click it. The current script loadout can be saved or loaded by clicking Menu > Save/Load.\r\n\r\n" +
+                    "5. Solo Mode Start & Playthrough\r\n" +
+                    "To start Solo Mode with everyone level 1, first turn on Solo Mode in the opening Seles map. Then use the hotkey Cross+L1 and everyone will be in the party at level 1. There is a separate script in the Settings tab called Party Changed. You must enable the script by selecting the script, then selecting the green button in the same column above. You can then double click it to add certain party members back into the party. You can change the character in slot 1 by using the Switch Slot 1 Character in Enhancements Tab I.";
             }
         }
 

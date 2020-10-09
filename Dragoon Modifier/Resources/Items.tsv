@@ -142,7 +142,7 @@ Violet Stone	Accessory	All	Stone													Thunder							Halves damage<LINE>fr
 Golden Stone	Accessory	All	Stone													Earth							Halves damage<LINE>from earth-based<LINE>attacks.	500
 																							 	200
 Ruby Ring	Accessory	All	Ring																sp_m_hit		20		Gain 20 SP when<LINE>damaged magically.	1000
-Sapphire Pin	Accessory	All	Pin																mp_m_hit		10		Gain 10% MP when<LINE>damaged magically.	1000
+Sapphire Pin	Accessory	All	Ring																mp_m_hit		10		Gain 10% MP when<LINE>damaged magically.	1000
 Rainbow Earring	Accessory	All	Ring															All					Avoids all<LINE>abnormal status<LINE>ailments.	1000
 																							 	2
 Emerald Earring	Accessory	All	Ring																sp_p_hit		20		Gain 20 SP when<LINE>damaged physically.	1000
