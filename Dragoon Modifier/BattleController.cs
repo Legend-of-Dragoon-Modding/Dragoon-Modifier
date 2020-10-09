@@ -2096,7 +2096,7 @@ namespace Dragoon_Modifier {
                     }
 
                     if (currentMP[slot] != previousMP[slot] && currentMP[slot] < previousMP[slot]) {
-                        byte spell = Globals.CHARACTER_TABLE[slot].Write("Spell_Cast");
+                        byte spell = Globals.CHARACTER_TABLE[slot].Read("Spell_Cast");
                         if (spell == 5 || spell == 14) {
                             Globals.CHARACTER_TABLE[slot].Write("DMAT", wingBlasterDMAT * multi);
                         } else if (spell == 6 || spell == 17) {
