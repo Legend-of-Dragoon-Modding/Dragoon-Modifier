@@ -6297,7 +6297,6 @@ namespace Dragoon_Modifier {
                                 foreach (var x in results) {
                                     offset = x;
                                     Constants.OFFSET = offset - 0xB070;
-                                    Console.WriteLine("OFFSET: " + offset);
                                     if (emulator.ReadInteger("STARTUP_SEARCH") == 320386 || emulator.ReadShort("BATTLE_VALUE") == 32776 || emulator.ReadShort("BATTLE_VALUE") == 41215) {
                                         Constants.KEY.SetValue("Offset", Constants.OFFSET);
                                         break;
