@@ -6234,9 +6234,9 @@ namespace Dragoon_Modifier {
                                 }
                             }*/
 
-                            for (int i = 0; i < 16; i++) {
+                            for (int i = 0; i < 256; i++) {
                                 Constants.OFFSET = 0;
-                                var scan = emulator.AoBScan(0x8000000 * i, i == 15 ? 0x7FFF0000 : (0x8000000 * (i + 1)), "50 53 2D 58 20 45 58 45");
+                                var scan = emulator.AoBScan(0x800000 * i, i == 15 ? 0x7FFF0000 : (0x800000 * (i + 1)), "50 53 2D 58 20 45 58 45");
                                 scan.Wait();
                                 var results = scan.Result;
                                 long offset = 0;
@@ -6287,15 +6287,17 @@ namespace Dragoon_Modifier {
                                 }
                             }
 
-                            for (int i = 0; i < 32; i++) {
+                            for (int i = 0; i < 8192; i++) {
                                 Constants.OFFSET = 0;
-                                var scan = emulator.AoBScan(0x7FF700000000 + ((long) 0x8000000 * i), 0x7FF700000000 + ((long) 0x8000000 * (i + 1)), "50 53 2D 58 20 45 58 45");
+                                var scan = emulator.AoBScan(0x7FF000000000 + ((long) 0x800000 * i), 0x7FF000000000 + ((long) 0x800000 * (i + 1)), "50 53 2D 58 20 45 58 45");
+                                //var scan = emulator.AoBScan(0x7FF665000000, 0x7FF666000000, "50 53 2D 58 20 45 58 45");
                                 scan.Wait();
                                 var results = scan.Result;
                                 long offset = 0;
                                 foreach (var x in results) {
                                     offset = x;
                                     Constants.OFFSET = offset - 0xB070;
+                                    Console.WriteLine("OFFSET: " + offset);
                                     if (emulator.ReadInteger("STARTUP_SEARCH") == 320386 || emulator.ReadShort("BATTLE_VALUE") == 32776 || emulator.ReadShort("BATTLE_VALUE") == 41215) {
                                         Constants.KEY.SetValue("Offset", Constants.OFFSET);
                                         break;
@@ -6330,9 +6332,9 @@ namespace Dragoon_Modifier {
                                 em = p;
                             }
 
-                            for (int i = 0; i < 16; i++) {
+                            for (int i = 0; i < 256; i++) {
                                 Constants.OFFSET = 0;
-                                var scan = emulator.AoBScan(0x8000000 * i, i == 15 ? 0x7FFF0000 : (0x8000000 * (i + 1)), "50 53 2D 58 20 45 58 45");
+                                var scan = emulator.AoBScan(0x800000 * i, i == 15 ? 0x7FFF0000 : (0x800000 * (i + 1)), "50 53 2D 58 20 45 58 45");
                                 scan.Wait();
                                 var results = scan.Result;
                                 long offset = 0;
