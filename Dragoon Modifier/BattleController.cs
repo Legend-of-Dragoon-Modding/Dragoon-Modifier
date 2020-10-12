@@ -212,6 +212,7 @@ namespace Dragoon_Modifier {
                         }
                     } else if (Globals.GAME_STATE == 7) {   // Battle result screen
                         if (Globals.STATS_CHANGED) {
+                            Globals.EXITING_BATTLE = 2;
                             ReduceSP(emulator);
                             ItemFieldChanges(emulator);
                             CharacterFieldChanges(emulator);
