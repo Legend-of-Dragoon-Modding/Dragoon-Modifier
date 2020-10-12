@@ -1336,6 +1336,9 @@ namespace Dragoon_Modifier {
             if (Globals.ADDITION_CHANGE) {
                 AdditionTableChange(emulator);
             }
+            if (Globals.ADDITION_LEVEL_CHANGE) {
+                AdditionLevelChange(emulator);
+            }
         }
 
         public static void DragoonTableChange(Emulator emulator) {
@@ -1429,6 +1432,19 @@ namespace Dragoon_Modifier {
                 emulator.WriteByte(address2 + 0x8 + addition * 0x18, (byte) Globals.DICTIONARY.AdditionData[character, reorderedaddition, 3].ADD_DMG_Multi);
                 emulator.WriteByte(address2 + 0xC + addition * 0x18, (byte) Globals.DICTIONARY.AdditionData[character, reorderedaddition, 4].ADD_DMG_Multi);
                 emulator.WriteByte(address2 + 0x10 + addition * 0x18, (byte) Globals.DICTIONARY.AdditionData[character, reorderedaddition, 5].ADD_DMG_Multi);
+            }
+        }
+
+        public static void AdditionLevelChange(Emulator emulator) {
+            Constants.WriteDebug("Changing Addition Levels...");
+            long address = Constants.GetAddress("MENU_ADDITION_TABLE_FLAT");
+            int addition = 0;
+            for (int i = 0; i < 35; i++) {
+                if (new int[] { 7, 13, 18, 22, 28 }.Contains(i)) {
+                    continue;
+                }
+                emulator.WriteByte(address + addition * 0xE, Globals.DICTIONARY.AdditionLevels[addition]);
+                addition++;
             }
         }
 
