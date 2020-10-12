@@ -666,7 +666,7 @@ namespace Dragoon_Modifier {
         byte special2 = 0;
         short special_ammount = 0;
         byte death_res = 0;
-        ushort sell_price = 0;
+        short sell_price = 0;
 
         #region Dictionaries
 
@@ -829,7 +829,7 @@ namespace Dragoon_Modifier {
         public byte Special2 { get { return special2; } }
         public short Special_Ammount { get { return special_ammount; } }
         public byte Death_Res { get { return death_res; } }
-        public ushort Sell_Price { get { return sell_price; } }
+        public short Sell_Price { get { return sell_price; } }
 
         public Equipment(int index, string[] values) {
             byte key = 0;
@@ -969,7 +969,7 @@ namespace Dragoon_Modifier {
             }
             if (UInt16.TryParse(values[24], NumberStyles.AllowLeadingSign, null as IFormatProvider, out ushort key3)) {
                 float temp = (float) key3 / 2;
-                sell_price = (ushort) Math.Round(temp);
+                sell_price = (short) Math.Round(temp);
             } else if (values[24] != "") {
                 Constants.WriteDebug(values[24] + " not found as Price for item: " + name);
             }
@@ -1000,7 +1000,7 @@ namespace Dragoon_Modifier {
         byte percentage = 0;
         byte uu2 = 0;
         byte baseSwitch = 0;
-        ushort sell_price = 0;
+        short sell_price = 0;
 
 
         #region Dictionaries
@@ -1157,7 +1157,7 @@ namespace Dragoon_Modifier {
         public byte Percentage { get { return percentage; } }
         public byte UU2 { get { return uu2; } }
         public byte BaseSwitch { get { return baseSwitch; } }
-        public ushort Sell_Price { get { return sell_price; } }
+        public short Sell_Price { get { return sell_price; } }
 
         public Item(byte index, string[] values) {
             byte key = 0;
@@ -1240,8 +1240,8 @@ namespace Dragoon_Modifier {
                 encodedDescription = LoDDict.StringEncode(description);
             }
             if (UInt16.TryParse(values[14], NumberStyles.AllowLeadingSign, null as IFormatProvider, out ushort key3)) {
-                float temp = (float)key2 / 2;
-                sell_price = (ushort) Math.Round(temp);
+                float temp = (float)key3 / 2;
+                sell_price = (short) Math.Round(temp);
             } else if (values[14] != "") {
                 Constants.WriteDebug(values[14] + " not found as Price for item: " + name);
             }
