@@ -1298,6 +1298,7 @@ namespace Dragoon_Modifier {
                             tabDifficulty.IsEnabled = false;
                             tabEnhancements.IsEnabled = false;
                             tabEnhancements2.IsEnabled = false;
+                            tabEnhancements3.IsEnabled = false;
                             tabShop.IsEnabled = false;
                             tabSettings.IsEnabled = false;
                         }
@@ -1323,6 +1324,7 @@ namespace Dragoon_Modifier {
                             tabDifficulty.IsEnabled = true;
                             tabEnhancements.IsEnabled = true;
                             tabEnhancements2.IsEnabled = true;
+                            tabEnhancements3.IsEnabled = true;
                             tabShop.IsEnabled = true;
                             tabSettings.IsEnabled = true;
                         }
