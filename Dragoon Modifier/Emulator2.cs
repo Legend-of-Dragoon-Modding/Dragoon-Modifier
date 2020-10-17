@@ -57,9 +57,9 @@ namespace Dragoon_Modifier {
             return buffer[0];
         }
 
-        public static byte ReadByte(string address) {
+        public static byte ReadByte(string address, int offset = 0) {
             byte[] buffer = new byte[1];
-            ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET, buffer, 1, out long bytesRead);
+            ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET + offset, buffer, 1, out long bytesRead);
             return buffer[0];
         }
 
@@ -69,9 +69,9 @@ namespace Dragoon_Modifier {
             return BitConverter.ToInt16(buffer, 0);
         }
 
-        public static short ReadShort(string address) {
+        public static short ReadShort(string address, int offset = 0) {
             byte[] buffer = new byte[2];
-            ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET, buffer, 2, out long bytesRead);
+            ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET + offset, buffer, 2, out long bytesRead);
             return BitConverter.ToInt16(buffer, 0);
         }
 
@@ -81,9 +81,9 @@ namespace Dragoon_Modifier {
             return BitConverter.ToUInt16(buffer, 0);
         }
 
-        public static ushort ReadUShort(string address) {
+        public static ushort ReadUShort(string address, int offset = 0) {
             byte[] buffer = new byte[2];
-            ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET, buffer, 2, out long bytesRead);
+            ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET + offset, buffer, 2, out long bytesRead);
             return BitConverter.ToUInt16(buffer, 0);
         }
 
@@ -93,9 +93,9 @@ namespace Dragoon_Modifier {
             return BitConverter.ToInt32(buffer, 0);
         }
 
-        public static Int32 ReadInt(string address) {
+        public static Int32 ReadInt(string address, int offset = 0) {
             byte[] buffer = new byte[4];
-            ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET, buffer, 4, out long bytesRead);
+            ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET + offset, buffer, 4, out long bytesRead);
             return BitConverter.ToInt32(buffer, 0);
         }
 
@@ -105,9 +105,9 @@ namespace Dragoon_Modifier {
             return BitConverter.ToUInt32(buffer, 0);
         }
 
-        public static UInt32 ReadUInt(string address) {
+        public static UInt32 ReadUInt(string address, int offset = 0) {
             byte[] buffer = new byte[4];
-            ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET, buffer, 4, out long bytesRead);
+            ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET + offset, buffer, 4, out long bytesRead);
             return BitConverter.ToUInt32(buffer, 0);
         }
 
@@ -117,9 +117,9 @@ namespace Dragoon_Modifier {
             return BitConverter.ToInt64(buffer, 0);
         }
 
-        public static long ReadLong(string address) {
+        public static long ReadLong(string address, int offset = 0) {
             byte[] buffer = new byte[8];
-            ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET, buffer, 4, out long bytesRead);
+            ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET + offset, buffer, 4, out long bytesRead);
             return BitConverter.ToInt64(buffer, 0);
         }
 
@@ -129,9 +129,9 @@ namespace Dragoon_Modifier {
             return BitConverter.ToUInt64(buffer, 0);
         }
 
-        public static ulong ReadULong(string address) {
+        public static ulong ReadULong(string address, int offset = 0) {
             byte[] buffer = new byte[8];
-            ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET, buffer, 4, out long bytesRead);
+            ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET + offset, buffer, 4, out long bytesRead);
             return BitConverter.ToUInt64(buffer, 0);
         }
 
@@ -147,9 +147,9 @@ namespace Dragoon_Modifier {
             WriteProcessMemory(processHandle, new IntPtr(address + Constants.OFFSET), val, 1, out int error);
         }
 
-        public static void WriteByte(string address, byte value) {
+        public static void WriteByte(string address, byte value, int offset = 0) {
             var val = BitConverter.GetBytes(value);
-            WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET), val, 1, out int error);
+            WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET + offset), val, 1, out int error);
         }
 
         public static void WriteShort(long address, short value) {
@@ -157,9 +157,9 @@ namespace Dragoon_Modifier {
             WriteProcessMemory(processHandle, new IntPtr(address + Constants.OFFSET), val, 2, out int error);
         }
 
-        public static void WriteShort(string address, short value) {
+        public static void WriteShort(string address, short value, int offset = 0) {
             var val = BitConverter.GetBytes(value);
-            WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET), val, 2, out int error);
+            WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET + offset), val, 2, out int error);
         }
 
         public static void WriteUShort(long address, ushort value) {
@@ -167,9 +167,9 @@ namespace Dragoon_Modifier {
             WriteProcessMemory(processHandle, new IntPtr(address + Constants.OFFSET), val, 2, out int error);
         }
 
-        public static void WriteUShort(string address, ushort value) {
+        public static void WriteUShort(string address, ushort value, int offset = 0) {
             var val = BitConverter.GetBytes(value);
-            WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET), val, 2, out int error);
+            WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET + offset), val, 2, out int error);
         }
 
         public static void WriteInt(long address, Int32 value) {
@@ -177,9 +177,9 @@ namespace Dragoon_Modifier {
             WriteProcessMemory(processHandle, new IntPtr(address + Constants.OFFSET), val, 4, out int error);
         }
 
-        public static void WriteInt(string address, Int32 value) {
+        public static void WriteInt(string address, Int32 value, int offset = 0) {
             var val = BitConverter.GetBytes(value);
-            WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET), val, 4, out int error);
+            WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET + offset), val, 4, out int error);
         }
 
         public static void WriteUInt(long address, UInt32 value) {
@@ -187,9 +187,9 @@ namespace Dragoon_Modifier {
             WriteProcessMemory(processHandle, new IntPtr(address + Constants.OFFSET), val, 4, out int error);
         }
 
-        public static void WriteUInt(string address, UInt32 value) {
+        public static void WriteUInt(string address, UInt32 value, int offset = 0) {
             var val = BitConverter.GetBytes(value);
-            WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET), val, 4, out int error);
+            WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET + offset), val, 4, out int error);
         }
 
         public static void WriteLong(long address, long value) {
@@ -197,9 +197,9 @@ namespace Dragoon_Modifier {
             WriteProcessMemory(processHandle, new IntPtr(address + Constants.OFFSET), val, 8, out int error);
         }
 
-        public static void WriteLong(string address, long value) {
+        public static void WriteLong(string address, long value, int offset = 0) {
             var val = BitConverter.GetBytes(value);
-            WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET), val, 8, out int error);
+            WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET + offset), val, 8, out int error);
         }
 
         public static void WriteULong(long address, ulong value) {
@@ -207,9 +207,9 @@ namespace Dragoon_Modifier {
             WriteProcessMemory(processHandle, new IntPtr(address + Constants.OFFSET), val, 8, out int error);
         }
 
-        public static void WriteULong(string address, ulong value) {
+        public static void WriteULong(string address, ulong value, int offset = 0) {
             var val = BitConverter.GetBytes(value);
-            WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET), val, 8, out int error);
+            WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET + offset), val, 8, out int error);
         }
 
         public static void WriteAoB(long address, string values) {
