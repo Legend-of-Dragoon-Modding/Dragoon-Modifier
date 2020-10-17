@@ -383,6 +383,7 @@ namespace Dragoon_Modifier {
                 InitUI();
                 LoadKey();
                 Globals.DICTIONARY = new LoDDict();
+                Emulator2.Setup("ePSXe", true);
 
                 try {
                     using (WebClient client = new WebClient()) {
