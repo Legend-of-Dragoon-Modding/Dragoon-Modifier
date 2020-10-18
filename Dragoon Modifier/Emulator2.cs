@@ -11,6 +11,12 @@ using System.Windows.Forms;
 
 namespace Dragoon_Modifier {
     static class Emulator2 {
+        static string[] emuList = {
+            "ePSXe",
+            "retroarch",
+
+        };
+
         const int PROCESS_ALL_ACCESS = 0x1F0FFF;
 
         static readonly int[] Empty = new int[0];
@@ -45,8 +51,20 @@ namespace Dragoon_Modifier {
 
             if (baseScan) {
                 var results = ScanAoB(start, end, "50 53 2D 58 20 45 58 45", false);
-                foreach (long result in results) {
-                    Constants.WriteDebug(result.ToString("X2"));
+                foreach (long x in results) {
+                    Constants.OFFSET = x - (long) 0xB070;
+
+                    if (Emulator2.ReadUInt("STARTUP_SEARCH") == 320386 || Emulator2.ReadUShort("BATTLE_VALUE") == 32776 || Emulator2.ReadUShort("BATTLE_VALUE") == 41215) {
+                        Constants.KEY.SetValue("Offset", Constants.OFFSET);
+                        break;
+                    } else {
+                        Constants.OFFSET = 0;
+                    }
+                }
+                if (Constants.OFFSET <= 0) {
+                    Constants.WritePLog("Failed to attach.");
+                } else {
+                    Constants.WriteDebug($"Calculated offset: {Constants.OFFSET.ToString("X2")}");
                 }
             }
         }

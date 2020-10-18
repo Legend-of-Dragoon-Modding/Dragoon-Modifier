@@ -383,7 +383,24 @@ namespace Dragoon_Modifier {
                 InitUI();
                 LoadKey();
                 Globals.DICTIONARY = new LoDDict();
-                Emulator2.Setup("ePSXe", true);
+                string[] emulist = {
+                    "ePSXe",
+                    "retroarch",
+                    "PCSX2",
+                    "duckstation-qt-x64-ReleaseLTCG",
+                    "duckstation-sdl-x64-ReleaseLTCG"
+
+                };
+                foreach (string em in emulist) {
+                    try {
+                        Emulator2.Setup(em, true);
+                        Constants.WriteDebug($"Found {em}");
+                        break;
+                    } catch (IndexOutOfRangeException e) {;
+
+                    }
+                }
+                
 
                 try {
                     using (WebClient client = new WebClient()) {
