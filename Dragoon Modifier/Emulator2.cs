@@ -41,20 +41,51 @@ namespace Dragoon_Modifier {
 
         static IntPtr processHandle = new IntPtr();
 
-        public static void Setup(string emulator, bool baseScan) {
-            process = Process.GetProcessesByName(emulator)[0];
-            startOffset = process.MainModule.BaseAddress;
-            start = startOffset.ToInt64();
-            endOffset = IntPtr.Add(startOffset, process.MainModule.ModuleMemorySize);
-            end = endOffset.ToInt64();
-            processHandle = OpenProcess(PROCESS_ALL_ACCESS, false, process.Id);
+        public static int GetProcIdFromName(string name) //new 1.0.2 function
+        {
+            Process[] processlist = Process.GetProcesses();
+
+            if (name.ToLower().Contains(".exe"))
+                name = name.Replace(".exe", "");
+            if (name.ToLower().Contains(".bin")) // test
+                name = name.Replace(".bin", "");
+
+            foreach (Process theprocess in processlist) {
+                if (theprocess.ProcessName.Equals(name, StringComparison.CurrentCultureIgnoreCase)) //find (name).exe in the process list (use task manager to find the name)
+
+                    return theprocess.Id;
+            }
+
+            return 0; //if we fail to find it
+        }
+
+        public static void Setup(string emuName, bool baseScan) {
+            
+            Process[] processList = Process.GetProcesses();
+
+            if (emuName.ToLower().Contains(".exe"))
+                emuName = emuName.Replace(".exe", "");
+            if (emuName.ToLower().Contains(".bin")) // test
+                emuName = emuName.Replace(".bin", "");
+
+            foreach (Process theprocess in processList) {
+                if (theprocess.ProcessName.Equals(emuName, StringComparison.CurrentCultureIgnoreCase)) { //find (name).exe in the process list (use task manager to find the name)
+                    process = theprocess;
+                    startOffset = process.MainModule.BaseAddress;
+                    start = startOffset.ToInt64();
+                    endOffset = IntPtr.Add(startOffset, process.MainModule.ModuleMemorySize);
+                    end = endOffset.ToInt64();
+                    processHandle = OpenProcess(PROCESS_ALL_ACCESS, false, process.Id);
+                    break;
+                }
+            }
 
             if (baseScan) {
-                var results = ScanAoB(start, end, "50 53 2D 58 20 45 58 45", false);
+                string AoBCheck = "50 53 2D 58 20 45 58 45";
+                var results = ScanAoB(start, end, AoBCheck, false);
                 foreach (long x in results) {
                     Constants.OFFSET = x - (long) 0xB070;
-
-                    if (Emulator2.ReadUInt("STARTUP_SEARCH") == 320386 || Emulator2.ReadUShort("BATTLE_VALUE") == 32776 || Emulator2.ReadUShort("BATTLE_VALUE") == 41215) {
+                    if (ReadUInt("STARTUP_SEARCH") == 320386 || ReadUShort("BATTLE_VALUE") == 32776 || ReadUShort("BATTLE_VALUE") == 41215) {
                         Constants.KEY.SetValue("Offset", Constants.OFFSET);
                         break;
                     } else {
@@ -62,7 +93,7 @@ namespace Dragoon_Modifier {
                     }
                 }
                 if (Constants.OFFSET <= 0) {
-                    Constants.WritePLog("Failed to attach.");
+                    Constants.WriteDebug("Failed to attach.");
                 } else {
                     Constants.WriteDebug($"Calculated offset: {Constants.OFFSET.ToString("X2")}");
                 }
@@ -290,26 +321,11 @@ namespace Dragoon_Modifier {
                 i++;
             }
 
-            int iter = 1000000;
-            var tasks = new List<Task>();
-
-            for (int chunk = 0; chunk < 1 + (endAddr - startAddr) / iter; chunk++) { //Splits addresses into 1mil + mask size (to check overlap) chunks and runs them in parallel.
-                long start = Math.Max(startAddr, startAddr + chunk * iter - maskStr.Length);
-                long end = Math.Min(endAddr, startAddr + iter + chunk * iter);
-
-                Task t = new Task(() => {
-                    byte[] data = ReadAoB(start, end);
-                    foreach (var position in data.Locate(pattern, maskArr)) {
-                        results.Add(position + start);
-                    }
-                });
-                tasks.Add(t);
+            byte[] data = ReadAoB(startAddr, endAddr);
+            foreach (var position in data.Locate(pattern, maskArr)) {
+                results.Add(position + startAddr);
             }
 
-            foreach (Task t in tasks) {
-                t.Start();
-            }
-            Task.WaitAll(tasks.ToArray());
             return results;
         }
 
