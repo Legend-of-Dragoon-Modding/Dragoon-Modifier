@@ -285,6 +285,24 @@ namespace Dragoon_Modifier {
             WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET), arr, arr.Length, out int error);
         }
 
+        public static void WriteText(long address, string values) {
+            string[] strArr = LoDDict.StringEncode(values).Split(' ');
+            byte[] arr = new byte[strArr.Length];
+            for (int i = 0; i < strArr.Length; i++) {
+                arr[i] = Convert.ToByte(strArr[i], 16);
+            }
+            WriteProcessMemory(processHandle, new IntPtr(address + Constants.OFFSET), arr, arr.Length, out int error);
+        }
+
+        public static void WriteText(string address, string values) {
+            string[] strArr = LoDDict.StringEncode(values).Split(' ');
+            byte[] arr = new byte[strArr.Length];
+            for (int i = 0; i < strArr.Length; i++) {
+                arr[i] = Convert.ToByte(strArr[i], 16);
+            }
+            WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET), arr, arr.Length, out int error);
+        }
+
         public static List<long> ScanAoB(long startAddr, long endAddr, string values, bool useOffset = true, bool addOffset = false) {
             List<long> results = new List<long>();
             if (useOffset) {

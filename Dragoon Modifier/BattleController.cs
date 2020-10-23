@@ -180,51 +180,51 @@ namespace Dragoon_Modifier {
                 try {
                     if (Globals.GAME_STATE == 1) {          // Battle
                         if (!Globals.STATS_CHANGED) { 
-                            Setup(emulator, uiCombo);
+                            Setup(uiCombo);
                         } else {
                             if (Globals.PARTY_SLOT[0] == 4 && Emulator2.ReadByte("HASCHEL_FIX" + Globals.DISC) != 0x80) {
-                                HaschelFix(emulator);
+                                HaschelFix();
                             }
                             if (slot1FinalBlow.Contains(Globals.ENCOUNTER_ID) && sharanda.Contains(Globals.PARTY_SLOT[0])) {
-                                ShanaFix(emulator, 0);
+                                ShanaFix(0);
                             }
                             if (slot2FinalBlow.Contains(Globals.ENCOUNTER_ID) && sharanda.Contains(Globals.PARTY_SLOT[1])) {
-                                ShanaFix(emulator, 1);
+                                ShanaFix(1);
                             }
                             if (Globals.ADDITION_SWAP) {
-                                AdditionSwapInit(emulator);
+                                AdditionSwapInit();
                             }
                             if (Globals.CheckDMScript("btnAdditionLevel")) {
-                                AdditionLevelUp(emulator);
+                                AdditionLevelUp();
                             }
                             if (Globals.CheckDMScript("btnNeverGuard")) {
-                                NeverGuard(emulator);
+                                NeverGuard();
                             }
                             if (Globals.CheckDMScript("btnRemoveCaps")) {
-                                RemoveDamageCap(emulator);
+                                RemoveDamageCap();
                             }
                             if (difficulty != "Normal") {
-                                EquipRun(emulator, inventorySize);
-                                HardDragoonRun(emulator, eleBombTurns, eleBombElement, reverseDBS);
-                                DartBurnStackHandler(emulator);
+                                EquipRun(inventorySize);
+                                HardDragoonRun(eleBombTurns, eleBombElement, reverseDBS);
+                                DartBurnStackHandler();
                             }
-                            BattleHotkeys(emulator);
+                            BattleHotkeys();
                         }
                     } else if (Globals.GAME_STATE == 7) {   // Battle result screen
                         if (Globals.STATS_CHANGED) {
                             Globals.EXITING_BATTLE = 2;
-                            ReduceSP(emulator);
-                            ItemFieldChanges(emulator);
-                            CharacterFieldChanges(emulator);
-                            PostBattleChapter3Buffs(emulator);
+                            ReduceSP();
+                            ItemFieldChanges();
+                            CharacterFieldChanges();
+                            PostBattleChapter3Buffs();
                             Globals.STATS_CHANGED = false;
                         }
                     } else if (Globals.GAME_STATE == 0) {   // Field
                         if (Globals.STATS_CHANGED) {
-                            ItemFieldChanges(emulator);
-                            CharacterFieldChanges(emulator);
+                            ItemFieldChanges();
+                            CharacterFieldChanges();
                             if (Globals.DIFFICULTY_MODE != "Normal") {
-                                PostBattleChapter3Buffs(emulator);
+                                PostBattleChapter3Buffs();
                             }
                             Globals.STATS_CHANGED = false;
                         }
@@ -255,7 +255,7 @@ namespace Dragoon_Modifier {
             }
         }
 
-        public static void Setup(Emulator emulator, Dictionary<string, int> uiCombo) {
+        public static void Setup(Dictionary<string, int> uiCombo) {
             Constants.WriteOutput("Battle detected. Loading...");
 
             checkFlowerStorm = false;
@@ -275,13 +275,13 @@ namespace Dragoon_Modifier {
             cameraOption = uiCombo["cboCamera"];
             killBGM = uiCombo["cboKillBGM"];
             if (Globals.CheckDMScript("btnAspectRatio")) {
-                ChangeAspectRatio(emulator);
+                ChangeAspectRatio();
             }
             if (Globals.CheckDMScript("btnKillBGM") && killBGM != 0) {
-                KillBGM(emulator);
+                KillBGM();
             }
             if (difficulty == "NormalHard" || difficulty == "HardHell") {
-                SwitchDualDifficulty(emulator);
+                SwitchDualDifficulty();
             }
             if (Globals.DIFFICULTY_MODE.Contains("Hell")) {
                 SetSPLossAmmount();
@@ -310,14 +310,14 @@ namespace Dragoon_Modifier {
                 Globals.UNIQUE_MONSTER_IDS.Add(Emulator2.ReadUShort("UNIQUE_SLOT", (monster * 0x1A8)));
             }
             for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                Globals.MONSTER_IDS.Add(Emulator2.ReadUShort("MONSTER_ID", GetOffset(emulator) + (i * 0x8)));
+                Globals.MONSTER_IDS.Add(Emulator2.ReadUShort("MONSTER_ID", GetOffset() + (i * 0x8)));
             }
             for (int monster = 0; monster < Globals.MONSTER_SIZE; monster++) {
-                Globals.MONSTER_TABLE.Add(new MonsterAddress(Globals.M_POINT, monster, Globals.MONSTER_IDS[monster], Globals.UNIQUE_MONSTER_IDS, emulator));
+                Globals.MONSTER_TABLE.Add(new MonsterAddress(Globals.M_POINT, monster, Globals.MONSTER_IDS[monster], Globals.UNIQUE_MONSTER_IDS));
             }
             for (int character = 0; character < 3; character++) {
                 if (Globals.PARTY_SLOT[character] < 9) {
-                    Globals.CHARACTER_TABLE.Add(new CharAddress(Globals.C_POINT, character, emulator));
+                    Globals.CHARACTER_TABLE.Add(new CharAddress(Globals.C_POINT, character));
                 }
             }
 
@@ -331,32 +331,32 @@ namespace Dragoon_Modifier {
             Constants.WriteDebug("Monster IDs:         " + String.Join(", ", Globals.MONSTER_IDS.ToArray()));
             Constants.WriteDebug("Unique Monster IDs:  " + String.Join(", ", Globals.UNIQUE_MONSTER_IDS.ToArray()));
             // in battle model pointers
-            Constants.WriteDebug("Slot1 Address:       " + Convert.ToString(Constants.OFFSET + GetOffset(emulator) + 0x1D95F4, 16).ToUpper());
-            Constants.WriteDebug("Slot2 Address:       " + Convert.ToString(Constants.OFFSET + GetOffset(emulator) + 0x1DA88C, 16).ToUpper());
-            Constants.WriteDebug("Slot3 Address:       " + Convert.ToString(Constants.OFFSET + GetOffset(emulator) + 0x1DBB24, 16).ToUpper());
+            Constants.WriteDebug("Slot1 Address:       " + Convert.ToString(Constants.OFFSET + GetOffset() + 0x1D95F4, 16).ToUpper());
+            Constants.WriteDebug("Slot2 Address:       " + Convert.ToString(Constants.OFFSET + GetOffset() + 0x1DA88C, 16).ToUpper());
+            Constants.WriteDebug("Slot3 Address:       " + Convert.ToString(Constants.OFFSET + GetOffset() + 0x1DBB24, 16).ToUpper());
 
-            Constants.WriteDebug("Addition Table:      " + Convert.ToString(Constants.GetAddress("ADDITION") + GetOffset(emulator) + Constants.OFFSET, 16).ToUpper());
+            Constants.WriteDebug("Addition Table:      " + Convert.ToString(Constants.GetAddress("ADDITION") + GetOffset() + Constants.OFFSET, 16).ToUpper());
 
-            MonsterChanges(emulator);
-            CharacterBattleChanges(emulator);
+            MonsterChanges();
+            CharacterBattleChanges();
             if (Globals.NO_DART > 0) {
                 Constants.WriteOutput("Finished loading. Waiting for No Dart to complete...");
-                NoDart(emulator);
+                NoDart();
             }
             if (Globals.CheckDMScript("btnBlackRoom")) {
-                BlackRoomBattle(emulator);
+                BlackRoomBattle();
             }
             if (Globals.CheckDMScript("btnNoDragoon")) {
                 NoDragoonMode();
             }
             if (difficulty != "Normal") {
-                HardHellModeSetup(emulator, uiCombo);
+                HardHellModeSetup(uiCombo);
             }
             Constants.WriteOutput("Finished loading.");
             Globals.STATS_CHANGED = true;
         }
 
-        public static int GetOffset(Emulator emulator) {
+        public static int GetOffset() {
             if (Constants.REGION == Region.NTA || Constants.REGION == Region.ENG) {
                 return Emulator2.ReadUShort("BATTLE_OFFSET") - 0x8F44;
             } else {
@@ -387,30 +387,30 @@ namespace Dragoon_Modifier {
         #region Battle Changes
 
         #region Monster Changes
-        public static void MonsterChanges(Emulator emulator) {
+        public static void MonsterChanges() {
             if (Globals.MONSTER_STAT_CHANGE && !Globals.CheckDMScript("btnUltimateBoss")) {
                 Constants.WriteOutput("Changing Monster Stats...");
                 for (int slot = 0; slot < Globals.MONSTER_SIZE; slot++) {
-                    MonsterStatChange(emulator, slot);
+                    MonsterStatChange(slot);
                 }
             }
 
             if (Globals.MONSTER_DROP_CHANGE && !Globals.CheckDMScript("btnUltimateBoss")) {
                 Constants.WriteOutput("Changing Monster Drops...");
                 for (int slot = 0; slot < Globals.UNIQUE_MONSTER_SIZE; slot++) {
-                    MonsterDropChange(emulator, slot);
+                    MonsterDropChange(slot);
                 }
             }
 
             if (Globals.MONSTER_EXPGOLD_CHANGE && !Globals.CheckDMScript("btnUltimateBoss")) {
                 Constants.WriteOutput("Changing Monster Exp and Gold Rewards...");
                 for (int slot = 0; slot < Globals.UNIQUE_MONSTER_SIZE; slot++) {
-                    MonsterExpGoldChange(emulator, slot);
+                    MonsterExpGoldChange(slot);
                 }
             }
         }
 
-        public static void MonsterStatChange(Emulator emulator, int slot) {
+        public static void MonsterStatChange(int slot) {
             int ID = Globals.MONSTER_IDS[slot];
             double HP = Globals.DICTIONARY.StatList[ID].HP * Globals.HP_MULTI;
             double resup = 1;
@@ -442,13 +442,13 @@ namespace Dragoon_Modifier {
             Globals.MONSTER_TABLE[slot].Write("Death_Res", Globals.DICTIONARY.StatList[ID].Death_Res);
         }
 
-        public static void MonsterDropChange(Emulator emulator, int slot) {
+        public static void MonsterDropChange(int slot) {
             int ID = Globals.UNIQUE_MONSTER_IDS[slot];
             Emulator2.WriteByte("MONSTER_REWARDS", (byte) Globals.DICTIONARY.StatList[ID].Drop_Chance, 0x4 + slot * 0x1A8);
             Emulator2.WriteByte("MONSTER_REWARDS", (byte) Globals.DICTIONARY.StatList[ID].Drop_Item, 0x5 + slot * 0x1A8);
         }
 
-        public static void MonsterExpGoldChange(Emulator emulator, int slot) {
+        public static void MonsterExpGoldChange(int slot) {
             int ID = Globals.UNIQUE_MONSTER_IDS[slot];
             Emulator2.WriteUShort("MONSTER_REWARDS", (ushort) Globals.DICTIONARY.StatList[ID].EXP, slot * 0x1A8);
             Emulator2.WriteUShort("MONSTER_REWARDS", (ushort) Globals.DICTIONARY.StatList[ID].Gold, 0x2 + slot * 0x1A8);
@@ -457,7 +457,7 @@ namespace Dragoon_Modifier {
         #endregion
 
         #region Character Changes
-        public static void CharacterBattleChanges(Emulator emulator) {
+        public static void CharacterBattleChanges() {
             if (Globals.PARTY_SLOT[1] == Globals.NO_DART || Globals.PARTY_SLOT[2] == Globals.NO_DART) {
                 Globals.NO_DART = null;
             }
@@ -470,7 +470,7 @@ namespace Dragoon_Modifier {
                 if (character > 8) {
                     break;
                 }
-                Globals.CURRENT_STATS[slot] = new CurrentStats(character, slot, emulator);
+                Globals.CURRENT_STATS[slot] = new CurrentStats(character, slot);
             }
 
             if (Globals.ADDITION_CHANGE) {
@@ -483,7 +483,7 @@ namespace Dragoon_Modifier {
                     if (character > 8) {
                         break;
                     }
-                    AdditionsBattleChanges(emulator, slot, character);
+                    AdditionsBattleChanges(slot, character);
                 }
             }
 
@@ -497,7 +497,7 @@ namespace Dragoon_Modifier {
                     if (character > 8) {
                         break;
                     }
-                    DragoonStatChanges(emulator, slot, character);
+                    DragoonStatChanges(slot, character);
                 }
             }
 
@@ -511,7 +511,7 @@ namespace Dragoon_Modifier {
                     if (character > 8) {
                         break;
                     }
-                    DragoonAdditionsBattleChanges(emulator, slot, character);
+                    DragoonAdditionsBattleChanges(slot, character);
                 }
             }
 
@@ -525,13 +525,13 @@ namespace Dragoon_Modifier {
                     if (character > 8) {
                         break;
                     }
-                    DragoonSpellChange(emulator, slot, character);
+                    DragoonSpellChange(slot, character);
                 }
             }
 
             if (Globals.DRAGOON_DESC_CHANGE && Constants.REGION == Region.NTA) {
                 Constants.WriteOutput("Changing Dragoon Spell Descriptions...");
-                DragoonSpellDescriptionChange(emulator);
+                DragoonSpellDescriptionChange();
             }
 
             if (Globals.ITEM_STAT_CHANGE || Globals.CHARACTER_STAT_CHANGE) {
@@ -544,17 +544,17 @@ namespace Dragoon_Modifier {
                     if (character > 8) {
                         break;
                     }
-                    SetCharacterStats(emulator, slot, character);
+                    SetCharacterStats(slot, character);
                 }
             }
 
             if (Globals.ITEM_NAMEDESC_CHANGE && Constants.REGION == Region.NTA) {
-                ItemBattleNameDescChange(emulator);
+                ItemBattleNameDescChange();
             }
         }
 
-        public static void AdditionsBattleChanges(Emulator emulator, int slot, int character) {
-            long address = Constants.GetAddress("ADDITION") + GetOffset(emulator);
+        public static void AdditionsBattleChanges(int slot, int character) {
+            long address = Constants.GetAddress("ADDITION") + GetOffset();
             Dictionary<int, int> additionnum = new Dictionary<int, int> {
             {0, 0},{1, 1},{2, 2},{3, 3},{4, 4},{5, 5},{6, 6},//Dart
             {8, 0},{9, 1},{10, 2},{11, 3},{12, 4},           //Lavitz
@@ -604,7 +604,7 @@ namespace Dragoon_Modifier {
             }
         }
 
-        public static void DragoonStatChanges(Emulator emulator, int slot, int character) {
+        public static void DragoonStatChanges(int slot, int character) {
             int dlv = Globals.CURRENT_STATS[slot].DLV;
             Globals.CHARACTER_TABLE[slot].Write("DAT", Globals.DICTIONARY.DragoonStats[character][dlv].DAT);
             Globals.CHARACTER_TABLE[slot].Write("DMAT", Globals.DICTIONARY.DragoonStats[character][dlv].DMAT);
@@ -618,7 +618,7 @@ namespace Dragoon_Modifier {
             Emulator2.WriteUShort("SECONDARY_CHARACTER_TABLE", MP, character * 0xA0 + 0x6E);
         }
 
-        public static void ItemBattleChanges(Emulator emulator, int slot) {
+        public static void ItemBattleChanges(int slot) {
             byte character = Globals.PARTY_SLOT[slot];
             if (slot == 0 && Globals.NO_DART != null) {
                 character = (byte) Globals.NO_DART;
@@ -669,7 +669,7 @@ namespace Dragoon_Modifier {
             Emulator2.WriteUShort("SECONDARY_CHARACTER_TABLE", Globals.CURRENT_STATS[slot].Equip_SPD, character * 0xA0 + 0x86);
         }
 
-        public static void CharacterBattleChanges(Emulator emulator, int slot) {
+        public static void CharacterBattleChanges(int slot) {
             byte character = Globals.PARTY_SLOT[slot];
             if (slot == 0 && Globals.NO_DART != null) {
                 character = (byte) Globals.NO_DART;
@@ -690,7 +690,7 @@ namespace Dragoon_Modifier {
             Globals.CHARACTER_TABLE[slot].Write("OG_SPD", Globals.CURRENT_STATS[slot].SPD);
         }
 
-        public static void SetCharacterStats(Emulator emulator, int slot, int character) {
+        public static void SetCharacterStats(int slot, int character) {
             int lv = Emulator2.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x12);
             long address = Constants.GetAddress("SECONDARY_CHARACTER_TABLE");
             ushort base_HP = 0;
@@ -840,8 +840,8 @@ namespace Dragoon_Modifier {
             Globals.CHARACTER_TABLE[slot].Write("Max_HP", Globals.CURRENT_STATS[slot].Max_HP);
         }
 
-        public static void DragoonAdditionsBattleChanges(Emulator emulator, int slot, int character) {
-            long address = Constants.GetAddress("ADDITION") + GetOffset(emulator) + 0x300;
+        public static void DragoonAdditionsBattleChanges(int slot, int character) {
+            long address = Constants.GetAddress("ADDITION") + GetOffset() + 0x300;
             Emulator2.WriteUShort(address + (slot * 0x100) + 0x8, (ushort) Globals.DICTIONARY.DragoonAddition[character].HIT1);
             Emulator2.WriteUShort(address + (slot * 0x100) + 0x20 + 0x8, (ushort) Globals.DICTIONARY.DragoonAddition[character].HIT2);
             Emulator2.WriteUShort(address + (slot * 0x100) + 0x40 + 0x8, (ushort) Globals.DICTIONARY.DragoonAddition[character].HIT3);
@@ -849,7 +849,7 @@ namespace Dragoon_Modifier {
             Emulator2.WriteUShort(address + (slot * 0x100) + 0x80 + 0x8, (ushort) Globals.DICTIONARY.DragoonAddition[character].HIT5);
         }
 
-        public static void DragoonSpellChange(Emulator emulator, int slot, int character) {
+        public static void DragoonSpellChange(int slot, int character) {
             long address = Constants.GetAddress("SPELL_TABLE");
             double[] bases = new double[] { 800, 600, 500, 400, 300, 200, 150, 100, 50 };
             byte[] base_table = new byte[] { 0x1, 0x2, 0x4, 0x8, 0x10, 0x20, 0x40, 0, 0x80 };
@@ -902,7 +902,7 @@ namespace Dragoon_Modifier {
             }
         }
 
-        public static void DragoonSpellDescriptionChange(Emulator emulator) {
+        public static void DragoonSpellDescriptionChange() {
             int i = 0;
             string descr = String.Empty;
             long address = Constants.GetAddress("DRAGOON_DESC_PTR");
@@ -920,7 +920,7 @@ namespace Dragoon_Modifier {
 
         #region Item Changes
 
-        public static void ItemBattleNameDescChange(Emulator emulator) {
+        public static void ItemBattleNameDescChange() {
             Constants.WriteOutput("Changing Item Names and Descriptions...");
             long address = Constants.GetAddress("ITEM_BTL_NAME");
             long address2 = Constants.GetAddress("ITEM_BTL_NAME_PTR");
@@ -973,7 +973,7 @@ namespace Dragoon_Modifier {
         #endregion
 
         #region No Dart
-        public static void HaschelFix(Emulator emulator) {
+        public static void HaschelFix() {
             Constants.WriteDebug("Haschel Fix - " + Globals.DISC);
 
             if (Constants.REGION == Region.NTA) {
@@ -994,7 +994,7 @@ namespace Dragoon_Modifier {
 
         }
 
-        public static void ShanaFix(Emulator emulator, byte slot) {
+        public static void ShanaFix(byte slot) {
             byte HP = 0;
             if (Globals.ENCOUNTER_ID == 408 || Globals.ENCOUNTER_ID == 409 || Globals.ENCOUNTER_ID == 387) {
                 if (Globals.MONSTER_TABLE[0].Read("HP") != 0) {
@@ -1023,7 +1023,7 @@ namespace Dragoon_Modifier {
             }
         }
 
-        public static void NoDart(Emulator emulator) {
+        public static void NoDart() {
             byte character = (byte) Globals.NO_DART;
             Globals.CHARACTER_TABLE[0].Write("Status", Emulator2.ReadByte("CHAR_TABLE", character * 0x2C + 0x10));
             if (Globals.ENCOUNTER_ID == 413) {
@@ -1163,15 +1163,15 @@ namespace Dragoon_Modifier {
             */
 
             if (!Globals.ADDITION_CHANGE) {
-                AdditionsBattleChanges(emulator, 0, character);
+                AdditionsBattleChanges(0, character);
             }
 
             if (!Globals.DRAGOON_STAT_CHANGE) {
-                DragoonStatChanges(emulator, 0, character);
+                DragoonStatChanges(0, character);
             }
 
             if (!Globals.ITEM_STAT_CHANGE) {
-                ItemBattleChanges(emulator, 0);
+                ItemBattleChanges(0);
             }
 
             if (Globals.AUTO_TRANSFORM) {
@@ -1206,22 +1206,22 @@ namespace Dragoon_Modifier {
         #region Field Changes
 
         #region Item Changes
-        public static void ItemFieldChanges(Emulator emulator) {
+        public static void ItemFieldChanges() {
             if (Globals.ITEM_STAT_CHANGE) {
-                EquipStatChange(emulator);
+                EquipStatChange();
             }
             if (Globals.THROWN_ITEM_CHANGE) {
-                ItemChange(emulator);
+                ItemChange();
             }
             if (Globals.ITEM_ICON_CHANGE) {
-                ItemIconChange(emulator);
+                ItemIconChange();
             }
             if (Globals.ITEM_NAMEDESC_CHANGE && Constants.REGION == Region.NTA) {
-                ItemNameDescChange(emulator);
+                ItemNameDescChange();
             }
         }
 
-        public static void EquipStatChange(Emulator emulator) {
+        public static void EquipStatChange() {
             Constants.WriteOutput("Changing Equipment Stats...");
             long address = Constants.GetAddress("ITEM_TABLE");
             int i = 0;
@@ -1258,7 +1258,7 @@ namespace Dragoon_Modifier {
             }
         }
 
-        public static void ItemChange(Emulator emulator) {
+        public static void ItemChange() {
             Constants.WriteOutput("Changing Thrown Items...");
             long address = Constants.GetAddress("THROWN_ITEM_TABLE");
             for (int i = 193; i < 255; i++) {
@@ -1276,7 +1276,7 @@ namespace Dragoon_Modifier {
             }
         }
 
-        public static void ItemIconChange(Emulator emulator) {
+        public static void ItemIconChange() {
             Constants.WriteOutput("Changing Item Icons...");
             long address = Constants.GetAddress("ITEM_TABLE");
             for (int i = 0; i < 186; i++) {
@@ -1288,7 +1288,7 @@ namespace Dragoon_Modifier {
             }
         }
 
-        public static void ItemNameDescChange(Emulator emulator) {
+        public static void ItemNameDescChange() {
             Constants.WriteOutput("Changing Item Names and Descriptions...");
             long address = Constants.GetAddress("ITEM_NAME");
             long address2 = Constants.GetAddress("ITEM_NAME_PTR");
@@ -1327,22 +1327,22 @@ namespace Dragoon_Modifier {
         #endregion
 
         #region Character Changes
-        public static void CharacterFieldChanges(Emulator emulator) {
+        public static void CharacterFieldChanges() {
             if (Globals.DRAGOON_STAT_CHANGE) {
-                DragoonTableChange(emulator);
+                DragoonTableChange();
             }
             if (Globals.CHARACTER_STAT_CHANGE) {
-                CharacterTableChange(emulator);
+                CharacterTableChange();
             }
             if (Globals.ADDITION_CHANGE) {
-                AdditionTableChange(emulator);
+                AdditionTableChange();
             }
             if (Globals.ADDITION_LEVEL_CHANGE) {
-                AdditionLevelChange(emulator);
+                AdditionLevelChange();
             }
         }
 
-        public static void DragoonTableChange(Emulator emulator) {
+        public static void DragoonTableChange() {
             Constants.WriteOutput("Changing Dragoon Stat table...");
             long address = Constants.GetAddress("DRAGOON_TABLE");
             int[] charReorder = new int[] { 5, 7, 0, 4, 6, 8, 1, 3, 2 };
@@ -1358,7 +1358,7 @@ namespace Dragoon_Modifier {
             }
         }
 
-        public static void CharacterTableChange(Emulator emulator) {
+        public static void CharacterTableChange() {
             Constants.WriteOutput("Changing Character Stat table...");
             long address = Constants.GetAddress("CHAR_STAT_TABLE");
             int[] charReorder = new int[] { 7, 0, 4, 6, 1, 3, 2 };
@@ -1377,7 +1377,7 @@ namespace Dragoon_Modifier {
             }
         }
 
-        public static void AdditionTableChange(Emulator emulator) {
+        public static void AdditionTableChange() {
             Constants.WriteOutput("Changing Addition table...");
             int reorderedaddition = 0;
             int character = 0;
@@ -1436,7 +1436,7 @@ namespace Dragoon_Modifier {
             }
         }
 
-        public static void AdditionLevelChange(Emulator emulator) {
+        public static void AdditionLevelChange() {
             Constants.WriteDebug("Changing Addition Levels...");
             long address = Constants.GetAddress("MENU_ADDITION_TABLE_FLAT");
             int addition = 0;
@@ -1456,7 +1456,7 @@ namespace Dragoon_Modifier {
         #region Scripts
 
         #region Addition Swap
-        public static void AdditionSwapInit(Emulator emulator) {
+        public static void AdditionSwapInit() {
             Nullable<int> character = null;
             for (byte slot = 0; slot < 3; slot++) {
                 if (Globals.CHARACTER_TABLE[slot].Read("Action") == 8) {
@@ -1648,11 +1648,11 @@ namespace Dragoon_Modifier {
                     }
                 }
 
-                AdditionSwap(emulator, (byte) character, swappableAdditions);
+                AdditionSwap((byte) character, swappableAdditions);
             }
         }
 
-        public static void AdditionSwap(Emulator emulator, byte slot, byte additionCount) {
+        public static void AdditionSwap(byte slot, byte additionCount) {
             byte[][] reorderAddition = new byte[9][] {
                 new byte[] { 0, 1, 2, 3, 4, 5, 6 },
                 new byte[]{ 8, 9, 10, 11, 12 },
@@ -1698,7 +1698,7 @@ namespace Dragoon_Modifier {
                 byte add = reorderAddition[character][addition];
                 Emulator2.WriteByte(Constants.GetAddress("CHAR_TABLE") + (character * 0x2C) + 0x19, add);
                 Thread.Sleep(200);
-                long address = Constants.GetAddress("ADDITION") + GetOffset(emulator);
+                long address = Constants.GetAddress("ADDITION") + GetOffset();
                 for (int hit = 0; hit < 8; hit++) {
                     Emulator2.WriteUShort(address + (slot * 0x100) + (hit * 0x20), (ushort) Globals.DICTIONARY.AdditionData[character, addition, hit].UU1);
                     Emulator2.WriteUShort(address + (slot * 0x100) + (hit * 0x20) + 0x2, (ushort) Globals.DICTIONARY.AdditionData[character, addition, hit].Next_Hit);
@@ -1778,7 +1778,7 @@ namespace Dragoon_Modifier {
         #endregion
 
         #region Addition Level Up in Battle
-        public static void AdditionLevelUp(Emulator emulator) {
+        public static void AdditionLevelUp() {
             Dictionary<int, int> additionnum = new Dictionary<int, int> {
                 {0, 0},{1, 1},{2, 2},{3, 3},{4, 4},{5, 5},{6, 6},//Dart
 			    {8, 0},{9, 1},{10, 2},{11, 3},{12, 4},           //Lavitz
@@ -1808,15 +1808,15 @@ namespace Dragoon_Modifier {
 
         #region Black Room
 
-        public static void BlackRoomField(Emulator emulator) {
+        public static void BlackRoomField() {
             if ((Globals.MAP >= 5 && Globals.MAP <= 7) || (Globals.MAP >= 624 && Globals.MAP <= 625)) {
                 Emulator2.WriteByte("BATTLE_FIELD", 96);
             }
         }
 
-        public static void BlackRoomBattle(Emulator emulator) {
+        public static void BlackRoomBattle() {
             if ((Globals.MAP >= 5 && Globals.MAP <= 7) || (Globals.MAP >= 624 && Globals.MAP <= 625)) {
-                WipeRewards(emulator);
+                WipeRewards();
                 for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
                     Globals.MONSTER_TABLE[i].Write("HP", 65535);
                     Globals.MONSTER_TABLE[i].Write("Max_HP", 65535);
@@ -1835,7 +1835,7 @@ namespace Dragoon_Modifier {
         #endregion
 
         #region Never Guard
-        public static void NeverGuard(Emulator emulator) {
+        public static void NeverGuard() {
             for (int i = 0; i < 3; i++) {
                 if (Globals.PARTY_SLOT[i] > 8) {
                     break;
@@ -1847,37 +1847,37 @@ namespace Dragoon_Modifier {
         #endregion
 
         #region Damage Cap Removal
-        public static void RemoveDamageCap(Emulator emulator) {
+        public static void RemoveDamageCap() {
             if (!firstDamageCapRemoval) {
                 Emulator2.WriteUInt("DAMAGE_CAP", 50000);
                 Emulator2.WriteUInt("DAMAGE_CAP", 50000, 0x8);
                 Emulator2.WriteUInt("DAMAGE_CAP", 50000, 0x14);
-                DamageCapScan(emulator);
+                DamageCapScan();
                 firstDamageCapRemoval = true;
             } else {
                 ushort currentItem = Emulator2.ReadUShort(Globals.M_POINT + 0xABC);
                 if (lastItemUsedDamageCap != currentItem) {
                     lastItemUsedDamageCap = currentItem;
                     if ((lastItemUsedDamageCap >= 0xC1 && lastItemUsedDamageCap <= 0xCA) || (lastItemUsedDamageCap >= 0xCF && lastItemUsedDamageCap <= 0xD2) || lastItemUsedDamageCap == 0xD6 || lastItemUsedDamageCap == 0xD8 || lastItemUsedDamageCap == 0xDC || (lastItemUsedDamageCap >= 0xF1 && lastItemUsedDamageCap <= 0xF8) || lastItemUsedDamageCap == 0xFA) {
-                        DamageCapScan(emulator);
+                        DamageCapScan();
                     }
                 }
                 for (int i = 0; i < 3; i++) {
                     if (Globals.PARTY_SLOT[i] < 9) {
                         if (Globals.CHARACTER_TABLE[i].Read("Action") == 24) {
-                            DamageCapScan(emulator);
+                            DamageCapScan();
                         }
                     }
                 }
                 for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
                     if (Globals.MONSTER_TABLE[i].Read("Action") == 28) { //Most used, not all monsters use action code 28 for item spells
-                        DamageCapScan(emulator);
+                        DamageCapScan();
                     }
                 }
             }
         }
 
-        public static void DamageCapScan(Emulator emulator) {
+        public static void DamageCapScan() {
             var damageCapScan = Emulator2.ScanAoB(0xA8660, 0x2A865F, "0F 27");
             long lastAddress = 0;
             foreach (var address in damageCapScan) {
@@ -1894,7 +1894,7 @@ namespace Dragoon_Modifier {
 
         #region Change Aspect Ratio
 
-        public static void ChangeAspectRatio(Emulator emulator) {
+        public static void ChangeAspectRatio() {
             ushort aspectRatio = 4096;
 
             if (aspectRatioOption == 0)
@@ -1918,7 +1918,7 @@ namespace Dragoon_Modifier {
 
         #region Kill BGM
 
-        public static void KillBGM(Emulator emulator) {
+        public static void KillBGM() {
             var bgmScan = Emulator2.ScanAoB(0xA8660, 0x2A865F, "53 53 73 71");
             foreach (var address in bgmScan) {
                 for (int i = 0; i <= 255; i++) {
@@ -1946,13 +1946,13 @@ namespace Dragoon_Modifier {
 
         #region Hard/Hell Mode specific
 
-        public static void HardHellModeSetup(Emulator emulator, Dictionary<string, int> uiCombo) {
-            EquipChangesSetup(emulator, uiCombo);
+        public static void HardHellModeSetup(Dictionary<string, int> uiCombo) {
+            EquipChangesSetup(uiCombo);
             if (difficulty.Contains("Hell")) {
-                HellDragoonChanges(emulator);
+                HellDragoonChanges();
             }
             if (difficulty.Equals("Hell")) {
-                ApplyNoEscape(emulator);
+                ApplyNoEscape();
             }
             if (Globals.PARTY_SLOT.Contains((byte) 2)) {
                 int index = Array.IndexOf(Globals.PARTY_SLOT, (byte) 2);
@@ -1966,7 +1966,7 @@ namespace Dragoon_Modifier {
         }
 
         #region Apply No Escape
-        public static void ApplyNoEscape(Emulator emulator) {
+        public static void ApplyNoEscape() {
             if (Globals.CheckDMScript("btnBlackRoom")) {
                 if (!((Globals.MAP >= 5 && Globals.MAP <= 7) || (Globals.MAP >= 624 && Globals.MAP <= 625))) {
                     for (int i = 0; i < 3; i++) {
@@ -1988,7 +1988,7 @@ namespace Dragoon_Modifier {
 
         #region Hard / Hell Mode Dragoon Changes
 
-        public static void HellDragoonChanges(Emulator emulator) {
+        public static void HellDragoonChanges() {
             Emulator2.WriteByte("SPELL_TABLE", (byte)((flowerStorm) * blossomStormTurnMP), 0x7 + (7 * 0xC)); //Lavitz's Blossom Storm MP
             Emulator2.WriteByte("SPELL_TABLE", (byte)((flowerStorm) * blossomStormTurnMP), 0x7 + (26 * 0xC)); //Albert's Rose storm MP
 
@@ -2004,7 +2004,7 @@ namespace Dragoon_Modifier {
             Emulator2.WriteByte("SPELL_TABLE", gatesOfHeavenMP, 0x7 + (67 * 0xC)); //???'s Gates of Heaven MP
         }
 
-        public static void HardDragoonRun(Emulator emulator, byte eleBombTurns, byte eleBombElement, bool reverseDBS) {
+        public static void HardDragoonRun(byte eleBombTurns, byte eleBombElement, bool reverseDBS) {
             byte dragoonSpecialAttack = Emulator2.ReadByte("DRAGOON_SPECIAL_ATTACK");
             for (int slot = 0; slot < 3; slot++) {
                 if (Globals.PARTY_SLOT[slot] > 8) {
@@ -2378,16 +2378,16 @@ namespace Dragoon_Modifier {
             Constants.WriteGLogOutput("Dart Burn Stacks: " + dartBurnStacks + " / " + dartMaxBurnStacks);
         }
 
-        public static void DartBurnStackHandler(Emulator emulator) {
+        public static void DartBurnStackHandler() {
             for (int i = 0; i < 3; i++) {
                 if (Globals.PARTY_SLOT[i] == 0) {
                     if (resetBurnStack) {
                         if (Globals.CHARACTER_TABLE[i].Read("Action") == 8 || Globals.CHARACTER_TABLE[i].Read("Action") == 10) {
                             dartBurnStacks = 0;
-                            emulator.WriteText(Globals.DRAGOON_SPELLS[0].Description_Pointer + 0x1E, "1.0");
-                            emulator.WriteText(Globals.DRAGOON_SPELLS[1].Description_Pointer + 0x1E, "1.0");
-                            emulator.WriteText(Globals.DRAGOON_SPELLS[2].Description_Pointer + 0x1E, "1.0");
-                            emulator.WriteText(Globals.DRAGOON_SPELLS[3].Description_Pointer + 0x20, "1.0");
+                            Emulator2.WriteText(Globals.DRAGOON_SPELLS[0].Description_Pointer + 0x1E, "1.0");
+                            Emulator2.WriteText(Globals.DRAGOON_SPELLS[1].Description_Pointer + 0x1E, "1.0");
+                            Emulator2.WriteText(Globals.DRAGOON_SPELLS[2].Description_Pointer + 0x1E, "1.0");
+                            Emulator2.WriteText(Globals.DRAGOON_SPELLS[3].Description_Pointer + 0x20, "1.0");
                             burnStackSelected = false;
                             Constants.WriteGLogOutput("Dart Burn Stacks: " + dartBurnStacks + " / " + dartMaxBurnStacks);
                         }
@@ -2412,19 +2412,19 @@ namespace Dragoon_Modifier {
                                 if ((iconCount == 4 && (iconSelected == 0 || iconSelected == 2)) || (iconCount == 5 && (iconSelected == 1 || iconSelected == 3))) {
                                     burnStackSelected = false;
                                     double burnAmount = 1 + (dartBurnStacks * damagePerBurn);
-                                    emulator.WriteText(Globals.DRAGOON_SPELLS[0].Description_Pointer + 0x1E, "1.0");
-                                    emulator.WriteText(Globals.DRAGOON_SPELLS[1].Description_Pointer + 0x1E, "1.0");
-                                    emulator.WriteText(Globals.DRAGOON_SPELLS[2].Description_Pointer + 0x1E, "1.0");
-                                    emulator.WriteText(Globals.DRAGOON_SPELLS[3].Description_Pointer + 0x20, "1.0");
+                                    Emulator2.WriteText(Globals.DRAGOON_SPELLS[0].Description_Pointer + 0x1E, "1.0");
+                                    Emulator2.WriteText(Globals.DRAGOON_SPELLS[1].Description_Pointer + 0x1E, "1.0");
+                                    Emulator2.WriteText(Globals.DRAGOON_SPELLS[2].Description_Pointer + 0x1E, "1.0");
+                                    Emulator2.WriteText(Globals.DRAGOON_SPELLS[3].Description_Pointer + 0x20, "1.0");
                                 }
                             } else {
                                 if ((iconCount == 4 && (iconSelected == 1 || iconSelected == 3)) || (iconCount == 5 && (iconSelected == 2 || iconSelected == 4))) {
                                     burnStackSelected = true;
                                     double burnAmount = 1 + (dartBurnStacks * damagePerBurn);
-                                    emulator.WriteText(Globals.DRAGOON_SPELLS[0].Description_Pointer + 0x1E, Convert.ToString(burnAmount).Substring(0, 3));
-                                    emulator.WriteText(Globals.DRAGOON_SPELLS[1].Description_Pointer + 0x1E, Convert.ToString(burnAmount).Substring(0, 3));
-                                    emulator.WriteText(Globals.DRAGOON_SPELLS[2].Description_Pointer + 0x1E, Convert.ToString(burnAmount).Substring(0, 3));
-                                    emulator.WriteText(Globals.DRAGOON_SPELLS[3].Description_Pointer + 0x20, Convert.ToString(burnAmount).Substring(0, 3));
+                                    Emulator2.WriteText(Globals.DRAGOON_SPELLS[0].Description_Pointer + 0x1E, Convert.ToString(burnAmount).Substring(0, 3));
+                                    Emulator2.WriteText(Globals.DRAGOON_SPELLS[1].Description_Pointer + 0x1E, Convert.ToString(burnAmount).Substring(0, 3));
+                                    Emulator2.WriteText(Globals.DRAGOON_SPELLS[2].Description_Pointer + 0x1E, Convert.ToString(burnAmount).Substring(0, 3));
+                                    Emulator2.WriteText(Globals.DRAGOON_SPELLS[3].Description_Pointer + 0x20, Convert.ToString(burnAmount).Substring(0, 3));
                                 }
                             }
                         } else if (Globals.CHARACTER_TABLE[i].Read("Action") == 26) {
@@ -2440,7 +2440,7 @@ namespace Dragoon_Modifier {
 
         #region Dual Difficulty
 
-        public static void SwitchDualDifficulty(Emulator emulator) {
+        public static void SwitchDualDifficulty() {
             bool boss = false;
             string cwd = AppDomain.CurrentDomain.BaseDirectory;
             string monsterBoss = difficulty == "HardHell" ? "Hell_Mode" : "Hard_Mode";
@@ -2560,7 +2560,7 @@ namespace Dragoon_Modifier {
                 bossSPLoss = 0;
         }
 
-        public static void ReduceSP(Emulator emulator) {
+        public static void ReduceSP() {
             if (bossSPLoss != 0) {
                 for (int character = 0; character < 9; character++) {
                     ushort currentTotalSP = Emulator2.ReadUShort("CHAR_TABLE", (character * 0x2C) + 0xE);
@@ -2619,10 +2619,10 @@ namespace Dragoon_Modifier {
 
         #region Equipment Changes
 
-        public static void EquipChangesSetup(Emulator emulator, Dictionary<string, int> uiCombo) {
+        public static void EquipChangesSetup(Dictionary<string, int> uiCombo) {
             Chapter3buffs();
-            PercBuffs(emulator);
-            SpecialEquipSetup(emulator, uiCombo);
+            PercBuffs();
+            SpecialEquipSetup(uiCombo);
         }
 
         public static void Chapter3buffs() {
@@ -2655,7 +2655,7 @@ namespace Dragoon_Modifier {
             }
         }
 
-        public static void PostBattleChapter3Buffs(Emulator emulator) {
+        public static void PostBattleChapter3Buffs() {
             if (Globals.CHAPTER >= 3) {
                 long address = Constants.GetAddress("ITEM_TABLE");
                 Emulator2.WriteByte(address + 28 * 0x1C + 0x9, (byte) (Emulator2.ReadByte(address + 28 * 0x1C + 0x9) + sparkleArrowBuff));
@@ -2663,11 +2663,11 @@ namespace Dragoon_Modifier {
                 Emulator2.WriteByte(address + 14 * 0x1C + 0x9, (byte) (Emulator2.ReadByte(address + 14 * 0x1C + 0x9) + shadowCutterBuff));
                 Emulator2.WriteByte(address + 35 * 0x1C + 0x9, (byte) (Emulator2.ReadByte(address + 35 * 0x1C + 0x9) + morningStarBuff));
             } else {
-                Emulator2.WriteAoB(Globals.DICTIONARY.ItemList[35].DescriptionPointer, "FF A0 FF A0");
+                Emulator2.WriteAoB((long)Globals.DICTIONARY.ItemList[35].DescriptionPointer, "FF A0 FF A0");
             }
         }
 
-        public static void PercBuffs(Emulator emulator) {
+        public static void PercBuffs() {
             for (int slot = 0; slot < 3; slot++) {
                 if (Globals.PARTY_SLOT[slot] > 8) {
                     break;
@@ -2704,7 +2704,7 @@ namespace Dragoon_Modifier {
             }
         }
 
-        public static void SpecialEquipSetup(Emulator emulator, Dictionary<string, int> uiCombo) {
+        public static void SpecialEquipSetup(Dictionary<string, int> uiCombo) {
             soasSiphonRingSlot = 0;
             spiritEaterSlot = 0;
             spiritEaterCheck = false;
@@ -2979,7 +2979,7 @@ namespace Dragoon_Modifier {
             }
         }
 
-        public static void EquipRun(Emulator emulator, int inventorySize) {
+        public static void EquipRun(int inventorySize) {
             for (int slot = 0; slot < 3; slot++) {
                 if (Globals.PARTY_SLOT[slot] > 8) {
                     break;
@@ -3225,7 +3225,7 @@ namespace Dragoon_Modifier {
         #endregion
 
         #region Extras
-        public static void WipeRewards(Emulator emulator) {
+        public static void WipeRewards() {
             for (int i = 0; i < Globals.UNIQUE_MONSTER_SIZE; i++) {
                 Emulator2.WriteUShort("MONSTER_REWARDS", 0, i * 0x1A8);
                 Emulator2.WriteUShort("MONSTER_REWARDS", 0, 0x2 + i * 0x1A8);
@@ -3237,7 +3237,7 @@ namespace Dragoon_Modifier {
 
         #region Hotkeys
 
-        public static void BattleHotkeys(Emulator emulator) {
+        public static void BattleHotkeys() {
             if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_UP)) { //Exit Dragoon Slot 1
                 if (Emulator2.ReadByte("DRAGOON_TURNS") > 1) {
                     Emulator2.WriteByte("DRAGOON_TURNS", 1);
@@ -3376,7 +3376,6 @@ namespace Dragoon_Modifier {
         long[] drop_item = { 0, 1 };
         long[] special_effect = { 0, 1 };
         long[] attack_move = { 0, 1 };
-        public Emulator emulator = null;
 
         public long[] Action { get { return action; } }
         public long[] HP { get { return hp; } }
@@ -3423,8 +3422,7 @@ namespace Dragoon_Modifier {
         public long[] Special_Effect { get { return special_effect; } }
         public long[] Attack_Move { get { return attack_move; } }
 
-        public MonsterAddress(long m_point, int monster, int ID, List<int> monsterUniqueIdList, Emulator emu) {
-            emulator = emu;
+        public MonsterAddress(long m_point, int monster, int ID, List<int> monsterUniqueIdList) {
             action[0] = m_point - 0xA8 - monster * 0x388;
             hp[0] = m_point - monster * 0x388;
             max_hp[0] = m_point + 0x8 - monster * 0x388;
@@ -3603,7 +3601,6 @@ namespace Dragoon_Modifier {
         long[] mp_onhit_magic = { 0, 1 };
         long[] mp_onhit_magic_trn = { 0, 1 };
         long[] color_map = { 0, 1 };
-        public Emulator emulator = null;
 
         public long[] Action { get { return action; } }
         public long[] Menu { get { return menu; } }
@@ -3700,8 +3697,7 @@ namespace Dragoon_Modifier {
         public long[] MP_ONHIT_MAGIC_TRN { get { return mp_onhit_magic_trn; } }
         public long[] Color_Map { get { return color_map; } }
 
-        public CharAddress(long c_point, int character, Emulator emu) {
-            emulator = emu;
+        public CharAddress(long c_point, int character) {
             special_effect[0] = Constants.GetAddress("UNIQUE_MONSTER_SIZE") + (character + Globals.MONSTER_SIZE) * 0x20;
             action[0] = c_point - 0xA8 - character * 0x388;
             menu[0] = c_point - 0xA4 - character * 0x388;
@@ -3922,7 +3918,7 @@ namespace Dragoon_Modifier {
         public dynamic Boots { get { return boots; } }
         public dynamic Accessory { get { return accessory; } }
 
-        public CurrentStats(int character, int slot, Emulator emulator) {
+        public CurrentStats(int character, int slot) {
             lv = Emulator2.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x12);
             if ((dragoon_spirits[character] & Emulator2.ReadByte("DRAGOON_SPIRITS")) > 0) {
                 dlv = Emulator2.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x13);

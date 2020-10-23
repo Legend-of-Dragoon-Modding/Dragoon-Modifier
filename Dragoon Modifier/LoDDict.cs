@@ -632,7 +632,7 @@ namespace Dragoon_Modifier {
                     encoded.Add(String.Join(" ", temp.ToArray()));
                 }
             }
-            return String.Join(" ", encoded.ToArray()) + " FF A0";
+            return String.Join(" ", encoded.ToArray());
         }
     }
 
@@ -837,7 +837,7 @@ namespace Dragoon_Modifier {
             id = index;
             name = values[0];
             if (!(name == "" || name == " ")) {
-                encodedName = LoDDict.StringEncode(name);
+                encodedName = LoDDict.StringEncode(name) + " FF A0";
             }
             if (typeDict.TryGetValue(values[1].ToLower(), out key)) {
                 type = key;
@@ -965,7 +965,7 @@ namespace Dragoon_Modifier {
             }
             description = values[23];
             if (!(description == "" || description == " ")) {
-                encodedDescription = LoDDict.StringEncode(description);
+                encodedDescription = LoDDict.StringEncode(description) + " FF A0";
             }
             if (UInt16.TryParse(values[24], NumberStyles.AllowLeadingSign, null as IFormatProvider, out ushort key3)) {
                 float temp = (float) key3 / 2;
@@ -1165,7 +1165,7 @@ namespace Dragoon_Modifier {
             id = index;
             name = values[0];
             if (!(name == "" || name == " ")) {
-                encodedName = LoDDict.StringEncode(name);
+                encodedName = LoDDict.StringEncode(name) + " FF A0";
             }
             if (Byte.TryParse(values[1], NumberStyles.AllowLeadingSign, null as IFormatProvider, out key)) {
                 target = key;
@@ -1237,7 +1237,7 @@ namespace Dragoon_Modifier {
             }
             description = values[13];
             if (!(description == "" || description == " ")) {
-                encodedDescription = LoDDict.StringEncode(description);
+                encodedDescription = LoDDict.StringEncode(description) + " FF A0";
             }
             if (UInt16.TryParse(values[14], NumberStyles.AllowLeadingSign, null as IFormatProvider, out ushort key3)) {
                 float temp = (float)key3 / 2;
@@ -1247,7 +1247,7 @@ namespace Dragoon_Modifier {
             }
             battleDescription = values[15];
             if (!(battleDescription == "" || battleDescription == " ")) {
-                encondedBattleDescription = LoDDict.StringEncode(battleDescription);
+                encondedBattleDescription = LoDDict.StringEncode(battleDescription) + " FF A0";
             }
         }
     }
@@ -1519,7 +1519,7 @@ namespace Dragoon_Modifier {
             }
             description = values[6];
             if (description != "") {
-                encoded_description = LoDDict.StringEncode(description);
+                encoded_description = LoDDict.StringEncode(description) + " FF A0";
             }
         }
     }
