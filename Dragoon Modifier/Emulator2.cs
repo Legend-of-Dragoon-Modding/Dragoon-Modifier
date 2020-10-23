@@ -35,9 +35,9 @@ namespace Dragoon_Modifier {
 
         static Process process = new Process();
         static IntPtr startOffset = new IntPtr();
-        static long start = new long();
+        static long start = 0x0;
         static IntPtr endOffset = new IntPtr();
-        static long end = new long();
+        static long end = 0x0;
 
         static IntPtr processHandle = new IntPtr();
 
@@ -80,8 +80,14 @@ namespace Dragoon_Modifier {
                 }
             }
 
-            if (baseScan) {
+            if (start == 0x0 && end == 0x0) {
+                Constants.WriteDebug("Failed to attach.");
+            } else if(baseScan) {
                 string AoBCheck = "50 53 2D 58 20 45 58 45";
+                if (emuName.ToLower() == "retroarch") { // RetroArch hotfix
+                    start = 0x40000000;
+                    end = 0x401F4000;
+                }
                 var results = ScanAoB(start, end, AoBCheck, false);
                 foreach (long x in results) {
                     Constants.OFFSET = x - (long) 0xB070;
@@ -279,7 +285,7 @@ namespace Dragoon_Modifier {
             WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET), arr, arr.Length, out int error);
         }
 
-        public static List<long> ScanAoB(long startAddr, long endAddr, string values, bool useOffset) {
+        public static List<long> ScanAoB(long startAddr, long endAddr, string values, bool useOffset = true) {
             List<long> results = new List<long>();
             if (useOffset) {
                 startAddr += Constants.OFFSET;

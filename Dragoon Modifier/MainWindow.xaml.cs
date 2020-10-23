@@ -6089,12 +6089,8 @@ namespace Dragoon_Modifier {
                     processID = emulator.GetProcIdFromName(Constants.EMULATOR_NAME);
                 }
 
-                try {
-                    Emulator2.Setup(Constants.EMULATOR_NAME, true);
-                } catch {
+                Emulator2.Setup(Constants.EMULATOR_NAME, true);
 
-                }
-                
 
                 if (processID > 0) {
                     Constants.RUN = true;

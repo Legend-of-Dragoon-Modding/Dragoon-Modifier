@@ -29,15 +29,15 @@ namespace Dragoon_Modifier {
                 } else if (menu == 0) {
                     Globals.GAME_STATE = 0;     // Field
                 }
-                Globals.DISC = emulator.ReadByte("DISC");
-                Globals.CHAPTER = (byte)(emulator.ReadByte("CHAPTER") + 1);
+                Globals.DISC = Emulator2.ReadByte("DISC");
+                Globals.CHAPTER = (byte)(Emulator2.ReadByte("CHAPTER") + 1);
                 Globals.ENCOUNTER_ID = emulator.ReadShort("ENCOUNTER_ID");
-                Globals.MAP = emulator.ReadShort("MAP");
-                Globals.PARTY_SLOT[0] = emulator.ReadByte("PARTY_SLOT");
-                Globals.PARTY_SLOT[1] = emulator.ReadByte("PARTY_SLOT", 4);
-                Globals.PARTY_SLOT[2] = emulator.ReadByte("PARTY_SLOT", 8);
-                Globals.DRAGOON_SPIRITS = emulator.ReadByte("DRAGOON_SPIRITS");
-                Globals.HOTKEY = emulator.ReadShort("HOTKEY");
+                Globals.MAP = Emulator2.ReadUShort("MAP");
+                Globals.PARTY_SLOT[0] = Emulator2.ReadByte("PARTY_SLOT");
+                Globals.PARTY_SLOT[1] = Emulator2.ReadByte("PARTY_SLOT", 4);
+                Globals.PARTY_SLOT[2] = Emulator2.ReadByte("PARTY_SLOT", 8);
+                Globals.DRAGOON_SPIRITS = Emulator2.ReadByte("DRAGOON_SPIRITS");
+                Globals.HOTKEY = Emulator2.ReadUShort("HOTKEY");
                 Thread.Sleep(100);
             }
         }
