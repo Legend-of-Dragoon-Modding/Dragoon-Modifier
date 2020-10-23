@@ -88,7 +88,7 @@ namespace Dragoon_Modifier {
                     start = 0x40000000;
                     end = 0x401F4000;
                 }
-                var results = ScanAoB(start, end, AoBCheck, false);
+                var results = ScanAoB(start, end, AoBCheck, false, true);
                 foreach (long x in results) {
                     Constants.OFFSET = x - (long) 0xB070;
                     if (ReadUInt("STARTUP_SEARCH") == 320386 || ReadUShort("BATTLE_VALUE") == 32776 || ReadUShort("BATTLE_VALUE") == 41215) {
@@ -285,7 +285,7 @@ namespace Dragoon_Modifier {
             WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET), arr, arr.Length, out int error);
         }
 
-        public static List<long> ScanAoB(long startAddr, long endAddr, string values, bool useOffset = true) {
+        public static List<long> ScanAoB(long startAddr, long endAddr, string values, bool useOffset = true, bool addOffset = false) {
             List<long> results = new List<long>();
             if (useOffset) {
                 startAddr += Constants.OFFSET;
@@ -329,7 +329,11 @@ namespace Dragoon_Modifier {
 
             byte[] data = ReadAoB(startAddr, endAddr);
             foreach (var position in data.Locate(pattern, maskArr)) {
-                results.Add(position + startAddr);
+                var temp = position + startAddr;
+                if (!addOffset) {
+                    temp -= Constants.OFFSET;
+                }
+                results.Add(temp);
             }
 
             return results;
