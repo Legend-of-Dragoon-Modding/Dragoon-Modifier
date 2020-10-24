@@ -7,11 +7,11 @@ using System.Threading;
 
 namespace Dragoon_Modifier {
     class GlobalController {
-        public static void Run(Emulator emulator) {
+        public static void Run() {
             while (Constants.RUN) {
-                ushort battleValue = emulator.ReadShort("BATTLE_VALUE");
+                ushort battleValue = Emulator.ReadUShort("BATTLE_VALUE");
                 Globals.BATTLE_VALUE = battleValue;
-                byte menu = emulator.ReadByte("MENU");
+                byte menu = Emulator.ReadByte("MENU");
                 if (menu == 4) {                // Menu
                     Globals.GAME_STATE = 2;
                 } else if (menu == 9) {         // Shop
@@ -29,18 +29,17 @@ namespace Dragoon_Modifier {
                 } else if (menu == 0) {
                     Globals.GAME_STATE = 0;     // Field
                 }
-                Globals.DISC = Emulator2.ReadByte("DISC");
-                Globals.CHAPTER = (byte)(Emulator2.ReadByte("CHAPTER") + 1);
-                Globals.ENCOUNTER_ID = emulator.ReadShort("ENCOUNTER_ID");
-                Globals.MAP = Emulator2.ReadUShort("MAP");
-                Globals.PARTY_SLOT[0] = Emulator2.ReadByte("PARTY_SLOT");
-                Globals.PARTY_SLOT[1] = Emulator2.ReadByte("PARTY_SLOT", 4);
-                Globals.PARTY_SLOT[2] = Emulator2.ReadByte("PARTY_SLOT", 8);
-                Globals.DRAGOON_SPIRITS = Emulator2.ReadByte("DRAGOON_SPIRITS");
-                Globals.HOTKEY = Emulator2.ReadUShort("HOTKEY");
+                Globals.DISC = Emulator.ReadByte("DISC");
+                Globals.CHAPTER = (byte) (Emulator.ReadByte("CHAPTER") + 1);
+                Globals.ENCOUNTER_ID = Emulator.ReadShort("ENCOUNTER_ID");
+                Globals.MAP = Emulator.ReadShort("MAP");
+                Globals.PARTY_SLOT[0] = Emulator.ReadByte("PARTY_SLOT");
+                Globals.PARTY_SLOT[1] = Emulator.ReadByte("PARTY_SLOT", 4);
+                Globals.PARTY_SLOT[2] = Emulator.ReadByte("PARTY_SLOT", 8);
+                Globals.DRAGOON_SPIRITS = Emulator.ReadByte("DRAGOON_SPIRITS");
+                Globals.HOTKEY = Emulator.ReadUShort("HOTKEY");
                 Thread.Sleep(100);
             }
         }
-
     }
 }

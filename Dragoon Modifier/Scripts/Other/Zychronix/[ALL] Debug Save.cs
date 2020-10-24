@@ -4,10 +4,10 @@ using System;
 using System.IO;
 
 public class DebugSave {
-    public static void Run(Emulator emulator) {}
-	public static void Open(Emulator emulator) {}
-	public static void Close(Emulator emulator) {}
-	public static void Click(Emulator emulator) {
+    public static void Run() {}
+	public static void Open() {}
+	public static void Close() {}
+	public static void Click() {
 		using (var registryData = new StreamWriter(AppDomain.CurrentDomain.BaseDirectory + "/Registry_Data.txt", false)) {
 			registryData.WriteLine("REGISTRY DATA");
 		}

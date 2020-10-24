@@ -13,28 +13,28 @@ namespace Dragoon_Modifier {
         MethodDelegate close;
         MethodDelegate click;
 
-        public SubScript(string file, Emulator emulator) {
+        public SubScript(string file) {
             this.file = Path.GetFullPath(file);
             script = CSScript.LoadFile(file, null, true);
-            run = script.GetStaticMethod("*.Run", emulator);
-            open = script.GetStaticMethod("*.Open", emulator);
-            close = script.GetStaticMethod("*.Close", emulator);
-            click = script.GetStaticMethod("*.Click", emulator);
+            run = script.GetStaticMethod("*.Run");
+            open = script.GetStaticMethod("*.Open");
+            close = script.GetStaticMethod("*.Close");
+            click = script.GetStaticMethod("*.Click");
         }
 
-        public SubScript(string file, ScriptState state, Emulator emulator) {
+        public SubScript(string file, ScriptState state) {
             this.file = Path.GetFullPath(file);
             this.state = state;
             script = CSScript.LoadFile(file, null, true);
-            run = script.GetStaticMethod("*.Run", emulator);
-            open = script.GetStaticMethod("*.Open", emulator);
-            close = script.GetStaticMethod("*.Close", emulator);
-            click = script.GetStaticMethod("*.Click", emulator);
+            run = script.GetStaticMethod("*.Run");
+            open = script.GetStaticMethod("*.Open");
+            close = script.GetStaticMethod("*.Close");
+            click = script.GetStaticMethod("*.Click");
         }
 
-        public int Run(Emulator emulator) {
+        public int Run() {
             try {
-                run(emulator);
+                run();
                 return 1;
             } catch (Exception ex) {
                 Constants.RUN = false;
@@ -46,9 +46,9 @@ namespace Dragoon_Modifier {
             }
         }
 
-        public int Open(Emulator emulator) {
+        public int Open() {
             try {
-                open(emulator);
+                open();
                 return 1;
             } catch (Exception ex) {
                 Constants.RUN = false;
@@ -60,9 +60,9 @@ namespace Dragoon_Modifier {
             }
         }
 
-        public int Close(Emulator emulator) {
+        public int Close() {
             try {
-                close(emulator);
+                close();
                 return 1;
             } catch (Exception ex) {
                 Constants.RUN = false;
@@ -74,9 +74,9 @@ namespace Dragoon_Modifier {
             }
         }
 
-        public int Click(Emulator emulator) {
+        public int Click() {
             try {
-                click(emulator);
+                click();
                 return 1;
             } catch (Exception ex) {
                 Constants.RUN = false;

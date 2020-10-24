@@ -6,9 +6,19 @@ public class PartyChanger {
 	static string[] modifiers = {"Not in Party", "In Party", "In Party Can't Select"};
 	static byte[] mod = {0x0, 0x3, 0x23};
 	
-    public static void Run(Emulator emulator) {}
+    public static void Run() {}
 	
-	public static void Open(Emulator emulator) {
+	public static void Open() {
+		ChangeParty();
+	}
+	
+	public static void Close() {}
+	
+	public static void Click() {
+		ChangeParty();
+	}
+	
+	public static void ChangeParty() {
 		InputWindow partyChange = new InputWindow("Party Changer");
 		Grid grid = new Grid();
 		Label[] character = new Label[9];
@@ -27,7 +37,7 @@ public class PartyChanger {
 		grid.ColumnDefinitions.Add(new ColumnDefinition());
 		
 		for (int i = 0; i < characters.Length; i++) {
-			byte current = emulator.ReadByte("CHAR_TABLE", 0x4 + 0x2C * i);
+			byte current = Emulator.ReadByte("CHAR_TABLE", 0x4 + 0x2C * i);
 			grid.RowDefinitions.Add(new RowDefinition());
 			modifier[i].SelectedIndex = current == mod[1] ? 1 : current == mod[2] ? 2 : 0;
 		}
@@ -41,7 +51,7 @@ public class PartyChanger {
 		partyChange.ShowDialog();
 		
 		for (int i = 0; i < characters.Length; i++) {
-			emulator.WriteByte("CHAR_TABLE", mod[modifier[i].SelectedIndex], 0x4 + 0x2C * i);
+			Emulator.WriteByte("CHAR_TABLE", mod[modifier[i].SelectedIndex], 0x4 + 0x2C * i);
 		}
 	}
 	
@@ -50,9 +60,4 @@ public class PartyChanger {
 		Grid.SetRow(obj, y);
 		grid.Children.Add(obj);
 	}
-	
-	public static void Close(Emulator emulator) {
-		
-	}
-	public static void Click(Emulator emulator) {}
 }

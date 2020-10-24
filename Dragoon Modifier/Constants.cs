@@ -20,7 +20,7 @@ namespace Dragoon_Modifier {
         public static TextBlock PLOG;
         public static long OFFSET = 0x0;
         public static Region REGION = Region.NTA;
-        public static byte EMULATOR = 255;
+        public static byte EMULATOR_ID = 255;
         public static int SAVE_SLOT = 0;
         public static string EMULATOR_NAME = "None";
         public static Dictionary<string, int[]> ADDRESSES = new Dictionary<string, int[]>();
@@ -296,65 +296,65 @@ namespace Dragoon_Modifier {
             return (long) (DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
         }
 
-        public static void UltimateBossRewards(Emulator emulator) { //temp?
+        public static void UltimateBossRewards() { //temp?
             for (int i = 0; i < 5; i++) {
-                emulator.WriteShort("MONSTER_REWARDS", 0, i * 0x1A8);
-                emulator.WriteShort("MONSTER_REWARDS", 0, 0x2 + i * 0x1A8);
-                emulator.WriteByte("MONSTER_REWARDS", 0, 0x4 + i * 0x1A8);
-                emulator.WriteByte("MONSTER_REWARDS", 0, 0x5 + i * 0x1A8);
+                Emulator.WriteShort("MONSTER_REWARDS", 0, i * 0x1A8);
+                Emulator.WriteShort("MONSTER_REWARDS", 0, 0x2 + i * 0x1A8);
+                Emulator.WriteByte("MONSTER_REWARDS", 0, 0x4 + i * 0x1A8);
+                Emulator.WriteByte("MONSTER_REWARDS", 0, 0x5 + i * 0x1A8);
             }
 
             if (Globals.ENCOUNTER_ID == 487) { //Commander II
-                emulator.WriteByte("MONSTER_REWARDS", 100, 0x4 + 0x1A8);
-                emulator.WriteByte("MONSTER_REWARDS", 158, 0x5 + 0x1A8); //Sabre
+                Emulator.WriteByte("MONSTER_REWARDS", 100, 0x4 + 0x1A8);
+                Emulator.WriteByte("MONSTER_REWARDS", 158, 0x5 + 0x1A8); //Sabre
             }
 
             if (Globals.ENCOUNTER_ID == 449 || Globals.ENCOUNTER_ID == 402 || Globals.ENCOUNTER_ID == 403) {
                 if (Globals.ENCOUNTER_ID == 402 || Globals.ENCOUNTER_ID == 403) {
-                    emulator.WriteShort("MONSTER_REWARDS", 3000, 0x1A8 + 0x2);
+                    Emulator.WriteShort("MONSTER_REWARDS", 3000, 0x1A8 + 0x2);
                 } else {
-                    emulator.WriteShort("MONSTER_REWARDS", 3000, 0x2);
+                    Emulator.WriteShort("MONSTER_REWARDS", 3000, 0x2);
                 }
             } else if (Globals.ENCOUNTER_ID == 417 || Globals.ENCOUNTER_ID == 418 || Globals.ENCOUNTER_ID == 448) {
                 if (Globals.ENCOUNTER_ID == 418) {
-                    emulator.WriteShort("MONSTER_REWARDS", 3000, 0x1A8 + 0x2);
+                    Emulator.WriteShort("MONSTER_REWARDS", 3000, 0x1A8 + 0x2);
                 } else {
-                    emulator.WriteShort("MONSTER_REWARDS", 3000, 0x2);
+                    Emulator.WriteShort("MONSTER_REWARDS", 3000, 0x2);
                 }
             } else if (Globals.ENCOUNTER_ID == 416 || Globals.ENCOUNTER_ID == 422 || Globals.ENCOUNTER_ID == 423) {
-                emulator.WriteShort("MONSTER_REWARDS", 9000, 0x2);
+                Emulator.WriteShort("MONSTER_REWARDS", 9000, 0x2);
             } else if (Globals.ENCOUNTER_ID == 432 || Globals.ENCOUNTER_ID == 430 || Globals.ENCOUNTER_ID == 433) {
-                emulator.WriteShort("MONSTER_REWARDS", 12000, 0x2);
+                Emulator.WriteShort("MONSTER_REWARDS", 12000, 0x2);
             } else if (Globals.ENCOUNTER_ID == 431 || Globals.ENCOUNTER_ID == 408) {
-                emulator.WriteShort("MONSTER_REWARDS", 15000, 0x1A8 + 0x2);
+                Emulator.WriteShort("MONSTER_REWARDS", 15000, 0x1A8 + 0x2);
             } else if (Globals.ENCOUNTER_ID == 447) {
-                emulator.WriteShort("MONSTER_REWARDS", 18000, 0x2);
+                Emulator.WriteShort("MONSTER_REWARDS", 18000, 0x2);
             } else if (Globals.ENCOUNTER_ID == 389 || Globals.ENCOUNTER_ID == 396) {
-                emulator.WriteShort("MONSTER_REWARDS", 20000, 0x2);
+                Emulator.WriteShort("MONSTER_REWARDS", 20000, 0x2);
             } else if (Globals.ENCOUNTER_ID == 399) {
-                emulator.WriteShort("MONSTER_REWARDS", 25000, 0x2);
+                Emulator.WriteShort("MONSTER_REWARDS", 25000, 0x2);
             } else if (Globals.ENCOUNTER_ID == 409) {
-                emulator.WriteShort("MONSTER_REWARDS", 30000, 0x2);
+                Emulator.WriteShort("MONSTER_REWARDS", 30000, 0x2);
             } else if (Globals.ENCOUNTER_ID == 393 || Globals.ENCOUNTER_ID == 398) {
-                emulator.WriteShort("MONSTER_REWARDS", 35000, 0x2);
+                Emulator.WriteUShort("MONSTER_REWARDS", 35000, 0x2);
             } else if (Globals.ENCOUNTER_ID == 397 || Globals.ENCOUNTER_ID == 400) {
-                emulator.WriteShort("MONSTER_REWARDS", 40000, 0x2);
+                Emulator.WriteUShort("MONSTER_REWARDS", 40000, 0x2);
             } else if (Globals.ENCOUNTER_ID == 410) {
-                emulator.WriteShort("MONSTER_REWARDS", 1000, 0x2);
+                Emulator.WriteShort("MONSTER_REWARDS", 1000, 0x2);
             } else if (Globals.ENCOUNTER_ID == 401) {
-                emulator.WriteShort("MONSTER_REWARDS", 45000, 0x2);
+                Emulator.WriteUShort("MONSTER_REWARDS", 45000, 0x2);
             } else if (Globals.ENCOUNTER_ID == 390) {
-                emulator.WriteInteger("TOTAL_GOLD", 100000);
+                Emulator.WriteInt("TOTAL_GOLD", 100000);
             } else if (Globals.ENCOUNTER_ID == 411) {
-                emulator.WriteInteger("TOTAL_GOLD", 60000);
+                Emulator.WriteInt("TOTAL_GOLD", 60000);
             } else if (Globals.ENCOUNTER_ID == 394) {
-                emulator.WriteInteger("TOTAL_GOLD", 70000);
+                Emulator.WriteInt("TOTAL_GOLD", 70000);
             } else if (Globals.ENCOUNTER_ID == 392) {
-                emulator.WriteInteger("TOTAL_GOLD", 80000);
+                Emulator.WriteInt("TOTAL_GOLD", 80000);
             } else if (Globals.ENCOUNTER_ID == 420) {
-                emulator.WriteInteger("TOTAL_GOLD", 120000);
+                Emulator.WriteInt("TOTAL_GOLD", 120000);
             } else if (Globals.ENCOUNTER_ID == 442) {
-                emulator.WriteInteger("TOTAL_GOLD", 100000);
+                Emulator.WriteInt("TOTAL_GOLD", 100000);
             }
         }
     }

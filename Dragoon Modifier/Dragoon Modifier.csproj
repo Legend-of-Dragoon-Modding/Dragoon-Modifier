@@ -296,7 +296,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="BattleController.cs" />
-    <Compile Include="Emulator2.cs" />
+    <Compile Include="Emulator.cs" />
     <Compile Include="GlobalController.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="GlobalSuppressions.cs" />
@@ -333,7 +333,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Constants.cs" />
-    <Compile Include="Emulator.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

@@ -30,7 +30,6 @@ namespace Dragoon_Modifier {
     public partial class MainWindow {
         #region Variables
         #region Program Variables
-        public static Emulator emulator = new Emulator();
         public Thread globalThread, newBattleThread, fieldThread, battleThread, hotkeyThread, otherThread, ultimateThread;
         public string preset = "";
         public bool presetHotkeys = true;
@@ -207,7 +206,7 @@ namespace Dragoon_Modifier {
         public int sigStoneSlot = 0;
         public int pandemoniumTurns = 0;
         public int pandemoniumSlot = 0;
-        public ushort ultimateBossMap = 0;
+        public short ultimateBossMap = 0;
         public bool ultimateBossKeepMap = false;
         //Ultimate Boss Equips
         public int soasSiphonSlot = -1;
@@ -400,7 +399,7 @@ namespace Dragoon_Modifier {
                     }
                 } catch (Exception e) { }
 
-                if (Constants.EMULATOR != 255) {
+                if (Constants.EMULATOR_ID != 255) {
                     SetupEmulator(true);
                 } else {
                     Constants.WriteOutput("Please pick an emulator to use in the settings menu.");
@@ -739,31 +738,7 @@ namespace Dragoon_Modifier {
 
             if (Constants.KEY.GetValue("EmulatorType") != null) {
                 int slot = (int) Constants.KEY.GetValue("EmulatorType");
-                Constants.EMULATOR = (byte) slot;
-
-                if (Constants.EMULATOR == 8) {
-                    Constants.EMULATOR_NAME = "RetroArch";
-                } else if (Constants.EMULATOR == 9) {
-                    Constants.EMULATOR_NAME = "pcsx2";
-                } else if (Constants.EMULATOR < 8) {
-                    Constants.EMULATOR_NAME = "ePSXe";
-                } else {
-                    if (Constants.KEY.GetValue("Other Emulator") == null) {
-                        OpenFileDialog ofg = new OpenFileDialog();
-                        ofg.Title = "Select Emulator";
-                        ofg.Filter = "Emulator|*.exe";
-                        if (ofg.ShowDialog() == true) {
-                            Constants.EMULATOR_NAME = System.IO.Path.GetFileNameWithoutExtension(ofg.FileName);
-                            Constants.KEY.SetValue("Other Emulator", Constants.EMULATOR_NAME);
-                        } else {
-                            Constants.KEY.SetValue("Other Emulator", null);
-                            Constants.EMULATOR = 255;
-                            miEmulator_Click(null, null);
-                        }
-                    } else {
-                        Constants.EMULATOR_NAME = Constants.KEY.GetValue("Other Emulator").ToString();
-                    }
-                }
+                Constants.EMULATOR_ID = (byte) slot;
 
                 foreach (MenuItem mi in miEmulator.Items)
                     mi.IsChecked = miEmulator.Items.IndexOf(mi) == slot ? true : false;
@@ -903,9 +878,9 @@ namespace Dragoon_Modifier {
 
         public void SaveKey() {
             Constants.KEY.SetValue("Save Slot", Constants.SAVE_SLOT);
-            if (Constants.EMULATOR != 255) {
-                Constants.KEY.SetValue("EmulatorType", (int) Constants.EMULATOR);
-                if (Constants.EMULATOR == 10) {
+            if (Constants.EMULATOR_ID != 255) {
+                Constants.KEY.SetValue("EmulatorType", (int) Constants.EMULATOR_ID);
+                if (Constants.EMULATOR_ID == 10) {
                     Constants.KEY.SetValue("Other Emulator", Constants.EMULATOR_NAME);
                 }
             }
@@ -966,10 +941,6 @@ namespace Dragoon_Modifier {
                         throw new Exception();
                     }
                 }
-                ScriptDisplay(lstField);
-                ScriptDisplay(lstBattle);
-                ScriptDisplay(lstHotkey);
-                ScriptDisplay(lstOther);
                 ChangeTitle(preset);
                 Constants.WriteOutput("Preset '" + preset + "' loaded.");
                 Constants.WriteOutput("Preset folder: " + Globals.MOD);
@@ -1016,7 +987,7 @@ namespace Dragoon_Modifier {
             SubScript script = (SubScript) lst.SelectedItem;
             if (script.state != ScriptState.DISABLED) {
                 Constants.WriteOutput("Opening script '" + script.ToString() + "'...");
-                if (script.Click(emulator) == 0) {
+                if (script.Click() == 0) {
                     Constants.WriteOutput("Script failed.");
                 }
             } else {
@@ -1030,10 +1001,6 @@ namespace Dragoon_Modifier {
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
-            ScriptDisplay(lstField);
-            ScriptDisplay(lstBattle);
-            ScriptDisplay(lstHotkey);
-            ScriptDisplay(lstOther);
             Constants.SetSubKey(Constants.SAVE_SLOT);
             LoadSubKey();
         }
@@ -1063,7 +1030,7 @@ namespace Dragoon_Modifier {
                         continue;
                     currentScript = script.ToString();
                     this.Dispatcher.BeginInvoke(new Action(() => {
-                        run = script.Run(emulator);
+                        run = script.Run();
                     }), DispatcherPriority.ContextIdle);
                 }
 
@@ -1110,7 +1077,7 @@ namespace Dragoon_Modifier {
 
                 if (Globals.GAME_STATE != 1) {
                     if ((Globals.MAP == 735 || Globals.MAP == 736) && Globals.DIFFICULTY_MODE.Contains("Hell") && ultimateBossCompleted < 34) {
-                        emulator.WriteByte("DRAGOON_SPIRITS", 127);
+                        Emulator.WriteByte("DRAGOON_SPIRITS", 127);
                     }
                 }
 
@@ -1166,15 +1133,15 @@ namespace Dragoon_Modifier {
                         continue;
                     currentScript = script.ToString();
                     this.Dispatcher.BeginInvoke(new Action(() => {
-                        run = script.Run(emulator);
+                        run = script.Run();
                     }), DispatcherPriority.ContextIdle);
                 }
 
                 this.Dispatcher.BeginInvoke(new Action(() => {
                     if (Globals.GAME_STATE == 1 && !Constants.BATTLE_UI) {
-                        Globals.BEFORE_BATTLE_MAP = emulator.ReadShort("MAP");
+                        Globals.BEFORE_BATTLE_MAP = Emulator.ReadShort("MAP");
                         for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                            monsterDisplay[i, 0].Text = emulator.ReadName(Constants.GetAddress("MONSTERS_NAMES") + (0x2C * i));
+                            monsterDisplay[i, 0].Text = Emulator.ReadName(Constants.GetAddress("MONSTERS_NAMES") + (0x2C * i));
                         }
                     }
                 }), DispatcherPriority.ContextIdle);
@@ -1225,7 +1192,7 @@ namespace Dragoon_Modifier {
                 }
 
                 if (ultimateBossKeepMap) {
-                    emulator.WriteShort("MAP", ultimateBossMap);
+                    Emulator.WriteShort("MAP", ultimateBossMap);
                     if (Globals.GAME_STATE != 1) {
                         ultimateBossKeepMap = false;
 
@@ -1267,15 +1234,15 @@ namespace Dragoon_Modifier {
 
                         WipeRewards();
 
-                        emulator.WriteShort("MONSTER_REWARDS", 60000, 1 * 0x1A8);
-                        emulator.WriteShort("MONSTER_REWARDS", 250, 1 * 0x1A8 + 0x2);
+                        Emulator.WriteUShort("MONSTER_REWARDS", 60000, 1 * 0x1A8);
+                        Emulator.WriteShort("MONSTER_REWARDS", 250, 1 * 0x1A8 + 0x2);
 
                         if (faustCount + 1 == 39) {
-                            emulator.WriteByte("MONSTER_REWARDS", 100, 1 * 0x1A8 + 0x4);
-                            emulator.WriteByte("MONSTER_REWARDS", 74, 1 * 0x1A8 + 0x5);
+                            Emulator.WriteByte("MONSTER_REWARDS", 100, 1 * 0x1A8 + 0x4);
+                            Emulator.WriteByte("MONSTER_REWARDS", 74, 1 * 0x1A8 + 0x5);
                         } else if (faustCount + 1 == 40) {
-                            emulator.WriteByte("MONSTER_REWARDS", 100, 1 * 0x1A8 + 0x4);
-                            emulator.WriteByte("MONSTER_REWARDS", 89, 1 * 0x1A8 + 0x5);
+                            Emulator.WriteByte("MONSTER_REWARDS", 100, 1 * 0x1A8 + 0x4);
+                            Emulator.WriteByte("MONSTER_REWARDS", 89, 1 * 0x1A8 + 0x5);
                         }
 
                         faustBattle = false;
@@ -1283,16 +1250,16 @@ namespace Dragoon_Modifier {
                     }
 
                     if (Globals.GAME_STATE == 1 && ubSoasWargod) {
-                        emulator.WriteAOB("SOAS_WARGOD", "06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06");
+                        Emulator.WriteAoB("SOAS_WARGOD", "06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06");
                     }
 
                     if (Globals.GAME_STATE == 1 && ubSoasDragoonBoost) {
-                        emulator.WriteShort("SOA_DRAGOON_BOOST_1", 4096);
-                        emulator.WriteShort("SOA_DRAGOON_BOOST_2", 4096);
+                        Emulator.WriteShort("SOA_DRAGOON_BOOST_1", 4096);
+                        Emulator.WriteShort("SOA_DRAGOON_BOOST_2", 4096);
                     }
 
                     this.Dispatcher.BeginInvoke(new Action(() => {
-                        emulator.WriteShort("ZOOM", (ushort) sldZoom.Value);
+                        Emulator.WriteUShort("ZOOM", (ushort) sldZoom.Value);
                         if (!Constants.DEBUG_MODE) {
                             tabBattle.Focus();
                             tabDifficulty.IsEnabled = false;
@@ -1347,7 +1314,7 @@ namespace Dragoon_Modifier {
                     scriptCount++;
                     currentScript = script.ToString();
                     this.Dispatcher.BeginInvoke(new Action(() => {
-                        run = script.Run(emulator);
+                        run = script.Run();
                     }), DispatcherPriority.ContextIdle);
                 }
 
@@ -1355,67 +1322,67 @@ namespace Dragoon_Modifier {
                     if (Globals.CURRENT_TIME >= (Globals.LAST_HOTKEY + 3)) {
                         if (Globals.GAME_STATE != 1) { //Field
                             if (Globals.HOTKEY == (Hotkey.KEY_L2 + Hotkey.KEY_SQUARE)) { //Shana - GoH
-                                if (emulator.ReadShort("CHAR_TABLE", 0xA + 0x2C * 2) >= 30) {
+                                if (Emulator.ReadShort("CHAR_TABLE", 0xA + 0x2C * 2) >= 30) {
                                     for (int i = 0; i < 9; i++) {
-                                        emulator.WriteShort("CHAR_TABLE", 9999, 0x8 + 0x2C * i);
+                                        Emulator.WriteShort("CHAR_TABLE", 9999, 0x8 + 0x2C * i);
                                     }
-                                    emulator.WriteShort("CHAR_TABLE", (ushort) (emulator.ReadShort("CHAR_TABLE", 0xA + 0x2C * 2) - 30), 0xA + 0x2C * 2);
+                                    Emulator.WriteUShort("CHAR_TABLE", (ushort) (Emulator.ReadUShort("CHAR_TABLE", 0xA + 0x2C * 2) - 30), 0xA + 0x2C * 2);
                                     Constants.WriteGLogOutput("Shana used Gates of Heaven.");
                                     Globals.LAST_HOTKEY = Constants.GetTime();
                                 }
                             } else if (Globals.HOTKEY == (Hotkey.KEY_L2 + Hotkey.KEY_CROSS)) { //???
-                                if (emulator.ReadShort("CHAR_TABLE", 0xA + 0x2C * 8) >= 30) {
+                                if (Emulator.ReadShort("CHAR_TABLE", 0xA + 0x2C * 8) >= 30) {
                                     for (int i = 0; i < 9; i++) {
-                                        emulator.WriteShort("CHAR_TABLE", 9999, 0x8 + 0x2C * i);
+                                        Emulator.WriteShort("CHAR_TABLE", 9999, 0x8 + 0x2C * i);
                                     }
-                                    emulator.WriteShort("CHAR_TABLE", (ushort) (emulator.ReadShort("CHAR_TABLE", 0xA + 0x2C * 8) - 30), 0xA + 0x2C * 8);
+                                    Emulator.WriteUShort("CHAR_TABLE", (ushort) (Emulator.ReadUShort("CHAR_TABLE", 0xA + 0x2C * 8) - 30), 0xA + 0x2C * 8);
                                     Constants.WriteGLogOutput("Miranda used Gates of Heaven.");
                                     Globals.LAST_HOTKEY = Constants.GetTime();
                                 }
                             } else if (Globals.HOTKEY == (Hotkey.KEY_L2 + Hotkey.KEY_CIRCLE)) { //Meru - RB
-                                if (emulator.ReadShort("CHAR_TABLE", 0xA + 0x2C * 6) >= 30) {
+                                if (Emulator.ReadShort("CHAR_TABLE", 0xA + 0x2C * 6) >= 30) {
                                     for (int i = 0; i < 9; i++) {
-                                        emulator.WriteShort("CHAR_TABLE", 9999, 0x8 + 0x2C * i);
+                                        Emulator.WriteShort("CHAR_TABLE", 9999, 0x8 + 0x2C * i);
                                     }
-                                    emulator.WriteShort("CHAR_TABLE", (ushort) (emulator.ReadShort("CHAR_TABLE", 0xA + 0x2C * 6) - 30), 0xA + 0x2C * 6);
+                                    Emulator.WriteUShort("CHAR_TABLE", (ushort) (Emulator.ReadShort("CHAR_TABLE", 0xA + 0x2C * 6) - 30), 0xA + 0x2C * 6);
                                     Constants.WriteGLogOutput("Meru used Rainbow Breath.");
                                     Globals.LAST_HOTKEY = Constants.GetTime();
                                 }
                             } else if (Globals.HOTKEY == (Hotkey.KEY_SELECT + Hotkey.KEY_L3)) { //Add Shana
-                                emulator.WriteShort("CHAR_TABLE", 3, 0x4 + 0x2C * 2);
+                                Emulator.WriteShort("CHAR_TABLE", 3, 0x4 + 0x2C * 2);
                                 Constants.WriteGLogOutput("Added Shana.");
                                 Globals.LAST_HOTKEY = Constants.GetTime();
                             } else if (Globals.HOTKEY == (Hotkey.KEY_SELECT + Hotkey.KEY_R3)) { //Add Lavitz
-                                emulator.WriteShort("CHAR_TABLE", 3, 0x4 + 0x2C * 1);
+                                Emulator.WriteShort("CHAR_TABLE", 3, 0x4 + 0x2C * 1);
                                 Constants.WriteGLogOutput("Added Lavitz.");
                                 Globals.LAST_HOTKEY = Constants.GetTime();
                             } else if (Globals.HOTKEY == (Hotkey.KEY_CROSS + Hotkey.KEY_L1)) { //Add Dragoon
                                 if (!Globals.DIFFICULTY_MODE.Equals("Normal")) {
                                     if (Globals.MAP == 10) {
-                                        emulator.WriteByte("DRAGOON_SPIRITS", 127);
+                                        Emulator.WriteByte("DRAGOON_SPIRITS", 127);
                                         Constants.WriteGLogOutput("All Dragoons at Start.");
                                         Globals.LAST_HOTKEY = Constants.GetTime();
                                     }
                                 }
 
                                 if (Globals.MAP == 232) {
-                                    byte dragoons = emulator.ReadByte("DRAGOON_SPIRITS");
+                                    byte dragoons = Emulator.ReadByte("DRAGOON_SPIRITS");
                                     dragoons |= 1 << 0;
-                                    emulator.WriteByte("DRAGOON_SPIRITS", dragoons);
+                                    Emulator.WriteByte("DRAGOON_SPIRITS", dragoons);
                                     Constants.WriteGLogOutput("Added Dart's Dragoon.");
                                     Globals.LAST_HOTKEY = Constants.GetTime();
                                 }
                                 
                                 if (Globals.CheckDMScript("btnSoloMode") || Globals.CheckDMScript("btnDuoMode")) {
                                     for (int i = 0; i < 9; i++) {
-                                        emulator.WriteInteger("CHAR_TABLE", 0, 0x0 + 0x2C * i);  // EXP
-                                        emulator.WriteByte("CHAR_TABLE", 3, 0x4 + 0x2C * i);  // In Party
-                                        emulator.WriteByte("CHAR_TABLE", 1, 0x12 + 0x2C * i); // Level
+                                        Emulator.WriteInt("CHAR_TABLE", 0, 0x0 + 0x2C * i);  // EXP
+                                        Emulator.WriteByte("CHAR_TABLE", 3, 0x4 + 0x2C * i);  // In Party
+                                        Emulator.WriteByte("CHAR_TABLE", 1, 0x12 + 0x2C * i); // Level
                                         if (i > 2 && (i != 5 || i != 8)) {
-                                            emulator.WriteByte("CHAR_TABLE", 0, 0x14 + 0x2C * i); // Weapon
-                                            emulator.WriteByte("CHAR_TABLE", 76, 0x15 + 0x2C * i); // Armor
-                                            emulator.WriteByte("CHAR_TABLE", 46, 0x16 + 0x2C * i); // Helmet
-                                            emulator.WriteByte("CHAR_TABLE", 93, 0x17 + 0x2C * i); // Shoe
+                                            Emulator.WriteByte("CHAR_TABLE", 0, 0x14 + 0x2C * i); // Weapon
+                                            Emulator.WriteByte("CHAR_TABLE", 76, 0x15 + 0x2C * i); // Armor
+                                            Emulator.WriteByte("CHAR_TABLE", 46, 0x16 + 0x2C * i); // Helmet
+                                            Emulator.WriteByte("CHAR_TABLE", 93, 0x17 + 0x2C * i); // Shoe
                                         }
                                     }
                                     Constants.WriteGLogOutput("Solo Mode all character start.");
@@ -1424,25 +1391,25 @@ namespace Dragoon_Modifier {
                             } else if (Globals.HOTKEY == (Hotkey.KEY_CROSS + Hotkey.KEY_R1)) { //Gold Quest
                                 if (Globals.MAP == 333) {
                                     if (goldQuest == 0) {
-                                        goldQuest = emulator.ReadInteger("GOLD");
+                                        goldQuest = Emulator.ReadInt("GOLD");
                                         Constants.WriteGLogOutput("Extra gold set, complete the quest and press this hotkey again.");
                                         Globals.LAST_HOTKEY = Constants.GetTime();
-                                    } else if (goldQuest + 500 == emulator.ReadInteger("GOLD")) {
-                                        emulator.WriteInteger("GOLD", goldQuest + 2500);
+                                    } else if (goldQuest + 500 == Emulator.ReadInt("GOLD")) {
+                                        Emulator.WriteInt("GOLD", goldQuest + 2500);
                                         Constants.WriteGLogOutput("5x gold.");
                                         Globals.LAST_HOTKEY = Constants.GetTime();
                                     }
                                 }
                             } else if (Globals.HOTKEY == (Hotkey.KEY_SQUARE + Hotkey.KEY_TRIANGLE)) { //Divine Dragoon
-                                byte dragoonSpirits = emulator.ReadByte("DRAGOON_SPIRITS");
+                                byte dragoonSpirits = Emulator.ReadByte("DRAGOON_SPIRITS");
                                 if (!Globals.DIFFICULTY_MODE.Equals("Normal") && ultimateBossCompleted >= 34) {
                                     if (Globals.MAP == 424 || Globals.MAP == 736) {
                                         if (dragoonSpirits == 127) {
-                                            emulator.WriteByte("DRAGOON_SPIRITS", 254);
+                                            Emulator.WriteByte("DRAGOON_SPIRITS", 254);
                                             Constants.WriteGLogOutput("Change to Divine Dragon mode.");
                                             Globals.LAST_HOTKEY = Constants.GetTime();
                                         } else if (dragoonSpirits == 254) {
-                                            emulator.WriteByte("DRAGOON_SPIRITS", 127);
+                                            Emulator.WriteByte("DRAGOON_SPIRITS", 127);
                                             Constants.WriteGLogOutput("Changed to Red-Eyed Dragon mode.");
                                             Globals.LAST_HOTKEY = Constants.GetTime();
                                         } else {
@@ -1454,22 +1421,22 @@ namespace Dragoon_Modifier {
                             } else if (Globals.HOTKEY == (Hotkey.KEY_SQUARE + Hotkey.KEY_CROSS)) { //Faust Battle
                                 if (!Globals.DIFFICULTY_MODE.Equals("Normal")) {
                                     if (Globals.MAP == 732) {
-                                        emulator.WriteShort("BATTLE_FIELD", 78);
-                                        emulator.WriteShort("ENCOUNTER_ID", 420);
+                                        Emulator.WriteShort("BATTLE_FIELD", 78);
+                                        Emulator.WriteShort("ENCOUNTER_ID", 420);
                                         faustBattle = true;
                                     }
                                 }
                             } else if (Globals.HOTKEY == (Hotkey.KEY_START + Hotkey.KEY_L3)) { //Moon Warp
                                 if (Globals.MAP == 729 || Globals.MAP == 730 || Globals.MAP == 527)
-                                    emulator.WriteShort("MAP", 527);
+                                    Emulator.WriteShort("MAP", 527);
                             } else if (Globals.HOTKEY == (Hotkey.KEY_START + Hotkey.KEY_R3)) { //Moon Warp 2
                                 if (Globals.MAP == 597 || Globals.MAP == 521 || Globals.MAP == 524 || Globals.MAP == 526 || Globals.MAP == 527 || Globals.MAP == 729 || Globals.MAP == 9)
-                                    emulator.WriteShort("MAP", 729);
+                                    Emulator.WriteShort("MAP", 729);
                                 if (Globals.BATTLE_VALUE == 0 && Globals.CHAPTER == 4 && (Globals.BEFORE_BATTLE_MAP >= 401 && Globals.BEFORE_BATTLE_MAP <= 405))
-                                    emulator.WriteShort("MAP", 402);
+                                    Emulator.WriteShort("MAP", 402);
                             } else if (Globals.HOTKEY == (Hotkey.KEY_CIRCLE + Hotkey.KEY_TRIANGLE)) { //Skip Dialog
-                                emulator.WriteByte("SKIP_DIALOG_1", 0);
-                                emulator.WriteByte("SKIP_DIALOG_2", 0);
+                                Emulator.WriteByte("SKIP_DIALOG_1", 0);
+                                Emulator.WriteByte("SKIP_DIALOG_2", 0);
                             } else if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_LEFT)) { //Widescreen for World Map
                                 ushort aspectRatio = 4096;
 
@@ -1484,20 +1451,20 @@ namespace Dragoon_Modifier {
                                 else if (uiCombo["cboAspectRatio"] == 4)
                                     aspectRatio = 2048;
 
-                                emulator.WriteShort("ASPECT_RATIO", aspectRatio);
+                                Emulator.WriteUShort("ASPECT_RATIO", aspectRatio);
                             } else if (Globals.HOTKEY == (Hotkey.KEY_SQUARE + Hotkey.KEY_UP)) {
-                                emulator.WriteByte("MENU", 16);
-                                emulator.WriteByte("TRANSITION", 13);
+                                Emulator.WriteByte("MENU", 16);
+                                Emulator.WriteByte("TRANSITION", 13);
                                 Globals.LAST_HOTKEY = Constants.GetTime();
                             } else if (Globals.HOTKEY == (Hotkey.KEY_SQUARE + Hotkey.KEY_DOWN)) {
-                                emulator.WriteByte("TRANSITION", 11);
+                                Emulator.WriteByte("TRANSITION", 11);
                                 Globals.LAST_HOTKEY = Constants.GetTime();
                             } else if (Globals.HOTKEY == (Hotkey.KEY_SQUARE + Hotkey.KEY_LEFT)) {
-                                emulator.WriteByte("MENU", 16);
-                                emulator.WriteByte("OVERWORLD", 4);
+                                Emulator.WriteByte("MENU", 16);
+                                Emulator.WriteByte("OVERWORLD", 4);
                                 Globals.LAST_HOTKEY = Constants.GetTime();
                             } else if (Globals.HOTKEY == (Hotkey.KEY_SQUARE + Hotkey.KEY_RIGHT)) {
-                                emulator.WriteByte("TRANSITION", 4);
+                                Emulator.WriteByte("TRANSITION", 4);
                                 Globals.LAST_HOTKEY = Constants.GetTime();
                             }
                         } else { //Battle
@@ -1566,13 +1533,13 @@ namespace Dragoon_Modifier {
                                     */
                                 }
                             } else if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_CIRCLE)) { //Music Speed
-                                if (emulator.ReadByte("MUSIC_SPEED_BATTLE") != 0) {
-                                    saveMusicSpeed = emulator.ReadByte("MUSIC_SPEED_BATTLE");
-                                    emulator.WriteByte("MUSIC_SPEED_BATTLE", 0);
+                                if (Emulator.ReadByte("MUSIC_SPEED_BATTLE") != 0) {
+                                    saveMusicSpeed = Emulator.ReadByte("MUSIC_SPEED_BATTLE");
+                                    Emulator.WriteByte("MUSIC_SPEED_BATTLE", 0);
                                     Constants.WriteGLogOutput("Music speed nulled.");
                                 } else {
                                     Constants.WriteGLogOutput("Music speed returned to normal.");
-                                    emulator.WriteByte("MUSIC_SPEED_BATTLE", saveMusicSpeed);
+                                    Emulator.WriteByte("MUSIC_SPEED_BATTLE", saveMusicSpeed);
                                 }
                             } else if (Globals.HOTKEY == (Hotkey.KEY_SELECT + Hotkey.KEY_START)) {
                                 if (Globals.DIFFICULTY_MODE.Equals("NormalHard") || Globals.DIFFICULTY_MODE.Equals("Hard")) {
@@ -1706,7 +1673,7 @@ namespace Dragoon_Modifier {
                             } else if (Globals.HOTKEY == (Hotkey.KEY_L2 + Hotkey.KEY_LEFT)) { //Soa's Wargod
                                 if ((134217728 & ultimateShopLimited) == 134217728) {
                                     ubSoasWargod = ubSoasWargod ? false : true;
-                                    emulator.WriteAOB("SOA_WARGOD", "06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06");
+                                    Emulator.WriteAoB("SOA_WARGOD", "06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06");
                                     Constants.WriteGLogOutput("Soa's Wargod has been " + (ubSoasWargod ? "activated" : "deactivated") + ".");
                                 } else {
                                     Constants.WriteGLogOutput("You do not have Soa's Wargod.");
@@ -1715,8 +1682,8 @@ namespace Dragoon_Modifier {
                             } else if (Globals.HOTKEY == (Hotkey.KEY_L2 + Hotkey.KEY_RIGHT)) { //Soa's Dragoon Boost
                                 if ((268435456 & ultimateShopLimited) == 268435456) {
                                     ubSoasDragoonBoost = ubSoasDragoonBoost ? false : true;
-                                    emulator.WriteShort("SOA_DRAGOON_BOOST_1", 4096);
-                                    emulator.WriteShort("SOA_DRAGOON_BOOST_2", 4096);
+                                    Emulator.WriteShort("SOA_DRAGOON_BOOST_1", 4096);
+                                    Emulator.WriteShort("SOA_DRAGOON_BOOST_2", 4096);
                                     Constants.WriteGLogOutput("Soa's Dragoon Boost has been " + (ubSoasDragoonBoost ? "activated" : "deactivated") + ".");
                                 } else {
                                     Constants.WriteGLogOutput("You do not have Soa's Dragoon Boost.");
@@ -1786,7 +1753,7 @@ namespace Dragoon_Modifier {
                         continue;
                     currentScript = script.ToString();
                     this.Dispatcher.BeginInvoke(new Action(() => {
-                        run = script.Run(emulator);
+                        run = script.Run();
                     }), DispatcherPriority.ContextIdle);
                 }
 
@@ -1853,9 +1820,9 @@ namespace Dragoon_Modifier {
                     }
 
                     if (Globals.MONSTER_TABLE[0].Read("Action") == 12)
-                        emulator.WriteByte(Globals.M_POINT - 0x50, ubZiegDragoon);
+                        Emulator.WriteByte(Globals.M_POINT - 0x50, ubZiegDragoon);
 
-                    if (emulator.ReadByte("TARGET_1") == 254 || emulator.ReadByte("TARGET_2") == 254 || emulator.ReadByte(Globals.M_POINT + 0xAC4) == 254) {
+                    if (Emulator.ReadByte("TARGET_1") == 254 || Emulator.ReadByte("TARGET_2") == 254 || Emulator.ReadByte(Globals.M_POINT + 0xAC4) == 254) {
                         byte lowestHPSlot = 0;
                         int lowestHP = 65535;
 
@@ -1869,12 +1836,12 @@ namespace Dragoon_Modifier {
                             }
                         }
 
-                        emulator.WriteByte("TARGET_1", lowestHPSlot);
-                        emulator.WriteByte("TARGET_2", lowestHPSlot);
-                        emulator.WriteByte(Globals.M_POINT + 0xAC4, lowestHPSlot);
+                        Emulator.WriteByte("TARGET_1", lowestHPSlot);
+                        Emulator.WriteByte("TARGET_2", lowestHPSlot);
+                        Emulator.WriteByte(Globals.M_POINT + 0xAC4, lowestHPSlot);
                     }
 
-                    emulator.WriteByte("SCREEN_FADE", 2);
+                    Emulator.WriteByte("SCREEN_FADE", 2);
 
                     ubTrackMTP[0] = Globals.MONSTER_TABLE[0].Read("Turn");
                 }
@@ -1890,7 +1857,7 @@ namespace Dragoon_Modifier {
         #region Save Anywhere
         public void SaveAnywhere() {
             if (Globals.GAME_STATE != 1) {
-                emulator.WriteShort("SAVE_ANYWHERE", 1);
+                Emulator.WriteShort("SAVE_ANYWHERE", 1);
             }
         }
         #endregion
@@ -1899,7 +1866,7 @@ namespace Dragoon_Modifier {
         
         public void ShopChanges() {
             if (Globals.GAME_STATE != 1 && SHOP_MAPS.Contains((int) Globals.MAP)) {
-                if (emulator.ReadByte("SHOP_DISC_SWAP") == 0) {
+                if (Emulator.ReadByte("SHOP_DISC_SWAP") == 0) {
                     SHOP_DISC_SWAP = true;
                 }
                 if (SHOP_DISC_SWAP) {
@@ -1912,35 +1879,35 @@ namespace Dragoon_Modifier {
                     ShopTableChange(false);
                 }
             }
-            if (emulator.ReadByte("OVERWORLD") == 3) {
+            if (Emulator.ReadByte("OVERWORLD") == 3) {
                 SHOP_CHANGED = false;
             }
         }
 
         public void ShopContentChange() {
-            if (SHOP_CHANGED == false && emulator.ReadByte("SHOP_BUY-SELL") == 3) {
+            if (SHOP_CHANGED == false && Emulator.ReadByte("SHOP_BUY-SELL") == 3) {
                 long address = Constants.GetAddress("SHOP_CONTENT");
-                byte shop_og_size = emulator.ReadByte(address + 0x44);
-                int shop = emulator.ReadByte("SHOP_ID");
+                byte shop_og_size = Emulator.ReadByte(address + 0x44);
+                int shop = Emulator.ReadByte("SHOP_ID");
                 int i = 0;
                 foreach (byte item in Globals.DICTIONARY.ShopList[shop]) {
-                    emulator.WriteShort(address + i * 4, (ushort) item);
-                    emulator.WriteShort(address + 0x2 + i * 4, (ushort) (Globals.DICTIONARY.ItemList[item].Sell_Price * 2));
+                    Emulator.WriteUShort(address + i * 4, (ushort) item);
+                    Emulator.WriteUShort(address + 0x2 + i * 4, (ushort) (Globals.DICTIONARY.ItemList[item].Sell_Price * 2));
                     i += 1;
                 }
                 byte[] current_shop = Globals.DICTIONARY.ShopList[shop];
                 byte[] filtered_shop = current_shop.Where(x => x != 255).ToArray();
                 int shop_size = filtered_shop.Length;
-                emulator.WriteByte(address + 0x44, shop_size);
+                Emulator.WriteByte(address + 0x44, (byte) shop_size);
                 if (filtered_shop[0] >= 192) {
-                    emulator.WriteByte(address + 0x45, 1);
+                    Emulator.WriteByte(address + 0x45, 1);
                 } else {
-                    emulator.WriteByte(address + 0x45, 0);
+                    Emulator.WriteByte(address + 0x45, 0);
                 }
                 if (shop_og_size > shop_size) {
                     for (int z = shop_size; z < 17; z++) {
-                        emulator.WriteShort(address + z * 4, (ushort) 255);
-                        emulator.WriteShort(address + 2 + z * 4, (ushort) 0);
+                        Emulator.WriteUShort(address + z * 4, (ushort) 255);
+                        Emulator.WriteUShort(address + 2 + z * 4, (ushort) 0);
                     }
                 }
                 Constants.WriteDebug("Contents of Shop " + shop + " Changed");
@@ -1950,9 +1917,9 @@ namespace Dragoon_Modifier {
             }
         }
         public void ShopTableChange(bool bypass) {
-            if (emulator.ReadByte("OVERWORLD") == 1) {
+            if (Emulator.ReadByte("OVERWORLD") == 1) {
                 if (!SHOP_CHANGED || bypass) {
-                    if (!bypass && emulator.ReadByte("TRANSITION") != 12) {
+                    if (!bypass && Emulator.ReadByte("TRANSITION") != 12) {
                         return;
                     }
                     long address = Constants.GetAddress("SHOP_LIST");
@@ -1962,12 +1929,12 @@ namespace Dragoon_Modifier {
                         foreach (byte item in shop) {
                             if (itemcount == 0) {
                                 if (item > 192) {
-                                    emulator.WriteByte(address + shopcount * 0x40, 1);
+                                    Emulator.WriteByte(address + shopcount * 0x40, 1);
                                 } else {
-                                    emulator.WriteByte(address + shopcount * 0x40, 0);
+                                    Emulator.WriteByte(address + shopcount * 0x40, 0);
                                 }
                             }
-                            emulator.WriteByte(address + itemcount * 0x4 + shopcount * 0x40 + 1, item);
+                            Emulator.WriteByte(address + itemcount * 0x4 + shopcount * 0x40 + 1, item);
                             itemcount++;
                         }
                         shopcount++;
@@ -1976,7 +1943,7 @@ namespace Dragoon_Modifier {
                     address = Constants.GetAddress("SHOP_PRICE");
                     int i = 0;
                     foreach (dynamic item in Globals.DICTIONARY.ItemList) {
-                        emulator.WriteShort(address + i * 0x2, (ushort) item.Sell_Price);
+                        Emulator.WriteUShort(address + i * 0x2, (ushort) item.Sell_Price);
                         i++;
                     }
                     SHOP_CHANGED = true;
@@ -1985,12 +1952,12 @@ namespace Dragoon_Modifier {
             }
         }
 
-        public static int ReadShop(int address, Emulator emulator) {
-            return emulator.ReadShort(address + ShopOffset());
+        public static int ReadShop(int address) {
+            return Emulator.ReadShort(address + ShopOffset());
         }
 
-        public static void WriteShop(int address, ushort value, Emulator emulator) {
-            emulator.WriteShort(address + ShopOffset(), value);
+        public static void WriteShop(int address, ushort value) {
+            Emulator.WriteUShort(address + ShopOffset(), value);
         }
 
         public static int ShopOffset() {
@@ -2005,11 +1972,11 @@ namespace Dragoon_Modifier {
 
 
         public void ShopAnywhere(byte shop) {
-            if (emulator.ReadByte("OVERWORLD") == 1) {
+            if (Emulator.ReadByte("OVERWORLD") == 1) {
                 ShopChanges();
-                emulator.WriteByte("SHOP_ID", shop);
-                emulator.WriteByte("MENU", 6);
-                emulator.WriteByte("TRANSITION", 13);
+                Emulator.WriteByte("SHOP_ID", shop);
+                Emulator.WriteByte("MENU", 6);
+                Emulator.WriteByte("TRANSITION", 13);
 
             }
         }
@@ -2018,9 +1985,9 @@ namespace Dragoon_Modifier {
 
         #region Auto Charm Potion
         public void AutoCharmPotion() {
-            if ((emulator.ReadShort("BATTLE_VALUE") > 3850 && emulator.ReadShort("BATTLE_VALUE") < 9999) && emulator.ReadInteger("GOLD") >= 8) {
-                emulator.WriteInteger("GOLD", emulator.ReadInteger("GOLD") - 8);
-                emulator.WriteShort("BATTLE_VALUE", 0);
+            if ((Emulator.ReadShort("BATTLE_VALUE") > 3850 && Emulator.ReadShort("BATTLE_VALUE") < 9999) && Emulator.ReadInt("GOLD") >= 8) {
+                Emulator.WriteInt("GOLD", Emulator.ReadInt("GOLD") - 8);
+                Emulator.WriteShort("BATTLE_VALUE", 0);
             }
         }
         #endregion
@@ -2032,11 +1999,11 @@ namespace Dragoon_Modifier {
             int maxEXP = Globals.DIFFICULTY_MODE.Contains("Hell") ? 160000 : 80000;
 
             if (char1 != char2) {
-                if (emulator.ReadByte(char1 + 0x4) != 0 && emulator.ReadByte(char2 + 0x4) != 0) {
-                    if (emulator.ReadInteger(char1) < maxEXP && emulator.ReadInteger(char2) < maxEXP) {
-                        int tempEXP = emulator.ReadInteger(char1);
-                        emulator.WriteInteger(char1, emulator.ReadInteger(char2));
-                        emulator.WriteInteger(char2, tempEXP);
+                if (Emulator.ReadByte(char1 + 0x4) != 0 && Emulator.ReadByte(char2 + 0x4) != 0) {
+                    if (Emulator.ReadInt(char1) < maxEXP && Emulator.ReadInt(char2) < maxEXP) {
+                        int tempEXP = Emulator.ReadInt(char1);
+                        Emulator.WriteInt(char1, Emulator.ReadInt(char2));
+                        Emulator.WriteInt(char2, tempEXP);
                         Constants.WriteGLog("Switch exp of " + cboSwitch1.Text + " and " + cboSwitch2.Text);
                     } else {
                         Constants.WriteGLog("One of the characters has " + maxEXP + " or more EXP and can't be switched.");
@@ -2056,77 +2023,77 @@ namespace Dragoon_Modifier {
                 long address = Constants.GetAddress("MENU_ADDITION_TABLE_FLAT");
                 long address2 = Constants.GetAddress("CHAR_TABLE") + 0x22;
                 //Dart
-                emulator.WriteByte(address + 0xE * 3, 13); //Crush Dance
-                emulator.WriteByte(address + 0xE * 4, 18); //Madness Hero
-                emulator.WriteByte(address + 0xE * 5, 23); //Moon Strike
-                emulator.WriteByte(address + 0xE * 6, 60); //Blazying Dynamo
-                if (emulator.ReadByte(address2) >= 80 &&
-                    emulator.ReadByte(address2 + 0x1) >= 80 &&
-                    emulator.ReadByte(address2 + 0x2) >= 80 &&
-                    emulator.ReadByte(address2 + 0x3) >= 80 &&
-                    emulator.ReadByte(address2 + 0x4) >= 80 &&
-                    emulator.ReadByte(address2 + 0x5) >= 80) {
-                    emulator.WriteByte(address + 0xE * 6, 29); //Blazying Dynamo
+                Emulator.WriteByte(address + 0xE * 3, 13); //Crush Dance
+                Emulator.WriteByte(address + 0xE * 4, 18); //Madness Hero
+                Emulator.WriteByte(address + 0xE * 5, 23); //Moon Strike
+                Emulator.WriteByte(address + 0xE * 6, 60); //Blazying Dynamo
+                if (Emulator.ReadByte(address2) >= 80 &&
+                    Emulator.ReadByte(address2 + 0x1) >= 80 &&
+                    Emulator.ReadByte(address2 + 0x2) >= 80 &&
+                    Emulator.ReadByte(address2 + 0x3) >= 80 &&
+                    Emulator.ReadByte(address2 + 0x4) >= 80 &&
+                    Emulator.ReadByte(address2 + 0x5) >= 80) {
+                    Emulator.WriteByte(address + 0xE * 6, 29); //Blazying Dynamo
                 }
                 //Lavitz
-                emulator.WriteByte(address + 0xE * 2 + 0x70, 10); //Rod Typhoon
-                emulator.WriteByte(address + 0xE * 3 + 0x70, 16); //Gust of Wind Dance
-                emulator.WriteByte(address + 0xE * 4 + 0x70, 60); //Flower Storm
-                if (emulator.ReadByte(address2 + 0x2C) >= 80 &&
-                    emulator.ReadByte(address2 + 0x2C + 0x1) >= 80 &&
-                    emulator.ReadByte(address2 + 0x2C + 0x2) >= 80 &&
-                    emulator.ReadByte(address2 + 0x2C + 0x3) >= 80) {
-                    emulator.WriteByte(address + 0xE * 4 + 0x70, 21); //Flower Storm
+                Emulator.WriteByte(address + 0xE * 2 + 0x70, 10); //Rod Typhoon
+                Emulator.WriteByte(address + 0xE * 3 + 0x70, 16); //Gust of Wind Dance
+                Emulator.WriteByte(address + 0xE * 4 + 0x70, 60); //Flower Storm
+                if (Emulator.ReadByte(address2 + 0x2C) >= 80 &&
+                    Emulator.ReadByte(address2 + 0x2C + 0x1) >= 80 &&
+                    Emulator.ReadByte(address2 + 0x2C + 0x2) >= 80 &&
+                    Emulator.ReadByte(address2 + 0x2C + 0x3) >= 80) {
+                    Emulator.WriteByte(address + 0xE * 4 + 0x70, 21); //Flower Storm
                 }
                 //Albert
-                emulator.WriteByte(address + 0xE * 2 + 0x70, 10); //Rod Typhoon
-                emulator.WriteByte(address + 0xE * 3 + 0x70, 16); //Gust of Wind Dance
-                emulator.WriteByte(address + 0xE * 4 + 0x70, 60); //Flower Storm
-                if (emulator.ReadByte(address2 + 0xDC) >= 80 &&
-                    emulator.ReadByte(address2 + 0xDC + 0x1) >= 80 &&
-                    emulator.ReadByte(address2 + 0xDC + 0x2) >= 80 &&
-                    emulator.ReadByte(address2 + 0xDC + 0x3) >= 80) {
-                    emulator.WriteByte(address + 0xE * 4 + 0x70, 21); //Flower Storm
+                Emulator.WriteByte(address + 0xE * 2 + 0x70, 10); //Rod Typhoon
+                Emulator.WriteByte(address + 0xE * 3 + 0x70, 16); //Gust of Wind Dance
+                Emulator.WriteByte(address + 0xE * 4 + 0x70, 60); //Flower Storm
+                if (Emulator.ReadByte(address2 + 0xDC) >= 80 &&
+                    Emulator.ReadByte(address2 + 0xDC + 0x1) >= 80 &&
+                    Emulator.ReadByte(address2 + 0xDC + 0x2) >= 80 &&
+                    Emulator.ReadByte(address2 + 0xDC + 0x3) >= 80) {
+                    Emulator.WriteByte(address + 0xE * 4 + 0x70, 21); //Flower Storm
                 }
                 //Rose
-                emulator.WriteByte(address + 0xE * 1 + 0xC4, 8); //More & More
-                emulator.WriteByte(address + 0xE * 2 + 0xC4, 15); //Hard Blade
-                emulator.WriteByte(address + 0xE * 3 + 0xC4, 60); //Demon's Dance
-                if (emulator.ReadByte(address2 + 0x84) >= 80 &&
-                    emulator.ReadByte(address2 + 0x84 + 0x1) >= 80 &&
-                    emulator.ReadByte(address2 + 0x84 + 0x2) >= 80) {
-                    emulator.WriteByte(address + 0xE * 3 + 0xC4, 21); //Demon's Dance
+                Emulator.WriteByte(address + 0xE * 1 + 0xC4, 8); //More & More
+                Emulator.WriteByte(address + 0xE * 2 + 0xC4, 15); //Hard Blade
+                Emulator.WriteByte(address + 0xE * 3 + 0xC4, 60); //Demon's Dance
+                if (Emulator.ReadByte(address2 + 0x84) >= 80 &&
+                    Emulator.ReadByte(address2 + 0x84 + 0x1) >= 80 &&
+                    Emulator.ReadByte(address2 + 0x84 + 0x2) >= 80) {
+                    Emulator.WriteByte(address + 0xE * 3 + 0xC4, 21); //Demon's Dance
                 }
                 //Kongol
-                emulator.WriteByte(address + 0xE * 1 + 0x10A, 10); //Inferno
-                emulator.WriteByte(address + 0xE * 2 + 0x10A, 60); //Bone Crush
-                if (emulator.ReadByte(address2 + 0x134) >= 80 &&
-                    emulator.ReadByte(address2 + 0x134 + 0x1) >= 80) {
-                    emulator.WriteByte(address + 0xE * 2 + 0x10A, 20); //Bone Crush
+                Emulator.WriteByte(address + 0xE * 1 + 0x10A, 10); //Inferno
+                Emulator.WriteByte(address + 0xE * 2 + 0x10A, 60); //Bone Crush
+                if (Emulator.ReadByte(address2 + 0x134) >= 80 &&
+                    Emulator.ReadByte(address2 + 0x134 + 0x1) >= 80) {
+                    Emulator.WriteByte(address + 0xE * 2 + 0x10A, 20); //Bone Crush
                 }
                 //Meru
-                emulator.WriteByte(address + 0xE * 1 + 0x142, 6); //Hammer Spin
-                emulator.WriteByte(address + 0xE * 2 + 0x142, 12); //Cool Boogie
-                emulator.WriteByte(address + 0xE * 3 + 0x142, 18); //Cat's Cradle
-                emulator.WriteByte(address + 0xE * 4 + 0x142, 60); //Perky Step
-                if (emulator.ReadByte(address2 + 0x108) >= 80 &&
-                    emulator.ReadByte(address2 + 0x108 + 0x1) >= 80 &&
-                    emulator.ReadByte(address2 + 0x108 + 0x2) >= 80 &&
-                    emulator.ReadByte(address2 + 0x108 + 0x3) >= 80) {
-                    emulator.WriteByte(address + 0xE * 4 + 0x142, 22);  //Perky Step
+                Emulator.WriteByte(address + 0xE * 1 + 0x142, 6); //Hammer Spin
+                Emulator.WriteByte(address + 0xE * 2 + 0x142, 12); //Cool Boogie
+                Emulator.WriteByte(address + 0xE * 3 + 0x142, 18); //Cat's Cradle
+                Emulator.WriteByte(address + 0xE * 4 + 0x142, 60); //Perky Step
+                if (Emulator.ReadByte(address2 + 0x108) >= 80 &&
+                    Emulator.ReadByte(address2 + 0x108 + 0x1) >= 80 &&
+                    Emulator.ReadByte(address2 + 0x108 + 0x2) >= 80 &&
+                    Emulator.ReadByte(address2 + 0x108 + 0x3) >= 80) {
+                    Emulator.WriteByte(address + 0xE * 4 + 0x142, 22);  //Perky Step
                 }
                 //Haschel
-                emulator.WriteByte(address + 0xE * 1 + 0x196, 5); // Flurry of Styx
-                emulator.WriteByte(address + 0xE * 2 + 0x196, 10); //Summon 4 Gods
-                emulator.WriteByte(address + 0xE * 3 + 0x196, 16); //5 Ring Shattering
-                emulator.WriteByte(address + 0xE * 4 + 0x196, 22); //Hex Hammer
-                emulator.WriteByte(address + 0xE * 5 + 0x196, 60); //Omni-Sweep        
-                if (emulator.ReadByte(address2 + 0xB0) >= 80 &&
-                    emulator.ReadByte(address2 + 0xB0 + 0x1) >= 80 &&
-                    emulator.ReadByte(address2 + 0xB0 + 0x2) >= 80 &&
-                    emulator.ReadByte(address2 + 0xB0 + 0x3) >= 80 &&
-                    emulator.ReadByte(address2 + 0xB0 + 0x4) >= 80) {
-                    emulator.WriteByte(address + 0xE * 5 + 0x196, 25); //Omni-Sweep 
+                Emulator.WriteByte(address + 0xE * 1 + 0x196, 5); // Flurry of Styx
+                Emulator.WriteByte(address + 0xE * 2 + 0x196, 10); //Summon 4 Gods
+                Emulator.WriteByte(address + 0xE * 3 + 0x196, 16); //5 Ring Shattering
+                Emulator.WriteByte(address + 0xE * 4 + 0x196, 22); //Hex Hammer
+                Emulator.WriteByte(address + 0xE * 5 + 0x196, 60); //Omni-Sweep        
+                if (Emulator.ReadByte(address2 + 0xB0) >= 80 &&
+                    Emulator.ReadByte(address2 + 0xB0 + 0x1) >= 80 &&
+                    Emulator.ReadByte(address2 + 0xB0 + 0x2) >= 80 &&
+                    Emulator.ReadByte(address2 + 0xB0 + 0x3) >= 80 &&
+                    Emulator.ReadByte(address2 + 0xB0 + 0x4) >= 80) {
+                    Emulator.WriteByte(address + 0xE * 5 + 0x196, 25); //Omni-Sweep 
                 }
                 earlyAdditionsOnFieldEntry = true;
             } else {
@@ -2139,32 +2106,32 @@ namespace Dragoon_Modifier {
             if (Globals.GAME_STATE != 1) {
                 long address = Constants.GetAddress("MENU_ADDITION_TABLE_FLAT");
                 //Dart
-                emulator.WriteByte(address * 0xE * 3, 15); //Crush Dance
-                emulator.WriteByte(address * 0xE * 4, 22); //Madness Hero
-                emulator.WriteByte(address * 0xE * 5, 29); //Moon Strike
-                emulator.WriteByte(address * 0xE * 6, 255); //Blazying Dynamo
+                Emulator.WriteByte(address * 0xE * 3, 15); //Crush Dance
+                Emulator.WriteByte(address * 0xE * 4, 22); //Madness Hero
+                Emulator.WriteByte(address * 0xE * 5, 29); //Moon Strike
+                Emulator.WriteByte(address * 0xE * 6, 255); //Blazying Dynamo
                 //Lavitz
-                emulator.WriteByte(address * 0xE * 2 + 0x70, 7); //Rod Typhoon
-                emulator.WriteByte(address * 0xE * 3 + 0x70, 11); //Gust of Wind Dance
-                emulator.WriteByte(address * 0xE * 4 + 0x70, 255); //Flower Storm
+                Emulator.WriteByte(address * 0xE * 2 + 0x70, 7); //Rod Typhoon
+                Emulator.WriteByte(address * 0xE * 3 + 0x70, 11); //Gust of Wind Dance
+                Emulator.WriteByte(address * 0xE * 4 + 0x70, 255); //Flower Storm
                 //Rose
-                emulator.WriteByte(address + 0xE * 1 + 0xC4, 14); //More & More
-                emulator.WriteByte(address + 0xE * 2 + 0xC4, 19); //Hard Blade
-                emulator.WriteByte(address + 0xE * 3 + 0xC4, 255); //Demon//s Dance
+                Emulator.WriteByte(address + 0xE * 1 + 0xC4, 14); //More & More
+                Emulator.WriteByte(address + 0xE * 2 + 0xC4, 19); //Hard Blade
+                Emulator.WriteByte(address + 0xE * 3 + 0xC4, 255); //Demon//s Dance
                 //Kongol
-                emulator.WriteByte(address + 0xE * 1 + 0x10A, 23); //Inferno
-                emulator.WriteByte(address + 0xE * 2 + 0x10A, 255); //Bone Crush
+                Emulator.WriteByte(address + 0xE * 1 + 0x10A, 23); //Inferno
+                Emulator.WriteByte(address + 0xE * 2 + 0x10A, 255); //Bone Crush
                 //Meru
-                emulator.WriteByte(address * 0xE * 1 + 0x142, 21); //Hammer Spin
-                emulator.WriteByte(address * 0xE * 2 + 0x142, 26); //Cool Boogie
-                emulator.WriteByte(address * 0xE * 3 + 0x142, 30); //Cat//s Cradle
-                emulator.WriteByte(address * 0xE * 4 + 0x142, 255); //Perky Step
+                Emulator.WriteByte(address * 0xE * 1 + 0x142, 21); //Hammer Spin
+                Emulator.WriteByte(address * 0xE * 2 + 0x142, 26); //Cool Boogie
+                Emulator.WriteByte(address * 0xE * 3 + 0x142, 30); //Cat//s Cradle
+                Emulator.WriteByte(address * 0xE * 4 + 0x142, 255); //Perky Step
                 //Haschel
-                emulator.WriteByte(address * 0xE * 1 + 0x196, 14); // Flurry of Styx
-                emulator.WriteByte(address * 0xE * 2 + 0x196, 18); //Summon 4 Gods
-                emulator.WriteByte(address * 0xE * 3 + 0x196, 22); //5 Ring Shattering
-                emulator.WriteByte(address * 0xE * 4 + 0x196, 26); //Hex Hammer
-                emulator.WriteByte(address * 0xE * 5 + 0x196, 255); //Omni-Sweep   
+                Emulator.WriteByte(address * 0xE * 1 + 0x196, 14); // Flurry of Styx
+                Emulator.WriteByte(address * 0xE * 2 + 0x196, 18); //Summon 4 Gods
+                Emulator.WriteByte(address * 0xE * 3 + 0x196, 22); //5 Ring Shattering
+                Emulator.WriteByte(address * 0xE * 4 + 0x196, 26); //Hex Hammer
+                Emulator.WriteByte(address * 0xE * 5 + 0x196, 255); //Omni-Sweep   
                 earlyAdditionsOnFieldEntry = false;
             }
         }
@@ -2181,11 +2148,11 @@ namespace Dragoon_Modifier {
         }
 
         public void BuyTicket(int cost, int tickets) {
-            if (emulator.ReadInteger("GOLD") >= cost) {
-                emulator.WriteInteger("GOLD", emulator.ReadInteger("GOLD") - cost);
-                emulator.WriteInteger("HERO_TICKETS", emulator.ReadInteger("HERO_TICKETS") + tickets);
+            if (Emulator.ReadInt("GOLD") >= cost) {
+                Emulator.WriteInt("GOLD", Emulator.ReadInt("GOLD") - cost);
+                Emulator.WriteInt("HERO_TICKETS", Emulator.ReadInt("HERO_TICKETS") + tickets);
             }
-            Constants.WriteGLogOutput("You have " + emulator.ReadInteger("HERO_TICKETS") + " tickets. Gold: " + emulator.ReadInteger("GOLD"));
+            Constants.WriteGLogOutput("You have " + Emulator.ReadInt("HERO_TICKETS") + " tickets. Gold: " + Emulator.ReadInt("GOLD"));
         }
 
         public void HeroItemShop() {
@@ -2205,7 +2172,7 @@ namespace Dragoon_Modifier {
                 return;
             }
 
-            int gold = emulator.ReadInteger("GOLD");
+            int gold = Emulator.ReadInt("GOLD");
             int price = uShopPrices[lstUltimateShop.SelectedIndex];
             int item = uItemId[lstUltimateShop.SelectedIndex];
             int oneLimited = uLimited[lstUltimateShop.SelectedIndex];
@@ -2229,14 +2196,14 @@ namespace Dragoon_Modifier {
             } else {
                 if (oneLimited > 0)
                     ultimateShopLimited += oneLimited;
-                emulator.WriteInteger("GOLD", gold - price);
+                Emulator.WriteInt("GOLD", gold - price);
                 Constants.WriteGLogOutput("Bought item. Gold: " + (gold - price));
             }
         }
 
         public bool BuyShopItem(byte item, int goldCost, int ticketCost, bool armor = false) {
-            int gold = emulator.ReadInteger("GOLD");
-            int tickets = emulator.ReadInteger("HERO_TICKETS");
+            int gold = Emulator.ReadInt("GOLD");
+            int tickets = Emulator.ReadInt("HERO_TICKETS");
 
             if (gold < goldCost) {
                 Constants.WriteGLogOutput("Not enough gold.");
@@ -2253,15 +2220,15 @@ namespace Dragoon_Modifier {
 
             if (armor) {
                 for (int i = 0; i < 255; i++) {
-                    if (emulator.ReadByte(address) == 255) {
+                    if (Emulator.ReadByte(address) == 255) {
                         slots = true;
-                        emulator.WriteByte(address, item);
+                        Emulator.WriteByte(address, item);
 
                         if (goldCost > 0)
-                            emulator.WriteInteger("GOLD", gold - goldCost);
+                            Emulator.WriteInt("GOLD", gold - goldCost);
 
                         if (ticketCost > 0)
-                            emulator.WriteShort("HERO_TICKETS", (ushort) (tickets - ticketCost));
+                            Emulator.WriteUShort("HERO_TICKETS", (ushort) (tickets - ticketCost));
 
                         break;
                     }
@@ -2269,15 +2236,15 @@ namespace Dragoon_Modifier {
                 }
             } else {
                 for (int i = 0; i < inventorySize; i++) {
-                    if (emulator.ReadByte(address) == 255) {
+                    if (Emulator.ReadByte(address) == 255) {
                         slots = true;
-                        emulator.WriteByte(address, item);
+                        Emulator.WriteByte(address, item);
 
                         if (goldCost > 0)
-                            emulator.WriteInteger("GOLD", gold - goldCost);
+                            Emulator.WriteInt("GOLD", gold - goldCost);
 
                         if (ticketCost > 0)
-                            emulator.WriteShort("HERO_TICKETS", (ushort) (tickets - ticketCost));
+                            Emulator.WriteUShort("HERO_TICKETS", (ushort) (tickets - ticketCost));
 
                         break;
                     }
@@ -2297,13 +2264,13 @@ namespace Dragoon_Modifier {
         #region Increase Text Speed
         public void IncreaseTextSpeed() {
             if (Globals.GAME_STATE != 1) {
-                emulator.WriteShort("TEXT_SPEED", 1);
+                Emulator.WriteShort("TEXT_SPEED", 1);
             }
         }
 
         public void AutoText() {
             if (Globals.GAME_STATE != 1) {
-                emulator.WriteShort("AUTO_TEXT", 13378);
+                Emulator.WriteShort("AUTO_TEXT", 13378);
             }
         }
         #endregion
@@ -2322,7 +2289,7 @@ namespace Dragoon_Modifier {
             if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED) {
                 for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
                     if (!Constants.BATTLE_UI) {
-                        monsterDisplay[i, 0].Text = emulator.ReadName(Constants.GetAddress("MONSTERS_NAMES") + (0x2C * i));
+                        monsterDisplay[i, 0].Text = Emulator.ReadName(Constants.GetAddress("MONSTERS_NAMES") + (0x2C * i));
                         Globals.MONSTER_NAME[i] = monsterDisplay[i, 0].Text;
                     }
 
@@ -2386,17 +2353,17 @@ namespace Dragoon_Modifier {
                 object temp2;
                 string turnLabel = "";
                 for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                    if (emulator.ReadShort(Globals.M_POINT - (i * 0x388)) > 0) {
+                    if (Emulator.ReadShort(Globals.M_POINT - (i * 0x388)) > 0) {
                         battleTurns[lastNumber, 0] = monsterDisplay[i, 0].Text;
-                        battleTurns[lastNumber, 1] = emulator.ReadShort(Globals.M_POINT - (i * 0x388) + 0x44);
+                        battleTurns[lastNumber, 1] = Emulator.ReadShort(Globals.M_POINT - (i * 0x388) + 0x44);
                         lastNumber += 1;
                     }
                 }
                 for (int i = 0; i < 3; i++) {
                     if (Globals.PARTY_SLOT[i] < 9) {
-                        if (emulator.ReadShort(Globals.C_POINT - (i * 0x388)) > 0) {
+                        if (Emulator.ReadShort(Globals.C_POINT - (i * 0x388)) > 0) {
                             battleTurns[lastNumber, 0] = characterDisplay[i, 0].Text;
-                            battleTurns[lastNumber, 1] = emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x44);
+                            battleTurns[lastNumber, 1] = Emulator.ReadShort(Globals.C_POINT - (i * 0x388) + 0x44);
                             lastNumber += 1;
                         }
                     }
@@ -2455,7 +2422,7 @@ namespace Dragoon_Modifier {
                 if (Globals.GAME_STATE != 1 && hpCapBreakOnBattleEntry) {
                     hpCapBreakOnBattleEntry = false;
                 } else {
-                    if (emulator.ReadShort("BATTLE_VALUE") == 41215 && Globals.STATS_CHANGED && hpCapBreakOnBattleEntry && maxHPTableLoaded) {
+                    if (Emulator.ReadShort("BATTLE_VALUE") == 41215 && Globals.STATS_CHANGED && hpCapBreakOnBattleEntry && maxHPTableLoaded) {
                         for (int i = 0; i < 3; i++) {
                             if (Globals.PARTY_SLOT[i] < 9)
                                 hpChangeSave[i] = Globals.CHARACTER_TABLE[i].Read("HP");
@@ -2466,7 +2433,7 @@ namespace Dragoon_Modifier {
         }
 
         public void LoadMaxHPTable(bool forceLoad) {
-            if ((!maxHPTableLoaded && Globals.GAME_STATE != 1 && (emulator.ReadShort("BATTLE_VALUE") > 1 && emulator.ReadShort("BATTLE_VALUE") <= 5120)) || forceLoad) {
+            if ((!maxHPTableLoaded && Globals.GAME_STATE != 1 && (Emulator.ReadShort("BATTLE_VALUE") > 1 && Emulator.ReadShort("BATTLE_VALUE") <= 5120)) || forceLoad) {
                 byte tableSlot = 0;
                 for (int i = 0; i < 9; i++) {
                     switch (i) {
@@ -2496,7 +2463,7 @@ namespace Dragoon_Modifier {
                     }
 
                     for (int x = 1; x < 61; x++) {
-                        maxHPTable[i, x - 1] = emulator.ReadShort("STAT_TABLE_HP_START", (tableSlot * 0x1E8) + (x * 0x8));
+                        maxHPTable[i, x - 1] = Emulator.ReadUShort("STAT_TABLE_HP_START", (tableSlot * 0x1E8) + (x * 0x8));
                     }
                 }
                 maxHPTableLoaded = true;
@@ -2525,10 +2492,10 @@ namespace Dragoon_Modifier {
         }
 
         public void KillBGM() {
-            ArrayList bgmScan = emulator.ScanAllAOB("53 53 73 71", 0xA8660, 0x2A865F);
+            List<long> bgmScan = Emulator.ScanAoB(0xA8660, 0x2A865F, "53 53 73 71");
             foreach (var address in bgmScan) {
                 for (int i = 0; i <= 255; i++) {
-                    emulator.WriteByteU((long) address + i, 0);
+                    Emulator.WriteByteDirect((long) address + i, (byte) 0);
                     Thread.Sleep(10);
                 }
             }
@@ -2559,25 +2526,25 @@ namespace Dragoon_Modifier {
         #region Solo/Duo Mode
         public void SoloModeField() {
             if (Globals.GAME_STATE != 1 && !addSoloPartyMembers) {
-                if (emulator.ReadByte("PARTY_SLOT", 0x4) != 255 || emulator.ReadByte("PARTY_SLOT", 0x8) != 255) {
+                if (Emulator.ReadByte("PARTY_SLOT", 0x4) != 255 || Emulator.ReadByte("PARTY_SLOT", 0x8) != 255) {
                     for (int i = 0; i < 8; i++) {
-                        emulator.WriteByte("PARTY_SLOT", 255, i + 0x4);
+                        Emulator.WriteByte("PARTY_SLOT", 255, i + 0x4);
                     }
                 }
             }
         }
         public void DuoModeField() {
             if (Globals.GAME_STATE != 1 && !addSoloPartyMembers) {
-                if (emulator.ReadByte("PARTY_SLOT", 0x4) == 255) {
-                    emulator.WriteByte("PARTY_SLOT", emulator.ReadByte("PARTY_SLOT"), 0x4);
-                    emulator.WriteByte("PARTY_SLOT", 0, 0x5);
-                    emulator.WriteByte("PARTY_SLOT", 0, 0x6);
-                    emulator.WriteByte("PARTY_SLOT", 0, 0x7);
+                if (Emulator.ReadByte("PARTY_SLOT", 0x4) == 255) {
+                    Emulator.WriteByte("PARTY_SLOT", Emulator.ReadByte("PARTY_SLOT"), 0x4);
+                    Emulator.WriteByte("PARTY_SLOT", 0, 0x5);
+                    Emulator.WriteByte("PARTY_SLOT", 0, 0x6);
+                    Emulator.WriteByte("PARTY_SLOT", 0, 0x7);
                 }
 
-                if (emulator.ReadByte("PARTY_SLOT", 0x8) != 255) {
+                if (Emulator.ReadByte("PARTY_SLOT", 0x8) != 255) {
                     for (int i = 0; i < 4; i++) {
-                        emulator.WriteByte("PARTY_SLOT", 255, i + 0x8);
+                        Emulator.WriteByte("PARTY_SLOT", 255, i + 0x8);
                     }
                 }
             }
@@ -2606,7 +2573,7 @@ namespace Dragoon_Modifier {
 
                 if (Globals.CheckDMScript("btnReduceSDEXP")) {
                     for (int i = 0; i < 5; i++) {
-                        emulator.WriteShort("MONSTER_REWARDS", (ushort) Math.Ceiling((double) (emulator.ReadShort(Constants.GetAddress("MONSTER_REWARDS") + (i * 0x1A8)) / 3)), (i * 0x1A8));
+                        Emulator.WriteUShort("MONSTER_REWARDS", (ushort) Math.Ceiling((double) (Emulator.ReadShort(Constants.GetAddress("MONSTER_REWARDS") + (i * 0x1A8)) / 3)), (i * 0x1A8));
                     }
                 }
                 soloModeOnBattleEntry = true;
@@ -2639,7 +2606,7 @@ namespace Dragoon_Modifier {
 
                 if (Globals.CheckDMScript("btnReduceSDEXP")) {
                     for (int i = 0; i < 5; i++) {
-                        emulator.WriteShort("MONSTER_REWARDS", (ushort) Math.Ceiling((double) (emulator.ReadShort(Constants.GetAddress("MONSTER_REWARDS") + (i * 0x1A8)) * (2 / 3))), (i * 0x1A8));
+                        Emulator.WriteUShort("MONSTER_REWARDS", (ushort) Math.Ceiling((double) (Emulator.ReadShort(Constants.GetAddress("MONSTER_REWARDS") + (i * 0x1A8)) * (2 / 3))), (i * 0x1A8));
                     }
                 }
                 duoModeOnBattleEntry = true;
@@ -2655,39 +2622,39 @@ namespace Dragoon_Modifier {
         public void AddSoloPartyMembers() {
             if (Globals.CheckDMScript("btnSoloMode")) {
                 addSoloPartyMembers = true;
-                emulator.WriteByte("PARTY_SLOT", Globals.PARTY_SLOT[0], 0x4);
-                emulator.WriteByte("PARTY_SLOT", 0, 0x5);
-                emulator.WriteByte("PARTY_SLOT", 0, 0x6);
-                emulator.WriteByte("PARTY_SLOT", 0, 0x7);
-                emulator.WriteByte("PARTY_SLOT", Globals.PARTY_SLOT[0], 0x8);
-                emulator.WriteByte("PARTY_SLOT", 0, 0x9);
-                emulator.WriteByte("PARTY_SLOT", 0, 0xA);
-                emulator.WriteByte("PARTY_SLOT", 0, 0xB);
+                Emulator.WriteByte("PARTY_SLOT", Globals.PARTY_SLOT[0], 0x4);
+                Emulator.WriteByte("PARTY_SLOT", 0, 0x5);
+                Emulator.WriteByte("PARTY_SLOT", 0, 0x6);
+                Emulator.WriteByte("PARTY_SLOT", 0, 0x7);
+                Emulator.WriteByte("PARTY_SLOT", Globals.PARTY_SLOT[0], 0x8);
+                Emulator.WriteByte("PARTY_SLOT", 0, 0x9);
+                Emulator.WriteByte("PARTY_SLOT", 0, 0xA);
+                Emulator.WriteByte("PARTY_SLOT", 0, 0xB);
             } else if (Globals.CheckDMScript("btnDuoMode")) {
                 addSoloPartyMembers = true;
-                emulator.WriteByte("PARTY_SLOT", Globals.PARTY_SLOT[0], 0x8);
-                emulator.WriteByte("PARTY_SLOT", 0, 0x9);
-                emulator.WriteByte("PARTY_SLOT", 0, 0xA);
-                emulator.WriteByte("PARTY_SLOT", 0, 0xB);
+                Emulator.WriteByte("PARTY_SLOT", Globals.PARTY_SLOT[0], 0x8);
+                Emulator.WriteByte("PARTY_SLOT", 0, 0x9);
+                Emulator.WriteByte("PARTY_SLOT", 0, 0xA);
+                Emulator.WriteByte("PARTY_SLOT", 0, 0xB);
             } else {
                 Constants.WritePLogOutput("Solo/Duo Mode must be turned on to add party members.");
             }
         }
 
         public void SwitchSoloCharacter() {
-            if (emulator.ReadByte("IN_PARTY", 0x2C * uiCombo["cboSwitchChar"]) != 0) {
+            if (Emulator.ReadByte("IN_PARTY", 0x2C * uiCombo["cboSwitchChar"]) != 0) {
                 if (Globals.CheckDMScript("btnSoloMode") || Globals.CheckDMScript("btnDuoMode")) {
-                    emulator.WriteByte("PARTY_SLOT", uiCombo["cboSwitchChar"]);
+                    Emulator.WriteByte("PARTY_SLOT", (byte) uiCombo["cboSwitchChar"]);
                     Globals.NO_DART = null;
                 } else {
                     if (uiCombo["cboSwitchChar"] == 0) {
                         Globals.NO_DART = null;
-                        emulator.WriteByte("PARTY_SLOT", uiCombo["cboSwitchChar"]);
+                        Emulator.WriteByte("PARTY_SLOT", (byte) uiCombo["cboSwitchChar"]);
                     } else {
                         Globals.DART_SWITCH = true;
                         Globals.NO_DART = uiCombo["cboSwitchChar"];
                         if (Globals.GAME_STATE == 0) {
-                            emulator.WriteByte("PARTY_SLOT", uiCombo["cboSwitchChar"]);
+                            Emulator.WriteByte("PARTY_SLOT", (byte) uiCombo["cboSwitchChar"]);
                         }
                         Constants.WritePLogOutput("No Dart has been activated for Slot 1 and will swap to your select character in battle.");
                         
@@ -2737,7 +2704,7 @@ namespace Dragoon_Modifier {
         #region Equip Changes
         public void EquipChangesField() {
             if (Globals.GAME_STATE != 1 && !equipChangesOnFieldEntry && (Globals.BATTLE_VALUE > 0 && Globals.BATTLE_VALUE < 9999) && !Globals.STATS_CHANGED) {
-                if (emulator.ReadByte("CHAPTER") >= 3) {
+                if (Emulator.ReadByte("CHAPTER") >= 3) {
                     //Heat Blade
                     WriteEquipChanges(0x112032, 25);
                     //Sparkle Arrow
@@ -2769,12 +2736,12 @@ namespace Dragoon_Modifier {
         }
 
         public void WriteEquipChanges(long address, byte value) {
-            emulator.WriteByte(address + EquipChangesOffset(), value);
+            Emulator.WriteByte(address + EquipChangesOffset(), value);
         }
 
         public void WriteEquipChangesAOB(long address, string value) {
             if (Constants.REGION != Region.JPN) {
-                emulator.WriteAOB(address + EquipChangesOffset(), value);
+                Emulator.WriteAoB(address + EquipChangesOffset(), value);
             }
         }
 
@@ -2793,164 +2760,164 @@ namespace Dragoon_Modifier {
         public void UltimateBossField() {
             if ((Globals.MAP >= 393 && Globals.MAP <= 405) && Globals.CHAPTER == 4 && !ultimateBossOnBattleEntry) {
                 if (uiCombo["cboUltimateBoss"] == 0 && (Globals.MAP >= 393 && Globals.MAP <= 394)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 487);
-                    emulator.WriteByte("BATTLE_FIELD", 10);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 487);
+                    Emulator.WriteByte("BATTLE_FIELD", 10);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 1 && (Globals.MAP >= 393 && Globals.MAP <= 394)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 386);
-                    emulator.WriteByte("BATTLE_FIELD", 3);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 386);
+                    Emulator.WriteByte("BATTLE_FIELD", 3);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 2 && (Globals.MAP >= 393 && Globals.MAP <= 394)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 414);
-                    emulator.WriteByte("BATTLE_FIELD", 8);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 414);
+                    Emulator.WriteByte("BATTLE_FIELD", 8);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 3 && (Globals.MAP >= 395 && Globals.MAP <= 397)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 461);
-                    emulator.WriteByte("BATTLE_FIELD", 21);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 461);
+                    Emulator.WriteByte("BATTLE_FIELD", 21);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 4 && (Globals.MAP >= 395 && Globals.MAP <= 397)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 412);
-                    emulator.WriteByte("BATTLE_FIELD", 16);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 412);
+                    Emulator.WriteByte("BATTLE_FIELD", 16);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 5 && (Globals.MAP >= 395 && Globals.MAP <= 397)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 413);
-                    emulator.WriteByte("BATTLE_FIELD", 70);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 413);
+                    Emulator.WriteByte("BATTLE_FIELD", 70);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 6 && (Globals.MAP >= 395 && Globals.MAP <= 397)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 387);
-                    emulator.WriteByte("BATTLE_FIELD", 5);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 387);
+                    Emulator.WriteByte("BATTLE_FIELD", 5);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 7 && (Globals.MAP >= 395 && Globals.MAP <= 397)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 415);
-                    emulator.WriteByte("BATTLE_FIELD", 12);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 415);
+                    Emulator.WriteByte("BATTLE_FIELD", 12);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 8 && (Globals.MAP >= 398 && Globals.MAP <= 400)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 449);
-                    emulator.WriteByte("BATTLE_FIELD", 68);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 449);
+                    Emulator.WriteByte("BATTLE_FIELD", 68);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 9 && (Globals.MAP >= 398 && Globals.MAP <= 400)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 402);
-                    emulator.WriteByte("BATTLE_FIELD", 23);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 402);
+                    Emulator.WriteByte("BATTLE_FIELD", 23);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 10 && (Globals.MAP >= 398 && Globals.MAP <= 400)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 403);
-                    emulator.WriteByte("BATTLE_FIELD", 29);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 403);
+                    Emulator.WriteByte("BATTLE_FIELD", 29);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 11 && (Globals.MAP >= 398 && Globals.MAP <= 400)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 417);
-                    emulator.WriteByte("BATTLE_FIELD", 31);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 417);
+                    Emulator.WriteByte("BATTLE_FIELD", 31);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 12 && (Globals.MAP >= 398 && Globals.MAP <= 400)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 418);
-                    emulator.WriteByte("BATTLE_FIELD", 41);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 418);
+                    Emulator.WriteByte("BATTLE_FIELD", 41);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 13 && (Globals.MAP >= 398 && Globals.MAP <= 400)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 448);
-                    emulator.WriteByte("BATTLE_FIELD", 68);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 448);
+                    Emulator.WriteByte("BATTLE_FIELD", 68);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 14 && (Globals.MAP >= 398 && Globals.MAP <= 400)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 416);
-                    emulator.WriteByte("BATTLE_FIELD", 38);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 416);
+                    Emulator.WriteByte("BATTLE_FIELD", 38);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 15 && (Globals.MAP >= 398 && Globals.MAP <= 400)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 422);
-                    emulator.WriteByte("BATTLE_FIELD", 42);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 422);
+                    Emulator.WriteByte("BATTLE_FIELD", 42);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 16 && (Globals.MAP >= 398 && Globals.MAP <= 400)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 423);
-                    emulator.WriteByte("BATTLE_FIELD", 47);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 423);
+                    Emulator.WriteByte("BATTLE_FIELD", 47);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 17 && (Globals.MAP >= 398 && Globals.MAP <= 400)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 432);
-                    emulator.WriteByte("BATTLE_FIELD", 69);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 432);
+                    Emulator.WriteByte("BATTLE_FIELD", 69);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 18 && (Globals.MAP >= 398 && Globals.MAP <= 400)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 430);
-                    emulator.WriteByte("BATTLE_FIELD", 67);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 430);
+                    Emulator.WriteByte("BATTLE_FIELD", 67);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 19 && (Globals.MAP >= 398 && Globals.MAP <= 400)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 433);
-                    emulator.WriteByte("BATTLE_FIELD", 56);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 433);
+                    Emulator.WriteByte("BATTLE_FIELD", 56);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 20 && (Globals.MAP >= 398 && Globals.MAP <= 400)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 431);
-                    emulator.WriteByte("BATTLE_FIELD", 54);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 431);
+                    Emulator.WriteByte("BATTLE_FIELD", 54);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 21 && (Globals.MAP >= 398 && Globals.MAP <= 400)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 447);
-                    emulator.WriteByte("BATTLE_FIELD", 68);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 447);
+                    Emulator.WriteByte("BATTLE_FIELD", 68);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 22 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 408);
-                    emulator.WriteByte("BATTLE_FIELD", 12);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 408);
+                    Emulator.WriteByte("BATTLE_FIELD", 12);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 23 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 389);
-                    emulator.WriteByte("BATTLE_FIELD", 21);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 389);
+                    Emulator.WriteByte("BATTLE_FIELD", 21);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 24 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 396);
-                    emulator.WriteByte("BATTLE_FIELD", 30);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 396);
+                    Emulator.WriteByte("BATTLE_FIELD", 30);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 25 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 399);
-                    emulator.WriteByte("BATTLE_FIELD", 72);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 399);
+                    Emulator.WriteByte("BATTLE_FIELD", 72);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 26 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 409);
-                    emulator.WriteByte("BATTLE_FIELD", 27);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 409);
+                    Emulator.WriteByte("BATTLE_FIELD", 27);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 27 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 393);
-                    emulator.WriteByte("BATTLE_FIELD", 14);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 393);
+                    Emulator.WriteByte("BATTLE_FIELD", 14);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 28 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 398);
-                    emulator.WriteByte("BATTLE_FIELD", 73);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 398);
+                    Emulator.WriteByte("BATTLE_FIELD", 73);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 29 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 397);
-                    emulator.WriteByte("BATTLE_FIELD", 35);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 397);
+                    Emulator.WriteByte("BATTLE_FIELD", 35);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 30 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 400);
-                    emulator.WriteByte("BATTLE_FIELD", 76);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 400);
+                    Emulator.WriteByte("BATTLE_FIELD", 76);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 31 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 410);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 410);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 32 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 401);
-                    emulator.WriteByte("BATTLE_FIELD", 77);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 401);
+                    Emulator.WriteByte("BATTLE_FIELD", 77);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 33 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 390);
-                    emulator.WriteByte("BATTLE_FIELD", 22);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 390);
+                    Emulator.WriteByte("BATTLE_FIELD", 22);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 34 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 411);
-                    emulator.WriteByte("BATTLE_FIELD", 24);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 411);
+                    Emulator.WriteByte("BATTLE_FIELD", 24);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 35 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 394);
-                    emulator.WriteByte("BATTLE_FIELD", 40);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 394);
+                    Emulator.WriteByte("BATTLE_FIELD", 40);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 36 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 392);
-                    emulator.WriteByte("BATTLE_FIELD", 45);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 392);
+                    Emulator.WriteByte("BATTLE_FIELD", 45);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 37 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 420);
-                    emulator.WriteByte("BATTLE_FIELD", 44);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 420);
+                    Emulator.WriteByte("BATTLE_FIELD", 44);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 38 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 442);
-                    emulator.WriteByte("BATTLE_FIELD", 71);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 442);
+                    Emulator.WriteByte("BATTLE_FIELD", 71);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else if (uiCombo["cboUltimateBoss"] == 39 && (Globals.MAP >= 401 && Globals.MAP <= 405)) {
-                    emulator.WriteShort("ENCOUNTER_ID", 443);
-                    emulator.WriteByte("BATTLE_FIELD", 65);
-                    emulator.WriteByte("TRANSITION", 19);
+                    Emulator.WriteShort("ENCOUNTER_ID", 443);
+                    Emulator.WriteByte("BATTLE_FIELD", 65);
+                    Emulator.WriteByte("TRANSITION", 19);
                 } else {
                     this.Dispatcher.BeginInvoke(new Action(() => {
                         Globals.dmScripts["btnUltimateBoss"] = false;
@@ -3146,9 +3113,9 @@ namespace Dragoon_Modifier {
                     if (Globals.ENCOUNTER_ID == 390) {
                         for (int i = 0; i < inventorySize + 1; i++) {
                             if (i == inventorySize) {
-                                inventoryRefreshSize = emulator.ReadByte("INVENTORY_SIZE");
+                                inventoryRefreshSize = Emulator.ReadByte("INVENTORY_SIZE");
                             } else {
-                                inventoryRefresh[i] = emulator.ReadByte("INVENTORY", i);
+                                inventoryRefresh[i] = Emulator.ReadByte("INVENTORY", i);
                             }
                         }
                         ubInventoryRefresh = false;
@@ -3193,7 +3160,7 @@ namespace Dragoon_Modifier {
                         TurnOnOffButton(ref btnUltimateBoss);
                     }), DispatcherPriority.ContextIdle);
                 } else {
-                    if (emulator.ReadShort("BATTLE_VALUE") == 41215 && Globals.STATS_CHANGED) {
+                    if (Emulator.ReadShort("BATTLE_VALUE") == 41215 && Globals.STATS_CHANGED) {
                         UltimateBossHP();
 
                         if (ubGuardBreak) {
@@ -3259,40 +3226,40 @@ namespace Dragoon_Modifier {
                                 }
                             } else if (Globals.ENCOUNTER_ID == 390) { //Doel
                                 if (ultimateHP[1] <= 75000) {
-                                    emulator.WriteAOB(Globals.MONS_ADDRESS[1] - 0x6F8C, "C2");
-                                    emulator.WriteAOB(Globals.MONS_ADDRESS[1] - 0x6F4C, "F8");
+                                    Emulator.WriteAoB(Globals.MONS_ADDRESS[1] - 0x6F8C, "C2");
+                                    Emulator.WriteAoB(Globals.MONS_ADDRESS[1] - 0x6F4C, "F8");
                                 } else {
-                                    if (magicChangeTurns > emulator.ReadShort(Globals.MONS_ADDRESS[1] + 0x44)) {
-                                        if (emulator.ReadByte("DRAGOON_SPECIAL_ATTACK") >= 0 && emulator.ReadByte("DRAGOON_SPECIAL_ATTACK", 0x1) == 0) {
-                                            if (emulator.ReadByte("DRAGOON_SPECIAL_ATTACK") == 0) {
-                                                emulator.WriteAOB(Globals.MONS_ADDRESS[1] - 0x6F8C, "C3");
-                                                emulator.WriteAOB(Globals.MONS_ADDRESS[1] - 0x6F4C, "D1");
-                                            } else if (emulator.ReadByte("DRAGOON_SPECIAL_ATTACK") == 1 || emulator.ReadByte("DRAGOON_SPECIAL_ATTACK") == 5) {
-                                                emulator.WriteAOB(Globals.MONS_ADDRESS[1] - 0x6F8C, "C7");
-                                                emulator.WriteAOB(Globals.MONS_ADDRESS[1] - 0x6F4C, "DC");
-                                            } else if (emulator.ReadByte("DRAGOON_SPECIAL_ATTACK") == 2 || emulator.ReadByte("DRAGOON_SPECIAL_ATTACK") == 8) {
-                                                emulator.WriteAOB(Globals.MONS_ADDRESS[1] - 0x6F8C, "C9");
-                                                emulator.WriteAOB(Globals.MONS_ADDRESS[1] - 0x6F4C, "D2");
-                                            } else if (emulator.ReadByte("DRAGOON_SPECIAL_ATTACK") == 3) {
-                                                emulator.WriteAOB(Globals.MONS_ADDRESS[1] - 0x6F8C, "CA");
-                                                emulator.WriteAOB(Globals.MONS_ADDRESS[1] - 0x6F4C, "D8");
-                                            } else if (emulator.ReadByte("DRAGOON_SPECIAL_ATTACK") == 4) {
-                                                emulator.WriteAOB(Globals.MONS_ADDRESS[1] - 0x6F8C, "C2");
-                                                emulator.WriteAOB(Globals.MONS_ADDRESS[1] - 0x6F4C, "CF");
-                                            } else if (emulator.ReadByte("DRAGOON_SPECIAL_ATTACK") == 6) {
-                                                emulator.WriteAOB(Globals.MONS_ADDRESS[1] - 0x6F8C, "C6");
-                                                emulator.WriteAOB(Globals.MONS_ADDRESS[1] - 0x6F4C, "D6");
-                                            } else if (emulator.ReadByte("DRAGOON_SPECIAL_ATTACK") == 7) {
-                                                emulator.WriteAOB(Globals.MONS_ADDRESS[1] - 0x6F8C, "C5");
-                                                emulator.WriteAOB(Globals.MONS_ADDRESS[1] - 0x6F4C, "D0");
+                                    if (magicChangeTurns > Emulator.ReadShort(Globals.MONS_ADDRESS[1] + 0x44)) {
+                                        if (Emulator.ReadByte("DRAGOON_SPECIAL_ATTACK") >= 0 && Emulator.ReadByte("DRAGOON_SPECIAL_ATTACK", 0x1) == 0) {
+                                            if (Emulator.ReadByte("DRAGOON_SPECIAL_ATTACK") == 0) {
+                                                Emulator.WriteAoB(Globals.MONS_ADDRESS[1] - 0x6F8C, "C3");
+                                                Emulator.WriteAoB(Globals.MONS_ADDRESS[1] - 0x6F4C, "D1");
+                                            } else if (Emulator.ReadByte("DRAGOON_SPECIAL_ATTACK") == 1 || Emulator.ReadByte("DRAGOON_SPECIAL_ATTACK") == 5) {
+                                                Emulator.WriteAoB(Globals.MONS_ADDRESS[1] - 0x6F8C, "C7");
+                                                Emulator.WriteAoB(Globals.MONS_ADDRESS[1] - 0x6F4C, "DC");
+                                            } else if (Emulator.ReadByte("DRAGOON_SPECIAL_ATTACK") == 2 || Emulator.ReadByte("DRAGOON_SPECIAL_ATTACK") == 8) {
+                                                Emulator.WriteAoB(Globals.MONS_ADDRESS[1] - 0x6F8C, "C9");
+                                                Emulator.WriteAoB(Globals.MONS_ADDRESS[1] - 0x6F4C, "D2");
+                                            } else if (Emulator.ReadByte("DRAGOON_SPECIAL_ATTACK") == 3) {
+                                                Emulator.WriteAoB(Globals.MONS_ADDRESS[1] - 0x6F8C, "CA");
+                                                Emulator.WriteAoB(Globals.MONS_ADDRESS[1] - 0x6F4C, "D8");
+                                            } else if (Emulator.ReadByte("DRAGOON_SPECIAL_ATTACK") == 4) {
+                                                Emulator.WriteAoB(Globals.MONS_ADDRESS[1] - 0x6F8C, "C2");
+                                                Emulator.WriteAoB(Globals.MONS_ADDRESS[1] - 0x6F4C, "CF");
+                                            } else if (Emulator.ReadByte("DRAGOON_SPECIAL_ATTACK") == 6) {
+                                                Emulator.WriteAoB(Globals.MONS_ADDRESS[1] - 0x6F8C, "C6");
+                                                Emulator.WriteAoB(Globals.MONS_ADDRESS[1] - 0x6F4C, "D6");
+                                            } else if (Emulator.ReadByte("DRAGOON_SPECIAL_ATTACK") == 7) {
+                                                Emulator.WriteAoB(Globals.MONS_ADDRESS[1] - 0x6F8C, "C5");
+                                                Emulator.WriteAoB(Globals.MONS_ADDRESS[1] - 0x6F4C, "D0");
                                             }
                                         } else {
-                                            emulator.WriteAOB(Globals.MONS_ADDRESS[1] - 0x6F8C, "C2");
-                                            emulator.WriteAOB(Globals.MONS_ADDRESS[1] - 0x6F4C, "CF");
+                                            Emulator.WriteAoB(Globals.MONS_ADDRESS[1] - 0x6F8C, "C2");
+                                            Emulator.WriteAoB(Globals.MONS_ADDRESS[1] - 0x6F4C, "CF");
                                         }
                                     }
 
-                                    magicChangeTurns = emulator.ReadShort(Globals.MONS_ADDRESS[1] + 0x44);
+                                    magicChangeTurns = Emulator.ReadShort(Globals.MONS_ADDRESS[1] + 0x44);
                                 }
                             } else if (Globals.ENCOUNTER_ID == 394) { //Divine Dargon
                                 double hpDamage = ultimateMaxHP[0] - ultimateHP[0];
@@ -3338,9 +3305,9 @@ namespace Dragoon_Modifier {
                                 if (Globals.MONSTER_TABLE[0].Read("HP") == 0) {
                                     for (int i = 0; i < inventorySize + 1; i++) {
                                         if (i == inventorySize) {
-                                            emulator.WriteByte("INVENTORY_SIZE", inventoryRefreshSize);
+                                            Emulator.WriteByte("INVENTORY_SIZE", inventoryRefreshSize);
                                         } else {
-                                            emulator.WriteByte("INVENTORY", inventoryRefresh[i], i);
+                                            Emulator.WriteByte("INVENTORY", inventoryRefresh[i], i);
                                         }
                                     }
                                 }
@@ -3404,7 +3371,7 @@ namespace Dragoon_Modifier {
                 } else if (Globals.MONSTER_IDS[i] == 349) { //Polter Helm
                     ubSharedHP = true;
                 } else if (Globals.MONSTER_IDS[i] == 365) { //The Last Kraken
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] + 0x175, 0);
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] + 0x175, 0);
                 } else if (Globals.MONSTER_IDS[i] == 308) { //Virage (head)
                     ubRemoveResistances = true;
                 } else if (Globals.MONSTER_IDS[i] == 293) { //Lenus
@@ -3693,7 +3660,7 @@ namespace Dragoon_Modifier {
                     if ((doubleRepeatUsed & 2097152) != 2097152) {
                         for (int i = 0; i < 3; i++) {
                             if (Globals.PARTY_SLOT[i] < 9) {
-                                if (emulator.ReadByte("SPECIAL_EFFECT", (Globals.MONSTER_SIZE + i) * 0x20) >= 12) {
+                                if (Emulator.ReadByte("SPECIAL_EFFECT", (Globals.MONSTER_SIZE + i) * 0x20) >= 12) {
                                     doubleRepeatUsed += 2097152;
                                     magicShieldSlot = i;
                                     magicShieldTurns = 12;
@@ -3709,7 +3676,7 @@ namespace Dragoon_Modifier {
                     if ((doubleRepeatUsed & 4194304) != 4194304) {
                         for (int i = 0; i < 3; i++) {
                             if (Globals.PARTY_SLOT[i] < 9) {
-                                int shieldValue = emulator.ReadByte("SPECIAL_EFFECT", (Globals.MONSTER_SIZE + i) * 0x20);
+                                int shieldValue = Emulator.ReadByte("SPECIAL_EFFECT", (Globals.MONSTER_SIZE + i) * 0x20);
                                 if (shieldValue == 3 || shieldValue == 7 || shieldValue == 11 || shieldValue == 15) {
                                     doubleRepeatUsed += 4194304;
                                     materialShieldSlot = i;
@@ -3725,7 +3692,7 @@ namespace Dragoon_Modifier {
                 if ((ultimateShopLimited & 8388608) == 8388608) { //Magic Sig Stone
                     if ((doubleRepeatUsed & 8388608) != 8388608) {
                         for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                            if (emulator.ReadByte("SPECIAL_EFFECT", i * 0x20) == 48) {
+                            if (Emulator.ReadByte("SPECIAL_EFFECT", i * 0x20) == 48) {
                                 doubleRepeatUsed += 8388608;
                                 sigStoneSlot = i;
                                 sigStoneTurns = 48;
@@ -3733,8 +3700,8 @@ namespace Dragoon_Modifier {
                         }
                     } else {
                         if (sigStoneTurns > 0) {
-                            if (emulator.ReadByte("SPECIAL_EFFECT", sigStoneSlot * 0x20) == 16) {
-                                emulator.WriteByte("SPECIAL_EFFECT", emulator.ReadByte("SPECIAL_EFFECT", sigStoneSlot * 0x20) + 16, sigStoneSlot * 0x20);
+                            if (Emulator.ReadByte("SPECIAL_EFFECT", sigStoneSlot * 0x20) == 16) {
+                                Emulator.WriteByte("SPECIAL_EFFECT", (byte) (Emulator.ReadByte("SPECIAL_EFFECT", sigStoneSlot * 0x20) + 16), sigStoneSlot * 0x20);
                                 sigStoneTurns -= 16;
                             }
 
@@ -3748,7 +3715,7 @@ namespace Dragoon_Modifier {
                     if ((doubleRepeatUsed & 16777216) != 16777216) {
                         for (int i = 0; i < 3; i++) {
                             if (Globals.PARTY_SLOT[i] < 9) {
-                                if (emulator.ReadByte("SPECIAL_EFFECT", 1 + ((Globals.MONSTER_SIZE + i) * 0x20)) == 3) {
+                                if (Emulator.ReadByte("SPECIAL_EFFECT", 1 + ((Globals.MONSTER_SIZE + i) * 0x20)) == 3) {
                                     doubleRepeatUsed += 16777216;
                                     pandemoniumSlot = i;
                                     pandemoniumTurns = 3;
@@ -3758,8 +3725,8 @@ namespace Dragoon_Modifier {
                     } else {
                         if (pandemoniumTurns > 0) {
                             if (pandemoniumTurns > 0) {
-                                if (emulator.ReadByte("SPECIAL_EFFECT", 1 + ((Globals.MONSTER_SIZE + pandemoniumSlot) * 0x20)) == 1) {
-                                    emulator.WriteByte(Constants.GetAddress("SPECIAL_EFFECT") + 1 + ((Globals.MONSTER_SIZE + pandemoniumSlot) * 0x20), emulator.ReadByte("SPECIAL_EFFECT", 1 + ((Globals.MONSTER_SIZE + pandemoniumSlot) * 0x20)) + 1);
+                                if (Emulator.ReadByte("SPECIAL_EFFECT", 1 + ((Globals.MONSTER_SIZE + pandemoniumSlot) * 0x20)) == 1) {
+                                    Emulator.WriteByte(Constants.GetAddress("SPECIAL_EFFECT") + 1 + ((Globals.MONSTER_SIZE + pandemoniumSlot) * 0x20), (byte) (Emulator.ReadByte("SPECIAL_EFFECT", 1 + ((Globals.MONSTER_SIZE + pandemoniumSlot) * 0x20)) + 1));
                                     pandemoniumTurns -= 1;
                                 }
 
@@ -3793,17 +3760,17 @@ namespace Dragoon_Modifier {
 
             for (int i = 0; i < 3; i++) {
                 long address = Constants.GetAddress("SPECIAL_EFFECT") + ((Globals.MONSTER_SIZE + i) * 0x20);
-                if (materialShieldTurns > 0 && magicShieldTurns > 0 && materialShieldSlot == i && magicShieldSlot == i && (emulator.ReadByte(address) == 5 || emulator.ReadByte(address) == 8 || emulator.ReadByte(address) == 9)) {
-                    emulator.WriteByte(address, emulator.ReadByte(address) + 5);
+                if (materialShieldTurns > 0 && magicShieldTurns > 0 && materialShieldSlot == i && magicShieldSlot == i && (Emulator.ReadByte(address) == 5 || Emulator.ReadByte(address) == 8 || Emulator.ReadByte(address) == 9)) {
+                    Emulator.WriteByte(address, (byte) (Emulator.ReadByte(address) + 5));
                     materialShieldTurns -= 1;
                     magicShieldTurns -= 5;
                 } else {
-                    if (materialShieldTurns > 0 && materialShieldSlot == i && emulator.ReadByte(address) == 1) {
-                        emulator.WriteByte(address, emulator.ReadByte(address) + 1);
+                    if (materialShieldTurns > 0 && materialShieldSlot == i && Emulator.ReadByte(address) == 1) {
+                        Emulator.WriteByte(address, (byte) (Emulator.ReadByte(address) + 1));
                         materialShieldTurns -= 1;
                     }
-                    if (magicShieldTurns > 0 && magicShieldSlot == i && emulator.ReadByte(address) == 4) {
-                        emulator.WriteByte(address, emulator.ReadByte(address) + 4);
+                    if (magicShieldTurns > 0 && magicShieldSlot == i && Emulator.ReadByte(address) == 4) {
+                        Emulator.WriteByte(address, (byte) (Emulator.ReadByte(address) + 4));
                         magicShieldTurns -= 4;
                     }
                 }
@@ -4037,14 +4004,14 @@ namespace Dragoon_Modifier {
         public void HealthSteal(int monsterSlot, byte attack) {
             if (Globals.MONSTER_TABLE[monsterSlot].Read("Attack_Move") == attack) {
                 if (ubHealthStealSave) {
-                    ushort dmg = emulator.ReadShort("DAMAGE_SLOT1");
+                    ushort dmg = Emulator.ReadUShort("DAMAGE_SLOT1");
                     if (dmg != 65534 && dmg != ubHealthStealDamage) {
                         ubHealthStealDamage = dmg;
                         ultimateHP[monsterSlot] += dmg;
                         ubHealthStealSave = false;
                     }
                 } else {
-                    ubHealthStealDamage = emulator.ReadShort("DAMAGE_SLOT1");
+                    ubHealthStealDamage = Emulator.ReadUShort("DAMAGE_SLOT1");
                     ubHealthStealSave = true;
                 }
             } else {
@@ -4062,7 +4029,7 @@ namespace Dragoon_Modifier {
                             Globals.CHARACTER_TABLE[i].Write("SP_ONHIT_PHYSICAL_TRN", turns);
                             Globals.CHARACTER_TABLE[i].Write("SP_ONHIT_MAGIC_TRN", turns);
                         }
-                        if (emulator.ReadByte("DRAGOON_TURNS", (i * 0x4)) == 0) {
+                        if (Emulator.ReadByte("DRAGOON_TURNS", (i * 0x4)) == 0) {
                             int sp = Globals.CHARACTER_TABLE[i].Read("SP") - spAmount;
                             Globals.CHARACTER_TABLE[i].Write("SP", sp > 0 ? sp : 0);
                         }
@@ -4141,68 +4108,68 @@ namespace Dragoon_Modifier {
 
             if (Globals.ENCOUNTER_ID == 416) {
                 index = new Random().Next(0, singleMagic.Count);
-                emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x102C, Convert.ToByte(singleMagic[index]));
+                Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x102C, Convert.ToByte(singleMagic[index]));
                 singleMagic.RemoveAt(index);
                 index = new Random().Next(0, singleMagic.Count);
-                emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xFEC, Convert.ToByte(singleMagic[index]));
+                Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xFEC, Convert.ToByte(singleMagic[index]));
                 singleMagic.RemoveAt(index);
                 index = new Random().Next(0, singleMagic.Count);
-                emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xFAC, Convert.ToByte(singleMagic[index]));
+                Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xFAC, Convert.ToByte(singleMagic[index]));
                 singleMagic.RemoveAt(index);
 
 
                 index = new Random().Next(0, wideMagic.Count);
-                emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xF6C, Convert.ToByte(wideMagic[index]));
+                Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xF6C, Convert.ToByte(wideMagic[index]));
                 wideMagic.RemoveAt(index);
                 index = new Random().Next(0, wideMagic.Count);
-                emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xF2C, Convert.ToByte(wideMagic[index]));
+                Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xF2C, Convert.ToByte(wideMagic[index]));
                 wideMagic.RemoveAt(index);
 
 
                 index = new Random().Next(0, powerMagic.Count);
-                emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xEEC, Convert.ToByte(powerMagic[index]));
+                Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xEEC, Convert.ToByte(powerMagic[index]));
                 powerMagic.RemoveAt(index);
             } else if (Globals.ENCOUNTER_ID == 396) {
                 index = new Random().Next(0, singleMagic.Count);
-                emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xC1C, Convert.ToByte(singleMagic[index]));
+                Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xC1C, Convert.ToByte(singleMagic[index]));
                 singleMagic.RemoveAt(index);
                 index = new Random().Next(0, singleMagic.Count);
-                emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xAF0, Convert.ToByte(singleMagic[index]));
+                Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xAF0, Convert.ToByte(singleMagic[index]));
                 singleMagic.RemoveAt(index);
 
                 index = new Random().Next(0, wideMagic.Count);
-                emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xBB8, Convert.ToByte(wideMagic[index]));
+                Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xBB8, Convert.ToByte(wideMagic[index]));
                 wideMagic.RemoveAt(index);
                 index = new Random().Next(0, wideMagic.Count);
-                emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xB54, Convert.ToByte(wideMagic[index]));
+                Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xB54, Convert.ToByte(wideMagic[index]));
                 wideMagic.RemoveAt(index);
             } else if (Globals.ENCOUNTER_ID == 394) {
                 index = new Random().Next(0, singleMagic.Count);
-                emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x1ABC, Convert.ToByte(singleMagic[index]));
+                Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x1ABC, Convert.ToByte(singleMagic[index]));
                 singleMagic.RemoveAt(index);
 
                 index = new Random().Next(0, powerMagic.Count);
-                emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x1A7C, Convert.ToByte(powerMagic[index]));
+                Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x1A7C, Convert.ToByte(powerMagic[index]));
                 powerMagic.RemoveAt(index);
                 index = new Random().Next(0, powerMagic.Count);
-                emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x1A3C, Convert.ToByte(powerMagic[index]));
+                Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x1A3C, Convert.ToByte(powerMagic[index]));
                 powerMagic.RemoveAt(index);
             } else if (Globals.ENCOUNTER_ID == 392) {
                 index = new Random().Next(0, singleMagic.Count);
-                emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xDAC, Convert.ToByte(singleMagic[index]));
+                Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xDAC, Convert.ToByte(singleMagic[index]));
                 singleMagic.RemoveAt(index);
                 index = new Random().Next(0, singleMagic.Count);
-                emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xD6C, Convert.ToByte(singleMagic[index]));
+                Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xD6C, Convert.ToByte(singleMagic[index]));
                 singleMagic.RemoveAt(index);
 
                 index = new Random().Next(0, wideMagic.Count);
-                emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xD2C, Convert.ToByte(wideMagic[index]));
+                Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xD2C, Convert.ToByte(wideMagic[index]));
                 wideMagic.RemoveAt(index);
                 index = new Random().Next(0, wideMagic.Count);
-                emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xCEC, Convert.ToByte(wideMagic[index]));
+                Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xCEC, Convert.ToByte(wideMagic[index]));
                 wideMagic.RemoveAt(index);
                 index = new Random().Next(0, wideMagic.Count);
-                emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xCAC, Convert.ToByte(wideMagic[index]));
+                Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xCAC, Convert.ToByte(wideMagic[index]));
                 wideMagic.RemoveAt(index);
             } else if (Globals.ENCOUNTER_ID == 420) {
                 if (ultimateHP[0] >= 800000) {
@@ -4212,23 +4179,23 @@ namespace Dragoon_Modifier {
                             element[i] = CharacterToElement(Globals.PARTY_SLOT[i]);
                         }
                     }
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5BBC, ElementToItem(0, element[0]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B84, ElementToItem(0, element[0]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B4C, ElementToItem(0, element[1]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B14, ElementToItem(0, element[1]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5ADC, ElementToItem(0, element[2]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5AA4, ElementToItem(0, element[2]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A6C, ElementToItem(0, element[new Random().Next(0, 2)]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A2C, ElementToItem(1, element[0]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59EC, ElementToItem(1, element[1]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59AC, ElementToItem(1, element[2]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x596C, ElementToItem(2, element[0]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x592C, ElementToItem(2, element[0]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58EC, ElementToItem(2, element[1]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58AC, ElementToItem(2, element[1]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x586C, ElementToItem(2, element[2]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x582C, ElementToItem(2, element[2]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x57EC, ElementToItem(2, element[new Random().Next(0, 2)]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5BBC, ElementToItem(0, element[0]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B84, ElementToItem(0, element[0]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B4C, ElementToItem(0, element[1]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B14, ElementToItem(0, element[1]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5ADC, ElementToItem(0, element[2]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5AA4, ElementToItem(0, element[2]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A6C, ElementToItem(0, element[new Random().Next(0, 2)]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A2C, ElementToItem(1, element[0]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59EC, ElementToItem(1, element[1]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59AC, ElementToItem(1, element[2]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x596C, ElementToItem(2, element[0]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x592C, ElementToItem(2, element[0]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58EC, ElementToItem(2, element[1]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58AC, ElementToItem(2, element[1]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x586C, ElementToItem(2, element[2]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x582C, ElementToItem(2, element[2]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x57EC, ElementToItem(2, element[new Random().Next(0, 2)]));
                 } else if (ultimateHP[0] >= 600000) {
                     byte[] element = { 16, 16, 16 };
                     for (int i = 0; i < 3; i++) {
@@ -4236,135 +4203,135 @@ namespace Dragoon_Modifier {
                             element[i] = CharacterToOppositeElement(Globals.PARTY_SLOT[i]);
                         }
                     }
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5BBC, ElementToItem(0, element[0]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B84, ElementToItem(0, element[0]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B4C, ElementToItem(0, element[1]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B14, ElementToItem(0, element[1]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5ADC, ElementToItem(0, element[2]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5AA4, ElementToItem(0, element[2]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A6C, ElementToItem(0, element[new Random().Next(0, 2)]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A2C, ElementToItem(1, element[0]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59EC, ElementToItem(1, element[1]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59AC, ElementToItem(1, element[2]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x596C, ElementToItem(2, element[0]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x592C, ElementToItem(2, element[0]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58EC, ElementToItem(2, element[1]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58AC, ElementToItem(2, element[1]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x586C, ElementToItem(2, element[2]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x582C, ElementToItem(2, element[2]));
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x57EC, ElementToItem(2, element[new Random().Next(0, 2)]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5BBC, ElementToItem(0, element[0]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B84, ElementToItem(0, element[0]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B4C, ElementToItem(0, element[1]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B14, ElementToItem(0, element[1]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5ADC, ElementToItem(0, element[2]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5AA4, ElementToItem(0, element[2]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A6C, ElementToItem(0, element[new Random().Next(0, 2)]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A2C, ElementToItem(1, element[0]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59EC, ElementToItem(1, element[1]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59AC, ElementToItem(1, element[2]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x596C, ElementToItem(2, element[0]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x592C, ElementToItem(2, element[0]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58EC, ElementToItem(2, element[1]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58AC, ElementToItem(2, element[1]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x586C, ElementToItem(2, element[2]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x582C, ElementToItem(2, element[2]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x57EC, ElementToItem(2, element[new Random().Next(0, 2)]));
                 } else if (ultimateHP[0] >= 400000) {
                     index = new Random().Next(0, singleMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5BBC, Convert.ToByte(singleMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5BBC, Convert.ToByte(singleMagic[index]));
                     singleMagic.RemoveAt(index);
                     index = new Random().Next(0, singleMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B84, Convert.ToByte(singleMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B84, Convert.ToByte(singleMagic[index]));
                     singleMagic.RemoveAt(index);
                     index = new Random().Next(0, singleMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B4C, Convert.ToByte(singleMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B4C, Convert.ToByte(singleMagic[index]));
                     singleMagic.RemoveAt(index);
                     index = new Random().Next(0, singleMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B14, Convert.ToByte(singleMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B14, Convert.ToByte(singleMagic[index]));
                     singleMagic.RemoveAt(index);
                     index = new Random().Next(0, singleMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5ADC, Convert.ToByte(singleMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5ADC, Convert.ToByte(singleMagic[index]));
                     singleMagic.RemoveAt(index);
                     index = new Random().Next(0, singleMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5AA4, Convert.ToByte(singleMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5AA4, Convert.ToByte(singleMagic[index]));
                     singleMagic.RemoveAt(index);
                     index = new Random().Next(0, singleMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A6C, Convert.ToByte(singleMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A6C, Convert.ToByte(singleMagic[index]));
                     singleMagic.RemoveAt(index);
 
                     index = new Random().Next(0, wideMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A2C, Convert.ToByte(wideMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A2C, Convert.ToByte(wideMagic[index]));
                     wideMagic.RemoveAt(index);
                     index = new Random().Next(0, wideMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59EC, Convert.ToByte(wideMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59EC, Convert.ToByte(wideMagic[index]));
                     wideMagic.RemoveAt(index);
                     index = new Random().Next(0, wideMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59AC, Convert.ToByte(wideMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59AC, Convert.ToByte(wideMagic[index]));
                     wideMagic.RemoveAt(index);
 
 
                     index = new Random().Next(0, powerMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x596C, Convert.ToByte(powerMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x596C, Convert.ToByte(powerMagic[index]));
                     powerMagic.RemoveAt(index);
                     index = new Random().Next(0, powerMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x592C, Convert.ToByte(powerMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x592C, Convert.ToByte(powerMagic[index]));
                     powerMagic.RemoveAt(index);
                     index = new Random().Next(0, powerMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58EC, Convert.ToByte(powerMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58EC, Convert.ToByte(powerMagic[index]));
                     powerMagic.RemoveAt(index);
                     index = new Random().Next(0, powerMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58AC, Convert.ToByte(powerMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58AC, Convert.ToByte(powerMagic[index]));
                     powerMagic.RemoveAt(index);
                     index = new Random().Next(0, powerMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x586C, Convert.ToByte(powerMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x586C, Convert.ToByte(powerMagic[index]));
                     powerMagic.RemoveAt(index);
                     index = new Random().Next(0, powerMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x582C, Convert.ToByte(powerMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x582C, Convert.ToByte(powerMagic[index]));
                     powerMagic.RemoveAt(index);
                     index = new Random().Next(0, powerMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x57EC, Convert.ToByte(powerMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x57EC, Convert.ToByte(powerMagic[index]));
                     powerMagic.RemoveAt(index);
                 } else {
                     wideMagic.Add(0xF1);
                     powerMagic.Add(0xFA);
 
                     index = new Random().Next(0, singleMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5BBC, Convert.ToByte(singleMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5BBC, Convert.ToByte(singleMagic[index]));
                     singleMagic.RemoveAt(index);
                     index = new Random().Next(0, singleMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B84, Convert.ToByte(singleMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B84, Convert.ToByte(singleMagic[index]));
                     singleMagic.RemoveAt(index);
                     index = new Random().Next(0, singleMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B4C, Convert.ToByte(singleMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B4C, Convert.ToByte(singleMagic[index]));
                     singleMagic.RemoveAt(index);
                     index = new Random().Next(0, singleMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B14, Convert.ToByte(singleMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B14, Convert.ToByte(singleMagic[index]));
                     singleMagic.RemoveAt(index);
                     index = new Random().Next(0, singleMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5ADC, Convert.ToByte(singleMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5ADC, Convert.ToByte(singleMagic[index]));
                     singleMagic.RemoveAt(index);
                     index = new Random().Next(0, singleMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5AA4, Convert.ToByte(singleMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5AA4, Convert.ToByte(singleMagic[index]));
                     singleMagic.RemoveAt(index);
                     index = new Random().Next(0, singleMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A6C, Convert.ToByte(singleMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A6C, Convert.ToByte(singleMagic[index]));
                     singleMagic.RemoveAt(index);
 
                     index = wideMagic.Count - 1;
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A2C, Convert.ToByte(wideMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A2C, Convert.ToByte(wideMagic[index]));
                     wideMagic.RemoveAt(index);
                     index = new Random().Next(0, wideMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59EC, Convert.ToByte(wideMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59EC, Convert.ToByte(wideMagic[index]));
                     wideMagic.RemoveAt(index);
                     index = new Random().Next(0, wideMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59AC, Convert.ToByte(wideMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59AC, Convert.ToByte(wideMagic[index]));
                     wideMagic.RemoveAt(index);
 
 
                     index = powerMagic.Count - 1;
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x596C, Convert.ToByte(powerMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x596C, Convert.ToByte(powerMagic[index]));
                     powerMagic.RemoveAt(index);
                     index = new Random().Next(0, powerMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x592C, Convert.ToByte(powerMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x592C, Convert.ToByte(powerMagic[index]));
                     powerMagic.RemoveAt(index);
                     index = new Random().Next(0, powerMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58EC, Convert.ToByte(powerMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58EC, Convert.ToByte(powerMagic[index]));
                     powerMagic.RemoveAt(index);
                     index = new Random().Next(0, powerMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58AC, Convert.ToByte(powerMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58AC, Convert.ToByte(powerMagic[index]));
                     powerMagic.RemoveAt(index);
                     index = new Random().Next(0, powerMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x586C, Convert.ToByte(powerMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x586C, Convert.ToByte(powerMagic[index]));
                     powerMagic.RemoveAt(index);
                     index = new Random().Next(0, powerMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x582C, Convert.ToByte(powerMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x582C, Convert.ToByte(powerMagic[index]));
                     powerMagic.RemoveAt(index);
                     index = new Random().Next(0, powerMagic.Count);
-                    emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x57EC, Convert.ToByte(powerMagic[index]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x57EC, Convert.ToByte(powerMagic[index]));
                     powerMagic.RemoveAt(index);
                 }
             }
@@ -4468,7 +4435,7 @@ namespace Dragoon_Modifier {
         }
 
         public void ElementalShift() {
-            int lastItem = emulator.ReadByte(Globals.MONS_ADDRESS[0] + 0xABC);
+            int lastItem = Emulator.ReadByte(Globals.MONS_ADDRESS[0] + 0xABC);
             if (lastItem == 0xC0 || lastItem == 0xC3 || lastItem == 0xD1 || lastItem == 0xF2) {
                 Globals.MONSTER_TABLE[0].Write("Element", 128);
                 Globals.MONSTER_TABLE[0].Write("Display_Element", 128);
@@ -4549,10 +4516,10 @@ namespace Dragoon_Modifier {
 
                 if (resetTP) {
                     tpDamage = 0;
-                    emulator.WriteByte(Globals.M_POINT - 0x50, 0);
+                    Emulator.WriteByte(Globals.M_POINT - 0x50, 0);
                 }
 
-                byte moveSet = emulator.ReadByte(Globals.M_POINT - 0x50);
+                byte moveSet = Emulator.ReadByte(Globals.M_POINT - 0x50);
                 if ((moveSet == 68 || moveSet == 69 || moveSet == 76) && tpDamage == 0) {
                     if (moveSet == 68) {
                         tpDamage = 120;
@@ -4699,7 +4666,7 @@ namespace Dragoon_Modifier {
                         if (Globals.PARTY_SLOT[i] < 9) {
                             if (ubTrackHP[i] != Globals.CHARACTER_TABLE[i].Read("HP")) {
                                 if (Globals.CHARACTER_TABLE[i].Read("HP") < ubTrackHP[i]) {
-                                    if (emulator.ReadByte(Globals.M_POINT + 0xABC) == 78) {
+                                    if (Emulator.ReadByte(Globals.M_POINT + 0xABC) == 78) {
                                         ubCustomStatusTurns[i] += 4;
                                         ubBlockMenuHPTrack = false;
                                         ubBlockMenuTPTrack = true;
@@ -4732,9 +4699,9 @@ namespace Dragoon_Modifier {
                             }
 
                             if (ubCustomStatusTurns[i] > 0) {
-                                emulator.WriteByte(Constants.GetAddress("SPECIAL_EFFECT") - 0x4 + (Globals.MONSTER_SIZE + i) * 0x20, 221);
+                                Emulator.WriteByte(Constants.GetAddress("SPECIAL_EFFECT") - 0x4 + (Globals.MONSTER_SIZE + i) * 0x20, 221);
                             } else {
-                                emulator.WriteByte(Constants.GetAddress("SPECIAL_EFFECT") - 0x4 + (Globals.MONSTER_SIZE + i) * 0x20, 8);
+                                Emulator.WriteByte(Constants.GetAddress("SPECIAL_EFFECT") - 0x4 + (Globals.MONSTER_SIZE + i) * 0x20, 8);
                             }
 
                             if (Globals.CHARACTER_TABLE[i].Read("HP") == 0)
@@ -4747,12 +4714,12 @@ namespace Dragoon_Modifier {
                 } else {
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9 && ubCustomStatusTurns[i] > 0) {
-                            emulator.WriteByte(Constants.GetAddress("SPECIAL_EFFECT") - 0x4 + (Globals.MONSTER_SIZE + i) * 0x20, 8);
+                            Emulator.WriteByte(Constants.GetAddress("SPECIAL_EFFECT") - 0x4 + (Globals.MONSTER_SIZE + i) * 0x20, 8);
                         }
                     }
                 }
 
-                byte moveSet = emulator.ReadByte(Globals.M_POINT + 0xABC);
+                byte moveSet = Emulator.ReadByte(Globals.M_POINT + 0xABC);
 
                 if ((moveSet == 72 || moveSet == 73 || moveSet == 78) && (ubTrackDMove != moveSet)) {
                     if (moveSet == 72 || moveSet == 78) {
@@ -4796,7 +4763,7 @@ namespace Dragoon_Modifier {
                         if (Globals.PARTY_SLOT[i] < 9 && !trackDamage) {
                             if (ubTrackHP[i] != Globals.CHARACTER_TABLE[i].Read("HP")) {
                                 if (Globals.CHARACTER_TABLE[i].Read("HP") < ubTrackHP[i]) {
-                                    byte moveSet = emulator.ReadByte(Globals.M_POINT + 0xABC);
+                                    byte moveSet = Emulator.ReadByte(Globals.M_POINT + 0xABC);
 
                                     if (moveSet == 74) {
                                         if (new Random().Next(10) <= 3 && !setStream)
@@ -4821,7 +4788,7 @@ namespace Dragoon_Modifier {
                     }
 
                     if (setStream) {
-                        emulator.WriteByte(Globals.M_POINT + 0xB5, 1);
+                        Emulator.WriteByte(Globals.M_POINT + 0xB5, 1);
                         Globals.MONSTER_TABLE[0].Write("A_AV", 30);
                         Globals.MONSTER_TABLE[0].Write("M_AV", 30);
                         Constants.WriteGLogOutput("[BOSS] Grand Stream accuracy lost activated.");
@@ -4856,7 +4823,7 @@ namespace Dragoon_Modifier {
                         }
                     }
 
-                    if (Globals.MONSTER_TABLE[0].Read("A_AV") > 0 && emulator.ReadByte(Globals.M_POINT + 0xB5) == 0) {
+                    if (Globals.MONSTER_TABLE[0].Read("A_AV") > 0 && Emulator.ReadByte(Globals.M_POINT + 0xB5) == 0) {
                         Globals.MONSTER_TABLE[0].Write("A_AV", 0);
                         Globals.MONSTER_TABLE[0].Write("M_AV", 0);
                     }
@@ -4869,7 +4836,7 @@ namespace Dragoon_Modifier {
 
                     ubTrackTM = Globals.MONSTER_TABLE[0].Read("Turn");
 
-                    byte moveSet = emulator.ReadByte(Globals.M_POINT + 0xABC);
+                    byte moveSet = Emulator.ReadByte(Globals.M_POINT + 0xABC);
 
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9 && !trackDamage) {
@@ -5015,7 +4982,7 @@ namespace Dragoon_Modifier {
                 }
             }
 
-            ubTrackDMove = emulator.ReadByte(Globals.M_POINT + 0xABC);
+            ubTrackDMove = Emulator.ReadByte(Globals.M_POINT + 0xABC);
         }
 
         public void Countdown() {
@@ -5023,8 +4990,8 @@ namespace Dragoon_Modifier {
             if (Math.Floor(totalDamage / 40000) >= (ubLivesIncreased + 1)) {
                 ubLivesIncreased += 1;
 
-                if (emulator.ReadByte("BOSS_COUNT") > 0) {
-                    emulator.WriteByte("BOSS_COUNT", emulator.ReadByte("BOSS_COUNT") - 1);
+                if (Emulator.ReadByte("BOSS_COUNT") > 0) {
+                    Emulator.WriteByte("BOSS_COUNT", (byte) (Emulator.ReadByte("BOSS_COUNT") - 1));
                 }
             }
 
@@ -5039,7 +5006,7 @@ namespace Dragoon_Modifier {
             if (ultimateHP[2] == 0 || Globals.MONSTER_TABLE[2].Read("HP") == 0)
                 ubTotalGold += 10000;
 
-            if (emulator.ReadByte("BOSS_COUNT") == 11) {
+            if (Emulator.ReadByte("BOSS_COUNT") == 11) {
                 for (int i = 0; i < 3; i++) {
                     if (Globals.PARTY_SLOT[i] < 9) {
                         Globals.CHARACTER_TABLE[i].Write("Guard", 0);
@@ -5047,9 +5014,9 @@ namespace Dragoon_Modifier {
                 }
             }
 
-            emulator.WriteInteger("BATTLE_REWARDS_GOLD", ubTotalGold);
+            Emulator.WriteInt("BATTLE_REWARDS_GOLD", ubTotalGold);
 
-            if (ultimateHP[0] == 0 || ultimateHP[1] == 0 || emulator.ReadByte("BOSS_COUNT") == 11)
+            if (ultimateHP[0] == 0 || ultimateHP[1] == 0 || Emulator.ReadByte("BOSS_COUNT") == 11)
                 UltimateBossDefeated();
         }
 
@@ -5077,7 +5044,7 @@ namespace Dragoon_Modifier {
                 double dragoons = 0.0;
                 double enrage = 0.0;
                 for (int i = 0; i < 3; i++) {
-                    if (emulator.ReadByte("DRAGOON_TURNS", i * 0x4) > 0) {
+                    if (Emulator.ReadByte("DRAGOON_TURNS", i * 0x4) > 0) {
                         dragoons += 0.25;
                     }
                 }
@@ -5088,8 +5055,8 @@ namespace Dragoon_Modifier {
                     enragedMode[0] = 2;
                 }
 
-                if (enragedMode[0] == 2 && emulator.ReadByte("BOSS_COUNT") == 1)
-                    emulator.WriteByte("BOSS_COUNT", 2);
+                if (enragedMode[0] == 2 && Emulator.ReadByte("BOSS_COUNT") == 1)
+                    Emulator.WriteByte("BOSS_COUNT", 2);
 
                 enrage = enragedMode[0] == 1 ? 1.10 : enragedMode[0] == 2 ? 1.25 : 1;
 
@@ -5104,7 +5071,7 @@ namespace Dragoon_Modifier {
 
                 Globals.MONSTER_TABLE[0].Write("AT", Math.Round(originalMonsterStats[0, 1] * multiAT * (1 + ubEnrageTurns + ubEnrageTurnsPlus)));
 
-                if (Globals.MONSTER_TABLE[0].Read("Action") == 28 && emulator.ReadByte(Globals.M_POINT + 0xABC) == 226)
+                if (Globals.MONSTER_TABLE[0].Read("Action") == 28 && Emulator.ReadByte(Globals.M_POINT + 0xABC) == 226)
                     multiAT *= 2;
 
                 Globals.MONSTER_TABLE[0].Write("MAT", Math.Round(originalMonsterStats[0, 2] * multiAT * (1 + ubEnrageTurns + ubEnrageTurnsPlus)));
@@ -5117,10 +5084,10 @@ namespace Dragoon_Modifier {
                     Globals.MONSTER_TABLE[0].Write("MDF", Math.Round(originalMonsterStats[0, 4] / (divDF + ubEnrageTurns + ubEnrageTurnsPlus)));
                 }
 
-                if (Globals.MONSTER_TABLE[0].Read("Action") == 28 && emulator.ReadByte(Globals.M_POINT + 0xABC) == 225) {
+                if (Globals.MONSTER_TABLE[0].Read("Action") == 28 && Emulator.ReadByte(Globals.M_POINT + 0xABC) == 225) {
                     ubEnrageTurns -= 5;
                     ubEnrageTurnsPlus += 0.10;
-                    emulator.WriteByte(Globals.M_POINT + 0xABC, 0);
+                    Emulator.WriteByte(Globals.M_POINT + 0xABC, 0);
                     if (ubEnrageTurns < 0)
                         ubEnrageTurns = 0;
                 }
@@ -5159,11 +5126,11 @@ namespace Dragoon_Modifier {
                     Constants.WritePLog("[BOSS] Shield Turns: " + shieldTurnsTaken + " | Next Shield: " + enrageChangeTurns + "/" + enhancedShieldTurns);
                 }
 
-                if (emulator.ReadByte("SHIELD_ACTIVE") == 1) {
+                if (Emulator.ReadByte("SHIELD_ACTIVE") == 1) {
                     if (shieldTurnsTaken >= 0) {
                         if (shieldTurnsTaken >= 3) {
-                            emulator.WriteByte("SHIELD_ACTION", 7);
-                            emulator.WriteByte("BOSS_COUNT", 3);
+                            Emulator.WriteByte("SHIELD_ACTION", 7);
+                            Emulator.WriteByte("BOSS_COUNT", 3);
                             shieldTurnsTaken -= 1;
                         } else {
                             Globals.MONSTER_TABLE[1].Write("P_Half", 1);
@@ -5182,8 +5149,8 @@ namespace Dragoon_Modifier {
                 } else {
                     shieldTurnsTaken = 0;
                     if (enrageChangeTurns >= enhancedShieldTurns && enhancedShieldTurns <= 90) {
-                        emulator.WriteByte("BOSS_COUNT", 4);
-                        emulator.WriteByte("SHIELD_ACTION", 23);
+                        Emulator.WriteByte("BOSS_COUNT", 4);
+                        Emulator.WriteByte("SHIELD_ACTION", 23);
                         Globals.MONSTER_TABLE[1].Write("Turn", Globals.MONSTER_TABLE[1].Read("Turn") + 255);
                         enhancedShieldTurns += (short) new Random().Next(10, 30);
                         if (enrageChangeTurns <= 90 && (enhancedShieldTurns >= 91 && enhancedShieldTurns <= 125)) {
@@ -5263,7 +5230,7 @@ namespace Dragoon_Modifier {
         public void ArmorGuard() {
             for (int i = 0; i < 3; i++) {
                 if (Globals.PARTY_SLOT[i] < 9) {
-                    if (emulator.ReadByte("DRAGOON_TURNS", (0x4 * i)) > 0 && Globals.CHARACTER_TABLE[i].Read("PWR_DF") != 0) {
+                    if (Emulator.ReadByte("DRAGOON_TURNS", (0x4 * i)) > 0 && Globals.CHARACTER_TABLE[i].Read("PWR_DF") != 0) {
                         Globals.CHARACTER_TABLE[i].Write("PWR_DF", 0);
                         Globals.CHARACTER_TABLE[i].Write("PWR_DF_TRN", 0);
                         Globals.CHARACTER_TABLE[i].Write("PWR_MDF", 0);
@@ -5308,7 +5275,7 @@ namespace Dragoon_Modifier {
 
             for (int i = 0; i < 3; i++) {
                 if (Globals.PARTY_SLOT[i] < 9) {
-                    if (Globals.CHARACTER_TABLE[i].Read("Action") == 10 && emulator.ReadByte(Globals.M_POINT + 0xD46) == 0) {
+                    if (Globals.CHARACTER_TABLE[i].Read("Action") == 10 && Emulator.ReadByte(Globals.M_POINT + 0xD46) == 0) {
                         //Globals.CHARACTER_TABLE[i].Write("Death_Res", 192);
                         Globals.CHARACTER_TABLE[i].Write("Guard", 1);
                     } else {
@@ -5326,31 +5293,31 @@ namespace Dragoon_Modifier {
         #region Extend Inventory
         public void ExtendInventory() {
             if (inventorySize > 32) {
-                if (emulator.ReadShort("INVENTORY_CAP_1") != inventorySize || emulator.ReadShort("INVENTORY_CAP_2") != inventorySize || emulator.ReadShort("INVENTORY_CAP_3") != inventorySize || emulator.ReadShort("INVENTORY_CAP_4") != inventorySize) {
-                    emulator.WriteShort("INVENTORY_CAP_1", (ushort) inventorySize);
-                    emulator.WriteShort("INVENTORY_CAP_2", (ushort) inventorySize);
-                    emulator.WriteShort("INVENTORY_CAP_3", (ushort) inventorySize);
-                    emulator.WriteShort("INVENTORY_CAP_4", (ushort) inventorySize);
-                    emulator.WriteShort("ITEM_CAP", 808);
+                if (Emulator.ReadShort("INVENTORY_CAP_1") != inventorySize || Emulator.ReadShort("INVENTORY_CAP_2") != inventorySize || Emulator.ReadShort("INVENTORY_CAP_3") != inventorySize || Emulator.ReadShort("INVENTORY_CAP_4") != inventorySize) {
+                    Emulator.WriteUShort("INVENTORY_CAP_1", (ushort) inventorySize);
+                    Emulator.WriteUShort("INVENTORY_CAP_2", (ushort) inventorySize);
+                    Emulator.WriteUShort("INVENTORY_CAP_3", (ushort) inventorySize);
+                    Emulator.WriteUShort("INVENTORY_CAP_4", (ushort) inventorySize);
+                    Emulator.WriteShort("ITEM_CAP", 808);
                 }
 
-                if (emulator.ReadShort("INVENTORY_CAP_MINUS_1") != inventorySize || emulator.ReadShort("INVENTORY_CAP_MINUS_2") != inventorySize) {
-                    emulator.WriteShort("INVENTORY_CAP_MINUS_1", (ushort) inventorySize);
-                    emulator.WriteShort("INVENTORY_CAP_MINUS_2", (ushort) inventorySize);
-                    emulator.WriteShort("ITEM_CAP", 808);
+                if (Emulator.ReadShort("INVENTORY_CAP_MINUS_1") != inventorySize || Emulator.ReadShort("INVENTORY_CAP_MINUS_2") != inventorySize) {
+                    Emulator.WriteUShort("INVENTORY_CAP_MINUS_1", (ushort) inventorySize);
+                    Emulator.WriteUShort("INVENTORY_CAP_MINUS_2", (ushort) inventorySize);
+                    Emulator.WriteShort("ITEM_CAP", 808);
                 }
 
-                if (emulator.ReadShort("INVENTORY_CAP_PLUS_1") != inventorySize || emulator.ReadShort("INVENTORY_CAP_PLUS_2") != inventorySize) {
-                    emulator.WriteShort("INVENTORY_CAP_PLUS_1", (ushort) inventorySize);
-                    emulator.WriteShort("INVENTORY_CAP_PLUS_2", (ushort) inventorySize);
-                    emulator.WriteShort("ITEM_CAP", 808);
+                if (Emulator.ReadShort("INVENTORY_CAP_PLUS_1") != inventorySize || Emulator.ReadShort("INVENTORY_CAP_PLUS_2") != inventorySize) {
+                    Emulator.WriteUShort("INVENTORY_CAP_PLUS_1", (ushort) inventorySize);
+                    Emulator.WriteUShort("INVENTORY_CAP_PLUS_2", (ushort) inventorySize);
+                    Emulator.WriteShort("ITEM_CAP", 808);
                 }
 
-                if (emulator.ReadShort("ITEM_LIMIT_1") == 32 || emulator.ReadShort("ITEM_LIMIT_2") == 32 || emulator.ReadShort("ITEM_LIMIT_3") == 32) {
-                    emulator.WriteShort("ITEM_LIMIT_1", (ushort) inventorySize);
-                    emulator.WriteShort("ITEM_LIMIT_2", (ushort) inventorySize);
-                    emulator.WriteShort("ITEM_LIMIT_3", (ushort) inventorySize);
-                    emulator.WriteShort("ITEM_CAP", 808);
+                if (Emulator.ReadShort("ITEM_LIMIT_1") == 32 || Emulator.ReadShort("ITEM_LIMIT_2") == 32 || Emulator.ReadShort("ITEM_LIMIT_3") == 32) {
+                    Emulator.WriteUShort("ITEM_LIMIT_1", (ushort) inventorySize);
+                    Emulator.WriteUShort("ITEM_LIMIT_2", (ushort) inventorySize);
+                    Emulator.WriteUShort("ITEM_LIMIT_3", (ushort) inventorySize);
+                    Emulator.WriteShort("ITEM_CAP", 808);
                 }
             }
         }
@@ -5371,7 +5338,7 @@ namespace Dragoon_Modifier {
                 return;
 
             if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED && eleBombTurns == 0) {
-                eleBombItemUsed = emulator.ReadByte(Globals.MONS_ADDRESS[0] + 0xABC);
+                eleBombItemUsed = Emulator.ReadByte(Globals.MONS_ADDRESS[0] + 0xABC);
                 if ((eleBombItemUsed >= 241 && eleBombItemUsed <= 248) || eleBombItemUsed == 250) {
                     if (Globals.PARTY_SLOT[2] < 9) {
                         byte player1Action = Globals.CHARACTER_TABLE[0].Read("Action");
@@ -5418,7 +5385,7 @@ namespace Dragoon_Modifier {
                 //Constants.WriteDebug("Item: " + eleBombItemUsed + " | Slot: " + eleBombSlot + " | Turns: " + eleBombTurns + " | Change: " + eleBombChange);
             } else {
                 //Constants.WriteDebug("Item: " + eleBombItemUsed + " | Slot: " + eleBombSlot + " | Turns: " + eleBombTurns + " | Change: " + eleBombChange + " | Element: " + eleBombElement + " | Action: " + Globals.CHARACTER_TABLE[eleBombSlot].Read("Action"));
-                if (emulator.ReadShort("BATTLE_VALUE") == 41215 && Globals.STATS_CHANGED && eleBombSlot >= 0) {
+                if (Emulator.ReadShort("BATTLE_VALUE") == 41215 && Globals.STATS_CHANGED && eleBombSlot >= 0) {
                     if ((Globals.CHARACTER_TABLE[eleBombSlot].Read("Action") == 8 || Globals.CHARACTER_TABLE[eleBombSlot].Read("Action") == 10) && !eleBombChange) {
                         eleBombChange = true;
                         if (eleBombTurns == 5) {
@@ -5500,7 +5467,7 @@ namespace Dragoon_Modifier {
                             Globals.CHARACTER_TABLE[i].Write("HP_Regen", 7);
                         } else if (Globals.CHARACTER_TABLE[i].Read("HP_Regen") == 256) {
                             Globals.CHARACTER_TABLE[i].Write("HP_Regen", 10);
-                        } else if (Globals.CHARACTER_TABLE[i].Read("HP_Regen") == 0 && emulator.ReadByte("CHAR_TABLE", 0 * 0x2C + 0x18) == 0x7D) { //Therapy Ring
+                        } else if (Globals.CHARACTER_TABLE[i].Read("HP_Regen") == 0 && Emulator.ReadByte("CHAR_TABLE", 0 * 0x2C + 0x18) == 0x7D) { //Therapy Ring
                             Globals.CHARACTER_TABLE[i].Write("HP_Regen", 10);
                         }
                     }
@@ -5516,7 +5483,7 @@ namespace Dragoon_Modifier {
 
         #region Monster Names As HP
         public void MonsterHPNames() {
-            if (emulator.ReadShort("BATTLE_VALUE") == 41215 && Globals.STATS_CHANGED && Constants.BATTLE_UI) {
+            if (Emulator.ReadShort("BATTLE_VALUE") == 41215 && Globals.STATS_CHANGED && Constants.BATTLE_UI) {
                 for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
                     int lastX = 0;
                     long hpName = Constants.GetAddress("MONSTERS_NAMES") + (i * 0x2C);
@@ -5525,16 +5492,16 @@ namespace Dragoon_Modifier {
                         hpArray = ultimateHP[i].ToString().ToCharArray();
                     }
                     for (int x = 0; x < hpArray.Length; x++) {
-                        emulator.WriteShort(hpName + (x * 2), GetNameHP(hpArray[x]));
+                        Emulator.WriteUShort(hpName + (x * 2), GetNameHP(hpArray[x]));
                         lastX = x;
                     }
-                    emulator.WriteInteger(hpName + ((lastX + 1) * 2), 41215);
+                    Emulator.WriteInt(hpName + ((lastX + 1) * 2), 41215);
                 }
             }
         }
 
         public ushort GetNameHP(char single) {
-            return (ushort) (emulator.GetCharacterByChar(single) + GetNameHPOffset());
+            return (ushort) (Emulator.GetCharacterByChar(single) + GetNameHPOffset());
         }
 
         public ushort GetNameHPOffset() {
@@ -5715,10 +5682,10 @@ namespace Dragoon_Modifier {
             this.Dispatcher.BeginInvoke(new Action(() => {
                 if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED && Globals.CheckDMScript("btnEATB")) {
                     if (!eatbOnBattleEntry)
-                        timePlayed = emulator.ReadInteger("TIME_PLAYED");
+                        timePlayed = Emulator.ReadInt("TIME_PLAYED");
 
-                    if (timePlayed + 60 < emulator.ReadInteger("TIME_PLAYED")) {
-                        timePlayed = emulator.ReadInteger("TIME_PLAYED");
+                    if (timePlayed + 60 < Emulator.ReadInt("TIME_PLAYED")) {
+                        timePlayed = Emulator.ReadInt("TIME_PLAYED");
 
                         for (int i = 0; i < 3; i++) {
                             if (Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[i].Read("HP") > 0) {
@@ -5753,7 +5720,7 @@ namespace Dragoon_Modifier {
                                 extraTurnBattleM[i] += Globals.MONSTER_TABLE[i].Read("SPD");
                                 if (extraTurnBattleM[i] > 7000 + (1000 * i)) {
                                     extraTurnBattleM[i] = 0;
-                                    emulator.WriteByte(Globals.MONS_ADDRESS[i] + 0x45, emulator.ReadByte(Globals.MONS_ADDRESS[i] + 0x45) + 1);
+                                    Emulator.WriteByte(Globals.MONS_ADDRESS[i] + 0x45, (byte) (Emulator.ReadByte(Globals.MONS_ADDRESS[i] + 0x45) + 1));
                                 }
                                 progressMATB[i].Value = extraTurnBattleM[i];
 
@@ -5796,9 +5763,9 @@ namespace Dragoon_Modifier {
             else
                 cooldowns = cooldowns + 90;
 
-            Constants.WriteDebugProgram("[EATB] Dragoon Turns: " + emulator.ReadByte("DRAGOON_TURNS", 0x4 * slot) + "/" + emulator.ReadShort("DRAGOON_TURNS", 0x4 * slot) + "/" + emulator.ReadInteger("DRAGOON_TURNS", 0x4 * slot));
+            Constants.WriteDebugProgram("[EATB] Dragoon Turns: " + Emulator.ReadByte("DRAGOON_TURNS", 0x4 * slot) + "/" + Emulator.ReadShort("DRAGOON_TURNS", 0x4 * slot) + "/" + Emulator.ReadInt("DRAGOON_TURNS", 0x4 * slot));
 
-            if (emulator.ReadByte("DRAGOON_TURNS", 0x4 * slot) > 0 && emulator.ReadByte("DRAGOON_TURNS", 0x4 * slot) < 6)
+            if (Emulator.ReadByte("DRAGOON_TURNS", 0x4 * slot) > 0 && Emulator.ReadByte("DRAGOON_TURNS", 0x4 * slot) < 6)
                 Globals.CHARACTER_TABLE[slot].Write("Action", 10);
             else
                 Globals.CHARACTER_TABLE[slot].Write("Action", 8);
@@ -5891,7 +5858,7 @@ namespace Dragoon_Modifier {
                 qtbTurns -= 1;
                 pgrQTB.Value = qtbTurns;
 
-                if (emulator.ReadByte("DRAGOON_TURNS", 0x4 * slot) > 0)
+                if (Emulator.ReadByte("DRAGOON_TURNS", 0x4 * slot) > 0)
                     Globals.CHARACTER_TABLE[slot].Write("Action", 10);
                 else
                     Globals.CHARACTER_TABLE[slot].Write("Action", 8);
@@ -6034,10 +6001,10 @@ namespace Dragoon_Modifier {
         #region Extras
         public void WipeRewards() {
             for (int i = 0; i < 5; i++) {
-                emulator.WriteShort("MONSTER_REWARDS", 0, i * 0x1A8);
-                emulator.WriteShort("MONSTER_REWARDS", 0, 0x2 + i * 0x1A8);
-                emulator.WriteByte("MONSTER_REWARDS", 0, 0x4 + i * 0x1A8);
-                emulator.WriteByte("MONSTER_REWARDS", 0, 0x5 + i * 0x1A8);
+                Emulator.WriteShort("MONSTER_REWARDS", 0, i * 0x1A8);
+                Emulator.WriteShort("MONSTER_REWARDS", 0, 0x2 + i * 0x1A8);
+                Emulator.WriteByte("MONSTER_REWARDS", 0, 0x4 + i * 0x1A8);
+                Emulator.WriteByte("MONSTER_REWARDS", 0, 0x5 + i * 0x1A8);
             }
         }
         #endregion
@@ -6053,9 +6020,9 @@ namespace Dragoon_Modifier {
                     script.state = script.state == ScriptState.DISABLED ? ScriptState.ENABLED : ScriptState.DISABLED;
                     Constants.WriteOutput("Script '" + script.ToString() + "' is now " + (script.state == ScriptState.DISABLED ? "disabled." : "enabled."));
                     if (script.state == ScriptState.ENABLED) {
-                        script.Open(emulator);
+                        script.Open();
                     } else {
-                        script.Close(emulator);
+                        script.Close();
                     }
                 } else {
                     Constants.WriteOutput("The script '" + script.ToString() + "' is locked and can't be disabled.");
@@ -6067,36 +6034,12 @@ namespace Dragoon_Modifier {
 
         private void miAttach_Click(object sender, RoutedEventArgs e) {
             if (!Constants.RUN) {
-                if (Constants.EMULATOR == 8 || Constants.EMULATOR == 9) {
-                    Constants.EMULATOR_NAME = "RetroArch";
-                } else if (Constants.EMULATOR == 10) {
-                    Constants.EMULATOR_NAME = "pcsx2";
-                } else if (Constants.EMULATOR == 11) {
-                    Constants.EMULATOR_NAME = "DuckStation";
-                } else if (Constants.EMULATOR == 12) {
-                    Constants.EMULATOR_NAME = "Other";
-                } else {
-                    Constants.EMULATOR_NAME = "ePSXe";
-                }
+                bool setup = Emulator.Setup(Constants.EMULATOR_NAME, true);
 
-                int processID = 0;
-                if (Constants.EMULATOR_NAME.Equals("DuckStation")) {
-                    processID = emulator.GetProcIdFromName("duckstation-qt-x64-ReleaseLTCG.exe");
-                    if (processID == 0) {
-                        processID = emulator.GetProcIdFromName("duckstation-sdl-x64-ReleaseLTCG.exe");
-                    }
-                } else {
-                    processID = emulator.GetProcIdFromName(Constants.EMULATOR_NAME);
-                }
-
-                Emulator2.Setup(Constants.EMULATOR_NAME, true);
-
-
-                if (processID > 0) {
+                if (setup) {
                     Constants.RUN = true;
-                    emulator.OpenProcess(processID);
-                    globalThread = new Thread(delegate () { GlobalController.Run(emulator); });
-                    newBattleThread = new Thread(delegate () { BattleController.Run(emulator, uiCombo, eleBombTurns, eleBombElement, ubReverseDBS, inventorySize); });
+                    globalThread = new Thread(delegate () { GlobalController.Run(); });
+                    newBattleThread = new Thread(delegate () { BattleController.Run(uiCombo, eleBombTurns, eleBombElement, ubReverseDBS, inventorySize); });
                     fieldThread = new Thread(FieldController);
                     battleThread = new Thread(BattleController1);
                     hotkeyThread = new Thread(HotkeysController);
@@ -6109,21 +6052,18 @@ namespace Dragoon_Modifier {
                     hotkeyThread.Start();
                     otherThread.Start();
 
-                    if (emulator.ReadShort("BATTLE_VALUE") < 9999)
+                    if (Emulator.ReadShort("BATTLE_VALUE") < 9999)
                         Globals.STATS_CHANGED = true;
                     Constants.WritePLogOutput("Attached to " + Constants.EMULATOR_NAME + ".");
                     miAttach.Header = "Detach";
-                    AttachEmulator();
                 } else {
                     Constants.RUN = false;
                     miAttach.Header = "Attach";
-                    emulator.CloseProcess();
                     Constants.WritePLogOutput("Program failed to open. Please open " + Constants.EMULATOR_NAME + " then press attach.");
                 }
             } else {
                 Constants.RUN = false;
                 miAttach.Header = "Attach";
-                emulator.CloseProcess();
                 Constants.WritePLogOutput("Detached from " + Constants.EMULATOR_NAME + ". Program stopped.");
             }
         }
@@ -6134,7 +6074,7 @@ namespace Dragoon_Modifier {
                     mi.IsChecked = (MenuItem) sender == mi ? true : false;
                 }
 
-                Constants.EMULATOR = (byte) miEmulator.Items.IndexOf((MenuItem) sender);
+                Constants.EMULATOR_ID = (byte) miEmulator.Items.IndexOf((MenuItem) sender);
                 SetupEmulator(false);
             } else {
                 ((MenuItem) sender).IsChecked = false;
@@ -6144,16 +6084,18 @@ namespace Dragoon_Modifier {
 
         public void SetupEmulator(bool onOpen) {
             string oldEmulator = Constants.EMULATOR_NAME;
-            if (Constants.EMULATOR == 8 || Constants.EMULATOR == 9) {
+            if (Constants.EMULATOR_ID == 0) {
                 Constants.EMULATOR_NAME = "RetroArch";
-            } else if (Constants.EMULATOR == 10) {
-                Constants.EMULATOR_NAME = "pcsx2";
-            } else if (Constants.EMULATOR == 11) {
+            } else if (Constants.EMULATOR_ID == 1) {
                 Constants.EMULATOR_NAME = "DuckStation";
-            } else if (Constants.EMULATOR == 12) {
-                Constants.EMULATOR_NAME = "Other";
-            } else {
+            } else if (Constants.EMULATOR_ID == 2) {
                 Constants.EMULATOR_NAME = "ePSXe";
+            } else if (Constants.EMULATOR_ID == 3) {
+                Constants.EMULATOR_NAME = "PCSXR-PGXP";
+            } else if (Constants.EMULATOR_ID == 4) {
+                Constants.EMULATOR_NAME = "PCSX2";
+            } else {
+                Constants.EMULATOR_NAME = "Other";
             }
 
             if (!onOpen && (Constants.EMULATOR_NAME != oldEmulator || Constants.EMULATOR_NAME.Equals("Other"))) {
@@ -6165,7 +6107,7 @@ namespace Dragoon_Modifier {
                     if (ofg.ShowDialog() == true) {
                         Constants.EMULATOR_NAME = System.IO.Path.GetFileNameWithoutExtension(ofg.FileName);
                     } else {
-                        Constants.EMULATOR = 12;
+                        Constants.EMULATOR_ID = 12;
                     }
                 }
                 System.Windows.Application.Current.Shutdown();
@@ -6180,219 +6122,16 @@ namespace Dragoon_Modifier {
             }
         }
 
-        public void AttachEmulator() {
-            switch (Constants.EMULATOR) {
-                case 0: //ePSXe 1.6.0
-                    Constants.OFFSET = 0x5B6E40;
-                    break;
-                case 1: //ePSXe 1.7.0
-                    Constants.OFFSET = 0x94C020;
-                    break;
-                case 2: //ePSXe 1.8.0
-                    Constants.OFFSET = 0xA52EA0;
-                    break;
-                case 3: //ePSXe 1.9.0
-                    Constants.OFFSET = 0xA579A0;
-                    break;
-                case 4: //ePSXe 1.9.25
-                    Constants.OFFSET = 0xA8B6A0;
-                    break;
-                case 5: //ePSXe 2.0
-                case 6: //ePSXe 2.0.2
-                case 7: //ePSXe 2.0.5
-                    try {
-                        Process emulator = null;
-                        foreach (Process p in Process.GetProcessesByName("ePSXe")) {
-                            emulator = p;
-                        }
-                        ProcessModule emMod = emulator.MainModule;
-
-                        if (Constants.EMULATOR == 5) {
-                            Constants.OFFSET = (int) (emMod.BaseAddress + 0x81A020);
-                        } else if (Constants.EMULATOR == 6) {
-                            Constants.OFFSET = (int) (emMod.BaseAddress + 0x825140);
-                        } else if (Constants.EMULATOR == 7) {
-                            Constants.OFFSET = (int) (emMod.BaseAddress + 0xA82020);
-                        }
-
-                    } catch (Exception ex) {
-                        Constants.RUN = false;
-                        miAttach.Header = "Attach";
-                        emulator.CloseProcess();
-                        Constants.WritePLog("Failed to attach to selected emulator.");
-                        Constants.WriteOutput("Address calculation failed. Please open ePSXe.");
-                    }
-                    break;
-                case 8: //RetroArch Beetle PSX HW
-                    Constants.OFFSET = 0x40000000;
-                    break;
-                case 9: //RetroArch (Old)
-                    try {
-                        if (!CheckOldOffset()) {
-                            Process em = null;
-                            //ProcessModule dll = null;
-                            foreach (Process p in Process.GetProcessesByName("retroarch")) {
-                                em = p;
-                            }
-                            /*foreach (ProcessModule pm in em.Modules) {
-                                if (pm.ModuleName == "mednafen_psx_hw_libretro.dll") {
-                                    dll = pm;
-                                }
-                            }*/
-
-                            for (int i = 0; i < 256; i++) {
-                                Constants.OFFSET = 0;
-                                var scan = emulator.AoBScan(0x800000 * i, i == 15 ? 0x7FFF0000 : (0x800000 * (i + 1)), "50 53 2D 58 20 45 58 45");
-                                scan.Wait();
-                                var results = scan.Result;
-                                long offset = 0;
-                                foreach (var x in results) {
-                                    offset = x;
-                                    Constants.OFFSET = offset - 0xB070;
-                                    if (emulator.ReadInteger("STARTUP_SEARCH") == 320386 || emulator.ReadShort("BATTLE_VALUE") == 32776 || emulator.ReadShort("BATTLE_VALUE") == 41215) {
-                                        Constants.KEY.SetValue("Offset", Constants.OFFSET);
-                                        break;
-                                    } else {
-                                        Constants.OFFSET = 0;
-                                    }
-                                }
-
-                                if (Constants.OFFSET > 0)
-                                    break;
-                            }
-                            if (Constants.OFFSET <= 0) {
-                                Constants.WritePLog("Failed to attach to RetroArch.");
-                                throw new Exception();
-                            }
-                        }
-                    } catch (Exception ex) {
-                        Constants.RUN = false;
-                        miAttach.Header = "Attach";
-                        emulator.CloseProcess();
-                        Constants.WritePLog("Failed to attach to selected emulator.");
-                        Constants.WriteOutput("Address calculation failed. Please open retroarch with Beetle PSX HW at the Load Game screen before loading a save.");
-                    }
-                    break;
-                case 10: //PCSX2
-                    Constants.OFFSET = 0x24000000;
-                    break;
-                case 11: //DuckStation
-                    try {
-                        if (!CheckOldOffset()) {
-                            Process em = null;
-                            foreach (Process p in Process.GetProcessesByName("duckstation-qt-x64-ReleaseLTCG")) {
-                                em = p;
-                            }
-
-                            if (em == null) {
-                                foreach (Process p in Process.GetProcessesByName("duckstation-sdl-x64-ReleaseLTCG")) {
-                                    em = p;
-                                }
-                                if (em == null) {
-                                    throw new Exception();
-                                }
-                            }
-
-                            for (int i = 0; i < 8192; i++) {
-                                Constants.OFFSET = 0;
-                                var scan = emulator.AoBScan(0x7FF000000000 + ((long) 0x800000 * i), 0x7FF000000000 + ((long) 0x800000 * (i + 1)), "50 53 2D 58 20 45 58 45");
-                                //var scan = emulator.AoBScan(0x7FF665000000, 0x7FF666000000, "50 53 2D 58 20 45 58 45");
-                                scan.Wait();
-                                var results = scan.Result;
-                                long offset = 0;
-                                foreach (var x in results) {
-                                    offset = x;
-                                    Constants.OFFSET = offset - 0xB070;
-                                    if (emulator.ReadInteger("STARTUP_SEARCH") == 320386 || emulator.ReadShort("BATTLE_VALUE") == 32776 || emulator.ReadShort("BATTLE_VALUE") == 41215) {
-                                        Constants.KEY.SetValue("Offset", Constants.OFFSET);
-                                        break;
-                                    } else {
-                                        Constants.OFFSET = 0;
-                                    }
-                                }
-                                scan.Dispose();
-
-                                if (Constants.OFFSET > 0)
-                                    break;
-                            }
-                            if (Constants.OFFSET <= 0) {
-                                Constants.WritePLog("Failed to attach to DuckStation.");
-                                throw new Exception();
-                            }
-                        }
-                    } catch (Exception ex) {
-                        Constants.RUN = false;
-                        miAttach.Header = "Attach";
-                        emulator.CloseProcess();
-                        Constants.WritePLog("Failed to attach to selected emulator.");
-                        Constants.WriteOutput("Address calculation failed. Please open DuckStation at the load select screen.");
-                    }
-                    break;
-                case 12: //Other Emulator
-                    try {
-                        Constants.EMULATOR_NAME = Constants.KEY.GetValue("Other Emulator").ToString();
-                        if (!CheckOldOffset()) {
-                            Process em = null;
-                            foreach (Process p in Process.GetProcessesByName(Constants.EMULATOR_NAME)) {
-                                em = p;
-                            }
-
-                            for (int i = 0; i < 256; i++) {
-                                Constants.OFFSET = 0;
-                                var scan = emulator.AoBScan(0x800000 * i, i == 15 ? 0x7FFF0000 : (0x800000 * (i + 1)), "50 53 2D 58 20 45 58 45");
-                                scan.Wait();
-                                var results = scan.Result;
-                                long offset = 0;
-                                foreach (var x in results) {
-                                    offset = x;
-                                    Constants.OFFSET = offset - 0xB070;
-                                    if (emulator.ReadInteger("STARTUP_SEARCH") == 320386 || emulator.ReadShort("BATTLE_VALUE") == 32776 || emulator.ReadShort("BATTLE_VALUE") == 41215) {
-                                        Constants.KEY.SetValue("Offset", Constants.OFFSET);
-                                        break;
-                                    } else {
-                                        Constants.OFFSET = 0;
-                                    }
-                                }
-
-                                if (Constants.OFFSET > 0)
-                                    break;
-                            }
-                            if (Constants.OFFSET <= 0) {
-                                Constants.WritePLog("Failed to attach to " + Constants.EMULATOR_NAME + ".");
-                                throw new Exception();
-                            }
-                        }
-                    } catch (Exception ex) {
-                        Constants.RUN = false;
-                        miAttach.Header = "Attach";
-                        emulator.CloseProcess();
-                        Constants.WritePLog("Failed to attach to selected emulator.");
-                        Constants.WriteOutput("Address calculation failed. Please open " + Constants.EMULATOR_NAME + " at the load select screen.");
-                    }
-                    break;
-            }
-        }
-
-        public bool CheckOldOffset() {
-            Constants.OFFSET = oldOffset;
-            if (emulator.ReadInteger("STARTUP_SEARCH") == 320386 || emulator.ReadShort("BATTLE_VALUE") == 32776 || emulator.ReadShort("BATTLE_VALUE") == 41215) {
-                return true;
-            } else {
-                Constants.OFFSET = 0;
-                return false;
-            }
-        }
-
         public void SetupScripts() {
             try {
                 foreach (string file in Directory.GetFiles("Scripts\\Field", "*.cs", SearchOption.AllDirectories).OrderBy(f => f))
-                    lstField.Items.Add(new SubScript(file, emulator));
+                    lstField.Items.Add(new SubScript(file));
                 foreach (string file in Directory.GetFiles("Scripts\\Battle", "*.cs", SearchOption.AllDirectories).OrderBy(f => f))
-                    lstBattle.Items.Add(new SubScript(file, emulator));
+                    lstBattle.Items.Add(new SubScript(file));
                 foreach (string file in Directory.GetFiles("Scripts\\Hotkeys", "*.cs", SearchOption.AllDirectories).OrderBy(f => f))
-                    lstHotkey.Items.Add(new SubScript(file, emulator));
+                    lstHotkey.Items.Add(new SubScript(file));
                 foreach (string file in Directory.GetFiles("Scripts\\Other", "*.cs", SearchOption.AllDirectories).OrderBy(f => f))
-                    lstOther.Items.Add(new SubScript(file, emulator));
+                    lstOther.Items.Add(new SubScript(file));
             } catch (Exception ex) {
                 Constants.RUN = false;
                 Constants.WriteGLog("Program stopped.");
@@ -6435,22 +6174,22 @@ namespace Dragoon_Modifier {
 
                 foreach (SubScript s in lstField.Items) {
                     if (s.state != ScriptState.DISABLED)
-                        s.Open(emulator);
+                        s.Open();
                 }
 
                 foreach (SubScript s in lstBattle.Items) {
                     if (s.state != ScriptState.DISABLED)
-                        s.Open(emulator);
+                        s.Open();
                 }
 
                 foreach (SubScript s in lstHotkey.Items) {
                     if (s.state != ScriptState.DISABLED)
-                        s.Open(emulator);
+                        s.Open();
                 }
 
                 foreach (SubScript s in lstOther.Items) {
                     if (s.state != ScriptState.DISABLED)
-                        s.Open(emulator);
+                        s.Open();
                 }
 
                 LoadSubKey();
@@ -6652,7 +6391,7 @@ namespace Dragoon_Modifier {
             InputWindow offsetEntry = new InputWindow("Manual Offset Entry");
             TextBox input = new TextBox();
             long newOffset = 0;
-            offsetEntry.AddTextBlockF("Search for the below AOB and subtract 0xB070 from the result and enter it below in integer format. Once done you can try attaching the emulator.\r\n50 53 2D 58 20 45 58 45");
+            offsetEntry.AddTextBlockF("Search for the below AOB and subtract 0xB070 from the result and enter it below in integer format. Once done you can try attaching the Emulator.\r\n50 53 2D 58 20 45 58 45");
             offsetEntry.AddObjectF(input);
             offsetEntry.ShowDialog();
 
@@ -6782,7 +6521,7 @@ namespace Dragoon_Modifier {
                     Constants.WriteOutput("Changing Mod");
                 }
 
-                if (emulator.ReadShort("BATTLE_VALUE") < 9999)
+                if (Emulator.ReadShort("BATTLE_VALUE") < 9999)
                     Globals.STATS_CHANGED = true;
 
                 Constants.WritePLogOutput("Mod directory: " + Globals.MOD);
@@ -6890,11 +6629,11 @@ namespace Dragoon_Modifier {
             }
 
             if (btn.Name.Equals("btnTextSpeed") && !Globals.dmScripts[btn.Name]) {
-                emulator.WriteShort("TEXT_SPEED", 223);
+                Emulator.WriteShort("TEXT_SPEED", 223);
             }
 
             if (btn.Name.Equals("btnAutoText") && !Globals.dmScripts[btn.Name]) {
-                emulator.WriteShort("AUTO_TEXT", 12354);
+                Emulator.WriteShort("AUTO_TEXT", 12354);
             }
 
             if (btn.Name.Equals("btnDivineRed") && (Globals.DIFFICULTY_MODE.Contains("Hell") && ultimateBossCompleted < 34)) {
@@ -6906,7 +6645,7 @@ namespace Dragoon_Modifier {
                 TurnOnOffButton(ref btn);
             } else {
                 Globals.NO_DART = null;
-                emulator.WriteByte("PARTY_SLOT", 0);
+                Emulator.WriteByte("PARTY_SLOT", 0);
                 btn.Background = new SolidColorBrush(Color.FromArgb(255, 255, 168, 168));
                 Constants.WritePLogOutput("No Dart turned off.");
             }
@@ -7093,7 +6832,7 @@ namespace Dragoon_Modifier {
 
             Globals.DICTIONARY = new LoDDict();
             SHOP_CHANGED = false;
-            if (emulator.ReadShort("BATTLE_VALUE") < 9999) {
+            if (Emulator.ReadShort("BATTLE_VALUE") < 9999) {
                 Globals.STATS_CHANGED = true;
             }
             Constants.WriteOutput("LOD Dictionary updated.");
@@ -7117,7 +6856,7 @@ namespace Dragoon_Modifier {
                 Globals.SPD_MULTI = slider.Value;
             } else if (sender == sldZoom) {
                 if (Globals.GAME_STATE == 1)
-                    emulator.WriteShort("ZOOM", (ushort) slider.Value);
+                    Emulator.WriteUShort("ZOOM", (ushort) slider.Value);
             }
         }
 
@@ -8245,11 +7984,11 @@ namespace Dragoon_Modifier {
         public void ReaderRemoveUI() {
             if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED) {
                 if (uiCombo["cboReaderUIRemoval"] == 1) {
-                    emulator.WriteByte(Globals.M_POINT + 0x1775, 2);
-                    emulator.WriteByte(Globals.M_POINT + 0x18B9, 2);
-                    emulator.WriteByte(Globals.M_POINT + 0x19FD, 2);
+                    Emulator.WriteByte(Globals.M_POINT + 0x1775, 2);
+                    Emulator.WriteByte(Globals.M_POINT + 0x18B9, 2);
+                    Emulator.WriteByte(Globals.M_POINT + 0x19FD, 2);
                 } else if (uiCombo["cboReaderUIRemoval"] == 2) {
-                    emulator.WriteShort("UI_Y", 270);
+                    Emulator.WriteShort("UI_Y", 270);
                 }
             }
         }

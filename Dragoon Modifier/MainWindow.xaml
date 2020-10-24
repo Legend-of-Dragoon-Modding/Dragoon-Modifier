@@ -1270,18 +1270,11 @@
                             </MenuItem>
                             <MenuItem Header="Settings" Background="#FFB6B6B6" Foreground="White">
                                 <MenuItem x:Name="miEmulator" Background="#FFB6B6B6" Foreground="White" Header="Emulator">
-                                    <MenuItem Header="ePSXe 1.6.0" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
-                                    <MenuItem Header="ePSXe 1.7.0" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
-                                    <MenuItem Header="ePSXe 1.8.0" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
-                                    <MenuItem Header="ePSXe 1.9.0" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
-                                    <MenuItem Header="ePSXe 1.9.25" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
-                                    <MenuItem Header="ePSXe 2.0" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
-                                    <MenuItem Header="ePSXe 2.0.2" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
-                                    <MenuItem Header="ePSXe 2.0.5" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
                                     <MenuItem Header="RetroArch" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
-                                    <MenuItem Header="RetroArch (Old)" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
-                                    <MenuItem Header="PCSX2" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
                                     <MenuItem Header="DuckStation" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
+                                    <MenuItem Header="ePSXe" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
+                                    <MenuItem Header="PCSXR-PGXP" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
+                                    <MenuItem Header="PCSX2" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
                                     <MenuItem Header="Other" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
                                 </MenuItem>
                                 <MenuItem x:Name="miRegion" Header="Region" Background="#FFB6B6B6" Foreground="White">

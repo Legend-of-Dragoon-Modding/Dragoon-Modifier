@@ -12,9 +12,9 @@ namespace Dragoon_Modifier {
         public static byte DISC = 1;
         public static byte CHAPTER = 0;
         public static int BATTLE_VALUE = 0;
-        public static ushort ENCOUNTER_ID = 0;
-        public static ushort MAP = 0;
-        public static ushort BEFORE_BATTLE_MAP = 0;
+        public static short ENCOUNTER_ID = 0;
+        public static short MAP = 0;
+        public static short BEFORE_BATTLE_MAP = 0;
         public static byte[] PARTY_SLOT = new byte[3];
         public static byte DRAGOON_SPIRITS = 0;
         public static byte GAME_STATE = 255;

@@ -7,7 +7,7 @@ public class MonsterStatTSV {
 	static bool WRITE = false;
 	static bool UPDATE_MODE = false;
 
-    public static void Run(Emulator emulator) {
+    public static void Run() {
 		if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED && !WRITE) {
 			List<string> tsvData = new List<string>();
 			List<int> mid = new List<int>();
@@ -28,7 +28,7 @@ public class MonsterStatTSV {
 				if (!mid.Contains(monster)) {
 					Constants.WriteDebug("[TSV - Monster] Writing new monster: " + monster);
 					using (var monsterData = new StreamWriter(AppDomain.CurrentDomain.BaseDirectory + "/Mods/Monster_Data.tsv", true)) {
-						monsterData.WriteLine(GetStats(offset, emulator, monster));
+						monsterData.WriteLine(GetStats(offset, monster));
 					}
 					mid.Add(monster);
 				} else {
@@ -38,7 +38,7 @@ public class MonsterStatTSV {
 							monsterData.WriteLine(header);
 							foreach (string txt in tsvData) {
 								if (monster == Int32.Parse(txt.Split('\t')[0])) {
-									monsterData.WriteLine(GetStats(offset, emulator, monster));
+									monsterData.WriteLine(GetStats(offset, monster));
 								} else {
 									monsterData.WriteLine(txt);
 								}
@@ -57,12 +57,12 @@ public class MonsterStatTSV {
         }
 	}
 
-	public static string GetStats(int offset, Emulator emulator, int monster) {
+	public static string GetStats(int offset, int monster) {
 		string stats = "";
 		string temp = "";
 		stats += monster;
 		stats += '\t';
-		stats += emulator.ReadName(0xC69D0 + (0x2C * offset));
+		stats += Emulator.ReadName(0xC69D0 + (0x2C * offset));
 		stats += '\t';
 		switch ((int) Globals.MONSTER_TABLE[offset].Read("Element")) {
 			case 0:
@@ -194,33 +194,33 @@ public class MonsterStatTSV {
 		stats += '\t';
 		stats += Globals.MONSTER_TABLE[offset].Read("Death_Res");
 		stats += '\t';
-		stats += emulator.ReadShort(Constants.GetAddress("MONSTER_REWARDS") + (int) Globals.UNIQUE_MONSTER_IDS.IndexOf(monster) * 0x1A8);
+		stats += Emulator.ReadShort(Constants.GetAddress("MONSTER_REWARDS") + (int) Globals.UNIQUE_MONSTER_IDS.IndexOf(monster) * 0x1A8);
 		stats += '\t';
-		stats += emulator.ReadShort(Constants.GetAddress("MONSTER_REWARDS") + (int) 0x2 + Globals.UNIQUE_MONSTER_IDS.IndexOf(monster) * 0x1A8);
+		stats += Emulator.ReadShort(Constants.GetAddress("MONSTER_REWARDS") + (int) 0x2 + Globals.UNIQUE_MONSTER_IDS.IndexOf(monster) * 0x1A8);
 		stats += '\t';
 		try {
-			stats += Globals.DICTIONARY.Num2Item[emulator.ReadByte(Constants.GetAddress("MONSTER_REWARDS") + (int) 0x5 + Globals.UNIQUE_MONSTER_IDS.IndexOf(monster) * 0x1A8)];
+			stats += Globals.DICTIONARY.Num2Item[Emulator.ReadByte(Constants.GetAddress("MONSTER_REWARDS") + (int) 0x5 + Globals.UNIQUE_MONSTER_IDS.IndexOf(monster) * 0x1A8)];
 		} catch (Exception e) {
-			Console.WriteLine("Key Failure: " + emulator.ReadByte(Constants.GetAddress("MONSTER_REWARDS") + (int) 0x5 + Globals.UNIQUE_MONSTER_IDS.IndexOf(monster) * 0x1A8));
+			Console.WriteLine("Key Failure: " + Emulator.ReadByte(Constants.GetAddress("MONSTER_REWARDS") + (int) 0x5 + Globals.UNIQUE_MONSTER_IDS.IndexOf(monster) * 0x1A8));
 			stats += Globals.DICTIONARY.Num2Item[0];
 		}
 		stats += '\t';
-		stats += emulator.ReadByte(Constants.GetAddress("MONSTER_REWARDS") + (int) 0x4 + Globals.UNIQUE_MONSTER_IDS.IndexOf(monster) * 0x1A8);
+		stats += Emulator.ReadByte(Constants.GetAddress("MONSTER_REWARDS") + (int) 0x4 + Globals.UNIQUE_MONSTER_IDS.IndexOf(monster) * 0x1A8);
 		stats += '\t';
 		//stats += Globals.MONSTER_TABLE[offset].Read("Counter");
 		//stats += '\t';
-		stats += emulator.ReadName(0xC69D0 + (0x2C * offset));
+		stats += Emulator.ReadName(0xC69D0 + (0x2C * offset));
 		Console.WriteLine(stats);
 		return stats;
 	}
 
-	public static void Open(Emulator emulator) {
+	public static void Open() {
 		WRITE = false;
 	}
 	
-	public static void Close(Emulator emulator) {
+	public static void Close() {
 		WRITE = false;
 	}
 	
-	public static void Click(Emulator emulator) {}
+	public static void Click() {}
 }
