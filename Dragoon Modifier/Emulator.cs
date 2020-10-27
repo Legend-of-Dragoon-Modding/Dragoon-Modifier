@@ -175,32 +175,32 @@ namespace Dragoon_Modifier {
             ReadProcessMemory(processHandle, startAddr, buffer, len, out long bytesRead);
             return buffer;
         }
-        public static void WriteByte(long address, byte value) {
-            var val = BitConverter.GetBytes(value);
+        public static void WriteByte(long address, int value) {
+            var val = BitConverter.GetBytes((byte) value);
             WriteProcessMemory(processHandle, new IntPtr(address + Constants.OFFSET), val, 1, out int error);
         }
-        public static void WriteByteDirect(long address, byte value) {
-            var val = BitConverter.GetBytes(value);
+        public static void WriteByteDirect(long address, int value) {
+            var val = BitConverter.GetBytes((byte) value);
             WriteProcessMemory(processHandle, new IntPtr(address), val, 1, out int error);
         }
-        public static void WriteByte(string address, byte value, int offset = 0) {
-            var val = BitConverter.GetBytes(value);
+        public static void WriteByte(string address, int value, int offset = 0) {
+            var val = BitConverter.GetBytes((byte) value);
             WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET + offset), val, 1, out int error);
         }
-        public static void WriteShort(long address, short value) {
-            var val = BitConverter.GetBytes(value);
+        public static void WriteShort(long address, int value) {
+            var val = BitConverter.GetBytes((short) value);
             WriteProcessMemory(processHandle, new IntPtr(address + Constants.OFFSET), val, 2, out int error);
         }
-        public static void WriteShort(string address, short value, int offset = 0) {
-            var val = BitConverter.GetBytes(value);
+        public static void WriteShort(string address, int value, int offset = 0) {
+            var val = BitConverter.GetBytes((short) value);
             WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET + offset), val, 2, out int error);
         }
-        public static void WriteUShort(long address, ushort value) {
-            var val = BitConverter.GetBytes(value);
+        public static void WriteUShort(long address, int value) {
+            var val = BitConverter.GetBytes((ushort) value);
             WriteProcessMemory(processHandle, new IntPtr(address + Constants.OFFSET), val, 2, out int error);
         }
-        public static void WriteUShort(string address, ushort value, int offset = 0) {
-            var val = BitConverter.GetBytes(value);
+        public static void WriteUShort(string address, int value, int offset = 0) {
+            var val = BitConverter.GetBytes((ushort) value);
             WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET + offset), val, 2, out int error);
         }
         public static void WriteInt(long address, Int32 value) {

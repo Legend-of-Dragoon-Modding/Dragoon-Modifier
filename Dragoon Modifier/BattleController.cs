@@ -221,6 +221,7 @@ namespace Dragoon_Modifier {
                         }
                     } else if (Globals.GAME_STATE == 0) {   // Field
                         if (Globals.STATS_CHANGED) {
+                            Globals.EXITING_BATTLE = 2;
                             ItemFieldChanges();
                             CharacterFieldChanges();
                             if (Globals.DIFFICULTY_MODE != "Normal") {
@@ -234,6 +235,7 @@ namespace Dragoon_Modifier {
                             dartSwitcheroo = true;
                         }
                     } else if (Globals.GAME_STATE == 2) {
+                        Globals.EXITING_BATTLE = 2;
                         if (Globals.NO_DART != null) {
                             Emulator.WriteByte("MENU_UNLOCK", 1);
                             if (dartSwitcheroo) {
@@ -794,6 +796,7 @@ namespace Dragoon_Modifier {
                 Globals.CHARACTER_TABLE[slot].Write("Death_Res", death_res);
                 byte weapon_element = (byte) weapon.Element;
                 Emulator.WriteByte(address + character * 0xA0 + 0x7A, weapon_element);
+                Globals.CHARACTER_TABLE[slot].Write("Element", weapon_element);
                 Globals.CHARACTER_TABLE[slot].Write("Display_Element", weapon_element);
 
                 hp_multi = (byte) (weapon.Special_Ammount * ((weapon.Special2 & 2) >> 1) + armor.Special_Ammount * ((armor.Special2 & 2) >> 1) + helm.Special_Ammount * ((helm.Special2 & 2) >> 1)
