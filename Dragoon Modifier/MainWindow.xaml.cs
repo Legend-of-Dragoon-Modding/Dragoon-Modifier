@@ -1147,6 +1147,7 @@ namespace Dragoon_Modifier {
                 }), DispatcherPriority.ContextIdle);
 
                 try {
+                    Console.WriteLine(Globals.CheckDMScript("btnHPNames"));
                     if (Globals.CheckDMScript("btnSoloMode"))
                         SoloModeBattle();
                     if (Globals.CheckDMScript("btnDuoMode"))
@@ -2422,7 +2423,7 @@ namespace Dragoon_Modifier {
                 if (Globals.GAME_STATE != 1 && hpCapBreakOnBattleEntry) {
                     hpCapBreakOnBattleEntry = false;
                 } else {
-                    if (Emulator.ReadShort("BATTLE_VALUE") == 41215 && Globals.STATS_CHANGED && hpCapBreakOnBattleEntry && maxHPTableLoaded) {
+                    if (Emulator.ReadUShort("BATTLE_VALUE") == 41215 && Globals.STATS_CHANGED && hpCapBreakOnBattleEntry && maxHPTableLoaded) {
                         for (int i = 0; i < 3; i++) {
                             if (Globals.PARTY_SLOT[i] < 9)
                                 hpChangeSave[i] = Globals.CHARACTER_TABLE[i].Read("HP");
@@ -3160,7 +3161,7 @@ namespace Dragoon_Modifier {
                         TurnOnOffButton(ref btnUltimateBoss);
                     }), DispatcherPriority.ContextIdle);
                 } else {
-                    if (Emulator.ReadShort("BATTLE_VALUE") == 41215 && Globals.STATS_CHANGED) {
+                    if (Emulator.ReadUShort("BATTLE_VALUE") == 41215 && Globals.STATS_CHANGED) {
                         UltimateBossHP();
 
                         if (ubGuardBreak) {
@@ -5385,7 +5386,7 @@ namespace Dragoon_Modifier {
                 //Constants.WriteDebug("Item: " + eleBombItemUsed + " | Slot: " + eleBombSlot + " | Turns: " + eleBombTurns + " | Change: " + eleBombChange);
             } else {
                 //Constants.WriteDebug("Item: " + eleBombItemUsed + " | Slot: " + eleBombSlot + " | Turns: " + eleBombTurns + " | Change: " + eleBombChange + " | Element: " + eleBombElement + " | Action: " + Globals.CHARACTER_TABLE[eleBombSlot].Read("Action"));
-                if (Emulator.ReadShort("BATTLE_VALUE") == 41215 && Globals.STATS_CHANGED && eleBombSlot >= 0) {
+                if (Emulator.ReadUShort("BATTLE_VALUE") == 41215 && Globals.STATS_CHANGED && eleBombSlot >= 0) {
                     if ((Globals.CHARACTER_TABLE[eleBombSlot].Read("Action") == 8 || Globals.CHARACTER_TABLE[eleBombSlot].Read("Action") == 10) && !eleBombChange) {
                         eleBombChange = true;
                         if (eleBombTurns == 5) {
@@ -5483,7 +5484,8 @@ namespace Dragoon_Modifier {
 
         #region Monster Names As HP
         public void MonsterHPNames() {
-            if (Emulator.ReadShort("BATTLE_VALUE") == 41215 && Globals.STATS_CHANGED && Constants.BATTLE_UI) {
+            Console.WriteLine("HERE: " + Emulator.ReadShort("BATTLE_VALUE") + " / " + Globals.STATS_CHANGED + " / " + Constants.BATTLE_UI);
+            if (Emulator.ReadUShort("BATTLE_VALUE") == 41215 && Globals.STATS_CHANGED && Constants.BATTLE_UI) {
                 for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
                     int lastX = 0;
                     long hpName = Constants.GetAddress("MONSTERS_NAMES") + (i * 0x2C);
