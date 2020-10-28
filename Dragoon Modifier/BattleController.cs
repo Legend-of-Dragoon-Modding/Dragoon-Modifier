@@ -235,7 +235,15 @@ namespace Dragoon_Modifier {
                             dartSwitcheroo = true;
                         }
                     } else if (Globals.GAME_STATE == 2) {
-                        Globals.EXITING_BATTLE = 2;
+                        if (Globals.STATS_CHANGED) {
+                            Globals.EXITING_BATTLE = 2;
+                            ItemFieldChanges();
+                            CharacterFieldChanges();
+                            if (Globals.DIFFICULTY_MODE != "Normal") {
+                                PostBattleChapter3Buffs();
+                            }
+                            Globals.STATS_CHANGED = false;
+                        }
                         if (Globals.NO_DART != null) {
                             Emulator.WriteByte("MENU_UNLOCK", 1);
                             if (dartSwitcheroo) {

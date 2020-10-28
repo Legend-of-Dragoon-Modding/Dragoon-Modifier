@@ -2758,7 +2758,11 @@ namespace Dragoon_Modifier {
 
         #region Field
         public void UltimateBossField() {
-            if ((Globals.MAP >= 393 && Globals.MAP <= 405) && Globals.CHAPTER == 4 && !ultimateBossOnBattleEntry) {
+            if ((Globals.GAME_STATE == 0 && Globals.MAP >= 393 && Globals.MAP <= 405) && Globals.CHAPTER == 4 && !ultimateBossOnBattleEntry && Emulator.ReadByte("TRANSITION") == 12) {
+                Thread.Sleep(200);
+                if (Emulator.ReadByte("TRANSITION") != 12) {
+                    return;
+                }
                 if (uiCombo["cboUltimateBoss"] == 0 && (Globals.MAP >= 393 && Globals.MAP <= 394)) {
                     Emulator.WriteShort("ENCOUNTER_ID", 487);
                     Emulator.WriteByte("BATTLE_FIELD", 10);
