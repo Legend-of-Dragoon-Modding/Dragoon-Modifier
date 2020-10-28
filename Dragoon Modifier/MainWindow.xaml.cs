@@ -1147,7 +1147,6 @@ namespace Dragoon_Modifier {
                 }), DispatcherPriority.ContextIdle);
 
                 try {
-                    Console.WriteLine(Globals.CheckDMScript("btnHPNames"));
                     if (Globals.CheckDMScript("btnSoloMode"))
                         SoloModeBattle();
                     if (Globals.CheckDMScript("btnDuoMode"))
@@ -5484,7 +5483,6 @@ namespace Dragoon_Modifier {
 
         #region Monster Names As HP
         public void MonsterHPNames() {
-            Console.WriteLine("HERE: " + Emulator.ReadShort("BATTLE_VALUE") + " / " + Globals.STATS_CHANGED + " / " + Constants.BATTLE_UI);
             if (Emulator.ReadUShort("BATTLE_VALUE") == 41215 && Globals.STATS_CHANGED && Constants.BATTLE_UI) {
                 for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
                     int lastX = 0;
