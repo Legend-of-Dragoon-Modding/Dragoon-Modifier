@@ -644,6 +644,17 @@ namespace Dragoon_Modifier {
             public void UpdateLabel(Object source, ElapsedEventArgs e) {
                 this.Dispatcher.BeginInvoke(new Action(() => {
                     if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED) {
+                        if (character) {
+                            if (Globals.PARTY_SLOT[slot - 1] > 8) {
+                                this.Content = "";
+                                return;
+                            }
+                        } else {
+                            if (slot > Globals.MONSTER_SIZE) {
+                                this.Content = "";
+                                return;
+                            }
+                        }
                         if (field.Equals("Max_SP")) {
                             if (character)
                                 this.Content = (Globals.CHARACTER_TABLE[slot - 1].Read("DLV") * 100).ToString();
@@ -959,6 +970,17 @@ namespace Dragoon_Modifier {
             public void UpdateBar(Object source, ElapsedEventArgs e) {
                 this.Dispatcher.BeginInvoke(new Action(() => {
                     if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED) {
+                        if (character) {
+                            if (Globals.PARTY_SLOT[slot - 1] > 8) {
+                                this.Value = this.Minimum;
+                                return;
+                            }
+                        } else {
+                            if (slot > Globals.MONSTER_SIZE) {
+                                this.Value = this.Minimum;
+                                return;
+                            }
+                        }
                         double minX, maxX, valueX;
                         if (Double.TryParse(field, out valueX)) {
                             this.Value = valueX;
@@ -1348,6 +1370,17 @@ namespace Dragoon_Modifier {
             public void UpdateBar(Object source, ElapsedEventArgs e) {
                 this.Dispatcher.BeginInvoke(new Action(() => {
                     if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED) {
+                        if (character) {
+                            if (Globals.PARTY_SLOT[slot - 1] > 8) {
+                                this.Value = this.Minimum;
+                                return;
+                            }
+                        } else {
+                            if (slot > Globals.MONSTER_SIZE) {
+                                this.Value = this.Minimum;
+                                return;
+                            }
+                        }
                         double minX, maxX, valueX;
                         if (Double.TryParse(field, out valueX)) {
                             this.Value = valueX;

@@ -398,6 +398,10 @@ namespace Dragoon_Modifier {
 
         #region Monster Changes
         public static void MonsterChanges() {
+            if (Globals.CheckDMScript("btnUltimateBoss")) {
+                WipeRewards();
+            }
+
             if (Globals.MONSTER_STAT_CHANGE && !Globals.CheckDMScript("btnUltimateBoss")) {
                 Constants.WriteOutput("Changing Monster Stats...");
                 for (int slot = 0; slot < Globals.MONSTER_SIZE; slot++) {
@@ -446,6 +450,7 @@ namespace Dragoon_Modifier {
             Globals.MONSTER_TABLE[slot].Write("M_Immune", Globals.DICTIONARY.StatList[ID].M_Immune);
             Globals.MONSTER_TABLE[slot].Write("P_Half", Globals.DICTIONARY.StatList[ID].P_Half);
             Globals.MONSTER_TABLE[slot].Write("M_Half", Globals.DICTIONARY.StatList[ID].M_Half);
+            Globals.MONSTER_TABLE[slot].Write("Element", Globals.DICTIONARY.StatList[ID].Element);
             Globals.MONSTER_TABLE[slot].Write("E_Immune", Globals.DICTIONARY.StatList[ID].E_Immune);
             Globals.MONSTER_TABLE[slot].Write("E_Half", Globals.DICTIONARY.StatList[ID].E_Half);
             Globals.MONSTER_TABLE[slot].Write("Stat_Res", Globals.DICTIONARY.StatList[ID].Stat_Res);

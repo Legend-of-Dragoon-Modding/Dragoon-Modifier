@@ -3155,6 +3155,61 @@ namespace Dragoon_Modifier {
                     }
                 }
 
+                WipeRewards();
+
+                if (Globals.ENCOUNTER_ID == 487) { //Commander II
+                    Emulator.WriteByte("MONSTER_REWARDS_CHANCE", 100, +0x1A8);
+                    Emulator.WriteByte("MONSTER_REWARDS_DROP", 158, 0x1A8); //Sabre
+                }
+
+                if (Globals.ENCOUNTER_ID == 449 || Globals.ENCOUNTER_ID == 402 || Globals.ENCOUNTER_ID == 403) {
+                    if (Globals.ENCOUNTER_ID == 402 || Globals.ENCOUNTER_ID == 403) {
+                        Emulator.WriteShort("MONSTER_REWARDS", 3000, 0x1A8 + 0x2);
+                    } else {
+                        Emulator.WriteShort("MONSTER_REWARDS", 3000, 0x2);
+                    }
+                } else if (Globals.ENCOUNTER_ID == 417 || Globals.ENCOUNTER_ID == 418 || Globals.ENCOUNTER_ID == 448) {
+                    if (Globals.ENCOUNTER_ID == 418) {
+                        Emulator.WriteShort("MONSTER_REWARDS", 3000, 0x1A8 + 0x2);
+                    } else {
+                        Emulator.WriteShort("MONSTER_REWARDS", 3000, 0x2);
+                    }
+                } else if (Globals.ENCOUNTER_ID == 416 || Globals.ENCOUNTER_ID == 422 || Globals.ENCOUNTER_ID == 423) {
+                    Emulator.WriteShort("MONSTER_REWARDS", 9000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 432 || Globals.ENCOUNTER_ID == 430 || Globals.ENCOUNTER_ID == 433) {
+                    Emulator.WriteShort("MONSTER_REWARDS", 12000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 431 || Globals.ENCOUNTER_ID == 408) {
+                    Emulator.WriteShort("MONSTER_REWARDS", 15000, 0x1A8 + 0x2);
+                } else if (Globals.ENCOUNTER_ID == 447) {
+                    Emulator.WriteShort("MONSTER_REWARDS", 18000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 389 || Globals.ENCOUNTER_ID == 396) {
+                    Emulator.WriteShort("MONSTER_REWARDS", 20000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 399) {
+                    Emulator.WriteShort("MONSTER_REWARDS", 25000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 409) {
+                    Emulator.WriteShort("MONSTER_REWARDS", 30000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 393 || Globals.ENCOUNTER_ID == 398) {
+                    Emulator.WriteShort("MONSTER_REWARDS", 35000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 397 || Globals.ENCOUNTER_ID == 400) {
+                    Emulator.WriteShort("MONSTER_REWARDS", 40000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 410) {
+                    Emulator.WriteShort("MONSTER_REWARDS", 1000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 401) {
+                    Emulator.WriteShort("MONSTER_REWARDS", 45000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 390) {
+                    Emulator.WriteInt("TOTAL_GOLD", 100000);
+                } else if (Globals.ENCOUNTER_ID == 411) {
+                    Emulator.WriteInt("TOTAL_GOLD", 60000);
+                } else if (Globals.ENCOUNTER_ID == 394) {
+                    Emulator.WriteInt("TOTAL_GOLD", 70000);
+                } else if (Globals.ENCOUNTER_ID == 392) {
+                    Emulator.WriteInt("TOTAL_GOLD", 80000);
+                } else if (Globals.ENCOUNTER_ID == 420) {
+                    Emulator.WriteInt("TOTAL_GOLD", 120000);
+                } else if (Globals.ENCOUNTER_ID == 442) {
+                    Emulator.WriteInt("TOTAL_GOLD", 100000);
+                }
+
                 ultimateBossOnBattleEntry = true;
             } else {
                 if (Globals.GAME_STATE != 1 && ultimateBossOnBattleEntry) {
