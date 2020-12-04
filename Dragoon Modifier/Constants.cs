@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Dragoon_Modifier {
     public class Constants {
-        public static string VERSION = "3.2.1.2";
+        public static string VERSION = "3.2.1.3";
         public static bool RUN = true;
         public static bool DEBUG_MODE = false;
         public static bool BATTLE_UI = false;

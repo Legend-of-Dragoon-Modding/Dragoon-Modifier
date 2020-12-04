@@ -3155,61 +3155,6 @@ namespace Dragoon_Modifier {
                     }
                 }
 
-                WipeRewards();
-
-                if (Globals.ENCOUNTER_ID == 487) { //Commander II
-                    Emulator.WriteByte("MONSTER_REWARDS_CHANCE", 100, +0x1A8);
-                    Emulator.WriteByte("MONSTER_REWARDS_DROP", 158, 0x1A8); //Sabre
-                }
-
-                if (Globals.ENCOUNTER_ID == 449 || Globals.ENCOUNTER_ID == 402 || Globals.ENCOUNTER_ID == 403) {
-                    if (Globals.ENCOUNTER_ID == 402 || Globals.ENCOUNTER_ID == 403) {
-                        Emulator.WriteShort("MONSTER_REWARDS", 3000, 0x1A8 + 0x2);
-                    } else {
-                        Emulator.WriteShort("MONSTER_REWARDS", 3000, 0x2);
-                    }
-                } else if (Globals.ENCOUNTER_ID == 417 || Globals.ENCOUNTER_ID == 418 || Globals.ENCOUNTER_ID == 448) {
-                    if (Globals.ENCOUNTER_ID == 418) {
-                        Emulator.WriteShort("MONSTER_REWARDS", 3000, 0x1A8 + 0x2);
-                    } else {
-                        Emulator.WriteShort("MONSTER_REWARDS", 3000, 0x2);
-                    }
-                } else if (Globals.ENCOUNTER_ID == 416 || Globals.ENCOUNTER_ID == 422 || Globals.ENCOUNTER_ID == 423) {
-                    Emulator.WriteShort("MONSTER_REWARDS", 9000, 0x2);
-                } else if (Globals.ENCOUNTER_ID == 432 || Globals.ENCOUNTER_ID == 430 || Globals.ENCOUNTER_ID == 433) {
-                    Emulator.WriteShort("MONSTER_REWARDS", 12000, 0x2);
-                } else if (Globals.ENCOUNTER_ID == 431 || Globals.ENCOUNTER_ID == 408) {
-                    Emulator.WriteShort("MONSTER_REWARDS", 15000, 0x1A8 + 0x2);
-                } else if (Globals.ENCOUNTER_ID == 447) {
-                    Emulator.WriteShort("MONSTER_REWARDS", 18000, 0x2);
-                } else if (Globals.ENCOUNTER_ID == 389 || Globals.ENCOUNTER_ID == 396) {
-                    Emulator.WriteShort("MONSTER_REWARDS", 20000, 0x2);
-                } else if (Globals.ENCOUNTER_ID == 399) {
-                    Emulator.WriteShort("MONSTER_REWARDS", 25000, 0x2);
-                } else if (Globals.ENCOUNTER_ID == 409) {
-                    Emulator.WriteShort("MONSTER_REWARDS", 30000, 0x2);
-                } else if (Globals.ENCOUNTER_ID == 393 || Globals.ENCOUNTER_ID == 398) {
-                    Emulator.WriteShort("MONSTER_REWARDS", 35000, 0x2);
-                } else if (Globals.ENCOUNTER_ID == 397 || Globals.ENCOUNTER_ID == 400) {
-                    Emulator.WriteShort("MONSTER_REWARDS", 40000, 0x2);
-                } else if (Globals.ENCOUNTER_ID == 410) {
-                    Emulator.WriteShort("MONSTER_REWARDS", 1000, 0x2);
-                } else if (Globals.ENCOUNTER_ID == 401) {
-                    Emulator.WriteShort("MONSTER_REWARDS", 45000, 0x2);
-                } else if (Globals.ENCOUNTER_ID == 390) {
-                    Emulator.WriteInt("TOTAL_GOLD", 100000);
-                } else if (Globals.ENCOUNTER_ID == 411) {
-                    Emulator.WriteInt("TOTAL_GOLD", 60000);
-                } else if (Globals.ENCOUNTER_ID == 394) {
-                    Emulator.WriteInt("TOTAL_GOLD", 70000);
-                } else if (Globals.ENCOUNTER_ID == 392) {
-                    Emulator.WriteInt("TOTAL_GOLD", 80000);
-                } else if (Globals.ENCOUNTER_ID == 420) {
-                    Emulator.WriteInt("TOTAL_GOLD", 120000);
-                } else if (Globals.ENCOUNTER_ID == 442) {
-                    Emulator.WriteInt("TOTAL_GOLD", 100000);
-                }
-
                 ultimateBossOnBattleEntry = true;
             } else {
                 if (Globals.GAME_STATE != 1 && ultimateBossOnBattleEntry) {
@@ -3284,7 +3229,7 @@ namespace Dragoon_Modifier {
                                     MagicChange();
                                 }
                             } else if (Globals.ENCOUNTER_ID == 390) { //Doel
-                                if (ultimateHP[1] <= 75000) {
+                                if (ultimateHP[1] <= 150000) {
                                     Emulator.WriteAoB(Globals.MONS_ADDRESS[1] - 0x6F8C, "C2");
                                     Emulator.WriteAoB(Globals.MONS_ADDRESS[1] - 0x6F4C, "F8");
                                 } else {
@@ -3516,6 +3461,61 @@ namespace Dragoon_Modifier {
                 Globals.MONSTER_TABLE[i].Write("OG_MDF", (short) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].MDF);
                 Globals.MONSTER_TABLE[i].Write("SPD", (short) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].SPD);
                 Globals.MONSTER_TABLE[i].Write("OG_SPD", (short) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].SPD);
+
+                WipeRewards();
+
+                if (Globals.ENCOUNTER_ID == 487) { //Commander II
+                    Emulator.WriteByte("MONSTER_REWARDS_CHANCE", 100, +0x1A8);
+                    Emulator.WriteByte("MONSTER_REWARDS_DROP", 158, 0x1A8); //Sabre
+                }
+
+                if (Globals.ENCOUNTER_ID == 449 || Globals.ENCOUNTER_ID == 402 || Globals.ENCOUNTER_ID == 403) {
+                    if (Globals.ENCOUNTER_ID == 402 || Globals.ENCOUNTER_ID == 403) {
+                        Emulator.WriteShort("MONSTER_REWARDS", 3000, 0x1A8 + 0x2);
+                    } else {
+                        Emulator.WriteShort("MONSTER_REWARDS", 3000, 0x2);
+                    }
+                } else if (Globals.ENCOUNTER_ID == 417 || Globals.ENCOUNTER_ID == 418 || Globals.ENCOUNTER_ID == 448) {
+                    if (Globals.ENCOUNTER_ID == 418) {
+                        Emulator.WriteShort("MONSTER_REWARDS", 3000, 0x1A8 + 0x2);
+                    } else {
+                        Emulator.WriteShort("MONSTER_REWARDS", 3000, 0x2);
+                    }
+                } else if (Globals.ENCOUNTER_ID == 416 || Globals.ENCOUNTER_ID == 422 || Globals.ENCOUNTER_ID == 423) {
+                    Emulator.WriteShort("MONSTER_REWARDS", 9000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 432 || Globals.ENCOUNTER_ID == 430 || Globals.ENCOUNTER_ID == 433) {
+                    Emulator.WriteShort("MONSTER_REWARDS", 12000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 431 || Globals.ENCOUNTER_ID == 408) {
+                    Emulator.WriteShort("MONSTER_REWARDS", 15000, 0x1A8 + 0x2);
+                } else if (Globals.ENCOUNTER_ID == 447) {
+                    Emulator.WriteShort("MONSTER_REWARDS", 18000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 389 || Globals.ENCOUNTER_ID == 396) {
+                    Emulator.WriteShort("MONSTER_REWARDS", 20000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 399) {
+                    Emulator.WriteShort("MONSTER_REWARDS", 25000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 409) {
+                    Emulator.WriteShort("MONSTER_REWARDS", 30000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 393 || Globals.ENCOUNTER_ID == 398) {
+                    Emulator.WriteShort("MONSTER_REWARDS", 35000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 397 || Globals.ENCOUNTER_ID == 400) {
+                    Emulator.WriteShort("MONSTER_REWARDS", 40000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 410) {
+                    Emulator.WriteShort("MONSTER_REWARDS", 1000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 401) {
+                    Emulator.WriteShort("MONSTER_REWARDS", 45000, 0x2);
+                } else if (Globals.ENCOUNTER_ID == 390) {
+                    Emulator.WriteInt("TOTAL_GOLD", 100000);
+                } else if (Globals.ENCOUNTER_ID == 411) {
+                    Emulator.WriteInt("TOTAL_GOLD", 60000);
+                } else if (Globals.ENCOUNTER_ID == 394) {
+                    Emulator.WriteInt("TOTAL_GOLD", 70000);
+                } else if (Globals.ENCOUNTER_ID == 392) {
+                    Emulator.WriteInt("TOTAL_GOLD", 80000);
+                } else if (Globals.ENCOUNTER_ID == 420) {
+                    Emulator.WriteInt("TOTAL_GOLD", 120000);
+                } else if (Globals.ENCOUNTER_ID == 442) {
+                    Emulator.WriteInt("TOTAL_GOLD", 100000);
+                }
             }
         }
 
@@ -4064,9 +4064,9 @@ namespace Dragoon_Modifier {
             if (Globals.MONSTER_TABLE[monsterSlot].Read("Attack_Move") == attack) {
                 if (ubHealthStealSave) {
                     ushort dmg = Emulator.ReadUShort("DAMAGE_SLOT1");
-                    if (dmg != 65534 && dmg != ubHealthStealDamage) {
+                    if (dmg <= 25000 && dmg != ubHealthStealDamage) {
                         ubHealthStealDamage = dmg;
-                        ultimateHP[monsterSlot] += dmg;
+                        ultimateHP[monsterSlot] += (int) Math.Round((double) dmg / 2);
                         ubHealthStealSave = false;
                     }
                 } else {
@@ -4079,23 +4079,28 @@ namespace Dragoon_Modifier {
         }
 
         public void SPAttack(int monsterSlot, byte attack, byte spAmount, byte spOnHit, byte turns) {
-            if (Globals.MONSTER_TABLE[monsterSlot].Read("Attack_Move") == attack) {
-                for (int i = 0; i < 3; i++) {
-                    if (Globals.PARTY_SLOT[i] < 9) {
-                        if (spOnHit > 0) {
-                            Globals.CHARACTER_TABLE[i].Write("SP_ONHIT_PHYSICAL", spOnHit);
-                            Globals.CHARACTER_TABLE[i].Write("SP_ONHIT_MAGIC", spOnHit);
-                            Globals.CHARACTER_TABLE[i].Write("SP_ONHIT_PHYSICAL_TRN", turns);
-                            Globals.CHARACTER_TABLE[i].Write("SP_ONHIT_MAGIC_TRN", turns);
-                        }
-                        if (Emulator.ReadByte("DRAGOON_TURNS", (i * 0x4)) == 0) {
+            try {
+                if (Globals.MONSTER_TABLE[monsterSlot].Read("Attack_Move") == attack) {
+                    for (int i = 0; i < 3; i++) {
+                        if (Globals.PARTY_SLOT[i] < 9 && Emulator.ReadByte("DRAGOON_TURNS", (i * 0x4)) == 0) {
+                            if (spOnHit > 0) {
+                                Globals.CHARACTER_TABLE[i].Write("SP_ONHIT_PHYSICAL", spOnHit);
+                                Globals.CHARACTER_TABLE[i].Write("SP_ONHIT_MAGIC", spOnHit);
+                                Globals.CHARACTER_TABLE[i].Write("SP_ONHIT_PHYSICAL_TRN", turns);
+                                Globals.CHARACTER_TABLE[i].Write("SP_ONHIT_MAGIC_TRN", turns);
+                            }
                             int sp = Globals.CHARACTER_TABLE[i].Read("SP") - spAmount;
                             Globals.CHARACTER_TABLE[i].Write("SP", sp > 0 ? sp : 0);
                         }
                     }
+                    Thread.Sleep(3500);
+                    Globals.MONSTER_TABLE[monsterSlot].Write("Attack_Move", 255);
                 }
-                Thread.Sleep(1900);
-                Globals.MONSTER_TABLE[monsterSlot].Write("Attack_Move", 255);
+            } catch (Exception ex) {
+                Constants.WriteGLogOutput("NON FATAL ERROR OCCURED.");
+                Constants.WritePLogOutput("NON FATAL ERROR OCCURED.");
+                Constants.WriteError(ex.ToString());
+                EnableUI();
             }
         }
 
@@ -4231,7 +4236,7 @@ namespace Dragoon_Modifier {
                 Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0xCAC, Convert.ToByte(wideMagic[index]));
                 wideMagic.RemoveAt(index);
             } else if (Globals.ENCOUNTER_ID == 420) {
-                if (ultimateHP[0] >= 800000) {
+                if (ultimateHP[0] >= 850000) {
                     byte[] element = { 16, 16, 16 };
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9) {
@@ -4255,31 +4260,7 @@ namespace Dragoon_Modifier {
                     Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x586C, ElementToItem(2, element[2]));
                     Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x582C, ElementToItem(2, element[2]));
                     Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x57EC, ElementToItem(2, element[new Random().Next(0, 2)]));
-                } else if (ultimateHP[0] >= 600000) {
-                    byte[] element = { 16, 16, 16 };
-                    for (int i = 0; i < 3; i++) {
-                        if (Globals.PARTY_SLOT[i] < 9) {
-                            element[i] = CharacterToOppositeElement(Globals.PARTY_SLOT[i]);
-                        }
-                    }
-                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5BBC, ElementToItem(0, element[0]));
-                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B84, ElementToItem(0, element[0]));
-                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B4C, ElementToItem(0, element[1]));
-                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B14, ElementToItem(0, element[1]));
-                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5ADC, ElementToItem(0, element[2]));
-                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5AA4, ElementToItem(0, element[2]));
-                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A6C, ElementToItem(0, element[new Random().Next(0, 2)]));
-                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A2C, ElementToItem(1, element[0]));
-                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59EC, ElementToItem(1, element[1]));
-                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59AC, ElementToItem(1, element[2]));
-                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x596C, ElementToItem(2, element[0]));
-                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x592C, ElementToItem(2, element[0]));
-                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58EC, ElementToItem(2, element[1]));
-                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58AC, ElementToItem(2, element[1]));
-                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x586C, ElementToItem(2, element[2]));
-                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x582C, ElementToItem(2, element[2]));
-                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x57EC, ElementToItem(2, element[new Random().Next(0, 2)]));
-                } else if (ultimateHP[0] >= 400000) {
+                } else if (ultimateHP[0] >= 700000) {
                     index = new Random().Next(0, singleMagic.Count);
                     Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5BBC, Convert.ToByte(singleMagic[index]));
                     singleMagic.RemoveAt(index);
@@ -4334,22 +4315,44 @@ namespace Dragoon_Modifier {
                     index = new Random().Next(0, powerMagic.Count);
                     Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x57EC, Convert.ToByte(powerMagic[index]));
                     powerMagic.RemoveAt(index);
+                } else if (ultimateHP[0] >= 500000) {
+                    byte[] element = { 16, 16, 16 };
+                    for (int i = 0; i < 3; i++) {
+                        if (Globals.PARTY_SLOT[i] < 9) {
+                            element[i] = CharacterToOppositeElement(Globals.PARTY_SLOT[i]);
+                        }
+                    }
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5BBC, ElementToItem(0, element[0]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B84, ElementToItem(0, element[0]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B4C, ElementToItem(0, element[1]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B14, ElementToItem(0, element[1]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5ADC, ElementToItem(0, element[2]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5AA4, ElementToItem(0, element[2]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A6C, ElementToItem(0, element[new Random().Next(0, 2)]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A2C, ElementToItem(1, element[0]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59EC, ElementToItem(1, element[1]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59AC, ElementToItem(1, element[2]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x596C, ElementToItem(2, element[0]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x592C, ElementToItem(2, element[0]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58EC, ElementToItem(2, element[1]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58AC, ElementToItem(2, element[1]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x586C, ElementToItem(2, element[2]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x582C, ElementToItem(2, element[2]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x57EC, ElementToItem(2, element[new Random().Next(0, 2)]));
                 } else {
-                    wideMagic.Add(0xF1);
+                    byte[] element = { 16, 16, 16 };
+                    for (int i = 0; i < 3; i++) {
+                        if (Globals.PARTY_SLOT[i] < 9) {
+                            element[i] = CharacterToOppositeElement(Globals.PARTY_SLOT[i]);
+                        }
+                    }
+
                     powerMagic.Add(0xFA);
 
-                    index = new Random().Next(0, singleMagic.Count);
-                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5BBC, Convert.ToByte(singleMagic[index]));
-                    singleMagic.RemoveAt(index);
-                    index = new Random().Next(0, singleMagic.Count);
-                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B84, Convert.ToByte(singleMagic[index]));
-                    singleMagic.RemoveAt(index);
-                    index = new Random().Next(0, singleMagic.Count);
-                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B4C, Convert.ToByte(singleMagic[index]));
-                    singleMagic.RemoveAt(index);
-                    index = new Random().Next(0, singleMagic.Count);
-                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B14, Convert.ToByte(singleMagic[index]));
-                    singleMagic.RemoveAt(index);
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5BBC, ElementToItem(0, element[0]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B84, ElementToItem(0, element[1]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B4C, ElementToItem(0, element[2]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5B14, ElementToItem(0, element[new Random().Next(0, 2)]));
                     index = new Random().Next(0, singleMagic.Count);
                     Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5ADC, Convert.ToByte(singleMagic[index]));
                     singleMagic.RemoveAt(index);
@@ -4360,29 +4363,14 @@ namespace Dragoon_Modifier {
                     Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A6C, Convert.ToByte(singleMagic[index]));
                     singleMagic.RemoveAt(index);
 
-                    index = wideMagic.Count - 1;
-                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A2C, Convert.ToByte(wideMagic[index]));
-                    wideMagic.RemoveAt(index);
-                    index = new Random().Next(0, wideMagic.Count);
-                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59EC, Convert.ToByte(wideMagic[index]));
-                    wideMagic.RemoveAt(index);
-                    index = new Random().Next(0, wideMagic.Count);
-                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59AC, Convert.ToByte(wideMagic[index]));
-                    wideMagic.RemoveAt(index);
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x5A2C, ElementToItem(1, element[new Random().Next(0, 2)]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59EC, ElementToItem(1, element[new Random().Next(0, 2)]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x59AC, 0xF1);
 
-
-                    index = powerMagic.Count - 1;
-                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x596C, Convert.ToByte(powerMagic[index]));
-                    powerMagic.RemoveAt(index);
-                    index = new Random().Next(0, powerMagic.Count);
-                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x592C, Convert.ToByte(powerMagic[index]));
-                    powerMagic.RemoveAt(index);
-                    index = new Random().Next(0, powerMagic.Count);
-                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58EC, Convert.ToByte(powerMagic[index]));
-                    powerMagic.RemoveAt(index);
-                    index = new Random().Next(0, powerMagic.Count);
-                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58AC, Convert.ToByte(powerMagic[index]));
-                    powerMagic.RemoveAt(index);
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x596C, ElementToItem(2, element[0]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x592C, ElementToItem(2, element[1]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58EC, ElementToItem(2, element[2]));
+                    Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x58AC, 0xFA);
                     index = new Random().Next(0, powerMagic.Count);
                     Emulator.WriteByte(Globals.MONS_ADDRESS[0] - 0x586C, Convert.ToByte(powerMagic[index]));
                     powerMagic.RemoveAt(index);
@@ -7120,10 +7108,10 @@ namespace Dragoon_Modifier {
                     "CROSS + L1        - Adds all Dragoons in the opening map 10 when Hard and Hell Mode is on. Sets everyone to level 1 with base equips in the opening map 10 when Solo or Duo mode is on. After Mappi battle it will add Dart's dragoon back regardless of difficulty.\r\n" +
                     "CROSS + R1        - Before you complete the quest in Furni map 333 press this hotkey, press it again after for extra gold from the quest.\r\n" +
                     "SQUARE + TRIANGLE - When in Hard Mode (or Hell Mode when you have beaten Ultimate Boss Dragoon Doel) you may switch between Red-Eyed and Divine Dragoon at the Divine Dragon's corpse (map 424) or on the moon (map 736).\r\n" +
-                    "SQUARE + CROSS    - Spawns a slightly modified Faust for EXP and Armor of Legend of Legend Casque (39/40th battle) on the moon (map 732).\r\n" +
-                    "START + L3        - Allows you to warp off the moon to Ulra (maps 729/730/527).\r\n" +
-                    "START + R3        - Allows you to warp back to the moon from Ulra (maps 597/521/524/526/527/729/9).\r\n" +
-                    "CIRCLE + TRIANGLE - Skip dialogs, stop before choice dialog or use Auto Text Advanced in Enhancements III.\r\n" +
+                    "SQUARE + CROSS    - Spawns a slightly modified Faust for EXP and Armor of Legend of Legend Casque (39/40th battle) on the moon (map 732). (Hold on screen transition)\r\n" +
+                    "START + L3        - Allows you to warp off the moon to Ulra (maps 729/730/527). (Hold on screen transition)\r\n" +
+                    "START + R3        - Allows you to warp back to the moon from Ulra (maps 597/521/524/526/527/729/9). (Hold on screen transition)\r\n" +
+                    "CIRCLE + TRIANGLE - Skip dialogs, stop before choice dialog (will cause a softlock if used incorrectly) or use Auto Text Advanced in Enhancements III.\r\n" +
                     "L1 + LEFT         - Sets widescreen for the world map.\r\n\r\n" +
                     "Battle\r\n\r\n" +
                     "L1 + UP           - Exit Dragoon Slot 1.\r\n" +
