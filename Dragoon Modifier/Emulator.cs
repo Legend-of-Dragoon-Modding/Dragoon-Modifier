@@ -53,7 +53,7 @@ namespace Dragoon_Modifier {
 
         public static bool Setup(string emuName, bool baseScan) {
             Process[] processList = Process.GetProcesses();
-
+            long baseAddress = 0;
             if (emuName.ToLower().Contains(".exe"))
                 emuName = emuName.Replace(".exe", "");
 
@@ -61,6 +61,7 @@ namespace Dragoon_Modifier {
                 if (theprocess.ProcessName.Equals(emuName, StringComparison.CurrentCultureIgnoreCase) || theprocess.ProcessName.Contains(emuName.ToLower())) { //find (name).exe in the process list (use task manager to find the name)
                     process = theprocess;
                     startOffset = process.MainModule.BaseAddress;
+                    baseAddress = (long) process.MainModule.BaseAddress;
                     start = startOffset.ToInt64();
                     endOffset = IntPtr.Add(startOffset, process.MainModule.ModuleMemorySize);
                     end = endOffset.ToInt64();
@@ -70,7 +71,7 @@ namespace Dragoon_Modifier {
             }
 
             if (start == 0x0 && end == 0x0) {
-                Constants.WriteDebug("Failed to attach.");
+                Constants.WriteDebug("Failed to attach, no process found.");
                 return false;
             } else if(baseScan) {
                 string AoBCheck = "50 53 2D 58 20 45 58 45";
@@ -78,19 +79,53 @@ namespace Dragoon_Modifier {
                     start = 0x40000000;
                     end = 0x401F4000;
                 }
-                Constants.WriteDebug("START SCAN: " + Convert.ToString(start, 16).ToUpper() + " - " + Convert.ToString(end, 16).ToUpper());
+                Constants.WriteOutput("Start Scan: " + Convert.ToString(start, 16).ToUpper() + " - " + Convert.ToString(end, 16).ToUpper());
                 var results = ScanAoB(start, end, AoBCheck, false, true);
                 foreach (long x in results) {
                     Constants.OFFSET = x - (long) 0xB070;
                     if (ReadUInt("STARTUP_SEARCH") == 320386 || ReadUShort("BATTLE_VALUE") == 32776 || ReadUShort("BATTLE_VALUE") == 41215) {
                         Constants.KEY.SetValue("Offset", Constants.OFFSET);
+                        Constants.WriteOutput("Base scan success.");
                         break;
                     } else {
                         Constants.OFFSET = 0;
                     }
                 }
+
+                if (Constants.OFFSET <= 0) { //Fallback
+                    Constants.WriteOutput("PSX EXE scan failed. Trying static offsets...");
+                    long[] knownOffsets = { 0x5B6E40, 0x94C020, 0xA52EA0, 0xA579A0, 0xA8B6A0, 0x24000000 };
+                    long[] baseOffsets = { 0x81A020, 0x825140, 0xA82020 };
+                    bool found = false;
+
+                    foreach (long address in knownOffsets) {
+                        Constants.OFFSET = address;
+                        if (ReadUInt("STARTUP_SEARCH") == 320386 || ReadUShort("BATTLE_VALUE") == 32776 || ReadUShort("BATTLE_VALUE") == 41215) {
+                            Constants.KEY.SetValue("Offset", Constants.OFFSET);
+                            Constants.WriteOutput("Static manual offset scan success.");
+                            found = true;
+                            break;
+                        } else {
+                            Constants.OFFSET = 0;
+                        }
+                    }
+
+                    if (!found) {
+                        foreach (long address in baseOffsets) {
+                            Constants.OFFSET = baseAddress + address;
+                            if (ReadUInt("STARTUP_SEARCH") == 320386 || ReadUShort("BATTLE_VALUE") == 32776 || ReadUShort("BATTLE_VALUE") == 41215) {
+                                Constants.KEY.SetValue("Offset", Constants.OFFSET);
+                                Constants.WriteOutput("Static base offset scan success.");
+                                break;
+                            } else {
+                                Constants.OFFSET = 0;
+                            }
+                        }
+                    }
+                }
+
                 if (Constants.OFFSET <= 0) {
-                    Constants.WriteDebug("Failed to attach.");
+                    Constants.WriteOutput("Scan failed. Please try opening Dragoon Modifier on the game's title or load screen.");
                     return false;
                 } else {
                     Constants.WriteDebug($"Calculated offset: {Constants.OFFSET.ToString("X2")}");
