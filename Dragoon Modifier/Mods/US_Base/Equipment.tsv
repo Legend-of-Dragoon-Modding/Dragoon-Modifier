@@ -73,7 +73,7 @@ Armor of Yore	Armor	Dart, Lavitz	Armor						35	35								Poison, Stun, Arm Block
 Satori Vest	Armor	Haschel	Warrior Dress						40	31				10				Poison, Stun, Arm Blocking					Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.	500
 Rainbow Dress	Armor	Female	Robe						32	55				5	5			Poison, Stun, Arm Blocking					Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.	500
 Angel Robe	Armor	Shana, Meru	Robe						10	20				5	5					revive	40		40% chance of<LINE>reviving from<LINE>death.	500
-Armor of Legend	Armor	All	Armor						127					50									Greatly reduces<LINE>damage from<LINE>physical attacks.	10000
+Armor of Legend	Armor	All	Armor						127					50					p_half				Greatly reduces<LINE>damage from<LINE>physical attacks.	10000
 																							 	2
 Bandana	Helm	Male	Bandana					3				100	100										 	10
 Sallet	Helm	Male	Helm					8				110	100										Increases hit<LINE>chance of physical<LINE>attacks by 10%.	40
@@ -88,7 +88,7 @@ Jeweled Crown	Helm	Shana, Meru	Crown					24		5		100	100						sp_m_hit		20		Gain 
 Rose's Hair Band	Helm	Rose	Bandana					36				100	100									death_res	Grants immunity<LINE>to instant death.	250
 																							 	2
 Phoenix Plume	Helm	All	Helm					30		10		100	100					Bewitchment, Confusion, Fear, Dispirit					Avoids bewitchment,<LINE>confusion, fear,<LINE>and dispiriting.	600
-Legend Casque	Helm	All	Helm					50		127		100	100		50								Greatly reduces<LINE>damage from<LINE>magical attacks.	10000
+Legend Casque	Helm	All	Helm					50		127		100	100		50					m_half			Greatly reduces<LINE>damage from<LINE>magical attacks.	10000
 Dragon Helm	Helm	All	Helm					50	10			100	100							hp_multi	50		Raises maximum<LINE>HP 50%.	500
 Magical Hat	Helm	All	Hat					50		10		100	100							mp_multi	50		Raises maximum<LINE>MP 50%.	500
 																							 	2
