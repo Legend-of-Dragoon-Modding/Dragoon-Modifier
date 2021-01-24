@@ -75,7 +75,7 @@ M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-
 285	Divine Ball	Non-Elemental	65535	0	0	16000	24000	50	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Divine Ball
 270	Lloyd	Non-Elemental	666666	80	65	80	120	65	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Lloyd
 277	Dummy Lloyd	Null	0	0	0	50	50	50	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Dummy Lloyd
-344	Magician Faust	Non-Elemental	1000000	315	315	50	25	50	0	20	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Magician Faust
+344	Magician Faust	Non-Elemental	1000000	345	345	100	50	50	0	20	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Magician Faust
 342	Mazo	Non-Elemental	800	101	101	50	200	50	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Mazo
 387	Zieg Feld	Fire	720000	532	110	120	150	70	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Zieg Feld
 386	Missing	Null	0	0	0	50	50	50	0	0	0	0	0	0	None	None	255	128	0	0	Broad Sword	0	Missing

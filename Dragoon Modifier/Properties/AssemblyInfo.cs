@@ -13,7 +13,7 @@ using System.Windows.Markup;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Dragoon Modifier")]
-[assembly: AssemblyCopyright("Copyright © Zychronix 2020")]
+[assembly: AssemblyCopyright("Copyright © Zychronix 2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -52,8 +52,8 @@ using System.Windows.Markup;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("3.2.1.3")]
-[assembly: AssemblyFileVersion("3.2.1.3")]
+[assembly: AssemblyVersion("3.3.0.0")]
+[assembly: AssemblyFileVersion("3.3.0.0")]
 
 #if DEBUG
 [assembly: XmlnsDefinition("debug-mode", "Namespace")]

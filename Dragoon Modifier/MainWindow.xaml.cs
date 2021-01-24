@@ -1067,7 +1067,7 @@ namespace Dragoon_Modifier {
                     Constants.RUN = false;
                     Constants.WriteGLog("Program stopped.");
                     Constants.WritePLogOutput("INTERNAL FIELD SCRIPT ERROR");
-                    Constants.WriteOutput("Fatal Error. Closing all threads.");
+                    Constants.WriteOutput("Fatal Error. Closing all threads. Please see error log in Settings console.");
                     Constants.WriteError(ex.ToString());
                     EnableUI();
                 }
@@ -1179,7 +1179,7 @@ namespace Dragoon_Modifier {
                     Constants.RUN = false;
                     Constants.WriteGLog("Program stopped.");
                     Constants.WritePLogOutput("INTERNAL BATTLE SCRIPT ERROR");
-                    Constants.WriteOutput("Fatal Error. Closing all threads.");
+                    Constants.WriteOutput("Fatal Error. Closing all threads. Please see error log in Settings console.");
                     Constants.WriteError(ex.ToString());
                     EnableUI();
                 }
@@ -1298,6 +1298,14 @@ namespace Dragoon_Modifier {
                     }), DispatcherPriority.ContextIdle);
                 }
             }
+
+            this.Dispatcher.BeginInvoke(new Action(() => {
+                System.Drawing.Icon newIcon = Properties.Resources.Icon_Grey;
+                System.Drawing.Bitmap bitmap = newIcon.ToBitmap();
+                IntPtr hBitmap = bitmap.GetHbitmap();
+                this.Icon = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, Int32Rect.Empty, System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+                EnableUI();
+            }), DispatcherPriority.ContextIdle);
         }
 
         public void HotkeysController() {
@@ -1777,6 +1785,7 @@ namespace Dragoon_Modifier {
         public void UltimateController() {
             while (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED && Constants.RUN) {
                 if (Globals.ENCOUNTER_ID == 442) {
+                    bool finalBurst = false;
                     if (ultimateHP[0] > 360000) {
                         if (ubTrackMTP[0] > Globals.MONSTER_TABLE[0].Read("Turn")) {
                             byte[] dragoonMagic = { 80, 81, 82 };
@@ -1787,6 +1796,7 @@ namespace Dragoon_Modifier {
                                 ubZiegDragoon = dragoonMagic[1];
                             } else {
                                 ubZiegDragoon = dragoonMagic[2];
+                                finalBurst = true;
                             }
                         }
                     } else if (ultimateHP[0] > 180000) {
@@ -1795,6 +1805,7 @@ namespace Dragoon_Modifier {
                             int chance = new Random().Next(1, 100);
                             if (chance > 65) {
                                 ubZiegDragoon = dragoonMagic[2];
+                                finalBurst = true;
                             } else if (chance > 35) {
                                 ubZiegDragoon = dragoonMagic[1];
                             } else if (chance > 15) {
@@ -1809,6 +1820,7 @@ namespace Dragoon_Modifier {
                             int chance = new Random().Next(1, 100);
                             if (chance > 65) {
                                 ubZiegDragoon = dragoonMagic[2];
+                                finalBurst = true;
                             } else if (chance > 45) {
                                 ubZiegDragoon = dragoonMagic[1];
                             } else if (chance > 25) {
@@ -1822,7 +1834,7 @@ namespace Dragoon_Modifier {
                     if (Globals.MONSTER_TABLE[0].Read("Action") == 12)
                         Emulator.WriteByte(Globals.M_POINT - 0x50, ubZiegDragoon);
 
-                    if (Emulator.ReadByte("TARGET_1") == 254 || Emulator.ReadByte("TARGET_2") == 254 || Emulator.ReadByte(Globals.M_POINT + 0xAC4) == 254) {
+                    if (Emulator.ReadByte("TARGET_1") == 254 || Emulator.ReadByte("TARGET_2") == 254 || Emulator.ReadByte(Globals.M_POINT + 0xAC4) == 254 || finalBurst) {
                         byte lowestHPSlot = 0;
                         int lowestHP = 65535;
 
@@ -1839,6 +1851,8 @@ namespace Dragoon_Modifier {
                         Emulator.WriteByte("TARGET_1", lowestHPSlot);
                         Emulator.WriteByte("TARGET_2", lowestHPSlot);
                         Emulator.WriteByte(Globals.M_POINT + 0xAC4, lowestHPSlot);
+                        Emulator.WriteByte(Globals.M_POINT - 0x54, lowestHPSlot);
+                        Emulator.WriteByte(Globals.M_POINT - 0x40, lowestHPSlot);
                     }
 
                     Emulator.WriteByte("SCREEN_FADE", 2);
@@ -3131,7 +3145,6 @@ namespace Dragoon_Modifier {
                     enrageChangeTurns = 0;
                     ubEnrageTurns = 0;
                     ubEnrageTurnsPlus = 0;
-
                 }
 
                 if (ubEnhancedShield) {
@@ -3148,9 +3161,30 @@ namespace Dragoon_Modifier {
                 }
 
                 if (ubGrantMaxHP) {
+                    double multiMax = 1.00;
+
+                    if (Globals.ENCOUNTER_ID == 420) {
+                        multiMax = 1.75;
+                    }
+
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9) {
-                            Globals.CHARACTER_TABLE[i].Write("Max_HP", Globals.CHARACTER_TABLE[i].Read("Max_HP") * 1.5);
+                            double maxHP = Globals.CHARACTER_TABLE[i].Read("Max_HP") * multiMax;
+                            if (maxHP > 32767) {
+                                int character = Globals.PARTY_SLOT[i];
+                                int lv = Emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x12);
+                                int df = Globals.CURRENT_STATS[i].DF * 2;
+                                int mdf = Globals.CURRENT_STATS[i].MDF * 2;
+                                Globals.CHARACTER_TABLE[i].Write("Max_HP", (short) (maxHP / 2));
+                                Globals.CHARACTER_TABLE[i].Write("DF", df);
+                                Globals.CHARACTER_TABLE[i].Write("OG_DF", df);
+                                Globals.CHARACTER_TABLE[i].Write("MDF", mdf);
+                                Globals.CHARACTER_TABLE[i].Write("OG_MDF", mdf);
+                                Emulator.WriteByte("SECONDARY_CHARACTER_TABLE", df, character * 0xA0 + 0x6C);
+                                Emulator.WriteByte("SECONDARY_CHARACTER_TABLE", mdf, character * 0xA0 + 0x6D);
+                            } else {
+                                Globals.CHARACTER_TABLE[i].Write("Max_HP", maxHP);
+                            }
                         }
                     }
                 }
@@ -3434,6 +3468,7 @@ namespace Dragoon_Modifier {
                     ubMagicChange = true;
                     ubDragoonGuard = true;
                     ubGrantMaxHP = true;
+                    ubUltimateEnrage = true;
                 } else if (Globals.MONSTER_IDS[i] == 387) { //Zieg
                     ubDragoonExtras = true;
                     ubTrackDragoon = true;
@@ -5162,6 +5197,59 @@ namespace Dragoon_Modifier {
                     Globals.MONSTER_TABLE[0].Write("MDF", Math.Round(originalMonsterStats[0, 4] * 1.25));
                     enragedMode[0] = 2;
                 }
+            } else if (Globals.ENCOUNTER_ID == 420) {
+                double multiMAT = 2.76;
+                byte magicType = 0;
+                int lastItem = Emulator.ReadByte(Globals.MONS_ADDRESS[0] + 0xABC);
+                ArrayList singleMagic = new ArrayList();
+                ArrayList wideMagic = new ArrayList();
+                ArrayList powerMagic = new ArrayList();
+                
+                int guardingParty = 0;
+                int guardingDragoon = 0;
+
+                singleMagic.Add(0xC3);
+                singleMagic.Add(0xC6);
+                singleMagic.Add(0xC7);
+                singleMagic.Add(0xC5);
+                singleMagic.Add(0xCA);
+                singleMagic.Add(0xC9);
+                singleMagic.Add(0xC2);
+                wideMagic.Add(0xD1);
+                wideMagic.Add(0xD6);
+                wideMagic.Add(0xDC);
+                wideMagic.Add(0xD0);
+                wideMagic.Add(0xD8);
+                wideMagic.Add(0xD2);
+                wideMagic.Add(0xCF);
+                powerMagic.Add(0xF2);
+                powerMagic.Add(0xF3);
+                powerMagic.Add(0xF4);
+                powerMagic.Add(0xF5);
+                powerMagic.Add(0xF7);
+                powerMagic.Add(0xF6);
+                powerMagic.Add(0xF8);
+                powerMagic.Add(0xFA);
+
+                for (int i = 0; i < 3; i++) {
+                    if (Globals.PARTY_SLOT[i] < 9) {
+                        if (Globals.CHARACTER_TABLE[i].Read("Guard") == 1)
+                            guardingParty++;
+                        if (Emulator.ReadByte("DRAGOON_TURNS", (0x4 * i)) > 0)
+                            guardingDragoon++;
+                    }
+                }
+
+                if (singleMagic.Contains(lastItem)) {
+                    double multi = 1 + (0.150 * guardingParty) + (0.075 * guardingDragoon);
+                    Globals.MONSTER_TABLE[0].Write("MAT", Math.Round(originalMonsterStats[0, 2] * multiMAT * multi));
+                } else if (wideMagic.Contains(lastItem)) {
+                    double multi = 1 + (0.100 * guardingParty) + (0.050 * guardingDragoon);
+                    Globals.MONSTER_TABLE[0].Write("MAT", Math.Round(originalMonsterStats[0, 2] * multiMAT * multi));
+                } else if (powerMagic.Contains(lastItem)) {
+                    double multi = 1 + (0.180 * guardingParty) + (0.090 * guardingDragoon);
+                    Globals.MONSTER_TABLE[0].Write("MAT", Math.Round(originalMonsterStats[0, 2] * multiMAT * multi));
+                }
             }
         }
 
@@ -6183,7 +6271,7 @@ namespace Dragoon_Modifier {
                 Constants.RUN = false;
                 Constants.WriteGLog("Program stopped.");
                 Constants.WritePLogOutput("Error loading scripts.");
-                Constants.WriteOutput("Fatal Error. Closing all threads.");
+                Constants.WriteOutput("Fatal Error. Closing all threads. Please see error log in Settings console.");
                 Constants.WriteError(ex.ToString());
                 EnableUI();
             }
@@ -7029,7 +7117,7 @@ namespace Dragoon_Modifier {
                     "31. Belzac - 608,000 HP | 40,000 Gold\r\nThis boss has custom status effects, each with a random chance of activation. 30% accuracy loss on Grand Stream. Power Down DF/MDF on Meteor Strike. Speed Down on Golden Dragoon.\r\n\r\n" +
                     "32. S Virage I | Head - 320,000 HP | Body - 320,000 HP | Arm - 160,000 HP | 1,000 - 75,000 Gold\r\nThis boss has Gold farming opportunities.\r\nThis boss has countdown changes. For every 40,000 damage, countdown increases. For each countdown increase you get 1,000 Gold each. Killing a body part grants the following gold: 45,000 Gold for the head, 15,000 Gold for the body, 10,000 Gold for the arm.\r\n\r\n" +
                     "33. Kanzas - 396,000 HP | 45,000 Gold\r\nThis boss has Electric Charges, with a maximum of 30 charges. Each charge is released all at once and can be released at any time, each charge grants 5% power on the next attack. Dragoon Addition grants 1 charge. Atomic Mind grants 3 charges and attack down for 3 turns. Thunder Kid grants 5 charges and defense down for 3 turns. Violet Dragon grants 15 charges and instantly releases all charges for this attack and grants power down for 3 turns.\r\n\r\n" +
-                    "34. Emperror Doel - 250,000 HP | Dragoon Doel - 750,000 HP | 100,000 Gold\r\nThis boss has Inventory Refresh.\r\nThis boss has Ultimate Enrage Mode.\r\nThis Boss has a Magic Change. Doel can now cast any magic when he is below 75,000 HP and will use elemental weaknesses to his advantage.\r\nThis boss has Enhanced Shield. Doel's Shield when it is about to appear will grant him Damage Immunity. The Shield grants him half damage.\r\nDefeating this boss will increase your inventory to 64 Slots.\r\nIf you are on Hell Mode you will unlock Divine Red-Eyed Dragon mode.\r\n\r\n" +
+                    "34. Emperor Doel - 250,000 HP | Dragoon Doel - 750,000 HP | 100,000 Gold\r\nThis boss has Inventory Refresh.\r\nThis boss has Ultimate Enrage Mode.\r\nThis Boss has a Magic Change. Doel can now cast any magic when he is below 75,000 HP and will use elemental weaknesses to his advantage.\r\nThis boss has Enhanced Shield. Doel's Shield when it is about to appear will grant him Damage Immunity. The Shield grants him half damage.\r\nDefeating this boss will increase your inventory to 64 Slots.\r\nIf you are on Hell Mode you will unlock Divine Red-Eyed Dragon mode.\r\n\r\n" +
                     "35. S Virage II | Head - 333,333 HP | Body - 222,222 HP | Arm 666,666 | 60,000 Gold\r\nThis boss has a modified Shared HP. Attacking the head heals the arm. Each attack to a body part will do 2x damage. Each part healed will recieve 1x HP. Attacking the arm heals the head. Attacking the head heals the body.\r\nThis boss has an enhanced Final Attack.\r\n\r\n" +
                     "36. Divine Dragon - 10,000 HP | 70,000 Gold\r\nThis boss has Armor Guard.\r\nThis Boss has Reverse Dragon Block Staff.\r\nThis boss has Ultimate Enrage Mode.\r\n\r\n" +
                     "37. Lloyd - 666,666 HP | 80,000 Gold\r\nThis boss has modified Ultimate Enrage Mode, Lloyd will increase his AT/MAT stats but lower his DF/MDF stats. Dying by his Dragoon Buster attack will lower his stats, but each time you die Lloyd's base stats increase.\r\nThis boss will remove resistances.\r\nThis boss has a Magic Change every 7%.\r\n\r\n" +
