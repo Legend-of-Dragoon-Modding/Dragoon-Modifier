@@ -10,9 +10,9 @@ Blossom Storm (Albert)	Yes	0	100	20	Wind	Damage Resist 50% Dur 3
 Jade Dragon		660	100	80	Wind	Wind STR 1320%
 Divine Dragon Ball		510	100	50	Non-Elemental	Void STR 1020%
 Star Children		166	100	20	Light	Light STR 330%
-Moon Light	Yes	100	100	10	Light	Ally Single 100% Rev & Rec
-Gates of Heaven	Yes	100	100	30	Light	Ally All 100% Recover
-White Silver Dragon		433.5	100	80	Light	Light STR 865%
+Moon Light	Yes	100	100	10	Light	Single 100% HP 50% RV
+Gates of Heaven	Yes	100	100	30	Light	All 50% HP & 50% RV
+White Silver Dragon		433.5	100	80	Light	Light STR 865% & 100% HP
 Wing Blaster (Lavitz)		220	100	20	Wind	Wind STR 440%
 Astral Drain		295	100	10	Dark	Dark STR 590% & HP
 Death Dimension		197.5	100	20	Dark	Dark STR 395%

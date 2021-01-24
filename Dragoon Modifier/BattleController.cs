@@ -145,6 +145,10 @@ namespace Dragoon_Modifier {
         static ushort starChildrenDMAT = 332;
         static byte gatesOfHeavenMP = 40;
         static ushort wSilverDragonDMAT = 289;
+        static int gatesOfHeavenHeal = 50;
+        static int gatesOfHeavenHealBase = 50;
+        static int gatesOfHeavenHellModePenalty = 15;
+        static int gatesOfHeavenHardModePenalty = 8;
 
         static ushort roseDAT = 330;
         static ushort roseSpecialDAT = 495;
@@ -583,7 +587,7 @@ namespace Dragoon_Modifier {
             }
 
 
-            if (Globals.ITEM_STAT_CHANGE || Globals.CHARACTER_STAT_CHANGE || Globals.dmScripts["btnUltimateBoss"]) {
+            if (Globals.ITEM_STAT_CHANGE || Globals.CHARACTER_STAT_CHANGE || Globals.CheckDMScript("btnUltimateBoss")) {
                 Constants.WriteOutput("Changing Character Stats...");
                 for (int slot = 0; slot < 3; slot++) {
                     int character = Globals.PARTY_SLOT[slot];
@@ -2266,6 +2270,21 @@ namespace Dragoon_Modifier {
                         }
                     }
 
+                    int heal = gatesOfHeavenHealBase;
+                    int healReduction = Globals.DIFFICULTY_MODE.Contains("Hell") ? gatesOfHeavenHellModePenalty : gatesOfHeavenHardModePenalty;
+                    for (int i = 0; i < 3; i++) {
+                        if (Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[i].Read("HP") == 0) {
+                            heal -= healReduction;
+                        }
+                    }
+
+                    if (heal != gatesOfHeavenHeal) {
+                        Emulator.WriteByte("SPELL_TABLE", heal, 0x5 + (12 * 0xC)); //Shana's Gates of Heaven Heal %
+                        Emulator.WriteByte("SPELL_TABLE", heal, 0x5 + (67 * 0xC)); //???'s Gates of Heaven Heal %
+                        Emulator.WriteText(Globals.DRAGOON_SPELLS[12].Description_Pointer + 0x8, heal.ToString());
+                        gatesOfHeavenHeal = heal;
+                    }
+
                     if (dragoonSpecialAttack == 2 || dragoonSpecialAttack == 8) {
                         Globals.CHARACTER_TABLE[slot].Write("DAT", (shanaSpecialDAT * multi));
                     } else {
@@ -2280,7 +2299,7 @@ namespace Dragoon_Modifier {
                         byte spell = Globals.CHARACTER_TABLE[slot].Read("Spell_Cast");
                         if (spell == 10 || spell == 65) {
                             Globals.CHARACTER_TABLE[slot].Write("DMAT", starChildrenDMAT * multi);
-                            Globals.CHARACTER_TABLE[slot].Write("HP_Regen", (recoveryRateSave + 20));
+                            Globals.CHARACTER_TABLE[slot].Write("HP_Regen", 100);
                             starChildren = 3;
                         } else if (spell == 13) {
                             Globals.CHARACTER_TABLE[slot].Write("DMAT", wSilverDragonDMAT * multi);
