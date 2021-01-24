@@ -70,7 +70,11 @@ namespace Dragoon_Modifier {
         // Dragoon Changes variables
         static ushort[] previousMP = { 0, 0, 0 };
         static ushort[] currentMP = { 0, 0, 0 };
+        static ushort[] trackMonsterHP = { 0, 0, 0, 0, 0 };
         static byte flowerStorm = 2;
+        static bool checkWingBlaster = false;
+        static bool checkGaspless = false;
+        static bool checkJadeDragon = false;
         static bool checkFlowerStorm = false;
         static byte starChildren = 0;
         static ushort recoveryRateSave = 0;
@@ -123,13 +127,16 @@ namespace Dragoon_Modifier {
         static ushort explosionDREDMAT = 1020;
         static ushort finalBurstDREMAT = 510;
 
-        static ushort lavitzDAT = 330;
-        static ushort lavitzSpecialDAT = 495;
+        static ushort lavitzDAT = 400;
+        static ushort lavitzSpecialDAT = 600;
 
         static ushort wingBlasterDMAT = 440;
         static byte blossomStormTurnMP = 20;
         static ushort gasplessDMAT = 330;
         static ushort jadeDragonDMAT = 440;
+        static byte wingBlasterTPDamage = 30;
+        static byte gasplessTPDamage = 90;
+        static byte jadeDragonTPDamage = 60;
 
         static ushort shanaDAT = 365;
         static ushort shanaSpecialDAT = 510;
@@ -284,7 +291,10 @@ namespace Dragoon_Modifier {
         public static void Setup(Dictionary<string, int> uiCombo) {
             Constants.WriteOutput("Battle detected. Loading...");
 
+            checkWingBlaster = false;
             checkFlowerStorm = false;
+            checkGaspless = false;
+            checkJadeDragon = false;
             checkRoseDamage = false;
             roseEnhanceDragoon = false;
             meruEnhanceDragoon = false;
@@ -2179,10 +2189,16 @@ namespace Dragoon_Modifier {
                         byte spell = Globals.CHARACTER_TABLE[slot].Read("Spell_Cast");
                         if (spell == 5 || spell == 14) {
                             Globals.CHARACTER_TABLE[slot].Write("DMAT", wingBlasterDMAT * multi);
+                            checkWingBlaster = true;
+                            for (int i = 0; i < Globals.MONSTER_SIZE; i++) trackMonsterHP[i] = Globals.MONSTER_TABLE[i].Read("HP");
                         } else if (spell == 6 || spell == 17) {
                             Globals.CHARACTER_TABLE[slot].Write("DMAT", gasplessDMAT * multi);
+                            checkGaspless = true;
+                            for (int i = 0; i < Globals.MONSTER_SIZE; i++) trackMonsterHP[i] = Globals.MONSTER_TABLE[i].Read("HP");
                         } else if (spell == 8) {
                             Globals.CHARACTER_TABLE[slot].Write("DMAT", jadeDragonDMAT * multi);
+                            checkJadeDragon = true;
+                            for (int i = 0; i < Globals.MONSTER_SIZE; i++) trackMonsterHP[i] = Globals.MONSTER_TABLE[i].Read("HP");
                         } else if (Globals.DIFFICULTY_MODE.Contains("Hell") && (spell == 7 || spell == 26)) {
                             checkFlowerStorm = true;
                             for (int x = 0; x < 3; x++) {
@@ -2197,6 +2213,21 @@ namespace Dragoon_Modifier {
                     } else {
                         if (currentMP[slot] > previousMP[slot]) {
                             previousMP[slot] = currentMP[slot];
+                        }
+
+                        if (checkWingBlaster || checkGaspless || checkJadeDragon) {
+                            for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
+                                if (Globals.MONSTER_TABLE[i].Read("HP") < trackMonsterHP[i]) {
+                                    double tpDamage = checkWingBlaster ? wingBlasterTPDamage : checkGaspless ? gasplessTPDamage : jadeDragonTPDamage;
+                                    if (Globals.MONSTER_TABLE[i].Read("SPEED_DOWN_TRN") > 0) tpDamage /= 3;
+                                    Globals.MONSTER_TABLE[i].Write("Turn", Math.Max(0, Globals.MONSTER_TABLE[i].Read("Turn") - tpDamage));
+                                    checkWingBlaster = checkGaspless = checkJadeDragon = false;
+                                }
+                            }
+
+                            if (Globals.CHARACTER_TABLE[slot].Read("Action") != 10 && Globals.CHARACTER_TABLE[slot].Read("Action") != 26) {
+                                checkWingBlaster = checkGaspless = checkJadeDragon = false;
+                            }
                         }
 
                         if (checkFlowerStorm) {
