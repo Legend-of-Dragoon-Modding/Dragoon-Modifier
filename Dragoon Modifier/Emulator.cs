@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace Dragoon_Modifier {
     public static class Emulator {
-        const int PROCESS_ALL_ACCESS = 0x1F0FFF;
+        const int PROCESS_ALL_ACCESS = 0x1FFFFF;
 
         static readonly int[] Empty = new int[0];
 
@@ -78,17 +78,50 @@ namespace Dragoon_Modifier {
                 if (emuName.ToLower() == "retroarch") { // RetroArch hotfix
                     start = 0x40000000;
                     end = 0x401F4000;
+
+                    Constants.WriteOutput("Start Special Scan: " + Convert.ToString(start, 16).ToUpper() + " - " + Convert.ToString(end, 16).ToUpper());
+                    var results = ScanAoB(start, end, AoBCheck, false, true);
+                    foreach (long x in results) {
+                        Constants.OFFSET = x - (long) 0xB070;
+                        if (ReadUInt("STARTUP_SEARCH") == 320386 || ReadUShort("BATTLE_VALUE") == 32776 || ReadUShort("BATTLE_VALUE") == 41215) {
+                            Constants.KEY.SetValue("Offset", Constants.OFFSET);
+                            Constants.WriteOutput("Base scan success.");
+                            break;
+                        } else {
+                            Constants.OFFSET = 0;
+                        }
+                    }
+                } else if (emuName.ToLower().Contains("duckstation")) {
+                    string duckstation = "80 7F 00 00";
+                    Constants.WriteOutput("Start Special Scan: " + Convert.ToString(start, 16).ToUpper() + " - " + Convert.ToString(end, 16).ToUpper());
+                    var results = ScanAoB(start, end, duckstation, false, true);
+                    foreach (long x in results) {
+                        byte[] psxPointer = ReadAoB(x + 0x30, x + 0x38);
+                        psxPointer.Reverse();
+                        Constants.OFFSET = BitConverter.ToInt64(psxPointer, 0);
+                        if (ReadUInt("STARTUP_SEARCH") == 320386 || ReadUShort("BATTLE_VALUE") == 32776 || ReadUShort("BATTLE_VALUE") == 41215) {
+                            Constants.KEY.SetValue("Offset", Constants.OFFSET);
+                            Constants.WriteOutput("Base scan success.");
+                            break;
+                        } else {
+                            Constants.OFFSET = 0;
+                        }
+                    }
                 }
-                Constants.WriteOutput("Start Scan: " + Convert.ToString(start, 16).ToUpper() + " - " + Convert.ToString(end, 16).ToUpper());
-                var results = ScanAoB(start, end, AoBCheck, false, true);
-                foreach (long x in results) {
-                    Constants.OFFSET = x - (long) 0xB070;
-                    if (ReadUInt("STARTUP_SEARCH") == 320386 || ReadUShort("BATTLE_VALUE") == 32776 || ReadUShort("BATTLE_VALUE") == 41215) {
-                        Constants.KEY.SetValue("Offset", Constants.OFFSET);
-                        Constants.WriteOutput("Base scan success.");
-                        break;
-                    } else {
-                        Constants.OFFSET = 0;
+
+                if (Constants.OFFSET <= 0) {
+                    Constants.WriteOutput("Start Scan: " + Convert.ToString(start, 16).ToUpper() + " - " + Convert.ToString(end, 16).ToUpper());
+                    var results = ScanAoB(start, end, AoBCheck, false, true);
+                    foreach (long x in results) {
+                        Constants.OFFSET = x - (long) 0xB070;
+                        Console.WriteLine(Convert.ToString(Constants.OFFSET, 16).ToUpper());
+                        if (ReadUInt("STARTUP_SEARCH") == 320386 || ReadUShort("BATTLE_VALUE") == 32776 || ReadUShort("BATTLE_VALUE") == 41215) {
+                            Constants.KEY.SetValue("Offset", Constants.OFFSET);
+                            Constants.WriteOutput("Base scan success.");
+                            break;
+                        } else {
+                            Constants.OFFSET = 0;
+                        }
                     }
                 }
 
