@@ -140,6 +140,7 @@ namespace Dragoon_Modifier {
 
         static ushort shanaDAT = 365;
         static ushort shanaSpecialDAT = 510;
+        static ushort shanaSaveAT = 0;
 
         static byte moonLightMP = 20;
         static ushort starChildrenDMAT = 332;
@@ -232,7 +233,10 @@ namespace Dragoon_Modifier {
                             }
                             if (difficulty != "Normal") {
                                 EquipRun(inventorySize);
-                                DartBurnStackHandler();
+                                if (!Globals.CheckDMScript("btnDivineRed")) {
+                                    DartBurnStackHandler();
+                                }
+                                MagicInventoryHandler();
                                 HardDragoonRun(eleBombTurns, eleBombElement, reverseDBS);
                             }
                             BattleHotkeys();
@@ -1266,6 +1270,7 @@ namespace Dragoon_Modifier {
             if (dlv == 0) {
                 Globals.CHARACTER_TABLE[0].Write("Dragoon", 0);
             }
+
             Constants.WriteOutput("No Dart complete.");
         }
 
@@ -2270,6 +2275,16 @@ namespace Dragoon_Modifier {
                         }
                     }
 
+                    if (slot == 0 && Globals.CHARACTER_TABLE[slot].Read("Action") == 10) {
+                        if (dragoonSpecialAttack == 2 || dragoonSpecialAttack == 8) {
+                            Globals.CHARACTER_TABLE[slot].Write("AT", Math.Floor(shanaSaveAT * (shanaSpecialDAT / 100D)));
+                        } else {
+                            Globals.CHARACTER_TABLE[slot].Write("AT", Math.Floor(shanaSaveAT * (shanaDAT / 100D)));
+                        }
+                    } else if (slot == 0 && Globals.CHARACTER_TABLE[slot].Read("Action") == 8) {
+                        Globals.CHARACTER_TABLE[slot].Write("AT", shanaSaveAT);
+                    }
+
                     int heal = gatesOfHeavenHealBase;
                     int healReduction = Globals.DIFFICULTY_MODE.Contains("Hell") ? gatesOfHeavenHellModePenalty : gatesOfHeavenHardModePenalty;
                     for (int i = 0; i < 3; i++) {
@@ -2610,6 +2625,73 @@ namespace Dragoon_Modifier {
                 }
             }
         }
+
+        public static void MagicInventoryHandler() {
+            for (int i = 0; i < 3; i++) {
+                if (Globals.PARTY_SLOT[i] == 2 || Globals.PARTY_SLOT[i] == 8) {
+                    if (Globals.CHARACTER_TABLE[i].Read("Action") == 10) {
+
+                    }
+
+                        /*if (dartBurnStacks > 0) {
+                        if (Globals.CHARACTER_TABLE[i].Read("Action") == 10) {
+                            int menu = Globals.CHARACTER_TABLE[i].Read("Menu");
+
+                            if (menu == 96 || menu == 98) {
+                                byte[] icons = { 1, 4, 9, 3, 3 };
+                                Globals.CHARACTER_TABLE[i].Write("Menu", 225 - (96 - Globals.CHARACTER_TABLE[i].Read("Menu")));
+                                Thread.Sleep(60);
+                                for (int x = menu == 96 ? 1 : 0; x < icons.Length; x++) {
+                                    Emulator.WriteByte(Globals.M_POINT + 0xD34 + (x - (menu == 96 ? 1 : 0)) * 0x2, icons[x]);
+                                }
+                            }
+
+                            int iconCount = Emulator.ReadByte(Globals.M_POINT + 0xD32);
+                            int iconSelected = Emulator.ReadByte(Globals.M_POINT + 0xD46);
+
+                            if (burnStackSelected) {
+                                if ((iconCount == 4 && (iconSelected == 0 || iconSelected == 2)) || (iconCount == 5 && (iconSelected == 1 || iconSelected == 3))) {
+                                    burnStackSelected = false;
+                                    double burnAmount = 1 + (dartBurnStacks * damagePerBurn);
+                                    Emulator.WriteText(Globals.DRAGOON_SPELLS[0].Description_Pointer + 0x1E, "1.00");
+                                    Emulator.WriteText(Globals.DRAGOON_SPELLS[1].Description_Pointer + 0x1E, "1.00");
+                                    Emulator.WriteText(Globals.DRAGOON_SPELLS[2].Description_Pointer + 0x1E, "1.00");
+                                    Emulator.WriteText(Globals.DRAGOON_SPELLS[3].Description_Pointer + 0x20, "1.00");
+
+                                    if (dartBurnStacks == dartMaxBurnStacks) {
+                                        Emulator.WriteByte("SPELL_TABLE", 10, 0x7 + (0 * 0xC));
+                                        Emulator.WriteByte("SPELL_TABLE", 20, 0x7 + (1 * 0xC));
+                                        Emulator.WriteByte("SPELL_TABLE", 30, 0x7 + (2 * 0xC));
+                                        Emulator.WriteByte("SPELL_TABLE", 80, 0x7 + (3 * 0xC));
+                                    }
+                                }
+                            } else {
+                                if ((iconCount == 4 && (iconSelected == 1 || iconSelected == 3)) || (iconCount == 5 && (iconSelected == 2 || iconSelected == 4))) {
+                                    burnStackSelected = true;
+                                    double burnAmount = 1 + (dartBurnStacks * damagePerBurn);
+                                    bool max = dartBurnStacks == dartMaxBurnStacks;
+                                    string flameshotDesc = Convert.ToString(max ? (burnAmount * burnStackMaxFlameshotMulti) : (burnAmount * burnStackFlameshotMulti));
+                                    string explosionDesc = Convert.ToString(max ? (burnAmount * burnStackMaxExplosionMulti) : (burnAmount * burnStackExplosionMulti));
+                                    string finalBurstDesc = Convert.ToString(max ? (burnAmount * burnStackMaxFinalBurstMulti) : (burnAmount * burnStackFinalBurstMulti));
+                                    string redEyeDesc = Convert.ToString(max ? (burnAmount * burnStackMaxRedEyeMulti) : (burnAmount * burnStackRedEyeMulti));
+                                    Emulator.WriteText(Globals.DRAGOON_SPELLS[0].Description_Pointer + 0x1E, flameshotDesc.Substring(0, Math.Min(4, flameshotDesc.Length)));
+                                    Emulator.WriteText(Globals.DRAGOON_SPELLS[1].Description_Pointer + 0x1E, explosionDesc.Substring(0, Math.Min(4, explosionDesc.Length)));
+                                    Emulator.WriteText(Globals.DRAGOON_SPELLS[2].Description_Pointer + 0x1E, finalBurstDesc.Substring(0, Math.Min(4, finalBurstDesc.Length)));
+                                    Emulator.WriteText(Globals.DRAGOON_SPELLS[3].Description_Pointer + 0x20, redEyeDesc.Substring(0, Math.Min(4, redEyeDesc.Length)));
+
+                                    if (dartBurnStacks == dartMaxBurnStacks) {
+                                        Emulator.WriteByte("SPELL_TABLE", 1, 0x7 + (0 * 0xC));
+                                        Emulator.WriteByte("SPELL_TABLE", 1, 0x7 + (1 * 0xC));
+                                        Emulator.WriteByte("SPELL_TABLE", 1, 0x7 + (2 * 0xC));
+                                        Emulator.WriteByte("SPELL_TABLE", 1, 0x7 + (3 * 0xC));
+                                    }
+                                }
+                            }
+                        }
+                    }*/
+                }
+            }
+        }
         #endregion
 
         #region Dual Difficulty
@@ -2797,6 +2879,18 @@ namespace Dragoon_Modifier {
             Chapter3buffs();
             PercBuffs();
             SpecialEquipSetup(uiCombo);
+
+            if (Globals.PARTY_SLOT[0] == 2 || Globals.PARTY_SLOT[0] == 8) {
+                shanaSaveAT = Globals.CHARACTER_TABLE[0].Read("AT");
+            }
+
+            if (Globals.CheckDMScript("btnDivineRed") && Globals.PARTY_SLOT[0] == 0 && (Globals.DIFFICULTY_MODE.Equals("Hard") || Globals.DIFFICULTY_MODE.Equals("Hell")) && Globals.PARTY_SLOT[0] == 0) {
+                Emulator.WriteAoB(Constants.GetAddress("SLOT1_SPELLS"), "01 02 FF FF FF FF FF FF");
+                Emulator.WriteByte("SPELL_TABLE", 50, 0x7 + (1 * 0xC)); //Explosion MP
+                Emulator.WriteByte("SPELL_TABLE", 50, 0x7 + (2 * 0xC)); //Final Burst MP
+                Emulator.WriteText(Globals.DRAGOON_SPELLS[1].Description_Pointer + 0x12, "1020%");
+                Emulator.WriteText(Globals.DRAGOON_SPELLS[2].Description_Pointer + 0x12, "1530%");
+            }
         }
 
         public static void Chapter3buffs() {
