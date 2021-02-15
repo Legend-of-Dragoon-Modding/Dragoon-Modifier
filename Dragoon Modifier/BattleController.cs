@@ -672,13 +672,11 @@ namespace Dragoon_Modifier {
             if (slot == 0 && Globals.NO_DART != null) {
                 character = (byte) Globals.NO_DART;
             }
-            int dlv = Globals.CURRENT_STATS[slot].DLV;
+            int dlv = Emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x13);
             Globals.CHARACTER_TABLE[slot].Write("DAT", Globals.DICTIONARY.DragoonStats[character][dlv].DAT);
             Globals.CHARACTER_TABLE[slot].Write("DMAT", Globals.DICTIONARY.DragoonStats[character][dlv].DMAT);
             Globals.CHARACTER_TABLE[slot].Write("DDF", Globals.DICTIONARY.DragoonStats[character][dlv].DDF);
             Globals.CHARACTER_TABLE[slot].Write("DMDF", Globals.DICTIONARY.DragoonStats[character][dlv].DMDF);
-            Globals.CHARACTER_TABLE[slot].Write("MP", Math.Min(Globals.CURRENT_STATS[slot].MP, Globals.CURRENT_STATS[slot].Max_MP));
-            Globals.CHARACTER_TABLE[slot].Write("Max_MP", Globals.CURRENT_STATS[slot].Max_MP);
             double MP_base = Globals.DICTIONARY.DragoonStats[character][dlv].MP;
             double MP_multi = 1 + (double)(Emulator.ReadByte("SECONDARY_CHARACTER_TABLE", character * 0xA0 + 0x64)) / 100;
             ushort MP_Max = (ushort) (MP_base * MP_multi);
@@ -1071,11 +1069,11 @@ namespace Dragoon_Modifier {
             Dictionary<int, byte> charelement = new Dictionary<int, byte> {
                 {0, 128},{1, 64},{2, 32},{3, 4},{4, 16},{5, 64},{6, 1},{7, 2},{8, 32}
             };
-            Globals.CHARACTER_TABLE[0].Write("LV", Globals.CURRENT_STATS[0].LV);
+            Globals.CHARACTER_TABLE[0].Write("LV", Emulator.ReadByte("CHAR_TABLE", 0x12 + (character * 0x2C)));
             Globals.CHARACTER_TABLE[0].Write("DLV", 1);
             Globals.CHARACTER_TABLE[0].Write("SP", 100);
 
-            int dlv = Globals.CURRENT_STATS[0].DLV;
+            int dlv = Emulator.ReadByte("CHAR_TABLE", 0x13 + (character * 0x2C));
 
             #region Dragoon Magic
             Emulator.WriteByte("DRAGOON_SPELL_SLOT", character); // Magic
@@ -1127,15 +1125,15 @@ namespace Dragoon_Modifier {
 
             #region Wargod/Destroyer Mace fix
             byte special_effect = 0;
-            if (Globals.CURRENT_STATS[0].Weapon.ID == 45) {
+            if (Globals.CHARACTER_TABLE[0].Read("Weapon") == 45) {
                 special_effect |= 1;
             }
 
-            if (Globals.CURRENT_STATS[0].Accessory.ID == 157) {
+            if (Globals.CHARACTER_TABLE[0].Read("Accessory") == 157) {
                 special_effect |= 2;
             }
 
-            if (Globals.CURRENT_STATS[0].Accessory.ID == 158) {
+            if (Globals.CHARACTER_TABLE[0].Read("Accessory") == 158) {
                 special_effect |= 6;
             }
 
@@ -1203,8 +1201,8 @@ namespace Dragoon_Modifier {
                     break;
                 }
             }
-            Globals.CHARACTER_TABLE[0].Write("DLV", Globals.CURRENT_STATS[0].DLV);
-            Globals.CHARACTER_TABLE[0].Write("SP", Globals.CURRENT_STATS[0].SP);
+            Globals.CHARACTER_TABLE[0].Write("DLV", dlv);
+            Globals.CHARACTER_TABLE[0].Write("SP", Emulator.ReadUShort("CHAR_TABLE", 0xC + (character * 0x2C)));
             if (dlv == 0) {
                 Globals.CHARACTER_TABLE[0].Write("Dragoon", 0);
             }
