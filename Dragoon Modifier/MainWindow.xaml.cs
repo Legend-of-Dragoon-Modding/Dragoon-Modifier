@@ -383,9 +383,9 @@ namespace Dragoon_Modifier {
                 LoadKey();
                 Globals.DICTIONARY = new LoDDict();
                 
-
+                
                 try {
-                    using (WebClient client = new WebClient()) {
+                    using (WebClient client = new WebClient()) { // This should have a timeout
                         client.Headers.Add("user-agent", "Anything");
                         string s = client.DownloadString("https://api.github.com/repos/Zychronix/Dragoon-Modifier/releases/latest");
                         var mod_version = JsonSerializer.Deserialize<MOD_Version>(s);
@@ -398,7 +398,7 @@ namespace Dragoon_Modifier {
                         }
                     }
                 } catch (Exception e) { }
-
+                
                 if (Constants.EMULATOR_ID != 255) {
                     SetupEmulator(true);
                 } else {
