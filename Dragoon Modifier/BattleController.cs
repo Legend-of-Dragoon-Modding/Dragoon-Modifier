@@ -672,19 +672,23 @@ namespace Dragoon_Modifier {
             if (slot == 0 && Globals.NO_DART != null) {
                 character = (byte) Globals.NO_DART;
             }
+            
+            long address = Constants.GetAddress("SECONDARY_CHARACTER_TABLE") + (character * 0xA0);
+
             int dlv = Emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x13);
             Globals.CHARACTER_TABLE[slot].Write("DAT", Globals.DICTIONARY.DragoonStats[character][dlv].DAT);
             Globals.CHARACTER_TABLE[slot].Write("DMAT", Globals.DICTIONARY.DragoonStats[character][dlv].DMAT);
             Globals.CHARACTER_TABLE[slot].Write("DDF", Globals.DICTIONARY.DragoonStats[character][dlv].DDF);
             Globals.CHARACTER_TABLE[slot].Write("DMDF", Globals.DICTIONARY.DragoonStats[character][dlv].DMDF);
             double MP_base = Globals.DICTIONARY.DragoonStats[character][dlv].MP;
-            double MP_multi = 1 + (double)(Emulator.ReadByte("SECONDARY_CHARACTER_TABLE", character * 0xA0 + 0x64)) / 100;
+            double MP_multi = 1 + (double)Emulator.ReadByte(address + 0x64) / 100;
             ushort MP_Max = (ushort) (MP_base * MP_multi);
             ushort MP_Curr = Math.Min(Emulator.ReadUShort("CHAR_TABLE", (character * 0x2C) + 0xA), MP_Max);
             Globals.CHARACTER_TABLE[slot].Write("MP", MP_Curr);
-            Emulator.WriteUShort("SECONDARY_CHARACTER_TABLE", character * 0xA0 + 0x6, MP_Curr); // HAS TO BE CHECKED
+            Emulator.WriteUShort(address + 0x6, MP_Curr); // HAS TO BE CHECKED
             Globals.CHARACTER_TABLE[slot].Write("Max_MP", MP_Max);
-            Emulator.WriteUShort("SECONDARY_CHARACTER_TABLE", character * 0xA0 + 0x6E, MP_Max);
+            Emulator.WriteUShort(address + 0x6E, MP_Max);
+            
         }
 
         public static void SetCharacterStats(int slot, int character) {
@@ -814,12 +818,14 @@ namespace Dragoon_Modifier {
 
                 byte mp_multi = (byte) (weapon.Special_Ammount * (weapon.Special2 & 1) + armor.Special_Ammount * (armor.Special2 & 1) + helm.Special_Ammount * (helm.Special2 & 1)
                     + boots.Special_Ammount * (boots.Special2 & 1) + accessory.Special_Ammount * (accessory.Special2 & 1));
-                Emulator.WriteByte(address + 0x64, mp_multi);
-                ushort mp_max = (ushort)Math.Floor((Emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x13) * 20 ) * ( 1 + ((double) mp_multi / 100)));
 
+                Emulator.WriteByte((address + 0x64), mp_multi);
+                double mp_multi2 = 1 + ((double) mp_multi) / (double)100;
+                byte dlv = Emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x13);
+                ushort mp_max = (ushort)(dlv * 20 * mp_multi2);
                 ushort MP_Curr = Math.Min(Emulator.ReadUShort("CHAR_TABLE", (character * 0x2C) + 0xA), mp_max);
                 Globals.CHARACTER_TABLE[slot].Write("MP", MP_Curr);
-                Emulator.WriteUShort("SECONDARY_CHARACTER_TABLE", character * 0xA0 + 0x6, MP_Curr); // HAS TO BE CHECKED
+                Emulator.WriteUShort(address + 0x6, MP_Curr); // HAS TO BE CHECKED
                 Globals.CHARACTER_TABLE[slot].Write("Max_MP", mp_max);
                 Emulator.WriteUShort(address + 0x6E, mp_max);
             }
