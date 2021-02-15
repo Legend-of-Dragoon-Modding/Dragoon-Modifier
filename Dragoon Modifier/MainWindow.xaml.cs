@@ -821,6 +821,12 @@ namespace Dragoon_Modifier {
                 Constants.EATB_BEEP = bool.Parse(Constants.KEY.GetValue("EATB Sounds").ToString());
                 miEatbSound.IsChecked = Constants.EATB_BEEP;
             }
+
+            if (Constants.KEY.GetValue("Offset") == null) {
+                Constants.KEY.SetValue("Offset", 0);
+            } else {
+                Constants.OFFSET = long.Parse(Constants.KEY.GetValue("Offset").ToString());
+            }
         }
 
         public void LoadReaderKey() {
@@ -884,6 +890,7 @@ namespace Dragoon_Modifier {
                     Constants.KEY.SetValue("Other Emulator", Constants.EMULATOR_NAME);
                 }
             }
+            Constants.KEY.SetValue("Offset", Constants.OFFSET);
             Constants.KEY.SetValue("Region", (int) Constants.REGION);
             Constants.KEY.SetValue("LoadPreset", miOpenPreset.IsChecked);
             if (miOpenPreset.IsChecked)

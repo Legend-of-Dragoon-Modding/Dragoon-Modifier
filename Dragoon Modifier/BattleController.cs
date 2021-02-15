@@ -238,7 +238,7 @@ namespace Dragoon_Modifier {
                                 if (!Globals.CheckDMScript("btnDivineRed")) {
                                     DartBurnStackHandler();
                                 }
-                                MagicInventoryHandler();
+                                //MagicInventoryHandler();
                                 HardDragoonRun(eleBombTurns, eleBombElement, reverseDBS);
                             }
                             BattleHotkeys();

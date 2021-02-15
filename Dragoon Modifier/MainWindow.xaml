@@ -1270,7 +1270,7 @@
                             </MenuItem>
                             <MenuItem Header="Settings" Background="#FFB6B6B6" Foreground="White">
                                 <MenuItem x:Name="miEmulator" Background="#FFB6B6B6" Foreground="White" Header="Emulator">
-                                    <MenuItem Header="RetroArch" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
+                                    <MenuItem Header="RetroArch (Beetle PSX HW)" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
                                     <MenuItem Header="DuckStation" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
                                     <MenuItem Header="ePSXe" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
                                     <MenuItem Header="PCSXR-PGXP" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
