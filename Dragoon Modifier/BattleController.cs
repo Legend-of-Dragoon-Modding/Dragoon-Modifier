@@ -519,7 +519,10 @@ namespace Dragoon_Modifier {
 
         #region Character Changes
         public static void CharacterBattleChanges() {
-            if (Globals.PARTY_SLOT[1] == Globals.NO_DART || Globals.PARTY_SLOT[2] == Globals.NO_DART) { // Turn off NoDart, if it were to duplicate a character
+            if (Globals.PARTY_SLOT[1] == Globals.NO_DART || Globals.PARTY_SLOT[2] == Globals.NO_DART) { // Do not swap, if it were to duplicate a character
+                Globals.NO_DART = 0;
+            }
+            if (Globals.PARTY_SLOT[2] > 8) { // Do not swap, if there are not 3 characters
                 Globals.NO_DART = 0;
             }
 
@@ -1042,10 +1045,6 @@ namespace Dragoon_Modifier {
         }
 
         public static void NoDart() {
-            if (Globals.PARTY_SLOT[2] > 8) {
-                Globals.NO_DART = 0;
-                return;
-            }
             byte character = (byte) Globals.NO_DART;
             Globals.CHARACTER_TABLE[0].Write("Status", Emulator.ReadByte("CHAR_TABLE", character * 0x2C + 0x10));
             if (Globals.ENCOUNTER_ID == 413) {
