@@ -301,6 +301,12 @@
       <DependentUpon>InputWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="LoDDict.cs" />
+    <Compile Include="LoDDict2\Character.cs" />
+    <Compile Include="LoDDict2\Equipment.cs" />
+    <Compile Include="LoDDict2\Item.cs" />
+    <Compile Include="LoDDict2\Level.cs" />
+    <Compile Include="LoDDict2\LoDDict2.cs" />
+    <Compile Include="LoDDict2\UsableItem.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
