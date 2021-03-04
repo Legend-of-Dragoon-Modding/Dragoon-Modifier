@@ -30,6 +30,15 @@ namespace Dragoon_Modifier.MemoryController {
         public ushort SP { get { return Emulator.ReadUShort(_sp); } set { Emulator.WriteUShort(_sp, value); } }
         public byte Weapon { get { return Emulator.ReadByte(_weapon); } set { Emulator.WriteByte(_weapon, value); } }
         public byte Helmet { get { return Emulator.ReadByte(_helmet); } set { Emulator.WriteByte(_helmet, value); } }
+        public byte Armor { get { return Emulator.ReadByte(_armor);  } set { Emulator.WriteByte(_armor, value); } }
+        public byte Shoes { get { return Emulator.ReadByte(_shoes); } set { Emulator.WriteByte(_shoes, value); } }
+        public byte Accessory { get { return Emulator.ReadByte(_accessory); } set { Emulator.WriteByte(_accessory, value); } }
+        public byte A_HIT { get { return Emulator.ReadByte(_aHit); } set { Emulator.WriteByte(_aHit, value); } }
+        public byte M_HIT { get { return Emulator.ReadByte(_mHit); } set { Emulator.WriteByte(_mHit, value); } }
+        public byte On_Hit_Status { get { return Emulator.ReadByte(_onHitStatus); } set { Emulator.WriteByte(_onHitStatus, value); } }
+        public byte On_Hit_Status_Chance { get { return Emulator.ReadByte(_onHitStatusChance); }set { Emulator.WriteByte(_onHitStatusChance, value); } }
+        public ushort Add_DMG_Multi { get { return Emulator.ReadUShort(_addDmgMulti); } set { Emulator.WriteUShort(_addDmgMulti, value); } }
+        public ushort Add_SP_Multi { get { return Emulator.ReadUShort(_addSpMulti); } set { Emulator.WriteUShort(_addSpMulti, value); } }
 
 
         CharacterAddress(long c_point, int position) : base(c_point, position) {

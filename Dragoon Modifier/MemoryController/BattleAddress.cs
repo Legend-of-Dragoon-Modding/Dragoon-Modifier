@@ -28,7 +28,7 @@ namespace Dragoon_Modifier.MemoryController {
 
         public byte Action { get { return Emulator.ReadByte(_action); } set { Emulator.WriteByte(_action, value); } }
         public ushort HP { get { return Emulator.ReadUShort(_hp); } set { Emulator.WriteUShort(_hp, value); } }
-        public ushort MaxHP { get { return Emulator.ReadUShort(_maxHP); } set { Emulator.WriteUShort(_maxHP, value); } }
+        public ushort Max_HP { get { return Emulator.ReadUShort(_maxHP); } set { Emulator.WriteUShort(_maxHP, value); } }
         // Element
         // DisplayElement
         public byte Guard { get { return Emulator.ReadByte(_guard); } set { Emulator.WriteByte(_guard, value); } }
@@ -41,6 +41,10 @@ namespace Dragoon_Modifier.MemoryController {
         public ushort MDF { get { return Emulator.ReadUShort(_mdf); } set { Emulator.WriteUShort(_mdf, value); } }
         public ushort OG_MDF { get { return Emulator.ReadUShort(_ogMDF); } set { Emulator.WriteUShort(_ogMDF, value); } }
         public ushort SPD { get { return Emulator.ReadUShort(_spd); } set { Emulator.WriteUShort(_spd, value); } }
+        public ushort OG_SPD { get { return Emulator.ReadUShort(_ogSPD); } set { Emulator.WriteUShort(_ogSPD, value); } }
+        public ushort Turn { get { return Emulator.ReadUShort(_turn); } set { Emulator.WriteUShort(_turn, value); } }
+        public byte A_AV { get { return Emulator.ReadByte(_aAV); } set { Emulator.WriteByte(_aAV, value); } }
+        public byte M_AV { get { return Emulator.ReadByte(_mAV); } set { Emulator.WriteByte(_mAV, value); } }
 
         public BattleAddress(long point, int position) {
             long curr_point = point - position * 0x388;
