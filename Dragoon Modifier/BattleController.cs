@@ -318,8 +318,6 @@ namespace Dragoon_Modifier {
             dartBurnStacks = 0;
             dartPreviousBurnStacks = 0;
 
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
             flowerStorm = (byte) (uiCombo["cboFlowerStorm"] + 2);
             difficulty = Globals.DIFFICULTY_MODE;
             aspectRatioOption = uiCombo["cboAspectRatio"];
@@ -339,14 +337,14 @@ namespace Dragoon_Modifier {
             } else {
                 bossSPLoss = 0;
             }
-            while (stopWatch.ElapsedMilliseconds < 4500) {
+
+            long cmtable = Emulator.ReadUInt("C_POINT", -0x18);
+            while (cmtable == Emulator.ReadUInt("C_POINT", 0x14) || cmtable == (Emulator.ReadUInt("C_POINT"))) {
                 if (Globals.GAME_STATE != 1) {
-                    stopWatch.Stop();
                     return;
                 }
                 Thread.Sleep(50);
             }
-            stopWatch.Stop();
 
             Globals.SetM_POINT((long) (Emulator.ReadUInt("C_POINT", 0x14) - 0x7FFFFEF8));
             Globals.SetC_POINT((long) (Emulator.ReadUInt("C_POINT") - 0x7FFFFEF8));
