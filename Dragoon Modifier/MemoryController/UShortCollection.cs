@@ -6,14 +6,17 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.MemoryController {
     public class UShortCollection {
-        long[] _addrArr;
-        public UShortCollection(long[] addrArr) {
-            _addrArr = addrArr;
+        long _baseAddr;
+        int _offset;
+
+        public UShortCollection(long baseAddress, int offset) {
+            _baseAddr = baseAddress;
+            _offset = offset;
         }
 
         public ushort this[int i] {
-            get { return Emulator.ReadUShort(_addrArr[i]); }
-            set { Emulator.WriteUShort(_addrArr[i], value); }
+            get { return Emulator.ReadUShort(_baseAddr + i * _offset); }
+            set { Emulator.WriteUShort(_baseAddr + i * _offset, value); }
         }
     }
 }

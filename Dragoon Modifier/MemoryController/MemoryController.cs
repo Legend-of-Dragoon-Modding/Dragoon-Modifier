@@ -27,27 +27,14 @@ namespace Dragoon_Modifier.MemoryController {
         public ByteCollection ItemInventory { get { return _itemInventory; } set { _itemInventory = value; } }
 
         public MemoryController() {
-            var partyAddr = Constants.GetAddress("PARTY_SLOT");
-            _partySlot = new ULongCollection(new long[] { partyAddr, partyAddr + 4, partyAddr + 8});
+            _partySlot = new ULongCollection(Constants.GetAddress("PARTY_SLOT"), 4);
             _disc = Constants.GetAddress("DISC");
             _map = Constants.GetAddress("MAP");
             _dragoonSpirits = Constants.GetAddress("DRAGOON_SPIRITS");
             _hotkey = Constants.GetAddress("HOTKEY");
             _battleValue = Constants.GetAddress("BATTLE_VALUE");
-            var equipInvAddr = Constants.GetAddress("ARMOR_INVENTORY");
-            var temp = new long[255];
-            for (int i = 0; i <255; i++) {
-                temp[i] = equipInvAddr;
-                equipInvAddr++;
-            }
-            _equipInventory = new ByteCollection(temp);
-            var itemInvAddr = Constants.GetAddress("INVENTORY");
-            temp = new long[64];
-            for (int i = 0; i < 64; i++) {
-                temp[i] = itemInvAddr;
-                itemInvAddr++;
-            }
-            _itemInventory = new ByteCollection(temp);
+            _equipInventory = new ByteCollection(Constants.GetAddress("ARMOR_INVENTORY"), 1);
+            _itemInventory = new ByteCollection(Constants.GetAddress("INVENTORY"), 1);
         }
     }
 }
