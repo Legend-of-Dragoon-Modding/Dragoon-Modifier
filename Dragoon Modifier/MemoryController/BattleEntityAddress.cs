@@ -51,7 +51,7 @@ namespace Dragoon_Modifier.MemoryController {
         long _pImmuneIcreaseTurn;
         long _mImmuneIncrease;
         long _mImmuneIncreaseTurn;
-        long _pShieldMshieldSigStone;
+        protected long _pShieldMshieldSigStone;
 
         public byte Action { get { return Emulator.ReadByte(_action); } set { Emulator.WriteByte(_action, value); } }
         public byte Spell_Cast { get { return Emulator.ReadByte(_spellCast); } set { Emulator.WriteByte(_spellCast, value); } }
