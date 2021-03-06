@@ -10,6 +10,8 @@ namespace Dragoon_Modifier.MemoryController {
         int _offset;
         uint _size;
 
+        public uint Length { get { return _size; } }
+
         public ShortCollection(long baseAddress, int offset, uint numberOfElements) {
             _baseAddr = baseAddress;
             _offset = offset;
@@ -28,6 +30,12 @@ namespace Dragoon_Modifier.MemoryController {
                     throw new IndexOutOfRangeException();
                 }
                 Emulator.WriteShort(_baseAddr + i * _offset, value);
+            }
+        }
+
+        public IEnumerator<short> GetEnumerator() {
+            for (uint i = 0; i < _size; i++) {
+                yield return this[i];
             }
         }
     }

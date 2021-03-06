@@ -17,6 +17,8 @@ namespace Dragoon_Modifier.MemoryController {
         ByteCollection _itemInventory;
         long _menu;
         long _transition;
+        long _gold;
+        long _menuUnlock;
 
         public ULongCollection PartySlot { get { return _partySlot; } set { _partySlot = value; } }
         public byte Disc { get { return Emulator.ReadByte(_disc); } }
@@ -29,6 +31,8 @@ namespace Dragoon_Modifier.MemoryController {
         public ByteCollection ItemInventory { get { return _itemInventory; } set { _itemInventory = value; } }
         public byte Menu { get { return Emulator.ReadByte(_menu); } set { Emulator.WriteByte(_menu, value); } }
         public byte Transition { get { return Emulator.ReadByte(_transition); } set { Emulator.WriteByte(_transition, value); } }
+        public ulong Gold { get { return Emulator.ReadULong(_gold); } set { Emulator.WriteULong(_gold, value); } }
+        public byte MenuUnlock { get { return Emulator.ReadByte(_menuUnlock); } set { Emulator.WriteByte(_menuUnlock, value); } }
 
         public MemoryController() {
             _partySlot = new ULongCollection(Constants.GetAddress("PARTY_SLOT"), 4, 3);
@@ -42,6 +46,8 @@ namespace Dragoon_Modifier.MemoryController {
             _itemInventory = new ByteCollection(Constants.GetAddress("INVENTORY"), 1, 64);
             _menu = Constants.GetAddress("MENU");
             _transition = Constants.GetAddress("TRANSITION");
+            _gold = Constants.GetAddress("GOLD");
+            _menuUnlock = Constants.GetAddress("MENU_UNLOCK");
         }
     }
 }
