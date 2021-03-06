@@ -197,6 +197,16 @@ namespace Dragoon_Modifier {
             ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET + offset, buffer, 1, out long bytesRead);
             return buffer[0];
         }
+        public static sbyte ReadSByte(long address) {
+            byte[] buffer = new byte[1];
+            ReadProcessMemory(processHandle, address + Constants.OFFSET, buffer, 1, out long bytesRead);
+            return (sbyte)buffer[0];
+        }
+        public static sbyte ReadSByte(string address, int offset = 0) {
+            byte[] buffer = new byte[1];
+            ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET + offset, buffer, 1, out long bytesRead);
+            return (sbyte)buffer[0];
+        }
         public static short ReadShort(long address) {
             byte[] buffer = new byte[2];
             ReadProcessMemory(processHandle, address + Constants.OFFSET, buffer, 2, out long bytesRead);

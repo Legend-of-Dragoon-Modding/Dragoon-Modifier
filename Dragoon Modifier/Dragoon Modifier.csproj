@@ -307,7 +307,7 @@
     <Compile Include="LoDDict2\Level.cs" />
     <Compile Include="LoDDict2\LoDDict2.cs" />
     <Compile Include="LoDDict2\UsableItem.cs" />
-    <Compile Include="MemoryController\BattleAddress.cs" />
+    <Compile Include="MemoryController\BattleEntityAddress.cs" />
     <Compile Include="MemoryController\CharacterAddress.cs" />
     <Compile Include="MemoryController\MemoryController.cs" />
     <Compile Include="MemoryController\MonsterAddress.cs" />
