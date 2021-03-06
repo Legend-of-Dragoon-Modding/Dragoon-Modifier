@@ -308,9 +308,14 @@
     <Compile Include="LoDDict2\LoDDict2.cs" />
     <Compile Include="LoDDict2\UsableItem.cs" />
     <Compile Include="MemoryController\BattleEntityAddress.cs" />
+    <Compile Include="MemoryController\ByteCollection.cs" />
     <Compile Include="MemoryController\CharacterAddress.cs" />
+    <Compile Include="MemoryController\LongCollection.cs" />
     <Compile Include="MemoryController\MemoryController.cs" />
     <Compile Include="MemoryController\MonsterAddress.cs" />
+    <Compile Include="MemoryController\ShortCollection.cs" />
+    <Compile Include="MemoryController\ULongCollection.cs" />
+    <Compile Include="MemoryController\UShortCollection.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
