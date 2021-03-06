@@ -20,6 +20,10 @@ namespace Dragoon_Modifier.MemoryController {
         long _gold;
         long _menuUnlock;
 
+
+        public CharacterTable table = new CharacterTable(Constants.GetAddress("CHAR_TABLE"));
+
+
         public ULongCollection PartySlot { get { return _partySlot; } set { _partySlot = value; } }
         public byte Disc { get { return Emulator.ReadByte(_disc); } }
         public byte Chapter { get { return (byte) (Emulator.ReadByte(_chapter) + 1); } }

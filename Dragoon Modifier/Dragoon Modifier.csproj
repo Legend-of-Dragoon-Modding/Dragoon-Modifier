@@ -310,6 +310,7 @@
     <Compile Include="MemoryController\BattleEntityAddress.cs" />
     <Compile Include="MemoryController\ByteCollection.cs" />
     <Compile Include="MemoryController\CharacterAddress.cs" />
+    <Compile Include="MemoryController\CharacterTable.cs" />
     <Compile Include="MemoryController\LongCollection.cs" />
     <Compile Include="MemoryController\MemoryController.cs" />
     <Compile Include="MemoryController\MonsterAddress.cs" />
