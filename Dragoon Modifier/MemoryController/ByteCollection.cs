@@ -8,15 +8,27 @@ namespace Dragoon_Modifier.MemoryController {
     public class ByteCollection {
         long _baseAddr;
         int _offset;
+        uint _size;
 
-        public ByteCollection(long baseAddress, int offset) {
+        public ByteCollection(long baseAddress, int offset, uint numberOfElements) {
             _baseAddr = baseAddress;
             _offset = offset;
+            _size = numberOfElements;
         }
 
-        public byte this[int i] {
-            get { return Emulator.ReadByte(_baseAddr + i * _offset); }
-            set { Emulator.WriteByte(_baseAddr + i * _offset, value); }
+        public byte this[uint i] {
+            get {
+                if (i >= _size) {
+                    throw new IndexOutOfRangeException();
+                }
+                return Emulator.ReadByte(_baseAddr + i * _offset);
+            }
+            set {
+                if (i >= _size) {
+                    throw new IndexOutOfRangeException();
+                }
+                Emulator.WriteByte(_baseAddr + i * _offset, value);
+            }
         }
     }
 }

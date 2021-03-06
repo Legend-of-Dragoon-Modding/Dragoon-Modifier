@@ -8,15 +8,27 @@ namespace Dragoon_Modifier.MemoryController {
     public class LongCollection {
         long _baseAddr;
         int _offset;
+        uint _size;
 
-        public LongCollection(long baseAddress, int offset) {
+        public LongCollection(long baseAddress, int offset, uint numberOfElements) {
             _baseAddr = baseAddress;
             _offset = offset;
+            _size = numberOfElements;
         }
 
-        public long this[int i] {
-            get { return Emulator.ReadLong(_baseAddr + i * _offset); }
-            set { Emulator.WriteLong(_baseAddr + i * _offset, value); }
+        public long this[uint i] {
+            get {
+                if (i >= _size) {
+                    throw new IndexOutOfRangeException();
+                }
+                return Emulator.ReadLong(_baseAddr + i * _offset);
+            }
+            set {
+                if (i >= _size) {
+                    throw new IndexOutOfRangeException();
+                }
+                Emulator.WriteLong(_baseAddr + i * _offset, value);
+            }
         }
     }
 }
