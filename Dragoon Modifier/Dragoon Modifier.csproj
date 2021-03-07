@@ -311,10 +311,12 @@
     <Compile Include="MemoryController\ByteCollection.cs" />
     <Compile Include="MemoryController\CharacterAddress.cs" />
     <Compile Include="MemoryController\CharacterTable.cs" />
+    <Compile Include="MemoryController\CurrentShop.cs" />
     <Compile Include="MemoryController\LongCollection.cs" />
     <Compile Include="MemoryController\MemoryController.cs" />
     <Compile Include="MemoryController\MonsterAddress.cs" />
     <Compile Include="MemoryController\SecondaryCharacterTable.cs" />
+    <Compile Include="MemoryController\Shop.cs" />
     <Compile Include="MemoryController\ShortCollection.cs" />
     <Compile Include="MemoryController\ULongCollection.cs" />
     <Compile Include="MemoryController\UShortCollection.cs" />

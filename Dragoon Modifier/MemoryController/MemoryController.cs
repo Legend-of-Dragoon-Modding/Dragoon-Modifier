@@ -21,7 +21,9 @@ namespace Dragoon_Modifier.MemoryController {
         long _menuUnlock;
         CharacterTable[] _characterTable = new CharacterTable[9];
         SecondaryCharacterTable[] _secondaryCharacterTable = new SecondaryCharacterTable[9];
-
+        Shop[] _shop = new Shop[45]; // There are most likely up to 64 shops. But most of it isn't used by the base game.
+        UShortCollection _itemSellPrice;
+        long _shopID;
 
         public ULongCollection PartySlot { get { return _partySlot; } set { _partySlot = value; } }
         public byte Disc { get { return Emulator.ReadByte(_disc); } }
@@ -38,6 +40,8 @@ namespace Dragoon_Modifier.MemoryController {
         public byte MenuUnlock { get { return Emulator.ReadByte(_menuUnlock); } set { Emulator.WriteByte(_menuUnlock, value); } }
         public CharacterTable[] CharacterTable { get { return _characterTable; } }
         public SecondaryCharacterTable[] SecondaryCharacterTable { get { return _secondaryCharacterTable; } }
+        public UShortCollection ItemSellPrice { get { return _itemSellPrice; } set { _itemSellPrice = value; } }
+        public byte ShopID { get { return Emulator.ReadByte(_shopID); } set { Emulator.WriteByte(_shopID, value); } }
 
         public MemoryController() {
             _partySlot = new ULongCollection(Constants.GetAddress("PARTY_SLOT"), 4, 3);
@@ -59,6 +63,13 @@ namespace Dragoon_Modifier.MemoryController {
                 _characterTable[i] = new CharacterTable(charTableAddr, i);
                 _secondaryCharacterTable[i] = new SecondaryCharacterTable(secondCharTableAddr, i);
             }
+            var shopListAddr = Constants.GetAddress("SHOP_LIST");
+            for (int i = 0; i < _shop.Length; i++) {
+                _shop[i] = new Shop(shopListAddr, i);
+            }
+            var itemSellPriceAddr = Constants.GetAddress("SHOP_PRICE");
+            _itemSellPrice = new UShortCollection(itemSellPriceAddr, 2, 256);
+            _shopID = Constants.GetAddress("SHOP_ID");
         }
     }
 }
