@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.MemoryController {
     public class MemoryController {
-        ULongCollection _partySlot;
+        UIntCollection _partySlot;
         long _disc;
         long _chapter;
         long _mapId;
@@ -25,29 +25,30 @@ namespace Dragoon_Modifier.MemoryController {
         CurrentShop _currentShop;
         UShortCollection _itemSellPrice;
         long _shopID;
+        EquipmentTableEntry[] _equipTable = new EquipmentTableEntry[192];
 
-        public ULongCollection PartySlot { get { return _partySlot; } set { _partySlot = value; } }
+        public UIntCollection PartySlot { get { return _partySlot; } }
         public byte Disc { get { return Emulator.ReadByte(_disc); } }
         public byte Chapter { get { return (byte) (Emulator.ReadByte(_chapter) + 1); } }
         public ushort MapID { get { return Emulator.ReadUShort(_mapId); } set { Emulator.WriteUShort(_mapId, value); } }
         public byte DragoonSpirits { get { return Emulator.ReadByte(_dragoonSpirits); } set { Emulator.WriteByte(_dragoonSpirits, value); } }
         public ushort Hotkey { get { return Emulator.ReadUShort(_hotkey); } set { Emulator.WriteByte(_hotkey, value); } }
         public ushort BattleValue { get { return Emulator.ReadUShort(_battleValue); } set { Emulator.WriteUShort(_battleValue, value); } }
-        public ByteCollection EquipmentInventory { get { return _equipInventory; } set { _equipInventory = value; } }
-        public ByteCollection ItemInventory { get { return _itemInventory; } set { _itemInventory = value; } }
+        public ByteCollection EquipmentInventory { get { return _equipInventory; } }
+        public ByteCollection ItemInventory { get { return _itemInventory; } }
         public byte Menu { get { return Emulator.ReadByte(_menu); } set { Emulator.WriteByte(_menu, value); } }
         public byte Transition { get { return Emulator.ReadByte(_transition); } set { Emulator.WriteByte(_transition, value); } }
-        public ulong Gold { get { return Emulator.ReadULong(_gold); } set { Emulator.WriteULong(_gold, value); } }
+        public uint Gold { get { return Emulator.ReadUInt(_gold); } set { Emulator.WriteUInt(_gold, value); } }
         public byte MenuUnlock { get { return Emulator.ReadByte(_menuUnlock); } set { Emulator.WriteByte(_menuUnlock, value); } }
         public CharacterTable[] CharacterTable { get { return _characterTable; } }
         public SecondaryCharacterTable[] SecondaryCharacterTable { get { return _secondaryCharacterTable; } }
         public Shop[] Shop { get { return _shop; } }
         public CurrentShop CurrentShop { get { return _currentShop; } }
-        public UShortCollection ItemSellPrice { get { return _itemSellPrice; } set { _itemSellPrice = value; } }
+        public UShortCollection ItemSellPrice { get { return _itemSellPrice; } }
         public byte ShopID { get { return Emulator.ReadByte(_shopID); } set { Emulator.WriteByte(_shopID, value); } }
 
         public MemoryController() {
-            _partySlot = new ULongCollection(Constants.GetAddress("PARTY_SLOT"), 4, 3);
+            _partySlot = new UIntCollection(Constants.GetAddress("PARTY_SLOT"), 4, 3);
             _disc = Constants.GetAddress("DISC");
             _chapter = Constants.GetAddress("CHAPTER");
             _mapId = Constants.GetAddress("MAP");
@@ -74,6 +75,11 @@ namespace Dragoon_Modifier.MemoryController {
             var itemSellPriceAddr = Constants.GetAddress("SHOP_PRICE");
             _itemSellPrice = new UShortCollection(itemSellPriceAddr, 2, 256);
             _shopID = Constants.GetAddress("SHOP_ID");
+            var equipTableAddr = Constants.GetAddress("ITEM_TABLE") - 1; // Currenly fixing incorrect start
+            for (int i = 0; i < _equipTable.Length; i++) {
+                _equipTable[i] = new EquipmentTableEntry(equipTableAddr, i);
+            }
+
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Dragoon_Modifier.MemoryController {
         ByteCollection _additionCount;
         ByteCollection _additionLevel;
 
-        public ulong Expirience { get { return Emulator.ReadULong(_baseAddress); } set { Emulator.WriteULong(_baseAddress, value); } }
+        public uint Expirience { get { return Emulator.ReadUInt(_baseAddress); } set { Emulator.WriteUInt(_baseAddress, value); } }
         public ushort HP { get { return Emulator.ReadUShort(_baseAddress + 0x4); } set { Emulator.WriteUShort(_baseAddress + 0x4, value); } }
         public ushort MP { get { return Emulator.ReadUShort(_baseAddress + 0x6); } set { Emulator.WriteUShort(_baseAddress + 0x6, value); } }
         public ushort SP { get { return Emulator.ReadUShort(_baseAddress + 0x8); } set { Emulator.WriteUShort(_baseAddress + 0x8, value); } }
