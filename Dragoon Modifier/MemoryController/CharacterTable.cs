@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.MemoryController {
     public class CharacterTable {
+        static readonly byte[] addCounts = new byte[] { 7, 5, 0, 4, 6, 5, 5, 3, 0};
+
         long _baseAddress;
+        ByteCollection _additionCount;
+        ByteCollection _additionLevel;
 
         public ulong Expirience { get { return Emulator.ReadULong(_baseAddress); } set { Emulator.WriteULong(_baseAddress, value); } }
         public ushort HP { get { return Emulator.ReadUShort(_baseAddress + 0x8); } set { Emulator.WriteUShort(_baseAddress + 0x8, value); } }
@@ -22,11 +26,13 @@ namespace Dragoon_Modifier.MemoryController {
         public byte Shoes { get { return Emulator.ReadByte(_baseAddress + 0x17); } set { Emulator.WriteByte(_baseAddress + 0x17, value); } }
         public byte Accessory { get { return Emulator.ReadByte(_baseAddress + 0x18); } set { Emulator.WriteByte(_baseAddress + 0x18, value); } }
         public byte ChosenAddition { get { return Emulator.ReadByte(_baseAddress + 0x19); } set { Emulator.WriteByte(_baseAddress + 0x19, value); } }
-        public ushort Test { get { return Emulator.ReadUShort(_baseAddress); } set { Emulator.WriteUShort(_baseAddress, value); } }
+        public ByteCollection AdditionLevel { get { return _additionLevel; } set { _additionLevel = value; } }
+        public ByteCollection AdditionCount { get { return _additionCount; } set { _additionCount = value; } }
 
-
-        public CharacterTable(long baseAddress) {
-            _baseAddress = baseAddress;
+        public CharacterTable(long baseAddress, int character) {
+            _baseAddress = baseAddress + 0x2C;
+            _additionLevel = new ByteCollection(_baseAddress + 0x1A, 1, addCounts[character]);
+            _additionCount = new ByteCollection(_baseAddress + 0x22, 1, addCounts[character]);
         }
 
     }

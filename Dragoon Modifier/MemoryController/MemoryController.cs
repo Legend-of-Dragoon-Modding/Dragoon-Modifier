@@ -19,9 +19,8 @@ namespace Dragoon_Modifier.MemoryController {
         long _transition;
         long _gold;
         long _menuUnlock;
-
-
-        public CharacterTable table = new CharacterTable(Constants.GetAddress("CHAR_TABLE"));
+        CharacterTable[] _characterTable = new CharacterTable[9];
+        SecondaryCharacterTable[] _secondaryCharacterTable = new SecondaryCharacterTable[9];
 
 
         public ULongCollection PartySlot { get { return _partySlot; } set { _partySlot = value; } }
@@ -37,6 +36,8 @@ namespace Dragoon_Modifier.MemoryController {
         public byte Transition { get { return Emulator.ReadByte(_transition); } set { Emulator.WriteByte(_transition, value); } }
         public ulong Gold { get { return Emulator.ReadULong(_gold); } set { Emulator.WriteULong(_gold, value); } }
         public byte MenuUnlock { get { return Emulator.ReadByte(_menuUnlock); } set { Emulator.WriteByte(_menuUnlock, value); } }
+        public CharacterTable[] CharacterTable { get { return _characterTable; } }
+        public SecondaryCharacterTable[] SecondaryCharacterTable { get { return _secondaryCharacterTable; } }
 
         public MemoryController() {
             _partySlot = new ULongCollection(Constants.GetAddress("PARTY_SLOT"), 4, 3);
@@ -52,6 +53,12 @@ namespace Dragoon_Modifier.MemoryController {
             _transition = Constants.GetAddress("TRANSITION");
             _gold = Constants.GetAddress("GOLD");
             _menuUnlock = Constants.GetAddress("MENU_UNLOCK");
+            var charTableAddr = Constants.GetAddress("CHAR_TABLE");
+            var secondCharTableAddr = Constants.GetAddress("SECONDARY_CHARACTER_TABLE");
+            for (int i = 0; i < 9; i++) {
+                _characterTable[i] = new CharacterTable(charTableAddr, i);
+                _secondaryCharacterTable[i] = new SecondaryCharacterTable(secondCharTableAddr, i);
+            }
         }
     }
 }
