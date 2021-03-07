@@ -314,6 +314,7 @@
     <Compile Include="MemoryController\CurrentShop.cs" />
     <Compile Include="MemoryController\EquipmentTableEntry.cs" />
     <Compile Include="MemoryController\IntCollection.cs" />
+    <Compile Include="MemoryController\ItemTableEntry.cs" />
     <Compile Include="MemoryController\MemoryController.cs" />
     <Compile Include="MemoryController\MonsterAddress.cs" />
     <Compile Include="MemoryController\SecondaryCharacterTable.cs" />

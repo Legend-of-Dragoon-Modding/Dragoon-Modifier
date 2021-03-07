@@ -40,6 +40,10 @@ namespace Dragoon_Modifier.MemoryController {
         public byte BodyDF { get { return Emulator.ReadByte(_baseAddress + 0x6C); } set { Emulator.WriteByte(_baseAddress + 0x6C, value); } }
         public byte BodyMDF { get { return Emulator.ReadByte(_baseAddress + 0x6D); } set { Emulator.WriteByte(_baseAddress + 0x6D, value); } }
         public ushort Max_MP { get { return Emulator.ReadUShort(_baseAddress + 0x6E); } set { Emulator.WriteUShort(_baseAddress + 0x6E, value); } }
+        public byte DAT { get { return Emulator.ReadByte(_baseAddress + 0x72); } set { Emulator.WriteByte(_baseAddress + 0x72, value); } }
+        public byte DMAT { get { return Emulator.ReadByte(_baseAddress + 0x73); } set { Emulator.WriteByte(_baseAddress + 0x73, value); } }
+        public byte DDF { get { return Emulator.ReadByte(_baseAddress + 0x72); } set { Emulator.WriteByte(_baseAddress + 0x72, value); } }
+        public byte DMDF { get { return Emulator.ReadByte(_baseAddress + 0x73); } set { Emulator.WriteByte(_baseAddress + 0x73, value); } }
         public byte Special_Effect { get { return Emulator.ReadByte(_baseAddress + 0x76); } set { Emulator.WriteByte(_baseAddress + 0x76, value); } } // Old Death_Res
         public byte WeaponElement { get { return Emulator.ReadByte(_baseAddress + 0x7A); } set { Emulator.WriteByte(_baseAddress + 0x7A, value); } }
         public byte E_Half { get { return Emulator.ReadByte(_baseAddress + 0x7C); } set { Emulator.WriteByte(_baseAddress + 0x7C, value); } }

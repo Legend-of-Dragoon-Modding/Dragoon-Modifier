@@ -26,6 +26,7 @@ namespace Dragoon_Modifier.MemoryController {
         UShortCollection _itemSellPrice;
         long _shopID;
         EquipmentTableEntry[] _equipTable = new EquipmentTableEntry[192];
+        ItemTableEntry[] _itemTable = new ItemTableEntry[64]; // Number of items should be verified
 
         public UIntCollection PartySlot { get { return _partySlot; } }
         public byte Disc { get { return Emulator.ReadByte(_disc); } }
@@ -46,6 +47,7 @@ namespace Dragoon_Modifier.MemoryController {
         public CurrentShop CurrentShop { get { return _currentShop; } }
         public UShortCollection ItemSellPrice { get { return _itemSellPrice; } }
         public byte ShopID { get { return Emulator.ReadByte(_shopID); } set { Emulator.WriteByte(_shopID, value); } }
+        public EquipmentTableEntry[] EquipmentTable { get { return _equipTable; } }
 
         public MemoryController() {
             _partySlot = new UIntCollection(Constants.GetAddress("PARTY_SLOT"), 4, 3);
@@ -75,9 +77,13 @@ namespace Dragoon_Modifier.MemoryController {
             var itemSellPriceAddr = Constants.GetAddress("SHOP_PRICE");
             _itemSellPrice = new UShortCollection(itemSellPriceAddr, 2, 256);
             _shopID = Constants.GetAddress("SHOP_ID");
-            var equipTableAddr = Constants.GetAddress("ITEM_TABLE") - 1; // Currenly fixing incorrect start
+            var equipTableAddr = Constants.GetAddress("ITEM_TABLE") - 1; // Fixing current incorrect start
             for (int i = 0; i < _equipTable.Length; i++) {
                 _equipTable[i] = new EquipmentTableEntry(equipTableAddr, i);
+            }
+            var itemTableAddr = Constants.GetAddress("THROWN_ITEM_TABLE");
+            for (int i = 0; i < _itemTable.Length; i++) {
+                _itemTable[i] = new ItemTableEntry(itemTableAddr, i);
             }
 
         }
