@@ -10,7 +10,7 @@ namespace Dragoon_Modifier.MemoryController {
         ByteCollection _item;
 
         public byte WeaponItemFlag { get { return Emulator.ReadByte(_baseAddress); } set { Emulator.WriteByte(_baseAddress, value); } }
-        public ByteCollection Item { get { return _item; } set { _item = value; } }
+        public ByteCollection Item { get { return _item; } }
 
         public Shop(long baseAddress, int shop) {
             _baseAddress = baseAddress + shop * 0x40;

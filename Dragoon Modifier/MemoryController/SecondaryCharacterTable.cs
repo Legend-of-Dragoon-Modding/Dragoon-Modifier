@@ -18,8 +18,8 @@ namespace Dragoon_Modifier.MemoryController {
         public ushort SP { get { return Emulator.ReadUShort(_baseAddress + 0x8); } set { Emulator.WriteUShort(_baseAddress + 0x8, value); } }
         public byte Level { get { return Emulator.ReadByte(_baseAddress + 0xE); } set { Emulator.WriteByte(_baseAddress + 0xE, value); } }
         public byte DragoonLevel { get { return Emulator.ReadByte(_baseAddress + 0xF); } set { Emulator.WriteByte(_baseAddress + 0xF, value); } }
-        public ByteCollection AdditionLevel { get { return _additionLevel; } set { _additionLevel = value; } }
-        public ByteCollection AdditionCount { get { return _additionCount; } set { _additionCount = value; } }
+        public ByteCollection AdditionLevel { get { return _additionLevel; } }
+        public ByteCollection AdditionCount { get { return _additionCount; } }
         public byte P_Half { get { return Emulator.ReadByte(_baseAddress + 0x4A); } set { Emulator.WriteByte(_baseAddress + 0x4A, value); } }
         public short SP_Multi { get { return Emulator.ReadShort(_baseAddress + 0x4C); } set { Emulator.WriteShort(_baseAddress + 0x4C, value); } }
         public ushort SP_P_Hit { get { return Emulator.ReadUShort(_baseAddress + 0x4E); } set { Emulator.WriteUShort(_baseAddress + 0x4E, value); } }

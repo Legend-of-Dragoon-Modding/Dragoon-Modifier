@@ -26,8 +26,8 @@ namespace Dragoon_Modifier.MemoryController {
         public byte Shoes { get { return Emulator.ReadByte(_baseAddress + 0x17); } set { Emulator.WriteByte(_baseAddress + 0x17, value); } }
         public byte Accessory { get { return Emulator.ReadByte(_baseAddress + 0x18); } set { Emulator.WriteByte(_baseAddress + 0x18, value); } }
         public byte ChosenAddition { get { return Emulator.ReadByte(_baseAddress + 0x19); } set { Emulator.WriteByte(_baseAddress + 0x19, value); } }
-        public ByteCollection AdditionLevel { get { return _additionLevel; } set { _additionLevel = value; } }
-        public ByteCollection AdditionCount { get { return _additionCount; } set { _additionCount = value; } }
+        public ByteCollection AdditionLevel { get { return _additionLevel; } }
+        public ByteCollection AdditionCount { get { return _additionCount; } }
 
         public CharacterTable(long baseAddress, int character) {
             _baseAddress = baseAddress + 0x2C;

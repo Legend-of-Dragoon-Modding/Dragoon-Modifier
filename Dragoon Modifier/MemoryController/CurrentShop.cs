@@ -12,8 +12,8 @@ namespace Dragoon_Modifier.MemoryController {
 
         public byte ItemCount { get { return Emulator.ReadByte(_baseAddress + 0x44); } set { Emulator.WriteByte(_baseAddress + 0x44, value); } }
         public byte WeaponItemFlag { get { return Emulator.ReadByte(_baseAddress + 0x45); } set { Emulator.WriteByte(_baseAddress + 0x45, value); } }
-        public ByteCollection ItemID { get { return _itemID; } set { _itemID = value; } }
-        public UShortCollection ItemPrice { get { return _itemPrice; } set { _itemPrice = value; } }
+        public ByteCollection ItemID { get { return _itemID; } }
+        public UShortCollection ItemPrice { get { return _itemPrice; } }
 
         public CurrentShop(long baseAddress) {
             _baseAddress = baseAddress;
