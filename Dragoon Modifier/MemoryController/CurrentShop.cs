@@ -19,7 +19,6 @@ namespace Dragoon_Modifier.MemoryController {
             _baseAddress = baseAddress;
             _itemID = new ByteCollection(_baseAddress, 4, 16);
             _itemPrice = new UShortCollection(_baseAddress + 0x2, 4, 16);
-
         }
     }
 }

@@ -27,6 +27,9 @@ namespace Dragoon_Modifier.MemoryController {
         long _shopID;
         EquipmentTableEntry[] _equipTable = new EquipmentTableEntry[192];
         ItemTableEntry[] _itemTable = new ItemTableEntry[64]; // Number of items should be verified
+        CharacterStatTable[] _charStatTable = new CharacterStatTable[7];
+        DragoonStatTable[] _dragoonStatTable = new DragoonStatTable[9];
+        AdditionTable[] _addTable = new AdditionTable[41];
 
         public UIntCollection PartySlot { get { return _partySlot; } }
         public byte Disc { get { return Emulator.ReadByte(_disc); } }
@@ -48,6 +51,8 @@ namespace Dragoon_Modifier.MemoryController {
         public UShortCollection ItemSellPrice { get { return _itemSellPrice; } }
         public byte ShopID { get { return Emulator.ReadByte(_shopID); } set { Emulator.WriteByte(_shopID, value); } }
         public EquipmentTableEntry[] EquipmentTable { get { return _equipTable; } }
+        public CharacterStatTable[] CharacterStatTable { get { return _charStatTable; } }
+        public AdditionTable[] MenuAdditionTable { get { return _addTable; } }
 
         public MemoryController() {
             _partySlot = new UIntCollection(Constants.GetAddress("PARTY_SLOT"), 4, 3);
@@ -85,7 +90,19 @@ namespace Dragoon_Modifier.MemoryController {
             for (int i = 0; i < _itemTable.Length; i++) {
                 _itemTable[i] = new ItemTableEntry(itemTableAddr, i);
             }
-
+            var charStatTableAddr = Constants.GetAddress("CHAR_STAT_TABLE");
+            for (int i = 0; i < _charStatTable.Length; i++) {
+                _charStatTable[i] = new CharacterStatTable(charStatTableAddr, i);
+            }
+            var dragoonStatTableAddr = Constants.GetAddress("DRAGOON_TABLE");
+            for (int i = 0; i < _dragoonStatTable.Length; i++) {
+                _dragoonStatTable[i] = new DragoonStatTable(dragoonStatTableAddr, i);
+            }
+            var addTableAddr = Constants.GetAddress("MENU_ADDITION_TABLE_FLAT");
+            var addMultiAddr = Constants.GetAddress("MENU_ADDITION_TABLE_MULTI");
+            for (int i = 0; i < _addTable.Length; i++) {
+                _addTable[i] = new AdditionTable(addTableAddr, addMultiAddr, i);
+            }
         }
     }
 }
