@@ -227,6 +227,16 @@ namespace Dragoon_Modifier {
             ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET + offset, buffer, 2, out long bytesRead);
             return BitConverter.ToUInt16(buffer, 0);
         }
+        public static UInt32 ReadUInt24(long address) {
+            byte[] buffer = new byte[4];
+            ReadProcessMemory(processHandle, address + Constants.OFFSET, buffer, 3, out long bytesRead);
+            return BitConverter.ToUInt32(buffer, 0);
+        }
+        public static UInt32 ReadUInt24(string address, int offset = 0) {
+            byte[] buffer = new byte[4];
+            ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET + offset, buffer, 3, out long bytesRead);
+            return BitConverter.ToUInt32(buffer, 0);
+        }
         public static Int32 ReadInt(long address) {
             byte[] buffer = new byte[4];
             ReadProcessMemory(processHandle, address + Constants.OFFSET, buffer, 4, out long bytesRead);
@@ -300,6 +310,16 @@ namespace Dragoon_Modifier {
         public static void WriteUShort(string address, int value, int offset = 0) {
             var val = BitConverter.GetBytes((ushort) value);
             WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET + offset), val, 2, out int error);
+        }
+        public static void WriteUInt24(long address, UInt32 value) {
+            var val = BitConverter.GetBytes(value);
+            val = val.Take(val.Count() - 1).ToArray();
+            WriteProcessMemory(processHandle, new IntPtr(address + Constants.OFFSET), val, 3, out int error);
+        }
+        public static void WriteUInt24(string address, UInt32 value, int offset = 0) {
+            var val = BitConverter.GetBytes(value);
+            val = val.Take(val.Count() - 1).ToArray();
+            WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET + offset), val, 3, out int error);
         }
         public static void WriteInt(long address, Int32 value) {
             var val = BitConverter.GetBytes(value);

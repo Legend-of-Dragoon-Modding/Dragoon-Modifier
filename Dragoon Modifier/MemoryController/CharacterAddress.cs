@@ -54,6 +54,9 @@ namespace Dragoon_Modifier.MemoryController {
         public byte SP_M_Hit_Increase_Turn { get { return Emulator.ReadByte(_baseAddress + 0xC9); } set { Emulator.WriteByte(_baseAddress + 0xC9, value); } }
         public sbyte MP_M_Hit_Increase { get { return Emulator.ReadSByte(_baseAddress + 0xCA); } set { Emulator.WriteByte(_baseAddress + 0xCA, value); } }
         public byte MP_M_Hit_Increase_Turn { get { return Emulator.ReadByte(_baseAddress + 0xCB); } set { Emulator.WriteByte(_baseAddress + 0xCB, value); } }
+        public byte ColorMap { get { return Emulator.ReadByte(_baseAddress + 0x1DD); } set { Emulator.WriteByte(_baseAddress + 0x1DD, value); } }
+        public byte AdditionSlotIndex { get { return Emulator.ReadByte(_baseAddress + 0x26E); } set { Emulator.WriteByte(_baseAddress + 0x26E, value); } }
+        public byte Pandemonium { get { return (byte) (Emulator.ReadByte(_pShieldMshieldSigStone + 0x1) & 3); } set { Emulator.WriteByte(_pShieldMshieldSigStone + 0x1, Emulator.ReadByte(_pShieldMshieldSigStone) | Math.Min(value, (byte) 3)); } }
 
         public CharacterAddress(long c_point, int slot, int position) : base(c_point, slot, position) {
         }

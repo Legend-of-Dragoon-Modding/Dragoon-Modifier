@@ -8,7 +8,9 @@ namespace Dragoon_Modifier.MemoryController {
     public class BattleEntityAddress {
         protected long _baseAddress;
         protected long _pShieldMshieldSigStone;
+        long _statusAddr;
 
+        public uint BaseAddress { get { return Emulator.ReadUInt24(_baseAddress - 0x108) + 0x108; } }
         public byte Action { get { return Emulator.ReadByte(_baseAddress - 0xA8); } set { Emulator.WriteByte(_baseAddress - 0xA8, value); } }
         public byte Spell_Cast { get { return Emulator.ReadByte(_baseAddress + 0x46); } set { Emulator.WriteByte(_baseAddress + 0x46, value); } }
         public ushort HP { get { return Emulator.ReadUShort(_baseAddress); } set { Emulator.WriteUShort(_baseAddress, value); } }
@@ -54,12 +56,16 @@ namespace Dragoon_Modifier.MemoryController {
         public int Pos_FB { get { return Emulator.ReadInt(_baseAddress + 0x16D); } set { Emulator.WriteInt(_baseAddress + 0x16D, value); } }
         public int Pos_UD { get { return Emulator.ReadInt(_baseAddress + 0x171); } set { Emulator.WriteInt(_baseAddress + 0x171, value); } }
         public int Pos_RL { get { return Emulator.ReadInt(_baseAddress + 0x175); } set { Emulator.WriteInt(_baseAddress + 0x175, value); } }
+        public byte Rotation { get { return Emulator.ReadByte(_baseAddress + 0x1B7); } set { Emulator.WriteByte(_baseAddress + 0x1B7, value); } }
         public byte PhysicalShield { get { return (byte)(Emulator.ReadByte(_pShieldMshieldSigStone) & 3); } set { Emulator.WriteByte(_pShieldMshieldSigStone, Emulator.ReadByte(_pShieldMshieldSigStone) | Math.Min(value, (byte)3)); } }
         public byte MagicalShield { get { return (byte)((Emulator.ReadByte(_pShieldMshieldSigStone) >> 2) & 3); } set { Emulator.WriteByte(_pShieldMshieldSigStone, Emulator.ReadByte(_pShieldMshieldSigStone) | (Math.Min(value, (byte)3) << 2)); } }
+        public byte StatusEffect { get { return Emulator.ReadByte(_statusAddr); } set { Emulator.WriteByte(_statusAddr, value); } }
+        public byte StatusTurns { get { return Emulator.ReadByte(_statusAddr + 0x1); } set { Emulator.WriteByte(_statusAddr + 0x1, value); } }
 
         public BattleEntityAddress(long point, int slot, int position) {
             _baseAddress = point - slot * 0x388;
             _pShieldMshieldSigStone = 0x6E3B4 + position * 0x20; // Which one from constants is this??
+            _statusAddr = 0x6E71C + position * 0x4; // Might be tied to the previous one
         }
     }
 }
