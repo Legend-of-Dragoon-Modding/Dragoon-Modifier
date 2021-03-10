@@ -38,7 +38,7 @@ namespace Dragoon_Modifier.MemoryController {
         public byte M_Half { get { return Emulator.ReadByte(_baseAddress + 0x10E); } set { Emulator.WriteByte(_baseAddress + 0x10E, value); } }
         public byte E_Immune { get { return Emulator.ReadByte(_baseAddress + 0x1A); } set { Emulator.WriteByte(_baseAddress + 0x1A, value); } }
         public byte E_Half { get { return Emulator.ReadByte(_baseAddress + 0x18); } set { Emulator.WriteByte(_baseAddress + 0x18, value); } }
-        public byte Unique_Index { get { return Emulator.ReadByte(_baseAddress + 0x264); } set { Emulator.WriteByte(_baseAddress + 0x264, value); } }
+        public byte UniqueIndex { get { return Emulator.ReadByte(_baseAddress + 0x264); } set { Emulator.WriteByte(_baseAddress + 0x264, value); } }
         public sbyte PWR_AT { get { return Emulator.ReadSByte(_baseAddress + 0xAC); } set { Emulator.WriteByte(_baseAddress + 0xAC, value); } }
         public byte PWR_AT_Turn { get { return Emulator.ReadByte(_baseAddress + 0xAD); } set { Emulator.WriteByte(_baseAddress + 0xAD, value); } }
         public sbyte PWR_MAT { get { return Emulator.ReadSByte(_baseAddress + 0xAE); } set { Emulator.WriteByte(_baseAddress + 0xAE, value); } }

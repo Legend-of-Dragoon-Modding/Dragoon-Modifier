@@ -30,6 +30,7 @@ namespace Dragoon_Modifier.MemoryController {
         CharacterStatTable[] _charStatTable = new CharacterStatTable[7];
         DragoonStatTable[] _dragoonStatTable = new DragoonStatTable[9];
         AdditionTable[] _addTable = new AdditionTable[41];
+        long _basePoint;
 
         public UIntCollection PartySlot { get { return _partySlot; } }
         public byte Disc { get { return Emulator.ReadByte(_disc); } }
@@ -53,6 +54,8 @@ namespace Dragoon_Modifier.MemoryController {
         public EquipmentTableEntry[] EquipmentTable { get { return _equipTable; } }
         public CharacterStatTable[] CharacterStatTable { get { return _charStatTable; } }
         public AdditionTable[] MenuAdditionTable { get { return _addTable; } }
+        public uint CharacterPoint { get { return Emulator.ReadUInt24(_basePoint); } }
+        public uint MonsterPoint { get { return Emulator.ReadUInt24(_basePoint + 0x14); } }
 
         public MemoryController() {
             _partySlot = new UIntCollection(Constants.GetAddress("PARTY_SLOT"), 4, 3);
@@ -103,6 +106,7 @@ namespace Dragoon_Modifier.MemoryController {
             for (int i = 0; i < _addTable.Length; i++) {
                 _addTable[i] = new AdditionTable(addTableAddr, addMultiAddr, i);
             }
+            _basePoint = Constants.GetAddress("C_POINT");
         }
     }
 }

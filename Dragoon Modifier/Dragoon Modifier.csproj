@@ -292,6 +292,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="BattleController.cs" />
+    <Compile Include="Battle\Battle.cs" />
     <Compile Include="Emulator.cs" />
     <Compile Include="GlobalController.cs" />
     <Compile Include="Globals.cs" />
