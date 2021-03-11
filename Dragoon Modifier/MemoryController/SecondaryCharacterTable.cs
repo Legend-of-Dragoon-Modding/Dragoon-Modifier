@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 namespace Dragoon_Modifier.MemoryController {
     public class SecondaryCharacterTable {
         static readonly byte[] addCounts = new byte[] { 7, 5, 0, 4, 6, 5, 5, 3, 0 };
-        
-        long _baseAddress;
+
+        int _baseAddress;
         ByteCollection _additionCount;
         ByteCollection _additionLevel;
 
@@ -61,7 +61,7 @@ namespace Dragoon_Modifier.MemoryController {
         public byte On_Hit_Status { get { return Emulator.ReadByte(_baseAddress + 0x98); } set { Emulator.WriteByte(_baseAddress + 0x98, value); } }
         public byte On_Hit_Status_Chance { get { return Emulator.ReadByte(_baseAddress + 0x9B); } set { Emulator.WriteByte(_baseAddress + 0x9B, value); } }
 
-        public SecondaryCharacterTable(long baseAddress, int character) {
+        public SecondaryCharacterTable(int baseAddress, int character) {
             _baseAddress = baseAddress + 0xA0;
             _additionLevel = new ByteCollection(_baseAddress + 0x35, 1, addCounts[character]);
             _additionCount = new ByteCollection(_baseAddress + 0x3E, 1, addCounts[character]);

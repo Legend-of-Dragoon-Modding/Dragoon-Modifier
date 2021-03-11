@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.MemoryController {
     class MonsterAddress : BattleEntityAddress {
-        long _rewardsAddress;
-        long _idAddress;
+        int _rewardsAddress;
+        int _idAddress;
 
         // exp
         // gold;
@@ -25,7 +25,7 @@ namespace Dragoon_Modifier.MemoryController {
         public byte ItemDrop { get { return Emulator.ReadByte(_rewardsAddress + 0x5 + UniqueIndex * 0x1A8); } set { Emulator.WriteByte(_rewardsAddress + 0x5 + UniqueIndex * 0x1A8, value); } }
         public ushort ID { get { return Emulator.ReadUShort(_idAddress); } }
 
-        public MonsterAddress(long m_point, int slot, int position, uint battleOffset) : base(m_point, slot, position) {
+        public MonsterAddress(int m_point, int slot, int position, int battleOffset) : base(m_point, slot, position) {
             _rewardsAddress = Constants.GetAddress("MONSTER_REWARDS");
             _idAddress = Constants.GetAddress("MONSTER_ID") + battleOffset + slot * 0x8;
         }

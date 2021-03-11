@@ -8,7 +8,7 @@ namespace Dragoon_Modifier.MemoryController {
     public class CharacterTable {
         static readonly byte[] addCounts = new byte[] { 7, 5, 0, 4, 6, 5, 5, 3, 0};
 
-        long _baseAddress;
+        int _baseAddress;
         ByteCollection _additionCount;
         ByteCollection _additionLevel;
 
@@ -29,7 +29,7 @@ namespace Dragoon_Modifier.MemoryController {
         public ByteCollection AdditionLevel { get { return _additionLevel; } }
         public ByteCollection AdditionCount { get { return _additionCount; } }
 
-        public CharacterTable(long baseAddress, int character) {
+        public CharacterTable(int baseAddress, int character) {
             _baseAddress = baseAddress + 0x2C;
             _additionLevel = new ByteCollection(_baseAddress + 0x1A, 1, addCounts[character]);
             _additionCount = new ByteCollection(_baseAddress + 0x22, 1, addCounts[character]);

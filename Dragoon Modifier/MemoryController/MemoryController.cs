@@ -7,30 +7,30 @@ using System.Threading.Tasks;
 namespace Dragoon_Modifier.MemoryController {
     public class MemoryController {
         UIntCollection _partySlot;
-        long _disc;
-        long _chapter;
-        long _mapId;
-        long _dragoonSpirits;
-        long _hotkey;
-        long _battleValue;
+        int _disc;
+        int _chapter;
+        int _mapId;
+        int _dragoonSpirits;
+        int _hotkey;
+        int _battleValue;
         ByteCollection _equipInventory;
         ByteCollection _itemInventory;
-        long _menu;
-        long _transition;
-        long _gold;
-        long _menuUnlock;
+        int _menu;
+        int _transition;
+        int _gold;
+        int _menuUnlock;
         CharacterTable[] _characterTable = new CharacterTable[9];
         SecondaryCharacterTable[] _secondaryCharacterTable = new SecondaryCharacterTable[9];
         Shop[] _shop = new Shop[45]; // There are most likely up to 64 shops. But most of it isn't used by the base game.
         CurrentShop _currentShop;
         UShortCollection _itemSellPrice;
-        long _shopID;
+        int _shopID;
         EquipmentTableEntry[] _equipTable = new EquipmentTableEntry[192];
         ItemTableEntry[] _itemTable = new ItemTableEntry[64]; // Number of items should be verified
         CharacterStatTable[] _charStatTable = new CharacterStatTable[7];
         DragoonStatTable[] _dragoonStatTable = new DragoonStatTable[9];
         AdditionTable[] _addTable = new AdditionTable[41];
-        long _basePoint;
+        int _basePoint;
 
         public UIntCollection PartySlot { get { return _partySlot; } }
         public byte Disc { get { return Emulator.ReadByte(_disc); } }

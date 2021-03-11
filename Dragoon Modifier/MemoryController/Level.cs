@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.MemoryController {
     public class Level {
-        long _baseAddress;
+        int _baseAddress;
 
         public ushort MaxHP { get { return Emulator.ReadUShort(_baseAddress); } set { Emulator.WriteUShort(_baseAddress, value); } }
         public byte SPD { get { return Emulator.ReadByte(_baseAddress + 0x3); } set { Emulator.WriteByte(_baseAddress + 0x3, value); } }
@@ -15,7 +15,7 @@ namespace Dragoon_Modifier.MemoryController {
         public byte DF { get { return Emulator.ReadByte(_baseAddress + 0x6); } set { Emulator.WriteByte(_baseAddress + 0x6, value); } }
         public byte MDF { get { return Emulator.ReadByte(_baseAddress + 0x7); } set { Emulator.WriteByte(_baseAddress + 0x7, value); } }
 
-        public Level(long baseAddress, int level) {
+        public Level(int baseAddress, int level) {
             _baseAddress = baseAddress + level * 0x8;
         }
     }

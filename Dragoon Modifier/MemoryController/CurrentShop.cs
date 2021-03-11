@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.MemoryController {
     public class CurrentShop {
-        long _baseAddress;
+        int _baseAddress;
         ByteCollection _itemID; // Should these just be an object?
         UShortCollection _itemPrice;
 
@@ -15,7 +15,7 @@ namespace Dragoon_Modifier.MemoryController {
         public ByteCollection ItemID { get { return _itemID; } }
         public UShortCollection ItemPrice { get { return _itemPrice; } }
 
-        public CurrentShop(long baseAddress) {
+        public CurrentShop(int baseAddress) {
             _baseAddress = baseAddress;
             _itemID = new ByteCollection(_baseAddress, 4, 16);
             _itemPrice = new UShortCollection(_baseAddress + 0x2, 4, 16);

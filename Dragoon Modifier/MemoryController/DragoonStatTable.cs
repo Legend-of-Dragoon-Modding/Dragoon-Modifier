@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.MemoryController {
     public class DragoonStatTable {
-        long _baseAddress;
+        int _baseAddress;
         DragoonLevel[] _level = new DragoonLevel[6];
         public DragoonLevel[] Level { get { return _level; } }
 
-        public DragoonStatTable(long baseAddress, int slot) {
+        public DragoonStatTable(int baseAddress, int slot) {
             _baseAddress = baseAddress + slot * 0x30;
             for (int i = 0; i < _level.Length; i++) {
                 _level[i] = new DragoonLevel(_baseAddress, i);

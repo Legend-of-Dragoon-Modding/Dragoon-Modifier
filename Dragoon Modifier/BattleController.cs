@@ -346,8 +346,8 @@ namespace Dragoon_Modifier {
                 Thread.Sleep(50);
             }
 
-            Globals.SetM_POINT((long) (Emulator.ReadUInt("C_POINT", 0x14) - 0x7FFFFEF8));
-            Globals.SetC_POINT((long) (Emulator.ReadUInt("C_POINT") - 0x7FFFFEF8));
+            Globals.SetM_POINT((int)(Emulator.ReadUInt24("C_POINT", 0x14) - 0x108));
+            Globals.SetC_POINT((int)(Emulator.ReadUInt24("C_POINT") - 0x108));
             Globals.MONSTER_SIZE = Emulator.ReadByte("MONSTER_SIZE");
             Globals.UNIQUE_MONSTER_SIZE = Emulator.ReadByte("UNIQUE_MONSTER_SIZE");
             Globals.UNIQUE_MONSTER_IDS = new List<int>();

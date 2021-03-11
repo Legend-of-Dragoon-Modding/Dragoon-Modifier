@@ -20,8 +20,8 @@ namespace Dragoon_Modifier {
         public static byte GAME_STATE = 255;
         public static bool STATS_CHANGED = false;
         public static byte EXITING_BATTLE = 0;
-        public static long M_POINT = 0;
-        public static long C_POINT = 0;
+        public static int M_POINT = 0;
+        public static int C_POINT = 0;
         public static long[] CHAR_ADDRESS = new long[3];
         public static long[] MONS_ADDRESS = new long[5];
         public static byte MONSTER_SIZE = 0;
@@ -73,14 +73,14 @@ namespace Dragoon_Modifier {
         public static bool ULTIMATE = false;
         #endregion
 
-        public static void SetM_POINT(long mPoint) {
+        public static void SetM_POINT(int mPoint) {
             M_POINT = mPoint;
             for (int i = 0; i < 5; i++) {
                 MONS_ADDRESS[i] = mPoint - (i * 0x388);
             }
         }
 
-        public static void SetC_POINT(long cPoint) {
+        public static void SetC_POINT(int cPoint) {
             C_POINT = cPoint;
             for (int i = 0; i < 3; i++) {
                 CHAR_ADDRESS[i] = cPoint - (i * 0x388);

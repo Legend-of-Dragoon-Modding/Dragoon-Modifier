@@ -58,7 +58,7 @@ namespace Dragoon_Modifier.MemoryController {
         public byte AdditionSlotIndex { get { return Emulator.ReadByte(_baseAddress + 0x26E); } set { Emulator.WriteByte(_baseAddress + 0x26E, value); } }
         public byte Pandemonium { get { return (byte) (Emulator.ReadByte(_pShieldMshieldSigStone + 0x1) & 3); } set { Emulator.WriteByte(_pShieldMshieldSigStone + 0x1, Emulator.ReadByte(_pShieldMshieldSigStone) | Math.Min(value, (byte) 3)); } }
 
-        public CharacterAddress(long c_point, int slot, int position) : base(c_point, slot, position) {
+        public CharacterAddress(int c_point, int slot, int position) : base(c_point, slot, position) {
         }
     }
 }

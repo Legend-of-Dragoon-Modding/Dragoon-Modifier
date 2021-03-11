@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.MemoryController {
     public class UIntCollection {
-        long _baseAddr;
+        int _baseAddr;
         int _offset;
         uint _size;
 
         public uint Length { get { return _size; } }
 
-        public UIntCollection(long baseAddress, int offset, uint numberOfElements) {
+        public UIntCollection(int baseAddress, int offset, uint numberOfElements) {
             _baseAddr = baseAddress;
             _offset = offset;
             _size = numberOfElements;

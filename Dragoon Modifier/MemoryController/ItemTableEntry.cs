@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.MemoryController {
     public class ItemTableEntry {
-        long _baseAddress;
+        int _baseAddress;
 
         public byte Target { get { return Emulator.ReadByte(_baseAddress); } set { Emulator.WriteByte(_baseAddress, value); } }
         public byte Element { get { return Emulator.ReadByte(_baseAddress + 0x1); } set { Emulator.WriteByte(_baseAddress + 0x1, value); } }
@@ -20,7 +20,7 @@ namespace Dragoon_Modifier.MemoryController {
         public byte BaseSwitch { get { return Emulator.ReadByte(_baseAddress + 0xB); } set { Emulator.WriteByte(_baseAddress + 0xB, value); } }
 
 
-        public ItemTableEntry(long baseAddress, int item) {
+        public ItemTableEntry(int baseAddress, int item) {
             _baseAddress = baseAddress + item * 0xC;
         }
     }

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.MemoryController {
     public class AdditionTable {
-        long _baseAddress;
-        long _multiAddress;
+        int _baseAddress;
+        int _multiAddress;
         UShortCollection _sp;
         ByteCollection _multi;
 
@@ -17,7 +17,7 @@ namespace Dragoon_Modifier.MemoryController {
         public ushort Damage { get { return Emulator.ReadByte(_baseAddress + 0xC); } set { Emulator.WriteByte(_baseAddress + 0xC, value); } }
         public ByteCollection DamageLevelMultiplier { get { return _multi; } }
 
-        public AdditionTable(long baseAddress, long multiAddress, int addition) {
+        public AdditionTable(int baseAddress, int multiAddress, int addition) {
             _baseAddress = baseAddress + addition * 0xE;
             _multiAddress = multiAddress + addition * 0x18;
             _sp = new UShortCollection(_baseAddress, 2, 5);
