@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier {
     public class Globals {
+        public static MemoryController.MemoryController MemoryController;
+
+
+
         public static ushort HOTKEY = 0;
         public static long CURRENT_TIME = 0;
         public static long LAST_HOTKEY = 0;
@@ -53,6 +57,7 @@ namespace Dragoon_Modifier {
         public static bool ADDITION_SWAP = false;
         public static bool DART_SWITCH = true;
         public static bool NO_DART_CHANGED = false;
+
 
         #region CHANGE variables
         public static bool MONSTER_STAT_CHANGE = false;

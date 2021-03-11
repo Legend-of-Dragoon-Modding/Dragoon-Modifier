@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.MemoryController {
     public class CharacterAddress : BattleEntityAddress {
+        int _menuBlock;
 
         public byte Menu { get { return Emulator.ReadByte(_baseAddress - 0xA4); } set { Emulator.WriteByte(_baseAddress - 0xA4, value); } }
         public byte LV { get { return Emulator.ReadByte(_baseAddress - 0x4); } set { Emulator.WriteByte(_baseAddress - 0x4, value); } }
@@ -57,8 +58,10 @@ namespace Dragoon_Modifier.MemoryController {
         public byte ColorMap { get { return Emulator.ReadByte(_baseAddress + 0x1DD); } set { Emulator.WriteByte(_baseAddress + 0x1DD, value); } }
         public byte AdditionSlotIndex { get { return Emulator.ReadByte(_baseAddress + 0x26E); } set { Emulator.WriteByte(_baseAddress + 0x26E, value); } }
         public byte Pandemonium { get { return (byte) (Emulator.ReadByte(_pShieldMshieldSigStone + 0x1) & 3); } set { Emulator.WriteByte(_pShieldMshieldSigStone + 0x1, Emulator.ReadByte(_pShieldMshieldSigStone) | Math.Min(value, (byte) 3)); } }
+        public byte MenuBlock { get { return Emulator.ReadByte(_menuBlock); } set { Emulator.WriteByte(_menuBlock, value); } }
 
         public CharacterAddress(int c_point, int slot, int position) : base(c_point, slot, position) {
+            _menuBlock = 0x6E3B0 + slot * 0x20;
         }
     }
 }

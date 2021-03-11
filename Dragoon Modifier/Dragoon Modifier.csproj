@@ -292,7 +292,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="BattleController.cs" />
-    <Compile Include="Battle\Battle.cs" />
+    <Compile Include="MemoryController\Battle\Battle.cs" />
     <Compile Include="Emulator.cs" />
     <Compile Include="GlobalController.cs" />
     <Compile Include="Globals.cs" />
@@ -309,9 +309,9 @@
     <Compile Include="LoDDict2\LoDDict2.cs" />
     <Compile Include="LoDDict2\UsableItem.cs" />
     <Compile Include="MemoryController\AdditionTable.cs" />
-    <Compile Include="MemoryController\BattleEntityAddress.cs" />
+    <Compile Include="MemoryController\Battle\BattleEntityAddress.cs" />
     <Compile Include="MemoryController\ByteCollection.cs" />
-    <Compile Include="MemoryController\CharacterAddress.cs" />
+    <Compile Include="MemoryController\Battle\CharacterAddress.cs" />
     <Compile Include="MemoryController\CharacterStatTable.cs" />
     <Compile Include="MemoryController\CharacterTable.cs" />
     <Compile Include="MemoryController\CurrentShop.cs" />
@@ -322,7 +322,7 @@
     <Compile Include="MemoryController\ItemTableEntry.cs" />
     <Compile Include="MemoryController\Level.cs" />
     <Compile Include="MemoryController\MemoryController.cs" />
-    <Compile Include="MemoryController\MonsterAddress.cs" />
+    <Compile Include="MemoryController\Battle\MonsterAddress.cs" />
     <Compile Include="MemoryController\SecondaryCharacterTable.cs" />
     <Compile Include="MemoryController\Shop.cs" />
     <Compile Include="MemoryController\ShortCollection.cs" />

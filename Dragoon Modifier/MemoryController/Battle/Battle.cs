@@ -22,6 +22,10 @@ namespace Dragoon_Modifier.Battle {
             _cPoint = cPoint;
             _mPoint = mPoint;
             _battleOffset = battleOffset;
+            _uniqueMonsterIDs = new ushort[uniqueMonsterSize];
+            for (int i = 0; i < _uniqueMonsterIDs.Length; i++) {
+
+            }
             _monsterTable = new MemoryController.MonsterAddress[monsterCount];
             _monsterIDs = new ushort[monsterCount];
             for (int i = 0; i < _monsterTable.Length; i++) {
@@ -30,8 +34,7 @@ namespace Dragoon_Modifier.Battle {
             }
             int partySize = 0;
             for (int i = 0; i < 3; i++) {
-
-                if (Globals.PARTY_SLOT[i] > 8) {
+                if (Globals.MemoryController.PartySlot[i] > 8) {
                     break;
                 }
                 partySize++;
