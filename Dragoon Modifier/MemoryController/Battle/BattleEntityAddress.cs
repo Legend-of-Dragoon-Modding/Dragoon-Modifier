@@ -16,7 +16,7 @@ namespace Dragoon_Modifier.MemoryController {
         public ushort HP { get { return Emulator.ReadUShort(_baseAddress); } set { Emulator.WriteUShort(_baseAddress, value); } }
         public ushort Max_HP { get { return Emulator.ReadUShort(_baseAddress + 0x8); } set { Emulator.WriteUShort(_baseAddress + 0x8, value); } }
         public byte Status { get { return Emulator.ReadByte(_baseAddress + 0x6); } set { Emulator.WriteByte(_baseAddress + 0x6, value); } }
-        public byte Status_Res { get { return Emulator.ReadByte(_baseAddress + 0x1C); } set { Emulator.WriteByte(_baseAddress + 0x1C, value); } }
+        public byte StatusResist { get { return Emulator.ReadByte(_baseAddress + 0x1C); } set { Emulator.WriteByte(_baseAddress + 0x1C, value); } }
         public byte Special_Efect { get { return Emulator.ReadByte(_baseAddress + 0xC); } set { Emulator.WriteByte(_baseAddress + 0xC, value); } } // Old Death_Res
         public byte Guard { get { return Emulator.ReadByte(_baseAddress + 0x4C); } set { Emulator.WriteByte(_baseAddress + 0x4C, value); } }
         public ushort AT { get { return Emulator.ReadUShort(_baseAddress + 0x2C); } set { Emulator.WriteUShort(_baseAddress + 0x2C, value); } }
@@ -30,8 +30,8 @@ namespace Dragoon_Modifier.MemoryController {
         public ushort SPD { get { return Emulator.ReadUShort(_baseAddress + 0x2A); } set { Emulator.WriteUShort(_baseAddress + 0x2A, value); } }
         public ushort OG_SPD { get { return Emulator.ReadUShort(_baseAddress + 0x5C); } set { Emulator.WriteUShort(_baseAddress + 0x5C, value); } }
         public ushort Turn { get { return Emulator.ReadUShort(_baseAddress + 0x44); } set { Emulator.WriteUShort(_baseAddress + 0x44, value); } }
-        public byte A_AV { get { return Emulator.ReadByte(_baseAddress + 0x38); } set { Emulator.WriteByte(_baseAddress + 0x38, value); } }
-        public byte M_AV { get { return Emulator.ReadByte(_baseAddress + 0x3A); } set { Emulator.WriteByte(_baseAddress + 0x3A, value); } }
+        public short A_AV { get { return Emulator.ReadByte(_baseAddress + 0x38); } set { Emulator.WriteByte(_baseAddress + 0x38, value); } }
+        public short M_AV { get { return Emulator.ReadByte(_baseAddress + 0x3A); } set { Emulator.WriteByte(_baseAddress + 0x3A, value); } }
         public byte P_Immune { get { return Emulator.ReadByte(_baseAddress + 0x108); } set { Emulator.WriteByte(_baseAddress + 0x108, value); } }
         public byte M_Immune { get { return Emulator.ReadByte(_baseAddress + 0x10A); } set { Emulator.WriteByte(_baseAddress + 0x10A, value); } }
         public byte P_Half { get { return Emulator.ReadByte(_baseAddress + 0x10C); } set { Emulator.WriteByte(_baseAddress + 0x10C, value); } }

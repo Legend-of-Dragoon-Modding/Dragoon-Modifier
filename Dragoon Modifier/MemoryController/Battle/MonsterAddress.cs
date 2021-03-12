@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.MemoryController {
-    class MonsterAddress : BattleEntityAddress {
+    public class MonsterAddress : BattleEntityAddress {
         int _rewardsAddress;
         int _idAddress;
 

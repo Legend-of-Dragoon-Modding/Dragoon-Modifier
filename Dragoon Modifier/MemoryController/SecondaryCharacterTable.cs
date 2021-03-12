@@ -22,10 +22,10 @@ namespace Dragoon_Modifier.MemoryController {
         public ByteCollection AdditionCount { get { return _additionCount; } }
         public byte P_Half { get { return Emulator.ReadByte(_baseAddress + 0x4A); } set { Emulator.WriteByte(_baseAddress + 0x4A, value); } }
         public short SP_Multi { get { return Emulator.ReadShort(_baseAddress + 0x4C); } set { Emulator.WriteShort(_baseAddress + 0x4C, value); } }
-        public ushort SP_P_Hit { get { return Emulator.ReadUShort(_baseAddress + 0x4E); } set { Emulator.WriteUShort(_baseAddress + 0x4E, value); } }
-        public ushort MP_P_Hit { get { return Emulator.ReadUShort(_baseAddress + 0x50); } set { Emulator.WriteUShort(_baseAddress + 0x50, value); } }
-        public ushort SP_M_Hit { get { return Emulator.ReadUShort(_baseAddress + 0x52); } set { Emulator.WriteUShort(_baseAddress + 0x52, value); } }
-        public ushort MP_M_Hit { get { return Emulator.ReadUShort(_baseAddress + 0x54); } set { Emulator.WriteUShort(_baseAddress + 0x54, value); } }
+        public short SP_P_Hit { get { return Emulator.ReadShort(_baseAddress + 0x4E); } set { Emulator.WriteShort(_baseAddress + 0x4E, value); } }
+        public short MP_P_Hit { get { return Emulator.ReadShort(_baseAddress + 0x50); } set { Emulator.WriteShort(_baseAddress + 0x50, value); } }
+        public short SP_M_Hit { get { return Emulator.ReadShort(_baseAddress + 0x52); } set { Emulator.WriteShort(_baseAddress + 0x52, value); } }
+        public short MP_M_Hit { get { return Emulator.ReadShort(_baseAddress + 0x54); } set { Emulator.WriteShort(_baseAddress + 0x54, value); } }
         public short HP_Regen { get { return Emulator.ReadShort(_baseAddress + 0x58); } set { Emulator.WriteShort(_baseAddress + 0x58, value); } }
         public short MP_Regen { get { return Emulator.ReadShort(_baseAddress + 0x5A); } set { Emulator.WriteShort(_baseAddress + 0x5A, value); } }
         public short SP_Regen { get { return Emulator.ReadShort(_baseAddress + 0x5C); } set { Emulator.WriteShort(_baseAddress + 0x5C, value); } }
@@ -54,10 +54,10 @@ namespace Dragoon_Modifier.MemoryController {
         public ushort EquipMAT { get { return Emulator.ReadUShort(_baseAddress + 0x8A); } set { Emulator.WriteUShort(_baseAddress + 0x8A, value); } }
         public ushort EquipDF { get { return Emulator.ReadUShort(_baseAddress + 0x8C); } set { Emulator.WriteUShort(_baseAddress + 0x8C, value); } }
         public ushort EquipMDF { get { return Emulator.ReadUShort(_baseAddress + 0x8E); } set { Emulator.WriteUShort(_baseAddress + 0x8E, value); } }
-        public ushort EquipA_HIT { get { return Emulator.ReadUShort(_baseAddress + 0x90); } set { Emulator.WriteUShort(_baseAddress + 0x90, value); } }
-        public ushort EquipM_HIT { get { return Emulator.ReadUShort(_baseAddress + 0x92); } set { Emulator.WriteUShort(_baseAddress + 0x92, value); } }
-        public ushort EquipA_AV { get { return Emulator.ReadUShort(_baseAddress + 0x94); } set { Emulator.WriteUShort(_baseAddress + 0x94, value); } }
-        public ushort EquipM_AV { get { return Emulator.ReadUShort(_baseAddress + 0x96); } set { Emulator.WriteUShort(_baseAddress + 0x96, value); } }
+        public short EquipA_HIT { get { return Emulator.ReadShort(_baseAddress + 0x90); } set { Emulator.WriteShort(_baseAddress + 0x90, value); } }
+        public short EquipM_HIT { get { return Emulator.ReadShort(_baseAddress + 0x92); } set { Emulator.WriteShort(_baseAddress + 0x92, value); } }
+        public short EquipA_AV { get { return Emulator.ReadShort(_baseAddress + 0x94); } set { Emulator.WriteShort(_baseAddress + 0x94, value); } }
+        public short EquipM_AV { get { return Emulator.ReadShort(_baseAddress + 0x96); } set { Emulator.WriteShort(_baseAddress + 0x96, value); } }
         public byte On_Hit_Status { get { return Emulator.ReadByte(_baseAddress + 0x98); } set { Emulator.WriteByte(_baseAddress + 0x98, value); } }
         public byte On_Hit_Status_Chance { get { return Emulator.ReadByte(_baseAddress + 0x9B); } set { Emulator.WriteByte(_baseAddress + 0x9B, value); } }
 

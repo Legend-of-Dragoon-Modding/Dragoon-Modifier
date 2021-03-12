@@ -739,7 +739,7 @@ namespace Dragoon_Modifier {
 
                 byte stat_res = (byte) (weapon.Stat_Res | armor.Stat_Res | helm.Stat_Res | boots.Stat_Res | accessory.Stat_Res);
                 Emulator.WriteByte(address + 0x7E, stat_res);
-                Globals.CHARACTER_TABLE[slot].Status_Res = stat_res;
+                Globals.CHARACTER_TABLE[slot].StatusResist = stat_res;
                 byte e_half = (byte) (weapon.E_Half | armor.E_Half | helm.E_Half | boots.E_Half | accessory.E_Half);
                 Emulator.WriteByte(address + 0x7C, e_half);
                 Globals.CHARACTER_TABLE[slot].E_Half = e_half;
@@ -1221,7 +1221,7 @@ namespace Dragoon_Modifier {
             long address = Constants.GetAddress("SECONDARY_CHARACTER_TABLE") + character * 0xA0;
 
             if (!Globals.ITEM_STAT_CHANGE) {
-                Globals.CHARACTER_TABLE[slot].Status_Res = Emulator.ReadByte(address + 0x7E);
+                Globals.CHARACTER_TABLE[slot].StatusResist = Emulator.ReadByte(address + 0x7E);
                 Globals.CHARACTER_TABLE[slot].E_Half = Emulator.ReadByte(address + 0x7C);
                 Globals.CHARACTER_TABLE[slot].E_Immune = Emulator.ReadByte(address + 0x7D);
                 Globals.CHARACTER_TABLE[slot].A_AV = Emulator.ReadByte(address + 0x94);

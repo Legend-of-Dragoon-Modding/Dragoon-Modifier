@@ -9,6 +9,7 @@ namespace Dragoon_Modifier.Battle {
         int _cPoint;
         int _mPoint;
         int _battleOffset;
+        ushort _encounterID;
         ushort[] _monsterIDs;
         ushort[] _uniqueMonsterIDs;
         MemoryController.MonsterAddress[] _monsterTable;
@@ -16,12 +17,16 @@ namespace Dragoon_Modifier.Battle {
 
         public int CharacterPoint { get { return _cPoint; } }
         public int MonsterPoint { get { return _mPoint; } }
-        public ushort[] ID { get { return _monsterIDs; } }
+        public ushort EncounterID { get { return _encounterID; } }
+        public ushort[] MonsterID { get { return _monsterIDs; } }
+        public MemoryController.MonsterAddress[] MonsterTable { get { return _monsterTable; } }
+        public MemoryController.CharacterAddress[] CharacterTable { get { return _characterTable; } }
 
-        public Battle(int cPoint, int mPoint, int battleOffset, byte monsterCount, byte uniqueMonsterSize) {
+        public Battle(int cPoint, int mPoint, int battleOffset, ushort encounterID, byte monsterCount, byte uniqueMonsterSize) {
             _cPoint = cPoint;
             _mPoint = mPoint;
             _battleOffset = battleOffset;
+            _encounterID = encounterID;
             _uniqueMonsterIDs = new ushort[uniqueMonsterSize];
             for (int i = 0; i < _uniqueMonsterIDs.Length; i++) {
 

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace Dragoon_Modifier {
     public class Globals {
         public static MemoryController.MemoryController MemoryController;
+        public static Battle.Battle BattleController;
 
 
 

@@ -310,6 +310,7 @@
     <Compile Include="LoDDict2\UsableItem.cs" />
     <Compile Include="MemoryController\AdditionTable.cs" />
     <Compile Include="MemoryController\Battle\BattleEntityAddress.cs" />
+    <Compile Include="MemoryController\Battle\NoDart.cs" />
     <Compile Include="MemoryController\ByteCollection.cs" />
     <Compile Include="MemoryController\Battle\CharacterAddress.cs" />
     <Compile Include="MemoryController\CharacterStatTable.cs" />
