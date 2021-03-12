@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.MemoryController {
     public class BattleEntityAddress {
-        protected int _baseAddress;
+        protected uint _baseAddress;
         protected int _pShieldMshieldSigStone;
         int _statusAddr;
 
@@ -62,8 +62,8 @@ namespace Dragoon_Modifier.MemoryController {
         public byte StatusEffect { get { return Emulator.ReadByte(_statusAddr); } set { Emulator.WriteByte(_statusAddr, value); } }
         public byte StatusTurns { get { return Emulator.ReadByte(_statusAddr + 0x1); } set { Emulator.WriteByte(_statusAddr + 0x1, value); } }
 
-        public BattleEntityAddress(int point, int slot, int position) {
-            _baseAddress = point - slot * 0x388;
+        public BattleEntityAddress(uint point, int slot, int position) {
+            _baseAddress = (uint) (point - slot * 0x388);
             _pShieldMshieldSigStone = 0x6E3B4 + position * 0x20; // Which one from constants is this??
             _statusAddr = 0x6E71C + position * 0x4; // Might be tied to the previous one
         }

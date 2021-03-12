@@ -6,25 +6,25 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.Battle {
     public class Battle {
-        int _cPoint;
-        int _mPoint;
-        int _battleOffset;
+        uint _cPoint;
+        uint _mPoint;
+        uint _battleOffset;
         ushort _encounterID;
         ushort[] _monsterIDs;
         ushort[] _uniqueMonsterIDs;
         MemoryController.MonsterAddress[] _monsterTable;
         MemoryController.CharacterAddress[] _characterTable;
 
-        public int CharacterPoint { get { return _cPoint; } }
-        public int MonsterPoint { get { return _mPoint; } }
+        public uint CharacterPoint { get { return _cPoint; } }
+        public uint MonsterPoint { get { return _mPoint; } }
         public ushort EncounterID { get { return _encounterID; } }
         public ushort[] MonsterID { get { return _monsterIDs; } }
         public MemoryController.MonsterAddress[] MonsterTable { get { return _monsterTable; } }
         public MemoryController.CharacterAddress[] CharacterTable { get { return _characterTable; } }
 
-        public Battle(int cPoint, int mPoint, int battleOffset, ushort encounterID, byte monsterCount, byte uniqueMonsterSize) {
-            _cPoint = cPoint;
-            _mPoint = mPoint;
+        public Battle(uint battleOffset, ushort encounterID, byte monsterCount, byte uniqueMonsterSize) {
+            _cPoint = Globals.MemoryController.CharacterPoint;
+            _mPoint = Globals.MemoryController.MonsterPoint;
             _battleOffset = battleOffset;
             _encounterID = encounterID;
             _uniqueMonsterIDs = new ushort[uniqueMonsterSize];

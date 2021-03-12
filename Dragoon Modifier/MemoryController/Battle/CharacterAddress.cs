@@ -62,7 +62,7 @@ namespace Dragoon_Modifier.MemoryController {
         public byte MenuBlock { get { return Emulator.ReadByte(_menuBlock); } set { Emulator.WriteByte(_menuBlock, value); } }
         public byte DragoonTurns { get { return Emulator.ReadByte(_dragoonTurns); } set { Emulator.WriteByte(_dragoonTurns, value); } }
 
-        public CharacterAddress(int c_point, int slot, int position) : base(c_point, slot, position) {
+        public CharacterAddress(uint c_point, int slot, int position) : base(c_point, slot, position) {
             _menuBlock = 0x6E3B0 + slot * 0x20;
             _dragoonTurns = Constants.GetAddress("DRAGOON_TURNS") + slot * 0x4;
         }

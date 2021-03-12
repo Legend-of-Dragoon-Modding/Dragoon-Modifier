@@ -339,15 +339,18 @@ namespace Dragoon_Modifier {
             }
 
             long cmtable = Emulator.ReadUInt("C_POINT", -0x18);
-            while (cmtable == Emulator.ReadUInt("C_POINT", 0x14) || cmtable == (Emulator.ReadUInt("C_POINT"))) {
+            while (cmtable == Globals.MemoryController.CharacterPoint || cmtable == Globals.MemoryController.MonsterPoint) {
                 if (Globals.GAME_STATE != 1) {
                     return;
                 }
                 Thread.Sleep(50);
             }
 
-            Globals.SetM_POINT((int)(Emulator.ReadUInt24("C_POINT", 0x14) - 0x108));
-            Globals.SetC_POINT((int)(Emulator.ReadUInt24("C_POINT") - 0x108));
+            Globals.SetM_POINT((int)Globals.MemoryController.CharacterPoint);
+            Globals.SetC_POINT((int) Globals.MemoryController.MonsterPoint);
+
+            Globals.BattleController = new Battle.Battle((uint) GetOffset(), (ushort) Globals.ENCOUNTER_ID, Emulator.ReadByte("MONSTER_SIZE"), Emulator.ReadByte("UNIQUE_MONSTER_SIZE"));
+
             Globals.MONSTER_SIZE = Emulator.ReadByte("MONSTER_SIZE");
             Globals.UNIQUE_MONSTER_SIZE = Emulator.ReadByte("UNIQUE_MONSTER_SIZE");
             Globals.UNIQUE_MONSTER_IDS = new List<int>();
@@ -368,7 +371,7 @@ namespace Dragoon_Modifier {
                 if (Globals.PARTY_SLOT[character] > 9) {
                     break;
                 }
-                Globals.CHARACTER_TABLE.Add(new MemoryController.CharacterAddress(Globals.C_POINT, character, Globals.MONSTER_SIZE + character));
+                Globals.CHARACTER_TABLE.Add(new MemoryController.CharacterAddress((uint)Globals.C_POINT, character, Globals.MONSTER_SIZE + character));
             }
 
             firstDamageCapRemoval = false;

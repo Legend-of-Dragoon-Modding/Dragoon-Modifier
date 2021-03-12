@@ -3084,7 +3084,7 @@ namespace Dragoon_Modifier {
                 if (ubRemoveResistances) {
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9) {
-                            Globals.CHARACTER_TABLE[i].Status_Res = 0;
+                            Globals.CHARACTER_TABLE[i].StatusResist = 0;
                             Globals.CHARACTER_TABLE[i].Special_Efect = 0;
                         }
                     }
@@ -6177,6 +6177,7 @@ namespace Dragoon_Modifier {
         private void miAttach_Click(object sender, RoutedEventArgs e) {
             if (!Constants.RUN) {
                 bool setup = Emulator.Setup(Constants.EMULATOR_NAME, true);
+                Globals.MemoryController = new MemoryController.MemoryController();
 
                 if (setup) {
                     Constants.RUN = true;

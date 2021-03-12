@@ -6,8 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Windows.Forms;
-
-
+using System.Globalization;
 
 namespace Dragoon_Modifier {
     public static class Emulator {
@@ -386,6 +385,8 @@ namespace Dragoon_Modifier {
             WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET), arr, arr.Length, out int error);
         }
         public static List<long> ScanAoB(long startAddr, long endAddr, string values, bool useOffset = true, bool addOffset = false) {
+            Stopwatch s = new Stopwatch();
+            s.Start();
             List<long> results = new List<long>();
             if (useOffset) {
                 startAddr += Constants.OFFSET;
@@ -435,7 +436,8 @@ namespace Dragoon_Modifier {
                 }
                 results.Add(temp);
             }
-
+            s.Stop();
+            Constants.WriteDebug($"Attached in {s.ElapsedMilliseconds}");
             return results;
         }
         public static int[] Locate(this byte[] self, byte[] candidate, byte[] mask) {
@@ -834,6 +836,76 @@ namespace Dragoon_Modifier {
             } else {
                 return 0;
             }
+        }
+
+
+        public static List<int> KMPSearch(string patternString, byte[] byteArray, bool findAll = false) {
+            var splitString = patternString.Split(' ');
+
+            int N = byteArray.Length;
+            int M = splitString.Length;
+            var patternValue = new byte[M];
+            var patternMask = new byte[M];
+            for (int k = 0; k < M; k++) {
+                patternMask[k] = 0xFF;
+            }
+            for (int k = 0; k < M; k++) {
+                if (Byte.TryParse(splitString[k], NumberStyles.HexNumber, null, out byte key)) {
+                    patternValue[k] = key;
+                } else {
+                    patternValue[k] = Convert.ToByte(splitString[k].Replace('?', '0'), 16);
+                    patternMask[k] = (byte) (patternMask[k] & patternValue[k]);
+                }
+            }
+
+            var indexList = new List<int>();
+
+            var substringIndex = CalculateSubstringIndexes(patternValue, patternMask, M);
+
+            int i = 0;
+            int j = 0;
+            while (i < N - M + 1) {
+                if ((byteArray[i] & patternMask[j]) == patternValue[j]) {
+                    i++;
+                    j++;
+                } else {
+                    if (j != 0) {
+                        j = substringIndex[j - 1];
+                    } else {
+                        i++;
+                    }
+                }
+                if (j == M) {
+                    indexList.Add(i - j);
+                    if (!findAll) {
+                        break;
+                    }
+                    j = substringIndex[j - 1];
+                }
+            }
+            return indexList;
+        }
+
+        static byte[] CalculateSubstringIndexes(byte[] patternValue, byte[] patternMask, int M) {
+            var substringIndex = new byte[M];
+            substringIndex[0] = 0;
+            int len = 0;
+            int i = 1;
+            while (i < M) {
+                if (patternValue[i] == (patternValue[len] & patternMask[i])) {
+                    substringIndex[i] = (byte) (len + 1);
+                    len++;
+                    i++;
+                } else {
+                    if (len != 0) {
+                        len = substringIndex[len - 1];
+                    } else {
+                        substringIndex[i] = 0;
+                        i++;
+                    }
+                }
+            }
+            return substringIndex;
         }
     }
 }
