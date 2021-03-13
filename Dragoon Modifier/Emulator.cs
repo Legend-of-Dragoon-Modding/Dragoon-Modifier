@@ -72,7 +72,7 @@ namespace Dragoon_Modifier {
             if (start == 0x0 && end == 0x0) {
                 Constants.WriteDebug("Failed to attach, no process found.");
                 return false;
-            } else if(baseScan) {
+            } else if (baseScan) {
                 string AoBCheck = "50 53 2D 58 20 45 58 45";
 
                 if (ReadUInt("STARTUP_SEARCH") == 320386 || ReadUShort("BATTLE_VALUE") == 32776 || ReadUShort("BATTLE_VALUE") == 41215) {
@@ -199,12 +199,12 @@ namespace Dragoon_Modifier {
         public static sbyte ReadSByte(long address) {
             byte[] buffer = new byte[1];
             ReadProcessMemory(processHandle, address + Constants.OFFSET, buffer, 1, out long bytesRead);
-            return (sbyte)buffer[0];
+            return (sbyte) buffer[0];
         }
         public static sbyte ReadSByte(string address, int offset = 0) {
             byte[] buffer = new byte[1];
             ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET + offset, buffer, 1, out long bytesRead);
-            return (sbyte)buffer[0];
+            return (sbyte) buffer[0];
         }
         public static short ReadShort(long address) {
             byte[] buffer = new byte[2];
@@ -838,6 +838,41 @@ namespace Dragoon_Modifier {
             }
         }
 
+        static Dictionary<string, byte[]> masking = new Dictionary<string, byte[]>() {
+            {"??", new byte[] { 0x00, 0x00} },
+            {"0?", new byte[] { 0x00, 0xF0} },
+            {"1?", new byte[] { 0x10, 0xF0} },
+            {"2?", new byte[] { 0x20, 0xF0} },
+            {"3?", new byte[] { 0x30, 0xF0} },
+            {"4?", new byte[] { 0x40, 0xF0} },
+            {"5?", new byte[] { 0x50, 0xF0} },
+            {"6?", new byte[] { 0x60, 0xF0} },
+            {"7?", new byte[] { 0x70, 0xF0} },
+            {"8?", new byte[] { 0x80, 0xF0} },
+            {"9?", new byte[] { 0x90, 0xF0} },
+            {"A?", new byte[] { 0xA0, 0xF0} },
+            {"B?", new byte[] { 0xB0, 0xF0} },
+            {"C?", new byte[] { 0xC0, 0xF0} },
+            {"D?", new byte[] { 0xD0, 0xF0} },
+            {"E?", new byte[] { 0xE0, 0xF0} },
+            {"F?", new byte[] { 0xF0, 0xF0} },
+            {"?0", new byte[] { 0x00, 0x0F} },
+            {"?1", new byte[] { 0x01, 0x0F} },
+            {"?2", new byte[] { 0x02, 0x0F} },
+            {"?3", new byte[] { 0x03, 0x0F} },
+            {"?4", new byte[] { 0x04, 0x0F} },
+            {"?5", new byte[] { 0x05, 0x0F} },
+            {"?6", new byte[] { 0x06, 0x0F} },
+            {"?7", new byte[] { 0x07, 0x0F} },
+            {"?8", new byte[] { 0x08, 0x0F} },
+            {"?9", new byte[] { 0x09, 0x0F} },
+            {"?A", new byte[] { 0x0A, 0x0F} },
+            {"?B", new byte[] { 0x0B, 0x0F} },
+            {"?C", new byte[] { 0x0C, 0x0F} },
+            {"?D", new byte[] { 0x0D, 0x0F} },
+            {"?E", new byte[] { 0x0E, 0x0F} },
+            {"?F", new byte[] { 0x0F, 0x0F} },
+        };
 
         public static List<int> KMPSearch(string patternString, byte[] byteArray, bool findAll = false) {
             var splitString = patternString.Split(' ');
@@ -847,14 +882,12 @@ namespace Dragoon_Modifier {
             var patternValue = new byte[M];
             var patternMask = new byte[M];
             for (int k = 0; k < M; k++) {
-                patternMask[k] = 0xFF;
-            }
-            for (int k = 0; k < M; k++) {
                 if (Byte.TryParse(splitString[k], NumberStyles.HexNumber, null, out byte key)) {
-                    patternValue[k] = key;
+                    patternValue[k] = key; // Can be parsed, unless theres a ? mask
+                    patternMask[k] = 0xFF;
                 } else {
-                    patternValue[k] = Convert.ToByte(splitString[k].Replace('?', '0'), 16);
-                    patternMask[k] = (byte) (patternMask[k] & patternValue[k]);
+                    patternValue[k] = masking[splitString[k]][0];
+                    patternMask[k] = masking[splitString[k]][1];
                 }
             }
 
