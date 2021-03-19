@@ -884,9 +884,9 @@ namespace Dragoon_Modifier {
             for (int k = 0; k < M; k++) {
                 if (Byte.TryParse(splitString[k], NumberStyles.HexNumber, null, out byte key)) {
                     patternValue[k] = key; // Can be parsed, unless theres a ? mask
-                    patternMask[k] = 0xFF;
+                    patternMask[k] = 0xFF; // & with 0xFF doesn't change the value
                 } else {
-                    patternValue[k] = masking[splitString[k]][0];
+                    patternValue[k] = masking[splitString[k]][0]; // For masked nibbles, value and mask is set to 0, so it always passes
                     patternMask[k] = masking[splitString[k]][1];
                 }
             }
