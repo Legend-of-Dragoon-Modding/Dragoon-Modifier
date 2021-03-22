@@ -27,28 +27,27 @@ namespace Dragoon_Modifier.MemoryController.Battle {
 
         public static void Initialize(byte character) {
             Globals.BattleController.CharacterTable[0].Status = Globals.MemoryController.CharacterTable[character].Status;
-            if (Globals.BattleController.EncounterID == 413) {
-                Globals.BattleController.MonsterTable[0].Action = 12;
-                while (Globals.BattleController.MonsterTable[0].Action != 44) {
-                    if (Globals.GAME_STATE != 1) {
+            if (Globals.BattleController.EncounterID == 413) { // Jiango has to have it's initial move. Otherwise he never gets a turn.
+                Globals.BattleController.MonsterTable[0].Action = 12; // Play the "This is Jiango" part
+                while (Globals.BattleController.MonsterTable[0].Action != 44) { // Jiango's initial move is over.
+                    if (Globals.GAME_STATE != 1) { // No longer in battle
                         return;
                     }
                     Thread.Sleep(50);
                 }
             }
-            Globals.BattleController.CharacterTable[0].Action = 10;
+            Globals.BattleController.CharacterTable[0].Action = 10; // Force character's turn in Dragoon form.
 
             while (Globals.BattleController.CharacterTable[0].Menu != 96) { // Wait for the NoDart's character turn to start
-                if (Globals.GAME_STATE != 1) {
+                if (Globals.GAME_STATE != 1) { // No longer in battle
                     return;
                 }
                 Thread.Sleep(50);
             }
 
-            Globals.BattleController.CharacterTable[0].DragoonTurns = 1;
-            Globals.BattleController.CharacterTable[0].Dragoon = 0x20; // Make sure we don't have Red-Eye
-            Globals.MemoryController.PartySlot[0] = character;
-
+            Globals.BattleController.CharacterTable[0].Dragoon = 0x20; // Make sure we have Red-Eye Dragoon
+            
+            Globals.MemoryController.PartySlot[0] = character; // Set ID to NoDart character
             Emulator.WriteByte("PARTY_SLOT", character, 0x234E); // Secondary ID
 
             Globals.BattleController.CharacterTable[0].Image = character;
@@ -67,7 +66,7 @@ namespace Dragoon_Modifier.MemoryController.Battle {
             #region Dragoon Magic
 
             Globals.BattleController.CharacterTable[0].DragoonSpellID = character; // ID has to match, otherwise you get all Flameshots
-            Dictionary<byte, byte> dmagic5 = new Dictionary<byte, byte> {
+            Dictionary<byte, byte> dmagic5 = new Dictionary<byte, byte> { // TODO this shouldn't be hardcoded, in case we want to change Dragoon Magic
                 {0, 3},{1, 8},{2, 13},{3, 19},{4, 23},{5, 8},{6, 28},{7, 31},{8, 13}
             };
             Dictionary<byte, byte> dmagic3 = new Dictionary<byte, byte> {
@@ -80,7 +79,7 @@ namespace Dragoon_Modifier.MemoryController.Battle {
                 {0, 0},{1, 5},{2, 11},{3, 15},{4, 20},{5, 14},{6, 24},{7, 29},{8, 66}
             };
 
-            switch (dlv) {
+            switch (dlv) { // Setting Dragoon Spell slots based on the D'LV
                 case 5:
                     Globals.BattleController.CharacterTable[0].DragoonSpell[0] = dmagic1[character];
                     Globals.BattleController.CharacterTable[0].DragoonSpell[1] = dmagic2[character];
@@ -143,10 +142,6 @@ namespace Dragoon_Modifier.MemoryController.Battle {
             /*
             if (!Globals.ADDITION_CHANGE) {
                 AdditionsBattleChanges(0, character);
-            }
-
-            if (!Globals.DRAGOON_STAT_CHANGE) {
-                DragoonStatChanges(0, character);
             }
             */
 

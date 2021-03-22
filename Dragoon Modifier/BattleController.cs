@@ -338,9 +338,9 @@ namespace Dragoon_Modifier {
                 bossSPLoss = 0;
             }
 
-            long cmtable = Emulator.ReadUInt24("C_POINT", -0x18);
-            while (cmtable == Globals.MemoryController.CharacterPoint || cmtable == Globals.MemoryController.MonsterPoint) {
-                if (Globals.GAME_STATE != 1) {
+            long cmtable = Emulator.ReadUInt24("C_POINT", -0x18); // Base address in the Battle Pointer Table
+            while (cmtable == Globals.MemoryController.CharacterPoint || cmtable == Globals.MemoryController.MonsterPoint) { // Wait until both C_Point and M_Point were set
+                if (Globals.GAME_STATE != 1) { // No longer in battle
                     return;
                 }
                 Thread.Sleep(50);

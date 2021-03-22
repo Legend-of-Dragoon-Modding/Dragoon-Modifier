@@ -118,6 +118,11 @@ namespace Dragoon_Modifier.MemoryController {
             SP_Multi = Globals.MemoryController.SecondaryCharacterTable[character].SP_Multi;
             Special_Efect = Globals.MemoryController.SecondaryCharacterTable[character].Special_Effect;
             Weapon_Element = Globals.MemoryController.SecondaryCharacterTable[character].WeaponElement;
+
+            DAT = Globals.MemoryController.SecondaryCharacterTable[character].DAT;
+            DMAT = Globals.MemoryController.SecondaryCharacterTable[character].DMAT;
+            DF = Globals.MemoryController.SecondaryCharacterTable[character].DDF;
+            DMDF = Globals.MemoryController.SecondaryCharacterTable[character].DMDF;
         }
     }
 }
