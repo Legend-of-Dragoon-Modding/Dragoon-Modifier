@@ -62,7 +62,7 @@ namespace Dragoon_Modifier.MemoryController {
         public byte On_Hit_Status_Chance { get { return Emulator.ReadByte(_baseAddress + 0x9B); } set { Emulator.WriteByte(_baseAddress + 0x9B, value); } }
 
         public SecondaryCharacterTable(int baseAddress, int character) {
-            _baseAddress = baseAddress + 0xA0;
+            _baseAddress = baseAddress + (character * 0xA0);
             _additionLevel = new ByteCollection(_baseAddress + 0x35, 1, addCounts[character]);
             _additionCount = new ByteCollection(_baseAddress + 0x3E, 1, addCounts[character]);
         }

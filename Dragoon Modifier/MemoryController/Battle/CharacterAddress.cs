@@ -42,8 +42,8 @@ namespace Dragoon_Modifier.MemoryController {
         public ushort DDF { get { return Emulator.ReadUShort(_baseAddress + 0xA8); } set { Emulator.WriteUShort(_baseAddress + 0xA8, value); } }
         public ushort DMDF { get { return Emulator.ReadUShort(_baseAddress + 0xAA); } set { Emulator.WriteUShort(_baseAddress + 0xAA, value); } }
         public byte Image { get { return Emulator.ReadByte(_baseAddress + 0x26A); } set { Emulator.WriteByte(_baseAddress + 0x26A, value); } }
-        public ushort Detransform1 { get { return Emulator.ReadUShort(_baseAddress + 0xF0); } set { Emulator.WriteUShort(_baseAddress + 0xF0, value); } }
-        public byte Detransform2 { get { return Emulator.ReadByte(_baseAddress + 0xEE); } set { Emulator.WriteByte(_baseAddress + 0xEE, value); } }
+        public ushort Detransform1 { get { return Emulator.ReadUShort(_baseAddress - 0xF0); } set { Emulator.WriteUShort(_baseAddress - 0xF0, value); } }
+        public byte Detransform2 { get { return Emulator.ReadByte(_baseAddress - 0xEE); } set { Emulator.WriteByte(_baseAddress - 0xEE, value); } }
         public sbyte A_HIT_Increase { get { return Emulator.ReadSByte(_baseAddress + 0xB4); } set { Emulator.WriteByte(_baseAddress + 0xB4, value); } }
         public byte A_HIT_Increase_Turn { get { return Emulator.ReadByte(_baseAddress + 0xB5); } set { Emulator.WriteByte(_baseAddress + 0xB5, value); } }
         public sbyte M_HIT_Increase { get { return Emulator.ReadSByte(_baseAddress + 0xB6); } set { Emulator.WriteByte(_baseAddress + 0xB6, value); } }
@@ -63,7 +63,7 @@ namespace Dragoon_Modifier.MemoryController {
         public byte DragoonTurns { get { return Emulator.ReadByte(_dragoonTurns); } set { Emulator.WriteByte(_dragoonTurns, value); } }
 
         public CharacterAddress(uint c_point, int slot, int position) : base(c_point, slot, position) {
-            _menuBlock = 0x6E3B0 + slot * 0x20;
+            _menuBlock = 0x6E3B0 + slot * 0x20; // TODO This has to get an address
             _dragoonTurns = Constants.GetAddress("DRAGOON_TURNS") + slot * 0x4;
         }
 

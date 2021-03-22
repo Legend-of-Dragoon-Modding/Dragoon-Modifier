@@ -30,7 +30,7 @@ namespace Dragoon_Modifier.MemoryController {
         public ByteCollection AdditionCount { get { return _additionCount; } }
 
         public CharacterTable(int baseAddress, int character) {
-            _baseAddress = baseAddress + 0x2C;
+            _baseAddress = baseAddress + (character * 0x2C);
             _additionLevel = new ByteCollection(_baseAddress + 0x1A, 1, addCounts[character]);
             _additionCount = new ByteCollection(_baseAddress + 0x22, 1, addCounts[character]);
         }

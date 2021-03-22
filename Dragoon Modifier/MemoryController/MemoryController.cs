@@ -31,6 +31,9 @@ namespace Dragoon_Modifier.MemoryController {
         DragoonStatTable[] _dragoonStatTable = new DragoonStatTable[9];
         AdditionTable[] _addTable = new AdditionTable[41];
         int _basePoint;
+        int _encounterID;
+        int _monsterSize;
+        int _uniqueMonsterSize;
 
         public UIntCollection PartySlot { get { return _partySlot; } }
         public byte Disc { get { return Emulator.ReadByte(_disc); } }
@@ -56,6 +59,9 @@ namespace Dragoon_Modifier.MemoryController {
         public AdditionTable[] MenuAdditionTable { get { return _addTable; } }
         public uint CharacterPoint { get { return Emulator.ReadUInt24(_basePoint); } }
         public uint MonsterPoint { get { return Emulator.ReadUInt24(_basePoint + 0x14); } }
+        public ushort EncounterID { get { return Emulator.ReadUShort(_encounterID); } set { Emulator.WriteUShort(_encounterID, value); } }
+        public byte MonsterSize { get { return Emulator.ReadByte(_monsterSize); } }
+        public byte UniqueMonsterSize { get { return Emulator.ReadByte(_uniqueMonsterSize); } }
 
         public MemoryController() {
             _partySlot = new UIntCollection(Constants.GetAddress("PARTY_SLOT"), 4, 3);
@@ -107,6 +113,9 @@ namespace Dragoon_Modifier.MemoryController {
                 _addTable[i] = new AdditionTable(addTableAddr, addMultiAddr, i);
             }
             _basePoint = Constants.GetAddress("C_POINT");
+            _encounterID = Constants.GetAddress("ENCOUNTER_ID");
+            _monsterSize = Constants.GetAddress("MONSTER_SIZE");
+            _uniqueMonsterSize = Constants.GetAddress("UNIQUE_MONSTER_SIZE");
         }
     }
 }
