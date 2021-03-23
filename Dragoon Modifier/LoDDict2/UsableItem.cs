@@ -71,10 +71,10 @@ namespace Dragoon_Modifier.LoDDict2 {
         public long BattleNamePointer { get { return battleNamePointer; } set { battleNamePointer = value; } }
 
         public UsableItem(byte index, string[] values) {
-            ID = index;
+            id = index;
             if (!(values[0] == "" || values[0] == " ")) {
-                Name = values[0];
-                EncodedName = LoDDict.StringEncode(Name) + " FF A0";
+                name = values[0];
+                encodedName = LoDDict.StringEncode(Name) + " FF A0";
             }
             if (Byte.TryParse(values[1], NumberStyles.AllowLeadingSign, null as IFormatProvider, out byte bkey)) {
                 target = bkey;
@@ -116,7 +116,7 @@ namespace Dragoon_Modifier.LoDDict2 {
                 Constants.WriteError(values[7] + " not found as Special_Ammount for item: " + Name);
             }
             if (IconDict.TryGetValue(values[8].ToLower(), out bkey)) {
-                Icon = bkey;
+                icon = bkey;
             } else {
                 Constants.WriteError(values[8] + " not found as Icon for item: " + Name);
             }
@@ -144,13 +144,13 @@ namespace Dragoon_Modifier.LoDDict2 {
                     Constants.WriteError(substring + " not found as Base_Switch for item:" + Name);
                 }
             }
-            Description = values[13];
-            if (!(Description == "" || Description == " ")) {
-                EncodedDescription = LoDDict.StringEncode(Description) + " FF A0";
+            description = values[13];
+            if (!(description == "" || description == " ")) {
+                encodedDescription = LoDDict.StringEncode(Description) + " FF A0";
             }
             if (UInt16.TryParse(values[14], NumberStyles.AllowLeadingSign, null as IFormatProvider, out ushort uskey)) {
                 float temp = (float) uskey / 2;
-                Sell_Price = (short) Math.Round(temp);
+                sell_price = (short) Math.Round(temp);
             } else if (values[14] != "") {
                 Constants.WriteError(values[14] + " not found as Price for item: " + Name);
             }

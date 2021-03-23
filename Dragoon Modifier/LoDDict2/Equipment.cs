@@ -113,10 +113,10 @@ namespace Dragoon_Modifier.LoDDict2 {
         public byte Death_Res { get { return death_res; } }
 
         public Equipment(byte index, string[] values) {
-            ID = index;
-            Name = values[0];
-            if (!(Name == "" || Name == " ")) {
-                EncodedName = LoDDict.StringEncode(Name) + " FF A0";
+            id = index;
+            name = values[0];
+            if (!(name == "" || name == " ")) {
+                encodedName = LoDDict.StringEncode(Name) + " FF A0";
             }
             if (typeDict.TryGetValue(values[1].ToLower(), out byte bkey)) {
                 type = bkey;
@@ -131,7 +131,7 @@ namespace Dragoon_Modifier.LoDDict2 {
                 }
             }
             if (IconDict.TryGetValue(values[3].ToLower(), out bkey)) {
-                Icon = bkey;
+                icon = bkey;
             } else {
                 Constants.WriteError(values[3] + " not found as icon for item: " + Name);
             }
@@ -242,13 +242,13 @@ namespace Dragoon_Modifier.LoDDict2 {
                     Constants.WriteError(substring + " not found as Death_Res for item:" + Name);
                 }
             }
-            Description = values[23];
-            if (!(Description == "" || Description == " ")) {
-                EncodedDescription = LoDDict.StringEncode(Description) + " FF A0";
+            description = values[23];
+            if (!(description == "" || description == " ")) {
+                encodedDescription = LoDDict.StringEncode(Description) + " FF A0";
             }
             if (UInt16.TryParse(values[24], NumberStyles.AllowLeadingSign, null as IFormatProvider, out ushort key3)) {
                 float temp = (float) key3 / 2;
-                Sell_Price = (short) Math.Round(temp);
+                sell_price = (short) Math.Round(temp);
             } else if (values[24] != "") {
                 Constants.WriteError(values[24] + " not found as Price for item: " + Name);
             }

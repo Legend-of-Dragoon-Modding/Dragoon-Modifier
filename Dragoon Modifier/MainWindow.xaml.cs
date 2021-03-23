@@ -382,6 +382,7 @@ namespace Dragoon_Modifier {
                 InitUI();
                 LoadKey();
                 Globals.DICTIONARY = new LoDDict();
+                Globals.LoDDictionary = new LoDDict2.LoDDict2();
                 
                 
                 try {
@@ -952,6 +953,7 @@ namespace Dragoon_Modifier {
                 Constants.WriteOutput("Preset '" + preset + "' loaded.");
                 Constants.WriteOutput("Preset folder: " + Globals.MOD);
                 Globals.DICTIONARY = new LoDDict();
+                Globals.LoDDictionary = new LoDDict2.LoDDict2();
             } catch (Exception e) {
                 Constants.WriteOutput("Failed to load preset. Script not found: '" + current + "'.");
                 DisableScripts();
@@ -6661,6 +6663,7 @@ namespace Dragoon_Modifier {
                 if (Globals.MOD != (string) mod.SelectedValue) {
                     Globals.MOD = (string) mod.SelectedValue;
                     Globals.DICTIONARY = new LoDDict();
+                    Globals.LoDDictionary = new LoDDict2.LoDDict2();
                     Constants.WriteOutput("Changing Mod");
                 }
 
@@ -6974,6 +6977,7 @@ namespace Dragoon_Modifier {
             }
 
             Globals.DICTIONARY = new LoDDict();
+            Globals.LoDDictionary = new LoDDict2.LoDDict2();
             SHOP_CHANGED = false;
             if (Emulator.ReadShort("BATTLE_VALUE") < 9999) {
                 Globals.STATS_CHANGED = true;

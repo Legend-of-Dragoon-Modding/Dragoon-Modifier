@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.LoDDict2 {
     public class Item {
-        byte id;
-        string name = "<END>";
-        string encodedName = "FF A0 FF A0";
+        protected byte id;
+        protected string name = "<END>";
+        protected string encodedName = "FF A0 FF A0";
         long namePointer = 0;
-        string description = "<END>";
-        string encodedDescription = "FF A0 FF A0";
+        protected string description = "<END>";
+        protected string encodedDescription = "FF A0 FF A0";
         long descriptionPointer = 0;
-        byte icon = 0;
-        short sell_price = 0;
+        protected byte icon = 0;
+        protected short sell_price = 0;
 
         Dictionary<string, byte> iconDict = new Dictionary<string, byte>() {
                 { "sword", 0 },
@@ -73,15 +73,15 @@ namespace Dragoon_Modifier.LoDDict2 {
                 {"", 64 }
             };
 
-        public byte ID { get { return id; } set { id = value; } }
-        public string Name { get { return name; } set { name = value; } }
-        public string EncodedName { get { return encodedName; } set { encodedName = value; } }
+        public byte ID { get { return id; } }
+        public string Name { get { return name; } }
+        public string EncodedName { get { return encodedName; } }
         public long NamePointer { get; set; }
-        public string Description { get { return description; } set { description = value; } }
-        public string EncodedDescription { get { return encodedDescription; } set { encodedDescription = value; } }
+        public string Description { get { return description; } }
+        public string EncodedDescription { get { return encodedDescription; } }
         public long DescriptionPointer { get; set; }
-        public byte Icon { get { return icon; } set { icon = value; } }
-        public short Sell_Price { get { return sell_price; } set { sell_price = value; } }
+        public byte Icon { get { return icon; } }
+        public short Sell_Price { get { return sell_price; } }
 
         public Dictionary<string, byte> IconDict { get { return iconDict; } }
     }

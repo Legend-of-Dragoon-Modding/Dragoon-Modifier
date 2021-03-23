@@ -67,16 +67,28 @@ namespace Dragoon_Modifier.LoDDict2 {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
             string cwd = AppDomain.CurrentDomain.BaseDirectory;
-            GetItems(cwd);
+            Init(cwd);
 
             watch.Stop();
             var elapsedMs = watch.ElapsedMilliseconds;
             Constants.WriteDebug($"LoDDict2 executed in {elapsedMs} ms");
         }
 
+        private void Init(string cwd) {
+            try {
+                GetItems(cwd);
+                SetCharacters(cwd);
+            } catch (Exception ex) {
+                Constants.RUN = false;
+                Constants.WriteGLog("Program stopped.");
+                Constants.WritePLogOutput("LoD Dictionary fatal error.");
+                Constants.WriteOutput("Fatal Error. Closing all threads.");
+                Constants.WriteError(ex.ToString());
+            }
+        }
 
 
-        public void GetEquipment(string cwd) {
+        private void GetEquipment(string cwd) {
             byte i = 0;
             try {
                 using (var itemData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Equipment.tsv")) {
@@ -105,7 +117,7 @@ namespace Dragoon_Modifier.LoDDict2 {
             }
         }
 
-        public void GetUsableItems(string cwd) {
+        private void GetUsableItems(string cwd) {
             byte i = 192;
             try {
                 using (var itemData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Items.tsv")) {
@@ -134,15 +146,15 @@ namespace Dragoon_Modifier.LoDDict2 {
             }
         }
 
-        public string CreateItemNameString() {
+        private string CreateItemNameString() {
             long offset = 0;
             long start = Constants.GetAddress("ITEM_NAME");
             Item[] sortedArr = itemArr.OrderByDescending(o => o.Name.Length).ToArray();
             List<string> stringList = new List<string>();
             foreach (Item item in sortedArr) {
-                if (stringList.Any(l => l.Contains(item.EncodedName))) {
-                    int index = Array.IndexOf(sortedArr, Array.Find(sortedArr, x => x.EncodedName.Contains(item.EncodedName)));
-                    item.NamePointer = sortedArr[index].NamePointer + (sortedArr[index].Name.Length - item.Name.Length) * 2;
+                if (stringList.Any(l => l.Contains(item.EncodedName))) { // Item name is already a substring of a different 
+                    int index = Array.IndexOf(sortedArr, Array.Find(sortedArr, x => x.EncodedName.Contains(item.EncodedName))); // Get index of matching string
+                    item.NamePointer = sortedArr[index].NamePointer + (sortedArr[index].Name.Length - item.Name.Length) * 2; // Account for different string length
                 } else {
                     stringList.Add(item.EncodedName);
                     item.NamePointer = start + offset;
@@ -161,7 +173,7 @@ namespace Dragoon_Modifier.LoDDict2 {
 
         }
 
-        public string CreateItemDescriptionString() {
+        private string CreateItemDescriptionString() {
             long offset = 0;
             long start = Constants.GetAddress("ITEM_DESC");
             Item[] sortedArr = itemArr.OrderByDescending(o => o.Description.Length).ToArray();
@@ -187,7 +199,7 @@ namespace Dragoon_Modifier.LoDDict2 {
             return result;
         }
 
-        public string CreateItemBattleNameString() {
+        private string CreateItemBattleNameString() {
             long offset = 0;
             long start = Constants.GetAddress("ITEM_BTL_NAME");
             Item[] sortedArr = (Item[]) itemArr.Skip(193).Take(63).OrderBy(o => o.Description.Length).ToArray();
@@ -213,7 +225,7 @@ namespace Dragoon_Modifier.LoDDict2 {
             return result;
         }
 
-        public string CreateItemBattleDescriptionString() {
+        private string CreateItemBattleDescriptionString() {
             long offset = 0;
             long start = Constants.GetAddress("ITEM_BTL_DESC");
             Item[] sortedArr = itemArr.Skip(193).Take(63).OrderBy(o => o.Description.Length).ToArray();
@@ -239,24 +251,59 @@ namespace Dragoon_Modifier.LoDDict2 {
             return result;
         }
 
-        public void GetItems(string cwd) {
-            try {
-                num2item = new Dictionary<byte, string>();
-                item2num = new Dictionary<string, byte>();
-                GetEquipment(cwd);
-                GetUsableItems(cwd);
-                nameStr = CreateItemNameString();
-                descStr = CreateItemDescriptionString();
-                btlNameStr = CreateItemBattleNameString();
-                btlDescStr = CreateItemBattleDescriptionString();
-            } catch (Exception ex) {
-                Constants.RUN = false;
-                Constants.WriteGLog("Program stopped.");
-                Constants.WritePLogOutput("LoD Dictionary fatal error.");
-                Constants.WriteOutput("Fatal Error. Closing all threads.");
-                Constants.WriteError(ex.ToString());
-            }
+        private void GetItems(string cwd) {
+            num2item = new Dictionary<byte, string>();
+            item2num = new Dictionary<string, byte>();
+            GetEquipment(cwd);
+            GetUsableItems(cwd);
+            nameStr = CreateItemNameString();
+            descStr = CreateItemDescriptionString();
+            btlNameStr = CreateItemBattleNameString();
+            btlDescStr = CreateItemBattleDescriptionString();
+        }
 
+        private Level[][] GetLevels(string cwd) {
+            var statsArr = new Level[7][];
+            for (int i = 0; i < statsArr.Length; i++) {
+                statsArr[i] = new Level[61];
+                statsArr[i][0] = new Level(0, 0, 0, 0, 0, 0);
+            }
+            try {
+                using (var characterData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Character_Stats.tsv")) {
+                    characterData.ReadLine();
+                    characterData.ReadLine(); // Skip first two lines
+                    while (!characterData.EndOfStream) {
+                        var line = characterData.ReadLine();
+                        var values = line.Split('\t').ToArray();
+                        int level = int.Parse(values[0]);
+                        statsArr[0][level] = new Level(values[1], values[2], values[3], values[4], values[5], values[6]);
+                        statsArr[1][level] = new Level(values[7], values[8], values[9], values[10], values[11], values[12]);
+                        statsArr[2][level] = new Level(values[13], values[14], values[15], values[16], values[17], values[18]);
+                        statsArr[3][level] = new Level(values[19], values[20], values[21], values[22], values[23], values[24]);
+                        statsArr[4][level] = new Level(values[25], values[26], values[27], values[28], values[29], values[30]);
+                        statsArr[5][level] = new Level(values[31], values[32], values[33], values[34], values[35], values[36]);
+                        statsArr[6][level] = new Level(values[37], values[38], values[39], values[40], values[41], values[42]);
+                    }
+                }
+            } catch (FileNotFoundException) {
+                string file = cwd + @"Mods\" + Globals.MOD + @"\Character_Stats.tsv";
+                Constants.WriteError(file + " not found. Turning off Stat Changes.");
+                Globals.CHARACTER_STAT_CHANGE = false;
+            }
+            return statsArr;
+        }
+
+        private void SetCharacters(string cwd) {
+            var statsArr = GetLevels(cwd);
+            characterArr[0] = new Character(statsArr[0]);
+            characterArr[1] = new Character(statsArr[1]);
+            characterArr[2] = new Character(statsArr[2]);
+            characterArr[3] = new Character(statsArr[3]);
+            characterArr[4] = new Character(statsArr[4]);
+            characterArr[5] = new Character(statsArr[1]);
+            characterArr[6] = new Character(statsArr[5]);
+            characterArr[7] = new Character(statsArr[6]);
+            characterArr[8] = new Character(statsArr[2]);
         }
 
     }

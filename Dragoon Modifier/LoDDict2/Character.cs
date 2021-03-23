@@ -5,11 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.LoDDict2 {
-    class Character {
-        Level[] baseStats = new Level[61];
+    public class Character {
+        Level[] _baseStats = new Level[61];
 
-        Character() {
+        public Level[] BaseStats { get { return _baseStats; } }
 
+        public Character(Level[] baseStats) {
+            _baseStats = baseStats;
         }
     }
 }

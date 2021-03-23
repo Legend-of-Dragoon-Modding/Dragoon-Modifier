@@ -152,15 +152,13 @@ namespace Dragoon_Modifier.MemoryController.Battle {
             } else {
                 Globals.BattleController.CharacterTable[0].Menu = 16;
             }
-            while (true) {
+            while (Globals.BattleController.CharacterTable[0].Action != 9) {
                 if (Globals.GAME_STATE != 1) { // Exit function if battle ends
                     return;
                 }
-                if (Globals.BattleController.CharacterTable[0].Action == 9) {
-                    break;
-                }
                 Thread.Sleep(50);
             }
+
             Globals.BattleController.CharacterTable[0].DLV = dlv;
             if (dlv == 0) {
                 Globals.BattleController.CharacterTable[0].Dragoon = 0;
