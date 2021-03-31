@@ -11,6 +11,7 @@ namespace Dragoon_Modifier.LoDDict2 {
         Dictionary<string, byte> item2num = new Dictionary<string, byte>();
         Dictionary<byte, string> num2item = new Dictionary<byte, string>();
         Character[] characterArr = new Character[9];
+        Dictionary<ushort, MonsterData> monsters = new Dictionary<ushort, MonsterData>();
 
         public static readonly Dictionary<byte, string> num2element = new Dictionary<byte, string>() {
                 {0, "None" },
@@ -57,6 +58,19 @@ namespace Dragoon_Modifier.LoDDict2 {
                 {"po", 128 },
                 {"all", 255 }
             };
+        public static readonly Dictionary<string, byte> special2num = new Dictionary<string, byte>() {
+             {"", 0 },
+             {"none", 0 },
+             {"cannot_sell", 4 },
+             {"attack_all", 8 },
+             {"death_chance", 64 },
+             {"death_res", 128 },
+             {"monster_unknown1", 1 },
+             {"monster_unknow2", 2 },
+             {"monster_unknown4", 4 },
+             {"monster_unknown8", 8 },
+             {"monster_unknown16", 16 }
+        };
 
         string nameStr;
         string descStr;
@@ -78,6 +92,7 @@ namespace Dragoon_Modifier.LoDDict2 {
             try {
                 GetItems(cwd);
                 SetCharacters(cwd);
+                GetMonsters(cwd);
             } catch (Exception ex) {
                 Constants.RUN = false;
                 Constants.WriteGLog("Program stopped.");
@@ -291,6 +306,25 @@ namespace Dragoon_Modifier.LoDDict2 {
                 Globals.CHARACTER_STAT_CHANGE = false;
             }
             return statsArr;
+        }
+
+        private void GetMonsters(string cwd) {
+            try {
+                using (var monsterData = new StreamReader(cwd + "Mods/" + Globals.MOD + "/Monster_Data.tsv")) {
+                    monsterData.ReadLine(); // Skip first line
+                    while (!monsterData.EndOfStream) {
+                        var line = monsterData.ReadLine();
+                        var values = line.Split('\t').ToArray();
+                        monsters.Add(UInt16.Parse(values[0]), new MonsterData(values, item2num, status2num, special2num, element2num));
+                    }
+                }
+            } catch (FileNotFoundException) {
+                string file = cwd + @"Mods\" + Globals.MOD + @"\Monster_Data.tsv";
+                Constants.WriteError(file + " not found. Turning off Monster and Drop Changes.");
+                Globals.MONSTER_STAT_CHANGE = false;
+                Globals.MONSTER_DROP_CHANGE = false;
+                Globals.MONSTER_EXPGOLD_CHANGE = false;
+            }
         }
 
         private void SetCharacters(string cwd) {
