@@ -14,6 +14,7 @@ namespace Dragoon_Modifier.Battle {
         ushort[] _uniqueMonsterIDs;
         MemoryController.MonsterAddress[] _monsterTable;
         MemoryController.CharacterAddress[] _characterTable;
+        MemoryController.ByteCollection _battleMenuSlot;
 
         public uint CharacterPoint { get { return _cPoint; } }
         public uint MonsterPoint { get { return _mPoint; } }
@@ -22,6 +23,9 @@ namespace Dragoon_Modifier.Battle {
         public MemoryController.MonsterAddress[] MonsterTable { get { return _monsterTable; } }
         public MemoryController.CharacterAddress[] CharacterTable { get { return _characterTable; } }
         public int BattleOffset { get { return _battleOffset; } }
+        public ushort BattleMenuCount { get { return Emulator.ReadUShort(_mPoint + 0xE3A); } set { Emulator.WriteUShort(_mPoint + 0xE3A, value); } }
+        public byte BattleMenuChosenSlot { get { return Emulator.ReadByte(_mPoint + 0xE4E); } set { Emulator.WriteByte(_mPoint + 0xE4E, value); } }
+        public MemoryController.ByteCollection BattleMenuSlot { get { return _battleMenuSlot; } }
 
         public Battle() {
             _cPoint = Globals.MemoryController.CharacterPoint;
@@ -51,6 +55,7 @@ namespace Dragoon_Modifier.Battle {
             for (int i = 0; i < _characterTable.Length; i++) {
                 _characterTable[i] = new MemoryController.CharacterAddress(_cPoint, i, i + monsterCount);
             }
+            _battleMenuSlot = new MemoryController.ByteCollection((int)_mPoint + 0xE3C, 2, 9);
 
         }
 

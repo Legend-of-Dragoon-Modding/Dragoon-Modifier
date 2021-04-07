@@ -71,6 +71,18 @@ namespace Dragoon_Modifier.LoDDict2 {
              {"monster_unknown8", 8 },
              {"monster_unknown16", 16 }
         };
+        static readonly string[][] additionDict = new string[][] {
+                new string[] { "Double_Slash", "Volcano", "Burning_Rush", "Crush_Dance", "Madness_Hero", "Moon_Strike", "Blazing_Dynamo"},
+                new string[] { "Harpoon", "Spinning Cane", "Rod_Typhoon", "Gust_of_Wind_Dance", "Flower_Storm"},
+                new string[] { },
+                new string[] { "Whip_Smack", "More_and_More", "Hard_Blade", "Demons_Dance"},
+                new string[] { "Double_Punch", "Flurry_of_Styx", "Summon_4_Gods", "5-Ring_Shattering", "Hex_Hammer", "Omni_Sweep"},
+                new string[] { "Harpoon", "Spinning Cane", "Rod_Typhoon", "Gust_of_Wind_Dance", "Flower_Storm"},
+                new string[] { "Double_Smack", "Hammer_Spin", "Cool_Boogie", "Cats_Cradle", "Perky_Step"},
+                new string[] { "Pursuit", "Inferno", "Bone_Crush"},
+                new string[] { }
+            };
+        static readonly string[] characterName = new string[] { "Dart", "Lavitz", "Shana", "Rose", "Haschel", "Albert", "Meru", "Kongol", "Miranda" };
 
         string nameStr;
         string descStr;
@@ -327,17 +339,46 @@ namespace Dragoon_Modifier.LoDDict2 {
             }
         }
 
+        private Addition[][] GetAdditions(string cwd) {
+            
+            var additionArr = new Addition[9][];
+
+            var path = cwd + @"Mods\" + Globals.MOD + @"\Additions\";
+
+            int i = 0;
+            foreach (var character in additionDict) {
+                additionArr[i] = new Addition[character.Length];
+                var currentChar = characterName[i];
+                int j = 0;
+                foreach (var addition in character) {
+                    try {
+                        additionArr[i][j] = new Addition(path + currentChar + @"\" + addition + @".tsv", addition);
+                    } catch (FileNotFoundException) {
+                        Constants.WriteError($"Addition file for {currentChar} - {addition} not found!");
+                    } catch (DirectoryNotFoundException) {
+                        Constants.WriteError($"Addition directory for character {currentChar} not found!");
+                        break;
+                    }
+                    j++;
+                }
+                i++;
+            }
+
+            return additionArr;
+        }
+
         private void SetCharacters(string cwd) {
             var statsArr = GetLevels(cwd);
-            characterArr[0] = new Character(statsArr[0]);
-            characterArr[1] = new Character(statsArr[1]);
-            characterArr[2] = new Character(statsArr[2]);
-            characterArr[3] = new Character(statsArr[3]);
-            characterArr[4] = new Character(statsArr[4]);
-            characterArr[5] = new Character(statsArr[1]);
-            characterArr[6] = new Character(statsArr[5]);
-            characterArr[7] = new Character(statsArr[6]);
-            characterArr[8] = new Character(statsArr[2]);
+            var additionArr = GetAdditions(cwd);
+            characterArr[0] = new Character(statsArr[0], additionArr[0]);
+            characterArr[1] = new Character(statsArr[1], additionArr[1]);
+            characterArr[2] = new Character(statsArr[2], additionArr[2]);
+            characterArr[3] = new Character(statsArr[3], additionArr[3]);
+            characterArr[4] = new Character(statsArr[4], additionArr[4]);
+            characterArr[5] = new Character(statsArr[1], additionArr[5]);
+            characterArr[6] = new Character(statsArr[5], additionArr[6]);
+            characterArr[7] = new Character(statsArr[6], additionArr[7]);
+            characterArr[8] = new Character(statsArr[2], additionArr[8]);
         }
 
     }

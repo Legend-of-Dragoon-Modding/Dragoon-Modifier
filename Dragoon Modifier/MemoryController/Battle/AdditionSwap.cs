@@ -49,17 +49,19 @@ namespace Dragoon_Modifier.MemoryController.Battle {
                 Globals.BattleController.CharacterTable[slot].Menu = menu;
                 Thread.Sleep(50);
 
+                Globals.BattleController.BattleMenuCount = additionCount; // Make sure we have correct ammount of items. Probably not needed after setting the menu.
 
-                Emulator.WriteByte(Globals.M_POINT + 0xD32, additionCount);
                 for (byte i = 0; i < additionCount; i++) {
-                    Emulator.WriteByte(Globals.M_POINT + 0xD34 + i * 0x2, 2);
+                    Globals.BattleController.BattleMenuSlot[i] = 2; // Sets slot i to Dragoon Transformation
                 }
 
+                byte chosenAddition = 0;
                 while (Globals.BattleController.CharacterTable[0].Action != 9) {
                     if (Globals.GAME_STATE != 1) { // Exit function if battle ends
                         return;
                     }
                     Thread.Sleep(50);
+                    chosenAddition = Globals.BattleController.BattleMenuChosenSlot; // Reads the index of the selected battle menu slot
                 }
 
                 // TODO Actually swap the addition
