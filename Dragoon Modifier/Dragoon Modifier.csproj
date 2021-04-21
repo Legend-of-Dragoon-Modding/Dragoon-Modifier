@@ -292,6 +292,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="BattleController.cs" />
+    <Compile Include="HardMode.cs" />
     <Compile Include="LoDDict2\Addition.cs" />
     <Compile Include="LoDDict2\AdditionHit.cs" />
     <Compile Include="LoDDict2\MonsterData.cs" />

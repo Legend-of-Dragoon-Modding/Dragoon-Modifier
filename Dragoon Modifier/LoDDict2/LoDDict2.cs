@@ -89,6 +89,8 @@ namespace Dragoon_Modifier.LoDDict2 {
         string btlNameStr;
         string btlDescStr;
 
+        public Item[] Items { get { return itemArr; } }
+
         public LoDDict2() {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
