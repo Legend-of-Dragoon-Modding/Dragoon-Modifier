@@ -10,6 +10,8 @@ namespace Dragoon_Modifier {
         public static Battle.Battle BattleController;
         public static LoDDict2.LoDDict2 LoDDictionary;
 
+        public enum GameStateEnum : byte { Field = 0, Battle = 1, Menu = 2, Shop = 3, LoadingScreen = 4, EndOfDisc = 5, ReplacePrompt = 6, BattleResult = 7, None = 255 };
+
         public static ushort HOTKEY = 0;
         public static long CURRENT_TIME = 0;
         public static long LAST_HOTKEY = 0;
@@ -21,7 +23,7 @@ namespace Dragoon_Modifier {
         public static short BEFORE_BATTLE_MAP = 0;
         public static byte[] PARTY_SLOT = new byte[3];
         public static byte DRAGOON_SPIRITS = 0;
-        public static byte GAME_STATE = 255;
+        public static GameStateEnum GAME_STATE = GameStateEnum.None;
         public static bool STATS_CHANGED = false;
         public static byte EXITING_BATTLE = 0;
         public static int M_POINT = 0;

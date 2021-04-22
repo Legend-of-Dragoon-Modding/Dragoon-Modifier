@@ -206,7 +206,7 @@ namespace Dragoon_Modifier {
             while (Constants.RUN) {
                 try {
                     switch (Globals.GAME_STATE) {
-                        case 1: // Battle
+                        case Globals.GameStateEnum.Battle:
                             if (!Globals.STATS_CHANGED) {
                                 ultimateBossStage = uiCombo["cboUltimateBoss"];
                                 Setup(uiCombo);
@@ -243,7 +243,7 @@ namespace Dragoon_Modifier {
                             }
                             BattleHotkeys();
                             break;
-                        case 7: // Battle result screen
+                        case Globals.GameStateEnum.BattleResult:
                             if (Globals.STATS_CHANGED) {
                                 Globals.EXITING_BATTLE = 2;
                                 ReduceSP();
@@ -255,7 +255,7 @@ namespace Dragoon_Modifier {
                                 Globals.STATS_CHANGED = false;
                             }
                             break;
-                        case 0: // Field
+                        case Globals.GameStateEnum.Field:
                             if (Globals.STATS_CHANGED) {
                                 Globals.EXITING_BATTLE = 2;
                                 ItemFieldChanges();
@@ -271,7 +271,7 @@ namespace Dragoon_Modifier {
                                 dartSwitcheroo = true;
                             }
                             break;
-                        case 2:
+                        case Globals.GameStateEnum.Menu:
                             if (Globals.STATS_CHANGED) {
                                 Globals.EXITING_BATTLE = 2;
                                 ItemFieldChanges();
@@ -328,7 +328,7 @@ namespace Dragoon_Modifier {
 
             long cmtable = Emulator.ReadUInt24("C_POINT", -0x18); // Base address in the Battle Pointer Table
             while (cmtable == Globals.MemoryController.CharacterPoint || cmtable == Globals.MemoryController.MonsterPoint) { // Wait until both C_Point and M_Point were set
-                if (Globals.GAME_STATE != 1) { // No longer in battle
+                if (Globals.GAME_STATE != Globals.GameStateEnum.Battle) { // No longer in battle
                     return;
                 }
                 Thread.Sleep(50);

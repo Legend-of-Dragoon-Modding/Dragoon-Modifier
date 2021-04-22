@@ -57,7 +57,7 @@ namespace Dragoon_Modifier.MemoryController.Battle {
 
                 byte chosenAddition = 0;
                 while (Globals.BattleController.CharacterTable[0].Action != 9) {
-                    if (Globals.GAME_STATE != 1) { // Exit function if battle ends
+                    if (Globals.GAME_STATE != Globals.GameStateEnum.Battle) { // Exit function if battle ends
                         return;
                     }
                     Thread.Sleep(50);
@@ -79,7 +79,7 @@ namespace Dragoon_Modifier.MemoryController.Battle {
 
 
                 while (Globals.BattleController.CharacterTable[0].Action != 9) {
-                    if (Globals.GAME_STATE != 1) { // Exit function if battle ends
+                    if (Globals.GAME_STATE != Globals.GameStateEnum.Battle) { // Exit function if battle ends
                         return;
                     }
                     Thread.Sleep(50);

@@ -1084,7 +1084,7 @@ namespace Dragoon_Modifier {
 
                 Thread.Sleep(500);
 
-                if (Globals.GAME_STATE != 1) {
+                if (Globals.GAME_STATE != Globals.GameStateEnum.Battle) {
                     if ((Globals.MAP == 735 || Globals.MAP == 736) && Globals.DIFFICULTY_MODE.Contains("Hell") && ultimateBossCompleted < 34) {
                         Emulator.WriteByte("DRAGOON_SPIRITS", 127);
                     }
@@ -1098,7 +1098,7 @@ namespace Dragoon_Modifier {
 
                     FieldUI();
 
-                    if (Globals.GAME_STATE == 1 && currentIconState != 3) {
+                    if (Globals.GAME_STATE == Globals.GameStateEnum.Battle && currentIconState != 3) {
                         currentIconState = 3;
                         System.Drawing.Icon newIcon = Properties.Resources.Icon_Green;
                         System.Drawing.Bitmap bitmap = newIcon.ToBitmap();
@@ -1147,7 +1147,7 @@ namespace Dragoon_Modifier {
                 }
 
                 this.Dispatcher.BeginInvoke(new Action(() => {
-                    if (Globals.GAME_STATE == 1 && !Constants.BATTLE_UI) {
+                    if (Globals.GAME_STATE == Globals.GameStateEnum.Battle && !Constants.BATTLE_UI) {
                         Globals.BEFORE_BATTLE_MAP = Emulator.ReadShort("MAP");
                         for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
                             monsterDisplay[i, 0].Text = Emulator.ReadName(Constants.GetAddress("MONSTERS_NAMES") + (0x2C * i));
@@ -1193,7 +1193,7 @@ namespace Dragoon_Modifier {
                     EnableUI();
                 }
 
-                if (Globals.MAP == 732 && Globals.ENCOUNTER_ID == 420 && Globals.GAME_STATE == 1 && Globals.STATS_CHANGED && Globals.MONSTER_TABLE[0].Read("HP") == 0 && !Globals.DIFFICULTY_MODE.Equals("Normal") && saveFaust) {
+                if (Globals.MAP == 732 && Globals.ENCOUNTER_ID == 420 && Globals.GAME_STATE == Globals.GameStateEnum.Battle && Globals.STATS_CHANGED && Globals.MONSTER_TABLE[0].Read("HP") == 0 && !Globals.DIFFICULTY_MODE.Equals("Normal") && saveFaust) {
                     faustCount += 1;
                     saveFaust = false;
                     Constants.WriteGLogOutput("Your current Faust count is: " + faustCount);
@@ -1202,7 +1202,7 @@ namespace Dragoon_Modifier {
 
                 if (ultimateBossKeepMap) {
                     Emulator.WriteShort("MAP", ultimateBossMap);
-                    if (Globals.GAME_STATE != 1) {
+                    if (Globals.GAME_STATE != Globals.GameStateEnum.Battle) {
                         ultimateBossKeepMap = false;
 
                         this.Dispatcher.BeginInvoke(new Action(() => {
@@ -1212,7 +1212,7 @@ namespace Dragoon_Modifier {
                     }
                 }
 
-                if (!keepStats && Globals.GAME_STATE == 1 && Globals.STATS_CHANGED) {
+                if (!keepStats && Globals.GAME_STATE == Globals.GameStateEnum.Battle && Globals.STATS_CHANGED) {
                     for (int i = 0; i < 3; i++) { //Should execute after equip changes
                         if (Globals.PARTY_SLOT[i] < 9) {
                             originalCharacterStats[i, 0] = Globals.CHARACTER_TABLE[i].Max_HP;
@@ -1258,11 +1258,11 @@ namespace Dragoon_Modifier {
                         saveFaust = true;
                     }
 
-                    if (Globals.GAME_STATE == 1 && ubSoasWargod) {
+                    if (Globals.GAME_STATE == Globals.GameStateEnum.Battle && ubSoasWargod) {
                         Emulator.WriteAoB("SOAS_WARGOD", "06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06");
                     }
 
-                    if (Globals.GAME_STATE == 1 && ubSoasDragoonBoost) {
+                    if (Globals.GAME_STATE == Globals.GameStateEnum.Battle && ubSoasDragoonBoost) {
                         Emulator.WriteShort("SOA_DRAGOON_BOOST_1", 4096);
                         Emulator.WriteShort("SOA_DRAGOON_BOOST_2", 4096);
                     }
@@ -1282,7 +1282,7 @@ namespace Dragoon_Modifier {
 
                     keepStats = true;
                 } else {
-                    if (Globals.GAME_STATE != 1) {
+                    if (Globals.GAME_STATE != Globals.GameStateEnum.Battle) {
                         keepStats = false;
                     }
                 }
@@ -1337,7 +1337,7 @@ namespace Dragoon_Modifier {
 
                 if (presetHotkeys) {
                     if (Globals.CURRENT_TIME >= (Globals.LAST_HOTKEY + 3)) {
-                        if (Globals.GAME_STATE != 1) { //Field
+                        if (Globals.GAME_STATE != Globals.GameStateEnum.Battle) { //Field
                             if (Globals.HOTKEY == (Hotkey.KEY_L2 + Hotkey.KEY_SQUARE)) { //Shana - GoH
                                 if (Emulator.ReadShort("CHAR_TABLE", 0xA + 0x2C * 2) >= 30) {
                                     for (int i = 0; i < 9; i++) {
@@ -1792,7 +1792,7 @@ namespace Dragoon_Modifier {
         }
 
         public void UltimateController() {
-            while (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED && Constants.RUN) {
+            while (Globals.GAME_STATE == Globals.GameStateEnum.Battle && Globals.STATS_CHANGED && Constants.RUN) {
                 if (Globals.ENCOUNTER_ID == 442) {
                     bool finalBurst = false;
                     if (ultimateHP[0] > 360000) {
@@ -1879,7 +1879,7 @@ namespace Dragoon_Modifier {
 
         #region Save Anywhere
         public void SaveAnywhere() {
-            if (Globals.GAME_STATE != 1) {
+            if (Globals.GAME_STATE != Globals.GameStateEnum.Battle) {
                 Emulator.WriteShort("SAVE_ANYWHERE", 1);
             }
         }
@@ -1888,7 +1888,7 @@ namespace Dragoon_Modifier {
         #region Shop Changes
         
         public void ShopChanges() {
-            if (Globals.GAME_STATE != 1 && SHOP_MAPS.Contains((int) Globals.MAP)) {
+            if (Globals.GAME_STATE != Globals.GameStateEnum.Battle && SHOP_MAPS.Contains((int) Globals.MAP)) {
                 if (Emulator.ReadByte("SHOP_DISC_SWAP") == 0) {
                     SHOP_DISC_SWAP = true;
                 }
@@ -2042,7 +2042,7 @@ namespace Dragoon_Modifier {
 
         #region Early Additions
         public void EarlyAdditions() {
-            if (Globals.GAME_STATE != 1 && !earlyAdditionsOnFieldEntry) {
+            if (Globals.GAME_STATE != Globals.GameStateEnum.Battle && !earlyAdditionsOnFieldEntry) {
                 long address = Constants.GetAddress("MENU_ADDITION_TABLE_FLAT");
                 long address2 = Constants.GetAddress("CHAR_TABLE") + 0x22;
                 //Dart
@@ -2120,13 +2120,13 @@ namespace Dragoon_Modifier {
                 }
                 earlyAdditionsOnFieldEntry = true;
             } else {
-                if (Globals.GAME_STATE == 1)
+                if (Globals.GAME_STATE == Globals.GameStateEnum.Battle)
                     earlyAdditionsOnFieldEntry = false;
             }
         }
 
         public void TurnOffEarlyAdditions() {
-            if (Globals.GAME_STATE != 1) {
+            if (Globals.GAME_STATE != Globals.GameStateEnum.Battle) {
                 long address = Constants.GetAddress("MENU_ADDITION_TABLE_FLAT");
                 //Dart
                 Emulator.WriteByte(address * 0xE * 3, 15); //Crush Dance
@@ -2286,13 +2286,13 @@ namespace Dragoon_Modifier {
 
         #region Increase Text Speed
         public void IncreaseTextSpeed() {
-            if (Globals.GAME_STATE != 1) {
+            if (Globals.GAME_STATE != Globals.GameStateEnum.Battle) {
                 Emulator.WriteShort("TEXT_SPEED", 1);
             }
         }
 
         public void AutoText() {
-            if (Globals.GAME_STATE != 1) {
+            if (Globals.GAME_STATE != Globals.GameStateEnum.Battle) {
                 Emulator.WriteShort("AUTO_TEXT", 13378);
             }
         }
@@ -2309,7 +2309,7 @@ namespace Dragoon_Modifier {
         }
 
         public void BattleUI() {
-            if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED) {
+            if (Globals.GAME_STATE == Globals.GameStateEnum.Battle && Globals.STATS_CHANGED) {
                 for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
                     if (!Constants.BATTLE_UI) {
                         monsterDisplay[i, 0].Text = Emulator.ReadName(Constants.GetAddress("MONSTERS_NAMES") + (0x2C * i));
@@ -2351,7 +2351,7 @@ namespace Dragoon_Modifier {
                 Constants.BATTLE_UI = true;
                 TurnOrder();
             } else {
-                if (Globals.GAME_STATE != 1 && Constants.BATTLE_UI) {
+                if (Globals.GAME_STATE != Globals.GameStateEnum.Battle && Constants.BATTLE_UI) {
                     Constants.BATTLE_UI = false;
                     for (int i = 0; i < 5; i++) {
                         for (int x = 0; x < 6; x++) {
@@ -2417,7 +2417,7 @@ namespace Dragoon_Modifier {
 
         #region HP Cap Break
         public void HPCapBreakField() {
-            if (Globals.GAME_STATE != 1 && (Globals.BATTLE_VALUE > 0 && Globals.BATTLE_VALUE < 9999)) {
+            if (Globals.GAME_STATE != Globals.GameStateEnum.Battle && (Globals.BATTLE_VALUE > 0 && Globals.BATTLE_VALUE < 9999)) {
                 for (int i = 0; i < 3; i++) {
                     if (Globals.PARTY_SLOT[i] != hpChangeSlot[i]) {
                         hpChangeSave[i] = 65535;
@@ -2428,7 +2428,7 @@ namespace Dragoon_Modifier {
         }
 
         public void HPCapBreakBattle() {
-            if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED && !hpCapBreakOnBattleEntry && maxHPTableLoaded) {
+            if (Globals.GAME_STATE == Globals.GameStateEnum.Battle && Globals.STATS_CHANGED && !hpCapBreakOnBattleEntry && maxHPTableLoaded) {
                 if (!Globals.CHARACTER_STAT_CHANGE) {
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9) {
@@ -2442,7 +2442,7 @@ namespace Dragoon_Modifier {
                 }
                 hpCapBreakOnBattleEntry = true;
             } else {
-                if (Globals.GAME_STATE != 1 && hpCapBreakOnBattleEntry) {
+                if (Globals.GAME_STATE != Globals.GameStateEnum.Battle && hpCapBreakOnBattleEntry) {
                     hpCapBreakOnBattleEntry = false;
                 } else {
                     if (Emulator.ReadUShort("BATTLE_VALUE") == 41215 && Globals.STATS_CHANGED && hpCapBreakOnBattleEntry && maxHPTableLoaded) {
@@ -2456,7 +2456,7 @@ namespace Dragoon_Modifier {
         }
 
         public void LoadMaxHPTable(bool forceLoad) {
-            if ((!maxHPTableLoaded && Globals.GAME_STATE != 1 && (Emulator.ReadShort("BATTLE_VALUE") > 1 && Emulator.ReadShort("BATTLE_VALUE") <= 5120)) || forceLoad) {
+            if ((!maxHPTableLoaded && Globals.GAME_STATE != Globals.GameStateEnum.Battle && (Emulator.ReadShort("BATTLE_VALUE") > 1 && Emulator.ReadShort("BATTLE_VALUE") <= 5120)) || forceLoad) {
                 byte tableSlot = 0;
                 for (int i = 0; i < 9; i++) {
                     switch (i) {
@@ -2526,16 +2526,16 @@ namespace Dragoon_Modifier {
         }
 
         public void KillBGMField() {
-            if (Globals.GAME_STATE != 1 && !killedBGMField && Globals.BATTLE_VALUE < 9999) {
+            if (Globals.GAME_STATE != Globals.GameStateEnum.Battle && !killedBGMField && Globals.BATTLE_VALUE < 9999) {
                 KillBGM();
                 killedBGMField = true;
                 reKilledBGMField = false;
             } else {
-                if (killedBGMField && Globals.GAME_STATE == 1) {
+                if (killedBGMField && Globals.GAME_STATE == Globals.GameStateEnum.Battle) {
                     killedBGMField = false;
                     reKilledBGMField = false;
                 } else {
-                    if (!reKilledBGMField && Globals.GAME_STATE != 1 && Globals.BATTLE_VALUE > 0) {
+                    if (!reKilledBGMField && Globals.GAME_STATE != Globals.GameStateEnum.Battle && Globals.BATTLE_VALUE > 0) {
                         KillBGM();
                         reKilledBGMField = true;
                     }
@@ -2548,7 +2548,7 @@ namespace Dragoon_Modifier {
 
         #region Solo/Duo Mode
         public void SoloModeField() {
-            if (Globals.GAME_STATE != 1 && !addSoloPartyMembers) {
+            if (Globals.GAME_STATE != Globals.GameStateEnum.Battle && !addSoloPartyMembers) {
                 if (Emulator.ReadByte("PARTY_SLOT", 0x4) != 255 || Emulator.ReadByte("PARTY_SLOT", 0x8) != 255) {
                     for (int i = 0; i < 8; i++) {
                         Emulator.WriteByte("PARTY_SLOT", 255, i + 0x4);
@@ -2557,7 +2557,7 @@ namespace Dragoon_Modifier {
             }
         }
         public void DuoModeField() {
-            if (Globals.GAME_STATE != 1 && !addSoloPartyMembers) {
+            if (Globals.GAME_STATE != Globals.GameStateEnum.Battle && !addSoloPartyMembers) {
                 if (Emulator.ReadByte("PARTY_SLOT", 0x4) == 255) {
                     Emulator.WriteByte("PARTY_SLOT", Emulator.ReadByte("PARTY_SLOT"), 0x4);
                     Emulator.WriteByte("PARTY_SLOT", 0, 0x5);
@@ -2574,7 +2574,7 @@ namespace Dragoon_Modifier {
         }
 
         public void SoloModeBattle() {
-            if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED && !soloModeOnBattleEntry) {
+            if (Globals.GAME_STATE == Globals.GameStateEnum.Battle && Globals.STATS_CHANGED && !soloModeOnBattleEntry) {
                 for (int i = 0; i < 3; i++) {
                     if (Globals.PARTY_SLOT[i] < 9) {
                         if (i != uiCombo["cboSoloLeader"]) {
@@ -2601,7 +2601,7 @@ namespace Dragoon_Modifier {
                 }
                 soloModeOnBattleEntry = true;
             } else {
-                if (Globals.GAME_STATE != 1 && soloModeOnBattleEntry) {
+                if (Globals.GAME_STATE != Globals.GameStateEnum.Battle && soloModeOnBattleEntry) {
                     soloModeOnBattleEntry = false;
                     if (!alwaysAddSoloPartyMembers)
                         addSoloPartyMembers = false;
@@ -2609,7 +2609,7 @@ namespace Dragoon_Modifier {
             }
         }
         public void DuoModeBattle() {
-            if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED && !duoModeOnBattleEntry) {
+            if (Globals.GAME_STATE == Globals.GameStateEnum.Battle && Globals.STATS_CHANGED && !duoModeOnBattleEntry) {
                 if (Globals.PARTY_SLOT[2] < 9) {
                     Globals.CHARACTER_TABLE[2].HP = 0;
                     Globals.CHARACTER_TABLE[2].Max_HP = 0;
@@ -2634,7 +2634,7 @@ namespace Dragoon_Modifier {
                 }
                 duoModeOnBattleEntry = true;
             } else {
-                if (Globals.GAME_STATE != 1 && duoModeOnBattleEntry) {
+                if (Globals.GAME_STATE != Globals.GameStateEnum.Battle && duoModeOnBattleEntry) {
                     duoModeOnBattleEntry = false;
                     if (!alwaysAddSoloPartyMembers)
                         addSoloPartyMembers = false;
@@ -2721,59 +2721,6 @@ namespace Dragoon_Modifier {
                 elementArrowItem = 0xC2;
                 Constants.WriteGLogOutput("Element Arrow changed to Thunder.");
             }
-        }
-        #endregion
-
-        #region Equip Changes
-        public void EquipChangesField() {
-            if (Globals.GAME_STATE != 1 && !equipChangesOnFieldEntry && (Globals.BATTLE_VALUE > 0 && Globals.BATTLE_VALUE < 9999) && !Globals.STATS_CHANGED) {
-                if (Emulator.ReadByte("CHAPTER") >= 3) {
-                    //Heat Blade
-                    WriteEquipChanges(0x112032, 25);
-                    //Sparkle Arrow
-                    WriteEquipChanges(0x11230A, 17);
-                    //Shadow Cutter
-                    WriteEquipChanges(0x112182, 33);
-                    //Morning Star
-                    WriteEquipChanges(0x1123CE, 0);
-                }
-
-                equipChangesOnFieldEntry = true;
-            } else {
-                if (Globals.GAME_STATE == 1 && equipChangesOnFieldEntry)
-                    equipChangesOnFieldEntry = false;
-            }
-        }
-
-        public void EquipChangesBattle() {
-            if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED && !equipChangesOnBattleEntry) {
-               
-            } else {
-                if (Globals.GAME_STATE != 1 && equipChangesOnBattleEntry) {
-                    equipChangesOnBattleEntry = false;
-                    checkHarpoon = false;
-                } else {
-                    
-                }
-            }
-        }
-
-        public void WriteEquipChanges(long address, byte value) {
-            Emulator.WriteByte(address + EquipChangesOffset(), value);
-        }
-
-        public void WriteEquipChangesAOB(long address, string value) {
-            if (Constants.REGION != Region.JPN) {
-                Emulator.WriteAoB(address + EquipChangesOffset(), value);
-            }
-        }
-
-        public int EquipChangesOffset() {
-            int offset = 0x0;
-            if (Constants.REGION == Region.JPN) {
-                offset -= 0x186C;
-            }
-            return offset;
         }
         #endregion
 
@@ -2995,7 +2942,7 @@ namespace Dragoon_Modifier {
 
         #region Battle
         public void UltimateBossBattle() {
-            if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED && !ultimateBossOnBattleEntry) {
+            if (Globals.GAME_STATE == Globals.GameStateEnum.Battle && Globals.STATS_CHANGED && !ultimateBossOnBattleEntry) {
                 ubHPChanged = ubCheckedDamage = ubUltimateHPSet = false;
                 ubCheckDamageCycle = 0;
                 ubDragoonBondMode = -1;
@@ -3200,7 +3147,7 @@ namespace Dragoon_Modifier {
 
                 ultimateBossOnBattleEntry = true;
             } else {
-                if (Globals.GAME_STATE != 1 && ultimateBossOnBattleEntry) {
+                if (Globals.GAME_STATE != Globals.GameStateEnum.Battle && ultimateBossOnBattleEntry) {
                     ultimateBossOnBattleEntry = false;
                     this.Dispatcher.BeginInvoke(new Action(() => {
                         Globals.dmScripts["btnUltimateBoss"] = false;
@@ -3564,7 +3511,7 @@ namespace Dragoon_Modifier {
         }
 
         public void UltimateBossDefeatCheck() {
-            if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED) {
+            if (Globals.GAME_STATE == Globals.GameStateEnum.Battle && Globals.STATS_CHANGED) {
                 switch (Globals.ENCOUNTER_ID) {
                     case 386: //Fruegel I
                     case 487: //Commander II
@@ -3699,7 +3646,7 @@ namespace Dragoon_Modifier {
         }
 
         public void DoubleRepeat() {
-            if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED) {
+            if (Globals.GAME_STATE == Globals.GameStateEnum.Battle && Globals.STATS_CHANGED) {
                 if ((ultimateShopLimited & 131072) == 131072) { //Power Up
                     if ((doubleRepeatUsed & 131072) != 131072) {
                         for (int i = 0; i < 3; i++) {
@@ -3842,7 +3789,7 @@ namespace Dragoon_Modifier {
 
                 doubleRepeatOnBattleEntry = true;
             } else {
-                if (Globals.GAME_STATE != 1 && doubleRepeatOnBattleEntry) {
+                if (Globals.GAME_STATE != Globals.GameStateEnum.Battle && doubleRepeatOnBattleEntry) {
                     doubleRepeatOnBattleEntry = false;
                     doubleRepeatUsed = 0;
                     magicShieldTurns = 0;
@@ -5481,7 +5428,7 @@ namespace Dragoon_Modifier {
             if (ubElementalShift)
                 return;
 
-            if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED && eleBombTurns == 0) {
+            if (Globals.GAME_STATE == Globals.GameStateEnum.Battle && Globals.STATS_CHANGED && eleBombTurns == 0) {
                 eleBombItemUsed = Emulator.ReadByte(Globals.MONS_ADDRESS[0] + 0xABC);
                 if ((eleBombItemUsed >= 241 && eleBombItemUsed <= 248) || eleBombItemUsed == 250) {
                     if (Globals.PARTY_SLOT[2] < 9) {
@@ -5602,7 +5549,7 @@ namespace Dragoon_Modifier {
 
         #region No HP Decay Soul Eater
         public void NoHPDecaySoulEater() {
-            if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED && !noHPDecayOnBattleEntry) {
+            if (Globals.GAME_STATE == Globals.GameStateEnum.Battle && Globals.STATS_CHANGED && !noHPDecayOnBattleEntry) {
                 for (int i = 0; i < 3; i++) {
                     if (Globals.PARTY_SLOT[i] == 0) {
                         if (Globals.CHARACTER_TABLE[i].HP_Regen == 246 || Globals.CHARACTER_TABLE[i].HP_Regen == -10) { //Default
@@ -5618,7 +5565,7 @@ namespace Dragoon_Modifier {
                 }
                 noHPDecayOnBattleEntry = true;
             } else {
-                if (Globals.GAME_STATE != 1 && noHPDecayOnBattleEntry) {
+                if (Globals.GAME_STATE != Globals.GameStateEnum.Battle && noHPDecayOnBattleEntry) {
                     noHPDecayOnBattleEntry = false;
                 }
             }
@@ -5659,7 +5606,7 @@ namespace Dragoon_Modifier {
 
         #region Damage Tracker
         public void DamageTracker() {
-            if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED && !damageTrackerOnBattleEntry) {
+            if (Globals.GAME_STATE == Globals.GameStateEnum.Battle && Globals.STATS_CHANGED && !damageTrackerOnBattleEntry) {
                 for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
                     if (ultimateHP[i] > 0) {
                         dmgTrkHP[i] = ultimateHP[i];
@@ -5672,10 +5619,10 @@ namespace Dragoon_Modifier {
                 }
                 damageTrackerOnBattleEntry = true;
             } else {
-                if (Globals.GAME_STATE != 1 && damageTrackerOnBattleEntry) {
+                if (Globals.GAME_STATE != Globals.GameStateEnum.Battle && damageTrackerOnBattleEntry) {
                     damageTrackerOnBattleEntry = false;
                 } else {
-                    if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED) {
+                    if (Globals.GAME_STATE == Globals.GameStateEnum.Battle && Globals.STATS_CHANGED) {
                         bool partyAttacking = false;
                         for (int i = 0; i < 3; i++) {
                             if (Globals.PARTY_SLOT[i] < 9) {
@@ -5750,7 +5697,7 @@ namespace Dragoon_Modifier {
 
         #region Battle Rows
         public void BattleFormationRows() {
-            if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED && !battleRowsOnBattleEntry) {
+            if (Globals.GAME_STATE == Globals.GameStateEnum.Battle && Globals.STATS_CHANGED && !battleRowsOnBattleEntry) {
                 this.Dispatcher.BeginInvoke(new Action(() => {
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9) {
@@ -5814,7 +5761,7 @@ namespace Dragoon_Modifier {
 
                 battleRowsOnBattleEntry = true;
             } else {
-                if (Globals.GAME_STATE != 1 && battleRowsOnBattleEntry) {
+                if (Globals.GAME_STATE != Globals.GameStateEnum.Battle && battleRowsOnBattleEntry) {
                     battleRowsOnBattleEntry = false;
                 }
             }
@@ -5824,7 +5771,7 @@ namespace Dragoon_Modifier {
         #region * Turn Battle
         public void EATB() {
             this.Dispatcher.BeginInvoke(new Action(() => {
-                if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED && Globals.CheckDMScript("btnEATB")) {
+                if (Globals.GAME_STATE == Globals.GameStateEnum.Battle && Globals.STATS_CHANGED && Globals.CheckDMScript("btnEATB")) {
                     if (!eatbOnBattleEntry)
                         timePlayed = Emulator.ReadInt("TIME_PLAYED");
 
@@ -5884,7 +5831,7 @@ namespace Dragoon_Modifier {
                     Globals.SetCustomValue("EATBM5", extraTurnBattleM[4]);
                     eatbOnBattleEntry = true;
                 } else {
-                    if (Globals.GAME_STATE != 1 && eatbOnBattleEntry) {
+                    if (Globals.GAME_STATE != Globals.GameStateEnum.Battle && eatbOnBattleEntry) {
                         eatbOnBattleEntry = false;
                         for (int i = 0; i < 3; i++) {
                             progressCATB[i].Value = 0;
@@ -5916,7 +5863,7 @@ namespace Dragoon_Modifier {
         }
 
         public void QTB() {
-            if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED && Globals.CheckDMScript("btnQTB")) {
+            if (Globals.GAME_STATE == Globals.GameStateEnum.Battle && Globals.STATS_CHANGED && Globals.CheckDMScript("btnQTB")) {
                 if (!qtbOnBattleEntry) {
                     this.Dispatcher.BeginInvoke(new Action(() => {
                         for (int i = 0; i < 3; i++)
@@ -5976,7 +5923,7 @@ namespace Dragoon_Modifier {
 
                 qtbOnBattleEntry = true;
             } else {
-                if (Globals.GAME_STATE != 1 && qtbOnBattleEntry) {
+                if (Globals.GAME_STATE != Globals.GameStateEnum.Battle && qtbOnBattleEntry) {
                     qtbOnBattleEntry = false;
                     qtbTurns = 0;
                     pgrQTB.Value = qtbTurns;
@@ -6052,7 +5999,7 @@ namespace Dragoon_Modifier {
         }
 
         public void ATB() {
-            if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED && Globals.CheckDMScript("btnATB")) {
+            if (Globals.GAME_STATE == Globals.GameStateEnum.Battle && Globals.STATS_CHANGED && Globals.CheckDMScript("btnATB")) {
                 if (!atbOnBattleEntry) {
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9) {
@@ -6120,7 +6067,7 @@ namespace Dragoon_Modifier {
                 Globals.SetCustomValue("EATBC3", extraTurnBattleC[2]);
                 atbOnBattleEntry = true;
             } else {
-                if (Globals.GAME_STATE != 1 && atbOnBattleEntry) {
+                if (Globals.GAME_STATE != Globals.GameStateEnum.Battle && atbOnBattleEntry) {
                     atbOnBattleEntry = false;
                 }
             }
@@ -6214,7 +6161,7 @@ namespace Dragoon_Modifier {
         }
 
         private void miEmulator_Click(object sender, RoutedEventArgs e) {
-            if (Globals.GAME_STATE != 1) {
+            if (Globals.GAME_STATE != Globals.GameStateEnum.Battle) {
                 foreach (MenuItem mi in miEmulator.Items) {
                     mi.IsChecked = (MenuItem) sender == mi ? true : false;
                 }
@@ -6288,7 +6235,7 @@ namespace Dragoon_Modifier {
         }
 
         private void miRegion_Click(object sender, RoutedEventArgs e) {
-            if (Globals.GAME_STATE != 1) {
+            if (Globals.GAME_STATE != Globals.GameStateEnum.Battle) {
                 foreach (MenuItem mi in miRegion.Items) {
                     mi.IsChecked = (MenuItem) sender == mi ? true : false;
                 }
@@ -6308,7 +6255,7 @@ namespace Dragoon_Modifier {
         }
 
         private void miSaveSlot_Click(object sender, RoutedEventArgs e) {
-            if (Globals.GAME_STATE != 1) {
+            if (Globals.GAME_STATE != Globals.GameStateEnum.Battle) {
                 SaveSubKey();
 
                 foreach (MenuItem mi in miSaveSlot.Items) {
@@ -6724,7 +6671,7 @@ namespace Dragoon_Modifier {
             if (btn.Name.Equals("btnKillBGM"))
                 SetKillBGMState();
 
-            if (btn.Name.Equals("btnUltimateBoss") && Globals.GAME_STATE != 1)
+            if (btn.Name.Equals("btnUltimateBoss") && Globals.GAME_STATE != Globals.GameStateEnum.Battle)
                 UltimateBossFieldSet();
 
             if (btn.Name.Equals("btnEarlyAdditions") && !Globals.dmScripts[btn.Name])
@@ -7002,7 +6949,7 @@ namespace Dragoon_Modifier {
             } else if (sender == sldSPD) {
                 Globals.SPD_MULTI = slider.Value;
             } else if (sender == sldZoom) {
-                if (Globals.GAME_STATE == 1)
+                if (Globals.GAME_STATE == Globals.GameStateEnum.Battle)
                     Emulator.WriteUShort("ZOOM", (ushort) slider.Value);
             }
         }
@@ -8129,7 +8076,7 @@ namespace Dragoon_Modifier {
         }
 
         public void ReaderRemoveUI() {
-            if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED) {
+            if (Globals.GAME_STATE == Globals.GameStateEnum.Battle && Globals.STATS_CHANGED) {
                 if (uiCombo["cboReaderUIRemoval"] == 1) {
                     Emulator.WriteByte(Globals.M_POINT + 0x1775, 2);
                     Emulator.WriteByte(Globals.M_POINT + 0x18B9, 2);
@@ -8141,7 +8088,7 @@ namespace Dragoon_Modifier {
         }
 
         public void ReaderAutoHotkey() {
-            if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED) {
+            if (Globals.GAME_STATE == Globals.GameStateEnum.Battle && Globals.STATS_CHANGED) {
                 bool update = false;
                 int shanaSlot = -1;
                 int[] actions = new int[3];

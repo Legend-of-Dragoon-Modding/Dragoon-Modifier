@@ -30,7 +30,7 @@ namespace Dragoon_Modifier.MemoryController.Battle {
             if (Globals.BattleController.EncounterID == 413) { // Jiango has to have it's initial move. Otherwise he never gets a turn.
                 Globals.BattleController.MonsterTable[0].Action = 12; // Play the "This is Jiango" part
                 while (Globals.BattleController.MonsterTable[0].Action != 44) { // Jiango's initial move is over.
-                    if (Globals.GAME_STATE != 1) { // No longer in battle
+                    if (Globals.GAME_STATE != Globals.GameStateEnum.Battle) { // No longer in battle
                         return;
                     }
                     Thread.Sleep(50);
@@ -39,7 +39,7 @@ namespace Dragoon_Modifier.MemoryController.Battle {
             Globals.BattleController.CharacterTable[0].Action = 10; // Force character's turn in Dragoon form.
 
             while (Globals.BattleController.CharacterTable[0].Menu != 96) { // Wait for the NoDart's character turn to start
-                if (Globals.GAME_STATE != 1) { // No longer in battle
+                if (Globals.GAME_STATE != Globals.GameStateEnum.Battle) { // No longer in battle
                     return;
                 }
                 Thread.Sleep(50);
@@ -153,7 +153,7 @@ namespace Dragoon_Modifier.MemoryController.Battle {
                 Globals.BattleController.CharacterTable[0].Menu = 16;
             }
             while (Globals.BattleController.CharacterTable[0].Action != 9) {
-                if (Globals.GAME_STATE != 1) { // Exit function if battle ends
+                if (Globals.GAME_STATE != Globals.GameStateEnum.Battle) { // Exit function if battle ends
                     return;
                 }
                 Thread.Sleep(50);

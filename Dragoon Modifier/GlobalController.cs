@@ -13,19 +13,19 @@ namespace Dragoon_Modifier {
                 Globals.BATTLE_VALUE = battleValue;
                 byte menu = Emulator.ReadByte("MENU");
                 if (menu == 4) {                // Menu
-                    Globals.GAME_STATE = 2;
+                    Globals.GAME_STATE = Globals.GameStateEnum.Menu;
                 } else if (menu == 9) {         // Shop
-                    Globals.GAME_STATE = 3;
+                    Globals.GAME_STATE = Globals.GameStateEnum.Shop;
                 } else if (menu == 14) {        // Loading screen
-                    Globals.GAME_STATE = 4;
+                    Globals.GAME_STATE = Globals.GameStateEnum.LoadingScreen;
                 } else if (menu == 19) {        // End of disc
-                    Globals.GAME_STATE = 5;
+                    Globals.GAME_STATE = Globals.GameStateEnum.EndOfDisc;
                 } else if (menu == 24) {        // Replace prompt
-                    Globals.GAME_STATE = 6;
+                    Globals.GAME_STATE = Globals.GameStateEnum.ReplacePrompt;
                 } else if (menu == 29) {
-                    Globals.GAME_STATE = 7;     // Battle result screen
+                    Globals.GAME_STATE = Globals.GameStateEnum.BattleResult;     // Battle result screen
                 } else if (battleValue == 41215) {
-                    Globals.GAME_STATE = 1;     // Battle
+                    Globals.GAME_STATE = Globals.GameStateEnum.Battle;     // Battle
                 } else if (menu == 0) {
                     Globals.GAME_STATE = 0;     // Field
                 }
