@@ -185,12 +185,12 @@ namespace Dragoon_Modifier {
                                 FileStream file = new FileStream(WRITE_LOCATION + "/Character/" + location + ".txt", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
                                 StreamWriter writer = new StreamWriter(file);
                                 if (field.Equals("Name")) {
-                                    if (Globals.CHARACTER_TABLE[i].Action == 8 || Globals.CHARACTER_TABLE[i].Action == 10)
+                                    if (Globals.BattleController.CharacterTable[i].Action == 8 || Globals.BattleController.CharacterTable[i].Action == 10)
                                         writer.WriteLine(Globals.CHARACTER_NAME[i] + "*");
                                     else
                                         writer.WriteLine(Globals.CHARACTER_NAME[i]);
                                 } else if (field.Equals("Max_SP")) {
-                                    writer.WriteLine((Globals.CHARACTER_TABLE[i].DLV * 100).ToString());
+                                    writer.WriteLine((Globals.BattleController.CharacterTable[i].DLV * 100).ToString());
                                 } else if (field.Equals("Burn Stack")) {
                                     writer.WriteLine(Globals.GetCustomValue("Burn Stack"));
                                 } else if (field.Equals("Damage Tracker1")) {
@@ -208,7 +208,7 @@ namespace Dragoon_Modifier {
                                 } else if (field.Equals("QTB")) {
                                     writer.WriteLine(Globals.GetCustomValue("QTB"));
                                 } else {
-                                    writer.WriteLine(Globals.CHARACTER_TABLE[i].GetType().GetProperty(field).GetValue(Globals.CHARACTER_TABLE[i]));
+                                    writer.WriteLine(Globals.BattleController.CharacterTable[i].GetType().GetProperty(field).GetValue(Globals.BattleController.CharacterTable[i]));
                                 }
                                 writer.Dispose();
                                 writer.Close();
@@ -657,7 +657,7 @@ namespace Dragoon_Modifier {
                         }
                         if (field.Equals("Max_SP")) {
                             if (character)
-                                this.Content = (Globals.CHARACTER_TABLE[slot - 1].DLV * 100).ToString();
+                                this.Content = (Globals.BattleController.CharacterTable[slot - 1].DLV * 100).ToString();
                         } else if (field.Equals("Burn Stack")) {
                             this.Content = Globals.GetCustomValue("Burn Stack");
                         } else if (field.Equals("Damage Tracker1")) {
@@ -684,7 +684,7 @@ namespace Dragoon_Modifier {
                             this.Content = Globals.GetCustomValue("EATBM5");
                         } else if (field.Equals("Name")) { 
                             if (character) {
-                                if (Globals.CHARACTER_TABLE[slot - 1].Action == 8 || Globals.CHARACTER_TABLE[slot - 1].Action == 10)
+                                if (Globals.BattleController.CharacterTable[slot - 1].Action == 8 || Globals.BattleController.CharacterTable[slot - 1].Action == 10)
                                     this.Content = Globals.CHARACTER_NAME[slot - 1] + "*";
                                 else
                                     this.Content = Globals.CHARACTER_NAME[slot - 1];
@@ -693,9 +693,9 @@ namespace Dragoon_Modifier {
                             }
                         } else {
                             if (character)
-                                this.Content = Globals.CHARACTER_TABLE[slot - 1].GetType().GetProperty(field).GetValue(Globals.CHARACTER_TABLE[slot - 1]).ToString();
+                                this.Content = Globals.BattleController.CharacterTable[slot - 1].GetType().GetProperty(field).GetValue(Globals.BattleController.CharacterTable[slot - 1]).ToString();
                             else
-                                this.Content = Globals.MONSTER_TABLE[slot - 1].GetType().GetProperty(field).GetValue(Globals.CHARACTER_TABLE[slot - 1]).ToString();
+                                this.Content = Globals.MONSTER_TABLE[slot - 1].GetType().GetProperty(field).GetValue(Globals.BattleController.CharacterTable[slot - 1]).ToString();
                         }
                     } else {
                         this.Content = "";
@@ -1011,7 +1011,7 @@ namespace Dragoon_Modifier {
                                 } else if (field.Equals("EATBM5")) {
                                     this.Value = Globals.GetCustomValue("EATBM5");
                                 } else {
-                                    this.Value = (double) Globals.CHARACTER_TABLE[slot - 1].GetType().GetProperty(field).GetValue(Globals.CHARACTER_TABLE[slot - 1]);
+                                    this.Value = (double) Globals.BattleController.CharacterTable[slot - 1].GetType().GetProperty(field).GetValue(Globals.BattleController.CharacterTable[slot - 1]);
                                 }
                             } else {
                                 this.Value = Globals.MONSTER_TABLE[slot - 1].Read(field);
@@ -1022,7 +1022,7 @@ namespace Dragoon_Modifier {
                             this.Minimum = minX;
                         } else {
                             if (character)
-                                this.Minimum = (double) Globals.CHARACTER_TABLE[slot - 1].GetType().GetProperty(min).GetValue(Globals.CHARACTER_TABLE[slot - 1]);
+                                this.Minimum = (double) Globals.BattleController.CharacterTable[slot - 1].GetType().GetProperty(min).GetValue(Globals.BattleController.CharacterTable[slot - 1]);
                             else
                                 this.Minimum = Globals.MONSTER_TABLE[slot - 1].Read(min);
                         }
@@ -1032,11 +1032,11 @@ namespace Dragoon_Modifier {
                         } else {
                             if (character) {
                                 if (max.Equals("Max_SP")) {
-                                    this.Maximum = Globals.CHARACTER_TABLE[slot - 1].DLV * 100;
+                                    this.Maximum = Globals.BattleController.CharacterTable[slot - 1].DLV * 100;
                                 } else if (max.Equals("Burn Stack")) {
                                     this.Maximum = 6;
                                 } else {
-                                    this.Maximum = (double) Globals.CHARACTER_TABLE[slot - 1].GetType().GetProperty(max).GetValue(Globals.CHARACTER_TABLE[slot - 1]);
+                                    this.Maximum = (double) Globals.BattleController.CharacterTable[slot - 1].GetType().GetProperty(max).GetValue(Globals.BattleController.CharacterTable[slot - 1]);
                                 }
                             } else {
                                 this.Maximum = Globals.MONSTER_TABLE[slot - 1].Read(max);
@@ -1386,7 +1386,7 @@ namespace Dragoon_Modifier {
                             this.Value = valueX;
                         } else {
                             if (character)
-                                this.Value = (double) Globals.CHARACTER_TABLE[slot - 1].GetType().GetProperty(field).GetValue(Globals.CHARACTER_TABLE[slot - 1]);
+                                this.Value = (double) Globals.BattleController.CharacterTable[slot - 1].GetType().GetProperty(field).GetValue(Globals.BattleController.CharacterTable[slot - 1]);
                             else
                                 this.Value = Globals.MONSTER_TABLE[slot - 1].Read(field);
                         }
@@ -1394,7 +1394,7 @@ namespace Dragoon_Modifier {
                             this.Minimum = minX;
                         } else {
                             if (character)
-                                this.Minimum = (double) Globals.CHARACTER_TABLE[slot - 1].GetType().GetProperty(min).GetValue(Globals.CHARACTER_TABLE[slot - 1]);
+                                this.Minimum = (double) Globals.BattleController.CharacterTable[slot - 1].GetType().GetProperty(min).GetValue(Globals.BattleController.CharacterTable[slot - 1]);
                             else
                                 this.Minimum = Globals.MONSTER_TABLE[slot - 1].Read(min);
                         }
@@ -1403,10 +1403,10 @@ namespace Dragoon_Modifier {
                         } else {
                             if (max.Equals("Max_SP")) {
                                 if (character)
-                                    this.Maximum = (int) (Globals.CHARACTER_TABLE[slot - 1].DLV) * 100;
+                                    this.Maximum = (int) (Globals.BattleController.CharacterTable[slot - 1].DLV) * 100;
                             } else {
                                 if (character)
-                                    this.Maximum = (double) Globals.CHARACTER_TABLE[slot - 1].GetType().GetProperty(max).GetValue(Globals.CHARACTER_TABLE[slot - 1]);
+                                    this.Maximum = (double) Globals.BattleController.CharacterTable[slot - 1].GetType().GetProperty(max).GetValue(Globals.BattleController.CharacterTable[slot - 1]);
                                 else
                                     this.Maximum = Globals.MONSTER_TABLE[slot - 1].Read(max);
                             }

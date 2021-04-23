@@ -22,5 +22,15 @@ namespace Dragoon_Modifier {
         public static int KEY_RIGHT = 8192;
         public static int KEY_DOWN = 16384;
         public static int KEY_LEFT = 32768;
+
+        public int ButtonPress { get; private set; }
+
+        public Hotkey(int buttonPress) {
+            ButtonPress = buttonPress;
+        }
+
+        public virtual void Init() {
+
+        }
     }
 }

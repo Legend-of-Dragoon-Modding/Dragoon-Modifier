@@ -1215,11 +1215,11 @@ namespace Dragoon_Modifier {
                 if (!keepStats && Globals.GAME_STATE == Globals.GameStateEnum.Battle && Globals.STATS_CHANGED) {
                     for (int i = 0; i < 3; i++) { //Should execute after equip changes
                         if (Globals.PARTY_SLOT[i] < 9) {
-                            originalCharacterStats[i, 0] = Globals.CHARACTER_TABLE[i].Max_HP;
-                            originalCharacterStats[i, 1] = Globals.CHARACTER_TABLE[i].AT;
-                            originalCharacterStats[i, 2] = Globals.CHARACTER_TABLE[i].MAT;
-                            originalCharacterStats[i, 3] = Globals.CHARACTER_TABLE[i].DF;
-                            originalCharacterStats[i, 4] = Globals.CHARACTER_TABLE[i].MDF;
+                            originalCharacterStats[i, 0] = Globals.BattleController.CharacterTable[i].Max_HP;
+                            originalCharacterStats[i, 1] = Globals.BattleController.CharacterTable[i].AT;
+                            originalCharacterStats[i, 2] = Globals.BattleController.CharacterTable[i].MAT;
+                            originalCharacterStats[i, 3] = Globals.BattleController.CharacterTable[i].DF;
+                            originalCharacterStats[i, 4] = Globals.BattleController.CharacterTable[i].MDF;
                         }
                     }
 
@@ -1712,19 +1712,19 @@ namespace Dragoon_Modifier {
                                     int characterSlot = 255, characterSlots = 255;
                                     for (int i = 0; i < 3; i++) {
                                         if (Globals.PARTY_SLOT[i] < 9) {
-                                            if (Globals.CHARACTER_TABLE[i].SP < 100) {
+                                            if (Globals.BattleController.CharacterTable[i].SP < 100) {
                                                 pass = false;
                                             }
 
-                                            if (Globals.CHARACTER_TABLE[i].Menu == 8)
+                                            if (Globals.BattleController.CharacterTable[i].Menu == 8)
                                                 characterSlot = i;
 
                                             characterSlots = i + 1;
                                         }
                                     }
 
-                                    if (pass && characterSlots == 3 && characterSlot < 9 && Globals.CHARACTER_TABLE[characterSlot].Menu < 128) {
-                                        Globals.CHARACTER_TABLE[characterSlot].Menu = (byte) (Globals.CHARACTER_TABLE[characterSlot].Menu + 128);
+                                    if (pass && characterSlots == 3 && characterSlot < 9 && Globals.BattleController.CharacterTable[characterSlot].Menu < 128) {
+                                        Globals.BattleController.CharacterTable[characterSlot].Menu = (byte) (Globals.BattleController.CharacterTable[characterSlot].Menu + 128);
                                     } else {
                                         Constants.WriteGLogOutput("You do not meet the requirements to create a special.");
                                     }
@@ -1732,24 +1732,6 @@ namespace Dragoon_Modifier {
                                     Constants.WriteGLogOutput("You do not have an Empty Dragoon Crystal.");
                                 }
 
-                                Globals.LAST_HOTKEY = Constants.GetTime();
-                            } else if (Globals.HOTKEY == (Hotkey.KEY_L1 + Hotkey.KEY_R1) && !Globals.ADDITION_SWAP) { //Addition Swap
-                                for (int i = 0; i < 3; i++) {
-                                    if (Globals.PARTY_SLOT[i] < 9) {
-                                        if (Globals.CHARACTER_TABLE[i].Action == 8) {
-                                            if (Globals.PARTY_SLOT[i] == 2 || Globals.PARTY_SLOT[i] == 8) {
-                                                Constants.WriteGLogOutput("Bow users don't have additions to swap to.");
-                                            } else {
-                                                if (Globals.CHARACTER_TABLE[i].Status != 0) {
-                                                    Constants.WriteGLogOutput("You can't addition swap when there is a status effect active.");
-                                                } else {
-                                                    Constants.WriteGLogOutput("Swapping additions...");
-                                                    Globals.ADDITION_SWAP = true;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
                                 Globals.LAST_HOTKEY = Constants.GetTime();
                             }
                         }
@@ -1849,7 +1831,7 @@ namespace Dragoon_Modifier {
 
                         for (int i = 0; i < 3; i++) {
                             if (Globals.PARTY_SLOT[i] < 9) {
-                                int hp = Globals.CHARACTER_TABLE[i].HP;
+                                int hp = Globals.BattleController.CharacterTable[i].HP;
                                 if (hp < lowestHP && hp > 0) {
                                     lowestHPSlot = (byte) i;
                                     lowestHP = hp;
@@ -2337,14 +2319,14 @@ namespace Dragoon_Modifier {
                     if (Globals.PARTY_SLOT[i] < 9) {
                         characterDisplay[i, 0].Text = Constants.GetCharName(Globals.PARTY_SLOT[i]);
                         Globals.CHARACTER_NAME[i] = characterDisplay[i, 0].Text;
-                        characterDisplay[i, 1].Text = " " + Globals.CHARACTER_TABLE[i].HP + "/" + Globals.CHARACTER_TABLE[i].Max_HP + "\r\n\r\n " + Globals.CHARACTER_TABLE[i].MP + "/" + Globals.CHARACTER_TABLE[i].Max_MP;
-                        characterDisplay[i, 2].Text = " " + Globals.CHARACTER_TABLE[i].AT + "\r\n\r\n " + Globals.CHARACTER_TABLE[i].MAT;
-                        characterDisplay[i, 3].Text = " " + Globals.CHARACTER_TABLE[i].DF + "\r\n\r\n " + Globals.CHARACTER_TABLE[i].MDF;
-                        characterDisplay[i, 4].Text = " " + Globals.CHARACTER_TABLE[i].A_HIT + "/" + Globals.CHARACTER_TABLE[i].M_HIT + "\r\n\r\n " + Globals.CHARACTER_TABLE[i].A_AV + "/" + Globals.CHARACTER_TABLE[i].M_AV;
-                        characterDisplay[i, 5].Text = " " + Globals.CHARACTER_TABLE[i].DAT + "\r\n\r\n " + Globals.CHARACTER_TABLE[i].DMAT;
-                        characterDisplay[i, 6].Text = " " + Globals.CHARACTER_TABLE[i].DDF + "\r\n\r\n " + Globals.CHARACTER_TABLE[i].DMDF;
-                        characterDisplay[i, 7].Text = " " + Globals.CHARACTER_TABLE[i].SPD + "\r\n\r\n " + Globals.CHARACTER_TABLE[i].SP;
-                        characterDisplay[i, 8].Text = " " + Globals.CHARACTER_TABLE[i].Turn;
+                        characterDisplay[i, 1].Text = " " + Globals.BattleController.CharacterTable[i].HP + "/" + Globals.BattleController.CharacterTable[i].Max_HP + "\r\n\r\n " + Globals.BattleController.CharacterTable[i].MP + "/" + Globals.BattleController.CharacterTable[i].Max_MP;
+                        characterDisplay[i, 2].Text = " " + Globals.BattleController.CharacterTable[i].AT + "\r\n\r\n " + Globals.BattleController.CharacterTable[i].MAT;
+                        characterDisplay[i, 3].Text = " " + Globals.BattleController.CharacterTable[i].DF + "\r\n\r\n " + Globals.BattleController.CharacterTable[i].MDF;
+                        characterDisplay[i, 4].Text = " " + Globals.BattleController.CharacterTable[i].A_HIT + "/" + Globals.BattleController.CharacterTable[i].M_HIT + "\r\n\r\n " + Globals.BattleController.CharacterTable[i].A_AV + "/" + Globals.BattleController.CharacterTable[i].M_AV;
+                        characterDisplay[i, 5].Text = " " + Globals.BattleController.CharacterTable[i].DAT + "\r\n\r\n " + Globals.BattleController.CharacterTable[i].DMAT;
+                        characterDisplay[i, 6].Text = " " + Globals.BattleController.CharacterTable[i].DDF + "\r\n\r\n " + Globals.BattleController.CharacterTable[i].DMDF;
+                        characterDisplay[i, 7].Text = " " + Globals.BattleController.CharacterTable[i].SPD + "\r\n\r\n " + Globals.BattleController.CharacterTable[i].SP;
+                        characterDisplay[i, 8].Text = " " + Globals.BattleController.CharacterTable[i].Turn;
                     }
                 }
 
@@ -2433,8 +2415,8 @@ namespace Dragoon_Modifier {
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9) {
                             if (hpChangeSave[i] != 65535 && hpChangeSave[i] > 9999) {
-                                if (Globals.CHARACTER_TABLE[i].HP < hpChangeSave[i] && hpChangeSave[i] < Globals.CHARACTER_TABLE[i].Max_HP) {
-                                    Globals.CHARACTER_TABLE[i].HP = hpChangeSave[i];
+                                if (Globals.BattleController.CharacterTable[i].HP < hpChangeSave[i] && hpChangeSave[i] < Globals.BattleController.CharacterTable[i].Max_HP) {
+                                    Globals.BattleController.CharacterTable[i].HP = hpChangeSave[i];
                                 }
                             }
                         }
@@ -2448,7 +2430,7 @@ namespace Dragoon_Modifier {
                     if (Emulator.ReadUShort("BATTLE_VALUE") == 41215 && Globals.STATS_CHANGED && hpCapBreakOnBattleEntry && maxHPTableLoaded) {
                         for (int i = 0; i < 3; i++) {
                             if (Globals.PARTY_SLOT[i] < 9)
-                                hpChangeSave[i] = Globals.CHARACTER_TABLE[i].HP;
+                                hpChangeSave[i] = Globals.BattleController.CharacterTable[i].HP;
                         }
                     }
                 }
@@ -2578,18 +2560,18 @@ namespace Dragoon_Modifier {
                 for (int i = 0; i < 3; i++) {
                     if (Globals.PARTY_SLOT[i] < 9) {
                         if (i != uiCombo["cboSoloLeader"]) {
-                            Globals.CHARACTER_TABLE[i].HP = 0;
-                            Globals.CHARACTER_TABLE[i].Max_HP = 0;
-                            Globals.CHARACTER_TABLE[i].HP_Regen = 200;
-                            Globals.CHARACTER_TABLE[i].Turn = 10000;
+                            Globals.BattleController.CharacterTable[i].HP = 0;
+                            Globals.BattleController.CharacterTable[i].Max_HP = 0;
+                            Globals.BattleController.CharacterTable[i].HP_Regen = 200;
+                            Globals.BattleController.CharacterTable[i].Turn = 10000;
                             //yeet
-                            Globals.CHARACTER_TABLE[i].Pos_FB = 255;
-                            Globals.CHARACTER_TABLE[i].Pos_UD = 255;
-                            Globals.CHARACTER_TABLE[i].Pos_RL = 255;
+                            Globals.BattleController.CharacterTable[i].Pos_FB = 255;
+                            Globals.BattleController.CharacterTable[i].Pos_UD = 255;
+                            Globals.BattleController.CharacterTable[i].Pos_RL = 255;
                         } else {
-                            Globals.CHARACTER_TABLE[i].Pos_FB = 9;
-                            Globals.CHARACTER_TABLE[i].Pos_FB = 0;
-                            Globals.CHARACTER_TABLE[i].Pos_FB = 0;
+                            Globals.BattleController.CharacterTable[i].Pos_FB = 9;
+                            Globals.BattleController.CharacterTable[i].Pos_FB = 0;
+                            Globals.BattleController.CharacterTable[i].Pos_FB = 0;
                         }
                     }
                 }
@@ -2611,20 +2593,20 @@ namespace Dragoon_Modifier {
         public void DuoModeBattle() {
             if (Globals.GAME_STATE == Globals.GameStateEnum.Battle && Globals.STATS_CHANGED && !duoModeOnBattleEntry) {
                 if (Globals.PARTY_SLOT[2] < 9) {
-                    Globals.CHARACTER_TABLE[2].HP = 0;
-                    Globals.CHARACTER_TABLE[2].Max_HP = 0;
-                    Globals.CHARACTER_TABLE[2].HP_Regen = 200;
-                    Globals.CHARACTER_TABLE[2].Turn = 10000;
+                    Globals.BattleController.CharacterTable[2].HP = 0;
+                    Globals.BattleController.CharacterTable[2].Max_HP = 0;
+                    Globals.BattleController.CharacterTable[2].HP_Regen = 200;
+                    Globals.BattleController.CharacterTable[2].Turn = 10000;
                     //yeet
-                    Globals.CHARACTER_TABLE[2].Pos_FB = 255;
-                    Globals.CHARACTER_TABLE[2].Pos_UD = 255;
-                    Globals.CHARACTER_TABLE[2].Pos_RL = 255;
-                    Globals.CHARACTER_TABLE[0].Pos_FB = 10;
-                    Globals.CHARACTER_TABLE[0].Pos_UD = 0;
-                    Globals.CHARACTER_TABLE[0].Pos_RL = 251;
-                    Globals.CHARACTER_TABLE[1].Pos_FB = 10;
-                    Globals.CHARACTER_TABLE[1].Pos_UD = 0;
-                    Globals.CHARACTER_TABLE[1].Pos_RL = 4;
+                    Globals.BattleController.CharacterTable[2].Pos_FB = 255;
+                    Globals.BattleController.CharacterTable[2].Pos_UD = 255;
+                    Globals.BattleController.CharacterTable[2].Pos_RL = 255;
+                    Globals.BattleController.CharacterTable[0].Pos_FB = 10;
+                    Globals.BattleController.CharacterTable[0].Pos_UD = 0;
+                    Globals.BattleController.CharacterTable[0].Pos_RL = 251;
+                    Globals.BattleController.CharacterTable[1].Pos_FB = 10;
+                    Globals.BattleController.CharacterTable[1].Pos_UD = 0;
+                    Globals.BattleController.CharacterTable[1].Pos_RL = 4;
                 }
 
                 if (Globals.CheckDMScript("btnReduceSDEXP")) {
@@ -3002,7 +2984,7 @@ namespace Dragoon_Modifier {
                 if (ubMPAttack) {
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9) {
-                            ubMPAttackTrk[i] = Globals.CHARACTER_TABLE[i].HP;
+                            ubMPAttackTrk[i] = Globals.BattleController.CharacterTable[i].HP;
                         }
                     }
                 }
@@ -3010,8 +2992,8 @@ namespace Dragoon_Modifier {
                 if (ubWoundDamage) {
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9) {
-                            ubWHP[i] = Globals.CHARACTER_TABLE[i].HP;
-                            ubWMHP[i] = Globals.CHARACTER_TABLE[i].Max_HP;
+                            ubWHP[i] = Globals.BattleController.CharacterTable[i].HP;
+                            ubWMHP[i] = Globals.BattleController.CharacterTable[i].Max_HP;
                         }
                     }
                 }
@@ -3033,8 +3015,8 @@ namespace Dragoon_Modifier {
                 if (ubRemoveResistances) {
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9) {
-                            Globals.CHARACTER_TABLE[i].StatusResist = 0;
-                            Globals.CHARACTER_TABLE[i].Special_Efect = 0;
+                            Globals.BattleController.CharacterTable[i].StatusResist = 0;
+                            Globals.BattleController.CharacterTable[i].Special_Efect = 0;
                         }
                     }
                 }
@@ -3042,7 +3024,7 @@ namespace Dragoon_Modifier {
                 if (ubTrackHPChange) {
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9) {
-                            ubTrackHP[i] = Globals.CHARACTER_TABLE[i].HP;
+                            ubTrackHP[i] = Globals.BattleController.CharacterTable[i].HP;
                         }
                     }
 
@@ -3055,7 +3037,7 @@ namespace Dragoon_Modifier {
 
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9) {
-                            ubTrackTP[i] = Globals.CHARACTER_TABLE[i].Turn;
+                            ubTrackTP[i] = Globals.BattleController.CharacterTable[i].Turn;
                         }
                     }
 
@@ -3111,7 +3093,7 @@ namespace Dragoon_Modifier {
                 if (ubDragoonGuard) {
                     /*for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9) {
-                            deathRes[i] = Globals.CHARACTER_TABLE[i].Read("Death_Res");
+                            deathRes[i] = Globals.BattleController.CharacterTable[i].Read("Death_Res");
                         }
                     }*/
                 }
@@ -3125,21 +3107,21 @@ namespace Dragoon_Modifier {
 
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9) {
-                            double maxHP = Globals.CHARACTER_TABLE[i].Max_HP * multiMax;
+                            double maxHP = Globals.BattleController.CharacterTable[i].Max_HP * multiMax;
                             if (maxHP > 32767) {
                                 int character = Globals.PARTY_SLOT[i];
                                 int lv = Emulator.ReadByte("CHAR_TABLE", (character * 0x2C) + 0x12);
                                 ushort df = Globals.CURRENT_STATS[i].DF * 2;
                                 ushort mdf = Globals.CURRENT_STATS[i].MDF * 2;
-                                Globals.CHARACTER_TABLE[i].Max_HP = (ushort) (maxHP / 2);
-                                Globals.CHARACTER_TABLE[i].DF = df;
-                                Globals.CHARACTER_TABLE[i].OG_DF = df;
-                                Globals.CHARACTER_TABLE[i].MDF = mdf;
-                                Globals.CHARACTER_TABLE[i].OG_MDF = mdf;
+                                Globals.BattleController.CharacterTable[i].Max_HP = (ushort) (maxHP / 2);
+                                Globals.BattleController.CharacterTable[i].DF = df;
+                                Globals.BattleController.CharacterTable[i].OG_DF = df;
+                                Globals.BattleController.CharacterTable[i].MDF = mdf;
+                                Globals.BattleController.CharacterTable[i].OG_MDF = mdf;
                                 Emulator.WriteByte("SECONDARY_CHARACTER_TABLE", df, character * 0xA0 + 0x6C);
                                 Emulator.WriteByte("SECONDARY_CHARACTER_TABLE", mdf, character * 0xA0 + 0x6D);
                             } else {
-                                Globals.CHARACTER_TABLE[i].Max_HP = (ushort) maxHP;
+                                Globals.BattleController.CharacterTable[i].Max_HP = (ushort) maxHP;
                             }
                         }
                     }
@@ -3650,12 +3632,12 @@ namespace Dragoon_Modifier {
                 if ((ultimateShopLimited & 131072) == 131072) { //Power Up
                     if ((doubleRepeatUsed & 131072) != 131072) {
                         for (int i = 0; i < 3; i++) {
-                            if (Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[i].PWR_AT == 50 && Globals.CHARACTER_TABLE[i].PWR_AT_Turn > 0) {
+                            if (Globals.PARTY_SLOT[i] < 9 && Globals.BattleController.CharacterTable[i].PWR_AT == 50 && Globals.BattleController.CharacterTable[i].PWR_AT_Turn > 0) {
                                 doubleRepeatUsed += 131072;
-                                Globals.CHARACTER_TABLE[i].PWR_AT_Turn = (byte)(Globals.CHARACTER_TABLE[i].PWR_AT_Turn + 3);
-                                Globals.CHARACTER_TABLE[i].PWR_MAT_Turn = (byte) (Globals.CHARACTER_TABLE[i].PWR_MAT_Turn + 3);
-                                Globals.CHARACTER_TABLE[i].PWR_DF_Turn = (byte) (Globals.CHARACTER_TABLE[i].PWR_DF_Turn + 3);
-                                Globals.CHARACTER_TABLE[i].PWR_MDF_Turn = (byte) (Globals.CHARACTER_TABLE[i].PWR_MDF_Turn + 3);
+                                Globals.BattleController.CharacterTable[i].PWR_AT_Turn = (byte)(Globals.BattleController.CharacterTable[i].PWR_AT_Turn + 3);
+                                Globals.BattleController.CharacterTable[i].PWR_MAT_Turn = (byte) (Globals.BattleController.CharacterTable[i].PWR_MAT_Turn + 3);
+                                Globals.BattleController.CharacterTable[i].PWR_DF_Turn = (byte) (Globals.BattleController.CharacterTable[i].PWR_DF_Turn + 3);
+                                Globals.BattleController.CharacterTable[i].PWR_MDF_Turn = (byte) (Globals.BattleController.CharacterTable[i].PWR_MDF_Turn + 3);
                             }
                         }
                     }
@@ -3678,12 +3660,12 @@ namespace Dragoon_Modifier {
                 if ((ultimateShopLimited & 524288) == 524288) { //Speed Up
                     if ((doubleRepeatUsed & 524288) != 524288) {
                         for (int i = 0; i < 3; i++) {
-                            if (Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[i].Speed_Up_Turn > 0) {
+                            if (Globals.PARTY_SLOT[i] < 9 && Globals.BattleController.CharacterTable[i].Speed_Up_Turn > 0) {
                                 doubleRepeatUsed += 524288;
-                                if (Globals.CHARACTER_TABLE[i].Speed_Up_Turn < 6) {
-                                    Globals.CHARACTER_TABLE[i].Speed_Up_Turn = (byte)(Globals.CHARACTER_TABLE[i].Speed_Up_Turn + 3);
+                                if (Globals.BattleController.CharacterTable[i].Speed_Up_Turn < 6) {
+                                    Globals.BattleController.CharacterTable[i].Speed_Up_Turn = (byte)(Globals.BattleController.CharacterTable[i].Speed_Up_Turn + 3);
                                 } else {
-                                    Globals.CHARACTER_TABLE[i].Speed_Up_Turn = 6;
+                                    Globals.BattleController.CharacterTable[i].Speed_Up_Turn = 6;
                                 }
                             }
                         }
@@ -3780,7 +3762,7 @@ namespace Dragoon_Modifier {
                                     pandemoniumTurns -= 1;
                                 }
 
-                                if (Globals.CHARACTER_TABLE[pandemoniumSlot].HP == 0)
+                                if (Globals.BattleController.CharacterTable[pandemoniumSlot].HP == 0)
                                     pandemoniumTurns = 0;
                             }
                         }
@@ -3838,7 +3820,7 @@ namespace Dragoon_Modifier {
             int totalDamage = 0;
             for (int i = 0; i < 3; i++) {
                 if (Globals.PARTY_SLOT[i] < 9) {
-                    byte action = Globals.CHARACTER_TABLE[i].Action;
+                    byte action = Globals.BattleController.CharacterTable[i].Action;
                     if (action == 24 || action == 26 || action == 136 || action == 138) {
                         partyAttacking = true;
                     }
@@ -3856,7 +3838,7 @@ namespace Dragoon_Modifier {
                 if (Globals.PARTY_SLOT[guardSlot] != 2 && Globals.PARTY_SLOT[guardSlot] != 8) {
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9) {
-                            byte action = Globals.CHARACTER_TABLE[i].Action;
+                            byte action = Globals.BattleController.CharacterTable[i].Action;
                             if (action == 0 || action == 2) {
                                 partyAttacking = false;
                             }
@@ -3868,7 +3850,7 @@ namespace Dragoon_Modifier {
             if (dragoonSpecialCheck) {
                 for (int i = 0; i < 3; i++) {
                     if (Globals.PARTY_SLOT[i] < 9) {
-                        byte action = Globals.CHARACTER_TABLE[i].Action;
+                        byte action = Globals.BattleController.CharacterTable[i].Action;
                         if (action == 18 || action == 19) {
                             partyAttacking = false;
                         }
@@ -3970,7 +3952,7 @@ namespace Dragoon_Modifier {
                 ubCheckedDamage = true;
             }
 
-            /*Constants.WriteDebug("HP[0]: " + ultimateHP[0] + "/" + Globals.MONSTER_TABLE[0].Read("HP") + " | P ATK: " + partyAttacking + "/" + ubCheckDamageCycle + " | CHK DMG: " + ubCheckedDamage + " | HP CHG: " + ubHPChanged + " | SET: " + ubUltimateHPSet + " | ACT: " + Globals.CHARACTER_TABLE[0].Read("Action") + "/" + Globals.CHARACTER_TABLE[1].Read("Action") + "/" + Globals.CHARACTER_TABLE[2].Read("Action"));
+            /*Constants.WriteDebug("HP[0]: " + ultimateHP[0] + "/" + Globals.MONSTER_TABLE[0].Read("HP") + " | P ATK: " + partyAttacking + "/" + ubCheckDamageCycle + " | CHK DMG: " + ubCheckedDamage + " | HP CHG: " + ubHPChanged + " | SET: " + ubUltimateHPSet + " | ACT: " + Globals.BattleController.CharacterTable[0].Read("Action") + "/" + Globals.BattleController.CharacterTable[1].Read("Action") + "/" + Globals.BattleController.CharacterTable[2].Read("Action"));
 
             if (!partyAttacking && ubCheckDamageCycle > 0 && ubHPChanged) {
                 if (Globals.CheckDMScript("btnDamageTracker") && Globals.dmScripts["btnDamageTracker"]) {
@@ -3991,7 +3973,7 @@ namespace Dragoon_Modifier {
                 //Constants.WriteDebug("Attack Move: " + Globals.MONSTER_TABLE[monsterSlot].Read("Attack_Move") + "/" + attack);
                 for (int i = 0; i < 3; i++) {
                     if (Globals.PARTY_SLOT[i] < 9) {
-                        Globals.CHARACTER_TABLE[i].Guard = 0;
+                        Globals.BattleController.CharacterTable[i].Guard = 0;
                     }
                 }
                 Thread.Sleep(1500); //it'll soft lock the game otherwise, game needs time to load the move
@@ -4010,7 +3992,7 @@ namespace Dragoon_Modifier {
         public void ZeroSPStart() {
             for (int i = 0; i < 3; i++) {
                 if (Globals.PARTY_SLOT[i] < 9) {
-                    Globals.CHARACTER_TABLE[i].SP = 0;
+                    Globals.BattleController.CharacterTable[i].SP = 0;
                 }
             }
         }
@@ -4021,13 +4003,13 @@ namespace Dragoon_Modifier {
                 for (int i = 0; i < 3; i++) {
                     if (Globals.PARTY_SLOT[i] < 9) {
                         if (mpOnHit > 0) {
-                            Globals.CHARACTER_TABLE[i].MP_P_Hit_Increase = (sbyte) mpOnHit;
-                            Globals.CHARACTER_TABLE[i].MP_M_Hit_Increase = (sbyte) mpOnHit;
-                            Globals.CHARACTER_TABLE[i].MP_P_Hit_Increase_Turn = turns;
-                            Globals.CHARACTER_TABLE[i].MP_M_Hit_Increase_Turn = turns;
+                            Globals.BattleController.CharacterTable[i].MP_P_Hit_Increase = (sbyte) mpOnHit;
+                            Globals.BattleController.CharacterTable[i].MP_M_Hit_Increase = (sbyte) mpOnHit;
+                            Globals.BattleController.CharacterTable[i].MP_P_Hit_Increase_Turn = turns;
+                            Globals.BattleController.CharacterTable[i].MP_M_Hit_Increase_Turn = turns;
                         }
-                        int mp = Globals.CHARACTER_TABLE[i].MP - mpAmount;
-                        Globals.CHARACTER_TABLE[i].MP = (ushort) (mpAmount > 0 ? mpAmount : 0);
+                        int mp = Globals.BattleController.CharacterTable[i].MP - mpAmount;
+                        Globals.BattleController.CharacterTable[i].MP = (ushort) (mpAmount > 0 ? mpAmount : 0);
                     }
                 }
                 Thread.Sleep(1900);
@@ -4038,14 +4020,14 @@ namespace Dragoon_Modifier {
         public void WoundDamage(int monsterSlot, byte attack) {
             for (int i = 0; i < 3; i++) {
                 if (Globals.PARTY_SLOT[i] < 9) {
-                    ushort hp = Globals.CHARACTER_TABLE[i].HP;
+                    ushort hp = Globals.BattleController.CharacterTable[i].HP;
                     if (hp < ubWHP[i] && Globals.MONSTER_TABLE[i].Read("Attack_Move") == attack) {
                         ushort woundDamage = (ushort) (ubWHP[i] - hp);
-                        Globals.CHARACTER_TABLE[i].Max_HP = (ushort) Math.Max(0, Globals.CHARACTER_TABLE[i].Max_HP - woundDamage);
+                        Globals.BattleController.CharacterTable[i].Max_HP = (ushort) Math.Max(0, Globals.BattleController.CharacterTable[i].Max_HP - woundDamage);
                     }
                     ubWHP[i] = hp;
-                    if (Globals.CHARACTER_TABLE[i].Action == 192) {
-                        Globals.CHARACTER_TABLE[i].Max_HP = ubWMHP[i];
+                    if (Globals.BattleController.CharacterTable[i].Action == 192) {
+                        Globals.BattleController.CharacterTable[i].Max_HP = ubWMHP[i];
                     }
                 }
             }
@@ -4075,13 +4057,13 @@ namespace Dragoon_Modifier {
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9 && Emulator.ReadByte("DRAGOON_TURNS", (i * 0x4)) == 0) {
                             if (spOnHit > 0) {
-                                Globals.CHARACTER_TABLE[i].SP_P_Hit_Increase = (sbyte)spOnHit;
-                                Globals.CHARACTER_TABLE[i].SP_M_Hit_Increase = (sbyte)spOnHit;
-                                Globals.CHARACTER_TABLE[i].SP_P_Hit_Increase_Turn = turns;
-                                Globals.CHARACTER_TABLE[i].SP_M_Hit_Increase_Turn = turns;
+                                Globals.BattleController.CharacterTable[i].SP_P_Hit_Increase = (sbyte)spOnHit;
+                                Globals.BattleController.CharacterTable[i].SP_M_Hit_Increase = (sbyte)spOnHit;
+                                Globals.BattleController.CharacterTable[i].SP_P_Hit_Increase_Turn = turns;
+                                Globals.BattleController.CharacterTable[i].SP_M_Hit_Increase_Turn = turns;
                             }
-                            int sp = Globals.CHARACTER_TABLE[i].SP - spAmount;
-                            Globals.CHARACTER_TABLE[i].SP = (ushort) (sp > 0 ? sp : 0);
+                            int sp = Globals.BattleController.CharacterTable[i].SP - spAmount;
+                            Globals.BattleController.CharacterTable[i].SP = (ushort) (sp > 0 ? sp : 0);
                         }
                     }
                     Thread.Sleep(3500);
@@ -4101,7 +4083,7 @@ namespace Dragoon_Modifier {
                 bool partyAttacking = false;
                 for (int i = 0; i < 3; i++) {
                     if (Globals.PARTY_SLOT[i] < 9) {
-                        byte action = Globals.CHARACTER_TABLE[i].Action;
+                        byte action = Globals.BattleController.CharacterTable[i].Action;
                         if (action == 8 || action == 10 || action == 24 || action == 26 || action == 136 || action == 138) {
                             partyAttacking = true;
                         }
@@ -4532,7 +4514,7 @@ namespace Dragoon_Modifier {
 
                 for (int i = 0; i < 3; i++) {
                     if (Globals.PARTY_SLOT[i] < 9) {
-                        if (Globals.CHARACTER_TABLE[i].Action == 8 || Globals.CHARACTER_TABLE[i].Action == 10) {
+                        if (Globals.BattleController.CharacterTable[i].Action == 8 || Globals.BattleController.CharacterTable[i].Action == 10) {
                             pass = true;
                         }
                     }
@@ -4540,14 +4522,14 @@ namespace Dragoon_Modifier {
 
                 for (int i = 0; i < 3; i++) {
                     if (Globals.PARTY_SLOT[i] < 9) {
-                        if (ubTrackHP[i] < Globals.CHARACTER_TABLE[i].HP) {
+                        if (ubTrackHP[i] < Globals.BattleController.CharacterTable[i].HP) {
                             if (tpDamage > 0 && pass) {
-                                Globals.CHARACTER_TABLE[i].Turn = (ushort) Math.Max(0, Globals.CHARACTER_TABLE[i].Turn - tpDamage);
-                                ubTrackHP[i] = Globals.CHARACTER_TABLE[i].HP;
+                                Globals.BattleController.CharacterTable[i].Turn = (ushort) Math.Max(0, Globals.BattleController.CharacterTable[i].Turn - tpDamage);
+                                ubTrackHP[i] = Globals.BattleController.CharacterTable[i].HP;
                                 resetTP = true;
                             }
-                        } else if (ubTrackHP[i] >= Globals.CHARACTER_TABLE[i].HP) {
-                            ubTrackHP[i] = Globals.CHARACTER_TABLE[i].HP;
+                        } else if (ubTrackHP[i] >= Globals.BattleController.CharacterTable[i].HP) {
+                            ubTrackHP[i] = Globals.BattleController.CharacterTable[i].HP;
                         }
                     }
                 }
@@ -4702,8 +4684,8 @@ namespace Dragoon_Modifier {
                 if (ubBlockMenuHPTrack) {
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9) {
-                            if (ubTrackHP[i] != Globals.CHARACTER_TABLE[i].HP) {
-                                if (Globals.CHARACTER_TABLE[i].HP < ubTrackHP[i]) {
+                            if (ubTrackHP[i] != Globals.BattleController.CharacterTable[i].HP) {
+                                if (Globals.BattleController.CharacterTable[i].HP < ubTrackHP[i]) {
                                     if (Emulator.ReadByte(Globals.M_POINT + 0xABC) == 78) {
                                         ubCustomStatusTurns[i] += 4;
                                         ubBlockMenuHPTrack = false;
@@ -4715,10 +4697,10 @@ namespace Dragoon_Modifier {
                                             ubBlockMenuTPTrack = true;
                                         }
                                     }
-                                    ubTrackHP[i] = Globals.CHARACTER_TABLE[i].HP;
+                                    ubTrackHP[i] = Globals.BattleController.CharacterTable[i].HP;
                                 }
                             } else {
-                                ubTrackHP[i] = Globals.CHARACTER_TABLE[i].HP;
+                                ubTrackHP[i] = Globals.BattleController.CharacterTable[i].HP;
                             }
                         }
                     }
@@ -4729,11 +4711,11 @@ namespace Dragoon_Modifier {
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9 && ubCustomStatusTurns[i] > 0) {
                             allZero = false;
-                            if (ubTrackTP[i] != Globals.CHARACTER_TABLE[i].Turn) {
-                                if (Globals.CHARACTER_TABLE[i].Turn < ubTrackTP[i]) {
+                            if (ubTrackTP[i] != Globals.BattleController.CharacterTable[i].Turn) {
+                                if (Globals.BattleController.CharacterTable[i].Turn < ubTrackTP[i]) {
                                     ubCustomStatusTurns[i] -= 1;
                                 }
-                                ubTrackTP[i] = Globals.CHARACTER_TABLE[i].Turn;
+                                ubTrackTP[i] = Globals.BattleController.CharacterTable[i].Turn;
                             }
 
                             if (ubCustomStatusTurns[i] > 0) {
@@ -4742,7 +4724,7 @@ namespace Dragoon_Modifier {
                                 Emulator.WriteByte(Constants.GetAddress("SPECIAL_EFFECT") - 0x4 + (Globals.MONSTER_SIZE + i) * 0x20, 8);
                             }
 
-                            if (Globals.CHARACTER_TABLE[i].HP == 0)
+                            if (Globals.BattleController.CharacterTable[i].HP == 0)
                                 ubCustomStatusTurns[i] = 0;
                         }
                     }
@@ -4763,7 +4745,7 @@ namespace Dragoon_Modifier {
                     if (moveSet == 72 || moveSet == 78) {
                         for (int i = 0; i < 3; i++) {
                             if (Globals.PARTY_SLOT[i] < 9) {
-                                ubTrackHP[i] = Globals.CHARACTER_TABLE[i].HP;
+                                ubTrackHP[i] = Globals.BattleController.CharacterTable[i].HP;
                             }
                         }
                         ubBlockMenuHPTrack = true;
@@ -4784,7 +4766,7 @@ namespace Dragoon_Modifier {
 
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9) {
-                            ubTrackTP[i] = Globals.CHARACTER_TABLE[i].Turn;
+                            ubTrackTP[i] = Globals.BattleController.CharacterTable[i].Turn;
                         }
                     }
                 }
@@ -4799,8 +4781,8 @@ namespace Dragoon_Modifier {
 
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9 && !trackDamage) {
-                            if (ubTrackHP[i] != Globals.CHARACTER_TABLE[i].HP) {
-                                if (Globals.CHARACTER_TABLE[i].HP < ubTrackHP[i]) {
+                            if (ubTrackHP[i] != Globals.BattleController.CharacterTable[i].HP) {
+                                if (Globals.BattleController.CharacterTable[i].HP < ubTrackHP[i]) {
                                     byte moveSet = Emulator.ReadByte(Globals.M_POINT + 0xABC);
 
                                     if (moveSet == 74) {
@@ -4817,9 +4799,9 @@ namespace Dragoon_Modifier {
                                         trackDamage = true;
                                     }
 
-                                    ubTrackHP[i] = Globals.CHARACTER_TABLE[i].HP;
+                                    ubTrackHP[i] = Globals.BattleController.CharacterTable[i].HP;
                                 } else {
-                                    ubTrackHP[i] = Globals.CHARACTER_TABLE[i].HP;
+                                    ubTrackHP[i] = Globals.BattleController.CharacterTable[i].HP;
                                 }
                             }
                         }
@@ -4835,10 +4817,10 @@ namespace Dragoon_Modifier {
                     if (setMeteor) {
                         for (int i = 0; i < 3; i++) {
                             if (Globals.PARTY_SLOT[i] < 9) {
-                                Globals.CHARACTER_TABLE[i].PWR_DF = -50;
-                                Globals.CHARACTER_TABLE[i].PWR_MDF = -50;
-                                Globals.CHARACTER_TABLE[i].PWR_DF_Turn = 2;
-                                Globals.CHARACTER_TABLE[i].PWR_MDF_Turn = 2;
+                                Globals.BattleController.CharacterTable[i].PWR_DF = -50;
+                                Globals.BattleController.CharacterTable[i].PWR_MDF = -50;
+                                Globals.BattleController.CharacterTable[i].PWR_DF_Turn = 2;
+                                Globals.BattleController.CharacterTable[i].PWR_MDF_Turn = 2;
                                 Constants.WriteGLogOutput("[BOSS] Meteor Strike defense down activated.");
                             }
                         }
@@ -4847,7 +4829,7 @@ namespace Dragoon_Modifier {
                     if (setDragon) {
                         for (int i = 0; i < 3; i++) {
                             if (Globals.PARTY_SLOT[i] < 9) {
-                                Globals.CHARACTER_TABLE[i].Speed_Down_Turn = 3;
+                                Globals.BattleController.CharacterTable[i].Speed_Down_Turn = 3;
                                 Constants.WriteGLogOutput("[BOSS] Golden Dragon speed down activated.");
                             }
                         }
@@ -4856,7 +4838,7 @@ namespace Dragoon_Modifier {
                     if (trackDamage) {
                         for (int i = 0; i < 3; i++) {
                             if (Globals.PARTY_SLOT[i] < 9) {
-                                ubTrackHP[i] = Globals.CHARACTER_TABLE[i].HP;
+                                ubTrackHP[i] = Globals.BattleController.CharacterTable[i].HP;
                             }
                         }
                     }
@@ -4878,8 +4860,8 @@ namespace Dragoon_Modifier {
 
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9 && !trackDamage) {
-                            if (ubTrackHP[i] != Globals.CHARACTER_TABLE[i].HP && (ubElectricUnleash == 0 || ubElectricUnleash == 2)) {
-                                if (Globals.CHARACTER_TABLE[i].HP < ubTrackHP[i]) {
+                            if (ubTrackHP[i] != Globals.BattleController.CharacterTable[i].HP && (ubElectricUnleash == 0 || ubElectricUnleash == 2)) {
+                                if (Globals.BattleController.CharacterTable[i].HP < ubTrackHP[i]) {
                                     if (moveSet == 59) {
                                         ubElectricCharges += 1;
                                         trackDamage = true;
@@ -4887,31 +4869,31 @@ namespace Dragoon_Modifier {
                                         ubElectricCharges += 3;
                                         trackDamage = true;
 
-                                        Globals.CHARACTER_TABLE[i].PWR_AT = -50;
-                                        Globals.CHARACTER_TABLE[i].PWR_MAT = -50;
-                                        Globals.CHARACTER_TABLE[i].PWR_AT_Turn = 3;
-                                        Globals.CHARACTER_TABLE[i].PWR_MAT_Turn = 3;
+                                        Globals.BattleController.CharacterTable[i].PWR_AT = -50;
+                                        Globals.BattleController.CharacterTable[i].PWR_MAT = -50;
+                                        Globals.BattleController.CharacterTable[i].PWR_AT_Turn = 3;
+                                        Globals.BattleController.CharacterTable[i].PWR_MAT_Turn = 3;
                                         Constants.WriteGLogOutput("[BOSS] Attack down activated.");
                                     } else if (moveSet == 71) {
                                         ubElectricCharges += 5;
                                         trackDamage = true;
 
-                                        Globals.CHARACTER_TABLE[i].PWR_DF = -50;
-                                        Globals.CHARACTER_TABLE[i].PWR_MDF = -50;
-                                        Globals.CHARACTER_TABLE[i].PWR_DF_Turn = 3;
-                                        Globals.CHARACTER_TABLE[i].PWR_MDF_Turn = 3;
+                                        Globals.BattleController.CharacterTable[i].PWR_DF = -50;
+                                        Globals.BattleController.CharacterTable[i].PWR_MDF = -50;
+                                        Globals.BattleController.CharacterTable[i].PWR_DF_Turn = 3;
+                                        Globals.BattleController.CharacterTable[i].PWR_MDF_Turn = 3;
                                         Constants.WriteGLogOutput("[BOSS] Defense down activated.");
                                     } else if (moveSet == 77) {
                                         trackDamage = true;
 
-                                        Globals.CHARACTER_TABLE[i].PWR_AT = -50;
-                                        Globals.CHARACTER_TABLE[i].PWR_MAT = -50;
-                                        Globals.CHARACTER_TABLE[i].PWR_DF = -50;
-                                        Globals.CHARACTER_TABLE[i].PWR_MDF = -50;
-                                        Globals.CHARACTER_TABLE[i].PWR_AT_Turn = 3;
-                                        Globals.CHARACTER_TABLE[i].PWR_MAT_Turn = 3;
-                                        Globals.CHARACTER_TABLE[i].PWR_DF_Turn = 3;
-                                        Globals.CHARACTER_TABLE[i].PWR_MDF_Turn = 3;
+                                        Globals.BattleController.CharacterTable[i].PWR_AT = -50;
+                                        Globals.BattleController.CharacterTable[i].PWR_MAT = -50;
+                                        Globals.BattleController.CharacterTable[i].PWR_DF = -50;
+                                        Globals.BattleController.CharacterTable[i].PWR_MDF = -50;
+                                        Globals.BattleController.CharacterTable[i].PWR_AT_Turn = 3;
+                                        Globals.BattleController.CharacterTable[i].PWR_MAT_Turn = 3;
+                                        Globals.BattleController.CharacterTable[i].PWR_DF_Turn = 3;
+                                        Globals.BattleController.CharacterTable[i].PWR_MDF_Turn = 3;
                                         Constants.WriteGLogOutput("[BOSS] Power down activated.");
                                     }
 
@@ -4955,16 +4937,16 @@ namespace Dragoon_Modifier {
 
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9) {
-                            ubTrackHP[i] = Globals.CHARACTER_TABLE[i].HP;
-                            if (Globals.CHARACTER_TABLE[i].Action == 192) {
-                                Globals.CHARACTER_TABLE[i].PWR_AT = 0;
-                                Globals.CHARACTER_TABLE[i].PWR_MAT = 0;
-                                Globals.CHARACTER_TABLE[i].PWR_DF = 0;
-                                Globals.CHARACTER_TABLE[i].PWR_MDF = 0;
-                                Globals.CHARACTER_TABLE[i].PWR_AT_Turn = 0;
-                                Globals.CHARACTER_TABLE[i].PWR_MAT_Turn = 0;
-                                Globals.CHARACTER_TABLE[i].PWR_DF_Turn = 0;
-                                Globals.CHARACTER_TABLE[i].PWR_MDF_Turn = 0;
+                            ubTrackHP[i] = Globals.BattleController.CharacterTable[i].HP;
+                            if (Globals.BattleController.CharacterTable[i].Action == 192) {
+                                Globals.BattleController.CharacterTable[i].PWR_AT = 0;
+                                Globals.BattleController.CharacterTable[i].PWR_MAT = 0;
+                                Globals.BattleController.CharacterTable[i].PWR_DF = 0;
+                                Globals.BattleController.CharacterTable[i].PWR_MDF = 0;
+                                Globals.BattleController.CharacterTable[i].PWR_AT_Turn = 0;
+                                Globals.BattleController.CharacterTable[i].PWR_MAT_Turn = 0;
+                                Globals.BattleController.CharacterTable[i].PWR_DF_Turn = 0;
+                                Globals.BattleController.CharacterTable[i].PWR_MDF_Turn = 0;
                             }
                         }
                     }
@@ -5047,7 +5029,7 @@ namespace Dragoon_Modifier {
             if (Emulator.ReadByte("BOSS_COUNT") == 11) {
                 for (int i = 0; i < 3; i++) {
                     if (Globals.PARTY_SLOT[i] < 9) {
-                        Globals.CHARACTER_TABLE[i].Guard = 0;
+                        Globals.BattleController.CharacterTable[i].Guard = 0;
                     }
                 }
             }
@@ -5189,7 +5171,7 @@ namespace Dragoon_Modifier {
 
                 for (int i = 0; i < 3; i++) {
                     if (Globals.PARTY_SLOT[i] < 9) {
-                        if (Globals.CHARACTER_TABLE[i].Guard == 1)
+                        if (Globals.BattleController.CharacterTable[i].Guard == 1)
                             guardingParty++;
                         if (Emulator.ReadByte("DRAGOON_TURNS", (0x4 * i)) > 0)
                             guardingDragoon++;
@@ -5308,11 +5290,11 @@ namespace Dragoon_Modifier {
         public void ReverseDragonBlockStaff() {
             if (Globals.DIFFICULTY_MODE.Equals("Normal")) {
                 for (int i = 0; i < 3; i++) {
-                    if (Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[i].DAT < 1000) {
-                        Globals.CHARACTER_TABLE[i].DAT = (ushort) (Globals.CHARACTER_TABLE[i].DAT * 20);
-                        Globals.CHARACTER_TABLE[i].DMAT = (ushort) (Globals.CHARACTER_TABLE[i].DMAT * 20);
-                        Globals.CHARACTER_TABLE[i].DDF = (ushort) (Globals.CHARACTER_TABLE[i].DDF * 20);
-                        Globals.CHARACTER_TABLE[i].DMDF = (ushort) (Globals.CHARACTER_TABLE[i].DMDF * 20);
+                    if (Globals.PARTY_SLOT[i] < 9 && Globals.BattleController.CharacterTable[i].DAT < 1000) {
+                        Globals.BattleController.CharacterTable[i].DAT = (ushort) (Globals.BattleController.CharacterTable[i].DAT * 20);
+                        Globals.BattleController.CharacterTable[i].DMAT = (ushort) (Globals.BattleController.CharacterTable[i].DMAT * 20);
+                        Globals.BattleController.CharacterTable[i].DDF = (ushort) (Globals.BattleController.CharacterTable[i].DDF * 20);
+                        Globals.BattleController.CharacterTable[i].DMDF = (ushort) (Globals.BattleController.CharacterTable[i].DMDF * 20);
                     }
                 }
             }
@@ -5321,25 +5303,25 @@ namespace Dragoon_Modifier {
         public void ArmorGuard() {
             for (int i = 0; i < 3; i++) {
                 if (Globals.PARTY_SLOT[i] < 9) {
-                    if (Emulator.ReadByte("DRAGOON_TURNS", (0x4 * i)) > 0 && Globals.CHARACTER_TABLE[i].PWR_DF != 0) {
-                        Globals.CHARACTER_TABLE[i].PWR_DF = 0;
-                        Globals.CHARACTER_TABLE[i].PWR_DF_Turn = 0;
-                        Globals.CHARACTER_TABLE[i].PWR_MDF = 0;
-                        Globals.CHARACTER_TABLE[i].PWR_MDF_Turn = 0;
+                    if (Emulator.ReadByte("DRAGOON_TURNS", (0x4 * i)) > 0 && Globals.BattleController.CharacterTable[i].PWR_DF != 0) {
+                        Globals.BattleController.CharacterTable[i].PWR_DF = 0;
+                        Globals.BattleController.CharacterTable[i].PWR_DF_Turn = 0;
+                        Globals.BattleController.CharacterTable[i].PWR_MDF = 0;
+                        Globals.BattleController.CharacterTable[i].PWR_MDF_Turn = 0;
                     } else {
-                        if (Globals.CHARACTER_TABLE[i].Guard == 1) {
-                            if (Globals.CHARACTER_TABLE[i].PWR_DF == -50 || Globals.CHARACTER_TABLE[i].PWR_DF == 0 || Globals.CHARACTER_TABLE[i].PWR_DF_Turn == 0) {
-                                Globals.CHARACTER_TABLE[i].PWR_DF = 50;
-                                Globals.CHARACTER_TABLE[i].PWR_DF_Turn = 20;
-                                Globals.CHARACTER_TABLE[i].PWR_MDF = 50;
-                                Globals.CHARACTER_TABLE[i].PWR_MDF_Turn = 20;
+                        if (Globals.BattleController.CharacterTable[i].Guard == 1) {
+                            if (Globals.BattleController.CharacterTable[i].PWR_DF == -50 || Globals.BattleController.CharacterTable[i].PWR_DF == 0 || Globals.BattleController.CharacterTable[i].PWR_DF_Turn == 0) {
+                                Globals.BattleController.CharacterTable[i].PWR_DF = 50;
+                                Globals.BattleController.CharacterTable[i].PWR_DF_Turn = 20;
+                                Globals.BattleController.CharacterTable[i].PWR_MDF = 50;
+                                Globals.BattleController.CharacterTable[i].PWR_MDF_Turn = 20;
                             }
                         } else {
-                            if (Globals.CHARACTER_TABLE[i].PWR_DF == 50 || Globals.CHARACTER_TABLE[i].PWR_DF == 0 || Globals.CHARACTER_TABLE[i].PWR_DF_Turn == 0) {
-                                Globals.CHARACTER_TABLE[i].PWR_DF = -50;
-                                Globals.CHARACTER_TABLE[i].PWR_DF_Turn = 20;
-                                Globals.CHARACTER_TABLE[i].PWR_MDF = -50;
-                                Globals.CHARACTER_TABLE[i].PWR_MDF_Turn = 20;
+                            if (Globals.BattleController.CharacterTable[i].PWR_DF == 50 || Globals.BattleController.CharacterTable[i].PWR_DF == 0 || Globals.BattleController.CharacterTable[i].PWR_DF_Turn == 0) {
+                                Globals.BattleController.CharacterTable[i].PWR_DF = -50;
+                                Globals.BattleController.CharacterTable[i].PWR_DF_Turn = 20;
+                                Globals.BattleController.CharacterTable[i].PWR_MDF = -50;
+                                Globals.BattleController.CharacterTable[i].PWR_MDF_Turn = 20;
                             }
                         }
                     }
@@ -5358,20 +5340,20 @@ namespace Dragoon_Modifier {
         public void DragoonGuard() {
             for (int i = 0; i < 3; i++) {
                 if (Globals.PARTY_SLOT[i] < 9) {
-                    if (Globals.CHARACTER_TABLE[i].Action == 10 && (Globals.CHARACTER_TABLE[i].Menu == 96 || Globals.CHARACTER_TABLE[i].Menu == 225)) {
-                        Globals.CHARACTER_TABLE[i].Menu = (byte)(Globals.CHARACTER_TABLE[i].Menu + 2);
+                    if (Globals.BattleController.CharacterTable[i].Action == 10 && (Globals.BattleController.CharacterTable[i].Menu == 96 || Globals.BattleController.CharacterTable[i].Menu == 225)) {
+                        Globals.BattleController.CharacterTable[i].Menu = (byte)(Globals.BattleController.CharacterTable[i].Menu + 2);
                     }
                 }
             }
 
             for (int i = 0; i < 3; i++) {
                 if (Globals.PARTY_SLOT[i] < 9) {
-                    if (Globals.CHARACTER_TABLE[i].Action == 10 && Emulator.ReadByte(Globals.M_POINT + 0xD46) == 0) {
-                        //Globals.CHARACTER_TABLE[i].Write("Death_Res", 192);
-                        Globals.CHARACTER_TABLE[i].Guard = 1;
+                    if (Globals.BattleController.CharacterTable[i].Action == 10 && Emulator.ReadByte(Globals.M_POINT + 0xD46) == 0) {
+                        //Globals.BattleController.CharacterTable[i].Write("Death_Res", 192);
+                        Globals.BattleController.CharacterTable[i].Guard = 1;
                     } else {
-                        if (Globals.CHARACTER_TABLE[i].Action == 10) {
-                            Globals.CHARACTER_TABLE[i].Guard = 0;
+                        if (Globals.BattleController.CharacterTable[i].Action == 10) {
+                            Globals.BattleController.CharacterTable[i].Guard = 0;
                         }
                     }
                 }
@@ -5432,9 +5414,9 @@ namespace Dragoon_Modifier {
                 eleBombItemUsed = Emulator.ReadByte(Globals.MONS_ADDRESS[0] + 0xABC);
                 if ((eleBombItemUsed >= 241 && eleBombItemUsed <= 248) || eleBombItemUsed == 250) {
                     if (Globals.PARTY_SLOT[2] < 9) {
-                        byte player1Action = Globals.CHARACTER_TABLE[0].Action;
-                        byte player2Action = Globals.CHARACTER_TABLE[1].Action;
-                        byte player3Action = Globals.CHARACTER_TABLE[2].Action;
+                        byte player1Action = Globals.BattleController.CharacterTable[0].Action;
+                        byte player2Action = Globals.BattleController.CharacterTable[1].Action;
+                        byte player3Action = Globals.BattleController.CharacterTable[2].Action;
                         if (player1Action == 24 && (player2Action == 16 || player2Action == 18 || player2Action == 208) && (player3Action == 16 || player3Action == 18 || player3Action == 208)) {
                             eleBombSlot = 0;
                             eleBombTurns = 5;
@@ -5451,8 +5433,8 @@ namespace Dragoon_Modifier {
                             eleBombChange = false;
                         }
                     } else if (Globals.PARTY_SLOT[1] < 9) {
-                        byte player1Action = Globals.CHARACTER_TABLE[0].Action;
-                        byte player2Action = Globals.CHARACTER_TABLE[1].Action;
+                        byte player1Action = Globals.BattleController.CharacterTable[0].Action;
+                        byte player2Action = Globals.BattleController.CharacterTable[1].Action;
                         if (player1Action == 24 && (player2Action == 16 || player2Action == 18 || player2Action == 208)) {
                             eleBombSlot = 0;
                             eleBombTurns = 5;
@@ -5464,7 +5446,7 @@ namespace Dragoon_Modifier {
                             eleBombChange = false;
                         }
                     } else {
-                        byte player1Action = Globals.CHARACTER_TABLE[0].Action;
+                        byte player1Action = Globals.BattleController.CharacterTable[0].Action;
                         if (player1Action == 24) {
                             eleBombSlot = 0;
                             eleBombTurns = 5;
@@ -5475,9 +5457,9 @@ namespace Dragoon_Modifier {
 
                 //Constants.WriteDebug("Item: " + eleBombItemUsed + " | Slot: " + eleBombSlot + " | Turns: " + eleBombTurns + " | Change: " + eleBombChange);
             } else {
-                //Constants.WriteDebug("Item: " + eleBombItemUsed + " | Slot: " + eleBombSlot + " | Turns: " + eleBombTurns + " | Change: " + eleBombChange + " | Element: " + eleBombElement + " | Action: " + Globals.CHARACTER_TABLE[eleBombSlot].Read("Action"));
+                //Constants.WriteDebug("Item: " + eleBombItemUsed + " | Slot: " + eleBombSlot + " | Turns: " + eleBombTurns + " | Change: " + eleBombChange + " | Element: " + eleBombElement + " | Action: " + Globals.BattleController.CharacterTable[eleBombSlot].Read("Action"));
                 if (Emulator.ReadUShort("BATTLE_VALUE") == 41215 && Globals.STATS_CHANGED && eleBombSlot >= 0) {
-                    if ((Globals.CHARACTER_TABLE[eleBombSlot].Action == 8 || Globals.CHARACTER_TABLE[eleBombSlot].Action == 10) && !eleBombChange) {
+                    if ((Globals.BattleController.CharacterTable[eleBombSlot].Action == 8 || Globals.BattleController.CharacterTable[eleBombSlot].Action == 10) && !eleBombChange) {
                         eleBombChange = true;
                         if (eleBombTurns == 5) {
                             ushort element = 0;
@@ -5513,7 +5495,7 @@ namespace Dragoon_Modifier {
                         }
                     }
 
-                    if (eleBombChange && (Globals.CHARACTER_TABLE[eleBombSlot].Action == 0 || Globals.CHARACTER_TABLE[eleBombSlot].Action == 2)) {
+                    if (eleBombChange && (Globals.BattleController.CharacterTable[eleBombSlot].Action == 0 || Globals.BattleController.CharacterTable[eleBombSlot].Action == 2)) {
                         eleBombChange = false;
                         eleBombTurns -= 1;
                         if (eleBombTurns <= 0) {
@@ -5524,7 +5506,7 @@ namespace Dragoon_Modifier {
                         }
                     }
 
-                    if (Globals.CHARACTER_TABLE[eleBombSlot].Action == 192) {
+                    if (Globals.BattleController.CharacterTable[eleBombSlot].Action == 192) {
                         for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
                             Globals.MONSTER_TABLE[i].Write("Element", eleBombOldElement[i]);
                             Globals.MONSTER_TABLE[i].Write("Display_Element", eleBombOldElement[i]);
@@ -5552,14 +5534,14 @@ namespace Dragoon_Modifier {
             if (Globals.GAME_STATE == Globals.GameStateEnum.Battle && Globals.STATS_CHANGED && !noHPDecayOnBattleEntry) {
                 for (int i = 0; i < 3; i++) {
                     if (Globals.PARTY_SLOT[i] == 0) {
-                        if (Globals.CHARACTER_TABLE[i].HP_Regen == 246 || Globals.CHARACTER_TABLE[i].HP_Regen == -10) { //Default
-                            Globals.CHARACTER_TABLE[i].HP_Regen = 0;
-                        } else if (Globals.CHARACTER_TABLE[i].HP_Regen == -3) { //Heal Ring
-                            Globals.CHARACTER_TABLE[i].HP_Regen = 7;
-                        } else if (Globals.CHARACTER_TABLE[i].HP_Regen == 256) {
-                            Globals.CHARACTER_TABLE[i].HP_Regen = 10;
-                        } else if (Globals.CHARACTER_TABLE[i].HP_Regen == 0 && Emulator.ReadByte("CHAR_TABLE", 0 * 0x2C + 0x18) == 0x7D) { //Therapy Ring
-                            Globals.CHARACTER_TABLE[i].HP_Regen = 10;
+                        if (Globals.BattleController.CharacterTable[i].HP_Regen == 246 || Globals.BattleController.CharacterTable[i].HP_Regen == -10) { //Default
+                            Globals.BattleController.CharacterTable[i].HP_Regen = 0;
+                        } else if (Globals.BattleController.CharacterTable[i].HP_Regen == -3) { //Heal Ring
+                            Globals.BattleController.CharacterTable[i].HP_Regen = 7;
+                        } else if (Globals.BattleController.CharacterTable[i].HP_Regen == 256) {
+                            Globals.BattleController.CharacterTable[i].HP_Regen = 10;
+                        } else if (Globals.BattleController.CharacterTable[i].HP_Regen == 0 && Emulator.ReadByte("CHAR_TABLE", 0 * 0x2C + 0x18) == 0x7D) { //Therapy Ring
+                            Globals.BattleController.CharacterTable[i].HP_Regen = 10;
                         }
                     }
                 }
@@ -5626,7 +5608,7 @@ namespace Dragoon_Modifier {
                         bool partyAttacking = false;
                         for (int i = 0; i < 3; i++) {
                             if (Globals.PARTY_SLOT[i] < 9) {
-                                byte action = Globals.CHARACTER_TABLE[i].Action;
+                                byte action = Globals.BattleController.CharacterTable[i].Action;
                                 if (action == 24 || action == 26 || action == 136 || action == 138) {
                                     partyAttacking = true;
                                     dmgTrkSlot = i;
@@ -5746,15 +5728,15 @@ namespace Dragoon_Modifier {
                             }
 
                             //if (Globals.PARTY_SLOT[i] != 2 && Globals.PARTY_SLOT[i] != 8)
-                            Globals.CHARACTER_TABLE[i].AT = (ushort) Math.Round(Globals.CHARACTER_TABLE[i].AT * attackBoost);
-                            Globals.CHARACTER_TABLE[i].MAT = (ushort) Math.Round(Globals.CHARACTER_TABLE[i].MAT * magicBoost);
-                            Globals.CHARACTER_TABLE[i].DF = (ushort) Math.Round(Globals.CHARACTER_TABLE[i].DF * defenseBoost);
-                            Globals.CHARACTER_TABLE[i].MDF = (ushort) Math.Round(Globals.CHARACTER_TABLE[i].MDF * defenseBoost);
+                            Globals.BattleController.CharacterTable[i].AT = (ushort) Math.Round(Globals.BattleController.CharacterTable[i].AT * attackBoost);
+                            Globals.BattleController.CharacterTable[i].MAT = (ushort) Math.Round(Globals.BattleController.CharacterTable[i].MAT * magicBoost);
+                            Globals.BattleController.CharacterTable[i].DF = (ushort) Math.Round(Globals.BattleController.CharacterTable[i].DF * defenseBoost);
+                            Globals.BattleController.CharacterTable[i].MDF = (ushort) Math.Round(Globals.BattleController.CharacterTable[i].MDF * defenseBoost);
 
                             if (rowType == 1)
-                                Globals.CHARACTER_TABLE[i].Pos_FB = 5;
+                                Globals.BattleController.CharacterTable[i].Pos_FB = 5;
                             else if (rowType == 2)
-                                Globals.CHARACTER_TABLE[i].Pos_FB = 13;
+                                Globals.BattleController.CharacterTable[i].Pos_FB = 13;
                         }
                     }
                 }), DispatcherPriority.ContextIdle);
@@ -5779,12 +5761,12 @@ namespace Dragoon_Modifier {
                         timePlayed = Emulator.ReadInt("TIME_PLAYED");
 
                         for (int i = 0; i < 3; i++) {
-                            if (Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[i].HP > 0) {
+                            if (Globals.PARTY_SLOT[i] < 9 && Globals.BattleController.CharacterTable[i].HP > 0) {
                                 if (cooldowns > 0) {
                                     cooldowns -= 1;
-                                    extraTurnBattleC[i] += Globals.CHARACTER_TABLE[i].SPD / 2;
+                                    extraTurnBattleC[i] += Globals.BattleController.CharacterTable[i].SPD / 2;
                                 } else {
-                                    extraTurnBattleC[i] += Globals.CHARACTER_TABLE[i].SPD;
+                                    extraTurnBattleC[i] += Globals.BattleController.CharacterTable[i].SPD;
                                 }
                                 if (extraTurnBattleC[i] > 6000) {
                                     extraTurnBattleC[i] = 6000;
@@ -5857,9 +5839,9 @@ namespace Dragoon_Modifier {
             Constants.WriteDebugProgram("[EATB] Dragoon Turns: " + Emulator.ReadByte("DRAGOON_TURNS", 0x4 * slot) + "/" + Emulator.ReadShort("DRAGOON_TURNS", 0x4 * slot) + "/" + Emulator.ReadInt("DRAGOON_TURNS", 0x4 * slot));
 
             if (Emulator.ReadByte("DRAGOON_TURNS", 0x4 * slot) > 0 && Emulator.ReadByte("DRAGOON_TURNS", 0x4 * slot) < 6)
-                Globals.CHARACTER_TABLE[slot].Action = 10;
+                Globals.BattleController.CharacterTable[slot].Action = 10;
             else
-                Globals.CHARACTER_TABLE[slot].Action = 8;
+                Globals.BattleController.CharacterTable[slot].Action = 8;
         }
 
         public void QTB() {
@@ -5867,7 +5849,7 @@ namespace Dragoon_Modifier {
                 if (!qtbOnBattleEntry) {
                     this.Dispatcher.BeginInvoke(new Action(() => {
                         for (int i = 0; i < 3; i++)
-                            currentHP[i] = Globals.CHARACTER_TABLE[i].HP;
+                            currentHP[i] = Globals.BattleController.CharacterTable[i].HP;
                         qtbTurns = 2;
                         pgrQTB.Value = qtbTurns;
                     }), DispatcherPriority.ContextIdle);
@@ -5875,27 +5857,27 @@ namespace Dragoon_Modifier {
 
                 byte partyMembersAttacked = 0;
                 for (int i = 0; i < 3; i++) {
-                    if (Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[i].HP > 0) {
-                        if (currentHP[i] < Globals.CHARACTER_TABLE[i].HP) {
+                    if (Globals.PARTY_SLOT[i] < 9 && Globals.BattleController.CharacterTable[i].HP > 0) {
+                        if (currentHP[i] < Globals.BattleController.CharacterTable[i].HP) {
                             partyMembersAttacked += 1;
-                            currentHP[i] = Globals.CHARACTER_TABLE[i].HP;
+                            currentHP[i] = Globals.BattleController.CharacterTable[i].HP;
                         } else {
                             if (uiCombo["cboQTB"] == Globals.PARTY_SLOT[i]) {
                                 byte healAmount = 10;
-                                if (Globals.CHARACTER_TABLE[i].Accessory == 125) {
+                                if (Globals.BattleController.CharacterTable[i].Accessory == 125) {
                                     healAmount = 20;
                                 }
-                                if (Globals.CHARACTER_TABLE[i].HP + 1 <= (double) (currentHP[i] + Math.Round((double) Globals.CHARACTER_TABLE[i].Max_HP / healAmount) + 2)) {
+                                if (Globals.BattleController.CharacterTable[i].HP + 1 <= (double) (currentHP[i] + Math.Round((double) Globals.BattleController.CharacterTable[i].Max_HP / healAmount) + 2)) {
                                     AddQTB();
-                                    currentHP[i] = Globals.CHARACTER_TABLE[i].HP;
+                                    currentHP[i] = Globals.BattleController.CharacterTable[i].HP;
                                 }
                             } else {
-                                currentHP[i] = Globals.CHARACTER_TABLE[i].HP;
+                                currentHP[i] = Globals.BattleController.CharacterTable[i].HP;
                             }
                         }
 
                         if (uiCombo["cboQTB"] == Globals.PARTY_SLOT[i]) {
-                            if (Globals.CHARACTER_TABLE[i].Action == 8 || Globals.CHARACTER_TABLE[i].Action == 10) {
+                            if (Globals.BattleController.CharacterTable[i].Action == 8 || Globals.BattleController.CharacterTable[i].Action == 10) {
                                 if (!qtbLeaderTurn)
                                     AddQTB();
                                 qtbLeaderTurn = true;
@@ -5950,14 +5932,14 @@ namespace Dragoon_Modifier {
                 pgrQTB.Value = qtbTurns;
 
                 if (Emulator.ReadByte("DRAGOON_TURNS", 0x4 * slot) > 0)
-                    Globals.CHARACTER_TABLE[slot].Action = 10;
+                    Globals.BattleController.CharacterTable[slot].Action = 10;
                 else
-                    Globals.CHARACTER_TABLE[slot].Action = 8;
+                    Globals.BattleController.CharacterTable[slot].Action = 8;
 
                 bool playerTurn = false;
                 for (int i = 0; i < 3; i++) {
-                    if (Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[i].HP > 0) {
-                        if (Globals.CHARACTER_TABLE[i].Action == 24 || Globals.CHARACTER_TABLE[i].Action == 26 | Globals.CHARACTER_TABLE[i].Action == 136) {
+                    if (Globals.PARTY_SLOT[i] < 9 && Globals.BattleController.CharacterTable[i].HP > 0) {
+                        if (Globals.BattleController.CharacterTable[i].Action == 24 || Globals.BattleController.CharacterTable[i].Action == 26 | Globals.BattleController.CharacterTable[i].Action == 136) {
                             playerTurn = true;
                         }
                     }
@@ -6003,10 +5985,10 @@ namespace Dragoon_Modifier {
                 if (!atbOnBattleEntry) {
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9) {
-                            currentHP[i] = Globals.CHARACTER_TABLE[i].HP;
-                            playerSpeed[i] = Globals.CHARACTER_TABLE[i].SPD;
-                            Globals.CHARACTER_TABLE[i].SPD = 0;
-                            Globals.CHARACTER_TABLE[i].Turn = 0;
+                            currentHP[i] = Globals.BattleController.CharacterTable[i].HP;
+                            playerSpeed[i] = Globals.BattleController.CharacterTable[i].SPD;
+                            Globals.BattleController.CharacterTable[i].SPD = 0;
+                            Globals.BattleController.CharacterTable[i].Turn = 0;
                         }
                     }
                 }
@@ -6017,22 +5999,22 @@ namespace Dragoon_Modifier {
 
                 for (int i = 0; i < 3; i++) {
                     if (Globals.PARTY_SLOT[i] < 9) {
-                        byte action = Globals.CHARACTER_TABLE[i].Action;
+                        byte action = Globals.BattleController.CharacterTable[i].Action;
                         if (action == 8 || action == 10 || action == 24 || action == 26 || action == 136 || action == 138)
                             partyTakingAction = true;
                     }
                 }
 
                 for (int i = 0; i < 3; i++) {
-                    if (Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[i].HP > 0) {
+                    if (Globals.PARTY_SLOT[i] < 9 && Globals.BattleController.CharacterTable[i].HP > 0) {
                         partyMemberAttacked[i] = false;
-                        Globals.CHARACTER_TABLE[i].SPD = 0;
-                        Globals.CHARACTER_TABLE[i].Turn = 0;
-                        if (currentHP[i] < Globals.CHARACTER_TABLE[i].HP) {
+                        Globals.BattleController.CharacterTable[i].SPD = 0;
+                        Globals.BattleController.CharacterTable[i].Turn = 0;
+                        if (currentHP[i] < Globals.BattleController.CharacterTable[i].HP) {
                             partyMemberAttacked[i] = true;
                             partyMembersAttacked += 1;
                         }
-                        currentHP[i] = Globals.CHARACTER_TABLE[i].HP;
+                        currentHP[i] = Globals.BattleController.CharacterTable[i].HP;
                     }
                 }
 
@@ -6050,7 +6032,7 @@ namespace Dragoon_Modifier {
 
                     if (partyTakingAction) {
                         for (int i = 0; i < 3; i++) {
-                            if (Globals.PARTY_SLOT[i] < 9 && Globals.CHARACTER_TABLE[i].HP > 0) {
+                            if (Globals.PARTY_SLOT[i] < 9 && Globals.BattleController.CharacterTable[i].HP > 0) {
                                 extraTurnBattleC[i] += playerSpeed[i] * 3;
                                 if (extraTurnBattleC[i] > 6000) {
                                     extraTurnBattleC[i] = 6000;
@@ -8094,9 +8076,9 @@ namespace Dragoon_Modifier {
                 int[] actions = new int[3];
                 for (int i = 0; i < 3; i++) {
                     if (Globals.PARTY_SLOT[i] < 9) {
-                        actions[i] = Globals.CHARACTER_TABLE[i].Action;
+                        actions[i] = Globals.BattleController.CharacterTable[i].Action;
                         if (actions[i] == 8 || actions[i] == 10 || actions[i] == 136) {
-                            if (Globals.CHARACTER_TABLE[i].Menu >= 15 && Globals.CHARACTER_TABLE[i].Menu < 250) {
+                            if (Globals.BattleController.CharacterTable[i].Menu >= 15 && Globals.BattleController.CharacterTable[i].Menu < 250) {
                                 update = true;
                             }
                         }
@@ -8121,7 +8103,7 @@ namespace Dragoon_Modifier {
 
                 for (int i = 0; i < 3; i++) {
                     if (Globals.PARTY_SLOT[i] < 9) {
-                        if ((actions[i] == 8 || actions[i] == 10) && Globals.CHARACTER_TABLE[i].Menu == 0 && !partySecondMenu) {
+                        if ((actions[i] == 8 || actions[i] == 10) && Globals.BattleController.CharacterTable[i].Menu == 0 && !partySecondMenu) {
                             update = true;
                             partySecondMenu = true;
                         }
@@ -8132,7 +8114,7 @@ namespace Dragoon_Modifier {
                     partySecondMenu = false;
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9) {
-                            if ((actions[i] == 8 || actions[i] == 10) && Globals.CHARACTER_TABLE[i].Menu == 0 && !partySecondMenu) {
+                            if ((actions[i] == 8 || actions[i] == 10) && Globals.BattleController.CharacterTable[i].Menu == 0 && !partySecondMenu) {
                                 update = true;
                                 partySecondMenu = true;
                             }

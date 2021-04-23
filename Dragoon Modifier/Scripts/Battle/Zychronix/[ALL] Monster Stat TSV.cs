@@ -8,7 +8,7 @@ public class MonsterStatTSV {
 	static bool UPDATE_MODE = false;
 
     public static void Run() {
-		if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED && !WRITE) {
+		if (Globals.GAME_STATE == Globals.GameStateEnum.Battle && Globals.STATS_CHANGED && !WRITE) {
 			List<string> tsvData = new List<string>();
 			List<int> mid = new List<int>();
 			string line;
@@ -51,7 +51,7 @@ public class MonsterStatTSV {
 
 			WRITE = true;
 		} else {
-			if (Globals.GAME_STATE != 1) {
+			if (Globals.GAME_STATE != Globals.GameStateEnum.Battle) {
 				WRITE = false;
             }
         }

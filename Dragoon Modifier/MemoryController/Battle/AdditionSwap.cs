@@ -8,16 +8,19 @@ using System.Threading.Tasks;
 namespace Dragoon_Modifier.MemoryController.Battle {
     public static class AdditionSwap {
         public static void Init() {
-            byte slot = 3;
+            byte slot = 0;
+            bool exit = true;
             for (byte i = 0; i < Globals.BattleController.CharacterTable.Length; i++) {
                 if (Globals.BattleController.CharacterTable[i].Action == 8) {
                     slot = i;
+                    exit = false;
                     break;
                 }
-                if (slot == Globals.BattleController.CharacterTable.Length - 1) {
-                    Constants.WriteOutput("Cannot swap addition right now.");
-                    return;
-                }
+            }
+
+            if (exit) {
+                Constants.WriteOutput("Cannot swap addition right now.");
+                return;
             }
 
             uint character = Globals.MemoryController.PartySlot[slot]; ;
@@ -41,6 +44,7 @@ namespace Dragoon_Modifier.MemoryController.Battle {
                 var SP = Globals.BattleController.CharacterTable[slot].SP;
                 Globals.BattleController.CharacterTable[slot].SP = 100;
                 Globals.BattleController.CharacterTable[slot].Action = 10;
+                Globals.BattleController.CharacterTable[slot].IsDragoon = 1;
                 Globals.BattleController.CharacterTable[slot].DragoonTurns = 1;
                 byte menu = 0;
                 for (byte i = 0; i < additionCount; i++) {
@@ -56,15 +60,16 @@ namespace Dragoon_Modifier.MemoryController.Battle {
                 }
 
                 byte chosenAddition = 0;
-                while (Globals.BattleController.CharacterTable[0].Action != 9) {
+                while (Globals.BattleController.CharacterTable[slot].Action != 9) {
                     if (Globals.GAME_STATE != Globals.GameStateEnum.Battle) { // Exit function if battle ends
                         return;
                     }
-                    Thread.Sleep(50);
                     chosenAddition = Globals.BattleController.BattleMenuChosenSlot; // Reads the index of the selected battle menu slot
+                    Thread.Sleep(50);
                 }
 
                 // TODO Actually swap the addition
+                Thread.Sleep(500);
 
                 var turn = Globals.BattleController.CharacterTable[slot].Turn;
                 Globals.BattleController.CharacterTable[slot].Turn = 800;
@@ -77,8 +82,7 @@ namespace Dragoon_Modifier.MemoryController.Battle {
                 var SP_Regen = Globals.BattleController.CharacterTable[slot].SP_Regen;
                 Globals.BattleController.CharacterTable[slot].SP_Regen = 0;
 
-
-                while (Globals.BattleController.CharacterTable[0].Action != 9) {
+                while (Globals.BattleController.CharacterTable[slot].MP != 1) {
                     if (Globals.GAME_STATE != Globals.GameStateEnum.Battle) { // Exit function if battle ends
                         return;
                     }
@@ -92,7 +96,6 @@ namespace Dragoon_Modifier.MemoryController.Battle {
                 Globals.BattleController.CharacterTable[slot].MP_Regen = MP_Regen;
                 Globals.BattleController.CharacterTable[slot].SP_Regen = SP_Regen;
 
-                Globals.ADDITION_SWAP = false;
                 Constants.WriteGLogOutput("Addition swap complete.");
             }
         }

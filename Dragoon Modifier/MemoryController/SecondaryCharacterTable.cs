@@ -63,7 +63,7 @@ namespace Dragoon_Modifier.MemoryController {
 
         public SecondaryCharacterTable(int baseAddress, int character) {
             _baseAddress = baseAddress + (character * 0xA0);
-            _additionLevel = new ByteCollection(_baseAddress + 0x35, 1, addCounts[character]);
+            _additionLevel = new ByteCollection(_baseAddress + 0x36, 1, addCounts[character]);
             _additionCount = new ByteCollection(_baseAddress + 0x3E, 1, addCounts[character]);
         }
     }

@@ -100,7 +100,7 @@ namespace Dragoon_Modifier {
 
         #endregion
 
-        #region Equipmen tVariables
+        #region Equipment Variables
 
         static byte spiritEaterSlot = 0;
         static bool spiritEaterCheck = false;
@@ -192,6 +192,11 @@ namespace Dragoon_Modifier {
 
         #endregion
 
+        public static Hotkey[] Hotkeys = new Hotkey[] {
+            new DragonBeaterHotkey(Hotkey.KEY_CIRCLE + Hotkey.KEY_RIGHT),
+            new JeweledHammerHotkey(Hotkey.KEY_CIRCLE + Hotkey.KEY_DOWN)
+        };
+
         public static void Setup(Dictionary<string, int> uiCombo, string difficulty) {
 
             checkWingBlaster = false;
@@ -227,6 +232,8 @@ namespace Dragoon_Modifier {
                 starChildren = 0;
                 recoveryRateSave = Globals.BattleController.CharacterTable[index].HP_Regen;
             }
+
+            SetupBurnStacks();
         }
 
         static void EquipChangesSetup(Dictionary<string, int> uiCombo, string difficulty) { // TODO remove Emulator
@@ -521,10 +528,10 @@ namespace Dragoon_Modifier {
                         Globals.BattleController.CharacterTable[slot].SP_Regen = 100;
                         for (int i = 0; i < Globals.BattleController.CharacterTable.Length; i++) {
                             if (i != slot) {
-                                ushort df = (ushort) Math.Round(Globals.CHARACTER_TABLE[slot].DF * 0.7);
+                                ushort df = (ushort) Math.Round(Globals.BattleController.CharacterTable[slot].DF * 0.7);
                                 Globals.BattleController.CharacterTable[i].DF = df;
                                 Globals.BattleController.CharacterTable[i].OG_DF = df;
-                                ushort mdf = (ushort) Math.Round(Globals.CHARACTER_TABLE[slot].MDF * 0.7);
+                                ushort mdf = (ushort) Math.Round(Globals.BattleController.CharacterTable[slot].MDF * 0.7);
                                 Globals.BattleController.CharacterTable[i].MDF = mdf;
                                 Globals.BattleController.CharacterTable[i].OG_MDF = mdf;
                             }
@@ -1130,6 +1137,16 @@ namespace Dragoon_Modifier {
             return multi;
         }
 
+        static void SetupBurnStacks() {
+            for (int slot = 0; slot < Globals.BattleController.CharacterTable.Length; slot++) {
+                if (Globals.PARTY_SLOT[slot] == 0) {
+                    int dlv = Globals.BattleController.CharacterTable[slot].DLV;
+                    dartMaxBurnStacks = dlv == 1 ? 3 : dlv == 2 ? 6 : dlv == 3 ? 9 : 12;
+                }
+                dartPreviousAction[slot] = 0;
+            }
+        }
+
         static void AddBurnStacks(int stacks, int slot) {
             dartPreviousBurnStacks = dartBurnStacks;
             dartBurnStacks = Math.Min(dartMaxBurnStacks, dartBurnStacks + stacks);
@@ -1143,7 +1160,7 @@ namespace Dragoon_Modifier {
             Constants.WriteGLogOutput("Dart Burn Stacks: " + dartBurnStacks + " / " + dartMaxBurnStacks);
         }
 
-        static void DartBurnStackHandler() {
+        public static void DartBurnStackHandler() {
             for (int i = 0; i < 3; i++) {
                 if (Globals.PARTY_SLOT[i] == 0) {
                     if (resetBurnStack) {
@@ -1253,7 +1270,7 @@ namespace Dragoon_Modifier {
                     dartPreviousAction[i] = Globals.BattleController.CharacterTable[i].Action;
                 }
             }
-        }
+        } // TODO rewrite
 
         static void NoEscape() { // TODO remove Emulator
             if (Globals.CheckDMScript("btnBlackRoom")) {
@@ -1340,7 +1357,7 @@ namespace Dragoon_Modifier {
                     if ((Globals.BattleController.CharacterTable[slot].Action == 136 || Globals.BattleController.CharacterTable[slot].Action == 26) && (batteryGloveLastAction != 136 || batteryGloveLastAction != 26)) {
                         batteryGloveCharge++;
                         if (batteryGloveCharge == 7) {
-                            Globals.BattleController.CharacterTable[slot].AT = (ushort) Math.Round(Globals.CHARACTER_TABLE[slot].AT * 2.5);
+                            Globals.BattleController.CharacterTable[slot].AT = (ushort) Math.Round(Globals.BattleController.CharacterTable[slot].AT * 2.5);
                         } else if (batteryGloveCharge > 7) {
                             batteryGloveCharge = 1;
                             Globals.BattleController.CharacterTable[slot].AT = Globals.BattleController.CharacterTable[slot].OG_AT;
@@ -1374,7 +1391,7 @@ namespace Dragoon_Modifier {
                 } else if ((legendCasqueSlot & (1 << slot)) != 0) {
                     if (legendCasqueCheckMDF[slot] && Globals.BattleController.CharacterTable[slot].Guard == 1) {
                         if (legendCasqueCount[slot] >= 3) {
-                            Globals.BattleController.CharacterTable[slot].MDF = (ushort) Math.Ceiling(Globals.CHARACTER_TABLE[slot].MDF * 1.2);
+                            Globals.BattleController.CharacterTable[slot].MDF = (ushort) Math.Ceiling(Globals.BattleController.CharacterTable[slot].MDF * 1.2);
                             legendCasqueCount[slot] = 0;
                         } else {
                             legendCasqueCount[slot] += 1;
@@ -1469,6 +1486,154 @@ namespace Dragoon_Modifier {
                         Globals.BattleController.CharacterTable[slot].Action = 192;
                     }
                 }
+            }
+        }
+
+        public static void MagicInventoryHandler() {
+            for (int i = 0; i < 3; i++) {
+                if (Globals.PARTY_SLOT[i] == 2 || Globals.PARTY_SLOT[i] == 8) {
+                    if (Globals.BattleController.CharacterTable[i].Action == 10) {
+
+                    }
+
+                    /*if (dartBurnStacks > 0) {
+                    if (Globals.BattleController.CharacterTable[i].Read("Action") == 10) {
+                        int menu = Globals.BattleController.CharacterTable[i].Read("Menu");
+
+                        if (menu == 96 || menu == 98) {
+                            byte[] icons = { 1, 4, 9, 3, 3 };
+                            Globals.BattleController.CharacterTable[i].Write("Menu", 225 - (96 - Globals.BattleController.CharacterTable[i].Read("Menu")));
+                            Thread.Sleep(60);
+                            for (int x = menu == 96 ? 1 : 0; x < icons.Length; x++) {
+                                Emulator.WriteByte(Globals.M_POINT + 0xD34 + (x - (menu == 96 ? 1 : 0)) * 0x2, icons[x]);
+                            }
+                        }
+
+                        int iconCount = Emulator.ReadByte(Globals.M_POINT + 0xD32);
+                        int iconSelected = Emulator.ReadByte(Globals.M_POINT + 0xD46);
+
+                        if (burnStackSelected) {
+                            if ((iconCount == 4 && (iconSelected == 0 || iconSelected == 2)) || (iconCount == 5 && (iconSelected == 1 || iconSelected == 3))) {
+                                burnStackSelected = false;
+                                double burnAmount = 1 + (dartBurnStacks * damagePerBurn);
+                                Emulator.WriteText(Globals.DRAGOON_SPELLS[0].Description_Pointer + 0x1E, "1.00");
+                                Emulator.WriteText(Globals.DRAGOON_SPELLS[1].Description_Pointer + 0x1E, "1.00");
+                                Emulator.WriteText(Globals.DRAGOON_SPELLS[2].Description_Pointer + 0x1E, "1.00");
+                                Emulator.WriteText(Globals.DRAGOON_SPELLS[3].Description_Pointer + 0x20, "1.00");
+
+                                if (dartBurnStacks == dartMaxBurnStacks) {
+                                    Emulator.WriteByte("SPELL_TABLE", 10, 0x7 + (0 * 0xC));
+                                    Emulator.WriteByte("SPELL_TABLE", 20, 0x7 + (1 * 0xC));
+                                    Emulator.WriteByte("SPELL_TABLE", 30, 0x7 + (2 * 0xC));
+                                    Emulator.WriteByte("SPELL_TABLE", 80, 0x7 + (3 * 0xC));
+                                }
+                            }
+                        } else {
+                            if ((iconCount == 4 && (iconSelected == 1 || iconSelected == 3)) || (iconCount == 5 && (iconSelected == 2 || iconSelected == 4))) {
+                                burnStackSelected = true;
+                                double burnAmount = 1 + (dartBurnStacks * damagePerBurn);
+                                bool max = dartBurnStacks == dartMaxBurnStacks;
+                                string flameshotDesc = Convert.ToString(max ? (burnAmount * burnStackMaxFlameshotMulti) : (burnAmount * burnStackFlameshotMulti));
+                                string explosionDesc = Convert.ToString(max ? (burnAmount * burnStackMaxExplosionMulti) : (burnAmount * burnStackExplosionMulti));
+                                string finalBurstDesc = Convert.ToString(max ? (burnAmount * burnStackMaxFinalBurstMulti) : (burnAmount * burnStackFinalBurstMulti));
+                                string redEyeDesc = Convert.ToString(max ? (burnAmount * burnStackMaxRedEyeMulti) : (burnAmount * burnStackRedEyeMulti));
+                                Emulator.WriteText(Globals.DRAGOON_SPELLS[0].Description_Pointer + 0x1E, flameshotDesc.Substring(0, Math.Min(4, flameshotDesc.Length)));
+                                Emulator.WriteText(Globals.DRAGOON_SPELLS[1].Description_Pointer + 0x1E, explosionDesc.Substring(0, Math.Min(4, explosionDesc.Length)));
+                                Emulator.WriteText(Globals.DRAGOON_SPELLS[2].Description_Pointer + 0x1E, finalBurstDesc.Substring(0, Math.Min(4, finalBurstDesc.Length)));
+                                Emulator.WriteText(Globals.DRAGOON_SPELLS[3].Description_Pointer + 0x20, redEyeDesc.Substring(0, Math.Min(4, redEyeDesc.Length)));
+
+                                if (dartBurnStacks == dartMaxBurnStacks) {
+                                    Emulator.WriteByte("SPELL_TABLE", 1, 0x7 + (0 * 0xC));
+                                    Emulator.WriteByte("SPELL_TABLE", 1, 0x7 + (1 * 0xC));
+                                    Emulator.WriteByte("SPELL_TABLE", 1, 0x7 + (2 * 0xC));
+                                    Emulator.WriteByte("SPELL_TABLE", 1, 0x7 + (3 * 0xC));
+                                }
+                            }
+                        }
+                    }
+                }*/
+                }
+            }
+        }
+
+        class JeweledHammerHotkey : Hotkey {
+            public JeweledHammerHotkey(int buttonPress) : base(buttonPress) {
+
+            }
+
+            public override void Init() {
+                if (jeweledHammerSlot != 0) {
+                    if (meruEnhanceDragoon) {
+                        if (Constants.REGION == Region.NTA) {
+                            Emulator.WriteAoB(Globals.DRAGOON_SPELLS[24].Description_Pointer, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1A 00 16 00 15 00 0F 00 FF A0");
+                            Emulator.WriteAoB(Globals.DRAGOON_SPELLS[27].Description_Pointer, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1A 00 18 00 15 00 0F 00 FF A0");
+                            Emulator.WriteAoB(Globals.DRAGOON_SPELLS[28].Description_Pointer, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 16 00 19 00 15 00 15 00 0F 00 FF A0");
+                        }
+                        Emulator.WriteByte("SPELL_TABLE", freezingRingMP, 0x7 + (24 * 0xC)); //Freezing Ring MP
+                        Emulator.WriteByte("SPELL_TABLE", rainbowBreathMP, 0x7 + (25 * 0xC)); //Rainbow Breath MP
+                        Emulator.WriteByte("SPELL_TABLE", diamonDustMP, 0x7 + (27 * 0xC)); //Diamond Dust MP
+                        Emulator.WriteByte("SPELL_TABLE", blueSeaDragonMP, 0x7 + (28 * 0xC)); //Blue Sea Dragon MP
+                        meruEnhanceDragoon = false;
+                        Constants.WriteGLogOutput("Meru's dragoon magic has returned to normal.");
+                    } else {
+                        if (Constants.REGION == Region.NTA) {
+                            Emulator.WriteAoB(Globals.DRAGOON_SPELLS[24].Description_Pointer, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1D 00 15 00 15 00 0F 00 FF A0");
+                            Emulator.WriteAoB(Globals.DRAGOON_SPELLS[27].Description_Pointer, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 1D 00 1D 00 15 00 0F 00 FF A0");
+                            Emulator.WriteAoB(Globals.DRAGOON_SPELLS[28].Description_Pointer, "35 00 39 00 4C 00 3D 00 4A 00 00 00 31 00 32 00 30 00 00 00 17 00 16 00 15 00 15 00 0F 00 FF A0");
+                        }
+                        Emulator.WriteByte("SPELL_TABLE", enhancedFreezingRingMP, 0x7 + (24 * 0xC)); //Freezing Ring MP
+                        Emulator.WriteByte("SPELL_TABLE", enhancedRainbowBreathMP, 0x7 + (25 * 0xC)); //Rainbow Breath MP
+                        Emulator.WriteByte("SPELL_TABLE", enhancedDiamondDustMP, 0x7 + (27 * 0xC)); //Diamond Dust MP
+                        Emulator.WriteByte("SPELL_TABLE", enhancedBlueSeaDragonMP, 0x7 + (28 * 0xC)); //Blue Sea Dragon MP
+                        meruEnhanceDragoon = true;
+                        Constants.WriteGLogOutput("Meru will now consume more MP for bonus effects.");
+                    }
+                } else {
+                    Constants.WriteGLogOutput("Jeweled Hammer not equipped.");
+                }
+                Globals.LAST_HOTKEY = Constants.GetTime();
+                return;
+            }
+        }
+
+        class DragonBeaterHotkey: Hotkey {
+            public DragonBeaterHotkey(int buttonPress) : base(buttonPress) {
+
+            }
+
+            public override void Init() {
+                if (dragonBeaterSlot != 0) {
+                    if (!checkRoseDamage) {
+                        if (roseEnhanceDragoon) {
+                            if (Constants.REGION == Region.NTA) {
+                                Emulator.WriteAoB(Globals.DRAGOON_SPELLS[15].Description_Pointer, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1A 00 1E 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 FF A0");
+                                Emulator.WriteAoB(Globals.DRAGOON_SPELLS[16].Description_Pointer, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 18 00 1E 00 1A 00 0F 00 FF A0");
+                                Emulator.WriteAoB(Globals.DRAGOON_SPELLS[19].Description_Pointer, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 16 00 1B 00 1D 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 FF A0");
+                            }
+                            Emulator.WriteByte("SPELL_TABLE", astralDrainMP, 0x7 + (15 * 0xC)); //Astral Drain MP
+                            Emulator.WriteByte("SPELL_TABLE", deathDimensionMP, 0x7 + (16 * 0xC)); //Death Dimension MP
+                            Emulator.WriteByte("SPELL_TABLE", darkDragonMP, 0x7 + (19 * 0xC)); //Dark Dragon MP
+                            roseEnhanceDragoon = false;
+                            Constants.WriteGLogOutput("Rose's dragoon magic has returned to normal.");
+                        } else {
+                            if (Constants.REGION == Region.NTA) {
+                                Emulator.WriteAoB(Globals.DRAGOON_SPELLS[15].Description_Pointer, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1D 00 17 00 1A 00 0F 00 00 00 10 00 00 00 26 00 2E 00 FF A0");
+                                Emulator.WriteAoB(Globals.DRAGOON_SPELLS[16].Description_Pointer, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 1C 00 1E 00 1A 00 0F 00 FF A0");
+                                Emulator.WriteAoB(Globals.DRAGOON_SPELLS[19].Description_Pointer, "22 00 39 00 4A 00 43 00 00 00 31 00 32 00 30 00 00 00 16 00 16 00 1A 00 15 00 0F 00 00 00 10 00 00 00 26 00 2E 00 FF A0");
+                            }
+                            Emulator.WriteByte("SPELL_TABLE", enhancedAstralDrainMP, 0x7 + (15 * 0xC)); //Astral Drain MP
+                            Emulator.WriteByte("SPELL_TABLE", enhancedDeathDimensionMP, 0x7 + (16 * 0xC)); //Death Dimension MP
+                            Emulator.WriteByte("SPELL_TABLE", enhancedDarkDragonMP, 0x7 + (19 * 0xC)); //Dark Dragon MP
+                            roseEnhanceDragoon = true;
+                            Constants.WriteGLogOutput("Rose will now consume more MP for bonus effects.");
+                        }
+                    } else {
+                        Constants.WriteGLogOutput("You can't swap MP modes right now.");
+                    }
+                } else {
+                    Constants.WriteGLogOutput("Dragon Beater not equipped.");
+                }
+                Globals.LAST_HOTKEY = Constants.GetTime();
             }
         }
     }
