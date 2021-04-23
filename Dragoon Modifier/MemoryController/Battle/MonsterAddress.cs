@@ -24,6 +24,7 @@ namespace Dragoon_Modifier.MemoryController {
         public byte DropChance { get { return Emulator.ReadByte(_rewardsAddress + 0x4 + UniqueIndex * 0x1A8); } set { Emulator.WriteByte(_rewardsAddress + 0x4 + UniqueIndex * 0x1A8, value); } }
         public byte ItemDrop { get { return Emulator.ReadByte(_rewardsAddress + 0x5 + UniqueIndex * 0x1A8); } set { Emulator.WriteByte(_rewardsAddress + 0x5 + UniqueIndex * 0x1A8, value); } }
         public ushort ID { get { return Emulator.ReadUShort(_idAddress); } }
+        public byte Attack_Move { get { return Emulator.ReadByte(_baseAddress + 0xACC); } set { Emulator.WriteByte(_baseAddress + 0xACC, value); } }
 
         public MonsterAddress(uint m_point, int slot, int position, int battleOffset) : base(m_point, slot, position) {
             _rewardsAddress = Constants.GetAddress("MONSTER_REWARDS");

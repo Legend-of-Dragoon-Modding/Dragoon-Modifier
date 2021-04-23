@@ -64,7 +64,7 @@ public class MonsterStatTSV {
 		stats += '\t';
 		stats += Emulator.ReadName(0xC69D0 + (0x2C * offset));
 		stats += '\t';
-		switch ((int) Globals.MONSTER_TABLE[offset].Read("Element")) {
+		switch ((int) Globals.BattleController.MonsterTable[offset].Element) {
 			case 0:
 				temp = "Null";
 				break;
@@ -98,31 +98,31 @@ public class MonsterStatTSV {
         }
 		stats += temp;
 		stats += '\t';
-		stats += Globals.MONSTER_TABLE[offset].Read("Max_HP");
+		stats += Globals.BattleController.MonsterTable[offset].Max_HP;
 		stats += '\t';
-		stats += Globals.MONSTER_TABLE[offset].Read("AT");
+		stats += Globals.BattleController.MonsterTable[offset].AT;
 		stats += '\t';
-		stats += Globals.MONSTER_TABLE[offset].Read("MAT");
+		stats += Globals.BattleController.MonsterTable[offset].MAT;
 		stats += '\t';
-		stats += Globals.MONSTER_TABLE[offset].Read("DF");
+		stats += Globals.BattleController.MonsterTable[offset].DF;
 		stats += '\t';
-		stats += Globals.MONSTER_TABLE[offset].Read("MDF");
+		stats += Globals.BattleController.MonsterTable[offset].MDF;
 		stats += '\t';
-		stats += Globals.MONSTER_TABLE[offset].Read("SPD");
+		stats += Globals.BattleController.MonsterTable[offset].SPD;
 		stats += '\t';
-		stats += Globals.MONSTER_TABLE[offset].Read("A_AV");
+		stats += Globals.BattleController.MonsterTable[offset].A_AV;
 		stats += '\t';
-		stats += Globals.MONSTER_TABLE[offset].Read("M_AV");
+		stats += Globals.BattleController.MonsterTable[offset].M_AV;
 		stats += '\t';
-		stats += Globals.MONSTER_TABLE[offset].Read("P_Immune");
+		stats += Globals.BattleController.MonsterTable[offset].P_Immune;
 		stats += '\t';
-		stats += Globals.MONSTER_TABLE[offset].Read("M_Immune");
+		stats += Globals.BattleController.MonsterTable[offset].M_Immune;
 		stats += '\t';
-		stats += Globals.MONSTER_TABLE[offset].Read("P_Half");
+		stats += Globals.BattleController.MonsterTable[offset].P_Half;
 		stats += '\t';
-		stats += Globals.MONSTER_TABLE[offset].Read("M_Half");
+		stats += Globals.BattleController.MonsterTable[offset].M_Half;
 		stats += '\t';
-		switch ((int) Globals.MONSTER_TABLE[offset].Read("E_Immune")) {
+		switch ((int) Globals.BattleController.MonsterTable[offset].E_Immune) {
 			case 0:
 				temp = "None";
 				break;
@@ -156,7 +156,7 @@ public class MonsterStatTSV {
 		}
 		stats += temp;
 		stats += '\t';
-		switch ((int) Globals.MONSTER_TABLE[offset].Read("E_Half")) {
+		switch ((int) Globals.BattleController.MonsterTable[offset].E_Half) {
 			case 0:
 				temp = "None";
 				break;
@@ -190,9 +190,9 @@ public class MonsterStatTSV {
 		}
 		stats += temp;
 		stats += '\t';
-		stats += Globals.MONSTER_TABLE[offset].Read("Stat_Res");
+		stats += Globals.BattleController.MonsterTable[offset].StatusResist;
 		stats += '\t';
-		stats += Globals.MONSTER_TABLE[offset].Read("Death_Res");
+		stats += Globals.BattleController.MonsterTable[offset].Special_Effect;
 		stats += '\t';
 		stats += Emulator.ReadShort(Constants.GetAddress("MONSTER_REWARDS") + (int) Globals.UNIQUE_MONSTER_IDS.IndexOf(monster) * 0x1A8);
 		stats += '\t';

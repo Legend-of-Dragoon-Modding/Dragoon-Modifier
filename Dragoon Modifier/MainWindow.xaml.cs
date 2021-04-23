@@ -1193,7 +1193,7 @@ namespace Dragoon_Modifier {
                     EnableUI();
                 }
 
-                if (Globals.MAP == 732 && Globals.ENCOUNTER_ID == 420 && Globals.GAME_STATE == Globals.GameStateEnum.Battle && Globals.STATS_CHANGED && Globals.MONSTER_TABLE[0].Read("HP") == 0 && !Globals.DIFFICULTY_MODE.Equals("Normal") && saveFaust) {
+                if (Globals.MAP == 732 && Globals.ENCOUNTER_ID == 420 && Globals.GAME_STATE == Globals.GameStateEnum.Battle && Globals.STATS_CHANGED && Globals.BattleController.MonsterTable[0].HP == 0 && !Globals.DIFFICULTY_MODE.Equals("Normal") && saveFaust) {
                     faustCount += 1;
                     saveFaust = false;
                     Constants.WriteGLogOutput("Your current Faust count is: " + faustCount);
@@ -1224,22 +1224,22 @@ namespace Dragoon_Modifier {
                     }
 
                     for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                        originalMonsterStats[i, 0] = Globals.MONSTER_TABLE[i].Read("Max_HP"); //MAX HP
-                        originalMonsterStats[i, 1] = Globals.MONSTER_TABLE[i].Read("AT"); //AT
-                        originalMonsterStats[i, 2] = Globals.MONSTER_TABLE[i].Read("MAT"); //MAT
-                        originalMonsterStats[i, 3] = Globals.MONSTER_TABLE[i].Read("DF"); //DF
-                        originalMonsterStats[i, 4] = Globals.MONSTER_TABLE[i].Read("MDF"); //MDF
-                        originalMonsterStats[i, 5] = Globals.MONSTER_TABLE[i].Read("SPD"); //SPD
+                        originalMonsterStats[i, 0] = Globals.BattleController.MonsterTable[i].Max_HP;
+                        originalMonsterStats[i, 1] = Globals.BattleController.MonsterTable[i].AT;
+                        originalMonsterStats[i, 2] = Globals.BattleController.MonsterTable[i].MAT;
+                        originalMonsterStats[i, 3] = Globals.BattleController.MonsterTable[i].DF;
+                        originalMonsterStats[i, 4] = Globals.BattleController.MonsterTable[i].MDF;
+                        originalMonsterStats[i, 5] = Globals.BattleController.MonsterTable[i].SPD;
                     }
 
                     if (faustBattle && Globals.ENCOUNTER_ID == 420) {
-                        Globals.MONSTER_TABLE[0].Write("HP", 25600);
-                        Globals.MONSTER_TABLE[0].Write("Max_HP", 25600);
-                        Globals.MONSTER_TABLE[0].Write("AT", 125);
-                        Globals.MONSTER_TABLE[0].Write("MAT", 125);
-                        Globals.MONSTER_TABLE[0].Write("DF", 75);
-                        Globals.MONSTER_TABLE[0].Write("MDF", 200);
-                        Globals.MONSTER_TABLE[0].Write("SPD", 50);
+                        Globals.BattleController.MonsterTable[0].HP = 25600;
+                        Globals.BattleController.MonsterTable[0].Max_HP = 25600;
+                        Globals.BattleController.MonsterTable[0].AT = 125;
+                        Globals.BattleController.MonsterTable[0].MAT = 125;
+                        Globals.BattleController.MonsterTable[0].DF = 75;
+                        Globals.BattleController.MonsterTable[0].MDF = 200;
+                        Globals.BattleController.MonsterTable[0].SPD = 50;
 
                         WipeRewards();
 
@@ -1561,67 +1561,67 @@ namespace Dragoon_Modifier {
                             } else if (Globals.HOTKEY == (Hotkey.KEY_SELECT + Hotkey.KEY_START)) {
                                 if (Globals.DIFFICULTY_MODE.Equals("NormalHard") || Globals.DIFFICULTY_MODE.Equals("Hard")) {
                                     if (Globals.ENCOUNTER_ID == 411) {
-                                        Globals.MONSTER_TABLE[0].Write("AT", 270);
-                                        Globals.MONSTER_TABLE[0].Write("MAT", 235);
-                                        Globals.MONSTER_TABLE[1].Write("AT", 250);
-                                        Globals.MONSTER_TABLE[1].Write("MAT", 235);
-                                        Globals.MONSTER_TABLE[2].Write("AT", 250);
-                                        Globals.MONSTER_TABLE[2].Write("MAT", 235);
+                                        Globals.BattleController.MonsterTable[0].AT = 270;
+                                        Globals.BattleController.MonsterTable[0].MAT = 235;
+                                        Globals.BattleController.MonsterTable[1].AT = 250;
+                                        Globals.BattleController.MonsterTable[1].MAT = 235;
+                                        Globals.BattleController.MonsterTable[2].AT = 250;
+                                        Globals.BattleController.MonsterTable[2].MAT = 235;
                                         Constants.WriteGLogOutput("Nerfed.");
                                         Globals.LAST_HOTKEY = Constants.GetTime();
                                     } else if (Globals.ENCOUNTER_ID == 442) {
-                                        Globals.MONSTER_TABLE[0].Write("AT", 332);
-                                        Globals.MONSTER_TABLE[0].Write("MAT", 290);
+                                        Globals.BattleController.MonsterTable[0].AT = 332;
+                                        Globals.BattleController.MonsterTable[0].MAT = 290;
                                         Constants.WriteGLogOutput("Nerfed.");
                                         Globals.LAST_HOTKEY = Constants.GetTime();
                                     } else if (Globals.ENCOUNTER_ID == 443) {
-                                        Globals.MONSTER_TABLE[0].Write("AT", 247);
-                                        Globals.MONSTER_TABLE[0].Write("MAT", 220);
-                                        Globals.MONSTER_TABLE[1].Write("Max_HP", 8000);
-                                        Globals.MONSTER_TABLE[1].Write("AT", 247);
-                                        Globals.MONSTER_TABLE[1].Write("MAT", 220);
-                                        Globals.MONSTER_TABLE[2].Write("Max_HP", 8000);
-                                        Globals.MONSTER_TABLE[2].Write("AT", 247);
-                                        Globals.MONSTER_TABLE[2].Write("MAT", 220);
-                                        Globals.MONSTER_TABLE[3].Write("Max_HP", 8000);
-                                        Globals.MONSTER_TABLE[3].Write("AT", 247);
-                                        Globals.MONSTER_TABLE[3].Write("MAT", 220);
-                                        Globals.MONSTER_TABLE[4].Write("Max_HP", 8000);
-                                        Globals.MONSTER_TABLE[4].Write("AT", 247);
-                                        Globals.MONSTER_TABLE[4].Write("MAT", 220);
+                                        Globals.BattleController.MonsterTable[0].AT = 247;
+                                        Globals.BattleController.MonsterTable[0].MAT = 220;
+                                        Globals.BattleController.MonsterTable[1].Max_HP = 8000;
+                                        Globals.BattleController.MonsterTable[1].AT = 247;
+                                        Globals.BattleController.MonsterTable[1].MAT = 220;
+                                        Globals.BattleController.MonsterTable[2].Max_HP = 8000;
+                                        Globals.BattleController.MonsterTable[2].AT = 247;
+                                        Globals.BattleController.MonsterTable[2].MAT = 220;
+                                        Globals.BattleController.MonsterTable[3].Max_HP = 8000;
+                                        Globals.BattleController.MonsterTable[3].AT = 247;
+                                        Globals.BattleController.MonsterTable[3].MAT = 220;
+                                        Globals.BattleController.MonsterTable[4].Max_HP = 8000;
+                                        Globals.BattleController.MonsterTable[4].AT = 247;
+                                        Globals.BattleController.MonsterTable[4].MAT = 220;
                                         Constants.WriteGLogOutput("Nerfed.");
                                         Globals.LAST_HOTKEY = Constants.GetTime();
                                     } else if (Globals.ENCOUNTER_ID == 390) {
-                                        Globals.MONSTER_TABLE[0].Write("AT", 38);
-                                        Globals.MONSTER_TABLE[0].Write("MAT", 38);
+                                        Globals.BattleController.MonsterTable[0].AT = 38;
+                                        Globals.BattleController.MonsterTable[0].MAT = 38;
                                         Constants.WriteGLogOutput("Nerfed.");
                                         Globals.LAST_HOTKEY = Constants.GetTime();
                                     } else if (Globals.ENCOUNTER_ID == 396) {
-                                        Globals.MONSTER_TABLE[0].Write("AT", 57);
-                                        Globals.MONSTER_TABLE[0].Write("MAT", 72);
-                                        Globals.MONSTER_TABLE[0].Write("DF", 140);
-                                        Globals.MONSTER_TABLE[0].Write("MDF", 200);
+                                        Globals.BattleController.MonsterTable[0].AT = 57;
+                                        Globals.BattleController.MonsterTable[0].MAT = 72;
+                                        Globals.BattleController.MonsterTable[0].DF = 140;
+                                        Globals.BattleController.MonsterTable[0].MDF = 200;
                                         Constants.WriteGLogOutput("Nerfed.");
                                         Globals.LAST_HOTKEY = Constants.GetTime();
                                     } else if (Globals.ENCOUNTER_ID == 430) {
-                                        Globals.MONSTER_TABLE[0].Write("HP", 17500);
-                                        Globals.MONSTER_TABLE[0].Write("Max_HP", 17500);
-                                        Globals.MONSTER_TABLE[0].Write("AT", 115);
-                                        Globals.MONSTER_TABLE[0].Write("MAT", 110);
-                                        Globals.MONSTER_TABLE[0].Write("DF", 180);
-                                        Globals.MONSTER_TABLE[0].Write("MDF", 180);
-                                        Globals.MONSTER_TABLE[1].Write("HP", 17500);
-                                        Globals.MONSTER_TABLE[1].Write("Max_HP", 17500);
-                                        Globals.MONSTER_TABLE[1].Write("AT", 103);
-                                        Globals.MONSTER_TABLE[1].Write("MAT", 130);
-                                        Globals.MONSTER_TABLE[1].Write("DF", 160);
-                                        Globals.MONSTER_TABLE[1].Write("MDF", 220);
-                                        Globals.MONSTER_TABLE[2].Write("HP", 20000);
-                                        Globals.MONSTER_TABLE[2].Write("Max_HP", 20000);
-                                        Globals.MONSTER_TABLE[2].Write("AT", 124);
-                                        Globals.MONSTER_TABLE[2].Write("MAT", 102);
-                                        Globals.MONSTER_TABLE[2].Write("DF", 140);
-                                        Globals.MONSTER_TABLE[2].Write("MDF", 140);
+                                        Globals.BattleController.MonsterTable[0].HP = 17500;
+                                        Globals.BattleController.MonsterTable[0].Max_HP = 17500;
+                                        Globals.BattleController.MonsterTable[0].AT = 115;
+                                        Globals.BattleController.MonsterTable[0].MAT = 110;
+                                        Globals.BattleController.MonsterTable[0].DF = 180;
+                                        Globals.BattleController.MonsterTable[0].MDF = 180;
+                                        Globals.BattleController.MonsterTable[1].HP = 17500;
+                                        Globals.BattleController.MonsterTable[1].Max_HP = 17500;
+                                        Globals.BattleController.MonsterTable[1].AT = 103;
+                                        Globals.BattleController.MonsterTable[1].MAT = 130;
+                                        Globals.BattleController.MonsterTable[1].DF = 160;
+                                        Globals.BattleController.MonsterTable[1].MDF = 220;
+                                        Globals.BattleController.MonsterTable[2].HP = 20000;
+                                        Globals.BattleController.MonsterTable[2].Max_HP = 20000;
+                                        Globals.BattleController.MonsterTable[2].AT = 124;
+                                        Globals.BattleController.MonsterTable[2].MAT = 102;
+                                        Globals.BattleController.MonsterTable[2].DF = 140;
+                                        Globals.BattleController.MonsterTable[2].MDF = 140;
                                         Constants.WriteGLogOutput("Nerfed.");
                                         Globals.LAST_HOTKEY = Constants.GetTime();
                                     } else {
@@ -1632,54 +1632,54 @@ namespace Dragoon_Modifier {
                             } else if (Globals.HOTKEY == (Hotkey.KEY_SELECT + Hotkey.KEY_R3)) {
                                 if (Globals.DIFFICULTY_MODE.Equals("NormalHard") || Globals.DIFFICULTY_MODE.Equals("Hard")) {
                                     if (Globals.ENCOUNTER_ID == 411) {
-                                        Globals.MONSTER_TABLE[0].Write("HP", 50000);
-                                        Globals.MONSTER_TABLE[0].Write("Max_HP", 50000);
-                                        Globals.MONSTER_TABLE[0].Write("AT", 160);
-                                        Globals.MONSTER_TABLE[0].Write("MAT", 125);
-                                        Globals.MONSTER_TABLE[0].Write("DF", 160);
-                                        Globals.MONSTER_TABLE[0].Write("MDF", 160);
-                                        Globals.MONSTER_TABLE[1].Write("HP", 15000);
-                                        Globals.MONSTER_TABLE[1].Write("Max_HP", 15000);
-                                        Globals.MONSTER_TABLE[1].Write("AT", 140);
-                                        Globals.MONSTER_TABLE[1].Write("MAT", 125);
-                                        Globals.MONSTER_TABLE[1].Write("DF", 190);
-                                        Globals.MONSTER_TABLE[1].Write("MDF", 170);
-                                        Globals.MONSTER_TABLE[2].Write("HP", 50000);
-                                        Globals.MONSTER_TABLE[2].Write("Max_HP", 50000);
-                                        Globals.MONSTER_TABLE[2].Write("AT", 140);
-                                        Globals.MONSTER_TABLE[2].Write("MAT", 125);
-                                        Globals.MONSTER_TABLE[2].Write("DF", 345);
-                                        Globals.MONSTER_TABLE[2].Write("MDF", 255);
+                                        Globals.BattleController.MonsterTable[0].HP = 50000;
+                                        Globals.BattleController.MonsterTable[0].Max_HP = 50000;
+                                        Globals.BattleController.MonsterTable[0].AT = 160;
+                                        Globals.BattleController.MonsterTable[0].MAT = 125;
+                                        Globals.BattleController.MonsterTable[0].DF = 160;
+                                        Globals.BattleController.MonsterTable[0].MDF = 160;
+                                        Globals.BattleController.MonsterTable[1].HP = 15000;
+                                        Globals.BattleController.MonsterTable[1].Max_HP = 15000;
+                                        Globals.BattleController.MonsterTable[1].AT = 140;
+                                        Globals.BattleController.MonsterTable[1].MAT = 125;
+                                        Globals.BattleController.MonsterTable[1].DF = 190;
+                                        Globals.BattleController.MonsterTable[1].MDF = 170;
+                                        Globals.BattleController.MonsterTable[2].HP = 50000;
+                                        Globals.BattleController.MonsterTable[2].Max_HP = 50000;
+                                        Globals.BattleController.MonsterTable[2].AT = 140;
+                                        Globals.BattleController.MonsterTable[2].MAT = 125;
+                                        Globals.BattleController.MonsterTable[2].DF = 345;
+                                        Globals.BattleController.MonsterTable[2].MDF = 255;
                                         Constants.WriteGLogOutput("Ultra Nerfed.");
                                         Globals.LAST_HOTKEY = Constants.GetTime();
                                     } else if (Globals.ENCOUNTER_ID == 442) {
-                                        Globals.MONSTER_TABLE[0].Write("HP", 60000);
-                                        Globals.MONSTER_TABLE[0].Write("Max_HP", 60000);
-                                        Globals.MONSTER_TABLE[0].Write("AT", 222);
-                                        Globals.MONSTER_TABLE[0].Write("MAT", 190);
-                                        Globals.MONSTER_TABLE[0].Write("DF", 170);
-                                        Globals.MONSTER_TABLE[0].Write("MDF", 200);
+                                        Globals.BattleController.MonsterTable[0].HP = 60000;
+                                        Globals.BattleController.MonsterTable[0].Max_HP = 60000;
+                                        Globals.BattleController.MonsterTable[0].AT = 222;
+                                        Globals.BattleController.MonsterTable[0].MAT = 190;
+                                        Globals.BattleController.MonsterTable[0].DF = 170;
+                                        Globals.BattleController.MonsterTable[0].MDF = 200;
                                         Constants.WriteGLogOutput("Ultra Nerfed.");
                                         Globals.LAST_HOTKEY = Constants.GetTime();
                                     } else if (Globals.ENCOUNTER_ID == 443) {
-                                        Globals.MONSTER_TABLE[0].Write("HP", 52500);
-                                        Globals.MONSTER_TABLE[0].Write("Max_HP", 52500);
-                                        Globals.MONSTER_TABLE[0].Write("AT", 167);
-                                        Globals.MONSTER_TABLE[0].Write("MAT", 140);
-                                        Globals.MONSTER_TABLE[0].Write("DF", 720);
-                                        Globals.MONSTER_TABLE[0].Write("MDF", 870);
-                                        Globals.MONSTER_TABLE[1].Write("Max_HP", 4000);
-                                        Globals.MONSTER_TABLE[1].Write("AT", 167);
-                                        Globals.MONSTER_TABLE[1].Write("MAT", 140);
-                                        Globals.MONSTER_TABLE[2].Write("Max_HP", 4000);
-                                        Globals.MONSTER_TABLE[2].Write("AT", 167);
-                                        Globals.MONSTER_TABLE[2].Write("MAT", 140);
-                                        Globals.MONSTER_TABLE[3].Write("Max_HP", 4000);
-                                        Globals.MONSTER_TABLE[3].Write("AT", 167);
-                                        Globals.MONSTER_TABLE[3].Write("MAT", 140);
-                                        Globals.MONSTER_TABLE[4].Write("Max_HP", 4000);
-                                        Globals.MONSTER_TABLE[4].Write("AT", 167);
-                                        Globals.MONSTER_TABLE[4].Write("MAT", 140);
+                                        Globals.BattleController.MonsterTable[0].HP = 52500;
+                                        Globals.BattleController.MonsterTable[0].Max_HP = 52500;
+                                        Globals.BattleController.MonsterTable[0].AT = 167;
+                                        Globals.BattleController.MonsterTable[0].MAT = 140;
+                                        Globals.BattleController.MonsterTable[0].DF = 720;
+                                        Globals.BattleController.MonsterTable[0].MDF = 870;
+                                        Globals.BattleController.MonsterTable[1].Max_HP = 4000;
+                                        Globals.BattleController.MonsterTable[1].AT = 167;
+                                        Globals.BattleController.MonsterTable[1].MAT = 140;
+                                        Globals.BattleController.MonsterTable[2].Max_HP = 4000;
+                                        Globals.BattleController.MonsterTable[2].AT = 167;
+                                        Globals.BattleController.MonsterTable[2].MAT = 140;
+                                        Globals.BattleController.MonsterTable[3].Max_HP = 4000;
+                                        Globals.BattleController.MonsterTable[3].AT = 167;
+                                        Globals.BattleController.MonsterTable[3].MAT = 140;
+                                        Globals.BattleController.MonsterTable[4].Max_HP = 4000;
+                                        Globals.BattleController.MonsterTable[4].AT = 167;
+                                        Globals.BattleController.MonsterTable[4].MAT = 140;
                                         Constants.WriteGLogOutput("Ultra Nerfed.");
                                         Globals.LAST_HOTKEY = Constants.GetTime();
                                     } else {
@@ -1778,7 +1778,7 @@ namespace Dragoon_Modifier {
                 if (Globals.ENCOUNTER_ID == 442) {
                     bool finalBurst = false;
                     if (ultimateHP[0] > 360000) {
-                        if (ubTrackMTP[0] > Globals.MONSTER_TABLE[0].Read("Turn")) {
+                        if (ubTrackMTP[0] > Globals.BattleController.MonsterTable[0].Turn) {
                             byte[] dragoonMagic = { 80, 81, 82 };
                             int chance = new Random().Next(1, 100);
                             if (chance > 60) {
@@ -1791,7 +1791,7 @@ namespace Dragoon_Modifier {
                             }
                         }
                     } else if (ultimateHP[0] > 180000) {
-                        if (ubTrackMTP[0] > Globals.MONSTER_TABLE[0].Read("Turn")) {
+                        if (ubTrackMTP[0] > Globals.BattleController.MonsterTable[0].Turn) {
                             byte[] dragoonMagic = { 80, 81, 82, 83 };
                             int chance = new Random().Next(1, 100);
                             if (chance > 65) {
@@ -1806,7 +1806,7 @@ namespace Dragoon_Modifier {
                             }
                         }
                     } else {
-                        if (ubTrackMTP[0] > Globals.MONSTER_TABLE[0].Read("Turn")) {
+                        if (ubTrackMTP[0] > Globals.BattleController.MonsterTable[0].Turn) {
                             byte[] dragoonMagic = { 80, 81, 82, 83 };
                             int chance = new Random().Next(1, 100);
                             if (chance > 65) {
@@ -1822,7 +1822,7 @@ namespace Dragoon_Modifier {
                         }
                     }
 
-                    if (Globals.MONSTER_TABLE[0].Read("Action") == 12)
+                    if (Globals.BattleController.MonsterTable[0].Action == 12)
                         Emulator.WriteByte(Globals.M_POINT - 0x50, ubZiegDragoon);
 
                     if (Emulator.ReadByte("TARGET_1") == 254 || Emulator.ReadByte("TARGET_2") == 254 || Emulator.ReadByte(Globals.M_POINT + 0xAC4) == 254 || finalBurst) {
@@ -1848,7 +1848,7 @@ namespace Dragoon_Modifier {
 
                     Emulator.WriteByte("SCREEN_FADE", 2);
 
-                    ubTrackMTP[0] = Globals.MONSTER_TABLE[0].Read("Turn");
+                    ubTrackMTP[0] = Globals.BattleController.MonsterTable[0].Turn;
                 }
                 Thread.Sleep(10);
             }
@@ -2302,16 +2302,16 @@ namespace Dragoon_Modifier {
                         if (ultimateMaxHP[i] > 65535) {
                             monsterDisplay[i, 1].Text = " " + ultimateHP[i] + "/" + ultimateMaxHP[i];
                         } else {
-                            monsterDisplay[i, 1].Text = " " + Convert.ToString(Globals.MONSTER_TABLE[i].Read("HP"), 10) + "/" + Globals.MONSTER_TABLE[i].Read("Max_HP");
+                            monsterDisplay[i, 1].Text = " " + Convert.ToString(Globals.BattleController.MonsterTable[i].HP, 10) + "/" + Globals.BattleController.MonsterTable[i].Max_HP;
                         }
                     } else {
-                        monsterDisplay[i, 1].Text = " " + Convert.ToString(Globals.MONSTER_TABLE[i].Read("HP"), 10) + "/" + Globals.MONSTER_TABLE[i].Read("Max_HP");
+                        monsterDisplay[i, 1].Text = " " + Convert.ToString(Globals.BattleController.MonsterTable[i].HP, 10) + "/" + Globals.BattleController.MonsterTable[i].Max_HP;
                     }
 
-                    monsterDisplay[i, 2].Text = " " + Globals.MONSTER_TABLE[i].Read("AT") + "/" + Globals.MONSTER_TABLE[i].Read("MAT");
-                    monsterDisplay[i, 3].Text = " " + Globals.MONSTER_TABLE[i].Read("DF") + "/" + Globals.MONSTER_TABLE[i].Read("MDF");
-                    monsterDisplay[i, 4].Text = " " + Globals.MONSTER_TABLE[i].Read("SPD");
-                    monsterDisplay[i, 5].Text = " " + Globals.MONSTER_TABLE[i].Read("Turn");
+                    monsterDisplay[i, 2].Text = " " + Globals.BattleController.MonsterTable[i].AT + "/" + Globals.BattleController.MonsterTable[i].MAT;
+                    monsterDisplay[i, 3].Text = " " + Globals.BattleController.MonsterTable[i].DF + "/" + Globals.BattleController.MonsterTable[i].MDF;
+                    monsterDisplay[i, 4].Text = " " + Globals.BattleController.MonsterTable[i].SPD;
+                    monsterDisplay[i, 5].Text = " " + Globals.BattleController.MonsterTable[i].Turn;
 
                     EnrageMode(i);
                 }
@@ -3000,14 +3000,14 @@ namespace Dragoon_Modifier {
 
                 if (ubMoveChange) {
                     for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                        ubMoveChgTrn[i] = Globals.MONSTER_TABLE[i].Read("Turn");
+                        ubMoveChgTrn[i] = Globals.BattleController.MonsterTable[i].Turn;
                     }
                     ubMoveChgSet = false;
                 }
 
                 if (ubArmorShell) {
                     if (Globals.ENCOUNTER_ID == 422) {
-                        ubHeartHPSave = Globals.MONSTER_TABLE[3].Read("HP");
+                        ubHeartHPSave = Globals.BattleController.MonsterTable[3].HP;
                         ubArmorShellTurns = 0;
                     }
                 }
@@ -3016,7 +3016,7 @@ namespace Dragoon_Modifier {
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9) {
                             Globals.BattleController.CharacterTable[i].StatusResist = 0;
-                            Globals.BattleController.CharacterTable[i].Special_Efect = 0;
+                            Globals.BattleController.CharacterTable[i].Special_Effect = 0;
                         }
                     }
                 }
@@ -3029,7 +3029,7 @@ namespace Dragoon_Modifier {
                     }
 
                     for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                        ubTrackEHP[i] = Globals.MONSTER_TABLE[i].Read("HP");
+                        ubTrackEHP[i] = Globals.BattleController.MonsterTable[i].HP;
                         if (ubBodyProtect)
                             ubTrackEHP[i] = ultimateHP[i];
                     }
@@ -3042,7 +3042,7 @@ namespace Dragoon_Modifier {
                     }
 
                     for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                        ubTrackMTP[i] = Globals.MONSTER_TABLE[i].Read("Turn");
+                        ubTrackMTP[i] = Globals.BattleController.MonsterTable[i].Turn;
                     }
 
                     ubBlockMenuHPTrack = false;
@@ -3278,7 +3278,7 @@ namespace Dragoon_Modifier {
 
                         if (ubInventoryRefresh) {
                             if (Globals.ENCOUNTER_ID == 390) {
-                                if (Globals.MONSTER_TABLE[0].Read("HP") == 0) {
+                                if (Globals.BattleController.MonsterTable[0].HP == 0) {
                                     for (int i = 0; i < inventorySize + 1; i++) {
                                         if (i == inventorySize) {
                                             Emulator.WriteByte("INVENTORY_SIZE", inventoryRefreshSize);
@@ -3417,23 +3417,23 @@ namespace Dragoon_Modifier {
                 }
 
                 if (Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].HP > 65535) {
-                    Globals.MONSTER_TABLE[i].Write("HP", (ushort) 65535);
-                    Globals.MONSTER_TABLE[i].Write("Max_HP", (ushort) 65535);
+                    Globals.BattleController.MonsterTable[i].HP = 65535;
+                    Globals.BattleController.MonsterTable[i].Max_HP = 65535;
                     ultimateHP[i] = ultimateMaxHP[i] = Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].HP;
                 } else {
-                    Globals.MONSTER_TABLE[i].Write("HP", (ushort) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].HP);
-                    Globals.MONSTER_TABLE[i].Write("Max_HP", (ushort) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].HP);
+                    Globals.BattleController.MonsterTable[i].HP = (ushort) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].HP;
+                    Globals.BattleController.MonsterTable[i].Max_HP = (ushort) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].HP;
                 }
-                Globals.MONSTER_TABLE[i].Write("AT", (short) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].AT);
-                Globals.MONSTER_TABLE[i].Write("OG_AT", (short) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].AT);
-                Globals.MONSTER_TABLE[i].Write("MAT", (short) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].MAT);
-                Globals.MONSTER_TABLE[i].Write("OG_MAT", (short) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].MAT);
-                Globals.MONSTER_TABLE[i].Write("DF", (short) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].DF);
-                Globals.MONSTER_TABLE[i].Write("OG_DF", (short) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].DF);
-                Globals.MONSTER_TABLE[i].Write("MDF", (short) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].MDF);
-                Globals.MONSTER_TABLE[i].Write("OG_MDF", (short) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].MDF);
-                Globals.MONSTER_TABLE[i].Write("SPD", (short) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].SPD);
-                Globals.MONSTER_TABLE[i].Write("OG_SPD", (short) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].SPD);
+                Globals.BattleController.MonsterTable[i].AT = (ushort) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].AT;
+                Globals.BattleController.MonsterTable[i].OG_AT = (ushort) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].AT;
+                Globals.BattleController.MonsterTable[i].MAT = (ushort) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].MAT;
+                Globals.BattleController.MonsterTable[i].OG_MAT = (ushort) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].MAT;
+                Globals.BattleController.MonsterTable[i].DF = (ushort) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].DF;
+                Globals.BattleController.MonsterTable[i].OG_DF = (ushort) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].DF;
+                Globals.BattleController.MonsterTable[i].MDF = (ushort) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].MDF;
+                Globals.BattleController.MonsterTable[i].OG_MDF = (ushort) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].MDF;
+                Globals.BattleController.MonsterTable[i].SPD = (ushort) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].SPD;
+                Globals.BattleController.MonsterTable[i].OG_SPD = (ushort) Globals.DICTIONARY.UltimateStatList[Globals.MONSTER_IDS[i]].SPD;
 
                 WipeRewards();
 
@@ -3498,7 +3498,7 @@ namespace Dragoon_Modifier {
                     case 386: //Fruegel I
                     case 487: //Commander II
                     case 414: //Urobolus
-                        if (Globals.MONSTER_TABLE[0].Read("HP") == 0) {
+                        if (Globals.BattleController.MonsterTable[0].HP == 0) {
                             UltimateBossDefeated();
                         }
                         break;
@@ -3514,14 +3514,14 @@ namespace Dragoon_Modifier {
                     case 408: //Virage I
                     case 409: //Virage II
                     case 420: //Magician Faust
-                        if (Globals.MONSTER_TABLE[0].Read("HP") == 0 || ultimateHP[0] == 0) {
+                        if (Globals.BattleController.MonsterTable[0].HP == 0 || ultimateHP[0] == 0) {
                             UltimateBossDefeated();
                         }
                         break;
                     case 449: //Feyrbrand (Spirit)
                     case 448: //Regole (Spirit)
                     case 447: //Divine Dragon (Spirit)
-                        if (Globals.MONSTER_TABLE[1].Read("HP") == 0 || ultimateHP[1] == 0) {
+                        if (Globals.BattleController.MonsterTable[1].HP == 0 || ultimateHP[1] == 0) {
                             UltimateBossDefeated();
                         }
                         break;
@@ -3531,14 +3531,14 @@ namespace Dragoon_Modifier {
                         }
                         break;
                     case 394: //Divine Dragon
-                        if (Globals.MONSTER_TABLE[0].Read("HP") == 0) {
+                        if (Globals.BattleController.MonsterTable[0].HP == 0) {
                             UltimateBossDefeated();
                         }
                         break;
                     default:
                         byte defeatedEnemies = 0;
                         for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                            if (Globals.MONSTER_TABLE[i].Read("HP") == 0 || ultimateHP[i] == 0) {
+                            if (Globals.BattleController.MonsterTable[i].HP == 0 || ultimateHP[i] == 0) {
                                 defeatedEnemies += 1;
                             }
                         }
@@ -3646,12 +3646,12 @@ namespace Dragoon_Modifier {
                 if ((ultimateShopLimited & 262144) == 262144) { //Power Down
                     if ((doubleRepeatUsed & 262144) != 262144) {
                         for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                            if (Globals.MONSTER_TABLE[i].Read("PWR_AT") == 206 && Globals.MONSTER_TABLE[i].Read("PWR_AT_TRN") > 0) {
+                            if (Globals.BattleController.MonsterTable[i].PWR_AT == -50 && Globals.BattleController.MonsterTable[i].PWR_AT_Turn > 0) {
                                 doubleRepeatUsed += 262144;
-                                Globals.MONSTER_TABLE[i].Write("PWR_AT_TRN", Globals.MONSTER_TABLE[i].Read("PWR_AT_TRN") + 3);
-                                Globals.MONSTER_TABLE[i].Write("PWR_MAT_TRN", Globals.MONSTER_TABLE[i].Read("PWR_MAT_TRN") + 3);
-                                Globals.MONSTER_TABLE[i].Write("PWR_DF_TRN", Globals.MONSTER_TABLE[i].Read("PWR_DF_TRN") + 3);
-                                Globals.MONSTER_TABLE[i].Write("PWR_MDF_TRN", Globals.MONSTER_TABLE[i].Read("PWR_MDF_TRN") + 3);
+                                Globals.BattleController.MonsterTable[i].PWR_AT_Turn += 3;
+                                Globals.BattleController.MonsterTable[i].PWR_MAT_Turn += 3;
+                                Globals.BattleController.MonsterTable[i].PWR_DF_Turn += 3;
+                                Globals.BattleController.MonsterTable[i].PWR_MDF_Turn += 3;
                             }
                         }
                     }
@@ -3675,13 +3675,13 @@ namespace Dragoon_Modifier {
                 if ((ultimateShopLimited & 1048576) == 1048576) { //Speed Down
                     if ((doubleRepeatUsed & 1048576) != 1048576) {
                         for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                            if (Globals.MONSTER_TABLE[i].Read("SPEED_DOWN_TRN") > 0) {
+                            if (Globals.BattleController.MonsterTable[i].Speed_Down_Turn > 0) {
                                 doubleRepeatUsed += 1048576;
 
-                                if (Globals.MONSTER_TABLE[i].Read("SPEED_DOWN_TRN") < 6) {
-                                    Globals.MONSTER_TABLE[i].Write("SPEED_DOWN_TRN", Globals.MONSTER_TABLE[i].Read("SPEED_DOWN_TRN") + 3);
+                                if (Globals.BattleController.MonsterTable[i].Speed_Down_Turn < 6) {
+                                    Globals.BattleController.MonsterTable[i].Speed_Down_Turn += 3;
                                 } else {
-                                    Globals.MONSTER_TABLE[i].Write("SPEED_DOWN_TRN", 6);
+                                    Globals.BattleController.MonsterTable[i].Speed_Down_Turn = 6;
                                 }
                             }
                         }
@@ -3737,7 +3737,7 @@ namespace Dragoon_Modifier {
                                 sigStoneTurns -= 16;
                             }
 
-                            if (Globals.MONSTER_TABLE[sigStoneSlot].Read("HP") == 0)
+                            if (Globals.BattleController.MonsterTable[sigStoneSlot].HP == 0)
                                 sigStoneTurns = 0;
                         }
                     }
@@ -3861,7 +3861,7 @@ namespace Dragoon_Modifier {
             if (partyAttacking && !ubUltimateHPSet) {
                 for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
                     if (ultimateHP[i] > 0) {
-                        Globals.MONSTER_TABLE[i].Write("HP", 65535);
+                        Globals.BattleController.MonsterTable[i].HP = 65535;
                     }
                 }
                 ubUltimateHPSet = true;
@@ -3872,7 +3872,7 @@ namespace Dragoon_Modifier {
                 if (ultimateHP[i] > 0) {
                     if (partyAttacking) {
                         if (!ubCheckedDamage) {
-                            ushort currentHP = Globals.MONSTER_TABLE[i].Read("HP");
+                            ushort currentHP = Globals.BattleController.MonsterTable[i].HP;
                             if (ubSharedHP) {
                                 if (currentHP < 65535) {
                                     totalDamage += 65535 - currentHP;
@@ -3883,7 +3883,7 @@ namespace Dragoon_Modifier {
                                         ultimateHP[x] -= totalDamage;
                                         if (ultimateHP[x] < 0) {
                                             ultimateHP[x] = 0;
-                                            Globals.MONSTER_TABLE[x].Write("HP", 0);
+                                            Globals.BattleController.MonsterTable[x].HP = 0;
                                         }
                                     }
                                 }
@@ -3894,14 +3894,14 @@ namespace Dragoon_Modifier {
                                 }
                                 if (ultimateHP[i] < 0) {
                                     ultimateHP[i] = 0;
-                                    Globals.MONSTER_TABLE[i].Write("HP", 0);
+                                    Globals.BattleController.MonsterTable[i].HP = 0;
                                 }
                             }
                         }
                         ubCheckDamageCycle = ubCheckedDamage ? 0 : 2;
                     } else {
                         if (ubCheckDamageCycle > 0) {
-                            ushort currentHP = Globals.MONSTER_TABLE[i].Read("HP");
+                            ushort currentHP = Globals.BattleController.MonsterTable[i].HP;
                             if (ubSharedHP) {
                                 if (currentHP < 65535) {
                                     totalDamage += 65535 - currentHP;
@@ -3911,23 +3911,23 @@ namespace Dragoon_Modifier {
                                 if ((i + 1) == Globals.MONSTER_SIZE) {
                                     for (int x = 0; x < Globals.MONSTER_SIZE; x++) {
                                         ultimateHP[x] -= totalDamage;
-                                        Globals.MONSTER_TABLE[i].Write("HP", (ushort) Math.Round(((double) ultimateHP[i] / ultimateMaxHP[i]) * 65535));
+                                        Globals.BattleController.MonsterTable[i].HP = (ushort) Math.Round(((double) ultimateHP[i] / ultimateMaxHP[i]) * 65535);
                                         if (ultimateHP[x] < 0) {
                                             ultimateHP[x] = 0;
-                                            Globals.MONSTER_TABLE[x].Write("HP", 0);
+                                            Globals.BattleController.MonsterTable[x].HP = 0;
                                         }
                                     }
                                 }
                             } else {
                                 if (currentHP < 65535) {
                                     ultimateHP[i] -= 65535 - currentHP;
-                                    Globals.MONSTER_TABLE[i].Write("HP", (ushort) Math.Round(((double) ultimateHP[i] / ultimateMaxHP[i]) * 65535));
+                                    Globals.BattleController.MonsterTable[i].HP = (ushort) Math.Round(((double) ultimateHP[i] / ultimateMaxHP[i]) * 65535);
                                     ubHPChanged = true;
                                     ubCheckDamageCycle = 0;
                                 }
                                 if (ultimateHP[i] < 0) {
                                     ultimateHP[i] = 0;
-                                    Globals.MONSTER_TABLE[i].Write("HP", 0);
+                                    Globals.BattleController.MonsterTable[i].HP = 0;
                                 }
                             }
 
@@ -3938,10 +3938,10 @@ namespace Dragoon_Modifier {
                             ubUltimateHPSet = false;
                             ubHPChanged = false;
                             ushort hpAmt = (ushort) Math.Round(((double) ultimateHP[i] / ultimateMaxHP[i]) * 65535);
-                            ushort currentHP = Globals.MONSTER_TABLE[i].Read("HP");
+                            ushort currentHP = Globals.BattleController.MonsterTable[i].HP;
                             //Constants.WriteDebug("HP%: " + hpAmt + " / " + currentHP);
                             if (hpAmt != currentHP) {
-                                Globals.MONSTER_TABLE[i].Write("HP", hpAmt);
+                                Globals.BattleController.MonsterTable[i].HP = hpAmt;
                             }
                         }
                     }
@@ -3969,7 +3969,7 @@ namespace Dragoon_Modifier {
 
         public void GuardBreak(int monsterSlot, byte attack) {
             //Constants.WritePLog("Attack Move: " + Globals.MONSTER_TABLE[monsterSlot].Read("Attack_Move") + "/" + attack);
-            if (Globals.MONSTER_TABLE[monsterSlot].Read("Attack_Move") == attack) {
+            if (Globals.BattleController.MonsterTable[monsterSlot].Attack_Move == attack) {
                 //Constants.WriteDebug("Attack Move: " + Globals.MONSTER_TABLE[monsterSlot].Read("Attack_Move") + "/" + attack);
                 for (int i = 0; i < 3; i++) {
                     if (Globals.PARTY_SLOT[i] < 9) {
@@ -3977,15 +3977,15 @@ namespace Dragoon_Modifier {
                     }
                 }
                 Thread.Sleep(1500); //it'll soft lock the game otherwise, game needs time to load the move
-                Globals.MONSTER_TABLE[monsterSlot].Write("Attack_Move", 255);
+                Globals.BattleController.MonsterTable[monsterSlot].Attack_Move = 255;
             }
         }
 
         public void UltimateHealthPotion(int monsterSlot, byte attack, double heal) {
-            if (Globals.MONSTER_TABLE[monsterSlot].Read("Attack_Move") == attack) {
+            if (Globals.BattleController.MonsterTable[monsterSlot].Attack_Move == attack) {
                 ultimateHP[monsterSlot] = (int) Math.Min(ultimateMaxHP[monsterSlot], ultimateHP[monsterSlot] + Math.Round(ultimateMaxHP[monsterSlot] / heal));
                 Thread.Sleep(1500);
-                Globals.MONSTER_TABLE[monsterSlot].Write("Attack_Move", 255);
+                Globals.BattleController.MonsterTable[monsterSlot].Attack_Move = 255;
             }
         }
 
@@ -3999,7 +3999,7 @@ namespace Dragoon_Modifier {
 
         public void MPAttack(int monsterSlot, byte attack, byte mpAmount, byte mpOnHit, byte turns) {
             //Constants.WritePLog("Attack Move: " + Globals.MONSTER_TABLE[monsterSlot].Read("Attack_Move") + "/" + attack);
-            if (Globals.MONSTER_TABLE[monsterSlot].Read("Attack_Move") == attack) {
+            if (Globals.BattleController.MonsterTable[monsterSlot].Attack_Move == attack) {
                 for (int i = 0; i < 3; i++) {
                     if (Globals.PARTY_SLOT[i] < 9) {
                         if (mpOnHit > 0) {
@@ -4013,7 +4013,7 @@ namespace Dragoon_Modifier {
                     }
                 }
                 Thread.Sleep(1900);
-                Globals.MONSTER_TABLE[monsterSlot].Write("Attack_Move", 255);
+                Globals.BattleController.MonsterTable[monsterSlot].Attack_Move = 255;
             }
         }
 
@@ -4021,7 +4021,7 @@ namespace Dragoon_Modifier {
             for (int i = 0; i < 3; i++) {
                 if (Globals.PARTY_SLOT[i] < 9) {
                     ushort hp = Globals.BattleController.CharacterTable[i].HP;
-                    if (hp < ubWHP[i] && Globals.MONSTER_TABLE[i].Read("Attack_Move") == attack) {
+                    if (hp < ubWHP[i] && Globals.BattleController.MonsterTable[i].Attack_Move == attack) {
                         ushort woundDamage = (ushort) (ubWHP[i] - hp);
                         Globals.BattleController.CharacterTable[i].Max_HP = (ushort) Math.Max(0, Globals.BattleController.CharacterTable[i].Max_HP - woundDamage);
                     }
@@ -4034,7 +4034,7 @@ namespace Dragoon_Modifier {
         }
 
         public void HealthSteal(int monsterSlot, byte attack) {
-            if (Globals.MONSTER_TABLE[monsterSlot].Read("Attack_Move") == attack) {
+            if (Globals.BattleController.MonsterTable[monsterSlot].Attack_Move == attack) {
                 if (ubHealthStealSave) {
                     ushort dmg = Emulator.ReadUShort("DAMAGE_SLOT1");
                     if (dmg <= 25000 && dmg != ubHealthStealDamage) {
@@ -4053,7 +4053,7 @@ namespace Dragoon_Modifier {
 
         public void SPAttack(int monsterSlot, byte attack, byte spAmount, byte spOnHit, byte turns) {
             try {
-                if (Globals.MONSTER_TABLE[monsterSlot].Read("Attack_Move") == attack) {
+                if (Globals.BattleController.MonsterTable[monsterSlot].Attack_Move == attack) {
                     for (int i = 0; i < 3; i++) {
                         if (Globals.PARTY_SLOT[i] < 9 && Emulator.ReadByte("DRAGOON_TURNS", (i * 0x4)) == 0) {
                             if (spOnHit > 0) {
@@ -4067,7 +4067,7 @@ namespace Dragoon_Modifier {
                         }
                     }
                     Thread.Sleep(3500);
-                    Globals.MONSTER_TABLE[monsterSlot].Write("Attack_Move", 255);
+                    Globals.BattleController.MonsterTable[monsterSlot].Attack_Move = 255;
                 }
             } catch (Exception ex) {
                 Constants.WriteGLogOutput("NON FATAL ERROR OCCURED.");
@@ -4078,7 +4078,7 @@ namespace Dragoon_Modifier {
         }
 
         public void MoveChange(int monsterSlot, byte attack, int chance) { //Some moves it won't overwrite but that's fine.
-            ushort trn = Globals.MONSTER_TABLE[monsterSlot].Read("Turn");
+            ushort trn = Globals.BattleController.MonsterTable[monsterSlot].Turn;
             if (ubMoveChgSet) {
                 bool partyAttacking = false;
                 for (int i = 0; i < 3; i++) {
@@ -4091,12 +4091,12 @@ namespace Dragoon_Modifier {
                 }
 
                 if (!partyAttacking) {
-                    Globals.MONSTER_TABLE[monsterSlot].Write("Attack_Move", attack);
+                    Globals.BattleController.MonsterTable[monsterSlot].Attack_Move = attack;
                     //Constants.WriteDebug("[MOVE] " + Globals.MONSTER_TABLE[monsterSlot].Read("Attack_Move"));
                 } else {
                     ubMoveChgSet = false;
                     if (Globals.ENCOUNTER_ID == 418) {
-                        Globals.MONSTER_TABLE[monsterSlot].Write("AT", originalMonsterStats[monsterSlot, 1] * 4.5);
+                        Globals.BattleController.MonsterTable[monsterSlot].AT = (ushort) (originalMonsterStats[monsterSlot, 1] * 4.5);
                     }
                 }
             } else {
@@ -4104,7 +4104,7 @@ namespace Dragoon_Modifier {
                     if (new Random().Next(0, 100) < chance) {
                         ubMoveChgSet = true;
                         if (Globals.ENCOUNTER_ID == 418) {
-                            Globals.MONSTER_TABLE[monsterSlot].Write("AT", Math.Round(originalMonsterStats[monsterSlot, 1] * 4.5 * 1.75));
+                            Globals.BattleController.MonsterTable[monsterSlot].AT = (ushort) Math.Round(originalMonsterStats[monsterSlot, 1] * 4.5 * 1.75);
                         }
                         //Constants.WriteDebug("[MOVE CHANGE] Roll success.");
                     } else {
@@ -4457,53 +4457,53 @@ namespace Dragoon_Modifier {
         public void ElementalShift() {
             int lastItem = Emulator.ReadByte(Globals.MONS_ADDRESS[0] + 0xABC);
             if (lastItem == 0xC0 || lastItem == 0xC3 || lastItem == 0xD1 || lastItem == 0xF2) {
-                Globals.MONSTER_TABLE[0].Write("Element", 128);
-                Globals.MONSTER_TABLE[0].Write("Display_Element", 128);
+                Globals.BattleController.MonsterTable[0].Element = 128;
+                Globals.BattleController.MonsterTable[0].Display_Element = 128;
             } else if (lastItem == 0xC6 || lastItem == 0xD6 || lastItem == 0xF3) {
-                Globals.MONSTER_TABLE[0].Write("Element", 1);
-                Globals.MONSTER_TABLE[0].Write("Display_Element", 1);
+                Globals.BattleController.MonsterTable[0].Element = 1;
+                Globals.BattleController.MonsterTable[0].Display_Element = 1;
             } else if (lastItem == 0xC7 || lastItem == 0xDC || lastItem == 0xF4) {
-                Globals.MONSTER_TABLE[0].Write("Element", 64);
-                Globals.MONSTER_TABLE[0].Write("Display_Element", 64);
+                Globals.BattleController.MonsterTable[0].Element = 64;
+                Globals.BattleController.MonsterTable[0].Display_Element = 64;
             } else if (lastItem == 0xC5 || lastItem == 0xD0 || lastItem == 0xF5) {
-                Globals.MONSTER_TABLE[0].Write("Element", 2);
-                Globals.MONSTER_TABLE[0].Write("Display_Element", 2);
+                Globals.BattleController.MonsterTable[0].Element = 2;
+                Globals.BattleController.MonsterTable[0].Display_Element = 2;
             } else if (lastItem == 0xCA || lastItem == 0xD8 || lastItem == 0xF7) {
-                Globals.MONSTER_TABLE[0].Write("Element", 4);
-                Globals.MONSTER_TABLE[0].Write("Display_Element", 4);
+                Globals.BattleController.MonsterTable[0].Element = 4;
+                Globals.BattleController.MonsterTable[0].Display_Element = 4;
             } else if (lastItem == 0xC9 || lastItem == 0xD2 || lastItem == 0xF6) {
-                Globals.MONSTER_TABLE[0].Write("Element", 32);
-                Globals.MONSTER_TABLE[0].Write("Display_Element", 32);
+                Globals.BattleController.MonsterTable[0].Element = 32;
+                Globals.BattleController.MonsterTable[0].Display_Element = 32;
             } else if (lastItem == 0xC2 || lastItem == 0xCF || lastItem == 0xF8) {
-                Globals.MONSTER_TABLE[0].Write("Element", 16);
-                Globals.MONSTER_TABLE[0].Write("Display_Element", 16);
+                Globals.BattleController.MonsterTable[0].Element = 16;
+                Globals.BattleController.MonsterTable[0].Display_Element = 16;
             } else if (lastItem == 0xC1 || lastItem == 0xF1) {
-                Globals.MONSTER_TABLE[0].Write("Element", 8);
-                Globals.MONSTER_TABLE[0].Write("Display_Element", 8);
+                Globals.BattleController.MonsterTable[0].Element = 8;
+                Globals.BattleController.MonsterTable[0].Display_Element = 8;
             }
         }
 
         public void BreakArmor() {
-            if (Globals.MONSTER_TABLE[3].Read("HP") != ubHeartHPSave) {
-                ubHeartHPSave = Globals.MONSTER_TABLE[3].Read("HP");
+            if (Globals.BattleController.MonsterTable[3].HP != ubHeartHPSave) {
+                ubHeartHPSave = Globals.BattleController.MonsterTable[3].HP;
                 ubArmorShellTurns = 1;
-                ubArmorShellTP = Globals.MONSTER_TABLE[0].Read("Turn");
+                ubArmorShellTP = Globals.BattleController.MonsterTable[0].Turn;
             }
 
             if (ubArmorShellTurns >= 1) {
-                Globals.MONSTER_TABLE[0].Write("DF", 30);
-                Globals.MONSTER_TABLE[0].Write("MDF", 36);
-                if (Globals.MONSTER_TABLE[0].Read("Turn") >= ubArmorShellTP) {
-                    ubArmorShellTP = Globals.MONSTER_TABLE[0].Read("Turn");
+                Globals.BattleController.MonsterTable[0].DF = 30;
+                Globals.BattleController.MonsterTable[0].MDF = 36;
+                if (Globals.BattleController.MonsterTable[0].Turn >= ubArmorShellTP) {
+                    ubArmorShellTP = Globals.BattleController.MonsterTable[0].Turn;
                 } else {
                     ubArmorShellTurns += 1;
-                    ubArmorShellTP = Globals.MONSTER_TABLE[0].Read("Turn");
+                    ubArmorShellTP = Globals.BattleController.MonsterTable[0].Turn;
                 }
             }
 
             if (ubArmorShellTurns > 3) {
-                Globals.MONSTER_TABLE[0].Write("DF", 0);
-                Globals.MONSTER_TABLE[0].Write("MDF", 0);
+                Globals.BattleController.MonsterTable[0].DF = 0;
+                Globals.BattleController.MonsterTable[0].MDF = 0;
                 ubArmorShellTurns = 0;
             }
         }
@@ -4561,11 +4561,11 @@ namespace Dragoon_Modifier {
             }
 
             for (int i = 2; i < 4; i++) {
-                if (Globals.MONSTER_TABLE[i].Read("HP") < ubTrackEHP[i]) {
-                    ubTrackEHP[i] = Globals.MONSTER_TABLE[i].Read("HP");
-                } else if (Globals.MONSTER_TABLE[i].Read("HP") > ubTrackEHP[i]) {
+                if (Globals.BattleController.MonsterTable[i].HP < ubTrackEHP[i]) {
+                    ubTrackEHP[i] = Globals.BattleController.MonsterTable[i].HP;
+                } else if (Globals.BattleController.MonsterTable[i].HP > ubTrackEHP[i]) {
                     ultimateHP[0] -= 54000;
-                    ubTrackEHP[i] = Globals.MONSTER_TABLE[i].Read("HP");
+                    ubTrackEHP[i] = Globals.BattleController.MonsterTable[i].HP;
                 }
             }
 
@@ -4594,10 +4594,10 @@ namespace Dragoon_Modifier {
                         multiplyMode[1] = 6.8;
                     }
 
-                    Globals.MONSTER_TABLE[0].Write("AT", (int) Math.Round(originalMonsterStats[0, 1] * multiplyMode[0]));
-                    Globals.MONSTER_TABLE[1].Write("AT", (int) Math.Round(originalMonsterStats[1, 1] * multiplyMode[0]));
-                    Globals.MONSTER_TABLE[0].Write("MAT", (int) Math.Round(originalMonsterStats[0, 2] * multiplyMode[1]));
-                    Globals.MONSTER_TABLE[1].Write("MAT", (int) Math.Round(originalMonsterStats[1, 2] * multiplyMode[1]));
+                    Globals.BattleController.MonsterTable[0].AT = (ushort) Math.Round(originalMonsterStats[0, 1] * multiplyMode[0]);
+                    Globals.BattleController.MonsterTable[1].AT = (ushort) Math.Round(originalMonsterStats[1, 1] * multiplyMode[0]);
+                    Globals.BattleController.MonsterTable[0].MAT = (ushort) Math.Round(originalMonsterStats[0, 2] * multiplyMode[1]);
+                    Globals.BattleController.MonsterTable[1].MAT = (ushort) Math.Round(originalMonsterStats[1, 2] * multiplyMode[1]);
                 } else {
                     if (ultimateHP[0] < ultimateMaxHP[0]) {
                         ubDragoonBondMode = 0;
@@ -4649,11 +4649,11 @@ namespace Dragoon_Modifier {
                         multiplyMode[0] = 7;
                         multiplyMode[1] = 7;
                     }
-                    Globals.MONSTER_TABLE[1].Write("AT", (int) Math.Round(originalMonsterStats[1, 1] * multiplyMode[0]));
-                    Globals.MONSTER_TABLE[1].Write("MAT", (int) Math.Round(originalMonsterStats[1, 2] * multiplyMode[1]));
+                    Globals.BattleController.MonsterTable[1].AT = (ushort) Math.Round(originalMonsterStats[1, 1] * multiplyMode[0]);
+                    Globals.BattleController.MonsterTable[1].MAT = (ushort) Math.Round(originalMonsterStats[1, 2] * multiplyMode[1]);
                     ultimateHP[0] = 1;
                     ultimateMaxHP[0] = 1;
-                    Globals.MONSTER_TABLE[0].Write("HP", 0);
+                    Globals.BattleController.MonsterTable[0].HP = 0;
                 }
             } else {
                 if (ultimateHP[1] <= 0) {
@@ -4670,11 +4670,11 @@ namespace Dragoon_Modifier {
                         multiplyMode[0] = 7;
                         multiplyMode[1] = 7;
                     }
-                    Globals.MONSTER_TABLE[0].Write("AT", (int) Math.Round(originalMonsterStats[0, 1] * multiplyMode[0]));
-                    Globals.MONSTER_TABLE[0].Write("MAT", (int) Math.Round(originalMonsterStats[0, 2] * multiplyMode[1]));
+                    Globals.BattleController.MonsterTable[0].AT = (ushort) Math.Round(originalMonsterStats[0, 1] * multiplyMode[0]);
+                    Globals.BattleController.MonsterTable[0].MAT = (ushort) Math.Round(originalMonsterStats[0, 2] * multiplyMode[1]);
                     ultimateHP[1] = 1;
                     ultimateMaxHP[1] = 1;
-                    Globals.MONSTER_TABLE[1].Write("HP", 0);
+                    Globals.BattleController.MonsterTable[1].HP = 0;
                 }
             }
         }
@@ -4809,8 +4809,8 @@ namespace Dragoon_Modifier {
 
                     if (setStream) {
                         Emulator.WriteByte(Globals.M_POINT + 0xB5, 1);
-                        Globals.MONSTER_TABLE[0].Write("A_AV", 30);
-                        Globals.MONSTER_TABLE[0].Write("M_AV", 30);
+                        Globals.BattleController.MonsterTable[0].A_AV = 30;
+                        Globals.BattleController.MonsterTable[0].M_AV = 30;
                         Constants.WriteGLogOutput("[BOSS] Grand Stream accuracy lost activated.");
                     }
 
@@ -4843,18 +4843,18 @@ namespace Dragoon_Modifier {
                         }
                     }
 
-                    if (Globals.MONSTER_TABLE[0].Read("A_AV") > 0 && Emulator.ReadByte(Globals.M_POINT + 0xB5) == 0) {
-                        Globals.MONSTER_TABLE[0].Write("A_AV", 0);
-                        Globals.MONSTER_TABLE[0].Write("M_AV", 0);
+                    if (Globals.BattleController.MonsterTable[0].A_AV > 0 && Emulator.ReadByte(Globals.M_POINT + 0xB5) == 0) {
+                        Globals.BattleController.MonsterTable[0].A_AV = 0;
+                        Globals.BattleController.MonsterTable[0].M_AV = 0;
                     }
                 } else if (Globals.ENCOUNTER_ID == 401) {
                     bool trackDamage = false;
 
-                    if (ubTrackTM > Globals.MONSTER_TABLE[0].Read("Turn") && ubElectricUnleash == 0) {
+                    if (ubTrackTM > Globals.BattleController.MonsterTable[0].Turn && ubElectricUnleash == 0) {
                         ubElectricCharges += 1;
                     }
 
-                    ubTrackTM = Globals.MONSTER_TABLE[0].Read("Turn");
+                    ubTrackTM = Globals.BattleController.MonsterTable[0].Turn;
 
                     byte moveSet = Emulator.ReadByte(Globals.M_POINT + 0xABC);
 
@@ -4955,21 +4955,21 @@ namespace Dragoon_Modifier {
                         double[] multiplyMode = { 2.4, 2.4, 1, 1 };
                         if (Globals.CheckDMScript("btnEnrage") || CheckEnrageBoss()) {
                             if (enragedMode[0] == 1) {
-                                Globals.MONSTER_TABLE[0].Write("AT", Math.Round(originalMonsterStats[0, 1] * multiplyMode[0] * ((ubElectricCharges / 20) + 1) * 1.1));
-                                Globals.MONSTER_TABLE[0].Write("MAT", Math.Round(originalMonsterStats[0, 2] * multiplyMode[1] * ((ubElectricCharges / 20) + 1) * 1.1));
-                                Globals.MONSTER_TABLE[0].Write("DF", Math.Round(originalMonsterStats[0, 3] * multiplyMode[2] * ((ubElectricCharges / 20) + 1) * 1.1));
-                                Globals.MONSTER_TABLE[0].Write("MDF", Math.Round(originalMonsterStats[0, 4] * multiplyMode[3] * ((ubElectricCharges / 20) + 1) * 1.1));
+                                Globals.BattleController.MonsterTable[0].AT = (ushort) Math.Round(originalMonsterStats[0, 1] * multiplyMode[0] * ((ubElectricCharges / 20) + 1) * 1.1);
+                                Globals.BattleController.MonsterTable[0].MAT = (ushort) Math.Round(originalMonsterStats[0, 2] * multiplyMode[1] * ((ubElectricCharges / 20) + 1) * 1.1);
+                                Globals.BattleController.MonsterTable[0].DF = (ushort) Math.Round(originalMonsterStats[0, 3] * multiplyMode[2] * ((ubElectricCharges / 20) + 1) * 1.1);
+                                Globals.BattleController.MonsterTable[0].MDF = (ushort) Math.Round(originalMonsterStats[0, 4] * multiplyMode[3] * ((ubElectricCharges / 20) + 1) * 1.1);
                             } else if (enragedMode[0] == 2) {
-                                Globals.MONSTER_TABLE[0].Write("AT", Math.Round(originalMonsterStats[0, 1] * multiplyMode[0] * ((ubElectricCharges / 20) + 1) * 1.25));
-                                Globals.MONSTER_TABLE[0].Write("MAT", Math.Round(originalMonsterStats[0, 2] * multiplyMode[1] * ((ubElectricCharges / 20) + 1) * 1.25));
-                                Globals.MONSTER_TABLE[0].Write("DF", Math.Round(originalMonsterStats[0, 3] * multiplyMode[2] * ((ubElectricCharges / 20) + 1) * 1.25));
-                                Globals.MONSTER_TABLE[0].Write("MDF", Math.Round(originalMonsterStats[0, 4] * multiplyMode[3] * ((ubElectricCharges / 20) + 1) * 1.25));
+                                Globals.BattleController.MonsterTable[0].AT = (ushort) Math.Round(originalMonsterStats[0, 1] * multiplyMode[0] * ((ubElectricCharges / 20) + 1) * 1.25);
+                                Globals.BattleController.MonsterTable[0].MAT = (ushort) Math.Round(originalMonsterStats[0, 2] * multiplyMode[1] * ((ubElectricCharges / 20) + 1) * 1.25);
+                                Globals.BattleController.MonsterTable[0].DF = (ushort) Math.Round(originalMonsterStats[0, 3] * multiplyMode[2] * ((ubElectricCharges / 20) + 1) * 1.25);
+                                Globals.BattleController.MonsterTable[0].MDF = (ushort) Math.Round(originalMonsterStats[0, 4] * multiplyMode[3] * ((ubElectricCharges / 20) + 1) * 1.25);
                             }
                         } else {
-                            Globals.MONSTER_TABLE[0].Write("AT", Math.Round(originalMonsterStats[0, 1] * multiplyMode[0] * ((ubElectricCharges / 20) + 1)));
-                            Globals.MONSTER_TABLE[0].Write("MAT", Math.Round(originalMonsterStats[0, 2] * multiplyMode[1] * ((ubElectricCharges / 20) + 1)));
-                            Globals.MONSTER_TABLE[0].Write("DF", Math.Round(originalMonsterStats[0, 3] * multiplyMode[2] * ((ubElectricCharges / 20) + 1)));
-                            Globals.MONSTER_TABLE[0].Write("MDF", Math.Round(originalMonsterStats[0, 4] * multiplyMode[3] * ((ubElectricCharges / 20) + 1)));
+                            Globals.BattleController.MonsterTable[0].AT = (ushort) Math.Round(originalMonsterStats[0, 1] * multiplyMode[0] * ((ubElectricCharges / 20) + 1));
+                            Globals.BattleController.MonsterTable[0].MAT = (ushort) Math.Round(originalMonsterStats[0, 2] * multiplyMode[1] * ((ubElectricCharges / 20) + 1));
+                            Globals.BattleController.MonsterTable[0].DF = (ushort) Math.Round(originalMonsterStats[0, 3] * multiplyMode[2] * ((ubElectricCharges / 20) + 1));
+                            Globals.BattleController.MonsterTable[0].MDF = (ushort) Math.Round(originalMonsterStats[0, 4] * multiplyMode[3] * ((ubElectricCharges / 20) + 1));
                         }
 
                         ubElectricUnleash = 2;
@@ -4978,21 +4978,21 @@ namespace Dragoon_Modifier {
                         if (trackDamage) {
                             if (Globals.CheckDMScript("btnEnrage") || CheckEnrageBoss()) {
                                 if (enragedMode[0] == 1) {
-                                    Globals.MONSTER_TABLE[0].Write("AT", Math.Round(originalMonsterStats[0, 1] * multiplyMode[0] * 1.1));
-                                    Globals.MONSTER_TABLE[0].Write("MAT", Math.Round(originalMonsterStats[0, 2] * multiplyMode[1] * 1.1));
-                                    Globals.MONSTER_TABLE[0].Write("DF", Math.Round(originalMonsterStats[0, 3] * multiplyMode[2] * 1.1));
-                                    Globals.MONSTER_TABLE[0].Write("MDF", Math.Round(originalMonsterStats[0, 4] * multiplyMode[3] * 1.1));
+                                    Globals.BattleController.MonsterTable[0].AT = (ushort) Math.Round(originalMonsterStats[0, 1] * multiplyMode[0] * 1.1);
+                                    Globals.BattleController.MonsterTable[0].MAT = (ushort) Math.Round(originalMonsterStats[0, 2] * multiplyMode[1] * 1.1);
+                                    Globals.BattleController.MonsterTable[0].DF = (ushort) Math.Round(originalMonsterStats[0, 3] * multiplyMode[2] * 1.1);
+                                    Globals.BattleController.MonsterTable[0].MDF = (ushort) Math.Round(originalMonsterStats[0, 4] * multiplyMode[3] * 1.1);
                                 } else if (enragedMode[0] == 2) {
-                                    Globals.MONSTER_TABLE[0].Write("AT", Math.Round(originalMonsterStats[0, 1] * multiplyMode[0] * 1.25));
-                                    Globals.MONSTER_TABLE[0].Write("MAT", Math.Round(originalMonsterStats[0, 2] * multiplyMode[1] * 1.25));
-                                    Globals.MONSTER_TABLE[0].Write("DF", Math.Round(originalMonsterStats[0, 3] * multiplyMode[2] * 1.25));
-                                    Globals.MONSTER_TABLE[0].Write("MDF", Math.Round(originalMonsterStats[0, 4] * multiplyMode[3] * 1.25));
+                                    Globals.BattleController.MonsterTable[0].AT = (ushort) Math.Round(originalMonsterStats[0, 1] * multiplyMode[0] * 1.25);
+                                    Globals.BattleController.MonsterTable[0].MAT = (ushort) Math.Round(originalMonsterStats[0, 2] * multiplyMode[1] * 1.25);
+                                    Globals.BattleController.MonsterTable[0].DF = (ushort) Math.Round(originalMonsterStats[0, 3] * multiplyMode[2] * 1.25);
+                                    Globals.BattleController.MonsterTable[0].MDF = (ushort) Math.Round(originalMonsterStats[0, 4] * multiplyMode[3] * 1.25);
                                 }
                             } else {
-                                Globals.MONSTER_TABLE[0].Write("AT", Math.Round(originalMonsterStats[0, 1] * multiplyMode[0]));
-                                Globals.MONSTER_TABLE[0].Write("MAT", Math.Round(originalMonsterStats[0, 2] * multiplyMode[1]));
-                                Globals.MONSTER_TABLE[0].Write("DF", Math.Round(originalMonsterStats[0, 3] * multiplyMode[2]));
-                                Globals.MONSTER_TABLE[0].Write("MDF", Math.Round(originalMonsterStats[0, 4] * multiplyMode[3]));
+                                Globals.BattleController.MonsterTable[0].AT = (ushort) Math.Round(originalMonsterStats[0, 1] * multiplyMode[0]);
+                                Globals.BattleController.MonsterTable[0].MAT = (ushort) Math.Round(originalMonsterStats[0, 2] * multiplyMode[1]);
+                                Globals.BattleController.MonsterTable[0].DF = (ushort) Math.Round(originalMonsterStats[0, 3] * multiplyMode[2]);
+                                Globals.BattleController.MonsterTable[0].MDF = (ushort) Math.Round(originalMonsterStats[0, 4] * multiplyMode[3]);
                             }
                         }
 
@@ -5017,13 +5017,13 @@ namespace Dragoon_Modifier {
 
             ubTotalGold = ubLivesIncreased * 1000;
 
-            if (ultimateHP[0] == 0 || Globals.MONSTER_TABLE[0].Read("HP") == 0)
+            if (ultimateHP[0] == 0 || Globals.BattleController.MonsterTable[0].HP == 0)
                 ubTotalGold += 45000;
 
-            if (ultimateHP[1] == 0 || Globals.MONSTER_TABLE[1].Read("HP") == 0)
+            if (ultimateHP[1] == 0 || Globals.BattleController.MonsterTable[1].HP == 0)
                 ubTotalGold += 15000;
 
-            if (ultimateHP[2] == 0 || Globals.MONSTER_TABLE[2].Read("HP") == 0)
+            if (ultimateHP[2] == 0 || Globals.BattleController.MonsterTable[2].HP == 0)
                 ubTotalGold += 10000;
 
             if (Emulator.ReadByte("BOSS_COUNT") == 11) {
@@ -5046,12 +5046,12 @@ namespace Dragoon_Modifier {
 
                 if (((hpDamage / ultimateMaxHP[enrageChangeIndex]) * 100) >= enrageChangeTurns + 1) {
                     enrageChangeTurns += 1;
-                    Globals.MONSTER_TABLE[enrageChangeIndex].Write("AT", Math.Round(Globals.MONSTER_TABLE[enrageChangeIndex].Read("AT") * 1.01));
-                    Globals.MONSTER_TABLE[enrageChangeIndex].Write("MAT", Math.Round(Globals.MONSTER_TABLE[enrageChangeIndex].Read("MAT") * 1.01));
+                    Globals.BattleController.MonsterTable[enrageChangeIndex].AT = (ushort) Math.Round(Globals.BattleController.MonsterTable[enrageChangeIndex].AT * 1.01);
+                    Globals.BattleController.MonsterTable[enrageChangeIndex].MAT = (ushort) Math.Round(Globals.BattleController.MonsterTable[enrageChangeIndex].MAT * 1.01);
 
                     if (enrageChangeTurns == 90 && enrageChangeIndex == 1) {
-                        Globals.MONSTER_TABLE[enrageChangeIndex].Write("DF", Math.Round(Globals.MONSTER_TABLE[enrageChangeIndex].Read("DF") / 0.3));
-                        Globals.MONSTER_TABLE[enrageChangeIndex].Write("MDF", Math.Round(Globals.MONSTER_TABLE[enrageChangeIndex].Read("MDF") / 0.3));
+                        Globals.BattleController.MonsterTable[enrageChangeIndex].DF = (ushort) Math.Round(Globals.BattleController.MonsterTable[enrageChangeIndex].DF / 0.3);
+                        Globals.BattleController.MonsterTable[enrageChangeIndex].MDF = (ushort) Math.Round(Globals.BattleController.MonsterTable[enrageChangeIndex].MDF / 0.3);
                     }
                 }
 
@@ -5069,9 +5069,9 @@ namespace Dragoon_Modifier {
                     }
                 }
 
-                if ((Globals.MONSTER_TABLE[0].Read("HP") <= (Globals.MONSTER_TABLE[0].Read("Max_HP") / 2)) && enragedMode[0] == 0) {
+                if ((Globals.BattleController.MonsterTable[0].HP <= (Globals.BattleController.MonsterTable[0].Max_HP / 2)) && enragedMode[0] == 0) {
                     enragedMode[0] = 1;
-                } else if ((Globals.MONSTER_TABLE[0].Read("HP") <= (Globals.MONSTER_TABLE[0].Read("Max_HP") / 4)) && enragedMode[0] == 1) {
+                } else if ((Globals.BattleController.MonsterTable[0].HP <= (Globals.BattleController.MonsterTable[0].Max_HP / 4)) && enragedMode[0] == 1) {
                     enragedMode[0] = 2;
                 }
 
@@ -5080,31 +5080,31 @@ namespace Dragoon_Modifier {
 
                 enrage = enragedMode[0] == 1 ? 1.10 : enragedMode[0] == 2 ? 1.25 : 1;
 
-                Globals.MONSTER_TABLE[0].Write("AT", (int) Math.Round(originalMonsterStats[0, 1] * multiplyMode[0] * (1 + dragoons) * enrage));
-                Globals.MONSTER_TABLE[0].Write("MAT", (int) Math.Round(originalMonsterStats[0, 2] * multiplyMode[1] * (1 + dragoons) * enrage));
+                Globals.BattleController.MonsterTable[0].AT = (ushort) Math.Round(originalMonsterStats[0, 1] * multiplyMode[0] * (1 + dragoons) * enrage);
+                Globals.BattleController.MonsterTable[0].MAT = (ushort) Math.Round(originalMonsterStats[0, 2] * multiplyMode[1] * (1 + dragoons) * enrage);
             } else if (Globals.ENCOUNTER_ID == 392) {
                 double multiAT = 3;
                 double divDF = 1.25;
 
-                if (ubTrackTP[0] > Globals.MONSTER_TABLE[0].Read("Turn"))
+                if (ubTrackTP[0] > Globals.BattleController.MonsterTable[0].Turn)
                     ubEnrageTurns += 0.10;
 
-                Globals.MONSTER_TABLE[0].Write("AT", Math.Round(originalMonsterStats[0, 1] * multiAT * (1 + ubEnrageTurns + ubEnrageTurnsPlus)));
+                Globals.BattleController.MonsterTable[0].AT = (ushort) Math.Round(originalMonsterStats[0, 1] * multiAT * (1 + ubEnrageTurns + ubEnrageTurnsPlus));
 
-                if (Globals.MONSTER_TABLE[0].Read("Action") == 28 && Emulator.ReadByte(Globals.M_POINT + 0xABC) == 226)
+                if (Globals.BattleController.MonsterTable[0].Action == 28 && Emulator.ReadByte(Globals.M_POINT + 0xABC) == 226)
                     multiAT *= 2;
 
-                Globals.MONSTER_TABLE[0].Write("MAT", Math.Round(originalMonsterStats[0, 2] * multiAT * (1 + ubEnrageTurns + ubEnrageTurnsPlus)));
+                Globals.BattleController.MonsterTable[0].MAT = (ushort) Math.Round(originalMonsterStats[0, 2] * multiAT * (1 + ubEnrageTurns + ubEnrageTurnsPlus));
 
                 if (ubEnrageTurns + ubEnrageTurnsPlus >= 1.75) {
-                    Globals.MONSTER_TABLE[0].Write("DF", Math.Round(originalMonsterStats[0, 3] / 3));
-                    Globals.MONSTER_TABLE[0].Write("MDF", Math.Round(originalMonsterStats[0, 4] / 3));
+                    Globals.BattleController.MonsterTable[0].DF = (ushort) Math.Round(originalMonsterStats[0, 3] / 3);
+                    Globals.BattleController.MonsterTable[0].MDF = (ushort) Math.Round(originalMonsterStats[0, 4] / 3);
                 } else {
-                    Globals.MONSTER_TABLE[0].Write("DF", Math.Round(originalMonsterStats[0, 3] / (divDF + ubEnrageTurns + ubEnrageTurnsPlus)));
-                    Globals.MONSTER_TABLE[0].Write("MDF", Math.Round(originalMonsterStats[0, 4] / (divDF + ubEnrageTurns + ubEnrageTurnsPlus)));
+                    Globals.BattleController.MonsterTable[0].DF = (ushort) Math.Round(originalMonsterStats[0, 3] / (divDF + ubEnrageTurns + ubEnrageTurnsPlus));
+                    Globals.BattleController.MonsterTable[0].MDF = (ushort) Math.Round(originalMonsterStats[0, 4] / (divDF + ubEnrageTurns + ubEnrageTurnsPlus));
                 }
 
-                if (Globals.MONSTER_TABLE[0].Read("Action") == 28 && Emulator.ReadByte(Globals.M_POINT + 0xABC) == 225) {
+                if (Globals.BattleController.MonsterTable[0].Action == 28 && Emulator.ReadByte(Globals.M_POINT + 0xABC) == 225) {
                     ubEnrageTurns -= 5;
                     ubEnrageTurnsPlus += 0.10;
                     Emulator.WriteByte(Globals.M_POINT + 0xABC, 0);
@@ -5112,7 +5112,7 @@ namespace Dragoon_Modifier {
                         ubEnrageTurns = 0;
                 }
 
-                ubTrackTP[0] = Globals.MONSTER_TABLE[0].Read("Turn");
+                ubTrackTP[0] = Globals.BattleController.MonsterTable[0].Turn;
             } else if (Globals.ENCOUNTER_ID == 442) {
                 double multiAT = 3.5;
                 double multiMAT = 3.5;
@@ -5122,17 +5122,17 @@ namespace Dragoon_Modifier {
                 if (ubZiegDragoon == 81)
                     multiMAT *= 1.25;
 
-                Globals.MONSTER_TABLE[0].Write("MAT", Math.Round(originalMonsterStats[0, 2] * multiMAT));
+                Globals.BattleController.MonsterTable[0].MAT = (ushort) Math.Round(originalMonsterStats[0, 2] * multiMAT);
 
-                if ((Globals.MONSTER_TABLE[0].Read("HP") <= (Globals.MONSTER_TABLE[0].Read("Max_HP") / 2)) && enragedMode[0] == 0) {
-                    Globals.MONSTER_TABLE[0].Write("AT", Math.Round(originalMonsterStats[0, 1] * multiAT * 1.1));
-                    Globals.MONSTER_TABLE[0].Write("DF", Math.Round(originalMonsterStats[0, 3] * 1.1));
-                    Globals.MONSTER_TABLE[0].Write("MDF", Math.Round(originalMonsterStats[0, 4] * 1.1));
+                if ((Globals.BattleController.MonsterTable[0].HP <= (Globals.BattleController.MonsterTable[0].Max_HP / 2)) && enragedMode[0] == 0) {
+                    Globals.BattleController.MonsterTable[0].AT = (ushort) Math.Round(originalMonsterStats[0, 1] * multiAT * 1.1);
+                    Globals.BattleController.MonsterTable[0].DF = (ushort) Math.Round(originalMonsterStats[0, 3] * 1.1);
+                    Globals.BattleController.MonsterTable[0].MDF = (ushort) Math.Round(originalMonsterStats[0, 4] * 1.1);
                     enragedMode[0] = 1;
-                } else if ((Globals.MONSTER_TABLE[0].Read("HP") <= (Globals.MONSTER_TABLE[0].Read("Max_HP") / 4)) && enragedMode[0] == 1) {
-                    Globals.MONSTER_TABLE[0].Write("AT", Math.Round(originalMonsterStats[0, 1] * multiAT * 1.25));
-                    Globals.MONSTER_TABLE[0].Write("DF", Math.Round(originalMonsterStats[0, 3] * 1.25));
-                    Globals.MONSTER_TABLE[0].Write("MDF", Math.Round(originalMonsterStats[0, 4] * 1.25));
+                } else if ((Globals.BattleController.MonsterTable[0].HP <= (Globals.BattleController.MonsterTable[0].Max_HP / 4)) && enragedMode[0] == 1) {
+                    Globals.BattleController.MonsterTable[0].AT = (ushort) Math.Round(originalMonsterStats[0, 1] * multiAT * 1.25);
+                    Globals.BattleController.MonsterTable[0].DF = (ushort) Math.Round(originalMonsterStats[0, 3] * 1.25);
+                    Globals.BattleController.MonsterTable[0].MDF = (ushort) Math.Round(originalMonsterStats[0, 4] * 1.25);
                     enragedMode[0] = 2;
                 }
             } else if (Globals.ENCOUNTER_ID == 420) {
@@ -5180,13 +5180,13 @@ namespace Dragoon_Modifier {
 
                 if (singleMagic.Contains(lastItem)) {
                     double multi = 1 + (0.150 * guardingParty) + (0.075 * guardingDragoon);
-                    Globals.MONSTER_TABLE[0].Write("MAT", Math.Round(originalMonsterStats[0, 2] * multiMAT * multi));
+                    Globals.BattleController.MonsterTable[0].MAT = (ushort) Math.Round(originalMonsterStats[0, 2] * multiMAT * multi);
                 } else if (wideMagic.Contains(lastItem)) {
                     double multi = 1 + (0.100 * guardingParty) + (0.050 * guardingDragoon);
-                    Globals.MONSTER_TABLE[0].Write("MAT", Math.Round(originalMonsterStats[0, 2] * multiMAT * multi));
+                    Globals.BattleController.MonsterTable[0].MAT = (ushort) Math.Round(originalMonsterStats[0, 2] * multiMAT * multi);
                 } else if (powerMagic.Contains(lastItem)) {
                     double multi = 1 + (0.180 * guardingParty) + (0.090 * guardingDragoon);
-                    Globals.MONSTER_TABLE[0].Write("MAT", Math.Round(originalMonsterStats[0, 2] * multiMAT * multi));
+                    Globals.BattleController.MonsterTable[0].MAT = (ushort) Math.Round(originalMonsterStats[0, 2] * multiMAT * multi);
                 }
             }
         }
@@ -5206,11 +5206,11 @@ namespace Dragoon_Modifier {
                             Emulator.WriteByte("BOSS_COUNT", 3);
                             shieldTurnsTaken -= 1;
                         } else {
-                            Globals.MONSTER_TABLE[1].Write("P_Half", 1);
-                            Globals.MONSTER_TABLE[1].Write("M_Half", 1);
+                            Globals.BattleController.MonsterTable[1].P_Half = 1;
+                            Globals.BattleController.MonsterTable[1].M_Half = 1;
                         }
 
-                        if (ubTrackTP[1] > Globals.MONSTER_TABLE[1].Read("Turn"))
+                        if (ubTrackTP[1] > Globals.BattleController.MonsterTable[1].Turn)
                             shieldTurnsTaken += 1;
                     }
 
@@ -5224,18 +5224,18 @@ namespace Dragoon_Modifier {
                     if (enrageChangeTurns >= enhancedShieldTurns && enhancedShieldTurns <= 90) {
                         Emulator.WriteByte("BOSS_COUNT", 4);
                         Emulator.WriteByte("SHIELD_ACTION", 23);
-                        Globals.MONSTER_TABLE[1].Write("Turn", Globals.MONSTER_TABLE[1].Read("Turn") + 255);
+                        Globals.BattleController.MonsterTable[1].Turn += 255;
                         enhancedShieldTurns += (short) new Random().Next(10, 30);
                         if (enrageChangeTurns <= 90 && (enhancedShieldTurns >= 91 && enhancedShieldTurns <= 125)) {
                             enhancedShieldTurns = 90;
                         }
                     }
 
-                    Globals.MONSTER_TABLE[1].Write("P_Half", 0);
-                    Globals.MONSTER_TABLE[1].Write("M_Half", 0);
+                    Globals.BattleController.MonsterTable[1].P_Half = 0;
+                    Globals.BattleController.MonsterTable[1].M_Half = 0;
                 }
 
-                ubTrackTP[1] = Globals.MONSTER_TABLE[1].Read("Turn");
+                ubTrackTP[1] = Globals.BattleController.MonsterTable[1].Turn;
             }
         }
 
@@ -5264,15 +5264,15 @@ namespace Dragoon_Modifier {
 
                     if (ultimateHP[0] < 0) {
                         ultimateHP[0] = 0;
-                        Globals.MONSTER_TABLE[0].Write("HP", 0);
+                        Globals.BattleController.MonsterTable[0].HP = 0;
                     }
                     if (ultimateHP[1] < 0) {
                         ultimateHP[1] = 0;
-                        Globals.MONSTER_TABLE[0].Write("HP", 0);
+                        Globals.BattleController.MonsterTable[0].HP = 0;
                     }
                     if (ultimateHP[2] < 0) {
                         ultimateHP[2] = 0;
-                        Globals.MONSTER_TABLE[0].Write("HP", 0);
+                        Globals.BattleController.MonsterTable[0].HP = 0;
                     }
 
                     ubTrackEHP[0] = ultimateHP[0];
@@ -5283,7 +5283,7 @@ namespace Dragoon_Modifier {
 
             if (ultimateHP[0] == 0 && ubFinalAttack) {
                 ubFinalAttack = false;
-                Globals.MONSTER_TABLE[0].Write("MAT", Math.Round(originalMonsterStats[0, 1] * 18));
+                Globals.BattleController.MonsterTable[0].MAT = (ushort) Math.Round(originalMonsterStats[0, 1] * 18);
             }
         }
 
@@ -5329,10 +5329,10 @@ namespace Dragoon_Modifier {
             }
 
             for (int i = 1; i < 3; i++) {
-                if (Globals.MONSTER_TABLE[i].Read("HP") < 65535 && Globals.MONSTER_TABLE[0].Read("HP") > 0) {
-                    int damage = 65535 - Globals.MONSTER_TABLE[i].Read("HP");
-                    Globals.MONSTER_TABLE[i].Write("HP", 65535);
-                    Globals.MONSTER_TABLE[0].Write("HP", Math.Max(0, Globals.MONSTER_TABLE[0].Read("HP") - damage));
+                if (Globals.BattleController.MonsterTable[i].HP < 65535 && Globals.BattleController.MonsterTable[0].HP > 0) {
+                    int damage = 65535 - Globals.BattleController.MonsterTable[i].HP;
+                    Globals.BattleController.MonsterTable[i].HP = 65535;
+                    Globals.BattleController.MonsterTable[0].HP -= (ushort) damage;
                 }
             }
         }
@@ -5486,9 +5486,9 @@ namespace Dragoon_Modifier {
                             eleBombElement = (byte) element;
 
                             for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                                eleBombOldElement[i] = Globals.MONSTER_TABLE[i].Read("Element");
-                                Globals.MONSTER_TABLE[i].Write("Element", element);
-                                Globals.MONSTER_TABLE[i].Write("Display_Element", element);
+                                eleBombOldElement[i] = Globals.BattleController.MonsterTable[i].Element;
+                                Globals.BattleController.MonsterTable[i].Element = (byte) element;
+                                Globals.BattleController.MonsterTable[i].Display_Element = (byte) element;
                             }
 
                             eleBombTurns -= 1;
@@ -5500,16 +5500,16 @@ namespace Dragoon_Modifier {
                         eleBombTurns -= 1;
                         if (eleBombTurns <= 0) {
                             for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                                Globals.MONSTER_TABLE[i].Write("Element", eleBombOldElement[i]);
-                                Globals.MONSTER_TABLE[i].Write("Display_Element", eleBombOldElement[i]);
+                                Globals.BattleController.MonsterTable[i].Element = (byte) eleBombOldElement[i];
+                                Globals.BattleController.MonsterTable[i].Display_Element = (byte) eleBombOldElement[i];
                             }
                         }
                     }
 
                     if (Globals.BattleController.CharacterTable[eleBombSlot].Action == 192) {
                         for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                            Globals.MONSTER_TABLE[i].Write("Element", eleBombOldElement[i]);
-                            Globals.MONSTER_TABLE[i].Write("Display_Element", eleBombOldElement[i]);
+                            Globals.BattleController.MonsterTable[i].Element = (byte) eleBombOldElement[i];
+                            Globals.BattleController.MonsterTable[i].Display_Element = (byte) eleBombOldElement[i];
                         }
                         eleBombChange = false;
                         eleBombTurns = 0;
@@ -5560,7 +5560,7 @@ namespace Dragoon_Modifier {
                 for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
                     int lastX = 0;
                     long hpName = Constants.GetAddress("MONSTERS_NAMES") + (i * 0x2C);
-                    char[] hpArray = Globals.MONSTER_TABLE[i].Read("HP").ToString().ToCharArray();
+                    char[] hpArray = Globals.BattleController.MonsterTable[i].HP.ToString().ToCharArray();
                     if (ultimateHP[i] > 0) {
                         hpArray = ultimateHP[i].ToString().ToCharArray();
                     }
@@ -5593,7 +5593,7 @@ namespace Dragoon_Modifier {
                     if (ultimateHP[i] > 0) {
                         dmgTrkHP[i] = ultimateHP[i];
                     } else {
-                        dmgTrkHP[i] = Globals.MONSTER_TABLE[i].Read("HP");
+                        dmgTrkHP[i] = Globals.BattleController.MonsterTable[i].HP;
                     }
                 }
                 for (int i = 0; i < 3; i++) {
@@ -5626,11 +5626,11 @@ namespace Dragoon_Modifier {
                                     dmgTrkHP[i] = ultimateHP[i];
                                 }
                             } else {
-                                if (Globals.MONSTER_TABLE[i].Read("HP") < dmgTrkHP[i]) {
-                                    dmgTrkChr[dmgTrkSlot] += dmgTrkHP[i] - Globals.MONSTER_TABLE[i].Read("HP");
-                                    dmgTrkHP[i] = Globals.MONSTER_TABLE[i].Read("HP");
-                                } else if (Globals.MONSTER_TABLE[i].Read("HP") > dmgTrkHP[i]) {
-                                    dmgTrkHP[i] = Globals.MONSTER_TABLE[i].Read("HP");
+                                if (Globals.BattleController.MonsterTable[i].HP < dmgTrkHP[i]) {
+                                    dmgTrkChr[dmgTrkSlot] += dmgTrkHP[i] - Globals.BattleController.MonsterTable[i].HP;
+                                    dmgTrkHP[i] = Globals.BattleController.MonsterTable[i].HP;
+                                } else if (Globals.BattleController.MonsterTable[i].HP > dmgTrkHP[i]) {
+                                    dmgTrkHP[i] = Globals.BattleController.MonsterTable[i].HP;
                                 }
                             }
                         }
@@ -5648,17 +5648,17 @@ namespace Dragoon_Modifier {
         #region Enrage Mode
         public void EnrageMode(int i) {
             if ((Globals.CheckDMScript("btnEnrage") || CheckEnrageBoss()) && !ubUltimateEnrage) {
-                if ((Globals.MONSTER_TABLE[i].Read("HP") <= (Globals.MONSTER_TABLE[i].Read("Max_HP") / 2)) && enragedMode[i] == 0) {
-                    Globals.MONSTER_TABLE[i].Write("AT", Math.Round(originalMonsterStats[i, 1] * 1.1));
-                    Globals.MONSTER_TABLE[i].Write("MAT", Math.Round(originalMonsterStats[i, 2] * 1.1));
-                    Globals.MONSTER_TABLE[i].Write("DF", Math.Round(originalMonsterStats[i, 3] * 1.1));
-                    Globals.MONSTER_TABLE[i].Write("MDF", Math.Round(originalMonsterStats[i, 4] * 1.1));
+                if ((Globals.BattleController.MonsterTable[i].HP <= (Globals.BattleController.MonsterTable[i].Max_HP / 2)) && enragedMode[i] == 0) {
+                    Globals.BattleController.MonsterTable[i].AT = (ushort) Math.Round(originalMonsterStats[i, 1] * 1.1);
+                    Globals.BattleController.MonsterTable[i].MAT = (ushort) Math.Round(originalMonsterStats[i, 2] * 1.1);
+                    Globals.BattleController.MonsterTable[i].DF = (ushort) Math.Round(originalMonsterStats[i, 3] * 1.1);
+                    Globals.BattleController.MonsterTable[i].MDF = (ushort) Math.Round(originalMonsterStats[i, 4] * 1.1);
                     enragedMode[i] = 1;
-                } else if ((Globals.MONSTER_TABLE[i].Read("HP") <= (Globals.MONSTER_TABLE[i].Read("Max_HP") / 4)) && enragedMode[i] == 1) {
-                    Globals.MONSTER_TABLE[i].Write("AT", Math.Round(originalMonsterStats[i, 1] * 1.25));
-                    Globals.MONSTER_TABLE[i].Write("MAT", Math.Round(originalMonsterStats[i, 2] * 1.25));
-                    Globals.MONSTER_TABLE[i].Write("DF", Math.Round(originalMonsterStats[i, 3] * 1.25));
-                    Globals.MONSTER_TABLE[i].Write("MDF", Math.Round(originalMonsterStats[i, 4] * 1.25));
+                } else if ((Globals.BattleController.MonsterTable[i].HP <= (Globals.BattleController.MonsterTable[i].Max_HP / 4)) && enragedMode[i] == 1) {
+                    Globals.BattleController.MonsterTable[i].AT = (ushort) Math.Round(originalMonsterStats[i, 1] * 1.25);
+                    Globals.BattleController.MonsterTable[i].MAT = (ushort) Math.Round(originalMonsterStats[i, 2] * 1.25);
+                    Globals.BattleController.MonsterTable[i].DF = (ushort) Math.Round(originalMonsterStats[i, 3] * 1.25);
+                    Globals.BattleController.MonsterTable[i].MDF = (ushort) Math.Round(originalMonsterStats[i, 4] * 1.25);
                     enragedMode[i] = 2;
                 }
             }
@@ -5777,20 +5777,20 @@ namespace Dragoon_Modifier {
                         }
 
                         for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                            if (Globals.MONSTER_TABLE[i].Read("HP") > 0) {
+                            if (Globals.BattleController.MonsterTable[i].HP > 0) {
                                 if (Globals.ENCOUNTER_ID == 390 && i == 1)
                                     break;
                                 if (Globals.ENCOUNTER_ID == 433 && i == 1)
-                                    if (Globals.MONSTER_TABLE[0].Read("HP") > 0)
+                                    if (Globals.BattleController.MonsterTable[0].HP > 0)
                                         break;
                                 if (Globals.ENCOUNTER_ID == 433 && i == 2)
-                                    if (Globals.MONSTER_TABLE[1].Read("HP") > 0)
+                                    if (Globals.BattleController.MonsterTable[1].HP > 0)
                                         break;
                                 if (Globals.ENCOUNTER_ID == 433 && i >= 1)
-                                    if (Globals.MONSTER_TABLE[i - 1].Read("HP") > 0)
+                                    if (Globals.BattleController.MonsterTable[i - 1].HP > 0)
                                         continue;
 
-                                extraTurnBattleM[i] += Globals.MONSTER_TABLE[i].Read("SPD");
+                                extraTurnBattleM[i] += Globals.BattleController.MonsterTable[i].SPD;
                                 if (extraTurnBattleM[i] > 7000 + (1000 * i)) {
                                     extraTurnBattleM[i] = 0;
                                     Emulator.WriteByte(Globals.MONS_ADDRESS[i] + 0x45, (byte) (Emulator.ReadByte(Globals.MONS_ADDRESS[i] + 0x45) + 1));
@@ -5955,7 +5955,7 @@ namespace Dragoon_Modifier {
             int enemiesAlive = 0;
             int turnPoints = 0;
             for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                if (Globals.MONSTER_TABLE[i].Read("HP") > 0)
+                if (Globals.BattleController.MonsterTable[i].HP > 0)
                     enemiesAlive++;
             }
             turnPoints = enemiesAlive == 1 ? 180 : enemiesAlive == 2 ? 90 : enemiesAlive == 3 ? 70 : enemiesAlive == 4 ? 60 : 50;
@@ -5964,15 +5964,15 @@ namespace Dragoon_Modifier {
                 turnPoints = 180;
 
             for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                if (Globals.MONSTER_TABLE[i].Read("HP") > 0) {
+                if (Globals.BattleController.MonsterTable[i].HP > 0) {
                     if (Globals.ENCOUNTER_ID == 390)
                         if (i == 0)
                             continue;
                     if (Globals.ENCOUNTER_ID == 433 && i >= 1)
-                        if (Globals.MONSTER_TABLE[i - 1].Read("HP") > 0)
+                        if (Globals.BattleController.MonsterTable[i - 1].HP > 0)
                             continue;
 
-                    Globals.MONSTER_TABLE[i].Write("Turn", Globals.MONSTER_TABLE[i].Read("Turn") + turnPoints);
+                    Globals.BattleController.MonsterTable[i].Turn += (ushort) turnPoints;
 
                     if (Globals.ENCOUNTER_ID == 385 || Globals.ENCOUNTER_ID == 415 || Globals.ENCOUNTER_ID == 413 || Globals.ENCOUNTER_ID == 417 || Globals.ENCOUNTER_ID == 394 || Globals.ENCOUNTER_ID == 422 || Globals.ENCOUNTER_ID == 432 || Globals.ENCOUNTER_ID == 443)
                         break;

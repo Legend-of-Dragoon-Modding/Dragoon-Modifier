@@ -117,7 +117,7 @@ namespace Dragoon_Modifier.MemoryController {
             MP_P_Hit = Globals.MemoryController.SecondaryCharacterTable[character].MP_P_Hit;
             SP_P_Hit = Globals.MemoryController.SecondaryCharacterTable[character].SP_P_Hit;
             SP_Multi = Globals.MemoryController.SecondaryCharacterTable[character].SP_Multi;
-            Special_Efect = Globals.MemoryController.SecondaryCharacterTable[character].Special_Effect;
+            Special_Effect = Globals.MemoryController.SecondaryCharacterTable[character].Special_Effect;
             Weapon_Element = Globals.MemoryController.SecondaryCharacterTable[character].WeaponElement;
 
             DAT = Globals.MemoryController.SecondaryCharacterTable[character].DAT;

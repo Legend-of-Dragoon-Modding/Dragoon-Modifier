@@ -189,16 +189,12 @@ namespace Dragoon_Modifier {
             Globals.UNIQUE_MONSTER_SIZE = Emulator.ReadByte("UNIQUE_MONSTER_SIZE");
             Globals.UNIQUE_MONSTER_IDS = new List<int>();
             Globals.MONSTER_IDS = new List<int>();
-            Globals.MONSTER_TABLE = new List<dynamic>();
 
             for (int monster = 0; monster < Globals.UNIQUE_MONSTER_SIZE; monster++) {
                 Globals.UNIQUE_MONSTER_IDS.Add(Emulator.ReadUShort("UNIQUE_SLOT", (monster * 0x1A8)));
             }
             for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
                 Globals.MONSTER_IDS.Add(Emulator.ReadUShort("MONSTER_ID", Globals.BattleController.BattleOffset + (i * 0x8)));
-            }
-            for (int monster = 0; monster < Globals.MONSTER_SIZE; monster++) {
-                Globals.MONSTER_TABLE.Add(new MonsterAddress(Globals.M_POINT, monster, Globals.MONSTER_IDS[monster], Globals.UNIQUE_MONSTER_IDS));
             }
 
             firstDamageCapRemoval = false;
@@ -271,29 +267,29 @@ namespace Dragoon_Modifier {
                 resup = HP / 65535;
                 HP = 65535;
             }
-            Globals.MONSTER_TABLE[slot].Write("HP", (ushort) Math.Round(HP));
-            Globals.MONSTER_TABLE[slot].Write("Max_HP", (ushort) Math.Round(HP));
-            Globals.MONSTER_TABLE[slot].Write("AT", (short) Math.Round(Globals.DICTIONARY.StatList[ID].AT * Globals.AT_MULTI));
-            Globals.MONSTER_TABLE[slot].Write("OG_AT", (short) Math.Round(Globals.DICTIONARY.StatList[ID].AT * Globals.AT_MULTI));
-            Globals.MONSTER_TABLE[slot].Write("MAT", (short) Math.Round(Globals.DICTIONARY.StatList[ID].MAT * Globals.MAT_MULTI));
-            Globals.MONSTER_TABLE[slot].Write("OG_MAT", (short) Math.Round(Globals.DICTIONARY.StatList[ID].MAT * Globals.MAT_MULTI));
-            Globals.MONSTER_TABLE[slot].Write("DF", (short) Math.Round(Globals.DICTIONARY.StatList[ID].DF * Globals.DF_MULTI * resup));
-            Globals.MONSTER_TABLE[slot].Write("OG_DF", (short) Math.Round(Globals.DICTIONARY.StatList[ID].DF * Globals.DF_MULTI * resup));
-            Globals.MONSTER_TABLE[slot].Write("MDF", (short) Math.Round(Globals.DICTIONARY.StatList[ID].MDF * Globals.MDF_MULTI * resup));
-            Globals.MONSTER_TABLE[slot].Write("OG_MDF", (short) Math.Round(Globals.DICTIONARY.StatList[ID].MDF * Globals.MDF_MULTI * resup));
-            Globals.MONSTER_TABLE[slot].Write("SPD", (short) Math.Round(Globals.DICTIONARY.StatList[ID].SPD * Globals.SPD_MULTI));
-            Globals.MONSTER_TABLE[slot].Write("OG_SPD", (short) Math.Round(Globals.DICTIONARY.StatList[ID].SPD * Globals.SPD_MULTI));
-            Globals.MONSTER_TABLE[slot].Write("A_AV", Globals.DICTIONARY.StatList[ID].A_AV);
-            Globals.MONSTER_TABLE[slot].Write("M_AV", Globals.DICTIONARY.StatList[ID].M_AV);
-            Globals.MONSTER_TABLE[slot].Write("P_Immune", Globals.DICTIONARY.StatList[ID].P_Immune);
-            Globals.MONSTER_TABLE[slot].Write("M_Immune", Globals.DICTIONARY.StatList[ID].M_Immune);
-            Globals.MONSTER_TABLE[slot].Write("P_Half", Globals.DICTIONARY.StatList[ID].P_Half);
-            Globals.MONSTER_TABLE[slot].Write("M_Half", Globals.DICTIONARY.StatList[ID].M_Half);
-            Globals.MONSTER_TABLE[slot].Write("Element", Globals.DICTIONARY.StatList[ID].Element);
-            Globals.MONSTER_TABLE[slot].Write("E_Immune", Globals.DICTIONARY.StatList[ID].E_Immune);
-            Globals.MONSTER_TABLE[slot].Write("E_Half", Globals.DICTIONARY.StatList[ID].E_Half);
-            Globals.MONSTER_TABLE[slot].Write("Stat_Res", Globals.DICTIONARY.StatList[ID].Stat_Res);
-            Globals.MONSTER_TABLE[slot].Write("Death_Res", Globals.DICTIONARY.StatList[ID].Death_Res);
+            Globals.BattleController.MonsterTable[slot].HP = (ushort) Math.Round(HP);
+            Globals.BattleController.MonsterTable[slot].Max_HP = (ushort) Math.Round(HP);
+            Globals.BattleController.MonsterTable[slot].AT = (ushort) Math.Round(Globals.DICTIONARY.StatList[ID].AT * Globals.AT_MULTI);
+            Globals.BattleController.MonsterTable[slot].OG_AT = (ushort) Math.Round(Globals.DICTIONARY.StatList[ID].AT * Globals.AT_MULTI);
+            Globals.BattleController.MonsterTable[slot].MAT = (ushort) Math.Round(Globals.DICTIONARY.StatList[ID].MAT * Globals.MAT_MULTI);
+            Globals.BattleController.MonsterTable[slot].OG_MAT = (ushort) Math.Round(Globals.DICTIONARY.StatList[ID].MAT * Globals.MAT_MULTI);
+            Globals.BattleController.MonsterTable[slot].DF = (ushort) Math.Round(Globals.DICTIONARY.StatList[ID].DF * Globals.DF_MULTI * resup);
+            Globals.BattleController.MonsterTable[slot].OG_DF = (ushort) Math.Round(Globals.DICTIONARY.StatList[ID].DF * Globals.DF_MULTI * resup);
+            Globals.BattleController.MonsterTable[slot].MDF = (ushort) Math.Round(Globals.DICTIONARY.StatList[ID].MDF * Globals.MDF_MULTI * resup);
+            Globals.BattleController.MonsterTable[slot].OG_MDF = (ushort) Math.Round(Globals.DICTIONARY.StatList[ID].MDF * Globals.MDF_MULTI * resup);
+            Globals.BattleController.MonsterTable[slot].SPD = (ushort) Math.Round(Globals.DICTIONARY.StatList[ID].SPD * Globals.SPD_MULTI);
+            Globals.BattleController.MonsterTable[slot].OG_SPD = (ushort) Math.Round(Globals.DICTIONARY.StatList[ID].SPD * Globals.SPD_MULTI);
+            Globals.BattleController.MonsterTable[slot].A_AV = Globals.DICTIONARY.StatList[ID].A_AV;
+            Globals.BattleController.MonsterTable[slot].M_AV = Globals.DICTIONARY.StatList[ID].M_AV;
+            Globals.BattleController.MonsterTable[slot].P_Immune = Globals.DICTIONARY.StatList[ID].P_Immune;
+            Globals.BattleController.MonsterTable[slot].M_Immune = Globals.DICTIONARY.StatList[ID].M_Immune;
+            Globals.BattleController.MonsterTable[slot].P_Half = Globals.DICTIONARY.StatList[ID].P_Half;
+            Globals.BattleController.MonsterTable[slot].M_Half = Globals.DICTIONARY.StatList[ID].M_Half;
+            Globals.BattleController.MonsterTable[slot].Element = Globals.DICTIONARY.StatList[ID].Element;
+            Globals.BattleController.MonsterTable[slot].E_Immune = Globals.DICTIONARY.StatList[ID].E_Immune;
+            Globals.BattleController.MonsterTable[slot].E_Half = Globals.DICTIONARY.StatList[ID].E_Half;
+            Globals.BattleController.MonsterTable[slot].StatusResist = Globals.DICTIONARY.StatList[ID].Stat_Res;
+            Globals.BattleController.MonsterTable[slot].Special_Effect = Globals.DICTIONARY.StatList[ID].Death_Res;
         }
 
         public static void MonsterDropChange(int slot) {
@@ -602,7 +598,7 @@ namespace Dragoon_Modifier {
                 Globals.BattleController.CharacterTable[slot].SP_Multi = sp_multi;
                 byte death_res = (byte) (weapon.Death_Res | armor.Death_Res | helm.Death_Res | boots.Death_Res | accessory.Death_Res);
                 Emulator.WriteByte(address + 0x76, death_res);
-                Globals.BattleController.CharacterTable[slot].Special_Efect = death_res;
+                Globals.BattleController.CharacterTable[slot].Special_Effect = death_res;
                 byte weapon_element = (byte) weapon.Element;
                 Emulator.WriteByte(address + 0x7A, weapon_element);
                 Globals.BattleController.CharacterTable[slot].Weapon_Element = weapon_element;
@@ -790,12 +786,12 @@ namespace Dragoon_Modifier {
         public static void ShanaFix(byte slot) {
             byte HP = 0;
             if (Globals.ENCOUNTER_ID == 408 || Globals.ENCOUNTER_ID == 409 || Globals.ENCOUNTER_ID == 387) {
-                if (Globals.MONSTER_TABLE[0].Read("HP") != 0) {
+                if (Globals.BattleController.MonsterTable[0].HP != 0) {
                     HP = 1;
                 }
             } else {
-                foreach (dynamic monster in Globals.MONSTER_TABLE) {
-                    if (monster.Read("HP") != 0) {
+                foreach (dynamic monster in Globals.BattleController.MonsterTable) {
+                    if (monster.HP != 0) {
                         HP |= 1;
                     }
                 }
@@ -1115,16 +1111,16 @@ namespace Dragoon_Modifier {
             if ((Globals.MAP >= 5 && Globals.MAP <= 7) || (Globals.MAP >= 624 && Globals.MAP <= 625)) {
                 WipeRewards();
                 for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                    Globals.MONSTER_TABLE[i].Write("HP", 65535);
-                    Globals.MONSTER_TABLE[i].Write("Max_HP", 65535);
-                    Globals.MONSTER_TABLE[i].Write("SPD", 0);
-                    Globals.MONSTER_TABLE[i].Write("AT", 0);
-                    Globals.MONSTER_TABLE[i].Write("MAT", 0);
-                    Globals.MONSTER_TABLE[i].Write("DF", 65535);
-                    Globals.MONSTER_TABLE[i].Write("MDF", 65535);
-                    Globals.MONSTER_TABLE[i].Write("P_Immune", 1);
-                    Globals.MONSTER_TABLE[i].Write("M_Immune", 1);
-                    Globals.MONSTER_TABLE[i].Write("Turn", 0);
+                    Globals.BattleController.MonsterTable[i].HP = 65535;
+                    Globals.BattleController.MonsterTable[i].Max_HP = 65535;
+                    Globals.BattleController.MonsterTable[i].SPD = 0;
+                    Globals.BattleController.MonsterTable[i].AT = 0;
+                    Globals.BattleController.MonsterTable[i].MAT = 0;
+                    Globals.BattleController.MonsterTable[i].DF = 65535;
+                    Globals.BattleController.MonsterTable[i].MDF = 65535;
+                    Globals.BattleController.MonsterTable[i].P_Immune = 1;
+                    Globals.BattleController.MonsterTable[i].M_Immune = 1;
+                    Globals.BattleController.MonsterTable[i].Turn = 0;
                 }
             }
         }
@@ -1167,7 +1163,7 @@ namespace Dragoon_Modifier {
                     }
                 }
                 for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                    if (Globals.MONSTER_TABLE[i].Read("Action") == 28) { //Most used, not all monsters use action code 28 for item spells
+                    if (Globals.BattleController.MonsterTable[i].Action == 28) { // Most used, not all monsters use action code 28 for item spells
                         DamageCapScan();
                     }
                 }
@@ -1471,180 +1467,6 @@ namespace Dragoon_Modifier {
     }
 
     #region Objects
-    public class MonsterAddress {
-        long[] action = { 0, 1 };
-        long[] hp = { 0, 2 };
-        long[] max_hp = { 0, 2 };
-        long[] element = { 0, 2 };
-        long[] display_element = { 0, 2 };
-        long[] guard = { 0, 1 };
-        long[] at = { 0, 2 };
-        long[] og_at = { 0, 2 };
-        long[] mat = { 0, 2 };
-        long[] og_mat = { 0, 2 };
-        long[] df = { 0, 2 };
-        long[] og_df = { 0, 2 };
-        long[] mdf = { 0, 2 };
-        long[] og_mdf = { 0, 2 };
-        long[] spd = { 0, 2 };
-        long[] og_spd = { 0, 2 };
-        long[] turn = { 0, 2 };
-        long[] a_av = { 0, 1 };
-        long[] m_av = { 0, 1 };
-        long[] pwr_at = { 0, 1 };
-        long[] pwr_at_trn = { 0, 1 };
-        long[] pwr_mat = { 0, 1 };
-        long[] pwr_mat_trn = { 0, 1 };
-        long[] pwr_df = { 0, 1 };
-        long[] pwr_df_trn = { 0, 1 };
-        long[] pwr_mdf = { 0, 1 };
-        long[] pwr_mdf_trn = { 0, 1 };
-        long[] speed_up_trn = { 0, 1 };
-        long[] speed_down_trn = { 0, 1 };
-        long[] p_immune = { 0, 1 };
-        long[] m_immune = { 0, 1 };
-        long[] p_half = { 0, 1 };
-        long[] m_half = { 0, 1 };
-        long[] e_immune = { 0, 1 };
-        long[] e_half = { 0, 1 };
-        long[] stat_res = { 0, 1 };
-        long[] death_res = { 0, 1 };
-        long[] unique_index = { 0, 1 };
-        long[] exp = { 0, 2 };
-        long[] gold = { 0, 2 };
-        long[] drop_chance = { 0, 1 };
-        long[] drop_item = { 0, 1 };
-        long[] special_effect = { 0, 1 };
-        long[] attack_move = { 0, 1 };
-
-        public long[] Action { get { return action; } }
-        public long[] HP { get { return hp; } }
-        public long[] Max_HP { get { return max_hp; } }
-        public long[] Element { get { return element; } }
-        public long[] Display_Element { get { return display_element; } }
-        public long[] Guard { get { return guard; } }
-        public long[] AT { get { return at; } }
-        public long[] OG_AT { get { return og_at; } }
-        public long[] MAT { get { return mat; } }
-        public long[] OG_MAT { get { return og_mat; } }
-        public long[] DF { get { return df; } }
-        public long[] OG_DF { get { return og_df; } }
-        public long[] MDF { get { return mdf; } }
-        public long[] OG_MDF { get { return og_mdf; } }
-        public long[] SPD { get { return spd; } }
-        public long[] OG_SPD { get { return og_spd; } }
-        public long[] Turn { get { return turn; } }
-        public long[] A_AV { get { return a_av; } }
-        public long[] M_AV { get { return m_av; } }
-        public long[] PWR_AT { get { return pwr_at; } }
-        public long[] PWR_AT_TRN { get { return pwr_at_trn; } }
-        public long[] PWR_MAT { get { return pwr_mat; } }
-        public long[] PWR_MAT_TRN { get { return pwr_mat_trn; } }
-        public long[] PWR_DF { get { return pwr_df; } }
-        public long[] PWR_DF_TRN { get { return pwr_df_trn; } }
-        public long[] PWR_MDF { get { return pwr_mdf; } }
-        public long[] PWR_MDF_TRN { get { return pwr_mdf_trn; } }
-        public long[] SPEED_UP_TRN { get { return speed_up_trn; } }
-        public long[] SPEED_DOWN_TRN { get { return speed_down_trn; } }
-        public long[] P_Immune { get { return p_immune; } }
-        public long[] M_Immune { get { return m_immune; } }
-        public long[] P_Half { get { return p_half; } }
-        public long[] M_Half { get { return m_half; } }
-        public long[] E_Immune { get { return e_immune; } }
-        public long[] E_Half { get { return e_half; } }
-        public long[] Stat_Res { get { return stat_res; } }
-        public long[] Death_Res { get { return death_res; } }
-        public long[] Unique_Index { get { return unique_index; } }
-        public long[] EXP { get { return exp; } }
-        public long[] Gold { get { return gold; } }
-        public long[] Drop_Chance { get { return drop_chance; } }
-        public long[] Drop_Item { get { return drop_item; } }
-        public long[] Special_Effect { get { return special_effect; } }
-        public long[] Attack_Move { get { return attack_move; } }
-
-        public MonsterAddress(long m_point, int monster, int ID, List<int> monsterUniqueIdList) {
-            action[0] = m_point - 0xA8 - monster * 0x388;
-            hp[0] = m_point - monster * 0x388;
-            max_hp[0] = m_point + 0x8 - monster * 0x388;
-            element[0] = m_point + 0x14 - monster * 0x388;
-            display_element[0] = m_point + 0x6A - monster * 0x388;
-            guard[0] = m_point + 0x4C - monster * 0x388;
-            at[0] = m_point + 0x2C - monster * 0x388;
-            og_at[0] = m_point + 0x58 - monster * 0x388;
-            mat[0] = m_point + 0x2E - monster * 0x388;
-            og_mat[0] = m_point + 0x5A - monster * 0x388;
-            df[0] = m_point + 0x30 - monster * 0x388;
-            og_df[0] = m_point + 0x5E - monster * 0x388;
-            mdf[0] = m_point + 0x32 - monster * 0x388;
-            og_mdf[0] = m_point + 0x60 - monster * 0x388;
-            spd[0] = m_point + 0x2A - monster * 0x388;
-            og_spd[0] = m_point + 0x5C - monster * 0x388;
-            turn[0] = m_point + 0x44 - monster * 0x388;
-            a_av[0] = m_point + 0x38 - monster * 0x388;
-            m_av[0] = m_point + 0x3A - monster * 0x388;
-            pwr_at[0] = m_point + 0xAC - monster * 0x388;
-            pwr_at_trn[0] = m_point + 0xAD - monster * 0x388;
-            pwr_mat[0] = m_point + 0xAE - monster * 0x388;
-            pwr_mat_trn[0] = m_point + 0xAF - monster * 0x388;
-            pwr_df[0] = m_point + 0xB0 - monster * 0x388;
-            pwr_df_trn[0] = m_point + 0xB1 - monster * 0x388;
-            pwr_mdf[0] = m_point + 0xB2 - monster * 0x388;
-            pwr_mdf_trn[0] = m_point + 0xB3 - monster * 0x388;
-            speed_up_trn[0] = m_point + 0xC1 - monster * 0x388;
-            speed_down_trn[0] = m_point + 0xC3 - monster * 0x388;
-            p_immune[0] = m_point + 0x108 - monster * 0x388;
-            m_immune[0] = m_point + 0x10A - monster * 0x388;
-            p_half[0] = m_point + 0x10C - monster * 0x388;
-            m_half[0] = m_point + 0x10E - monster * 0x388;
-            e_immune[0] = m_point + 0x1A - monster * 0x388;
-            e_half[0] = m_point + 0x18 - monster * 0x388;
-            stat_res[0] = m_point + 0x1C - monster * 0x388;
-            death_res[0] = m_point + 0xC - monster * 0x388;
-            attack_move[0] = m_point + 0xACC - monster * 0x388;
-            unique_index[0] = m_point + 0x264 - monster * 0x388;
-            exp[0] = Constants.GetAddress("MONSTER_REWARDS") + (int) Constants.OFFSET + Globals.UNIQUE_MONSTER_IDS.IndexOf(ID) * 0x1A8;
-            gold[0] = Constants.GetAddress("MONSTER_REWARDS") + (int) Constants.OFFSET + 0x2 + Globals.UNIQUE_MONSTER_IDS.IndexOf(ID) * 0x1A8;
-            drop_chance[0] = Constants.GetAddress("MONSTER_REWARDS") + (int) Constants.OFFSET + 0x4 + Globals.UNIQUE_MONSTER_IDS.IndexOf(ID) * 0x1A8;
-            drop_item[0] = Constants.GetAddress("MONSTER_REWARDS") + (int) Constants.OFFSET + 0x5 + Globals.UNIQUE_MONSTER_IDS.IndexOf(ID) * 0x1A8;
-            special_effect[0] = Constants.GetAddress("UNIQUE_MONSTER_SIZE") + monster * 0x20;
-        }
-
-        public object Read(string attribute) {
-            try {
-                PropertyInfo property = GetType().GetProperty(attribute);
-                var address = (long[]) property.GetValue(this, null);
-                if (address[1] == 2) {
-                    return Emulator.ReadUShort(address[0]);
-                } else if (address[1] == 4) {
-                    return Emulator.ReadUInt(address[0]);
-                } else {
-                    return Emulator.ReadByte(address[0]);
-                }
-            } catch (Exception e) {
-                Constants.WriteError("Monster Read Error - A: " + attribute);
-                Console.WriteLine("Monster Read Error - A: " + attribute);
-                return 0;
-            }
-        }
-
-        public void Write(string attribute, object value) {
-            try {
-                PropertyInfo property = GetType().GetProperty(attribute);
-                var address = (long[]) property.GetValue(this, null);
-                if (address[1] == 2) {
-                    Emulator.WriteUShort(address[0], Convert.ToUInt16(value));
-                } else if (address[1] == 4) {
-                    Emulator.WriteUInt(address[0], Convert.ToUInt32(value));
-                } else {;
-                    Emulator.WriteByte(address[0], Convert.ToByte(value));
-                }
-            } catch (Exception e) {
-                Constants.WriteError(e);
-                Constants.WriteError("Monster Write Error - A: " + attribute + " V: " + value);
-                Console.WriteLine("Monster Write Error - A: " + attribute + " V: " + value);
-            }
-        }
-    }
 
     public class CurrentStats {
         byte lv = 1;
@@ -1843,5 +1665,6 @@ namespace Dragoon_Modifier {
             if (mp > max_mp) mp = max_mp;
         }
     }
+
     #endregion
 }

@@ -827,15 +827,15 @@ namespace Dragoon_Modifier {
                 if (spell == 5 || spell == 14) {
                     Globals.BattleController.CharacterTable[slot].DMAT = (ushort) (wingBlasterDMAT * multi);
                     checkWingBlaster = true;
-                    for (int i = 0; i < Globals.MONSTER_SIZE; i++) trackMonsterHP[i] = Globals.MONSTER_TABLE[i].Read("HP");
+                    for (int i = 0; i < Globals.MONSTER_SIZE; i++) trackMonsterHP[i] = Globals.BattleController.MonsterTable[i].HP;
                 } else if (spell == 6 || spell == 17) {
                     Globals.BattleController.CharacterTable[slot].DMAT = (ushort) (gasplessDMAT * multi);
                     checkGaspless = true;
-                    for (int i = 0; i < Globals.MONSTER_SIZE; i++) trackMonsterHP[i] = Globals.MONSTER_TABLE[i].Read("HP");
+                    for (int i = 0; i < Globals.MONSTER_SIZE; i++) trackMonsterHP[i] = Globals.BattleController.MonsterTable[i].HP;
                 } else if (spell == 8) {
                     Globals.BattleController.CharacterTable[slot].DMAT = (ushort) (jadeDragonDMAT * multi);
                     checkJadeDragon = true;
-                    for (int i = 0; i < Globals.MONSTER_SIZE; i++) trackMonsterHP[i] = Globals.MONSTER_TABLE[i].Read("HP");
+                    for (int i = 0; i < Globals.MONSTER_SIZE; i++) trackMonsterHP[i] = Globals.BattleController.MonsterTable[i].HP;
                 } else if (Globals.DIFFICULTY_MODE.Contains("Hell") && (spell == 7 || spell == 26)) {
                     checkFlowerStorm = true;
                     for (int x = 0; x < 3; x++) {
@@ -854,10 +854,10 @@ namespace Dragoon_Modifier {
 
                 if (checkWingBlaster || checkGaspless || checkJadeDragon) {
                     for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
-                        if (Globals.MONSTER_TABLE[i].Read("HP") < trackMonsterHP[i]) {
+                        if (Globals.BattleController.MonsterTable[i].HP < trackMonsterHP[i]) {
                             double tpDamage = checkWingBlaster ? wingBlasterTPDamage : checkGaspless ? gasplessTPDamage : jadeDragonTPDamage;
-                            if (Globals.MONSTER_TABLE[i].Read("SPEED_DOWN_TRN") > 0) tpDamage /= 3;
-                            Globals.MONSTER_TABLE[i].Write("Turn", Math.Max(0, Globals.MONSTER_TABLE[i].Read("Turn") - tpDamage));
+                            if (Globals.BattleController.MonsterTable[i].Speed_Down_Turn > 0) tpDamage /= 3;
+                            Globals.BattleController.MonsterTable[i].Turn = (ushort) Math.Max(0, Globals.BattleController.MonsterTable[i].Turn - tpDamage);
                             checkWingBlaster = checkGaspless = checkJadeDragon = false;
                         }
                     }

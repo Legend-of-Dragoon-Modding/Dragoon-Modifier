@@ -20,7 +20,7 @@ namespace Dragoon_Modifier.MemoryController {
         public ushort Max_HP { get { return Emulator.ReadUShort(_baseAddress + 0x8); } set { Emulator.WriteUShort(_baseAddress + 0x8, value); } }
         public byte Status { get { return Emulator.ReadByte(_baseAddress + 0x6); } set { Emulator.WriteByte(_baseAddress + 0x6, value); } }
         public byte StatusResist { get { return Emulator.ReadByte(_baseAddress + 0x1C); } set { Emulator.WriteByte(_baseAddress + 0x1C, value); } }
-        public byte Special_Efect { get { return Emulator.ReadByte(_baseAddress + 0xC); } set { Emulator.WriteByte(_baseAddress + 0xC, value); } } // Old Death_Res
+        public byte Special_Effect { get { return Emulator.ReadByte(_baseAddress + 0xC); } set { Emulator.WriteByte(_baseAddress + 0xC, value); } } // Old Death_Res
         public byte Guard { get { return Emulator.ReadByte(_baseAddress + 0x4C); } set { Emulator.WriteByte(_baseAddress + 0x4C, value); } }
         public ushort AT { get { return Emulator.ReadUShort(_baseAddress + 0x2C); } set { Emulator.WriteUShort(_baseAddress + 0x2C, value); } }
         public ushort OG_AT { get { return Emulator.ReadUShort(_baseAddress + 0x58); } set { Emulator.WriteUShort(_baseAddress + 0x58, value); } }
@@ -72,7 +72,7 @@ namespace Dragoon_Modifier.MemoryController {
             _baseAddress = (uint) (point - (slot * 0x388) + 0x108);
             _pShieldMshieldSigStone = 0x6E3B4 + position * 0x20; // Which one from constants is this??
             _statusAddr = 0x6E71C + position * 0x4; // Might be tied to the previous one
-            _dragoonSpellsAddr = Constants.GetAddress("DRAGOON_SPELL_SPOT") + slot * 0x9;
+            _dragoonSpellsAddr = Constants.GetAddress("DRAGOON_SPELL_SLOT") + slot * 0x9; // Should this be in character???
             _dragoonSpells = new ByteCollection(_dragoonSpellsAddr + 1, 1, 8);
             _additionSpecial = Constants.GetAddress("WARGOD") + slot * 0x4;
         }

@@ -264,9 +264,9 @@ namespace Dragoon_Modifier {
                             if (field.Equals("Name")) {
                                 writer.WriteLine(Globals.MONSTER_NAME[i]);
                             } else if (field.Equals("Drop_Chance")) {
-                                writer.WriteLine(Globals.MONSTER_TABLE[i].Read(field) + "%");
+                                writer.WriteLine(Globals.BattleController.MonsterTable[i].GetType().GetProperty(field).GetValue(Globals.BattleController.MonsterTable[i]) + "%");
                             } else if (field.Equals("Drop_Item")) {
-                                writer.WriteLine(Globals.DICTIONARY.Num2Item[Globals.MONSTER_TABLE[i].Read(field)]);
+                                writer.WriteLine(Globals.DICTIONARY.Num2Item[Globals.BattleController.MonsterTable[i].GetType().GetProperty(field).GetValue(Globals.BattleController.MonsterTable[i])]);
                             } else if (field.Equals("EATBM1")) {
                                 writer.WriteLine(Globals.GetCustomValue("EATBM1"));
                             } else if (field.Equals("EATBM2")) {
@@ -278,7 +278,7 @@ namespace Dragoon_Modifier {
                             } else if (field.Equals("EATBM5")) {
                                 writer.WriteLine(Globals.GetCustomValue("EATBM5"));
                             } else {
-                                writer.WriteLine(Globals.MONSTER_TABLE[i].Read(field));
+                                writer.WriteLine(Globals.BattleController.MonsterTable[i].GetType().GetProperty(field).GetValue(Globals.BattleController.MonsterTable[i]));
                             }
                             writer.Dispose();
                             writer.Close();
@@ -695,7 +695,7 @@ namespace Dragoon_Modifier {
                             if (character)
                                 this.Content = Globals.BattleController.CharacterTable[slot - 1].GetType().GetProperty(field).GetValue(Globals.BattleController.CharacterTable[slot - 1]).ToString();
                             else
-                                this.Content = Globals.MONSTER_TABLE[slot - 1].GetType().GetProperty(field).GetValue(Globals.BattleController.CharacterTable[slot - 1]).ToString();
+                                this.Content = Globals.BattleController.MonsterTable[slot - 1].GetType().GetProperty(field).GetValue(Globals.BattleController.MonsterTable[slot - 1].ToString());
                         }
                     } else {
                         this.Content = "";
@@ -1014,7 +1014,7 @@ namespace Dragoon_Modifier {
                                     this.Value = (double) Globals.BattleController.CharacterTable[slot - 1].GetType().GetProperty(field).GetValue(Globals.BattleController.CharacterTable[slot - 1]);
                                 }
                             } else {
-                                this.Value = Globals.MONSTER_TABLE[slot - 1].Read(field);
+                                this.Value = (double) Globals.BattleController.MonsterTable[slot - 1].GetType().GetProperty(field).GetValue(Globals.BattleController.MonsterTable[slot - 1]);
                             }
                         }
 
@@ -1024,7 +1024,7 @@ namespace Dragoon_Modifier {
                             if (character)
                                 this.Minimum = (double) Globals.BattleController.CharacterTable[slot - 1].GetType().GetProperty(min).GetValue(Globals.BattleController.CharacterTable[slot - 1]);
                             else
-                                this.Minimum = Globals.MONSTER_TABLE[slot - 1].Read(min);
+                                this.Minimum = (double) Globals.BattleController.MonsterTable[slot - 1].GetType().GetProperty(min).GetValue(Globals.BattleController.MonsterTable[slot - 1]);
                         }
 
                         if (Double.TryParse(max, out maxX)) {
@@ -1039,7 +1039,7 @@ namespace Dragoon_Modifier {
                                     this.Maximum = (double) Globals.BattleController.CharacterTable[slot - 1].GetType().GetProperty(max).GetValue(Globals.BattleController.CharacterTable[slot - 1]);
                                 }
                             } else {
-                                this.Maximum = Globals.MONSTER_TABLE[slot - 1].Read(max);
+                                this.Maximum = (double) Globals.BattleController.MonsterTable[slot - 1].GetType().GetProperty(max).GetValue(Globals.BattleController.MonsterTable[slot - 1]);
                             }
                         }
                     } else {
@@ -1388,7 +1388,7 @@ namespace Dragoon_Modifier {
                             if (character)
                                 this.Value = (double) Globals.BattleController.CharacterTable[slot - 1].GetType().GetProperty(field).GetValue(Globals.BattleController.CharacterTable[slot - 1]);
                             else
-                                this.Value = Globals.MONSTER_TABLE[slot - 1].Read(field);
+                                this.Value = (double) Globals.BattleController.MonsterTable[slot - 1].GetType().GetProperty(field).GetValue(Globals.BattleController.MonsterTable[slot - 1]);
                         }
                         if (Double.TryParse(min, out minX)) {
                             this.Minimum = minX;
@@ -1396,7 +1396,7 @@ namespace Dragoon_Modifier {
                             if (character)
                                 this.Minimum = (double) Globals.BattleController.CharacterTable[slot - 1].GetType().GetProperty(min).GetValue(Globals.BattleController.CharacterTable[slot - 1]);
                             else
-                                this.Minimum = Globals.MONSTER_TABLE[slot - 1].Read(min);
+                                this.Minimum = (double) Globals.BattleController.MonsterTable[slot - 1].GetType().GetProperty(min).GetValue(Globals.BattleController.MonsterTable[slot - 1]);
                         }
                         if (Double.TryParse(max, out maxX)) {
                             this.Maximum = maxX;
@@ -1408,7 +1408,7 @@ namespace Dragoon_Modifier {
                                 if (character)
                                     this.Maximum = (double) Globals.BattleController.CharacterTable[slot - 1].GetType().GetProperty(max).GetValue(Globals.BattleController.CharacterTable[slot - 1]);
                                 else
-                                    this.Maximum = Globals.MONSTER_TABLE[slot - 1].Read(max);
+                                    this.Maximum = (double) Globals.BattleController.MonsterTable[slot - 1].GetType().GetProperty(max).GetValue(Globals.BattleController.MonsterTable[slot - 1]);
                             }
                         }
                     } else {
