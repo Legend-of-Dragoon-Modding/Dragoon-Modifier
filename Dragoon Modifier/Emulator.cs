@@ -34,6 +34,10 @@ namespace Dragoon_Modifier {
 
         static IntPtr processHandle = new IntPtr();
 
+        public static void SetHandle(Process proc) {
+            processHandle = OpenProcess(PROCESS_ALL_ACCESS, false, proc.Id);
+        }
+
         public static int GetProcIdFromName(string name) //new 1.0.2 function
         {
             Process[] processlist = Process.GetProcesses();
@@ -73,9 +77,7 @@ namespace Dragoon_Modifier {
                 Constants.WriteDebug("Failed to attach, no process found.");
                 return false;
             } else if (baseScan) {
-                string AoBCheck = "50 53 2D 58 20 45 58 45";
-
-                if (ReadUInt("STARTUP_SEARCH") == 320386 || ReadUShort("BATTLE_VALUE") == 32776 || ReadUShort("BATTLE_VALUE") == 41215) {
+                if (Attach.Verify(Constants.OFFSET)) {
                     Constants.KEY.SetValue("Offset", Constants.OFFSET);
                     Constants.WriteOutput("Previous offset successful.");
                 } else {
@@ -84,64 +86,16 @@ namespace Dragoon_Modifier {
 
                 if (Constants.OFFSET <= 0) {
                     if (emuName.ToLower() == "retroarch") { // RetroArch hotfix
-                        bool found = false;
-                        try {
-                            for (int i = 1; i < 17; i++) {
-                                start = 0x00000000 + (0x10000000 * i);
-                                end = 0x001F4000 + (0x10000000 * i);
+                        Attach.RetroArch(process);
 
-                                Constants.WriteOutput("Start RetroArch Scan (" + i + "/16): " + Convert.ToString(start, 16).ToUpper() + " - " + Convert.ToString(end, 16).ToUpper());
-                                var results = ScanAoB(start, end, AoBCheck, false, true);
-                                foreach (long x in results) {
-                                    Constants.OFFSET = x - (long) 0xB070;
-                                    if (ReadUInt("STARTUP_SEARCH") == 320386 || ReadUShort("BATTLE_VALUE") == 32776 || ReadUShort("BATTLE_VALUE") == 41215) {
-                                        Constants.KEY.SetValue("Offset", Constants.OFFSET);
-                                        Constants.WriteOutput("Base scan success.");
-                                        found = true;
-                                        break;
-                                    } else {
-                                        Constants.OFFSET = 0;
-                                    }
-                                }
-
-                                if (found) break;
-                            }
-                        } catch (Exception e) {
-                            Constants.WriteOutput("RetroArch scan failed.");
-                        }
+                      
                     } else if (emuName.ToLower().Contains("duckstation")) {
-                        string duckstation = "53 6F 6E 79 20 43 6F 6D 70 75 74 65 72 20 45 6E 74 65 72 74 61 69 6E 6D 65 6E 74 20 49 6E 63";
-                        Constants.WriteOutput("Start DuckStation Scan: " + Convert.ToString(start, 16).ToUpper() + " - " + Convert.ToString(end, 16).ToUpper());
-                        var results = ScanAoB(start, end, duckstation, false, true);
-                        foreach (long x in results) {
-                            byte[] psxPointer = ReadAoB(x - 0x118, x - 0x110);
-                            psxPointer.Reverse();
-                            Constants.OFFSET = BitConverter.ToInt64(psxPointer, 0);
-                            if (ReadUInt("STARTUP_SEARCH") == 320386 || ReadUShort("BATTLE_VALUE") == 32776 || ReadUShort("BATTLE_VALUE") == 41215) {
-                                Constants.KEY.SetValue("Offset", Constants.OFFSET);
-                                Constants.WriteOutput("Base scan success.");
-                                break;
-                            } else {
-                                Constants.OFFSET = 0;
-                            }
-                        }
+                        Attach.DuckStation(process);
                     }
                 }
 
                 if (Constants.OFFSET <= 0) {
-                    Constants.WriteOutput("Start Scan: " + Convert.ToString(start, 16).ToUpper() + " - " + Convert.ToString(end, 16).ToUpper());
-                    var results = ScanAoB(start, end, AoBCheck, false, true);
-                    foreach (long x in results) {
-                        Constants.OFFSET = x - (long) 0xB070;
-                        Console.WriteLine(Convert.ToString(Constants.OFFSET, 16).ToUpper());
-                        if (ReadUInt("STARTUP_SEARCH") == 320386 || ReadUShort("BATTLE_VALUE") == 32776 || ReadUShort("BATTLE_VALUE") == 41215) {
-                            Constants.KEY.SetValue("Offset", Constants.OFFSET);
-                            Constants.WriteOutput("Base scan success.");
-                            break;
-                        } else {
-                            Constants.OFFSET = 0;
-                        }
-                    }
+                    Attach.ePSXe(process);
                 }
 
                 if (Constants.OFFSET <= 0) { //Fallback
@@ -152,7 +106,7 @@ namespace Dragoon_Modifier {
 
                     foreach (long address in knownOffsets) {
                         Constants.OFFSET = address;
-                        if (ReadUInt("STARTUP_SEARCH") == 320386 || ReadUShort("BATTLE_VALUE") == 32776 || ReadUShort("BATTLE_VALUE") == 41215) {
+                        if (Attach.Verify(address)) {
                             Constants.KEY.SetValue("Offset", Constants.OFFSET);
                             Constants.WriteOutput("Static manual offset scan success.");
                             found = true;
@@ -164,8 +118,7 @@ namespace Dragoon_Modifier {
 
                     if (!found) {
                         foreach (long address in baseOffsets) {
-                            Constants.OFFSET = baseAddress + address;
-                            if (ReadUInt("STARTUP_SEARCH") == 320386 || ReadUShort("BATTLE_VALUE") == 32776 || ReadUShort("BATTLE_VALUE") == 41215) {
+                            if (Attach.Verify(baseAddress + address)) {
                                 Constants.KEY.SetValue("Offset", Constants.OFFSET);
                                 Constants.WriteOutput("Static base offset scan success.");
                                 break;
@@ -391,14 +344,6 @@ namespace Dragoon_Modifier {
             if (useOffset) {
                 startAddr += Constants.OFFSET;
                 endAddr += Constants.OFFSET;
-            }
-            if (endAddr > end) {
-                endAddr = end;
-                Constants.WriteDebug("Limiting AoB Scan to emulator memory");
-            }
-            if (startAddr >= endAddr) {
-                Constants.WriteDebug("Incorrect start/end address");
-                return results;
             }
             string[] maskStr = values.Split(' ');
             byte[] pattern = new byte[maskStr.Length];
@@ -874,7 +819,8 @@ namespace Dragoon_Modifier {
             {"?F", new byte[] { 0x0F, 0x0F} },
         };
 
-        public static List<int> KMPSearch(string patternString, byte[] byteArray, bool findAll = false) {
+        public static List<int> KMPSearch(string patternString, long start, long end, bool findAll = false) {
+            var byteArray = ReadAoB(start, end);
             var splitString = patternString.Split(' ');
 
             int N = byteArray.Length;

@@ -77,7 +77,14 @@ namespace Dragoon_Modifier.MemoryController {
         public void ResetStats(byte character) {
             HP = Globals.MemoryController.SecondaryCharacterTable[character].HP;
             Max_HP = Globals.MemoryController.SecondaryCharacterTable[character].Max_HP;
-            MP = Globals.MemoryController.SecondaryCharacterTable[character].MP;
+            if (Globals.MemoryController.SecondaryCharacterTable[character].DragoonLevel != 0) {
+                Max_MP = Globals.MemoryController.SecondaryCharacterTable[character].Max_MP;
+                MP = Globals.MemoryController.SecondaryCharacterTable[character].MP;
+            } else {
+                MP = 0;
+                Max_MP = 0;
+            }
+            
             Max_MP = Globals.MemoryController.SecondaryCharacterTable[character].Max_MP;
             SP = Globals.MemoryController.SecondaryCharacterTable[character].SP;
 

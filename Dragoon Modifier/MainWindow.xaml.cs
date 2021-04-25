@@ -6107,7 +6107,8 @@ namespace Dragoon_Modifier {
 
         private void miAttach_Click(object sender, RoutedEventArgs e) {
             if (!Constants.RUN) {
-                bool setup = Emulator.Setup(Constants.EMULATOR_NAME, true);
+                bool setup = Attach.Setup(Constants.EMULATOR_NAME);
+                
                 Globals.MemoryController = new MemoryController.MemoryController();
 
                 if (setup) {

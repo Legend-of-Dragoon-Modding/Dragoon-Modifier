@@ -291,6 +291,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Attach.cs" />
     <Compile Include="BattleController.cs" />
     <Compile Include="HardMode.cs" />
     <Compile Include="LoDDict2\Addition.cs" />
