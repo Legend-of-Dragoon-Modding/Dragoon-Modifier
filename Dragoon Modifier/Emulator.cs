@@ -211,22 +211,22 @@ namespace Dragoon_Modifier {
         }
         public static long ReadLong(long address) {
             byte[] buffer = new byte[8];
-            ReadProcessMemory(processHandle, address + Constants.OFFSET, buffer, 4, out long bytesRead);
+            ReadProcessMemory(processHandle, address + Constants.OFFSET, buffer, 8, out long bytesRead);
             return BitConverter.ToInt64(buffer, 0);
         }
         public static long ReadLong(string address, int offset = 0) {
             byte[] buffer = new byte[8];
-            ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET + offset, buffer, 4, out long bytesRead);
+            ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET + offset, buffer, 8, out long bytesRead);
             return BitConverter.ToInt64(buffer, 0);
         }
         public static ulong ReadULong(long address) {
             byte[] buffer = new byte[8];
-            ReadProcessMemory(processHandle, address + Constants.OFFSET, buffer, 4, out long bytesRead);
+            ReadProcessMemory(processHandle, address + Constants.OFFSET, buffer, 8, out long bytesRead);
             return BitConverter.ToUInt64(buffer, 0);
         }
         public static ulong ReadULong(string address, int offset = 0) {
             byte[] buffer = new byte[8];
-            ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET + offset, buffer, 4, out long bytesRead);
+            ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET + offset, buffer, 8, out long bytesRead);
             return BitConverter.ToUInt64(buffer, 0);
         }
         public static byte[] ReadAoB(long startAddr, long endAddr) {
