@@ -293,6 +293,7 @@
     </ApplicationDefinition>
     <Compile Include="Attach.cs" />
     <Compile Include="BattleController.cs" />
+    <Compile Include="Emu.cs" />
     <Compile Include="HardMode.cs" />
     <Compile Include="LoDDict2\Addition.cs" />
     <Compile Include="LoDDict2\AdditionHit.cs" />
