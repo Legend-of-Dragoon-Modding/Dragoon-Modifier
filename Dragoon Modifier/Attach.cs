@@ -78,6 +78,7 @@ namespace Dragoon_Modifier {
         }
 
         static bool Emulators(Process proc, string emulatorName) {
+            Constants.OFFSET = 0; // Break for now
             if (Verify(Constants.OFFSET)) {
                 Constants.KEY.SetValue("Offset", Constants.OFFSET);
                 Constants.WriteOutput("Previous offset successful.");
@@ -137,7 +138,7 @@ namespace Dragoon_Modifier {
             var start = (long) proc.MainModule.BaseAddress;
             var end = start + proc.MainModule.ModuleMemorySize;
             Constants.WriteOutput("Starting Scan: " + Convert.ToString(start, 16).ToUpper() + " - " + Convert.ToString(end, 16).ToUpper());
-            var results = Emulator.KMPSearch(AoBCheck, start, end, true);
+            var results = Emulator.KMPSearch(AoBCheck, Emulator.ReadAoB(start, end), true);
             Constants.WriteDebug(results.Count);
             foreach (var result in results) {
                 var tempOffset = start + result - 0xB070;
@@ -157,7 +158,7 @@ namespace Dragoon_Modifier {
                 var end = start + 0x1000008;
                 for (int i = 0; i < 17; i++) {
                     Constants.WriteOutput("Start RetroArch Scan (" + i + "/16): " + Convert.ToString(start, 16).ToUpper() + " - " + Convert.ToString(end, 16).ToUpper());
-                    var results = Emulator.KMPSearch(AoBCheck, start, end, true);
+                    var results = Emulator.KMPSearch(AoBCheck, Emulator.ReadAoB(start, end), true);
                     foreach (var result in results) {
                         var tempOffset = start + result - 0xB070;
                         if (Verify(tempOffset)) {
@@ -183,7 +184,7 @@ namespace Dragoon_Modifier {
             var end = start + proc.MainModule.ModuleMemorySize;
             string duckstation = "53 6F 6E 79 20 43 6F 6D 70 75 74 65 72 20 45 6E 74 65 72 74 61 69 6E 6D 65 6E 74 20 49 6E 63";
             Constants.WriteDebug(start);
-            var results = Emulator.KMPSearch(duckstation, start, end, true);
+            var results = Emulator.KMPSearch(duckstation, Emulator.ReadAoB(start, end), true);
             foreach (var result in results) {
                 byte[] psxPointer = Emulator.ReadAoB(result + start - 0x118, result + start - 0x110);
                 psxPointer.Reverse();

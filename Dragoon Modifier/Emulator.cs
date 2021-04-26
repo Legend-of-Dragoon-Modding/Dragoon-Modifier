@@ -819,8 +819,7 @@ namespace Dragoon_Modifier {
             {"?F", new byte[] { 0x0F, 0x0F} },
         };
 
-        public static List<int> KMPSearch(string patternString, long start, long end, bool findAll = false) {
-            var byteArray = ReadAoB(start, end);
+        public static List<int> KMPSearch(string patternString, byte[] byteArray, bool findAll = false) {
             var splitString = patternString.Split(' ');
 
             int N = byteArray.Length;
