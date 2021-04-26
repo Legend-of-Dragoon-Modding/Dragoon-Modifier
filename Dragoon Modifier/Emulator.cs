@@ -337,52 +337,21 @@ namespace Dragoon_Modifier {
             }
             WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET), arr, arr.Length, out int error);
         }
-        public static List<long> ScanAoB(long startAddr, long endAddr, string values, bool useOffset = true, bool addOffset = false) {
-            Stopwatch s = new Stopwatch();
-            s.Start();
-            List<long> results = new List<long>();
+
+        public static List<long> ScanAoB(long start, long end, string pattern, bool useOffset = true, bool addOffset = false) {
+            long offset = 0;
             if (useOffset) {
-                startAddr += Constants.OFFSET;
-                endAddr += Constants.OFFSET;
+                offset = Constants.OFFSET;
             }
-            string[] maskStr = values.Split(' ');
-            byte[] pattern = new byte[maskStr.Length];
-            byte[] maskArr = new byte[maskStr.Length];
-            int i = 0;
-            foreach (string element in maskStr) {
-                if (element.Contains('?')) {
-                    if (element == "??") {
-                        maskArr[i] = 0xFF;
-                    } else {
-                        char[] toPattern = element.ToCharArray();
-                        if (element[0] == '?') {
-                            toPattern[0] = '0';
-                            maskArr[i] = 0x0F;
-                        } else {
-                            toPattern[1] = '0';
-                            maskArr[i] = 0xF0;
-                        }
-                        string str = new string(toPattern);
-                        pattern[i] = Convert.ToByte(str, 16);
+            List<long> results = KMPSearch(pattern, ReadAoB(start + offset, end + offset), true);
 
-                    }
-                } else {
-                    pattern[i] = Convert.ToByte(element, 16);
-                    maskArr[i] = 0x00;
+            for (int i = 0; i < results.Count; i++) {
+                results[i] += start;
+                if (addOffset) {
+                    results[i] += Constants.OFFSET;
                 }
-                i++;
             }
 
-            byte[] data = ReadAoB(startAddr, endAddr);
-            foreach (var position in data.Locate(pattern, maskArr)) {
-                var temp = position + startAddr;
-                if (!addOffset) {
-                    temp -= Constants.OFFSET;
-                }
-                results.Add(temp);
-            }
-            s.Stop();
-            Constants.WriteDebug($"Attached in {s.ElapsedMilliseconds}");
             return results;
         }
         public static int[] Locate(this byte[] self, byte[] candidate, byte[] mask) {
@@ -819,7 +788,7 @@ namespace Dragoon_Modifier {
             {"?F", new byte[] { 0x0F, 0x0F} },
         };
 
-        public static List<int> KMPSearch(string patternString, byte[] byteArray, bool findAll = false) {
+        public static List<long> KMPSearch(string patternString, byte[] byteArray, bool findAll = false) {
             var splitString = patternString.Split(' ');
 
             int N = byteArray.Length;
@@ -836,12 +805,12 @@ namespace Dragoon_Modifier {
                 }
             }
 
-            var indexList = new List<int>();
+            var indexList = new List<long>();
 
             var substringIndex = CalculateSubstringIndexes(patternValue, patternMask, M);
 
-            int i = 0;
-            int j = 0;
+            int i = 0; // Index in the byteArray
+            int j = 0; // Index of the pattern
             while (i < N - M + 1) {
                 if ((byteArray[i] & patternMask[j]) == patternValue[j]) {
                     i++;
