@@ -6111,6 +6111,17 @@ namespace Dragoon_Modifier {
                 
                 Globals.MemoryController = new MemoryController.MemoryController();
 
+                try {
+                    //var emu = new Emu(Constants.EMULATOR_NAME);
+
+                    // if (setup) segment
+
+                } catch (EmulatorAttachException) {
+
+                } catch (EmulatorNotFoundException) {
+
+                }
+
                 if (setup) {
                     Constants.RUN = true;
                     globalThread = new Thread(delegate () { GlobalController.Run(); });

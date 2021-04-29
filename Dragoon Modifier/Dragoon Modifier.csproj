@@ -294,7 +294,9 @@
     <Compile Include="Attach.cs" />
     <Compile Include="BattleController.cs" />
     <Compile Include="Emu.cs" />
+    <Compile Include="Exceptions.cs" />
     <Compile Include="HardMode.cs" />
+    <Compile Include="KMP.cs" />
     <Compile Include="LoDDict2\Addition.cs" />
     <Compile Include="LoDDict2\AdditionHit.cs" />
     <Compile Include="LoDDict2\MonsterData.cs" />
@@ -336,6 +338,7 @@
     <Compile Include="MemoryController\ShortCollection.cs" />
     <Compile Include="MemoryController\UIntCollection.cs" />
     <Compile Include="MemoryController\UShortCollection.cs" />
+    <Compile Include="ProcessMemory.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
