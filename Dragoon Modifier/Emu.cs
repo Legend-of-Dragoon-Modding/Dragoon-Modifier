@@ -50,17 +50,17 @@ namespace Dragoon_Modifier {
             { "SCES_330.47", Region.SPN },
 
         };
-        
-        IntPtr _processHandle;
-        long _emulatorOffset = 0;
-        Region _region;
-        Dictionary<string, int> _regionalAddresses;
 
-        //public MemoryController.MemoryController MemoryController { get; private set; }
+        IntPtr _processHandle;
+
+        public long EmulatorOffset { get; private set; }
+        public Region Region { get; private set; }
+        public Dictionary<string, int> RegionalAddresses {get; private set;}
+        public MemoryController.MemoryController MemoryController { get; private set; }
         //public Battle.Battle BattleController { get; private set; }
 
         public Emu(string emulatorName) {
-            _emulatorOffset = Constants.OFFSET; // TODO load previous offset
+            EmulatorOffset = Constants.OFFSET; // TODO load previous offset
 
             if (emulatorName.ToLower().Contains(".exe")) {
                 emulatorName = emulatorName.Replace("exe", "");
@@ -71,25 +71,26 @@ namespace Dragoon_Modifier {
             _processHandle = ProcessMemory.GetProcessHandle(proc);
 
             if (!Emulators(proc, emulatorName)) {
-                throw new EmulatorAttachException();
+                throw new EmulatorAttachException(emulatorName);
             }
 
-            _regionalAddresses = LoadRegionalAddresses(_region);
+            RegionalAddresses = LoadRegionalAddresses(Region);
 
+            MemoryController = new MemoryController.MemoryController(this);
         }
 
         #region Byte
 
         public byte ReadByte(long address) {
             byte[] buffer = new byte[1];
-            ProcessMemory.ReadProcessMemory(_processHandle, address + _emulatorOffset, buffer, 1, out long lpNumberOfBytesRead);
+            ProcessMemory.ReadProcessMemory(_processHandle, address + EmulatorOffset, buffer, 1, out long lpNumberOfBytesRead);
             return buffer[0];
         }
 
         public byte ReadByte(string address, int offset = 0) {
-            if (_regionalAddresses.TryGetValue(address, out var key)) {
+            if (RegionalAddresses.TryGetValue(address, out var key)) {
                 byte[] buffer = new byte[1];
-                ProcessMemory.ReadProcessMemory(_processHandle, key + _emulatorOffset + offset, buffer, 1, out long lpNumberOfBytesRead);
+                ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, 1, out long lpNumberOfBytesRead);
                 return buffer[0];
             }
             Constants.WriteError($"Incorrect address key {address}.");
@@ -99,13 +100,13 @@ namespace Dragoon_Modifier {
 
         public void WriteByte(long address, byte value) {
             var val = BitConverter.GetBytes(value);
-            ProcessMemory.WriteProcessMemory(_processHandle, address + _emulatorOffset, val, 1, out int lpNumberOfBytesWritten);
+            ProcessMemory.WriteProcessMemory(_processHandle, address + EmulatorOffset, val, 1, out int lpNumberOfBytesWritten);
         }
 
         public void WriteByte(string address, byte value, int offset = 0) {
-            if (_regionalAddresses.TryGetValue(address, out var key)) {
+            if (RegionalAddresses.TryGetValue(address, out var key)) {
                 var val = BitConverter.GetBytes(value);
-                ProcessMemory.WriteProcessMemory(_processHandle, key + _emulatorOffset + offset, val, 1, out int lpNumberOfBytesWritten);
+                ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, val, 1, out int lpNumberOfBytesWritten);
                 return;
             }
             Constants.WriteError($"Incorrect address key {address}.");
@@ -116,14 +117,14 @@ namespace Dragoon_Modifier {
         #region SByte
         public sbyte ReadSByte(long address) {
             byte[] buffer = new byte[1];
-            ProcessMemory.ReadProcessMemory(_processHandle, address + _emulatorOffset, buffer, 1, out long lpNumberOfBytesRead);
+            ProcessMemory.ReadProcessMemory(_processHandle, address + EmulatorOffset, buffer, 1, out long lpNumberOfBytesRead);
             return (sbyte) buffer[0];
         }
 
         public sbyte ReadSByte(string address, int offset = 0) {
-            if (_regionalAddresses.TryGetValue(address, out var key)) {
+            if (RegionalAddresses.TryGetValue(address, out var key)) {
                 byte[] buffer = new byte[1];
-                ProcessMemory.ReadProcessMemory(_processHandle, key + _emulatorOffset + offset, buffer, 1, out long lpNumberOfBytesRead);
+                ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, 1, out long lpNumberOfBytesRead);
                 return (sbyte) buffer[0];
             }
             Constants.WriteError($"Incorrect address key {address}.");
@@ -132,13 +133,13 @@ namespace Dragoon_Modifier {
 
         public void WriteSByte(long address, sbyte value) {
             var val = BitConverter.GetBytes(value);
-            ProcessMemory.WriteProcessMemory(_processHandle, address + _emulatorOffset, val, 1, out int lpNumberOfBytesWritten);
+            ProcessMemory.WriteProcessMemory(_processHandle, address + EmulatorOffset, val, 1, out int lpNumberOfBytesWritten);
         }
 
         public void WriteSByte(string address, sbyte value, int offset = 0) {
-            if (_regionalAddresses.TryGetValue(address, out var key)) {
+            if (RegionalAddresses.TryGetValue(address, out var key)) {
                 var val = BitConverter.GetBytes(value);
-                ProcessMemory.WriteProcessMemory(_processHandle, key + _emulatorOffset + offset, val, 1, out int lpNumberOfBytesWritten);
+                ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, val, 1, out int lpNumberOfBytesWritten);
                 return;
             }
             Constants.WriteError($"Incorrect address key {address}.");
@@ -150,13 +151,13 @@ namespace Dragoon_Modifier {
 
         public short ReadShort(long address) {
             byte[] buffer = new byte[2];
-            ProcessMemory.ReadProcessMemory(_processHandle, address + _emulatorOffset, buffer, 2, out long lpNumberOfBytesRead);
+            ProcessMemory.ReadProcessMemory(_processHandle, address + EmulatorOffset, buffer, 2, out long lpNumberOfBytesRead);
             return BitConverter.ToInt16(buffer, 0);
         }
         public short ReadShort(string address, int offset = 0) {
-            if (_regionalAddresses.TryGetValue(address, out var key)) {
+            if (RegionalAddresses.TryGetValue(address, out var key)) {
                 byte[] buffer = new byte[2];
-                ProcessMemory.ReadProcessMemory(_processHandle, key + _emulatorOffset + offset, buffer, 2, out long lpNumberOfBytesRead);
+                ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, 2, out long lpNumberOfBytesRead);
                 return BitConverter.ToInt16(buffer, 0);
             }
             Constants.WriteError($"Incorrect address key {address}.");
@@ -165,12 +166,12 @@ namespace Dragoon_Modifier {
 
         public void WriteShort(long address, short value) {
             var val = BitConverter.GetBytes(value);
-            ProcessMemory.WriteProcessMemory(_processHandle, address + _emulatorOffset, val, 2, out int lpNumberOfBytesWritten);
+            ProcessMemory.WriteProcessMemory(_processHandle, address + EmulatorOffset, val, 2, out int lpNumberOfBytesWritten);
         }
         public void WriteShort(string address, short value, int offset = 0) {
-            if (_regionalAddresses.TryGetValue(address, out var key)) {
+            if (RegionalAddresses.TryGetValue(address, out var key)) {
                 var val = BitConverter.GetBytes(value);
-                ProcessMemory.WriteProcessMemory(_processHandle, key + _emulatorOffset + offset, val, 2, out int lpNumberOfBytesWritten);
+                ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, val, 2, out int lpNumberOfBytesWritten);
                 return;
             }
             Constants.WriteError($"Incorrect address key {address}.");
@@ -182,14 +183,14 @@ namespace Dragoon_Modifier {
 
         public ushort ReadUShort(long address) {
             byte[] buffer = new byte[2];
-            ProcessMemory.ReadProcessMemory(_processHandle, address + _emulatorOffset, buffer, 2, out long lpNumberOfBytesRead);
+            ProcessMemory.ReadProcessMemory(_processHandle, address + EmulatorOffset, buffer, 2, out long lpNumberOfBytesRead);
             return BitConverter.ToUInt16(buffer, 0);
         }
 
         public ushort ReadUShort(string address, int offset = 0) {
-            if (_regionalAddresses.TryGetValue(address, out var key)) {
+            if (RegionalAddresses.TryGetValue(address, out var key)) {
                 byte[] buffer = new byte[2];
-                ProcessMemory.ReadProcessMemory(_processHandle, key + _emulatorOffset + offset, buffer, 2, out long lpNumberOfBytesRead);
+                ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, 2, out long lpNumberOfBytesRead);
                 return BitConverter.ToUInt16(buffer, 0);
             }
             Constants.WriteError($"Incorrect address key {address}.");
@@ -198,13 +199,13 @@ namespace Dragoon_Modifier {
 
         public void WriteUShort(long address, ushort value) {
             var val = BitConverter.GetBytes(value);
-            ProcessMemory.WriteProcessMemory(_processHandle, address + _emulatorOffset, val, 2, out int lpNumberOfBytesWritten);
+            ProcessMemory.WriteProcessMemory(_processHandle, address + EmulatorOffset, val, 2, out int lpNumberOfBytesWritten);
         }
 
         public void WriteUShort(string address, ushort value, int offset = 0) {
-            if (_regionalAddresses.TryGetValue(address, out var key)) {
+            if (RegionalAddresses.TryGetValue(address, out var key)) {
                 var val = BitConverter.GetBytes(value);
-                ProcessMemory.WriteProcessMemory(_processHandle, key + _emulatorOffset + offset, val, 2, out int lpNumberOfBytesWritten);
+                ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, val, 2, out int lpNumberOfBytesWritten);
                 return;
             }
             Constants.WriteError($"Incorrect address key {address}.");
@@ -216,14 +217,14 @@ namespace Dragoon_Modifier {
 
         public UInt32 ReadUInt24(long address) {
             byte[] buffer = new byte[3];
-            ProcessMemory.ReadProcessMemory(_processHandle, address + _emulatorOffset, buffer, 3, out long lpNumberOfBytesRead);
+            ProcessMemory.ReadProcessMemory(_processHandle, address + EmulatorOffset, buffer, 3, out long lpNumberOfBytesRead);
             return BitConverter.ToUInt32(buffer, 0);
         }
 
         public UInt32 ReadUInt24(string address, int offset = 0) {
-            if (_regionalAddresses.TryGetValue(address, out var key)) {
+            if (RegionalAddresses.TryGetValue(address, out var key)) {
                 byte[] buffer = new byte[3];
-                ProcessMemory.ReadProcessMemory(_processHandle, key + _emulatorOffset + offset, buffer, 3, out long lpNumberOfBytesRead);
+                ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, 3, out long lpNumberOfBytesRead);
                 return BitConverter.ToUInt32(buffer, 0);
             }
             Constants.WriteError($"Incorrect address key {address}.");
@@ -233,14 +234,14 @@ namespace Dragoon_Modifier {
         public void WriteUInt24(long address, UInt32 value) {
             var val = BitConverter.GetBytes(value);
             val = val.Take(val.Count() - 1).ToArray();
-            ProcessMemory.WriteProcessMemory(_processHandle, address + _emulatorOffset, val, 3, out int lpNumberOfBytesWritten);
+            ProcessMemory.WriteProcessMemory(_processHandle, address + EmulatorOffset, val, 3, out int lpNumberOfBytesWritten);
         }
 
         public void WriteUInt24(string address, UInt32 value, int offset = 0) {
-            if (_regionalAddresses.TryGetValue(address, out var key)) {
+            if (RegionalAddresses.TryGetValue(address, out var key)) {
                 var val = BitConverter.GetBytes(value);
                 val = val.Take(val.Count() - 1).ToArray();
-                ProcessMemory.WriteProcessMemory(_processHandle, key + _emulatorOffset + offset, val, 3, out int lpNumberOfBytesWritten);
+                ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, val, 3, out int lpNumberOfBytesWritten);
                 return;
             }
             Constants.WriteError($"Incorrect address key {address}.");
@@ -252,14 +253,14 @@ namespace Dragoon_Modifier {
 
         public Int32 ReadInt(long address) {
             byte[] buffer = new byte[4];
-            ProcessMemory.ReadProcessMemory(_processHandle, address + _emulatorOffset, buffer, 4, out long lpNumberOfBytesRead);
+            ProcessMemory.ReadProcessMemory(_processHandle, address + EmulatorOffset, buffer, 4, out long lpNumberOfBytesRead);
             return BitConverter.ToInt32(buffer, 0);
         }
 
         public Int32 ReadInt(string address, int offset = 0) {
-            if (_regionalAddresses.TryGetValue(address, out var key)) {
+            if (RegionalAddresses.TryGetValue(address, out var key)) {
                 byte[] buffer = new byte[4];
-                ProcessMemory.ReadProcessMemory(_processHandle, key + _emulatorOffset + offset, buffer, 4, out long lpNumberOfBytesRead);
+                ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, 4, out long lpNumberOfBytesRead);
                 return BitConverter.ToInt32(buffer, 0);
             }
             Constants.WriteError($"Incorrect address key {address}.");
@@ -268,13 +269,13 @@ namespace Dragoon_Modifier {
 
         public void WriteInt(long address, Int32 value) {
             var val = BitConverter.GetBytes(value);
-            ProcessMemory.WriteProcessMemory(_processHandle, address + _emulatorOffset, val, 4, out int lpNumberOfBytesWritten);
+            ProcessMemory.WriteProcessMemory(_processHandle, address + EmulatorOffset, val, 4, out int lpNumberOfBytesWritten);
         }
 
         public void WriteInt(string address, Int32 value, int offset = 0) {
-            if (_regionalAddresses.TryGetValue(address, out var key)) {
+            if (RegionalAddresses.TryGetValue(address, out var key)) {
                 var val = BitConverter.GetBytes(value);
-                ProcessMemory.WriteProcessMemory(_processHandle, key + _emulatorOffset + offset, val, 4, out int lpNumberOfBytesWritten);
+                ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, val, 4, out int lpNumberOfBytesWritten);
                 return;
             }
             Constants.WriteError($"Incorrect address key {address}.");
@@ -286,14 +287,14 @@ namespace Dragoon_Modifier {
 
         public UInt32 ReadUInt(long address) {
             byte[] buffer = new byte[4];
-            ProcessMemory.ReadProcessMemory(_processHandle, address + _emulatorOffset, buffer, 4, out long lpNumberOfBytesRead);
+            ProcessMemory.ReadProcessMemory(_processHandle, address + EmulatorOffset, buffer, 4, out long lpNumberOfBytesRead);
             return BitConverter.ToUInt32(buffer, 0);
         }
 
         public UInt32 ReadUInt(string address, int offset = 0) {
-            if (_regionalAddresses.TryGetValue(address, out var key)) {
+            if (RegionalAddresses.TryGetValue(address, out var key)) {
                 byte[] buffer = new byte[4];
-                ProcessMemory.ReadProcessMemory(_processHandle, key + _emulatorOffset + offset, buffer, 4, out long lpNumberOfBytesRead);
+                ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, 4, out long lpNumberOfBytesRead);
                 return BitConverter.ToUInt32(buffer, 0);
             }
             Constants.WriteError($"Incorrect address key {address}.");
@@ -302,13 +303,13 @@ namespace Dragoon_Modifier {
 
         public void WriteUInt(long address, UInt32 value) {
             var val = BitConverter.GetBytes(value);
-            ProcessMemory.WriteProcessMemory(_processHandle, address + _emulatorOffset, val, 4, out int lpNumberOfBytesWritten);
+            ProcessMemory.WriteProcessMemory(_processHandle, address + EmulatorOffset, val, 4, out int lpNumberOfBytesWritten);
         }
 
         public void WriteUInt(string address, UInt32 value, int offset = 0) {
-            if (_regionalAddresses.TryGetValue(address, out var key)) {
+            if (RegionalAddresses.TryGetValue(address, out var key)) {
                 var val = BitConverter.GetBytes(value);
-                ProcessMemory.WriteProcessMemory(_processHandle, key + _emulatorOffset + offset, val, 4, out int lpNumberOfBytesWritten);
+                ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, val, 4, out int lpNumberOfBytesWritten);
                 return;
             }
             Constants.WriteError($"Incorrect address key {address}.");
@@ -320,14 +321,14 @@ namespace Dragoon_Modifier {
 
         public long ReadLong(long address) {
             byte[] buffer = new byte[8];
-            ProcessMemory.ReadProcessMemory(_processHandle, address + _emulatorOffset, buffer, 8, out long lpNumberOfBytesRead);
+            ProcessMemory.ReadProcessMemory(_processHandle, address + EmulatorOffset, buffer, 8, out long lpNumberOfBytesRead);
             return BitConverter.ToInt64(buffer, 0);
         }
 
         public long ReadLong(string address, int offset = 0) {
-            if (_regionalAddresses.TryGetValue(address, out var key)) {
+            if (RegionalAddresses.TryGetValue(address, out var key)) {
                 byte[] buffer = new byte[8];
-                ProcessMemory.ReadProcessMemory(_processHandle, key + _emulatorOffset + offset, buffer, 8, out long lpNumberOfBytesRead);
+                ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, 8, out long lpNumberOfBytesRead);
                 return BitConverter.ToInt64(buffer, 0);
             }
             Constants.WriteError($"Incorrect address key {address}.");
@@ -336,13 +337,13 @@ namespace Dragoon_Modifier {
 
         public void WriteLong(long address, long value) {
             var val = BitConverter.GetBytes(value);
-            ProcessMemory.WriteProcessMemory(_processHandle, address + _emulatorOffset, val, 8, out int lpNumberOfBytesWritten);
+            ProcessMemory.WriteProcessMemory(_processHandle, address + EmulatorOffset, val, 8, out int lpNumberOfBytesWritten);
         }
 
         public void WriteLong(string address, long value, int offset = 0) {
-            if (_regionalAddresses.TryGetValue(address, out var key)) {
+            if (RegionalAddresses.TryGetValue(address, out var key)) {
                 var val = BitConverter.GetBytes(value);
-                ProcessMemory.WriteProcessMemory(_processHandle, key + _emulatorOffset + offset, val, 8, out int lpNumberOfBytesWritten);
+                ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, val, 8, out int lpNumberOfBytesWritten);
                 return;
             }
             Constants.WriteError($"Incorrect address key {address}.");
@@ -354,14 +355,14 @@ namespace Dragoon_Modifier {
 
         public ulong ReadULong(long address) {
             byte[] buffer = new byte[8];
-            ProcessMemory.ReadProcessMemory(_processHandle, address + _emulatorOffset, buffer, 8, out long lpNumberOfBytesRead);
+            ProcessMemory.ReadProcessMemory(_processHandle, address + EmulatorOffset, buffer, 8, out long lpNumberOfBytesRead);
             return BitConverter.ToUInt64(buffer, 0);
         }
 
         public ulong ReadULong(string address, int offset = 0) {
-            if (_regionalAddresses.TryGetValue(address, out var key)) {
+            if (RegionalAddresses.TryGetValue(address, out var key)) {
                 byte[] buffer = new byte[8];
-                ProcessMemory.ReadProcessMemory(_processHandle, key + _emulatorOffset + offset, buffer, 8, out long lpNumberOfBytesRead);
+                ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, 8, out long lpNumberOfBytesRead);
                 return BitConverter.ToUInt64(buffer, 0);
             }
             Constants.WriteError($"Incorrect address key {address}.");
@@ -370,13 +371,13 @@ namespace Dragoon_Modifier {
 
         public void WriteULong(long address, ulong value) {
             var val = BitConverter.GetBytes(value);
-            ProcessMemory.WriteProcessMemory(_processHandle, address + _emulatorOffset, val, 8, out int lpNumberOfBytesWritten);
+            ProcessMemory.WriteProcessMemory(_processHandle, address + EmulatorOffset, val, 8, out int lpNumberOfBytesWritten);
         }
 
         public void WriteULong(string address, ulong value, int offset = 0) {
-            if (_regionalAddresses.TryGetValue(address, out var key)) {
+            if (RegionalAddresses.TryGetValue(address, out var key)) {
                 var val = BitConverter.GetBytes(value);
-                ProcessMemory.WriteProcessMemory(_processHandle, key + _emulatorOffset + offset, val, 8, out int lpNumberOfBytesWritten);
+                ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, val, 8, out int lpNumberOfBytesWritten);
             }
             Constants.WriteError($"Incorrect address key {address}.");
         }
@@ -388,14 +389,14 @@ namespace Dragoon_Modifier {
         public byte[] ReadAoB(long startAddr, long endAddr) {
             long len = endAddr - startAddr;
             byte[] buffer = new byte[len];
-            ProcessMemory.ReadProcessMemory(_processHandle, startAddr + _emulatorOffset, buffer, len, out long lpNumberOfBytesRead);
+            ProcessMemory.ReadProcessMemory(_processHandle, startAddr + EmulatorOffset, buffer, len, out long lpNumberOfBytesRead);
             return buffer;
         }
 
         public byte[] ReadAoB(string address, long length, int offset = 0) {
-            if (_regionalAddresses.TryGetValue(address, out var key)) {
+            if (RegionalAddresses.TryGetValue(address, out var key)) {
                 byte[] buffer = new byte[length];
-                ProcessMemory.ReadProcessMemory(_processHandle, key + _emulatorOffset + offset, buffer, length, out long lpNumberOfBytesRead);
+                ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, length, out long lpNumberOfBytesRead);
                 return buffer;
             }
             Constants.WriteError($"Incorrect address key {address}.");
@@ -408,17 +409,17 @@ namespace Dragoon_Modifier {
             for (int i = 0; i < strArr.Length; i++) {
                 arr[i] = Convert.ToByte(strArr[i], 16);
             }
-            ProcessMemory.WriteProcessMemory(_processHandle, address + _emulatorOffset, arr, arr.Length, out int lpNumberOfBytesWritten);
+            ProcessMemory.WriteProcessMemory(_processHandle, address + EmulatorOffset, arr, arr.Length, out int lpNumberOfBytesWritten);
         }
 
         public void WriteAoB(string address, string values, int offset = 0) {
-            if (_regionalAddresses.TryGetValue(address, out var key)) {
+            if (RegionalAddresses.TryGetValue(address, out var key)) {
                 string[] strArr = values.Split(' ');
                 byte[] arr = new byte[strArr.Length];
                 for (int i = 0; i < strArr.Length; i++) {
                     arr[i] = Convert.ToByte(strArr[i], 16);
                 }
-                ProcessMemory.WriteProcessMemory(_processHandle, key + _emulatorOffset + offset, arr, arr.Length, out int lpNumberOfBytesWritten);
+                ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, arr, arr.Length, out int lpNumberOfBytesWritten);
                 Constants.WriteError($"Incorrect address key {address}.");
                 return;
             }
@@ -429,7 +430,7 @@ namespace Dragoon_Modifier {
         public List<long> ScanAoB(long start, long end, string pattern, bool useOffset = true, bool addOffset = false) {
             long offset = 0;
             if (!useOffset) {
-                offset -= _emulatorOffset;
+                offset -= EmulatorOffset;
             }
 
             List<long> results = KMP.Search(pattern, ReadAoB(start + offset, end + offset), true);
@@ -437,7 +438,7 @@ namespace Dragoon_Modifier {
             for (int i = 0; i < results.Count; i++) {
                 results[i] += start;
                 if (addOffset) {
-                    results[i] += _emulatorOffset;
+                    results[i] += EmulatorOffset;
                 }
             }
 
@@ -455,9 +456,9 @@ namespace Dragoon_Modifier {
         bool Verify(long offset) {
             var start = versionAddr + offset;
             var end = start + versionStringLen;
-            string version = Encoding.Default.GetString(ReadAoB(start - _emulatorOffset, end - _emulatorOffset));
+            string version = Encoding.Default.GetString(ReadAoB(start - EmulatorOffset, end - EmulatorOffset));
             if (versions.TryGetValue(version, out var key)) {
-                _region = key;
+                Region = key;
                 Constants.WriteOutput($"Detected region: {key}");
                 return true;
             }
@@ -465,7 +466,7 @@ namespace Dragoon_Modifier {
         }
 
         bool Emulators(Process proc, string emulatorName) {
-            if (Verify(_emulatorOffset)) {
+            if (Verify(EmulatorOffset)) {
                 Constants.WriteOutput("Previous offset successful.");
                 return true;
             } else {
@@ -481,7 +482,7 @@ namespace Dragoon_Modifier {
         }
 
         bool ePSXe(Process proc) {
-            _emulatorOffset = 0;
+            EmulatorOffset = 0;
             var start = (long) proc.MainModule.BaseAddress;
             var end = start + proc.MainModule.ModuleMemorySize;
             Constants.WriteOutput("Starting Scan: " + Convert.ToString(start, 16).ToUpper() + " - " + Convert.ToString(end, 16).ToUpper());
@@ -489,8 +490,8 @@ namespace Dragoon_Modifier {
             foreach (var result in results) {
                 var tempOffset = start + result - 0xB070;
                 if (Verify(tempOffset)) {
-                    _emulatorOffset = tempOffset;
-                    Constants.KEY.SetValue("Offset", _emulatorOffset);
+                    EmulatorOffset = tempOffset;
+                    Constants.KEY.SetValue("Offset", EmulatorOffset);
                     Constants.WriteOutput("Base scan successful.");
                     return true;
                 }
@@ -500,7 +501,7 @@ namespace Dragoon_Modifier {
 
         bool RetroArch(Process proc) {
             try {
-                _emulatorOffset = 0;
+                EmulatorOffset = 0;
                 var start = (long) proc.MainModule.BaseAddress;
                 var end = start + 0x1000008;
                 for (int i = 0; i < 17; i++) {
@@ -509,8 +510,8 @@ namespace Dragoon_Modifier {
                     foreach (var result in results) {
                         var tempOffset = start + result - 0xB070;
                         if (Verify(tempOffset)) {
-                            _emulatorOffset = tempOffset;
-                            Constants.KEY.SetValue("Offset", _emulatorOffset);
+                            EmulatorOffset = tempOffset;
+                            Constants.KEY.SetValue("Offset", EmulatorOffset);
                             Constants.WriteOutput("Base scan successful.");
                             return true;
                         }
@@ -527,7 +528,7 @@ namespace Dragoon_Modifier {
         }
 
         bool DuckStation(Process proc) {
-            _emulatorOffset = 0;
+            EmulatorOffset = 0;
             var start = (long) proc.MainModule.BaseAddress;
             var end = start + proc.MainModule.ModuleMemorySize;
             var results = KMP.Search(duckstationCheck, ReadAoB(start, end), true);
@@ -535,8 +536,8 @@ namespace Dragoon_Modifier {
                 foreach (var offset in duckstationOffsets) {
                     var pointer = ReadLong(result + start - offset);
                     if (Verify(pointer)) {
-                        _emulatorOffset = pointer;
-                        Constants.KEY.SetValue("Offset", _emulatorOffset);
+                        EmulatorOffset = pointer;
+                        Constants.KEY.SetValue("Offset", EmulatorOffset);
                         Constants.WriteOutput("Base scan successful.");
                         return true;
                     }
@@ -553,7 +554,7 @@ namespace Dragoon_Modifier {
                     return proc;
                 }
             }
-            throw new EmulatorNotFoundException();
+            throw new EmulatorNotFoundException(emulatorName);
         }
 
         static Dictionary<string, int> LoadRegionalAddresses(Region region) {

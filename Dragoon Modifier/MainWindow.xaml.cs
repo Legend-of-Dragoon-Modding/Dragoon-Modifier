@@ -6107,22 +6107,15 @@ namespace Dragoon_Modifier {
 
         private void miAttach_Click(object sender, RoutedEventArgs e) {
             if (!Constants.RUN) {
-                bool setup = Attach.Setup(Constants.EMULATOR_NAME);
+                //bool setup = Attach.Setup(Constants.EMULATOR_NAME);
                 
-                Globals.MemoryController = new MemoryController.MemoryController();
+                //Globals.MemoryController = new MemoryController.MemoryController();
 
                 try {
-                    //var emu = new Emu(Constants.EMULATOR_NAME);
+                    var emulator = new Emu(Constants.EMULATOR_NAME);
 
-                    // if (setup) segment
+                    Constants.WriteDebug(emulator.MemoryController.MapID);
 
-                } catch (EmulatorAttachException) {
-
-                } catch (EmulatorNotFoundException) {
-
-                }
-
-                if (setup) {
                     Constants.RUN = true;
                     globalThread = new Thread(delegate () { GlobalController.Run(); });
                     newBattleThread = new Thread(delegate () { BattleController.Run(uiCombo, eleBombTurns, eleBombElement, ubReverseDBS, inventorySize); });
@@ -6138,15 +6131,26 @@ namespace Dragoon_Modifier {
                     hotkeyThread.Start();
                     otherThread.Start();
 
-                    if (Emulator.ReadShort("BATTLE_VALUE") < 9999)
+                    if (emulator.MemoryController.BattleValue < 9999) {
                         Globals.STATS_CHANGED = true;
-                    Constants.WritePLogOutput("Attached to " + Constants.EMULATOR_NAME + ".");
+                    }
+
                     miAttach.Header = "Detach";
-                } else {
+
+                } catch (EmulatorAttachException ex) {
                     Constants.RUN = false;
                     miAttach.Header = "Attach";
-                    Constants.WritePLogOutput("Program failed to open. Please open " + Constants.EMULATOR_NAME + " then press attach.");
+
+                    Constants.WriteDebug(ex);
+                    Constants.WritePLogOutput(ex.Message);
+                } catch (EmulatorNotFoundException ex) {
+                    Constants.RUN = false;
+                    miAttach.Header = "Attach";
+
+                    Constants.WriteDebug(ex);
+                    Constants.WritePLogOutput(ex.Message);
                 }
+
             } else {
                 Constants.RUN = false;
                 miAttach.Header = "Attach";
