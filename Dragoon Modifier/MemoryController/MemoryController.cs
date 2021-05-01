@@ -120,5 +120,27 @@ namespace Dragoon_Modifier.MemoryController {
             _monsterSize = emulator.GetAddress("MONSTER_SIZE");
             _uniqueMonsterSize = emulator.GetAddress("UNIQUE_MONSTER_SIZE");
         }
+
+        public GameState GetGameState() {
+            switch (Menu) {
+                case 4:
+                    return GameState.Menu;
+                case 9:
+                    return GameState.Shop;
+                case 14:
+                    return GameState.LoadingScreen;
+                case 19:
+                    return GameState.EndOfDisc;
+                case 24:
+                    return GameState.ReplacePrompt;
+                case 29:
+                    return GameState.BattleResult;
+                default:
+                    if (BattleValue == 41215) {
+                        return GameState.Battle;
+                    }
+                    return GameState.Field;
+            }
+        }
     }
 }

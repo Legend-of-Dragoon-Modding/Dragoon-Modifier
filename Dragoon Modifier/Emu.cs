@@ -461,6 +461,8 @@ namespace Dragoon_Modifier {
             return 0;
         }
 
+
+
         bool Verify(long offset) {
             var start = versionAddr + offset;
             var end = start + versionStringLen;
