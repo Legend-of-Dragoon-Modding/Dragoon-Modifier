@@ -383,22 +383,8 @@ namespace Dragoon_Modifier {
                 LoadKey();
                 Globals.DICTIONARY = new LoDDict();
                 Globals.LoDDictionary = new LoDDict2.LoDDict2();
-                
-                
-                try {
-                    using (WebClient client = new WebClient()) { // This should have a timeout
-                        client.Headers.Add("user-agent", "Anything");
-                        string s = client.DownloadString("https://api.github.com/repos/Zychronix/Dragoon-Modifier/releases/latest");
-                        var mod_version = JsonSerializer.Deserialize<MOD_Version>(s);
-                        string new_version = mod_version.tag_name.Replace("v", "");
-                        Version v1 = new Version(new_version);
-                        Version v2 = new Version(Constants.VERSION);
-                        if (v1.CompareTo(v2) > 0) {
-                            Constants.WriteOutput($"Current version {Constants.VERSION} is outdated. You can download version {new_version} at {mod_version.html_url}");
-                            Constants.WriteGLog($"Newer version ({new_version}) available.");
-                        }
-                    }
-                } catch (Exception e) { }
+
+                ModVersion.Check();
                 
                 if (Constants.EMULATOR_ID != 255) {
                     SetupEmulator(true);
@@ -6174,18 +6160,25 @@ namespace Dragoon_Modifier {
 
         public void SetupEmulator(bool onOpen) {
             string oldEmulator = Constants.EMULATOR_NAME;
-            if (Constants.EMULATOR_ID == 0) {
-                Constants.EMULATOR_NAME = "RetroArch";
-            } else if (Constants.EMULATOR_ID == 1) {
-                Constants.EMULATOR_NAME = "DuckStation";
-            } else if (Constants.EMULATOR_ID == 2) {
-                Constants.EMULATOR_NAME = "ePSXe";
-            } else if (Constants.EMULATOR_ID == 3) {
-                Constants.EMULATOR_NAME = "PCSXR-PGXP";
-            } else if (Constants.EMULATOR_ID == 4) {
-                Constants.EMULATOR_NAME = "PCSX2";
-            } else {
-                Constants.EMULATOR_NAME = "Other";
+            switch (Constants.EMULATOR_ID) {
+                case 0:
+                    Constants.EMULATOR_NAME = "RetroArch";
+                    break;
+                case 1:
+                    Constants.EMULATOR_NAME = "DuckStation";
+                    break;
+                case 2:
+                    Constants.EMULATOR_NAME = "ePSXe";
+                    break;
+                case 3:
+                    Constants.EMULATOR_NAME = "PCSXR-PGXP";
+                    break;
+                case 4:
+                    Constants.EMULATOR_NAME = "PCSX2";
+                    break;
+                default:
+                    Constants.EMULATOR_NAME = "Other";
+                    break;
             }
 
             if (!onOpen && (Constants.EMULATOR_NAME != oldEmulator || Constants.EMULATOR_NAME.Equals("Other"))) {
@@ -8180,11 +8173,5 @@ namespace Dragoon_Modifier {
             SaveSubKey();
         }
         #endregion
-    }
-
-    public class MOD_Version {
-        public string name { get; set; }
-        public string tag_name { get; set; }
-        public string html_url { get; set; }
     }
 }

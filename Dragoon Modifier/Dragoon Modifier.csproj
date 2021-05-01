@@ -354,6 +354,7 @@
       <DependentUpon>SubWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="UniformTabPanel.cs" />
+    <Compile Include="ModVersion.cs" />
     <Page Include="InputWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

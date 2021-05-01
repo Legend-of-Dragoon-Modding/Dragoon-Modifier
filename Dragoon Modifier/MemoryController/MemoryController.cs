@@ -67,58 +67,58 @@ namespace Dragoon_Modifier.MemoryController {
 
         public MemoryController(Emu emulator) {
             _emulator = emulator;
-            _partySlot = new UIntCollection(emulator.RegionalAddresses["PARTY_SLOT"], 4, 3);
-            _disc = emulator.RegionalAddresses["DISC"];
-            _chapter = emulator.RegionalAddresses["CHAPTER"];
-            _mapId = emulator.RegionalAddresses["MAP"];
-            _dragoonSpirits = emulator.RegionalAddresses["DRAGOON_SPIRITS"];
-            _hotkey = emulator.RegionalAddresses["HOTKEY"];
-            _battleValue = emulator.RegionalAddresses["BATTLE_VALUE"];
-            _equipInventory = new ByteCollection(emulator.RegionalAddresses["ARMOR_INVENTORY"], 1, 255);
-            _itemInventory = new ByteCollection(emulator.RegionalAddresses["INVENTORY"], 1, 64);
-            _menu = emulator.RegionalAddresses["MENU"];
-            _transition = emulator.RegionalAddresses["TRANSITION"];
-            _gold = emulator.RegionalAddresses["GOLD"];
-            _menuUnlock = emulator.RegionalAddresses["MENU_UNLOCK"];
-            var charTableAddr = emulator.RegionalAddresses["CHAR_TABLE"];
-            var secondCharTableAddr = emulator.RegionalAddresses["SECONDARY_CHARACTER_TABLE"];
+            _partySlot = new UIntCollection(emulator.GetAddress("PARTY_SLOT"), 4, 3);
+            _disc = emulator.GetAddress("DISC");
+            _chapter = emulator.GetAddress("CHAPTER");
+            _mapId = emulator.GetAddress("MAP");
+            _dragoonSpirits = emulator.GetAddress("DRAGOON_SPIRITS");
+            _hotkey = emulator.GetAddress("HOTKEY");
+            _battleValue = emulator.GetAddress("BATTLE_VALUE");
+            _equipInventory = new ByteCollection(emulator.GetAddress("ARMOR_INVENTORY"), 1, 255);
+            _itemInventory = new ByteCollection(emulator.GetAddress("INVENTORY"), 1, 64);
+            _menu = emulator.GetAddress("MENU");
+            _transition = emulator.GetAddress("TRANSITION");
+            _gold = emulator.GetAddress("GOLD");
+            _menuUnlock = emulator.GetAddress("MENU_UNLOCK");
+            var charTableAddr = emulator.GetAddress("CHAR_TABLE");
+            var secondCharTableAddr = emulator.GetAddress("SECONDARY_CHARACTER_TABLE");
             for (int i = 0; i < 9; i++) {
                 _characterTable[i] = new CharacterTable(charTableAddr, i);
                 _secondaryCharacterTable[i] = new SecondaryCharacterTable(secondCharTableAddr, i);
             }
-            var shopListAddr = emulator.RegionalAddresses["SHOP_LIST"];
+            var shopListAddr = emulator.GetAddress("SHOP_LIST");
             for (int i = 0; i < _shop.Length; i++) {
                 _shop[i] = new Shop(shopListAddr, i);
             }
-            _currentShop = new CurrentShop(emulator.RegionalAddresses["SHOP_CONTENT"]);
-            var itemSellPriceAddr = emulator.RegionalAddresses["SHOP_PRICE"];
+            _currentShop = new CurrentShop(emulator.GetAddress("SHOP_CONTENT"));
+            var itemSellPriceAddr = emulator.GetAddress("SHOP_PRICE");
             _itemSellPrice = new UShortCollection(itemSellPriceAddr, 2, 256);
-            _shopID = emulator.RegionalAddresses["SHOP_ID"];
-            var equipTableAddr = emulator.RegionalAddresses["ITEM_TABLE"] - 1; // Fixing current incorrect start
+            _shopID = emulator.GetAddress("SHOP_ID");
+            var equipTableAddr = emulator.GetAddress("ITEM_TABLE") - 1; // Fixing current incorrect start
             for (int i = 0; i < _equipTable.Length; i++) {
                 _equipTable[i] = new EquipmentTableEntry(equipTableAddr, i);
             }
-            var itemTableAddr = emulator.RegionalAddresses["THROWN_ITEM_TABLE"];
+            var itemTableAddr = emulator.GetAddress("THROWN_ITEM_TABLE");
             for (int i = 0; i < _itemTable.Length; i++) {
                 _itemTable[i] = new ItemTableEntry(itemTableAddr, i);
             }
-            var charStatTableAddr = emulator.RegionalAddresses["CHAR_STAT_TABLE"];
+            var charStatTableAddr = emulator.GetAddress("CHAR_STAT_TABLE");
             for (int i = 0; i < _charStatTable.Length; i++) {
                 _charStatTable[i] = new CharacterStatTable(charStatTableAddr, i);
             }
-            var dragoonStatTableAddr = emulator.RegionalAddresses["DRAGOON_TABLE"];
+            var dragoonStatTableAddr = emulator.GetAddress("DRAGOON_TABLE");
             for (int i = 0; i < _dragoonStatTable.Length; i++) {
                 _dragoonStatTable[i] = new DragoonStatTable(dragoonStatTableAddr, i);
             }
-            var addTableAddr = emulator.RegionalAddresses["MENU_ADDITION_TABLE_FLAT"];
-            var addMultiAddr = emulator.RegionalAddresses["MENU_ADDITION_TABLE_MULTI"];
+            var addTableAddr = emulator.GetAddress("MENU_ADDITION_TABLE_FLAT");
+            var addMultiAddr = emulator.GetAddress("MENU_ADDITION_TABLE_MULTI");
             for (int i = 0; i < _addTable.Length; i++) {
                 _addTable[i] = new AdditionTable(addTableAddr, addMultiAddr, i);
             }
-            _basePoint = emulator.RegionalAddresses["C_POINT"];
-            _encounterID = emulator.RegionalAddresses["ENCOUNTER_ID"];
-            _monsterSize = emulator.RegionalAddresses["MONSTER_SIZE"];
-            _uniqueMonsterSize = emulator.RegionalAddresses["UNIQUE_MONSTER_SIZE"];
+            _basePoint = emulator.GetAddress("C_POINT");
+            _encounterID = emulator.GetAddress("ENCOUNTER_ID");
+            _monsterSize = emulator.GetAddress("MONSTER_SIZE");
+            _uniqueMonsterSize = emulator.GetAddress("UNIQUE_MONSTER_SIZE");
         }
     }
 }
