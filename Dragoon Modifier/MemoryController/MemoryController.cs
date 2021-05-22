@@ -10,6 +10,9 @@ namespace Dragoon_Modifier.MemoryController {
         int _disc;
         int _chapter;
         int _mapId;
+        int _overworldContinent;
+        int _overworldSegment;
+        int _overworldCheck;
         int _dragoonSpirits;
         int _hotkey;
         int _battleValue;
@@ -41,6 +44,9 @@ namespace Dragoon_Modifier.MemoryController {
         public byte Disc { get { return _emulator.ReadByte(_disc); } }
         public byte Chapter { get { return (byte) (_emulator.ReadByte(_chapter) + 1); } }
         public ushort MapID { get { return _emulator.ReadUShort(_mapId); } set { _emulator.WriteUShort(_mapId, value); } }
+        public byte OverworldContinent { get { return _emulator.ReadByte(_overworldContinent); } set { _emulator.WriteByte(_overworldContinent, value); } }
+        public byte OverworldSegment { get { return _emulator.ReadByte(_overworldSegment); } set { _emulator.WriteByte(_overworldSegment, value); } }
+        public byte OverworldCheck { get { return _emulator.ReadByte(_overworldCheck); } set { _emulator.WriteByte(_overworldCheck, value); } }
         public byte DragoonSpirits { get { return _emulator.ReadByte(_dragoonSpirits); } set { _emulator.WriteByte(_dragoonSpirits, value); } }
         public ushort Hotkey { get { return _emulator.ReadUShort(_hotkey); } set { Emulator.WriteByte(_hotkey, value); } }
         public ushort BattleValue { get { return _emulator.ReadUShort(_battleValue); } set { _emulator.WriteUShort(_battleValue, value); } }
@@ -71,6 +77,9 @@ namespace Dragoon_Modifier.MemoryController {
             _disc = emulator.GetAddress("DISC");
             _chapter = emulator.GetAddress("CHAPTER");
             _mapId = emulator.GetAddress("MAP");
+            _overworldContinent = 0xBF0B0; // TODO
+            _overworldSegment = 0xC67AC; // TODO
+            _overworldCheck = 0xBB10C; // TODO
             _dragoonSpirits = emulator.GetAddress("DRAGOON_SPIRITS");
             _hotkey = emulator.GetAddress("HOTKEY");
             _battleValue = emulator.GetAddress("BATTLE_VALUE");
@@ -123,6 +132,22 @@ namespace Dragoon_Modifier.MemoryController {
 
         public GameState GetGameState() {
             switch (Menu) {
+                case 0:
+                    if (BattleValue == 41215) {
+                        return GameState.Battle;
+                    }
+
+                    var overworldSegment = OverworldSegment; // 0 on field, or when behind Seles (unaccessible part of overworld map)
+                    var overwoldCheck = OverworldCheck; // Added extra check to cover behind Seles and transitions
+
+                    if (overworldSegment == 0 && overwoldCheck == 1) {
+                        return GameState.Field;
+                    }
+
+                    if (overworldSegment != 0 && overwoldCheck == 3) {
+                        return GameState.Overworld;
+                    }
+                    return GameState.None;
                 case 4:
                     return GameState.Menu;
                 case 9:
@@ -136,10 +161,8 @@ namespace Dragoon_Modifier.MemoryController {
                 case 29:
                     return GameState.BattleResult;
                 default:
-                    if (BattleValue == 41215) {
-                        return GameState.Battle;
-                    }
-                    return GameState.Field;
+                    return GameState.None;
+                    
             }
         }
     }

@@ -295,6 +295,8 @@
     <Compile Include="BattleController.cs" />
     <Compile Include="Emu.cs" />
     <Compile Include="Exceptions.cs" />
+    <Compile Include="FieldController.cs" />
+    <Compile Include="GameController.cs" />
     <Compile Include="HardMode.cs" />
     <Compile Include="KMP.cs" />
     <Compile Include="LoDDict2\Addition.cs" />
@@ -353,6 +355,7 @@
     <Compile Include="SubWindow.xaml.cs">
       <DependentUpon>SubWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UIControls.cs" />
     <Compile Include="UniformTabPanel.cs" />
     <Compile Include="ModVersion.cs" />
     <Page Include="InputWindow.xaml">

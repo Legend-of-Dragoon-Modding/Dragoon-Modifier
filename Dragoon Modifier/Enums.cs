@@ -24,6 +24,7 @@ namespace Dragoon_Modifier {
         EndOfDisc = 5,
         ReplacePrompt = 6,
         BattleResult = 7,
+        Overworld = 8,
         None = 255
     };
 }
