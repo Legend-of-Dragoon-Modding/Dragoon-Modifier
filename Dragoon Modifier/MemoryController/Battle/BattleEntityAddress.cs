@@ -33,8 +33,8 @@ namespace Dragoon_Modifier.MemoryController {
         public ushort SPD { get { return Emulator.ReadUShort(_baseAddress + 0x2A); } set { Emulator.WriteUShort(_baseAddress + 0x2A, value); } }
         public ushort OG_SPD { get { return Emulator.ReadUShort(_baseAddress + 0x5C); } set { Emulator.WriteUShort(_baseAddress + 0x5C, value); } }
         public ushort Turn { get { return Emulator.ReadUShort(_baseAddress + 0x44); } set { Emulator.WriteUShort(_baseAddress + 0x44, value); } }
-        public short A_AV { get { return Emulator.ReadByte(_baseAddress + 0x38); } set { Emulator.WriteByte(_baseAddress + 0x38, value); } }
-        public short M_AV { get { return Emulator.ReadByte(_baseAddress + 0x3A); } set { Emulator.WriteByte(_baseAddress + 0x3A, value); } }
+        public short A_AV { get { return Emulator.ReadShort(_baseAddress + 0x38); } set { Emulator.WriteShort(_baseAddress + 0x38, value); } }
+        public short M_AV { get { return Emulator.ReadShort(_baseAddress + 0x3A); } set { Emulator.WriteShort(_baseAddress + 0x3A, value); } }
         public byte P_Immune { get { return Emulator.ReadByte(_baseAddress + 0x108); } set { Emulator.WriteByte(_baseAddress + 0x108, value); } }
         public byte M_Immune { get { return Emulator.ReadByte(_baseAddress + 0x10A); } set { Emulator.WriteByte(_baseAddress + 0x10A, value); } }
         public byte P_Half { get { return Emulator.ReadByte(_baseAddress + 0x10C); } set { Emulator.WriteByte(_baseAddress + 0x10C, value); } }
@@ -42,13 +42,13 @@ namespace Dragoon_Modifier.MemoryController {
         public byte E_Immune { get { return Emulator.ReadByte(_baseAddress + 0x1A); } set { Emulator.WriteByte(_baseAddress + 0x1A, value); } }
         public byte E_Half { get { return Emulator.ReadByte(_baseAddress + 0x18); } set { Emulator.WriteByte(_baseAddress + 0x18, value); } }
         public byte UniqueIndex { get { return Emulator.ReadByte(_baseAddress + 0x264); } set { Emulator.WriteByte(_baseAddress + 0x264, value); } }
-        public sbyte PWR_AT { get { return Emulator.ReadSByte(_baseAddress + 0xAC); } set { Emulator.WriteByte(_baseAddress + 0xAC, value); } }
+        public sbyte PWR_AT { get { return Emulator.ReadSByte(_baseAddress + 0xAC); } set { Emulator.WriteSByte(_baseAddress + 0xAC, value); } }
         public byte PWR_AT_Turn { get { return Emulator.ReadByte(_baseAddress + 0xAD); } set { Emulator.WriteByte(_baseAddress + 0xAD, value); } }
-        public sbyte PWR_MAT { get { return Emulator.ReadSByte(_baseAddress + 0xAE); } set { Emulator.WriteByte(_baseAddress + 0xAE, value); } }
+        public sbyte PWR_MAT { get { return Emulator.ReadSByte(_baseAddress + 0xAE); } set { Emulator.WriteSByte(_baseAddress + 0xAE, value); } }
         public byte PWR_MAT_Turn { get { return Emulator.ReadByte(_baseAddress + 0xAF); } set { Emulator.WriteByte(_baseAddress + 0xAF, value); } }
-        public sbyte PWR_DF { get { return Emulator.ReadSByte(_baseAddress + 0xB0); } set { Emulator.WriteByte(_baseAddress + 0xB0, value); } }
+        public sbyte PWR_DF { get { return Emulator.ReadSByte(_baseAddress + 0xB0); } set { Emulator.WriteSByte(_baseAddress + 0xB0, value); } }
         public byte PWR_DF_Turn { get { return Emulator.ReadByte(_baseAddress + 0xB1); } set { Emulator.WriteByte(_baseAddress + 0xB1, value); } }
-        public sbyte PWR_MDF { get { return Emulator.ReadSByte(_baseAddress + 0xB2); } set { Emulator.WriteByte(_baseAddress + 0xB2, value); } }
+        public sbyte PWR_MDF { get { return Emulator.ReadSByte(_baseAddress + 0xB2); } set { Emulator.WriteSByte(_baseAddress + 0xB2, value); } }
         public byte PWR_MDF_Turn { get { return Emulator.ReadByte(_baseAddress + 0xB3); } set { Emulator.WriteByte(_baseAddress + 0xB3, value); } }
         public byte Speed_Up_Turn { get { return Emulator.ReadByte(_baseAddress + 0xC1); } set { Emulator.WriteByte(_baseAddress + 0xC1, value); } }
         public byte Speed_Down_Turn { get { return Emulator.ReadByte(_baseAddress + 0xC3); } set { Emulator.WriteByte(_baseAddress + 0xC3, value); } }
@@ -60,8 +60,8 @@ namespace Dragoon_Modifier.MemoryController {
         public int Pos_UD { get { return Emulator.ReadInt(_baseAddress + 0x171); } set { Emulator.WriteInt(_baseAddress + 0x171, value); } }
         public int Pos_RL { get { return Emulator.ReadInt(_baseAddress + 0x175); } set { Emulator.WriteInt(_baseAddress + 0x175, value); } }
         public byte Rotation { get { return Emulator.ReadByte(_baseAddress + 0x1B7); } set { Emulator.WriteByte(_baseAddress + 0x1B7, value); } }
-        public byte PhysicalShield { get { return (byte)(Emulator.ReadByte(_pShieldMshieldSigStone) & 3); } set { Emulator.WriteByte(_pShieldMshieldSigStone, Emulator.ReadByte(_pShieldMshieldSigStone) | Math.Min(value, (byte)3)); } }
-        public byte MagicalShield { get { return (byte)((Emulator.ReadByte(_pShieldMshieldSigStone) >> 2) & 3); } set { Emulator.WriteByte(_pShieldMshieldSigStone, Emulator.ReadByte(_pShieldMshieldSigStone) | (Math.Min(value, (byte)3) << 2)); } }
+        public byte PhysicalShield { get { return (byte)(Emulator.ReadByte(_pShieldMshieldSigStone) & 3); } set { Emulator.WriteByte(_pShieldMshieldSigStone, (byte) (Emulator.ReadByte(_pShieldMshieldSigStone) | Math.Min(value, (byte)3))); } }
+        public byte MagicalShield { get { return (byte)((Emulator.ReadByte(_pShieldMshieldSigStone) >> 2) & 3); } set { Emulator.WriteByte(_pShieldMshieldSigStone, (byte) (Emulator.ReadByte(_pShieldMshieldSigStone) | (Math.Min(value, (byte)3) << 2))); } }
         public byte StatusEffect { get { return Emulator.ReadByte(_statusAddr); } set { Emulator.WriteByte(_statusAddr, value); } }
         public byte StatusTurns { get { return Emulator.ReadByte(_statusAddr + 0x1); } set { Emulator.WriteByte(_statusAddr + 0x1, value); } }
         public byte DragoonSpellID { get { return Emulator.ReadByte(_dragoonSpellsAddr); } set { Emulator.WriteByte(_dragoonSpellsAddr, value); } }

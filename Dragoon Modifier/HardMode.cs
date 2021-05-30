@@ -197,7 +197,7 @@ namespace Dragoon_Modifier {
             new JeweledHammerHotkey(Hotkey.KEY_CIRCLE + Hotkey.KEY_DOWN)
         };
 
-        public static void Setup(Dictionary<string, int> uiCombo, string difficulty) {
+        public static void Setup(string difficulty) {
 
             checkWingBlaster = false;
             checkFlowerStorm = false;
@@ -213,9 +213,9 @@ namespace Dragoon_Modifier {
             dartBurnStacks = 0;
             dartPreviousBurnStacks = 0;
 
-            flowerStorm = (byte) (uiCombo["cboFlowerStorm"] + 2);
+            // flowerStorm = (byte) (uiCombo["cboFlowerStorm"] + 2); TODO UI
 
-            EquipChangesSetup(uiCombo, difficulty);
+            EquipChangesSetup(difficulty);
 
             if (difficulty.Contains("Hell")) {
                 HellDragoonChanges();
@@ -236,10 +236,10 @@ namespace Dragoon_Modifier {
             SetupBurnStacks();
         }
 
-        static void EquipChangesSetup(Dictionary<string, int> uiCombo, string difficulty) { // TODO remove Emulator
+        static void EquipChangesSetup(string difficulty) { // TODO remove Emulator
             Chapter3Buffs();
             PercentageBuffs();
-            EquipSetup(uiCombo);
+            EquipSetup();
 
             if (Globals.PARTY_SLOT[0] == 2 || Globals.PARTY_SLOT[0] == 8) {
                 shanaSaveAT = Globals.BattleController.CharacterTable[0].AT;
@@ -342,7 +342,7 @@ namespace Dragoon_Modifier {
             }
         }
 
-        static void EquipSetup(Dictionary<string, int> uiCombo) {
+        static void EquipSetup() {
             soasSyphonRingSlot = 0;
             spiritEaterSlot = 0;
             spiritEaterCheck = false;
@@ -498,7 +498,7 @@ namespace Dragoon_Modifier {
 
                     case 161: // Element Arrow
                         elementArrowSlot |= (byte) (1 << slot);
-                        ElementArrowSetup(uiCombo);
+                        ElementArrowSetup();
                         elementArrowLastAction = 255;
                         elementArrowTurns = 0;
                         Globals.BattleController.CharacterTable[slot].Weapon_Element = elementArrowElement;
@@ -649,7 +649,8 @@ namespace Dragoon_Modifier {
             }
         }
 
-        static void ElementArrowSetup(Dictionary<string, int> uiCombo) {
+        static void ElementArrowSetup() {
+            /* TODO UI
             switch (uiCombo["cboElement"]) {
                 case 0:
                     elementArrowElement = 128;
@@ -686,6 +687,7 @@ namespace Dragoon_Modifier {
                     elementArrowItem = 0xC2;
                     break;
             }
+            */
         }
 
         static void HellDragoonChanges() { // TODO remove Emulator.Write
@@ -924,8 +926,8 @@ namespace Dragoon_Modifier {
             }
 
             if (heal != gatesOfHeavenHeal) {
-                Emulator.WriteByte("SPELL_TABLE", heal, 0x5 + (12 * 0xC)); //Shana's Gates of Heaven Heal %
-                Emulator.WriteByte("SPELL_TABLE", heal, 0x5 + (67 * 0xC)); //???'s Gates of Heaven Heal %
+                Emulator.WriteByte("SPELL_TABLE", (byte) heal, 0x5 + (12 * 0xC)); //Shana's Gates of Heaven Heal %
+                Emulator.WriteByte("SPELL_TABLE", (byte) heal, 0x5 + (67 * 0xC)); //???'s Gates of Heaven Heal %
                 Emulator.WriteText(Globals.DRAGOON_SPELLS[12].Description_Pointer + 0x8, heal.ToString());
                 gatesOfHeavenHeal = heal;
             }

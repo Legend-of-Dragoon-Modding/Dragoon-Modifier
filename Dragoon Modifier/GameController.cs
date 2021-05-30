@@ -8,17 +8,17 @@ using System.Threading.Tasks;
 namespace Dragoon_Modifier {
     public static class GameController {
         public static byte InventorySize;
-        public static void Run(Emu emulator) {
+        public static void Run() {
             while (Constants.RUN) {
                 try { 
-                    switch (emulator.MemoryController.GetGameState()) {
+                    switch (Emulator.MemoryController.GetGameState()) {
                         case GameState.Battle:
                             break;
                         case GameState.Field:
-                            FieldController.Field(emulator);
+                            FieldController.Field();
                             break;
                         case GameState.Overworld:
-                            FieldController.Overworld(emulator);
+                            FieldController.Overworld();
                             break;
                     }
                     Thread.Sleep(250);

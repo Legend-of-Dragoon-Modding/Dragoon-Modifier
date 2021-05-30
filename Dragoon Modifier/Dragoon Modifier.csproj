@@ -293,7 +293,7 @@
     </ApplicationDefinition>
     <Compile Include="Attach.cs" />
     <Compile Include="BattleController.cs" />
-    <Compile Include="Emu.cs" />
+    <Compile Include="Emulator.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="FieldController.cs" />
     <Compile Include="GameController.cs" />
@@ -302,9 +302,12 @@
     <Compile Include="LoDDict2\Addition.cs" />
     <Compile Include="LoDDict2\AdditionHit.cs" />
     <Compile Include="LoDDict2\MonsterData.cs" />
+    <Compile Include="LoDDictionary\Dictionary.cs" />
+    <Compile Include="LoDDictionary\Equipment.cs" />
+    <Compile Include="LoDDictionary\Item.cs" />
+    <Compile Include="LoDDictionary\UsableItem.cs" />
     <Compile Include="MemoryController\Battle\AdditionSwap.cs" />
     <Compile Include="MemoryController\Battle\Battle.cs" />
-    <Compile Include="Emulator.cs" />
     <Compile Include="GlobalController.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="GlobalSuppressions.cs" />
@@ -449,6 +452,7 @@
     <Resource Include="4.ico" />
     <Resource Include="5.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(ProjectDir)Scripts\*.*" "$(ProjectDir)bin\$(ConfigurationName)\Scripts\" /E /Y

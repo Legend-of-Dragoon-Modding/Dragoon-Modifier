@@ -1,858 +1,618 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Diagnostics;
-using System.Windows.Forms;
-using System.Globalization;
 
 namespace Dragoon_Modifier {
     public static class Emulator {
-        const int PROCESS_ALL_ACCESS = 0x1FFFFF;
+        const uint versionAddr = 0x9E19;
+        const uint versionStringLen = 11;
+        const string AoBCheck = "50 53 2D 58 20 45 58 45";
+        const string duckstationCheck = "53 6F 6E 79 20 43 6F 6D 70 75 74 65 72 20 45 6E 74 65 72 74 61 69 6E 6D 65 6E 74 20 49 6E 63";
 
-        static readonly int[] Empty = new int[0];
+        static readonly int[] duckstationOffsets = new int[] { 0x110, 0x118 };
+        static readonly Dictionary<string, Region> versions = new Dictionary<string, Region> {
+            { "SCUS_944.91", Region.NTA },
+            { "SCUS_945.84", Region.NTA },
+            { "SCUS_945.85", Region.NTA },
+            { "SCUS_945.86", Region.NTA },
 
-        [DllImport("kernel32.dll")]
-        public static extern IntPtr OpenProcess(int dwDesiredAccess, bool bInheritHandle, int dwProcessId);
+            { "SCPS_101.19", Region.JPN },
+            { "SCPS_101.20", Region.JPN },
+            { "SCPS_101.21", Region.JPN },
+            { "SCPS_101.22", Region.JPN },
 
-        [DllImport("kernel32.dll")]
-        public static extern bool ReadProcessMemory(IntPtr hProcess, long lpBaseAddress, byte[] lpBuffer, long dwSize, out long lpNumberOfBytesRead);
+            { "SCES_030.43", Region.ENG },
+            { "SCES_130.43", Region.ENG },
+            { "SCES_230.43", Region.ENG },
+            { "SCES_330.43", Region.ENG },
 
-        [DllImport("kernel32.dll")]
-        static extern bool WriteProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, byte[] lpBuffer, int nSize, out int lpNumberOfBytesWritten);
+            { "SCES_030.44", Region.FRN },
+            { "SCES_130.44", Region.FRN },
+            { "SCES_230.44", Region.FRN },
+            { "SCES_330.44", Region.FRN },
 
-        [DllImport("kernel32.dll")]
-        public static extern Int32 CloseHandle(IntPtr hProcess);
+            { "SCES_030.45", Region.GER },
+            { "SCES_130.45", Region.GER },
+            { "SCES_230.45", Region.GER },
+            { "SCES_330.45", Region.GER },
 
-        static Process process = new Process();
-        static IntPtr startOffset = new IntPtr();
-        static long start = 0x0;
-        static IntPtr endOffset = new IntPtr();
-        static long end = 0x0;
+            { "SCES_030.46", Region.ITL },
+            { "SCES_130.46", Region.ITL },
+            { "SCES_230.46", Region.ITL },
+            { "SCES_330.46", Region.ITL },
 
-        static IntPtr processHandle = new IntPtr();
+            { "SCES_030.47", Region.SPN },
+            { "SCES_130.47", Region.SPN },
+            { "SCES_230.47", Region.SPN },
+            { "SCES_330.47", Region.SPN },
 
-        public static void SetHandle(Process proc) {
-            processHandle = OpenProcess(PROCESS_ALL_ACCESS, false, proc.Id);
-        }
+        };
 
-        public static int GetProcIdFromName(string name) //new 1.0.2 function
-        {
-            Process[] processlist = Process.GetProcesses();
+        static IntPtr _processHandle;
+        static Dictionary<string, int> _regionalAddresses;
 
-            if (name.ToLower().Contains(".exe"))
-                name = name.Replace(".exe", "");
+        public static  long EmulatorOffset { get; private set; }
+        public static Region Region { get; private set; }
+        public static MemoryController.MemoryController MemoryController { get; private set; }
 
-            foreach (Process theprocess in processlist) {
-                if (theprocess.ProcessName.Equals(name, StringComparison.CurrentCultureIgnoreCase)) //find (name).exe in the process list (use task manager to find the name)
+        #region Byte
 
-                    return theprocess.Id;
-            }
-
-            return 0; //if we fail to find it
-        }
-
-        public static bool Setup(string emuName, bool baseScan) {
-            Process[] processList = Process.GetProcesses();
-            long baseAddress = 0;
-            if (emuName.ToLower().Contains(".exe"))
-                emuName = emuName.Replace(".exe", "");
-
-            foreach (Process theprocess in processList) {
-                if (theprocess.ProcessName.Equals(emuName, StringComparison.CurrentCultureIgnoreCase) || theprocess.ProcessName.Contains(emuName.ToLower())) { //find (name).exe in the process list (use task manager to find the name)
-                    process = theprocess;
-                    startOffset = process.MainModule.BaseAddress;
-                    baseAddress = (long) process.MainModule.BaseAddress;
-                    start = startOffset.ToInt64();
-                    endOffset = IntPtr.Add(startOffset, process.MainModule.ModuleMemorySize);
-                    end = endOffset.ToInt64();
-                    processHandle = OpenProcess(PROCESS_ALL_ACCESS, false, process.Id);
-                    break;
-                }
-            }
-
-            if (start == 0x0 && end == 0x0) {
-                Constants.WriteDebug("Failed to attach, no process found.");
-                return false;
-            } else if (baseScan) {
-                if (Attach.Verify(Constants.OFFSET)) {
-                    Constants.KEY.SetValue("Offset", Constants.OFFSET);
-                    Constants.WriteOutput("Previous offset successful.");
-                } else {
-                    Constants.OFFSET = 0;
-                }
-
-                if (Constants.OFFSET <= 0) {
-                    if (emuName.ToLower() == "retroarch") { // RetroArch hotfix
-                        Attach.RetroArch(process);
-
-                      
-                    } else if (emuName.ToLower().Contains("duckstation")) {
-                        Attach.DuckStation(process);
-                    }
-                }
-
-                if (Constants.OFFSET <= 0) {
-                    Attach.ePSXe(process);
-                }
-
-                if (Constants.OFFSET <= 0) { //Fallback
-                    Constants.WriteOutput("PSX EXE scan failed. Trying static offsets...");
-                    long[] knownOffsets = { 0x5B6E40, 0x94C020, 0xA52EA0, 0xA579A0, 0xA8B6A0, 0x24000000 };
-                    long[] baseOffsets = { 0x81A020, 0x825140, 0xA82020 };
-                    bool found = false;
-
-                    foreach (long address in knownOffsets) {
-                        Constants.OFFSET = address;
-                        if (Attach.Verify(address)) {
-                            Constants.KEY.SetValue("Offset", Constants.OFFSET);
-                            Constants.WriteOutput("Static manual offset scan success.");
-                            found = true;
-                            break;
-                        } else {
-                            Constants.OFFSET = 0;
-                        }
-                    }
-
-                    if (!found) {
-                        foreach (long address in baseOffsets) {
-                            if (Attach.Verify(baseAddress + address)) {
-                                Constants.KEY.SetValue("Offset", Constants.OFFSET);
-                                Constants.WriteOutput("Static base offset scan success.");
-                                break;
-                            } else {
-                                Constants.OFFSET = 0;
-                            }
-                        }
-                    }
-                }
-
-                if (Constants.OFFSET <= 0) {
-                    Constants.WriteOutput("Scan failed. Please try opening Dragoon Modifier on the game's title or load screen.");
-                    return false;
-                } else {
-                    Constants.WriteDebug($"Calculated offset: {Constants.OFFSET.ToString("X2")}");
-                    return true;
-                }
-            }
-            return false;
-        }
         public static byte ReadByte(long address) {
             byte[] buffer = new byte[1];
-            ReadProcessMemory(processHandle, address + Constants.OFFSET, buffer, 1, out long bytesRead);
+            ProcessMemory.ReadProcessMemory(_processHandle, address + EmulatorOffset, buffer, 1, out long lpNumberOfBytesRead);
             return buffer[0];
         }
+
         public static byte ReadByte(string address, int offset = 0) {
-            byte[] buffer = new byte[1];
-            ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET + offset, buffer, 1, out long bytesRead);
-            return buffer[0];
+            if (_regionalAddresses.TryGetValue(address, out var key)) {
+                byte[] buffer = new byte[1];
+                ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, 1, out long lpNumberOfBytesRead);
+                return buffer[0];
+            }
+            Constants.WriteError($"Incorrect address key {address}.");
+            return 0;
+
         }
+
+        public static void WriteByte(long address, byte value) {
+            var val = BitConverter.GetBytes(value);
+            ProcessMemory.WriteProcessMemory(_processHandle, address + EmulatorOffset, val, 1, out int lpNumberOfBytesWritten);
+        }
+
+        public static void WriteByte(string address, byte value, int offset = 0) {
+            if (_regionalAddresses.TryGetValue(address, out var key)) {
+                var val = BitConverter.GetBytes(value);
+                ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, val, 1, out int lpNumberOfBytesWritten);
+                return;
+            }
+            Constants.WriteError($"Incorrect address key {address}.");
+        }
+
+        #endregion
+
+        #region SByte
         public static sbyte ReadSByte(long address) {
             byte[] buffer = new byte[1];
-            ReadProcessMemory(processHandle, address + Constants.OFFSET, buffer, 1, out long bytesRead);
+            ProcessMemory.ReadProcessMemory(_processHandle, address + EmulatorOffset, buffer, 1, out long lpNumberOfBytesRead);
             return (sbyte) buffer[0];
         }
+
         public static sbyte ReadSByte(string address, int offset = 0) {
-            byte[] buffer = new byte[1];
-            ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET + offset, buffer, 1, out long bytesRead);
-            return (sbyte) buffer[0];
+            if (_regionalAddresses.TryGetValue(address, out var key)) {
+                byte[] buffer = new byte[1];
+                ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, 1, out long lpNumberOfBytesRead);
+                return (sbyte) buffer[0];
+            }
+            Constants.WriteError($"Incorrect address key {address}.");
+            return 0;
         }
+
+        public static void WriteSByte(long address, sbyte value) {
+            var val = BitConverter.GetBytes(value);
+            ProcessMemory.WriteProcessMemory(_processHandle, address + EmulatorOffset, val, 1, out int lpNumberOfBytesWritten);
+        }
+
+        public static void WriteSByte(string address, sbyte value, int offset = 0) {
+            if (_regionalAddresses.TryGetValue(address, out var key)) {
+                var val = BitConverter.GetBytes(value);
+                ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, val, 1, out int lpNumberOfBytesWritten);
+                return;
+            }
+            Constants.WriteError($"Incorrect address key {address}.");
+        }
+
+        #endregion
+
+        #region Short
+
         public static short ReadShort(long address) {
             byte[] buffer = new byte[2];
-            ReadProcessMemory(processHandle, address + Constants.OFFSET, buffer, 2, out long bytesRead);
+            ProcessMemory.ReadProcessMemory(_processHandle, address + EmulatorOffset, buffer, 2, out long lpNumberOfBytesRead);
             return BitConverter.ToInt16(buffer, 0);
         }
         public static short ReadShort(string address, int offset = 0) {
-            byte[] buffer = new byte[2];
-            ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET + offset, buffer, 2, out long bytesRead);
-            return BitConverter.ToInt16(buffer, 0);
+            if (_regionalAddresses.TryGetValue(address, out var key)) {
+                byte[] buffer = new byte[2];
+                ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, 2, out long lpNumberOfBytesRead);
+                return BitConverter.ToInt16(buffer, 0);
+            }
+            Constants.WriteError($"Incorrect address key {address}.");
+            return 0;
         }
+
+        public static void WriteShort(long address, short value) {
+            var val = BitConverter.GetBytes(value);
+            ProcessMemory.WriteProcessMemory(_processHandle, address + EmulatorOffset, val, 2, out int lpNumberOfBytesWritten);
+        }
+        public static void WriteShort(string address, short value, int offset = 0) {
+            if (_regionalAddresses.TryGetValue(address, out var key)) {
+                var val = BitConverter.GetBytes(value);
+                ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, val, 2, out int lpNumberOfBytesWritten);
+                return;
+            }
+            Constants.WriteError($"Incorrect address key {address}.");
+        }
+
+        #endregion
+
+        #region UShort
+
         public static ushort ReadUShort(long address) {
             byte[] buffer = new byte[2];
-            ReadProcessMemory(processHandle, address + Constants.OFFSET, buffer, 2, out long bytesRead);
+            ProcessMemory.ReadProcessMemory(_processHandle, address + EmulatorOffset, buffer, 2, out long lpNumberOfBytesRead);
             return BitConverter.ToUInt16(buffer, 0);
         }
+
         public static ushort ReadUShort(string address, int offset = 0) {
-            byte[] buffer = new byte[2];
-            ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET + offset, buffer, 2, out long bytesRead);
-            return BitConverter.ToUInt16(buffer, 0);
+            if (_regionalAddresses.TryGetValue(address, out var key)) {
+                byte[] buffer = new byte[2];
+                ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, 2, out long lpNumberOfBytesRead);
+                return BitConverter.ToUInt16(buffer, 0);
+            }
+            Constants.WriteError($"Incorrect address key {address}.");
+            return 0;
         }
+
+        public static void WriteUShort(long address, ushort value) {
+            var val = BitConverter.GetBytes(value);
+            ProcessMemory.WriteProcessMemory(_processHandle, address + EmulatorOffset, val, 2, out int lpNumberOfBytesWritten);
+        }
+
+        public static void WriteUShort(string address, ushort value, int offset = 0) {
+            if (_regionalAddresses.TryGetValue(address, out var key)) {
+                var val = BitConverter.GetBytes(value);
+                ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, val, 2, out int lpNumberOfBytesWritten);
+                return;
+            }
+            Constants.WriteError($"Incorrect address key {address}.");
+        }
+
+        #endregion
+
+        #region UInt24
+
         public static UInt32 ReadUInt24(long address) {
             byte[] buffer = new byte[4];
-            ReadProcessMemory(processHandle, address + Constants.OFFSET, buffer, 3, out long bytesRead);
+            ProcessMemory.ReadProcessMemory(_processHandle, address + EmulatorOffset, buffer, 3, out long lpNumberOfBytesRead);
             return BitConverter.ToUInt32(buffer, 0);
         }
+
         public static UInt32 ReadUInt24(string address, int offset = 0) {
-            byte[] buffer = new byte[4];
-            ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET + offset, buffer, 3, out long bytesRead);
-            return BitConverter.ToUInt32(buffer, 0);
+            if (_regionalAddresses.TryGetValue(address, out var key)) {
+                byte[] buffer = new byte[4];
+                ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, 3, out long lpNumberOfBytesRead);
+                return BitConverter.ToUInt32(buffer, 0);
+            }
+            Constants.WriteError($"Incorrect address key {address}.");
+            return 0;
         }
-        public static Int32 ReadInt(long address) {
-            byte[] buffer = new byte[4];
-            ReadProcessMemory(processHandle, address + Constants.OFFSET, buffer, 4, out long bytesRead);
-            return BitConverter.ToInt32(buffer, 0);
-        }
-        public static Int32 ReadInt(string address, int offset = 0) {
-            byte[] buffer = new byte[4];
-            ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET + offset, buffer, 4, out long bytesRead);
-            return BitConverter.ToInt32(buffer, 0);
-        }
-        public static UInt32 ReadUInt(long address) {
-            byte[] buffer = new byte[4];
-            ReadProcessMemory(processHandle, address + Constants.OFFSET, buffer, 4, out long bytesRead);
-            return BitConverter.ToUInt32(buffer, 0);
-        }
-        public static UInt32 ReadUInt(string address, int offset = 0) {
-            byte[] buffer = new byte[4];
-            ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET + offset, buffer, 4, out long bytesRead);
-            return BitConverter.ToUInt32(buffer, 0);
-        }
-        public static long ReadLong(long address) {
-            byte[] buffer = new byte[8];
-            ReadProcessMemory(processHandle, address + Constants.OFFSET, buffer, 8, out long bytesRead);
-            return BitConverter.ToInt64(buffer, 0);
-        }
-        public static long ReadLong(string address, int offset = 0) {
-            byte[] buffer = new byte[8];
-            ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET + offset, buffer, 8, out long bytesRead);
-            return BitConverter.ToInt64(buffer, 0);
-        }
-        public static ulong ReadULong(long address) {
-            byte[] buffer = new byte[8];
-            ReadProcessMemory(processHandle, address + Constants.OFFSET, buffer, 8, out long bytesRead);
-            return BitConverter.ToUInt64(buffer, 0);
-        }
-        public static ulong ReadULong(string address, int offset = 0) {
-            byte[] buffer = new byte[8];
-            ReadProcessMemory(processHandle, Constants.GetAddress(address) + Constants.OFFSET + offset, buffer, 8, out long bytesRead);
-            return BitConverter.ToUInt64(buffer, 0);
-        }
-        public static byte[] ReadAoB(long startAddr, long endAddr) {
-            long len = (long) (endAddr - startAddr);
-            byte[] buffer = new byte[len];
-            ReadProcessMemory(processHandle, startAddr, buffer, len, out long bytesRead);
-            return buffer;
-        }
-        public static void WriteByte(long address, int value) {
-            var val = BitConverter.GetBytes((byte) value);
-            WriteProcessMemory(processHandle, new IntPtr(address + Constants.OFFSET), val, 1, out int error);
-        }
-        public static void WriteByteDirect(long address, int value) {
-            var val = BitConverter.GetBytes((byte) value);
-            WriteProcessMemory(processHandle, new IntPtr(address), val, 1, out int error);
-        }
-        public static void WriteByte(string address, int value, int offset = 0) {
-            var val = BitConverter.GetBytes((byte) value);
-            WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET + offset), val, 1, out int error);
-        }
-        public static void WriteShort(long address, int value) {
-            var val = BitConverter.GetBytes((short) value);
-            WriteProcessMemory(processHandle, new IntPtr(address + Constants.OFFSET), val, 2, out int error);
-        }
-        public static void WriteShort(string address, int value, int offset = 0) {
-            var val = BitConverter.GetBytes((short) value);
-            WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET + offset), val, 2, out int error);
-        }
-        public static void WriteUShort(long address, int value) {
-            var val = BitConverter.GetBytes((ushort) value);
-            WriteProcessMemory(processHandle, new IntPtr(address + Constants.OFFSET), val, 2, out int error);
-        }
-        public static void WriteUShort(string address, int value, int offset = 0) {
-            var val = BitConverter.GetBytes((ushort) value);
-            WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET + offset), val, 2, out int error);
-        }
+
         public static void WriteUInt24(long address, UInt32 value) {
             var val = BitConverter.GetBytes(value);
             val = val.Take(val.Count() - 1).ToArray();
-            WriteProcessMemory(processHandle, new IntPtr(address + Constants.OFFSET), val, 3, out int error);
+            ProcessMemory.WriteProcessMemory(_processHandle, address + EmulatorOffset, val, 3, out int lpNumberOfBytesWritten);
         }
+
         public static void WriteUInt24(string address, UInt32 value, int offset = 0) {
-            var val = BitConverter.GetBytes(value);
-            val = val.Take(val.Count() - 1).ToArray();
-            WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET + offset), val, 3, out int error);
+            if (_regionalAddresses.TryGetValue(address, out var key)) {
+                var val = BitConverter.GetBytes(value);
+                val = val.Take(val.Count() - 1).ToArray();
+                ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, val, 3, out int lpNumberOfBytesWritten);
+                return;
+            }
+            Constants.WriteError($"Incorrect address key {address}.");
         }
+
+        #endregion
+
+        #region Int
+
+        public static Int32 ReadInt(long address) {
+            byte[] buffer = new byte[4];
+            ProcessMemory.ReadProcessMemory(_processHandle, address + EmulatorOffset, buffer, 4, out long lpNumberOfBytesRead);
+            return BitConverter.ToInt32(buffer, 0);
+        }
+
+        public static Int32 ReadInt(string address, int offset = 0) {
+            if (_regionalAddresses.TryGetValue(address, out var key)) {
+                byte[] buffer = new byte[4];
+                ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, 4, out long lpNumberOfBytesRead);
+                return BitConverter.ToInt32(buffer, 0);
+            }
+            Constants.WriteError($"Incorrect address key {address}.");
+            return 0;
+        }
+
         public static void WriteInt(long address, Int32 value) {
             var val = BitConverter.GetBytes(value);
-            WriteProcessMemory(processHandle, new IntPtr(address + Constants.OFFSET), val, 4, out int error);
+            ProcessMemory.WriteProcessMemory(_processHandle, address + EmulatorOffset, val, 4, out int lpNumberOfBytesWritten);
         }
+
         public static void WriteInt(string address, Int32 value, int offset = 0) {
-            var val = BitConverter.GetBytes(value);
-            WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET + offset), val, 4, out int error);
+            if (_regionalAddresses.TryGetValue(address, out var key)) {
+                var val = BitConverter.GetBytes(value);
+                ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, val, 4, out int lpNumberOfBytesWritten);
+                return;
+            }
+            Constants.WriteError($"Incorrect address key {address}.");
         }
+
+        #endregion
+
+        #region UInt
+
+        public static UInt32 ReadUInt(long address) {
+            byte[] buffer = new byte[4];
+            ProcessMemory.ReadProcessMemory(_processHandle, address + EmulatorOffset, buffer, 4, out long lpNumberOfBytesRead);
+            return BitConverter.ToUInt32(buffer, 0);
+        }
+
+        public static UInt32 ReadUInt(string address, int offset = 0) {
+            if (_regionalAddresses.TryGetValue(address, out var key)) {
+                byte[] buffer = new byte[4];
+                ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, 4, out long lpNumberOfBytesRead);
+                return BitConverter.ToUInt32(buffer, 0);
+            }
+            Constants.WriteError($"Incorrect address key {address}.");
+            return 0;
+        }
+
         public static void WriteUInt(long address, UInt32 value) {
             var val = BitConverter.GetBytes(value);
-            WriteProcessMemory(processHandle, new IntPtr(address + Constants.OFFSET), val, 4, out int error);
+            ProcessMemory.WriteProcessMemory(_processHandle, address + EmulatorOffset, val, 4, out int lpNumberOfBytesWritten);
         }
+
         public static void WriteUInt(string address, UInt32 value, int offset = 0) {
-            var val = BitConverter.GetBytes(value);
-            WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET + offset), val, 4, out int error);
+            if (_regionalAddresses.TryGetValue(address, out var key)) {
+                var val = BitConverter.GetBytes(value);
+                ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, val, 4, out int lpNumberOfBytesWritten);
+                return;
+            }
+            Constants.WriteError($"Incorrect address key {address}.");
         }
+
+        #endregion
+
+        #region Long
+
+        public static long ReadLong(long address) {
+            byte[] buffer = new byte[8];
+            ProcessMemory.ReadProcessMemory(_processHandle, address + EmulatorOffset, buffer, 8, out long lpNumberOfBytesRead);
+            return BitConverter.ToInt64(buffer, 0);
+        }
+
+        public static long ReadLong(string address, int offset = 0) {
+            if (_regionalAddresses.TryGetValue(address, out var key)) {
+                byte[] buffer = new byte[8];
+                ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, 8, out long lpNumberOfBytesRead);
+                return BitConverter.ToInt64(buffer, 0);
+            }
+            Constants.WriteError($"Incorrect address key {address}.");
+            return 0;
+        }
+
         public static void WriteLong(long address, long value) {
             var val = BitConverter.GetBytes(value);
-            WriteProcessMemory(processHandle, new IntPtr(address + Constants.OFFSET), val, 8, out int error);
+            ProcessMemory.WriteProcessMemory(_processHandle, address + EmulatorOffset, val, 8, out int lpNumberOfBytesWritten);
         }
+
         public static void WriteLong(string address, long value, int offset = 0) {
-            var val = BitConverter.GetBytes(value);
-            WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET + offset), val, 8, out int error);
+            if (_regionalAddresses.TryGetValue(address, out var key)) {
+                var val = BitConverter.GetBytes(value);
+                ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, val, 8, out int lpNumberOfBytesWritten);
+                return;
+            }
+            Constants.WriteError($"Incorrect address key {address}.");
         }
+
+        #endregion
+
+        #region ULong
+
+        public static ulong ReadULong(long address) {
+            byte[] buffer = new byte[8];
+            ProcessMemory.ReadProcessMemory(_processHandle, address + EmulatorOffset, buffer, 8, out long lpNumberOfBytesRead);
+            return BitConverter.ToUInt64(buffer, 0);
+        }
+
+        public static ulong ReadULong(string address, int offset = 0) {
+            if (_regionalAddresses.TryGetValue(address, out var key)) {
+                byte[] buffer = new byte[8];
+                ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, 8, out long lpNumberOfBytesRead);
+                return BitConverter.ToUInt64(buffer, 0);
+            }
+            Constants.WriteError($"Incorrect address key {address}.");
+            return 0;
+        }
+
         public static void WriteULong(long address, ulong value) {
             var val = BitConverter.GetBytes(value);
-            WriteProcessMemory(processHandle, new IntPtr(address + Constants.OFFSET), val, 8, out int error);
+            ProcessMemory.WriteProcessMemory(_processHandle, address + EmulatorOffset, val, 8, out int lpNumberOfBytesWritten);
         }
+
         public static void WriteULong(string address, ulong value, int offset = 0) {
-            var val = BitConverter.GetBytes(value);
-            WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET + offset), val, 8, out int error);
+            if (_regionalAddresses.TryGetValue(address, out var key)) {
+                var val = BitConverter.GetBytes(value);
+                ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, val, 8, out int lpNumberOfBytesWritten);
+            }
+            Constants.WriteError($"Incorrect address key {address}.");
         }
+
+        #endregion
+
+        #region AoB
+
+        public static byte[] ReadAoB(long startAddr, long endAddr) {
+            long len = endAddr - startAddr;
+            byte[] buffer = new byte[len];
+            ProcessMemory.ReadProcessMemory(_processHandle, startAddr + EmulatorOffset, buffer, len, out long lpNumberOfBytesRead);
+            return buffer;
+        }
+
+        public static byte[] ReadAoB(string address, long length, int offset = 0) {
+            if (_regionalAddresses.TryGetValue(address, out var key)) {
+                byte[] buffer = new byte[length];
+                ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, length, out long lpNumberOfBytesRead);
+                return buffer;
+            }
+            Constants.WriteError($"Incorrect address key {address}.");
+            return new byte[0];
+        }
+
         public static void WriteAoB(long address, string values) {
             string[] strArr = values.Split(' ');
             byte[] arr = new byte[strArr.Length];
             for (int i = 0; i < strArr.Length; i++) {
                 arr[i] = Convert.ToByte(strArr[i], 16);
             }
-            WriteProcessMemory(processHandle, new IntPtr(address + Constants.OFFSET), arr, arr.Length, out int error);
+            ProcessMemory.WriteProcessMemory(_processHandle, address + EmulatorOffset, arr, arr.Length, out int lpNumberOfBytesWritten);
         }
-        public static void WriteAoB(string address, string values) {
+
+        public static void WriteAoB(string address, string values, int offset = 0) {
+            if (_regionalAddresses.TryGetValue(address, out var key)) {
+                string[] strArr = values.Split(' ');
+                byte[] arr = new byte[strArr.Length];
+                for (int i = 0; i < strArr.Length; i++) {
+                    arr[i] = Convert.ToByte(strArr[i], 16);
+                }
+                ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, arr, arr.Length, out int lpNumberOfBytesWritten);
+                Constants.WriteError($"Incorrect address key {address}.");
+                return;
+            }
+        }
+
+        #endregion
+
+        public static List<long> ScanAoB(long start, long end, string pattern, bool useOffset = true, bool addOffset = false) {
+            long offset = 0;
+            if (!useOffset) {
+                offset -= EmulatorOffset;
+            }
+
+            List<long> results = KMP.Search(pattern, ReadAoB(start + offset, end + offset), true);
+
+            for (int i = 0; i < results.Count; i++) {
+                results[i] += start;
+                if (addOffset) {
+                    results[i] += EmulatorOffset;
+                }
+            }
+
+            return results;
+        }
+
+        public static void WriteText(long address, string values) {
             string[] strArr = values.Split(' ');
             byte[] arr = new byte[strArr.Length];
             for (int i = 0; i < strArr.Length; i++) {
                 arr[i] = Convert.ToByte(strArr[i], 16);
             }
-            WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET), arr, arr.Length, out int error);
+            ProcessMemory.WriteProcessMemory(_processHandle, address + EmulatorOffset, arr, arr.Length, out int error);
         }
-        public static void WriteText(long address, string values) {
-            string[] strArr = LoDDict.StringEncode(values).Split(' ');
-            byte[] arr = new byte[strArr.Length];
-            for (int i = 0; i < strArr.Length; i++) {
-                arr[i] = Convert.ToByte(strArr[i], 16);
-            }
-            WriteProcessMemory(processHandle, new IntPtr(address + Constants.OFFSET), arr, arr.Length, out int error);
-        }
+
         public static void WriteText(string address, string values) {
             string[] strArr = LoDDict.StringEncode(values).Split(' ');
             byte[] arr = new byte[strArr.Length];
             for (int i = 0; i < strArr.Length; i++) {
                 arr[i] = Convert.ToByte(strArr[i], 16);
             }
-            WriteProcessMemory(processHandle, new IntPtr(Constants.GetAddress(address) + Constants.OFFSET), arr, arr.Length, out int error);
+            ProcessMemory.WriteProcessMemory(_processHandle, GetAddress(address) + EmulatorOffset, arr, arr.Length, out int error);
         }
 
-        public static List<long> ScanAoB(long start, long end, string pattern, bool useOffset = true, bool addOffset = false) {
-            long offset = 0;
-            if (useOffset) {
-                offset = Constants.OFFSET;
-            }
-            List<long> results = KMPSearch(pattern, ReadAoB(start + offset, end + offset), true);
+        // Read name
 
-            for (int i = 0; i < results.Count; i++) {
-                results[i] += start;
-                if (addOffset) {
-                    results[i] += Constants.OFFSET;
+        // GetCharacterByNumber
+
+        // GetCharacterbyChar
+
+        public static int GetAddress(string address) {
+            if (_regionalAddresses.TryGetValue(address, out var key)) {
+                return key;
+            }
+            Constants.WriteError($"Incorrect address key {address}.");
+            return 0;
+        }
+
+        static bool Verify(long offset) {
+            var start = versionAddr + offset;
+            var end = start + versionStringLen;
+            string version = Encoding.Default.GetString(ReadAoB(start - EmulatorOffset, end - EmulatorOffset));
+            if (versions.TryGetValue(version, out var key)) {
+                Region = key;
+                Constants.WriteOutput($"Detected region: {key}");
+                return true;
+            }
+            return false;
+        }
+
+        static bool Emulators(Process proc, string emulatorName) {
+            if (Verify(EmulatorOffset)) {
+                Constants.WriteOutput("Previous offset successful.");
+                return true;
+            } else {
+                if (emulatorName.ToLower() == "retroarch") {
+                    return RetroArch(proc);
+                } else if (emulatorName.ToLower().Contains("duckstation")) {
+                    return DuckStation(proc);
+                } else if (emulatorName.Contains("ePSXe")) {
+                    return ePSXe(proc);
                 }
-            }
-
-            return results;
-        }
-        public static int[] Locate(this byte[] self, byte[] candidate, byte[] mask) {
-            if (IsEmptyLocate(self, candidate))
-                return Empty;
-            var list = new List<int>();
-            for (int i = 0; i < self.Length; i++) {
-                if (!IsMatch(self, i, candidate, mask)) {
-                    continue;
-                }
-                list.Add(i);
-            }
-            return list.Count == 0 ? Empty : list.ToArray();
-        }
-        static bool IsMatch(byte[] array, int position, byte[] candidate, byte[] mask) {
-            if (candidate.Length > (array.Length - position)) {
                 return false;
             }
-            for (int i = 0; i < candidate.Length; i++) {
-                if (mask[i] == 0x00) {
-                    if (array[position + i] != candidate[i]) {
-                        return false;
-                    }
-                } else if (mask[i] != 0xFF) {
-                    if ((array[position + i] & mask[i]) != (array[position + i] & candidate[i])) {
-                        return false;
-                    }
-                }
-
-            }
-            return true;
-        }
-        static bool IsEmptyLocate(byte[] array, byte[] candidate) {
-            return array == null
-                || candidate == null
-                || array.Length == 0
-                || candidate.Length == 0
-                || candidate.Length > array.Length;
-        }
-        public static string ReadName(int nameAddress) {
-            string name = "";
-            for (int i = 0; i <= 20; i++) {
-                if (GetCharacterByNumber(nameAddress + (i * 2)) == "")
-                    break;
-                name += GetCharacterByNumber(nameAddress + (i * 2));
-            }
-            return name;
-        }
-        public static string GetCharacterByNumber(int charAddress) {
-            byte character = ReadByte(charAddress);
-            if (character == 0) {
-                return " ";
-            } else if (character == 1) {
-                return ",";
-            } else if (character == 2) {
-                return ".";
-            } else if (character == 3) {
-                return "-";
-            } else if (character == 4) {
-                return ":";
-            } else if (character == 5) {
-                return "?";
-            } else if (character == 6) {
-                return "!";
-            } else if (character == 7) {
-                return "_";
-            } else if (character == 8) {
-                return "/";
-            } else if (character == 9) {
-                return "'";
-            } else if (character == 10) {
-                return "\"";
-            } else if (character == 11) {
-                return "(";
-            } else if (character == 12) {
-                return ")";
-            } else if (character == 13) {
-                return "—";
-            } else if (character == 14) {
-                return "@";
-            } else if (character == 15) {
-                return "%";
-            } else if (character == 16) {
-                return "&";
-            } else if (character == 17) {
-                return "*";
-            } else if (character == 18) {
-                return "#";
-            } else if (character == 19) {
-                return ">";
-            } else if (character == 20) {
-                return ",";
-            } else if (character == 21) {
-                return "0";
-            } else if (character == 22) {
-                return "1";
-            } else if (character == 23) {
-                return "2";
-            } else if (character == 24) {
-                return "3";
-            } else if (character == 25) {
-                return "4";
-            } else if (character == 26) {
-                return "5";
-            } else if (character == 27) {
-                return "6";
-            } else if (character == 28) {
-                return "7";
-            } else if (character == 29) {
-                return "8";
-            } else if (character == 30) {
-                return "9";
-            } else if (character == 31) {
-                return "A";
-            } else if (character == 32) {
-                return "B";
-            } else if (character == 33) {
-                return "C";
-            } else if (character == 34) {
-                return "D";
-            } else if (character == 35) {
-                return "E";
-            } else if (character == 36) {
-                return "F";
-            } else if (character == 37) {
-                return "G";
-            } else if (character == 38) {
-                return "H";
-            } else if (character == 39) {
-                return "I";
-            } else if (character == 40) {
-                return "J";
-            } else if (character == 41) {
-                return "K";
-            } else if (character == 42) {
-                return "L";
-            } else if (character == 43) {
-                return "M";
-            } else if (character == 44) {
-                return "N";
-            } else if (character == 45) {
-                return "O";
-            } else if (character == 46) {
-                return "P";
-            } else if (character == 47) {
-                return "Q";
-            } else if (character == 48) {
-                return "R";
-            } else if (character == 49) {
-                return "S";
-            } else if (character == 50) {
-                return "T";
-            } else if (character == 51) {
-                return "U";
-            } else if (character == 52) {
-                return "V";
-            } else if (character == 53) {
-                return "W";
-            } else if (character == 54) {
-                return "X";
-            } else if (character == 55) {
-                return "Y";
-            } else if (character == 56) {
-                return "Z";
-            } else if (character == 57) {
-                return "a";
-            } else if (character == 58) {
-                return "b";
-            } else if (character == 59) {
-                return "c";
-            } else if (character == 60) {
-                return "d";
-            } else if (character == 61) {
-                return "e";
-            } else if (character == 62) {
-                return "f";
-            } else if (character == 63) {
-                return "g";
-            } else if (character == 64) {
-                return "h";
-            } else if (character == 65) {
-                return "i";
-            } else if (character == 66) {
-                return "j";
-            } else if (character == 67) {
-                return "k";
-            } else if (character == 68) {
-                return "l";
-            } else if (character == 69) {
-                return "m";
-            } else if (character == 70) {
-                return "n";
-            } else if (character == 71) {
-                return "o";
-            } else if (character == 72) {
-                return "p";
-            } else if (character == 73) {
-                return "q";
-            } else if (character == 74) {
-                return "r";
-            } else if (character == 75) {
-                return "s";
-            } else if (character == 76) {
-                return "t";
-            } else if (character == 77) {
-                return "u";
-            } else if (character == 78) {
-                return "v";
-            } else if (character == 79) {
-                return "w";
-            } else if (character == 80) {
-                return "x";
-            } else if (character == 81) {
-                return "y";
-            } else if (character == 82) {
-                return "z";
-            } else if (character == 83) {
-                return "[";
-            } else if (character == 84) {
-                return "]";
-            } else {
-                return "";
-            }
-        }
-        public static byte GetCharacterByChar(char character) {
-            if (character == ' ') {
-                return 0;
-            } else if (character == ',') {
-                return 1;
-            } else if (character == '.') {
-                return 2;
-            } else if (character == '-') {
-                return 3;
-            } else if (character == ':') {
-                return 4;
-            } else if (character == '?') {
-                return 5;
-            } else if (character == '!') {
-                return 6;
-            } else if (character == '_') {
-                return 7;
-            } else if (character == '/') {
-                return 8;
-            } else if (character == '\'') {
-                return 9;
-            } else if (character == '"') {
-                return 10;
-            } else if (character == '(') {
-                return 11;
-            } else if (character == ')') {
-                return 12;
-            } else if (character == '—') {
-                return 13;
-            } else if (character == '@') {
-                return 14;
-            } else if (character == '%') {
-                return 15;
-            } else if (character == '&') {
-                return 16;
-            } else if (character == '*') {
-                return 17;
-            } else if (character == '#') {
-                return 18;
-            } else if (character == '>') {
-                return 19;
-            } else if (character == '<') {
-                return 20;
-            } else if (character == '0') {
-                return 21;
-            } else if (character == '1') {
-                return 22;
-            } else if (character == '2') {
-                return 23;
-            } else if (character == '3') {
-                return 24;
-            } else if (character == '4') {
-                return 25;
-            } else if (character == '5') {
-                return 26;
-            } else if (character == '6') {
-                return 27;
-            } else if (character == '7') {
-                return 28;
-            } else if (character == '8') {
-                return 29;
-            } else if (character == '9') {
-                return 30;
-            } else if (character == 'A') {
-                return 31;
-            } else if (character == 'B') {
-                return 32;
-            } else if (character == 'C') {
-                return 33;
-            } else if (character == 'D') {
-                return 34;
-            } else if (character == 'E') {
-                return 35;
-            } else if (character == 'F') {
-                return 36;
-            } else if (character == 'G') {
-                return 37;
-            } else if (character == 'H') {
-                return 38;
-            } else if (character == 'I') {
-                return 39;
-            } else if (character == 'J') {
-                return 40;
-            } else if (character == 'K') {
-                return 41;
-            } else if (character == 'L') {
-                return 42;
-            } else if (character == 'M') {
-                return 43;
-            } else if (character == 'N') {
-                return 44;
-            } else if (character == 'O') {
-                return 45;
-            } else if (character == 'P') {
-                return 46;
-            } else if (character == 'Q') {
-                return 47;
-            } else if (character == 'R') {
-                return 48;
-            } else if (character == 'S') {
-                return 49;
-            } else if (character == 'T') {
-                return 50;
-            } else if (character == 'U') {
-                return 51;
-            } else if (character == 'V') {
-                return 52;
-            } else if (character == 'W') {
-                return 53;
-            } else if (character == 'X') {
-                return 54;
-            } else if (character == 'Y') {
-                return 55;
-            } else if (character == 'Z') {
-                return 56;
-            } else if (character == 'a') {
-                return 57;
-            } else if (character == 'b') {
-                return 58;
-            } else if (character == 'c') {
-                return 59;
-            } else if (character == 'd') {
-                return 60;
-            } else if (character == 'e') {
-                return 61;
-            } else if (character == 'f') {
-                return 62;
-            } else if (character == 'g') {
-                return 63;
-            } else if (character == 'h') {
-                return 64;
-            } else if (character == 'i') {
-                return 65;
-            } else if (character == 'j') {
-                return 66;
-            } else if (character == 'k') {
-                return 67;
-            } else if (character == 'l') {
-                return 68;
-            } else if (character == 'm') {
-                return 69;
-            } else if (character == 'n') {
-                return 70;
-            } else if (character == 'o') {
-                return 71;
-            } else if (character == 'p') {
-                return 72;
-            } else if (character == 'q') {
-                return 73;
-            } else if (character == 'r') {
-                return 74;
-            } else if (character == 's') {
-                return 75;
-            } else if (character == 't') {
-                return 76;
-            } else if (character == 'u') {
-                return 77;
-            } else if (character == 'v') {
-                return 78;
-            } else if (character == 'w') {
-                return 79;
-            } else if (character == 'x') {
-                return 80;
-            } else if (character == 'y') {
-                return 81;
-            } else if (character == 'z') {
-                return 82;
-            } else if (character == '[') {
-                return 83;
-            } else if (character == ']') {
-                return 84;
-            } else {
-                return 0;
-            }
         }
 
-        static Dictionary<string, byte[]> masking = new Dictionary<string, byte[]>() {
-            {"??", new byte[] { 0x00, 0x00} },
-            {"0?", new byte[] { 0x00, 0xF0} },
-            {"1?", new byte[] { 0x10, 0xF0} },
-            {"2?", new byte[] { 0x20, 0xF0} },
-            {"3?", new byte[] { 0x30, 0xF0} },
-            {"4?", new byte[] { 0x40, 0xF0} },
-            {"5?", new byte[] { 0x50, 0xF0} },
-            {"6?", new byte[] { 0x60, 0xF0} },
-            {"7?", new byte[] { 0x70, 0xF0} },
-            {"8?", new byte[] { 0x80, 0xF0} },
-            {"9?", new byte[] { 0x90, 0xF0} },
-            {"A?", new byte[] { 0xA0, 0xF0} },
-            {"B?", new byte[] { 0xB0, 0xF0} },
-            {"C?", new byte[] { 0xC0, 0xF0} },
-            {"D?", new byte[] { 0xD0, 0xF0} },
-            {"E?", new byte[] { 0xE0, 0xF0} },
-            {"F?", new byte[] { 0xF0, 0xF0} },
-            {"?0", new byte[] { 0x00, 0x0F} },
-            {"?1", new byte[] { 0x01, 0x0F} },
-            {"?2", new byte[] { 0x02, 0x0F} },
-            {"?3", new byte[] { 0x03, 0x0F} },
-            {"?4", new byte[] { 0x04, 0x0F} },
-            {"?5", new byte[] { 0x05, 0x0F} },
-            {"?6", new byte[] { 0x06, 0x0F} },
-            {"?7", new byte[] { 0x07, 0x0F} },
-            {"?8", new byte[] { 0x08, 0x0F} },
-            {"?9", new byte[] { 0x09, 0x0F} },
-            {"?A", new byte[] { 0x0A, 0x0F} },
-            {"?B", new byte[] { 0x0B, 0x0F} },
-            {"?C", new byte[] { 0x0C, 0x0F} },
-            {"?D", new byte[] { 0x0D, 0x0F} },
-            {"?E", new byte[] { 0x0E, 0x0F} },
-            {"?F", new byte[] { 0x0F, 0x0F} },
-        };
-
-        public static List<long> KMPSearch(string patternString, byte[] byteArray, bool findAll = false) {
-            var splitString = patternString.Split(' ');
-
-            int N = byteArray.Length;
-            int M = splitString.Length;
-            var patternValue = new byte[M];
-            var patternMask = new byte[M];
-            for (int k = 0; k < M; k++) {
-                if (Byte.TryParse(splitString[k], NumberStyles.HexNumber, null, out byte key)) {
-                    patternValue[k] = key; // Can be parsed, unless theres a ? mask
-                    patternMask[k] = 0xFF; // & with 0xFF doesn't change the value
-                } else {
-                    patternValue[k] = masking[splitString[k]][0]; // For masked nibbles, value and mask is set to 0, so it always passes
-                    patternMask[k] = masking[splitString[k]][1];
+        static bool ePSXe(Process proc) {
+            EmulatorOffset = 0;
+            var start = (long) proc.MainModule.BaseAddress;
+            var end = start + proc.MainModule.ModuleMemorySize;
+            Constants.WriteOutput("Starting Scan: " + Convert.ToString(start, 16).ToUpper() + " - " + Convert.ToString(end, 16).ToUpper());
+            var results = KMP.Search(AoBCheck, ReadAoB(start, end), true);
+            foreach (var result in results) {
+                var tempOffset = start + result - 0xB070;
+                if (Verify(tempOffset)) {
+                    EmulatorOffset = tempOffset;
+                    Constants.KEY.SetValue("Offset", EmulatorOffset);
+                    Constants.WriteOutput("Base scan successful.");
+                    return true;
                 }
             }
+            return false;
+        }
 
-            var indexList = new List<long>();
+        static bool RetroArch(Process proc) {
+            try {
+                EmulatorOffset = 0;
+                var start = (long) proc.MainModule.BaseAddress;
+                var end = start + 0x1000008;
+                for (int i = 0; i < 17; i++) {
+                    Constants.WriteOutput("Start RetroArch Scan (" + i + "/16): " + Convert.ToString(start, 16).ToUpper() + " - " + Convert.ToString(end, 16).ToUpper());
+                    var results = KMP.Search(AoBCheck, ReadAoB(start, end), true);
+                    foreach (var result in results) {
+                        var tempOffset = start + result - 0xB070;
+                        if (Verify(tempOffset)) {
+                            EmulatorOffset = tempOffset;
+                            Constants.KEY.SetValue("Offset", EmulatorOffset);
+                            Constants.WriteOutput("Base scan successful.");
+                            return true;
+                        }
+                    }
+                    start += 0x10000000;
+                    end += 0x10000000;
+                }
+                return false;
 
-            var substringIndex = CalculateSubstringIndexes(patternValue, patternMask, M);
+            } catch (Exception e) {
+                Constants.WriteOutput("RetroArch scan failed.");
+                return false;
+            }
+        }
 
-            int i = 0; // Index in the byteArray
-            int j = 0; // Index of the pattern
-            while (i < N - M + 1) {
-                if ((byteArray[i] & patternMask[j]) == patternValue[j]) {
-                    i++;
-                    j++;
-                } else {
-                    if (j != 0) {
-                        j = substringIndex[j - 1];
+        static bool DuckStation(Process proc) {
+            EmulatorOffset = 0;
+            var start = (long) proc.MainModule.BaseAddress;
+            var end = start + proc.MainModule.ModuleMemorySize;
+            var results = KMP.Search(duckstationCheck, ReadAoB(start, end), true);
+            foreach (var result in results) {
+                foreach (var offset in duckstationOffsets) {
+                    var pointer = ReadLong(result + start - offset);
+                    if (Verify(pointer)) {
+                        EmulatorOffset = pointer;
+                        Constants.KEY.SetValue("Offset", EmulatorOffset);
+                        Constants.WriteOutput("Base scan successful.");
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        static Process FindEmulatorProcess(string emulatorName) {
+            Process[] processes = Process.GetProcesses();
+
+            foreach (Process proc in processes) {
+                if (proc.ProcessName.Equals(emulatorName, StringComparison.CurrentCultureIgnoreCase) || proc.ProcessName.Contains(emulatorName.ToLower())) { // Find (name).exe in the process list (use task manager to find the name)
+                    return proc;
+                }
+            }
+            throw new EmulatorNotFoundException(emulatorName);
+        }
+
+        static Dictionary<string, int> Load_regionalAddresses(Region region) {
+            var addresses = new Dictionary<string, int>();
+            using (StreamReader reader = File.OpenText("Scripts\\Addresses.csv")) {
+                string line;
+                while ((line = reader.ReadLine()) != null) {
+                    string[] values = line.Split(',');
+                    if (addresses.ContainsKey(values[0])) {
+                        Constants.WriteDebug("Same key warning: " + values[0]);
                     } else {
-                        i++;
+                        addresses.Add(values[0], Convert.ToInt32(values[(int) region + 1], 16));
                     }
-                }
-                if (j == M) {
-                    indexList.Add(i - j);
-                    if (!findAll) {
-                        break;
-                    }
-                    j = substringIndex[j - 1];
                 }
             }
-            return indexList;
+
+            foreach (string file in Directory.GetFiles("Scripts\\Addresses", "*.csv", SearchOption.AllDirectories)) {
+                using (StreamReader reader = File.OpenText(file)) {
+                    string line;
+                    while ((line = reader.ReadLine()) != null) {
+                        string[] values = line.Split(',');
+                        if (addresses.ContainsKey(values[0])) {
+                            Constants.WriteDebug("Same key warning: " + values[0]);
+                        } else {
+                            addresses.Add(values[0], Convert.ToInt32(values[(int) region + 1], 16));
+                        }
+                    }
+                }
+            }
+            return addresses;
         }
 
-        static byte[] CalculateSubstringIndexes(byte[] patternValue, byte[] patternMask, int M) {
-            var substringIndex = new byte[M];
-            substringIndex[0] = 0;
-            int len = 0;
-            int i = 1;
-            while (i < M) {
-                if (patternValue[i] == (patternValue[len] & patternMask[i])) {
-                    substringIndex[i] = (byte) (len + 1);
-                    len++;
-                    i++;
-                } else {
-                    if (len != 0) {
-                        len = substringIndex[len - 1];
-                    } else {
-                        substringIndex[i] = 0;
-                        i++;
-                    }
-                }
+        public static void SetHandle(Process proc) {
+            _processHandle = ProcessMemory.GetProcessHandle(proc);
+        }
+
+        public static void Init(string emulatorName) {
+            EmulatorOffset = Constants.OFFSET; // TODO load previous offset
+
+            if (emulatorName.ToLower().Contains(".exe")) {
+                emulatorName = emulatorName.Replace("exe", "");
             }
-            return substringIndex;
+
+            Process proc = FindEmulatorProcess(emulatorName);
+
+            _processHandle = ProcessMemory.GetProcessHandle(proc);
+
+            if (!Emulators(proc, emulatorName)) {
+                throw new EmulatorAttachException(emulatorName);
+            }
+
+            _regionalAddresses = Load_regionalAddresses(Region);
+
+            MemoryController = new MemoryController.MemoryController();
         }
     }
 }

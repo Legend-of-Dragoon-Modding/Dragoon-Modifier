@@ -14,7 +14,7 @@ namespace Dragoon_Modifier.MemoryController {
         public byte Level { get { return Emulator.ReadByte(_baseAddress); } set { Emulator.WriteByte(_baseAddress, value); } }
         public byte Hits { get { return Emulator.ReadByte(_baseAddress + 0x1); } set { Emulator.WriteByte(_baseAddress + 0x1, value); } }
         public UShortCollection SP { get { return _sp; } }
-        public ushort Damage { get { return Emulator.ReadByte(_baseAddress + 0xC); } set { Emulator.WriteByte(_baseAddress + 0xC, value); } }
+        public ushort Damage { get { return Emulator.ReadUShort(_baseAddress + 0xC); } set { Emulator.WriteUShort(_baseAddress + 0xC, value); } }
         public ByteCollection DamageLevelMultiplier { get { return _multi; } }
 
         public AdditionTable(int baseAddress, int multiAddress, int addition) {

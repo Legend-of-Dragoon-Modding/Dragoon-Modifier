@@ -40,14 +40,14 @@ namespace Dragoon_Modifier {
             new AdditionSwap(Hotkey.KEY_L1 + Hotkey.KEY_R1)
         };
 
-        public static void Run(Dictionary<string, int> uiCombo, byte eleBombTurns, byte eleBombElement, bool reverseDBS, int inventorySize) {
+        public static void Run(byte eleBombTurns, byte eleBombElement, bool reverseDBS, int inventorySize) {
             while (Constants.RUN) {
                 try {
                     switch (Globals.GAME_STATE) {
                         case Globals.GameStateEnum.Battle:
                             if (!Globals.STATS_CHANGED) {
-                                ultimateBossStage = uiCombo["cboUltimateBoss"];
-                                Setup(uiCombo);
+                                // ultimateBossStage = uiCombo["cboUltimateBoss"]; TODO
+                                Setup();
                                 break;
                             }
                             if (Globals.PARTY_SLOT[0] == 4 && Emulator.ReadByte("HASCHEL_FIX" + Globals.DISC) != 0x80) {
@@ -149,14 +149,14 @@ namespace Dragoon_Modifier {
             }
         }
 
-        public static void Setup(Dictionary<string, int> uiCombo) {
+        public static void Setup() {
             Constants.WriteOutput("Battle detected. Loading...");
 
             
             difficulty = Globals.DIFFICULTY_MODE;
-            aspectRatioOption = uiCombo["cboAspectRatio"];
-            cameraOption = uiCombo["cboCamera"];
-            killBGM = uiCombo["cboKillBGM"];
+            // aspectRatioOption = uiCombo["cboAspectRatio"]; TODO UI
+            // cameraOption = uiCombo["cboCamera"]; TODO UI
+            // killBGM = uiCombo["cboKillBGM"]; TODO UI
             if (Globals.CheckDMScript("btnAspectRatio")) {
                 ChangeAspectRatio();
             }
@@ -226,7 +226,7 @@ namespace Dragoon_Modifier {
                 NoDragoonMode();
             }
             if (difficulty != "Normal") {
-                HardMode.Setup(uiCombo, difficulty);
+                HardMode.Setup(difficulty);
             }
 
             Constants.WriteOutput("Finished loading.");

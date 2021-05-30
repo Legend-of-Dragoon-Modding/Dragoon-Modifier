@@ -15,14 +15,14 @@ namespace Dragoon_Modifier {
         static bool shopListChanged = false;
 
 
-        public static void Field(Emu emulator) {
+        public static void Field() {
             try {
                 if (GameController.InventorySize != 32) {
                     ExtendInventory(GameController.InventorySize);
                 }
 
                 if (Globals.SHOP_CHANGE) {
-                    ShopTableChange(emulator);
+                    ShopTableChange();
                 }
 
                 if (UIControls.SaveAnywhere) {
@@ -72,7 +72,7 @@ namespace Dragoon_Modifier {
             }
         }
 
-        public static void Overworld(Emu emulator) {
+        public static void Overworld() {
             if (GameController.InventorySize != 32) {
                 ExtendInventory(GameController.InventorySize);
             }
@@ -108,9 +108,9 @@ namespace Dragoon_Modifier {
 
         }
 
-        static void ShopTableChange(Emu emulator) {
-            if (!shopListChanged && shopMaps.Contains(emulator.MemoryController.MapID)) {
-                if (emulator.MemoryController.Transition != 12) { // Map transition in progress
+        static void ShopTableChange() {
+            if (!shopListChanged && shopMaps.Contains(Emulator.MemoryController.MapID)) {
+                if (Emulator.MemoryController.Transition != 12) { // Map transition in progress
                     return;
                 }
                 // TODO run
