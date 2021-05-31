@@ -17,6 +17,9 @@ namespace Dragoon_Modifier {
 
         public static void Field() {
             try {
+                if (GameController.StatsChanged) {
+                    GameController.StatsChanged = false;
+                }
                 if (GameController.InventorySize != 32) {
                     ExtendInventory(GameController.InventorySize);
                 }

@@ -45,7 +45,7 @@ namespace Dragoon_Modifier {
                 try {
                     switch (Emulator.MemoryController.GameState) {
                         case GameState.Battle:
-                            if (!Globals.STATS_CHANGED) {
+                            if (!GameController.StatsChanged) {
                                 // ultimateBossStage = uiCombo["cboUltimateBoss"]; TODO
                                 Setup();
                                 break;
@@ -90,7 +90,7 @@ namespace Dragoon_Modifier {
                             }
                             break;
                         case GameState.BattleResult:
-                            if (Globals.STATS_CHANGED) {
+                            if (GameController.StatsChanged) {
                                 Globals.EXITING_BATTLE = 2;
                                 ReduceSP();
                                 ItemFieldChanges();
@@ -98,18 +98,18 @@ namespace Dragoon_Modifier {
                                 if (Globals.DIFFICULTY_MODE != "Normal") {
                                     HardMode.PostBattleChapter3Buffs();
                                 }
-                                Globals.STATS_CHANGED = false;
+                                GameController.StatsChanged = false;
                             }
                             break;
                         case GameState.Field:
-                            if (Globals.STATS_CHANGED) {
+                            if (GameController.StatsChanged) {
                                 Globals.EXITING_BATTLE = 2;
                                 ItemFieldChanges();
                                 CharacterFieldChanges();
                                 if (Globals.DIFFICULTY_MODE != "Normal") {
                                     HardMode.PostBattleChapter3Buffs();
                                 }
-                                Globals.STATS_CHANGED = false;
+                                GameController.StatsChanged = false;
                             }
                             if (Globals.PARTY_SLOT[2] < 9 && Globals.PARTY_SLOT[0] != 0) {
                                 Globals.NO_DART = Globals.PARTY_SLOT[0];
@@ -118,14 +118,14 @@ namespace Dragoon_Modifier {
                             }
                             break;
                         case GameState.Menu:
-                            if (Globals.STATS_CHANGED) {
+                            if (GameController.StatsChanged) {
                                 Globals.EXITING_BATTLE = 2;
                                 ItemFieldChanges();
                                 CharacterFieldChanges();
                                 if (Globals.DIFFICULTY_MODE != "Normal") {
                                     HardMode.PostBattleChapter3Buffs();
                                 }
-                                Globals.STATS_CHANGED = false;
+                                GameController.StatsChanged = false;
                             }
                             if (Globals.NO_DART != null) {
                                 Emulator.WriteByte("MENU_UNLOCK", 1);
@@ -228,7 +228,7 @@ namespace Dragoon_Modifier {
             }
 
             Constants.WriteOutput("Finished loading.");
-            Globals.STATS_CHANGED = true;
+            GameController.StatsChanged = true;
         }
 
         #region Battle Changes

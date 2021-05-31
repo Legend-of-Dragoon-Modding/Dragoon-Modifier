@@ -19,7 +19,6 @@ namespace Dragoon_Modifier {
         public static short BEFORE_BATTLE_MAP = 0;
         public static byte[] PARTY_SLOT = new byte[3];
         public static byte DRAGOON_SPIRITS = 0;
-        public static bool STATS_CHANGED = false;
         public static byte EXITING_BATTLE = 0;
         public static int M_POINT = 0;
         public static int C_POINT = 0;
