@@ -58,6 +58,7 @@ namespace Dragoon_Modifier {
         public static  long EmulatorOffset { get; private set; }
         public static Region Region { get; private set; }
         public static MemoryController.MemoryController MemoryController { get; private set; }
+        public static Battle.Battle BattleController { get; private set; }
 
         #region Byte
 
@@ -613,6 +614,14 @@ namespace Dragoon_Modifier {
             _regionalAddresses = Load_regionalAddresses(Region);
 
             MemoryController = new MemoryController.MemoryController();
+        }
+
+        public static void BattleInit() {
+            BattleController = new Battle.Battle();
+        }
+
+        public static void BattleEnd() {
+            BattleController = null;
         }
     }
 }

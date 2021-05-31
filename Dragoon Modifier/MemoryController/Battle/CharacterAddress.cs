@@ -70,60 +70,61 @@ namespace Dragoon_Modifier.MemoryController {
 
         public void Detransform() {
             DragoonTurns = 1;
+            IsDragoon = 1;
             Detransform1 += 0x4478;
             Detransform2 = 27;
         }
 
         public void ResetStats(byte character) {
-            HP = Globals.MemoryController.SecondaryCharacterTable[character].HP;
-            Max_HP = Globals.MemoryController.SecondaryCharacterTable[character].Max_HP;
-            Max_MP = Globals.MemoryController.SecondaryCharacterTable[character].Max_MP;
-            MP = Globals.MemoryController.SecondaryCharacterTable[character].MP; Max_MP = 0;
-            SP = Globals.MemoryController.SecondaryCharacterTable[character].SP;
+            HP = Emulator.MemoryController.SecondaryCharacterTable[character].HP;
+            Max_HP = Emulator.MemoryController.SecondaryCharacterTable[character].Max_HP;
+            Max_MP = Emulator.MemoryController.SecondaryCharacterTable[character].Max_MP;
+            MP = Emulator.MemoryController.SecondaryCharacterTable[character].MP; Max_MP = 0;
+            SP = Emulator.MemoryController.SecondaryCharacterTable[character].SP;
 
-            ushort spd = (ushort) (Globals.MemoryController.SecondaryCharacterTable[character].BodySPD + Globals.MemoryController.SecondaryCharacterTable[character].EquipSPD);
+            ushort spd = (ushort) (Emulator.MemoryController.SecondaryCharacterTable[character].BodySPD + Emulator.MemoryController.SecondaryCharacterTable[character].EquipSPD);
             SPD = spd;
             OG_SPD = spd;
-            ushort at = (ushort) (Globals.MemoryController.SecondaryCharacterTable[character].BodyAT + Globals.MemoryController.SecondaryCharacterTable[character].EquipAT);
+            ushort at = (ushort) (Emulator.MemoryController.SecondaryCharacterTable[character].BodyAT + Emulator.MemoryController.SecondaryCharacterTable[character].EquipAT);
             AT = at;
             OG_AT = at;
-            ushort mat = (ushort) (Globals.MemoryController.SecondaryCharacterTable[character].BodyMAT + Globals.MemoryController.SecondaryCharacterTable[character].EquipMAT);
+            ushort mat = (ushort) (Emulator.MemoryController.SecondaryCharacterTable[character].BodyMAT + Emulator.MemoryController.SecondaryCharacterTable[character].EquipMAT);
             MAT = mat;
             OG_MAT = mat;
-            ushort df = (ushort) (Globals.MemoryController.SecondaryCharacterTable[character].BodyDF + Globals.MemoryController.SecondaryCharacterTable[character].EquipDF);
+            ushort df = (ushort) (Emulator.MemoryController.SecondaryCharacterTable[character].BodyDF + Emulator.MemoryController.SecondaryCharacterTable[character].EquipDF);
             DF = df;
             OG_DF = df;
-            ushort mdf = (ushort) (Globals.MemoryController.SecondaryCharacterTable[character].BodyMDF + Globals.MemoryController.SecondaryCharacterTable[character].EquipMDF);
+            ushort mdf = (ushort) (Emulator.MemoryController.SecondaryCharacterTable[character].BodyMDF + Emulator.MemoryController.SecondaryCharacterTable[character].EquipMDF);
             MDF = mdf;
             OG_MDF = mdf;
 
-            StatusResist = Globals.MemoryController.SecondaryCharacterTable[character].StatusResist;
-            E_Half = Globals.MemoryController.SecondaryCharacterTable[character].E_Half;
-            E_Immune = Globals.MemoryController.SecondaryCharacterTable[character].E_Immune;
-            A_AV = Globals.MemoryController.SecondaryCharacterTable[character].EquipA_AV;
-            M_AV = Globals.MemoryController.SecondaryCharacterTable[character].EquipM_AV;
-            A_HIT = Globals.MemoryController.SecondaryCharacterTable[character].EquipA_HIT;
-            M_HIT = Globals.MemoryController.SecondaryCharacterTable[character].EquipM_HIT;
-            P_Half = Globals.MemoryController.SecondaryCharacterTable[character].P_Half;
-            M_Half = Globals.MemoryController.SecondaryCharacterTable[character].M_Half;
-            On_Hit_Status = Globals.MemoryController.SecondaryCharacterTable[character].On_Hit_Status;
-            On_Hit_Status_Chance = Globals.MemoryController.SecondaryCharacterTable[character].On_Hit_Status_Chance;
-            Revive = Globals.MemoryController.SecondaryCharacterTable[character].Revive;
-            SP_Regen = Globals.MemoryController.SecondaryCharacterTable[character].SP_Regen;
-            MP_Regen = Globals.MemoryController.SecondaryCharacterTable[character].MP_Regen;
-            HP_Regen = Globals.MemoryController.SecondaryCharacterTable[character].HP_Regen;
-            MP_M_Hit = Globals.MemoryController.SecondaryCharacterTable[character].MP_M_Hit;
-            SP_M_Hit = Globals.MemoryController.SecondaryCharacterTable[character].SP_M_Hit;
-            MP_P_Hit = Globals.MemoryController.SecondaryCharacterTable[character].MP_P_Hit;
-            SP_P_Hit = Globals.MemoryController.SecondaryCharacterTable[character].SP_P_Hit;
-            SP_Multi = Globals.MemoryController.SecondaryCharacterTable[character].SP_Multi;
-            Special_Effect = Globals.MemoryController.SecondaryCharacterTable[character].Special_Effect;
-            Weapon_Element = Globals.MemoryController.SecondaryCharacterTable[character].WeaponElement;
+            StatusResist = Emulator.MemoryController.SecondaryCharacterTable[character].StatusResist;
+            E_Half = Emulator.MemoryController.SecondaryCharacterTable[character].E_Half;
+            E_Immune = Emulator.MemoryController.SecondaryCharacterTable[character].E_Immune;
+            A_AV = Emulator.MemoryController.SecondaryCharacterTable[character].EquipA_AV;
+            M_AV = Emulator.MemoryController.SecondaryCharacterTable[character].EquipM_AV;
+            A_HIT = Emulator.MemoryController.SecondaryCharacterTable[character].EquipA_HIT;
+            M_HIT = Emulator.MemoryController.SecondaryCharacterTable[character].EquipM_HIT;
+            P_Half = Emulator.MemoryController.SecondaryCharacterTable[character].P_Half;
+            M_Half = Emulator.MemoryController.SecondaryCharacterTable[character].M_Half;
+            On_Hit_Status = Emulator.MemoryController.SecondaryCharacterTable[character].On_Hit_Status;
+            On_Hit_Status_Chance = Emulator.MemoryController.SecondaryCharacterTable[character].On_Hit_Status_Chance;
+            Revive = Emulator.MemoryController.SecondaryCharacterTable[character].Revive;
+            SP_Regen = Emulator.MemoryController.SecondaryCharacterTable[character].SP_Regen;
+            MP_Regen = Emulator.MemoryController.SecondaryCharacterTable[character].MP_Regen;
+            HP_Regen = Emulator.MemoryController.SecondaryCharacterTable[character].HP_Regen;
+            MP_M_Hit = Emulator.MemoryController.SecondaryCharacterTable[character].MP_M_Hit;
+            SP_M_Hit = Emulator.MemoryController.SecondaryCharacterTable[character].SP_M_Hit;
+            MP_P_Hit = Emulator.MemoryController.SecondaryCharacterTable[character].MP_P_Hit;
+            SP_P_Hit = Emulator.MemoryController.SecondaryCharacterTable[character].SP_P_Hit;
+            SP_Multi = Emulator.MemoryController.SecondaryCharacterTable[character].SP_Multi;
+            Special_Effect = Emulator.MemoryController.SecondaryCharacterTable[character].Special_Effect;
+            Weapon_Element = Emulator.MemoryController.SecondaryCharacterTable[character].WeaponElement;
 
-            DAT = Globals.MemoryController.SecondaryCharacterTable[character].DAT;
-            DMAT = Globals.MemoryController.SecondaryCharacterTable[character].DMAT;
-            DF = Globals.MemoryController.SecondaryCharacterTable[character].DDF;
-            DMDF = Globals.MemoryController.SecondaryCharacterTable[character].DMDF;
+            DAT = Emulator.MemoryController.SecondaryCharacterTable[character].DAT;
+            DMAT = Emulator.MemoryController.SecondaryCharacterTable[character].DMAT;
+            DF = Emulator.MemoryController.SecondaryCharacterTable[character].DDF;
+            DMDF = Emulator.MemoryController.SecondaryCharacterTable[character].DMDF;
         }
     }
 }

@@ -10,8 +10,8 @@ namespace Dragoon_Modifier.MemoryController.Battle {
         public static void Init() {
             byte slot = 0;
             bool exit = true;
-            for (byte i = 0; i < Globals.BattleController.CharacterTable.Length; i++) {
-                if (Globals.BattleController.CharacterTable[i].Action == 8) {
+            for (byte i = 0; i < Emulator.BattleController.CharacterTable.Length; i++) {
+                if (Emulator.BattleController.CharacterTable[i].Action == 8) {
                     slot = i;
                     exit = false;
                     break;
@@ -23,10 +23,10 @@ namespace Dragoon_Modifier.MemoryController.Battle {
                 return;
             }
 
-            uint character = Globals.MemoryController.PartySlot[slot]; ;
+            uint character = Emulator.MemoryController.PartySlot[slot]; ;
 
             byte additionCount = 0;
-            foreach (var additionLevel in Globals.MemoryController.SecondaryCharacterTable[character].AdditionLevel) {
+            foreach (var additionLevel in Emulator.MemoryController.SecondaryCharacterTable[character].AdditionLevel) {
                 if (additionLevel != 0) {
                     additionCount++;
                 }
@@ -41,60 +41,60 @@ namespace Dragoon_Modifier.MemoryController.Battle {
 
         private static void SwapAddition(byte slot, uint character, byte additionCount) {
             if (additionCount > 1) {
-                var SP = Globals.BattleController.CharacterTable[slot].SP;
-                Globals.BattleController.CharacterTable[slot].SP = 100;
-                Globals.BattleController.CharacterTable[slot].Action = 10;
-                Globals.BattleController.CharacterTable[slot].IsDragoon = 1;
-                Globals.BattleController.CharacterTable[slot].DragoonTurns = 1;
+                var SP = Emulator.BattleController.CharacterTable[slot].SP;
+                Emulator.BattleController.CharacterTable[slot].SP = 100;
+                Emulator.BattleController.CharacterTable[slot].Action = 10;
+                Emulator.BattleController.CharacterTable[slot].IsDragoon = 1;
+                Emulator.BattleController.CharacterTable[slot].DragoonTurns = 1;
                 byte menu = 0;
                 for (byte i = 0; i < additionCount; i++) {
                     menu += (byte) Math.Pow(2, i);
                 }
-                Globals.BattleController.CharacterTable[slot].Menu = menu;
+                Emulator.BattleController.CharacterTable[slot].Menu = menu;
                 Thread.Sleep(50);
 
-                Globals.BattleController.BattleMenuCount = additionCount; // Make sure we have correct ammount of items. Probably not needed after setting the menu.
+                Emulator.BattleController.BattleMenuCount = additionCount; // Make sure we have correct ammount of items. Probably not needed after setting the menu.
 
                 for (byte i = 0; i < additionCount; i++) {
-                    Globals.BattleController.BattleMenuSlot[i] = 2; // Sets slot i to Dragoon Transformation
+                    Emulator.BattleController.BattleMenuSlot[i] = 2; // Sets slot i to Dragoon Transformation
                 }
 
                 byte chosenAddition = 0;
-                while (Globals.BattleController.CharacterTable[slot].Action != 9) {
-                    if (Globals.GAME_STATE != Globals.GameStateEnum.Battle) { // Exit function if battle ends
+                while (Emulator.BattleController.CharacterTable[slot].Action != 9) {
+                    if (Emulator.MemoryController.GameState != GameState.Battle) { // Exit function if battle ends
                         return;
                     }
-                    chosenAddition = Globals.BattleController.BattleMenuChosenSlot; // Reads the index of the selected battle menu slot
+                    chosenAddition = Emulator.BattleController.BattleMenuChosenSlot; // Reads the index of the selected battle menu slot
                     Thread.Sleep(50);
                 }
 
                 // TODO Actually swap the addition
                 Thread.Sleep(500);
 
-                var turn = Globals.BattleController.CharacterTable[slot].Turn;
-                Globals.BattleController.CharacterTable[slot].Turn = 800;
-                var MP = Globals.BattleController.CharacterTable[slot].MP;
-                Globals.BattleController.CharacterTable[slot].MP = 0;
-                var HP_Regen = Globals.BattleController.CharacterTable[slot].HP_Regen;
-                Globals.BattleController.CharacterTable[slot].HP_Regen = 0;
-                var MP_Regen = Globals.BattleController.CharacterTable[slot].MP_Regen;
-                Globals.BattleController.CharacterTable[slot].MP_Regen = 1; // Used for catching the turn
-                var SP_Regen = Globals.BattleController.CharacterTable[slot].SP_Regen;
-                Globals.BattleController.CharacterTable[slot].SP_Regen = 0;
+                var turn = Emulator.BattleController.CharacterTable[slot].Turn;
+                Emulator.BattleController.CharacterTable[slot].Turn = 800;
+                var MP = Emulator.BattleController.CharacterTable[slot].MP;
+                Emulator.BattleController.CharacterTable[slot].MP = 0;
+                var HP_Regen = Emulator.BattleController.CharacterTable[slot].HP_Regen;
+                Emulator.BattleController.CharacterTable[slot].HP_Regen = 0;
+                var MP_Regen = Emulator.BattleController.CharacterTable[slot].MP_Regen;
+                Emulator.BattleController.CharacterTable[slot].MP_Regen = 1; // Used for catching the turn
+                var SP_Regen = Emulator.BattleController.CharacterTable[slot].SP_Regen;
+                Emulator.BattleController.CharacterTable[slot].SP_Regen = 0;
 
-                while (Globals.BattleController.CharacterTable[slot].MP != 1) {
-                    if (Globals.GAME_STATE != Globals.GameStateEnum.Battle) { // Exit function if battle ends
+                while (Emulator.BattleController.CharacterTable[slot].MP != 1) {
+                    if (Emulator.MemoryController.GameState != GameState.Battle) { // Exit function if battle ends
                         return;
                     }
                     Thread.Sleep(50);
                 }
 
-                Globals.BattleController.CharacterTable[slot].SP = SP;
-                Globals.BattleController.CharacterTable[slot].MP = MP;
-                Globals.BattleController.CharacterTable[slot].Turn = turn;
-                Globals.BattleController.CharacterTable[slot].HP_Regen = HP_Regen;
-                Globals.BattleController.CharacterTable[slot].MP_Regen = MP_Regen;
-                Globals.BattleController.CharacterTable[slot].SP_Regen = SP_Regen;
+                Emulator.BattleController.CharacterTable[slot].SP = SP;
+                Emulator.BattleController.CharacterTable[slot].MP = MP;
+                Emulator.BattleController.CharacterTable[slot].Turn = turn;
+                Emulator.BattleController.CharacterTable[slot].HP_Regen = HP_Regen;
+                Emulator.BattleController.CharacterTable[slot].MP_Regen = MP_Regen;
+                Emulator.BattleController.CharacterTable[slot].SP_Regen = SP_Regen;
 
                 Constants.WriteGLogOutput("Addition swap complete.");
             }

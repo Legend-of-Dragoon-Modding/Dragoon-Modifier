@@ -7,12 +7,18 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier {
     public static class GameController {
-        public static byte InventorySize;
+        public static byte InventorySize = 32;
+        public static bool StatsChanged = false;
         public static void Run() {
             while (Constants.RUN) {
                 try { 
-                    switch (Emulator.MemoryController.GetGameState()) {
+                    switch (Emulator.MemoryController.GameState) {
                         case GameState.Battle:
+                            if (StatsChanged) {
+                                BattleController2.Run();
+                            } else {
+                                BattleController2.Setup();
+                            }
                             break;
                         case GameState.Field:
                             FieldController.Field();

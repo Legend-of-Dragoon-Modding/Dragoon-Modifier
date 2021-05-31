@@ -63,11 +63,13 @@ namespace Dragoon_Modifier.MemoryController {
         public EquipmentTableEntry[] EquipmentTable { get { return _equipTable; } }
         public CharacterStatTable[] CharacterStatTable { get { return _charStatTable; } }
         public AdditionTable[] MenuAdditionTable { get { return _addTable; } }
+        public uint BattlePointBase { get { return Emulator.ReadUInt24(_basePoint - 0x18); } }
         public uint CharacterPoint { get { return Emulator.ReadUInt24(_basePoint); } }
         public uint MonsterPoint { get { return Emulator.ReadUInt24(_basePoint + 0x14); } }
         public ushort EncounterID { get { return Emulator.ReadUShort(_encounterID); } set { Emulator.WriteUShort(_encounterID, value); } }
         public byte MonsterSize { get { return Emulator.ReadByte(_monsterSize); } }
         public byte UniqueMonsterSize { get { return Emulator.ReadByte(_uniqueMonsterSize); } }
+        public GameState GameState { get { return GetGameState(); } }
 
         public MemoryController() {
             _partySlot = new UIntCollection(Emulator.GetAddress("PARTY_SLOT"), 4, 3);
@@ -127,7 +129,7 @@ namespace Dragoon_Modifier.MemoryController {
             _uniqueMonsterSize = Emulator.GetAddress("UNIQUE_MONSTER_SIZE");
         }
 
-        public GameState GetGameState() {
+        private GameState GetGameState() {
             switch (Menu) {
                 case 0:
                     if (BattleValue == 41215) {

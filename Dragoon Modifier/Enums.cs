@@ -27,4 +27,12 @@ namespace Dragoon_Modifier {
         Overworld = 8,
         None = 255
     };
+
+    public enum Difficulty : byte {
+        Normal = 0,
+        NormalHard = 1,
+        Hard = 2,
+        HardHell = 3,
+        Hell = 4
+    }
 }

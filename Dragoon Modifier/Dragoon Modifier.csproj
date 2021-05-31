@@ -293,6 +293,7 @@
     </ApplicationDefinition>
     <Compile Include="Attach.cs" />
     <Compile Include="BattleController.cs" />
+    <Compile Include="BattleController2.cs" />
     <Compile Include="Emulator.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="FieldController.cs" />

@@ -26,46 +26,46 @@ namespace Dragoon_Modifier.MemoryController.Battle {
         }
 
         public static void Initialize(byte character) {
-            Globals.BattleController.CharacterTable[0].Status = Globals.MemoryController.CharacterTable[character].Status;
-            if (Globals.BattleController.EncounterID == 413) { // Jiango has to have it's initial move. Otherwise he never gets a turn.
-                Globals.BattleController.MonsterTable[0].Action = 12; // Play the "This is Jiango" part
-                while (Globals.BattleController.MonsterTable[0].Action != 44) { // Jiango's initial move is over.
-                    if (Globals.GAME_STATE != Globals.GameStateEnum.Battle) { // No longer in battle
+            Emulator.BattleController.CharacterTable[0].Status = Emulator.MemoryController.CharacterTable[character].Status;
+            if (Emulator.BattleController.EncounterID == 413) { // Jiango has to have it's initial move. Otherwise he never gets a turn.
+                Emulator.BattleController.MonsterTable[0].Action = 12; // Play the "This is Jiango" part
+                while (Emulator.BattleController.MonsterTable[0].Action != 44) { // Jiango's initial move is over.
+                    if (Emulator.MemoryController.GameState != GameState.Battle) { // No longer in battle
                         return;
                     }
                     Thread.Sleep(50);
                 }
             }
-            Globals.BattleController.CharacterTable[0].Action = 10; // Force character's turn in Dragoon form.
+            Emulator.BattleController.CharacterTable[0].Action = 10; // Force character's turn in Dragoon form.
 
-            while (Globals.BattleController.CharacterTable[0].Menu != 96) { // Wait for the NoDart's character turn to start
-                if (Globals.GAME_STATE != Globals.GameStateEnum.Battle) { // No longer in battle
+            while (Emulator.BattleController.CharacterTable[0].Menu != 96) { // Wait for the NoDart's character turn to start
+                if (Emulator.MemoryController.GameState != GameState.Battle) { // No longer in battle
                     return;
                 }
                 Thread.Sleep(50);
             }
 
-            Globals.BattleController.CharacterTable[0].Dragoon = 0x20; // Make sure we have Red-Eye Dragoon
+            Emulator.BattleController.CharacterTable[0].Dragoon = 0x20; // Make sure we have Red-Eye Dragoon
             
-            Globals.MemoryController.PartySlot[0] = character; // Set ID to NoDart character
+            Emulator.MemoryController.PartySlot[0] = character; // Set ID to NoDart character
             Emulator.WriteByte("PARTY_SLOT", character, 0x234E); // Secondary ID
 
-            Globals.BattleController.CharacterTable[0].Image = character;
-            Globals.BattleController.CharacterTable[0].Weapon = Globals.MemoryController.CharacterTable[character].Weapon;
-            Globals.BattleController.CharacterTable[0].Helmet = Globals.MemoryController.CharacterTable[character].Helmet;
-            Globals.BattleController.CharacterTable[0].Armor = Globals.MemoryController.CharacterTable[character].Armor;
-            Globals.BattleController.CharacterTable[0].Shoes = Globals.MemoryController.CharacterTable[character].Shoes;
-            Globals.BattleController.CharacterTable[0].Accessory = Globals.MemoryController.CharacterTable[character].Accessory;
+            Emulator.BattleController.CharacterTable[0].Image = character;
+            Emulator.BattleController.CharacterTable[0].Weapon = Emulator.MemoryController.CharacterTable[character].Weapon;
+            Emulator.BattleController.CharacterTable[0].Helmet = Emulator.MemoryController.CharacterTable[character].Helmet;
+            Emulator.BattleController.CharacterTable[0].Armor = Emulator.MemoryController.CharacterTable[character].Armor;
+            Emulator.BattleController.CharacterTable[0].Shoes = Emulator.MemoryController.CharacterTable[character].Shoes;
+            Emulator.BattleController.CharacterTable[0].Accessory = Emulator.MemoryController.CharacterTable[character].Accessory;
 
-            Globals.BattleController.CharacterTable[0].LV = Globals.MemoryController.CharacterTable[character].Level;
-            Globals.BattleController.CharacterTable[0].DLV = 1;
-            Globals.BattleController.CharacterTable[0].SP = 100;
+            Emulator.BattleController.CharacterTable[0].LV = Emulator.MemoryController.CharacterTable[character].Level;
+            Emulator.BattleController.CharacterTable[0].DLV = 1;
+            Emulator.BattleController.CharacterTable[0].SP = 100;
 
-            byte dlv = Globals.MemoryController.SecondaryCharacterTable[character].DragoonLevel;
+            byte dlv = Emulator.MemoryController.SecondaryCharacterTable[character].DragoonLevel;
 
             #region Dragoon Magic
 
-            Globals.BattleController.CharacterTable[0].DragoonSpellID = character; // ID has to match, otherwise you get all Flameshots
+            Emulator.BattleController.CharacterTable[0].DragoonSpellID = character; // ID has to match, otherwise you get all Flameshots
             Dictionary<byte, byte> dmagic5 = new Dictionary<byte, byte> { // TODO this shouldn't be hardcoded, in case we want to change Dragoon Magic
                 {0, 3},{1, 8},{2, 13},{3, 19},{4, 23},{5, 8},{6, 28},{7, 31},{8, 13}
             };
@@ -81,40 +81,40 @@ namespace Dragoon_Modifier.MemoryController.Battle {
 
             switch (dlv) { // Setting Dragoon Spell slots based on the D'LV
                 case 5:
-                    Globals.BattleController.CharacterTable[0].DragoonSpell[0] = dmagic1[character];
-                    Globals.BattleController.CharacterTable[0].DragoonSpell[1] = dmagic2[character];
+                    Emulator.BattleController.CharacterTable[0].DragoonSpell[0] = dmagic1[character];
+                    Emulator.BattleController.CharacterTable[0].DragoonSpell[1] = dmagic2[character];
                     if (Globals.NO_DART != 7) {
-                        Globals.BattleController.CharacterTable[0].DragoonSpell[2] = dmagic3[character];
-                        Globals.BattleController.CharacterTable[0].DragoonSpell[3] = dmagic5[character];
+                        Emulator.BattleController.CharacterTable[0].DragoonSpell[2] = dmagic3[character];
+                        Emulator.BattleController.CharacterTable[0].DragoonSpell[3] = dmagic5[character];
                         break;
                     }
-                    Globals.BattleController.CharacterTable[0].DragoonSpell[2] = dmagic5[character];
-                    Globals.BattleController.CharacterTable[0].DragoonSpell[3] = 0xFF;
+                    Emulator.BattleController.CharacterTable[0].DragoonSpell[2] = dmagic5[character];
+                    Emulator.BattleController.CharacterTable[0].DragoonSpell[3] = 0xFF;
                     break;
                 case 4:
                 case 3:
-                    Globals.BattleController.CharacterTable[0].DragoonSpell[0] = dmagic1[character];
-                    Globals.BattleController.CharacterTable[0].DragoonSpell[1] = dmagic2[character];
-                    Globals.BattleController.CharacterTable[0].DragoonSpell[2] = dmagic3[character];
-                    Globals.BattleController.CharacterTable[0].DragoonSpell[3] = 0xFF;
+                    Emulator.BattleController.CharacterTable[0].DragoonSpell[0] = dmagic1[character];
+                    Emulator.BattleController.CharacterTable[0].DragoonSpell[1] = dmagic2[character];
+                    Emulator.BattleController.CharacterTable[0].DragoonSpell[2] = dmagic3[character];
+                    Emulator.BattleController.CharacterTable[0].DragoonSpell[3] = 0xFF;
                     break;
                 case 2:
-                    Globals.BattleController.CharacterTable[0].DragoonSpell[0] = dmagic1[character];
-                    Globals.BattleController.CharacterTable[0].DragoonSpell[1] = dmagic2[character];
-                    Globals.BattleController.CharacterTable[0].DragoonSpell[2] = 0xFF;
-                    Globals.BattleController.CharacterTable[0].DragoonSpell[3] = 0xFF;
+                    Emulator.BattleController.CharacterTable[0].DragoonSpell[0] = dmagic1[character];
+                    Emulator.BattleController.CharacterTable[0].DragoonSpell[1] = dmagic2[character];
+                    Emulator.BattleController.CharacterTable[0].DragoonSpell[2] = 0xFF;
+                    Emulator.BattleController.CharacterTable[0].DragoonSpell[3] = 0xFF;
                     break;
                 case 1:
-                    Globals.BattleController.CharacterTable[0].DragoonSpell[0] = dmagic1[character];
-                    Globals.BattleController.CharacterTable[0].DragoonSpell[1] = 0xFF;
-                    Globals.BattleController.CharacterTable[0].DragoonSpell[2] = 0xFF;
-                    Globals.BattleController.CharacterTable[0].DragoonSpell[3] = 0xFF;
+                    Emulator.BattleController.CharacterTable[0].DragoonSpell[0] = dmagic1[character];
+                    Emulator.BattleController.CharacterTable[0].DragoonSpell[1] = 0xFF;
+                    Emulator.BattleController.CharacterTable[0].DragoonSpell[2] = 0xFF;
+                    Emulator.BattleController.CharacterTable[0].DragoonSpell[3] = 0xFF;
                     break;
                 case 0:
-                    Globals.BattleController.CharacterTable[0].DragoonSpell[0] = 0xFF;
-                    Globals.BattleController.CharacterTable[0].DragoonSpell[1] = 0xFF;
-                    Globals.BattleController.CharacterTable[0].DragoonSpell[2] = 0xFF;
-                    Globals.BattleController.CharacterTable[0].DragoonSpell[3] = 0xFF;
+                    Emulator.BattleController.CharacterTable[0].DragoonSpell[0] = 0xFF;
+                    Emulator.BattleController.CharacterTable[0].DragoonSpell[1] = 0xFF;
+                    Emulator.BattleController.CharacterTable[0].DragoonSpell[2] = 0xFF;
+                    Emulator.BattleController.CharacterTable[0].DragoonSpell[3] = 0xFF;
                     break;
             }
 
@@ -123,19 +123,19 @@ namespace Dragoon_Modifier.MemoryController.Battle {
             #region Wargod/Destroyer Mace fix
 
             byte special_effect = 0;
-            if (Globals.BattleController.CharacterTable[0].Weapon == 45) { // Destroyer Mace
+            if (Emulator.BattleController.CharacterTable[0].Weapon == 45) { // Destroyer Mace
                 special_effect |= 1;
             }
 
-            if (Globals.BattleController.CharacterTable[0].Accessory == 157) { // Wargod Sash
+            if (Emulator.BattleController.CharacterTable[0].Accessory == 157) { // Wargod Sash
                 special_effect |= 2;
             }
 
-            if (Globals.BattleController.CharacterTable[0].Accessory == 158) { // Ultimate Wargod
+            if (Emulator.BattleController.CharacterTable[0].Accessory == 158) { // Ultimate Wargod
                 special_effect |= 6;
             }
 
-            Globals.BattleController.CharacterTable[0].AdditionSpecial = special_effect;
+            Emulator.BattleController.CharacterTable[0].AdditionSpecial = special_effect;
 
             #endregion
 
@@ -145,25 +145,25 @@ namespace Dragoon_Modifier.MemoryController.Battle {
             }
             */
 
-            Globals.BattleController.CharacterTable[0].ResetStats(character);
+            Emulator.BattleController.CharacterTable[0].ResetStats(character);
 
             if (Globals.AUTO_TRANSFORM) {
-                Globals.BattleController.CharacterTable[0].Detransform();
+                Emulator.BattleController.CharacterTable[0].Detransform();
             } else {
-                Globals.BattleController.CharacterTable[0].Menu = 16;
+                Emulator.BattleController.CharacterTable[0].Menu = 16;
             }
-            while (Globals.BattleController.CharacterTable[0].Action != 9) {
-                if (Globals.GAME_STATE != Globals.GameStateEnum.Battle) { // Exit function if battle ends
+            while (Emulator.BattleController.CharacterTable[0].Action != 9) {
+                if (Emulator.MemoryController.GameState != GameState.Battle) { // Exit function if battle ends
                     return;
                 }
                 Thread.Sleep(50);
             }
 
-            Globals.BattleController.CharacterTable[0].DLV = dlv;
+            Emulator.BattleController.CharacterTable[0].DLV = dlv;
             if (dlv == 0) {
-                Globals.BattleController.CharacterTable[0].Dragoon = 0;
+                Emulator.BattleController.CharacterTable[0].Dragoon = 0;
             }
-            Globals.BattleController.CharacterTable[0].SP = Globals.MemoryController.SecondaryCharacterTable[character].SP;
+            Emulator.BattleController.CharacterTable[0].SP = Emulator.MemoryController.SecondaryCharacterTable[character].SP;
 
             Constants.WriteOutput("No Dart complete.");
         }

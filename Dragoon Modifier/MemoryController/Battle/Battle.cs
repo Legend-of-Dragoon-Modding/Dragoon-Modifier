@@ -6,56 +6,47 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.Battle {
     public class Battle {
-        uint _cPoint;
-        uint _mPoint;
-        int _battleOffset;
-        ushort _encounterID;
-        ushort[] _monsterIDs;
-        ushort[] _uniqueMonsterIDs;
-        MemoryController.MonsterAddress[] _monsterTable;
-        MemoryController.CharacterAddress[] _characterTable;
-        MemoryController.ByteCollection _battleMenuSlot;
-
-        public uint CharacterPoint { get { return _cPoint; } }
-        public uint MonsterPoint { get { return _mPoint; } }
-        public ushort EncounterID { get { return _encounterID; } }
-        public ushort[] MonsterID { get { return _monsterIDs; } }
-        public MemoryController.MonsterAddress[] MonsterTable { get { return _monsterTable; } }
-        public MemoryController.CharacterAddress[] CharacterTable { get { return _characterTable; } }
-        public int BattleOffset { get { return _battleOffset; } }
-        public ushort BattleMenuCount { get { return Emulator.ReadUShort(_mPoint + 0xE3A); } set { Emulator.WriteUShort(_mPoint + 0xE3A, value); } }
-        public byte BattleMenuChosenSlot { get { return Emulator.ReadByte(_mPoint + 0xE4E); } set { Emulator.WriteByte(_mPoint + 0xE4E, value); } }
-        public MemoryController.ByteCollection BattleMenuSlot { get { return _battleMenuSlot; } }
+        public uint CharacterPoint { get; private set; }
+        public uint MonsterPoint { get; private set; }
+        public ushort EncounterID { get; private set; }
+        public ushort[] MonsterID { get; private set; }
+        public ushort[] UniqueMonsterID { get; private set; }
+        public MemoryController.MonsterAddress[] MonsterTable { get; private set; }
+        public MemoryController.CharacterAddress[] CharacterTable { get; private set; }
+        public int BattleOffset { get; private set; }
+        public ushort BattleMenuCount { get { return Emulator.ReadUShort(MonsterPoint + 0xE3A); } set { Emulator.WriteUShort(MonsterPoint + 0xE3A, value); } }
+        public byte BattleMenuChosenSlot { get { return Emulator.ReadByte(MonsterPoint + 0xE4E); } set { Emulator.WriteByte(MonsterPoint + 0xE4E, value); } }
+        public MemoryController.ByteCollection BattleMenuSlot { get; private set; }
 
         public Battle() {
-            _cPoint = Globals.MemoryController.CharacterPoint;
-            _mPoint = Globals.MemoryController.MonsterPoint;
-            _battleOffset = GetOffset();
-            _encounterID = Globals.MemoryController.EncounterID;
-            var monsterCount = Globals.MemoryController.MonsterSize;
-            var uniqueMonsterSize = Globals.MemoryController.UniqueMonsterSize;
-            _uniqueMonsterIDs = new ushort[uniqueMonsterSize];
-            for (int i = 0; i < _uniqueMonsterIDs.Length; i++) {
-
+            CharacterPoint = Emulator.MemoryController.CharacterPoint;
+            MonsterPoint = Emulator.MemoryController.MonsterPoint;
+            BattleOffset = GetOffset();
+            EncounterID = Emulator.MemoryController.EncounterID;
+            var monsterCount = Emulator.MemoryController.MonsterSize;
+            var uniqueMonsterSize = Emulator.MemoryController.UniqueMonsterSize;
+            UniqueMonsterID = new ushort[uniqueMonsterSize];
+            for (int i = 0; i < UniqueMonsterID.Length; i++) {
+                // TODO
             }
-            _monsterTable = new MemoryController.MonsterAddress[monsterCount];
-            _monsterIDs = new ushort[monsterCount];
-            for (int i = 0; i < _monsterTable.Length; i++) {
-                _monsterTable[i] = new MemoryController.MonsterAddress(_mPoint, i, i, 0);
-                _monsterIDs[i] = _monsterTable[i].ID;
+            MonsterTable = new MemoryController.MonsterAddress[monsterCount];
+            MonsterID = new ushort[monsterCount];
+            for (int i = 0; i < MonsterTable.Length; i++) {
+                MonsterTable[i] = new MemoryController.MonsterAddress(MonsterPoint, i, i, 0);
+                MonsterID[i] = MonsterTable[i].ID;
             }
             int partySize = 0;
             for (int i = 0; i < 3; i++) {
-                if (Globals.MemoryController.PartySlot[i] > 8) {
+                if (Emulator.MemoryController.PartySlot[i] > 8) {
                     break;
                 }
                 partySize++;
             }
-            _characterTable = new MemoryController.CharacterAddress[partySize];
-            for (int i = 0; i < _characterTable.Length; i++) {
-                _characterTable[i] = new MemoryController.CharacterAddress(_cPoint, i, i + monsterCount);
+            CharacterTable = new MemoryController.CharacterAddress[partySize];
+            for (int i = 0; i < CharacterTable.Length; i++) {
+                CharacterTable[i] = new MemoryController.CharacterAddress(CharacterPoint, i, i + monsterCount);
             }
-            _battleMenuSlot = new MemoryController.ByteCollection((int)_mPoint + 0xE3C, 2, 9);
+            BattleMenuSlot = new MemoryController.ByteCollection((int) MonsterPoint + 0xE3C, 2, 9);
 
         }
 
