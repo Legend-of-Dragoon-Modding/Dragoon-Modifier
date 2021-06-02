@@ -61,7 +61,7 @@ namespace Dragoon_Modifier.LoDDictionary {
         static readonly Dictionary<string, byte> specialEffects = new Dictionary<string, byte>() {
             {"", 0 },
             {"none", 0 },
-            {"dragon_buster", 4 },
+            {"cannot_sell", 4 },
             {"attack_all", 8 },
             {"death_chance", 64 },
             {"death_res", 128 }
@@ -114,9 +114,10 @@ namespace Dragoon_Modifier.LoDDictionary {
         public Equipment(byte index, string[] values) {
             var error = new List<string>();
             Id = index;
-            if (values[0] != "" || values[0] != " ") {
+            if (!(values[0] == "" || values[0] == " ")) {
                 Name = values[0];
-                EncodedName = Dictionary.EncodeText(Name);
+                EncodedName = Dictionary.EncodeText(values[0]);
+                Constants.WriteDebug(EncodedName);
             }
 
             if (types.TryGetValue(values[1].ToLower(), out byte bkey)) {
@@ -143,7 +144,7 @@ namespace Dragoon_Modifier.LoDDictionary {
                 error.Add($"{values[3]} not found as icon.");
             }
 
-            if (Dictionary.Element2Num.TryGetValue(values[4], out bkey)) {
+            if (Dictionary.Element2Num.TryGetValue(values[4].ToLower(), out bkey)) {
                 _element = bkey;
             } else {
                 error.Add($"{values[4]} not found as element.");
@@ -293,9 +294,9 @@ namespace Dragoon_Modifier.LoDDictionary {
                 error.Add($"{String.Join(", ", errorTemp)} not found as special effect.");
             }
 
-            if (values[23] != "" || values[23] != " ") {
+            if (!(values[23] == "" || values[23] == " ")) {
                 Description = values[23];
-                EncodedDescription = Dictionary.EncodeText(values[23]);
+                EncodedDescription = Dictionary.EncodeText(Description) + " FF A0";
             }
 
             if (UInt16.TryParse(values[24], NumberStyles.AllowLeadingSign, null as IFormatProvider, out uskey)) {

@@ -18,6 +18,7 @@ namespace Dragoon_Modifier {
         public static void Field() {
             try {
                 if (GameController.StatsChanged) {
+                    ItemChange();
                     GameController.StatsChanged = false;
                 }
                 if (GameController.InventorySize != 32) {
@@ -122,6 +123,36 @@ namespace Dragoon_Modifier {
             shopListChanged = false;
         }
 
+        public static void ItemChange() {
+            if (Globals.ITEM_ICON_CHANGE) {
+                ItemIconChange();
+            }
+            if (Globals.ITEM_NAMEDESC_CHANGE) {
+                ItemNameDescChange();
+            }
+        }
+
+        public static void ItemIconChange() {
+            Constants.WriteOutput("Changing Item Icons...");
+            for (int i = 0; i < Emulator.MemoryController.EquipmentTable.Length; i++) {
+                Emulator.MemoryController.EquipmentTable[i].Icon = LoDDictionary.Dictionary.Items[i].Icon;
+            }
+            for (int i = 0; i < Emulator.MemoryController.UsableItemTable.Length; i++) {
+                Emulator.MemoryController.UsableItemTable[i].Icon = LoDDictionary.Dictionary.Items[i + 192].Icon;
+            }
+        }
+
+        public static void ItemNameDescChange() {
+            Constants.WriteOutput("Changing Item Names and Descriptions...");
+            int address = Emulator.GetAddress("ITEM_NAME");
+            int address2 = Emulator.GetAddress("ITEM_NAME_PTR");
+            //Emulator.WriteAoB(address, LoDDictionary.Dictionary.EncodedNames);
+            int i = 0;
+            foreach (LoDDictionary.Item item in LoDDictionary.Dictionary.Items) {
+                Emulator.WriteUInt24(address2 + i * 0x4, item.NamePointer);
+                i++;
+            }
+        }
 
     }
 }

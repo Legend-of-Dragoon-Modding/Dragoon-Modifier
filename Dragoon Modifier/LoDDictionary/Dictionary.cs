@@ -104,6 +104,8 @@ namespace Dragoon_Modifier.LoDDictionary {
                 {']', "54 00" }
             };
 
+        static Item[] _items = new Item[256];
+
         public static readonly Dictionary<byte, string> Num2Element = new Dictionary<byte, string>() {
                 {0, "None" },
                 {1, "Water" },
@@ -149,8 +151,22 @@ namespace Dragoon_Modifier.LoDDictionary {
                 {"po", 128 },
                 {"all", 255 }
             };
+        public static readonly Dictionary<string, byte> DamageBase2Num = new Dictionary<string, byte>() {
+            {"", 0x0 },
+            {"none", 0x0 },
+            {"0", 0x0},
+            {"100", 0x0 },
+            {"800", 0x1 },
+            {"600", 0x2 },
+            {"500", 0x4 },
+            {"400", 0x8 },
+            {"300", 0x10 },
+            {"200", 0x20 },
+            {"150", 0x40 },
+            {"50", 0x80 }
+        };
 
-        public static Item[] Items { get; private set; }
+        public static Item[] Items { get { return _items; } private set { _items = value; } }
         public static string EncodedNames { get; private set; }
         public static string EncodedDescriptions { get; private set; }
         public static string EncodedBattleNames { get; private set; }
@@ -194,29 +210,29 @@ namespace Dragoon_Modifier.LoDDictionary {
 
         private static void GetUsableItems(string cwd, string mod) {
             byte index = 192;
-            using (var itemData = new StreamReader(cwd + "Mods/" + mod + "/Equipment.tsv")) {
+            using (var itemData = new StreamReader(cwd + "Mods/" + mod + "/Items.tsv")) {
                 itemData.ReadLine(); // Skip the first line
                 while (!itemData.EndOfStream && index != 0) {
                     var line = itemData.ReadLine();
                     var values = line.Split('\t').ToArray();
-                    Items[index] = new Equipment(index, values);
+                    Items[index] = new UsableItem(index, values);
                     index++;
                 }
             }
         }
 
         private static string CreateItemNameString() {
-            long offset = 0;
-            long start = Constants.GetAddress("ITEM_NAME");
-            Item[] sortedArr = Items.OrderByDescending(o => o.Name.Length).ToArray();
+            int offset = 0;
+            int start = Emulator.GetAddress("ITEM_NAME");
+            LoDDictionary.Item[] sortedArr = Items.OrderByDescending(o => o.Name.Length).ToArray();
             List<string> stringList = new List<string>();
-            foreach (Item item in sortedArr) {
+            foreach (LoDDictionary.Item item in sortedArr) {
                 if (stringList.Any(l => l.Contains(item.EncodedName))) { // Item name is already a substring of a different 
                     int index = Array.IndexOf(sortedArr, Array.Find(sortedArr, x => x.EncodedName.Contains(item.EncodedName))); // Get index of matching string
-                    item.NamePointer = sortedArr[index].NamePointer + (sortedArr[index].Name.Length - item.Name.Length) * 2; // Account for different string length
+                    item.NamePointer = (uint) (sortedArr[index].NamePointer + (sortedArr[index].Name.Length - item.Name.Length) * 2); // Account for different string length
                 } else {
                     stringList.Add(item.EncodedName);
-                    item.NamePointer = start + offset;
+                    item.NamePointer = (uint) (start + offset);
                     offset += (item.EncodedName.Replace(" ", "").Length / 2);
                 }
             }
@@ -232,17 +248,17 @@ namespace Dragoon_Modifier.LoDDictionary {
         }
 
         private static string CreateItemDescriptionString() {
-            long offset = 0;
-            long start = Constants.GetAddress("ITEM_DESC");
+            int offset = 0;
+            int start = Emulator.GetAddress("ITEM_DESC");
             Item[] sortedArr = Items.OrderByDescending(o => o.Description.Length).ToArray();
             List<string> stringList = new List<string>();
             foreach (Item item in sortedArr) {
                 if (stringList.Any(l => l.Contains(item.EncodedDescription))) {
                     int index = Array.IndexOf(sortedArr, Array.Find(sortedArr, x => x.EncodedDescription.Contains(item.EncodedDescription)));
-                    item.DescriptionPointer = sortedArr[index].DescriptionPointer + (sortedArr[index].Description.Length - item.Description.Length) * 2;
+                    item.DescriptionPointer = (uint) (sortedArr[index].DescriptionPointer + (sortedArr[index].Description.Length - item.Description.Length) * 2);
                 } else {
                     stringList.Add(item.EncodedDescription);
-                    item.DescriptionPointer = start + offset;
+                    item.DescriptionPointer = (uint) (start + offset);
                     offset += (item.EncodedDescription.Replace(" ", "").Length / 2);
                 }
             }
@@ -258,17 +274,17 @@ namespace Dragoon_Modifier.LoDDictionary {
         }
 
         private static string CreateItemBattleNameString() {
-            long offset = 0;
-            long start = Constants.GetAddress("ITEM_BTL_NAME");
-            Item[] sortedArr = (Item[]) Items.Skip(193).Take(63).OrderBy(o => o.Description.Length).ToArray();
+            int offset = 0;
+            int start = Constants.GetAddress("ITEM_BTL_NAME");
+            Item[] sortedArr = Items.Skip(193).Take(63).OrderBy(o => o.Description.Length).ToArray();
             List<string> stringList = new List<string>();
             foreach (UsableItem item in sortedArr) {
                 if (stringList.Any(l => l.Contains(item.EncodedName))) {
                     int index = Array.IndexOf(sortedArr, Array.Find(sortedArr, x => x.EncodedName.Contains(item.EncodedName)));
-                    item.BattleNamePointer = Convert.ToUInt32(sortedArr[index].GetType().GetProperty("BattleNamePointer").GetValue(sortedArr[index])) + (sortedArr[index].Name.Length - item.Name.Length) * 2;
+                    item.BattleNamePointer = (int) (Convert.ToInt32(sortedArr[index].GetType().GetProperty("BattleNamePointer").GetValue(sortedArr[index])) + (sortedArr[index].Name.Length - item.Name.Length) * 2);
                 } else {
                     stringList.Add(item.EncodedName);
-                    item.BattleNamePointer = start + offset;
+                    item.BattleNamePointer = (int) (start + offset);
                     offset += (item.EncodedName.Replace(" ", "").Length / 2);
                 }
             }
@@ -291,10 +307,10 @@ namespace Dragoon_Modifier.LoDDictionary {
             foreach (UsableItem item in sortedArr) {
                 if (stringList.Any(l => l.Contains(item.EncodedBattleDescription))) {
                     int index = Array.IndexOf(sortedArr, Array.Find(sortedArr, x => x.GetType().GetProperty("EncodedBattleDescription").GetValue(x).ToString().Contains(item.EncodedBattleDescription)));
-                    item.BattleDescriptionPointer = Convert.ToUInt32(sortedArr[index].GetType().GetProperty("BattleDescriptionPointer").GetValue(sortedArr[index])) + (sortedArr[index].GetType().GetProperty("BattleDescription").GetValue(sortedArr[index]).ToString().Length - item.BattleDescription.Length) * 2;
+                    item.BattleDescriptionPointer = (int) (Convert.ToInt32(sortedArr[index].GetType().GetProperty("BattleDescriptionPointer").GetValue(sortedArr[index])) + (sortedArr[index].GetType().GetProperty("BattleDescription").GetValue(sortedArr[index]).ToString().Length - item.BattleDescription.Length) * 2);
                 } else {
                     stringList.Add(item.EncodedBattleDescription);
-                    item.BattleDescriptionPointer = start + offset;
+                    item.BattleDescriptionPointer = (int) (start + offset);
                     offset += (item.EncodedBattleDescription.Replace(" ", "").Length / 2);
                 }
             }

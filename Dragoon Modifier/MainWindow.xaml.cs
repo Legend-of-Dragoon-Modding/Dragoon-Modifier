@@ -383,7 +383,7 @@ namespace Dragoon_Modifier {
                 LoadKey();
                 Globals.DICTIONARY = new LoDDict();
                 Globals.LoDDictionary = new LoDDict2.LoDDict2();
-                //LoDDictionary.Dictionary.Init("US_Base");
+                LoDDictionary.Dictionary.Init(Globals.MOD);
 
                 ModVersion.Check();
                 
@@ -6608,6 +6608,7 @@ namespace Dragoon_Modifier {
                     Globals.MOD = (string) mod.SelectedValue;
                     Globals.DICTIONARY = new LoDDict();
                     Globals.LoDDictionary = new LoDDict2.LoDDict2();
+                    LoDDictionary.Dictionary.Init(Globals.MOD);
                     Constants.WriteOutput("Changing Mod");
                 }
 
@@ -6922,6 +6923,7 @@ namespace Dragoon_Modifier {
 
             Globals.DICTIONARY = new LoDDict();
             Globals.LoDDictionary = new LoDDict2.LoDDict2();
+            LoDDictionary.Dictionary.Init(Globals.MOD);
             SHOP_CHANGED = false;
             if (Emulator.ReadShort("BATTLE_VALUE") < 9999) {
                 GameController.StatsChanged = true;

@@ -29,7 +29,7 @@ namespace Dragoon_Modifier.MemoryController {
         UShortCollection _itemSellPrice;
         int _shopID;
         EquipmentTableEntry[] _equipTable = new EquipmentTableEntry[192];
-        ItemTableEntry[] _itemTable = new ItemTableEntry[64]; // Number of items should be verified
+        ItemTableEntry[] _usableItemTable = new ItemTableEntry[64]; // Number of items should be verified
         CharacterStatTable[] _charStatTable = new CharacterStatTable[7];
         DragoonStatTable[] _dragoonStatTable = new DragoonStatTable[9];
         AdditionTable[] _addTable = new AdditionTable[41];
@@ -61,6 +61,7 @@ namespace Dragoon_Modifier.MemoryController {
         public UShortCollection ItemSellPrice { get { return _itemSellPrice; } }
         public byte ShopID { get { return Emulator.ReadByte(_shopID); } set { Emulator.WriteByte(_shopID, value); } }
         public EquipmentTableEntry[] EquipmentTable { get { return _equipTable; } }
+        public ItemTableEntry[] UsableItemTable { get { return _usableItemTable; } }
         public CharacterStatTable[] CharacterStatTable { get { return _charStatTable; } }
         public AdditionTable[] MenuAdditionTable { get { return _addTable; } }
         public uint BattlePointBase { get { return Emulator.ReadUInt24(_basePoint - 0x18); } }
@@ -102,13 +103,13 @@ namespace Dragoon_Modifier.MemoryController {
             var itemSellPriceAddr = Emulator.GetAddress("SHOP_PRICE");
             _itemSellPrice = new UShortCollection(itemSellPriceAddr, 2, 256);
             _shopID = Emulator.GetAddress("SHOP_ID");
-            var equipTableAddr = Emulator.GetAddress("ITEM_TABLE") - 1; // Fixing current incorrect start
+            var equipTableAddr = Emulator.GetAddress("ITEM_TABLE");
             for (int i = 0; i < _equipTable.Length; i++) {
                 _equipTable[i] = new EquipmentTableEntry(equipTableAddr, i);
             }
             var itemTableAddr = Emulator.GetAddress("THROWN_ITEM_TABLE");
-            for (int i = 0; i < _itemTable.Length; i++) {
-                _itemTable[i] = new ItemTableEntry(itemTableAddr, i);
+            for (int i = 0; i < _usableItemTable.Length; i++) {
+                _usableItemTable[i] = new ItemTableEntry(itemTableAddr, i);
             }
             var charStatTableAddr = Emulator.GetAddress("CHAR_STAT_TABLE");
             for (int i = 0; i < _charStatTable.Length; i++) {

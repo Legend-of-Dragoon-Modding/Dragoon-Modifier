@@ -73,10 +73,10 @@ namespace Dragoon_Modifier.LoDDictionary {
         public byte Id { get; protected set; }
         public string Name { get { return _name; } protected set { _name = value; ; } }
         public string EncodedName { get { return _encodedName; } protected set { _encodedName = value; } }
-        public long NamePointer { get; set; }
+        public uint NamePointer { get; set; }
         public string Description { get { return _description; } protected set { _description = value; } }
         public string EncodedDescription { get { return _encodedDescription; } protected set { _encodedDescription = value; } }
-        public long DescriptionPointer { get; set; }
+        public uint DescriptionPointer { get; set; }
         public byte Icon { get { return _icon; } set { _icon = value; } }
         public short SellPrice { get { return _sellPrice; } protected set { _sellPrice = value; } }
     }
