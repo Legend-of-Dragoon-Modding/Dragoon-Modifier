@@ -385,7 +385,6 @@ namespace Dragoon_Modifier {
         }
 
         public static void WriteAoB(long address, string values) {
-            Constants.WriteDebug(values);
             string[] strArr = values.Split(' ');
             byte[] arr = new byte[strArr.Length];
             for (int i = 0; i < strArr.Length; i++) {

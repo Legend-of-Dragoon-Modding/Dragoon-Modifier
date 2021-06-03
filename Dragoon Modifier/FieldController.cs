@@ -144,12 +144,17 @@ namespace Dragoon_Modifier {
 
         public static void ItemNameDescChange() {
             Constants.WriteOutput("Changing Item Names and Descriptions...");
-            int address = Emulator.GetAddress("ITEM_NAME");
-            int address2 = Emulator.GetAddress("ITEM_NAME_PTR");
-            //Emulator.WriteAoB(address, LoDDictionary.Dictionary.EncodedNames);
+            int address = Emulator.GetAddress("ITEM_NAME_PTR");
+            int address2 = Emulator.GetAddress("ITEM_DESC_PTR");
+
+            int address3 = Emulator.GetAddress("ITEM_NAME");
+            int address4 = Emulator.GetAddress("ITEM_DESC");
+            Emulator.WriteAoB(address3, LoDDictionary.Dictionary.EncodedNames);
+            Emulator.WriteAoB(address4, LoDDictionary.Dictionary.EncodedDescriptions);
             int i = 0;
             foreach (LoDDictionary.Item item in LoDDictionary.Dictionary.Items) {
-                Emulator.WriteUInt24(address2 + i * 0x4, item.NamePointer);
+                Emulator.WriteUInt24(address + i * 0x4, (uint) item.NamePointer);
+                Emulator.WriteUInt24(address2 + i * 0x4, (uint) item.DescriptionPointer);
                 i++;
             }
         }

@@ -34,8 +34,8 @@ namespace Dragoon_Modifier.LoDDictionary {
             {"hp", 0x80 }
         };
 
-        string _battleDescription = " ";
-        string _encodedBattleDescription = "00 00 FF A0";
+        string _battleDescription = "<END>";
+        string _encodedBattleDescription = "FF A0 FF A0";
         byte _target = 0xC0;
         byte _element = 0;
         byte _damage = 0;

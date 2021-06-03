@@ -62,10 +62,10 @@ namespace Dragoon_Modifier.LoDDictionary {
                 {"", 64 }
             };
 
-        string _name = " ";
-        string _encodedName = "00 00 FF A0";
-        string _description = " ";
-        string _encodedDescription = "00 00 FF A0";
+        string _name = "<END>";
+        string _encodedName = "FF A0 FF A0";
+        string _description = "<END>";
+        string _encodedDescription = "FF A0 FF A0";
         byte _icon = 64;
         short _sellPrice = 0;
 
@@ -73,10 +73,10 @@ namespace Dragoon_Modifier.LoDDictionary {
         public byte Id { get; protected set; }
         public string Name { get { return _name; } protected set { _name = value; ; } }
         public string EncodedName { get { return _encodedName; } protected set { _encodedName = value; } }
-        public uint NamePointer { get; set; }
+        public int NamePointer { get; set; }
         public string Description { get { return _description; } protected set { _description = value; } }
         public string EncodedDescription { get { return _encodedDescription; } protected set { _encodedDescription = value; } }
-        public uint DescriptionPointer { get; set; }
+        public int DescriptionPointer { get; set; }
         public byte Icon { get { return _icon; } set { _icon = value; } }
         public short SellPrice { get { return _sellPrice; } protected set { _sellPrice = value; } }
     }

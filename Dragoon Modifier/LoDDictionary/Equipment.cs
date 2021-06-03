@@ -116,8 +116,7 @@ namespace Dragoon_Modifier.LoDDictionary {
             Id = index;
             if (!(values[0] == "" || values[0] == " ")) {
                 Name = values[0];
-                EncodedName = Dictionary.EncodeText(values[0]);
-                Constants.WriteDebug(EncodedName);
+                EncodedName = Dictionary.EncodeText(Name) + " FF A0";
             }
 
             if (types.TryGetValue(values[1].ToLower(), out byte bkey)) {

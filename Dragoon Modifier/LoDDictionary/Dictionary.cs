@@ -229,10 +229,10 @@ namespace Dragoon_Modifier.LoDDictionary {
             foreach (LoDDictionary.Item item in sortedArr) {
                 if (stringList.Any(l => l.Contains(item.EncodedName))) { // Item name is already a substring of a different 
                     int index = Array.IndexOf(sortedArr, Array.Find(sortedArr, x => x.EncodedName.Contains(item.EncodedName))); // Get index of matching string
-                    item.NamePointer = (uint) (sortedArr[index].NamePointer + (sortedArr[index].Name.Length - item.Name.Length) * 2); // Account for different string length
+                    item.NamePointer = (sortedArr[index].NamePointer + (sortedArr[index].Name.Length - item.Name.Length) * 2); // Account for different string length
                 } else {
                     stringList.Add(item.EncodedName);
-                    item.NamePointer = (uint) (start + offset);
+                    item.NamePointer = (start + offset);
                     offset += (item.EncodedName.Replace(" ", "").Length / 2);
                 }
             }
@@ -255,10 +255,10 @@ namespace Dragoon_Modifier.LoDDictionary {
             foreach (Item item in sortedArr) {
                 if (stringList.Any(l => l.Contains(item.EncodedDescription))) {
                     int index = Array.IndexOf(sortedArr, Array.Find(sortedArr, x => x.EncodedDescription.Contains(item.EncodedDescription)));
-                    item.DescriptionPointer = (uint) (sortedArr[index].DescriptionPointer + (sortedArr[index].Description.Length - item.Description.Length) * 2);
+                    item.DescriptionPointer = (sortedArr[index].DescriptionPointer + (sortedArr[index].Description.Length - item.Description.Length) * 2);
                 } else {
                     stringList.Add(item.EncodedDescription);
-                    item.DescriptionPointer = (uint) (start + offset);
+                    item.DescriptionPointer = (start + offset);
                     offset += (item.EncodedDescription.Replace(" ", "").Length / 2);
                 }
             }
@@ -369,6 +369,7 @@ namespace Dragoon_Modifier.LoDDictionary {
                             Constants.WriteError($"Encoding table doesn't include {letter} symbol.");
                         }
                     }
+                    encoded.Add(String.Join(" ", temp));
                 }
             }
             return String.Join(" ", encoded);
