@@ -69,7 +69,7 @@ namespace Dragoon_Modifier.LoDDictionary {
 
         byte _whoEquips = 0;
         byte _type = 0;
-        byte _element = 0;
+        byte _weaponElement = 0;
         byte _onHitStatus = 0;
         byte _onHitStatusChance = 0;
         ushort _at = 0;
@@ -86,12 +86,12 @@ namespace Dragoon_Modifier.LoDDictionary {
         byte _statusResistance = 0;
         byte _specialBonus1 = 0;
         byte _specialBonus2 = 0;
-        short _specialBonusAmmount = 0;
+        byte _specialBonusAmmount = 0;
         byte _specialEffect = 0;
 
         public byte WhoEquips { get { return _whoEquips; } private set { _whoEquips = value; } }
         public byte Type { get { return _type; } private set { _type = value; } }
-        public byte Element { get { return _element; } private set { _element = value; } }
+        public byte WeaponElement { get { return _weaponElement; } private set { _weaponElement = value; } }
         public byte OnHitStatus { get { return _onHitStatus; } private set { _onHitStatus = value; } }
         public byte OnHitStatusChance { get { return _onHitStatusChance; } private set { _onHitStatusChance = value; } }
         public ushort AT { get { return _at; } private set { _at = value; } }
@@ -108,7 +108,7 @@ namespace Dragoon_Modifier.LoDDictionary {
         public byte StatusResistance { get { return _statusResistance; } private set { _statusResistance = value; } }
         public byte SpecialBonus1 { get { return _specialBonus1; } private set { _specialBonus1 = value; } }
         public byte SpecialBonus2 { get { return _specialBonus2; } private set { _specialBonus2 = value; } }
-        public short SpecialBonusAmmount { get { return _specialBonusAmmount; } private set { _specialBonusAmmount = value; } }
+        public byte SpecialBonusAmmount { get { return _specialBonusAmmount; } private set { _specialBonusAmmount = value; } }
         public byte SpecialEffect { get { return _specialEffect; } private set { _specialEffect = value; } }
 
         public Equipment(byte index, string[] values) {
@@ -144,9 +144,9 @@ namespace Dragoon_Modifier.LoDDictionary {
             }
 
             if (Dictionary.Element2Num.TryGetValue(values[4].ToLower(), out bkey)) {
-                _element = bkey;
+                _weaponElement = bkey;
             } else {
-                error.Add($"{values[4]} not found as element.");
+                error.Add($"{values[4]} not found as weapon element.");
             }
 
             if (Dictionary.Status2Num.TryGetValue(values[5].ToLower(), out bkey)) {
@@ -275,8 +275,12 @@ namespace Dragoon_Modifier.LoDDictionary {
                 error.Add($"{String.Join(", ", errorTemp)} not found as special bonus 2.");
             }
 
-            if (Int16.TryParse(values[21], NumberStyles.AllowLeadingSign, null as IFormatProvider, out short skey)) {
-                _specialBonusAmmount = skey;
+            if (Int16.TryParse(values[21], NumberStyles.AllowLeadingSign, null as IFormatProvider, out var skey)) {
+                if (skey > 255 || skey < -128) {
+                    error.Add($"{values[15]} not found as special ammount.");
+                } else {
+                    _specialBonusAmmount = BitConverter.GetBytes(skey)[0];
+                }
             } else if (values[21] != "") {
                 error.Add($"{values[15]} not found as special ammount.");
             }

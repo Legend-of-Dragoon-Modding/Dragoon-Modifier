@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace Dragoon_Modifier {
     public class Globals {
         public static LoDDict2.LoDDict2 LoDDictionary;
+        public static byte NoDart = 255;
 
         public static ushort HOTKEY = 0;
         public static long CURRENT_TIME = 0;

@@ -381,8 +381,6 @@ namespace Dragoon_Modifier {
                 Constants.Init();
                 InitUI();
                 LoadKey();
-                Globals.DICTIONARY = new LoDDict();
-                Globals.LoDDictionary = new LoDDict2.LoDDict2();
                 LoDDictionary.Dictionary.Init(Globals.MOD);
 
                 ModVersion.Check();
@@ -939,8 +937,6 @@ namespace Dragoon_Modifier {
                 ChangeTitle(preset);
                 Constants.WriteOutput("Preset '" + preset + "' loaded.");
                 Constants.WriteOutput("Preset folder: " + Globals.MOD);
-                Globals.DICTIONARY = new LoDDict();
-                Globals.LoDDictionary = new LoDDict2.LoDDict2();
             } catch (Exception e) {
                 Constants.WriteOutput("Failed to load preset. Script not found: '" + current + "'.");
                 DisableScripts();
@@ -6606,8 +6602,6 @@ namespace Dragoon_Modifier {
 
                 if (Globals.MOD != (string) mod.SelectedValue) {
                     Globals.MOD = (string) mod.SelectedValue;
-                    Globals.DICTIONARY = new LoDDict();
-                    Globals.LoDDictionary = new LoDDict2.LoDDict2();
                     LoDDictionary.Dictionary.Init(Globals.MOD);
                     Constants.WriteOutput("Changing Mod");
                 }
@@ -6921,8 +6915,6 @@ namespace Dragoon_Modifier {
                 btn.Background = enrageBoss ? (new SolidColorBrush(Color.FromArgb(255, 168, 211, 255))) : (new SolidColorBrush(Color.FromArgb(0, 0, 0, 0)));
             }
 
-            Globals.DICTIONARY = new LoDDict();
-            Globals.LoDDictionary = new LoDDict2.LoDDict2();
             LoDDictionary.Dictionary.Init(Globals.MOD);
             SHOP_CHANGED = false;
             if (Emulator.ReadShort("BATTLE_VALUE") < 9999) {

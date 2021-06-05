@@ -562,7 +562,7 @@ namespace Dragoon_Modifier {
             throw new EmulatorNotFoundException(emulatorName);
         }
 
-        static Dictionary<string, int> Load_regionalAddresses(Region region) {
+        static Dictionary<string, int> LoadRegionalAddresses(Region region) {
             var addresses = new Dictionary<string, int>();
             using (StreamReader reader = File.OpenText("Scripts\\Addresses.csv")) {
                 string line;
@@ -611,7 +611,7 @@ namespace Dragoon_Modifier {
                 throw new EmulatorAttachException(emulatorName);
             }
 
-            _regionalAddresses = Load_regionalAddresses(Region);
+            _regionalAddresses = LoadRegionalAddresses(Region);
 
             MemoryController = new MemoryController.MemoryController();
         }

@@ -26,6 +26,10 @@ namespace Dragoon_Modifier.MemoryController.Battle {
         }
 
         public static void Initialize(byte character) {
+            if (Emulator.MemoryController.PartySlot[1] == character || Emulator.MemoryController.PartySlot[2] == character) {
+                Constants.WriteDebug($"No Dart character already present.");
+                return;
+            }
             Emulator.BattleController.CharacterTable[0].Status = Emulator.MemoryController.CharacterTable[character].Status;
             if (Emulator.BattleController.EncounterID == 413) { // Jiango has to have it's initial move. Otherwise he never gets a turn.
                 Emulator.BattleController.MonsterTable[0].Action = 12; // Play the "This is Jiango" part

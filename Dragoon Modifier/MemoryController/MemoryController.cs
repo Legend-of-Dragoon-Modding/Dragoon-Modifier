@@ -29,7 +29,7 @@ namespace Dragoon_Modifier.MemoryController {
         UShortCollection _itemSellPrice;
         int _shopID;
         EquipmentTableEntry[] _equipTable = new EquipmentTableEntry[192];
-        ItemTableEntry[] _usableItemTable = new ItemTableEntry[64]; // Number of items should be verified
+        UsableItemTableEntry[] _usableItemTable = new UsableItemTableEntry[64]; // Number of items should be verified
         CharacterStatTable[] _charStatTable = new CharacterStatTable[7];
         DragoonStatTable[] _dragoonStatTable = new DragoonStatTable[9];
         AdditionTable[] _addTable = new AdditionTable[41];
@@ -61,7 +61,7 @@ namespace Dragoon_Modifier.MemoryController {
         public UShortCollection ItemSellPrice { get { return _itemSellPrice; } }
         public byte ShopID { get { return Emulator.ReadByte(_shopID); } set { Emulator.WriteByte(_shopID, value); } }
         public EquipmentTableEntry[] EquipmentTable { get { return _equipTable; } }
-        public ItemTableEntry[] UsableItemTable { get { return _usableItemTable; } }
+        public UsableItemTableEntry[] UsableItemTable { get { return _usableItemTable; } }
         public CharacterStatTable[] CharacterStatTable { get { return _charStatTable; } }
         public AdditionTable[] MenuAdditionTable { get { return _addTable; } }
         public uint BattlePointBase { get { return Emulator.ReadUInt24(_basePoint - 0x18); } }
@@ -103,13 +103,17 @@ namespace Dragoon_Modifier.MemoryController {
             var itemSellPriceAddr = Emulator.GetAddress("SHOP_PRICE");
             _itemSellPrice = new UShortCollection(itemSellPriceAddr, 2, 256);
             _shopID = Emulator.GetAddress("SHOP_ID");
-            var equipTableAddr = Emulator.GetAddress("ITEM_TABLE");
+
+            int itemNamePtr = Emulator.GetAddress("ITEM_NAME_PTR");
+            int itemDescPtr = Emulator.GetAddress("ITEM_DESC_PTR");
+
+            var equipTableAddr = Emulator.GetAddress("ITEM_TABLE") - 1; // Fix for wrong address 
             for (int i = 0; i < _equipTable.Length; i++) {
-                _equipTable[i] = new EquipmentTableEntry(equipTableAddr, i);
+                _equipTable[i] = new EquipmentTableEntry(equipTableAddr, itemNamePtr, itemDescPtr, i);
             }
             var itemTableAddr = Emulator.GetAddress("THROWN_ITEM_TABLE");
             for (int i = 0; i < _usableItemTable.Length; i++) {
-                _usableItemTable[i] = new ItemTableEntry(itemTableAddr, i);
+                _usableItemTable[i] = new UsableItemTableEntry(itemTableAddr, itemNamePtr, itemDescPtr, i);
             }
             var charStatTableAddr = Emulator.GetAddress("CHAR_STAT_TABLE");
             for (int i = 0; i < _charStatTable.Length; i++) {
@@ -128,6 +132,8 @@ namespace Dragoon_Modifier.MemoryController {
             _encounterID = Emulator.GetAddress("ENCOUNTER_ID");
             _monsterSize = Emulator.GetAddress("MONSTER_SIZE");
             _uniqueMonsterSize = Emulator.GetAddress("UNIQUE_MONSTER_SIZE");
+            var encounterMapAddr = 0xF64AC; // TODO
+            var encounterTableAddr = 0xF74C4; // TODO
         }
 
         private GameState GetGameState() {

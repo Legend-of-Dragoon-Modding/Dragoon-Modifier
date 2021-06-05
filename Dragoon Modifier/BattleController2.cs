@@ -60,7 +60,9 @@ namespace Dragoon_Modifier {
 
             Constants.WriteDebug($"Monster Size:        {Emulator.BattleController.MonsterTable.Length}");
 
-
+            if (Globals.NoDart != 0 && Globals.NoDart != 255) {
+                MemoryController.Battle.NoDart.Initialize(Globals.NoDart);
+            }
 
             GameController.StatsChanged = true;
         }
