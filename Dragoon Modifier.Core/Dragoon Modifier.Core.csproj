@@ -45,8 +45,10 @@
     <Compile Include="Enums.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="KMP.cs" />
+    <Compile Include="Memory\AdditionTable.cs" />
     <Compile Include="Memory\Battle\BattleEntity.cs" />
     <Compile Include="Memory\Battle\Character.cs" />
+    <Compile Include="Memory\Battle\Controller.cs" />
     <Compile Include="Memory\Battle\Monster.cs" />
     <Compile Include="Memory\CharacterTable.cs" />
     <Compile Include="Memory\Collections\Byte.cs" />

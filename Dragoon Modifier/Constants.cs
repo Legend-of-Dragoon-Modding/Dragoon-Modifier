@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using System.Linq;
+using Dragoon_Modifier.Core;
 
 namespace Dragoon_Modifier {
     public class Constants {

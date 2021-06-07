@@ -52,11 +52,12 @@ namespace Dragoon_Modifier.Core {
         };
 
         static IntPtr _processHandle;
-        static Dictionary<string, int> _regionalAddresses;
+        static Dictionary<string, int> _regionalAddresses = new Dictionary<string, int>();
 
         public static long EmulatorOffset { get; private set; }
         public static Region Region { get; private set; }
         public static Memory.Controller Memory { get; private set; }
+        public static Memory.Battle.Controller Battle { get; private set; }
 
 
 
@@ -446,7 +447,8 @@ namespace Dragoon_Modifier.Core {
             if (_regionalAddresses.TryGetValue(address, out var key)) {
                 return key;
             }
-            throw new IncorrectAddressException(address);
+            return 0;
+            // throw new IncorrectAddressException(address);
         }
 
         private static bool Verify(long offset) {
@@ -591,6 +593,9 @@ namespace Dragoon_Modifier.Core {
 
             Memory = new Memory.Controller();
 
+        }
+        public static void LoadBattle() {
+            Battle = new Memory.Battle.Controller();
         }
     }
 }

@@ -7,6 +7,7 @@
         public byte Special2 { get { return Emulator.ReadByte(_baseAddress + 0x4); } set { Emulator.WriteByte(_baseAddress + 0x4, value); } }
         public byte Unknown1 { get { return Emulator.ReadByte(_baseAddress + 0x5); } set { Emulator.WriteByte(_baseAddress + 0x5, value); } }
         public byte SpecialAmmount { get { return Emulator.ReadByte(_baseAddress + 0x6); } set { Emulator.WriteByte(_baseAddress + 0x6, value); } }
+        public override byte Icon { get { return Emulator.ReadByte(_baseAddress + 0x7); } set { Emulator.WriteByte(_baseAddress + 0x7, value); } }
         public byte Status { get { return Emulator.ReadByte(_baseAddress + 0x8); } set { Emulator.WriteByte(_baseAddress + 0x8, value); } }
         public byte Percentage { get { return Emulator.ReadByte(_baseAddress + 0x9); } set { Emulator.WriteByte(_baseAddress + 0x9, value); } }
         public byte Unknown2 { get { return Emulator.ReadByte(_baseAddress + 0xA); } set { Emulator.WriteByte(_baseAddress + 0xA, value); } }

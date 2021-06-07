@@ -21,6 +21,7 @@ using System.Windows.Threading;
 using System.Xml.Serialization;
 using XamlRadialProgressBar;
 using Xceed.Wpf.Toolkit;
+using Dragoon_Modifier.Core;
 
 namespace Dragoon_Modifier {
     /// <summary>
@@ -130,7 +131,7 @@ namespace Dragoon_Modifier {
         }
 
         public void WriteToText() {
-            if (Emulator.MemoryController.GameState == GameState.Battle && GameController.StatsChanged) {
+            if (Emulator.Memory.GameState == GameState.Battle && GameController.StatsChanged) {
                 try {
                     int partySize = 0;
                     for (int i = 0; i < 3; i++) {
@@ -185,12 +186,12 @@ namespace Dragoon_Modifier {
                                 FileStream file = new FileStream(WRITE_LOCATION + "/Character/" + location + ".txt", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
                                 StreamWriter writer = new StreamWriter(file);
                                 if (field.Equals("Name")) {
-                                    if (Emulator.BattleController.CharacterTable[i].Action == 8 || Emulator.BattleController.CharacterTable[i].Action == 10)
+                                    if (Emulator.Battle.CharacterTable[i].Action == 8 || Emulator.Battle.CharacterTable[i].Action == 10)
                                         writer.WriteLine(Globals.CHARACTER_NAME[i] + "*");
                                     else
                                         writer.WriteLine(Globals.CHARACTER_NAME[i]);
                                 } else if (field.Equals("Max_SP")) {
-                                    writer.WriteLine((Emulator.BattleController.CharacterTable[i].DLV * 100).ToString());
+                                    writer.WriteLine((Emulator.Battle.CharacterTable[i].DLV * 100).ToString());
                                 } else if (field.Equals("Burn Stack")) {
                                     writer.WriteLine(Globals.GetCustomValue("Burn Stack"));
                                 } else if (field.Equals("Damage Tracker1")) {
@@ -208,7 +209,7 @@ namespace Dragoon_Modifier {
                                 } else if (field.Equals("QTB")) {
                                     writer.WriteLine(Globals.GetCustomValue("QTB"));
                                 } else {
-                                    writer.WriteLine(Emulator.BattleController.CharacterTable[i].GetType().GetProperty(field).GetValue(Emulator.BattleController.CharacterTable[i]));
+                                    writer.WriteLine(Emulator.Battle.CharacterTable[i].GetType().GetProperty(field).GetValue(Emulator.Battle.CharacterTable[i]));
                                 }
                                 writer.Dispose();
                                 writer.Close();
@@ -264,9 +265,9 @@ namespace Dragoon_Modifier {
                             if (field.Equals("Name")) {
                                 writer.WriteLine(Globals.MONSTER_NAME[i]);
                             } else if (field.Equals("Drop_Chance")) {
-                                writer.WriteLine(Emulator.BattleController.MonsterTable[i].GetType().GetProperty(field).GetValue(Emulator.BattleController.MonsterTable[i]) + "%");
+                                writer.WriteLine(Emulator.Battle.MonsterTable[i].GetType().GetProperty(field).GetValue(Emulator.Battle.MonsterTable[i]) + "%");
                             } else if (field.Equals("Drop_Item")) {
-                                writer.WriteLine(Globals.DICTIONARY.Num2Item[Emulator.BattleController.MonsterTable[i].GetType().GetProperty(field).GetValue(Emulator.BattleController.MonsterTable[i])]);
+                                writer.WriteLine(Globals.DICTIONARY.Num2Item[Emulator.Battle.MonsterTable[i].GetType().GetProperty(field).GetValue(Emulator.Battle.MonsterTable[i])]);
                             } else if (field.Equals("EATBM1")) {
                                 writer.WriteLine(Globals.GetCustomValue("EATBM1"));
                             } else if (field.Equals("EATBM2")) {
@@ -278,7 +279,7 @@ namespace Dragoon_Modifier {
                             } else if (field.Equals("EATBM5")) {
                                 writer.WriteLine(Globals.GetCustomValue("EATBM5"));
                             } else {
-                                writer.WriteLine(Emulator.BattleController.MonsterTable[i].GetType().GetProperty(field).GetValue(Emulator.BattleController.MonsterTable[i]));
+                                writer.WriteLine(Emulator.Battle.MonsterTable[i].GetType().GetProperty(field).GetValue(Emulator.Battle.MonsterTable[i]));
                             }
                             writer.Dispose();
                             writer.Close();
@@ -643,7 +644,7 @@ namespace Dragoon_Modifier {
 
             public void UpdateLabel(Object source, ElapsedEventArgs e) {
                 this.Dispatcher.BeginInvoke(new Action(() => {
-                    if (Emulator.MemoryController.GameState == GameState.Battle && GameController.StatsChanged) {
+                    if (Emulator.Memory.GameState == GameState.Battle && GameController.StatsChanged) {
                         if (character) {
                             if (Globals.PARTY_SLOT[slot - 1] > 8) {
                                 this.Content = "";
@@ -657,7 +658,7 @@ namespace Dragoon_Modifier {
                         }
                         if (field.Equals("Max_SP")) {
                             if (character)
-                                this.Content = (Emulator.BattleController.CharacterTable[slot - 1].DLV * 100).ToString();
+                                this.Content = (Emulator.Battle.CharacterTable[slot - 1].DLV * 100).ToString();
                         } else if (field.Equals("Burn Stack")) {
                             this.Content = Globals.GetCustomValue("Burn Stack");
                         } else if (field.Equals("Damage Tracker1")) {
@@ -684,7 +685,7 @@ namespace Dragoon_Modifier {
                             this.Content = Globals.GetCustomValue("EATBM5");
                         } else if (field.Equals("Name")) { 
                             if (character) {
-                                if (Emulator.BattleController.CharacterTable[slot - 1].Action == 8 || Emulator.BattleController.CharacterTable[slot - 1].Action == 10)
+                                if (Emulator.Battle.CharacterTable[slot - 1].Action == 8 || Emulator.Battle.CharacterTable[slot - 1].Action == 10)
                                     this.Content = Globals.CHARACTER_NAME[slot - 1] + "*";
                                 else
                                     this.Content = Globals.CHARACTER_NAME[slot - 1];
@@ -693,9 +694,9 @@ namespace Dragoon_Modifier {
                             }
                         } else {
                             if (character)
-                                this.Content = Emulator.BattleController.CharacterTable[slot - 1].GetType().GetProperty(field).GetValue(Emulator.BattleController.CharacterTable[slot - 1]).ToString();
+                                this.Content = Emulator.Battle.CharacterTable[slot - 1].GetType().GetProperty(field).GetValue(Emulator.Battle.CharacterTable[slot - 1]).ToString();
                             else
-                                this.Content = Emulator.BattleController.MonsterTable[slot - 1].GetType().GetProperty(field).GetValue(Emulator.BattleController.MonsterTable[slot - 1].ToString());
+                                this.Content = Emulator.Battle.MonsterTable[slot - 1].GetType().GetProperty(field).GetValue(Emulator.Battle.MonsterTable[slot - 1].ToString());
                         }
                     } else {
                         this.Content = "";
@@ -969,7 +970,7 @@ namespace Dragoon_Modifier {
 
             public void UpdateBar(Object source, ElapsedEventArgs e) {
                 this.Dispatcher.BeginInvoke(new Action(() => {
-                    if (Emulator.MemoryController.GameState == GameState.Battle && GameController.StatsChanged) {
+                    if (Emulator.Memory.GameState == GameState.Battle && GameController.StatsChanged) {
                         if (character) {
                             if (Globals.PARTY_SLOT[slot - 1] > 8) {
                                 this.Value = this.Minimum;
@@ -1011,10 +1012,10 @@ namespace Dragoon_Modifier {
                                 } else if (field.Equals("EATBM5")) {
                                     this.Value = Globals.GetCustomValue("EATBM5");
                                 } else {
-                                    this.Value = (double) Emulator.BattleController.CharacterTable[slot - 1].GetType().GetProperty(field).GetValue(Emulator.BattleController.CharacterTable[slot - 1]);
+                                    this.Value = (double) Emulator.Battle.CharacterTable[slot - 1].GetType().GetProperty(field).GetValue(Emulator.Battle.CharacterTable[slot - 1]);
                                 }
                             } else {
-                                this.Value = (double) Emulator.BattleController.MonsterTable[slot - 1].GetType().GetProperty(field).GetValue(Emulator.BattleController.MonsterTable[slot - 1]);
+                                this.Value = (double) Emulator.Battle.MonsterTable[slot - 1].GetType().GetProperty(field).GetValue(Emulator.Battle.MonsterTable[slot - 1]);
                             }
                         }
 
@@ -1022,9 +1023,9 @@ namespace Dragoon_Modifier {
                             this.Minimum = minX;
                         } else {
                             if (character)
-                                this.Minimum = (double) Emulator.BattleController.CharacterTable[slot - 1].GetType().GetProperty(min).GetValue(Emulator.BattleController.CharacterTable[slot - 1]);
+                                this.Minimum = (double) Emulator.Battle.CharacterTable[slot - 1].GetType().GetProperty(min).GetValue(Emulator.Battle.CharacterTable[slot - 1]);
                             else
-                                this.Minimum = (double) Emulator.BattleController.MonsterTable[slot - 1].GetType().GetProperty(min).GetValue(Emulator.BattleController.MonsterTable[slot - 1]);
+                                this.Minimum = (double) Emulator.Battle.MonsterTable[slot - 1].GetType().GetProperty(min).GetValue(Emulator.Battle.MonsterTable[slot - 1]);
                         }
 
                         if (Double.TryParse(max, out maxX)) {
@@ -1032,14 +1033,14 @@ namespace Dragoon_Modifier {
                         } else {
                             if (character) {
                                 if (max.Equals("Max_SP")) {
-                                    this.Maximum = Emulator.BattleController.CharacterTable[slot - 1].DLV * 100;
+                                    this.Maximum = Emulator.Battle.CharacterTable[slot - 1].DLV * 100;
                                 } else if (max.Equals("Burn Stack")) {
                                     this.Maximum = 6;
                                 } else {
-                                    this.Maximum = (double) Emulator.BattleController.CharacterTable[slot - 1].GetType().GetProperty(max).GetValue(Emulator.BattleController.CharacterTable[slot - 1]);
+                                    this.Maximum = (double) Emulator.Battle.CharacterTable[slot - 1].GetType().GetProperty(max).GetValue(Emulator.Battle.CharacterTable[slot - 1]);
                                 }
                             } else {
-                                this.Maximum = (double) Emulator.BattleController.MonsterTable[slot - 1].GetType().GetProperty(max).GetValue(Emulator.BattleController.MonsterTable[slot - 1]);
+                                this.Maximum = (double) Emulator.Battle.MonsterTable[slot - 1].GetType().GetProperty(max).GetValue(Emulator.Battle.MonsterTable[slot - 1]);
                             }
                         }
                     } else {
@@ -1369,7 +1370,7 @@ namespace Dragoon_Modifier {
 
             public void UpdateBar(Object source, ElapsedEventArgs e) {
                 this.Dispatcher.BeginInvoke(new Action(() => {
-                    if (Emulator.MemoryController.GameState == GameState.Battle && GameController.StatsChanged) {
+                    if (Emulator.Memory.GameState == GameState.Battle && GameController.StatsChanged) {
                         if (character) {
                             if (Globals.PARTY_SLOT[slot - 1] > 8) {
                                 this.Value = this.Minimum;
@@ -1386,29 +1387,29 @@ namespace Dragoon_Modifier {
                             this.Value = valueX;
                         } else {
                             if (character)
-                                this.Value = (double) Emulator.BattleController.CharacterTable[slot - 1].GetType().GetProperty(field).GetValue(Emulator.BattleController.CharacterTable[slot - 1]);
+                                this.Value = (double) Emulator.Battle.CharacterTable[slot - 1].GetType().GetProperty(field).GetValue(Emulator.Battle.CharacterTable[slot - 1]);
                             else
-                                this.Value = (double) Emulator.BattleController.MonsterTable[slot - 1].GetType().GetProperty(field).GetValue(Emulator.BattleController.MonsterTable[slot - 1]);
+                                this.Value = (double) Emulator.Battle.MonsterTable[slot - 1].GetType().GetProperty(field).GetValue(Emulator.Battle.MonsterTable[slot - 1]);
                         }
                         if (Double.TryParse(min, out minX)) {
                             this.Minimum = minX;
                         } else {
                             if (character)
-                                this.Minimum = (double) Emulator.BattleController.CharacterTable[slot - 1].GetType().GetProperty(min).GetValue(Emulator.BattleController.CharacterTable[slot - 1]);
+                                this.Minimum = (double) Emulator.Battle.CharacterTable[slot - 1].GetType().GetProperty(min).GetValue(Emulator.Battle.CharacterTable[slot - 1]);
                             else
-                                this.Minimum = (double) Emulator.BattleController.MonsterTable[slot - 1].GetType().GetProperty(min).GetValue(Emulator.BattleController.MonsterTable[slot - 1]);
+                                this.Minimum = (double) Emulator.Battle.MonsterTable[slot - 1].GetType().GetProperty(min).GetValue(Emulator.Battle.MonsterTable[slot - 1]);
                         }
                         if (Double.TryParse(max, out maxX)) {
                             this.Maximum = maxX;
                         } else {
                             if (max.Equals("Max_SP")) {
                                 if (character)
-                                    this.Maximum = (int) (Emulator.BattleController.CharacterTable[slot - 1].DLV) * 100;
+                                    this.Maximum = (int) (Emulator.Battle.CharacterTable[slot - 1].DLV) * 100;
                             } else {
                                 if (character)
-                                    this.Maximum = (double) Emulator.BattleController.CharacterTable[slot - 1].GetType().GetProperty(max).GetValue(Emulator.BattleController.CharacterTable[slot - 1]);
+                                    this.Maximum = (double) Emulator.Battle.CharacterTable[slot - 1].GetType().GetProperty(max).GetValue(Emulator.Battle.CharacterTable[slot - 1]);
                                 else
-                                    this.Maximum = (double) Emulator.BattleController.MonsterTable[slot - 1].GetType().GetProperty(max).GetValue(Emulator.BattleController.MonsterTable[slot - 1]);
+                                    this.Maximum = (double) Emulator.Battle.MonsterTable[slot - 1].GetType().GetProperty(max).GetValue(Emulator.Battle.MonsterTable[slot - 1]);
                             }
                         }
                     } else {

@@ -6,6 +6,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
+using Dragoon_Modifier.Core;
+
 namespace Dragoon_Modifier.LoDDictionary {
     public static class Dictionary {
         private static readonly Dictionary<string, string> _textCodes = new Dictionary<string, string>() {

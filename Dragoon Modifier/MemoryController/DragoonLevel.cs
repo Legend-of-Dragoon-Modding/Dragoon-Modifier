@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dragoon_Modifier.Core;
 
 namespace Dragoon_Modifier.MemoryController {
     public class DragoonLevel {

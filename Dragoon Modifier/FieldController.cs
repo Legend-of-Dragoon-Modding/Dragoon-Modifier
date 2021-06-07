@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dragoon_Modifier.Core;
 
 namespace Dragoon_Modifier {
     public static class FieldController {
@@ -113,8 +114,8 @@ namespace Dragoon_Modifier {
         }
 
         static void ShopTableChange() {
-            if (!shopListChanged && shopMaps.Contains(Emulator.MemoryController.MapID)) {
-                if (Emulator.MemoryController.Transition != 12) { // Map transition in progress
+            if (!shopListChanged && shopMaps.Contains(Emulator.Memory.MapID)) {
+                if (Emulator.Memory.Transition != 12) { // Map transition in progress
                     return;
                 }
                 // TODO run
@@ -140,11 +141,8 @@ namespace Dragoon_Modifier {
 
         static void ItemIconChange() {
             Constants.WriteOutput("Changing Item Icons...");
-            for (int i = 0; i < Emulator.MemoryController.EquipmentTable.Length; i++) {
-                Emulator.MemoryController.EquipmentTable[i].Icon = LoDDictionary.Dictionary.Items[i].Icon;
-            }
-            for (int i = 0; i < Emulator.MemoryController.UsableItemTable.Length; i++) {
-                Emulator.MemoryController.UsableItemTable[i].Icon = LoDDictionary.Dictionary.Items[i + 192].Icon;
+            for (int i = 0; i < Emulator.Memory.Item.Length; i++) {
+                Emulator.Memory.Item[i].Icon = LoDDictionary.Dictionary.Items[i].Icon;
             }
         }
 
@@ -157,59 +155,56 @@ namespace Dragoon_Modifier {
             Emulator.WriteAoB(address2, LoDDictionary.Dictionary.EncodedDescriptions);
  
 
-            for (int i = 0; i < Emulator.MemoryController.EquipmentTable.Length; i++) {
-                Emulator.MemoryController.EquipmentTable[i].NamePointer = (uint) LoDDictionary.Dictionary.Items[i].NamePointer;
-                Emulator.MemoryController.EquipmentTable[i].DescriptionPointer = (uint) LoDDictionary.Dictionary.Items[i].DescriptionPointer;
-            }
-
-            for (int i = 0; i < Emulator.MemoryController.UsableItemTable.Length; i++) {
-                Emulator.MemoryController.UsableItemTable[i].NamePointer = (uint) LoDDictionary.Dictionary.Items[i + 192].NamePointer;
-                Emulator.MemoryController.UsableItemTable[i].DescriptionPointer = (uint) LoDDictionary.Dictionary.Items[i+ 192].DescriptionPointer;
+            for (int i = 0; i < Emulator.Memory.Item.Length; i++) {
+                Emulator.Memory.Item[i].NamePointer = (uint) LoDDictionary.Dictionary.Items[i].NamePointer;
+                Emulator.Memory.Item[i].DescriptionPointer = (uint) LoDDictionary.Dictionary.Items[i].DescriptionPointer;
             }
         }
 
         static void ItemStatChange() {
             for (int i = 0; i < 192; i++) {
                 var equip = (LoDDictionary.Equipment) LoDDictionary.Dictionary.Items[i];
-                Emulator.MemoryController.EquipmentTable[i].WhoEquips = equip.WhoEquips;
-                Emulator.MemoryController.EquipmentTable[i].ItemType = equip.Type;
-                Emulator.MemoryController.EquipmentTable[i].WeaponElement = equip.WeaponElement;
-                Emulator.MemoryController.EquipmentTable[i].Status = equip.OnHitStatus;
-                Emulator.MemoryController.EquipmentTable[i].StatusChance = equip.OnHitStatusChance;
-                Emulator.MemoryController.EquipmentTable[i].AT = (byte) Math.Min(equip.AT, (ushort) 255);
-                Emulator.MemoryController.EquipmentTable[i].AT2 = (byte) Math.Max(Math.Min(equip.AT - 255, 255), 0);
-                Emulator.MemoryController.EquipmentTable[i].MAT = equip.MAT;
-                Emulator.MemoryController.EquipmentTable[i].DF = equip.DF;
-                Emulator.MemoryController.EquipmentTable[i].MDF = equip.MDF;
-                Emulator.MemoryController.EquipmentTable[i].SPD = equip.SPD;
-                Emulator.MemoryController.EquipmentTable[i].A_HIT = equip.A_HIT;
-                Emulator.MemoryController.EquipmentTable[i].M_HIT = equip.M_HIT;
-                Emulator.MemoryController.EquipmentTable[i].A_AV = equip.A_AV;
-                Emulator.MemoryController.EquipmentTable[i].M_AV = equip.M_AV;
-                Emulator.MemoryController.EquipmentTable[i].E_Half = equip.ElementalResistance;
-                Emulator.MemoryController.EquipmentTable[i].E_Immune = equip.ElementalImmunity;
-                Emulator.MemoryController.EquipmentTable[i].StatusResist = equip.StatusResistance;
-                Emulator.MemoryController.EquipmentTable[i].Special1 = equip.SpecialBonus1;
-                Emulator.MemoryController.EquipmentTable[i].Special2 = equip.SpecialBonus2;
-                Emulator.MemoryController.EquipmentTable[i].SpecialAmmount = equip.SpecialBonusAmmount;
-                Emulator.MemoryController.EquipmentTable[i].SpecialEffect = equip.SpecialEffect;
+                var mem = (Core.Memory.Equipment) Emulator.Memory.Item[i];
+                mem.WhoEquips = equip.WhoEquips;
+                mem.ItemType = equip.Type;
+                mem.WeaponElement = equip.WeaponElement;
+                mem.Status = equip.OnHitStatus;
+                mem.StatusChance = equip.OnHitStatusChance;
+                mem.AT = (byte) Math.Min(equip.AT, (ushort) 255);
+                mem.AT2 = (byte) Math.Max(Math.Min(equip.AT - 255, 255), 0);
+                mem.MAT = equip.MAT;
+                mem.DF = equip.DF;
+                mem.MDF = equip.MDF;
+                mem.SPD = equip.SPD;
+                mem.A_HIT = equip.A_HIT;
+                mem.M_HIT = equip.M_HIT;
+                mem.A_AV = equip.A_AV;
+                mem.M_AV = equip.M_AV;
+                mem.E_Half = equip.ElementalResistance;
+                mem.E_Immune = equip.ElementalImmunity;
+                mem.StatusResist = equip.StatusResistance;
+                mem.Special1 = equip.SpecialBonus1;
+                mem.Special2 = equip.SpecialBonus2;
+                mem.SpecialAmmount = equip.SpecialBonusAmmount;
+                mem.SpecialEffect = equip.SpecialEffect;
             }
         }
 
         static void ThrownItemChange() {
-            for (int i = 0; i < 64; i++) {
-                var item = (LoDDictionary.UsableItem) LoDDictionary.Dictionary.Items[i + 192];
-                Emulator.MemoryController.UsableItemTable[i].Target = item.Target;
-                Emulator.MemoryController.UsableItemTable[i].Element = item.Element;
-                Emulator.MemoryController.UsableItemTable[i].Damage = item.Damage;
-                Emulator.MemoryController.UsableItemTable[i].Special1 = item.Special1;
-                Emulator.MemoryController.UsableItemTable[i].Special2 = item.Special2;
-                Emulator.MemoryController.UsableItemTable[i].Unknown1 = item.Unknown1;
-                Emulator.MemoryController.UsableItemTable[i].SpecialAmmount = item.SpecialAmmount;
-                Emulator.MemoryController.UsableItemTable[i].Status = item.Status;
-                Emulator.MemoryController.UsableItemTable[i].Percentage = item.Percentage;
-                Emulator.MemoryController.UsableItemTable[i].Unknown2 = item.Unknown2;
-                Emulator.MemoryController.UsableItemTable[i].BaseSwitch = item.BaseSwitch;
+            for (int i = 192; i < 255; i++) {
+                var item = (LoDDictionary.UsableItem) LoDDictionary.Dictionary.Items[i];
+                var mem = (Core.Memory.UsableItem) Emulator.Memory.Item[i];
+                mem.Target = item.Target;
+                mem.Element = item.Element;
+                mem.Damage = item.Damage;
+                mem.Special1 = item.Special1;
+                mem.Special2 = item.Special2;
+                mem.Unknown1 = item.Unknown1;
+                mem.SpecialAmmount = item.SpecialAmmount;
+                mem.Status = item.Status;
+                mem.Percentage = item.Percentage;
+                mem.Unknown2 = item.Unknown2;
+                mem.BaseSwitch = item.BaseSwitch;
             }
         }
 

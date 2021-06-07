@@ -17,6 +17,7 @@ namespace Dragoon_Modifier.Core.Memory {
         public byte Special1 { get { return Emulator.ReadByte(_baseAddress + 0xB); } set { Emulator.WriteByte(_baseAddress + 0xB, value); } }
         public byte Special2 { get { return Emulator.ReadByte(_baseAddress + 0xC); } set { Emulator.WriteByte(_baseAddress + 0xC, value); } }
         public byte SpecialAmmount { get { return Emulator.ReadByte(_baseAddress + 0xD); } set { Emulator.WriteByte(_baseAddress + 0xD, value); } }
+        public override byte Icon { get { return Emulator.ReadByte(_baseAddress + 0xE); } set { Emulator.WriteByte(_baseAddress + 0xE, value); } }
         public byte SPD { get { return Emulator.ReadByte(_baseAddress + 0xF); } set { Emulator.WriteByte(_baseAddress + 0xF, value); } }
         public byte AT2 { get { return Emulator.ReadByte(_baseAddress + 0x10); } set { Emulator.WriteByte(_baseAddress + 0x10, value); } }
         public byte MAT { get { return Emulator.ReadByte(_baseAddress + 0x11); } set { Emulator.WriteByte(_baseAddress + 0x11, value); } }

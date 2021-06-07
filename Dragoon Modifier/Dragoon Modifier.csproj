@@ -291,15 +291,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Attach.cs" />
     <Compile Include="BattleController.cs" />
     <Compile Include="BattleController2.cs" />
-    <Compile Include="Emulator.cs" />
-    <Compile Include="Exceptions.cs" />
     <Compile Include="FieldController.cs" />
     <Compile Include="GameController.cs" />
     <Compile Include="HardMode.cs" />
-    <Compile Include="KMP.cs" />
     <Compile Include="LoDDict2\Addition.cs" />
     <Compile Include="LoDDict2\AdditionHit.cs" />
     <Compile Include="LoDDict2\MonsterData.cs" />
@@ -308,7 +304,6 @@
     <Compile Include="LoDDictionary\Item.cs" />
     <Compile Include="LoDDictionary\UsableItem.cs" />
     <Compile Include="MemoryController\Battle\AdditionSwap.cs" />
-    <Compile Include="MemoryController\Battle\Battle.cs" />
     <Compile Include="GlobalController.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="GlobalSuppressions.cs" />
@@ -323,27 +318,11 @@
     <Compile Include="LoDDict2\Level.cs" />
     <Compile Include="LoDDict2\LoDDict2.cs" />
     <Compile Include="LoDDict2\UsableItem.cs" />
-    <Compile Include="MemoryController\AdditionTable.cs" />
-    <Compile Include="MemoryController\Battle\BattleEntityAddress.cs" />
     <Compile Include="MemoryController\Battle\NoDart.cs" />
-    <Compile Include="MemoryController\ByteCollection.cs" />
-    <Compile Include="MemoryController\Battle\CharacterAddress.cs" />
     <Compile Include="MemoryController\CharacterStatTable.cs" />
-    <Compile Include="MemoryController\CharacterTable.cs" />
-    <Compile Include="MemoryController\CurrentShop.cs" />
     <Compile Include="MemoryController\DragoonLevel.cs" />
     <Compile Include="MemoryController\DragoonStatTable.cs" />
-    <Compile Include="MemoryController\EquipmentTableEntry.cs" />
-    <Compile Include="MemoryController\IntCollection.cs" />
-    <Compile Include="MemoryController\ItemTableEntry.cs" />
     <Compile Include="MemoryController\Level.cs" />
-    <Compile Include="MemoryController\MemoryController.cs" />
-    <Compile Include="MemoryController\Battle\MonsterAddress.cs" />
-    <Compile Include="MemoryController\SecondaryCharacterTable.cs" />
-    <Compile Include="MemoryController\Shop.cs" />
-    <Compile Include="MemoryController\ShortCollection.cs" />
-    <Compile Include="MemoryController\UIntCollection.cs" />
-    <Compile Include="MemoryController\UShortCollection.cs" />
     <Compile Include="ProcessMemory.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -353,7 +332,6 @@
     <Compile Include="ReaderWindow.xaml.cs">
       <DependentUpon>ReaderWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Enums.cs" />
     <Compile Include="ScriptState.cs" />
     <Compile Include="SubScript.cs" />
     <Compile Include="SubWindow.xaml.cs">
@@ -453,7 +431,12 @@
     <Resource Include="4.ico" />
     <Resource Include="5.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Dragoon Modifier.Core\Dragoon Modifier.Core.csproj">
+      <Project>{06c5fd14-0541-4918-b5ab-af58da13c174}</Project>
+      <Name>Dragoon Modifier.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(ProjectDir)Scripts\*.*" "$(ProjectDir)bin\$(ConfigurationName)\Scripts\" /E /Y

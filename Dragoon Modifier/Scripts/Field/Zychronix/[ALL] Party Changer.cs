@@ -1,5 +1,6 @@
 using Dragoon_Modifier;
 using System.Windows.Controls;
+using Dragoon_Modifier.Core;
 
 public class PartyChanger {
 	static string[] characters = {"Dart", "Lavitz", "Shana", "Rose", "Haschel", "Albert", "Meru", "Kongol", "Miranda"};

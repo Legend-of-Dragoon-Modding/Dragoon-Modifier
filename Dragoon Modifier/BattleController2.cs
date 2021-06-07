@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Dragoon_Modifier.Core;
+
 namespace Dragoon_Modifier {
     public static class BattleController2 {
         static readonly uint[] sharanda = new uint[] { 0x2, 0x8 };
@@ -48,17 +50,17 @@ namespace Dragoon_Modifier {
             }
             */
 
-            uint tableBase = Emulator.MemoryController.BattlePointBase; // Base address in the Battle Pointer Table
-            while (tableBase == Emulator.MemoryController.CharacterPoint || tableBase == Emulator.MemoryController.MonsterPoint) { // Wait until both C_Point and M_Point were set
-                if (Emulator.MemoryController.GameState != GameState.Battle) {
+            uint tableBase = Emulator.Memory.BattlePointBase; // Base address in the Battle Pointer Table
+            while (tableBase == Emulator.Memory.CharacterPoint || tableBase == Emulator.Memory.MonsterPoint) { // Wait until both C_Point and M_Point were set
+                if (Emulator.Memory.GameState != GameState.Battle) {
                     return;
                 }
                 Thread.Sleep(50);
             }
 
-            Emulator.BattleInit();
+            Emulator.LoadBattle();
 
-            Constants.WriteDebug($"Monster Size:        {Emulator.BattleController.MonsterTable.Length}");
+            Constants.WriteDebug($"Monster Size:        {Emulator.Battle.MonsterTable.Length}");
 
             if (Globals.NoDart != 0 && Globals.NoDart != 255) {
                 MemoryController.Battle.NoDart.Initialize(Globals.NoDart);
@@ -68,14 +70,14 @@ namespace Dragoon_Modifier {
         }
 
         public static void Run() {
-            if (Emulator.MemoryController.PartySlot[0] == 4 && Emulator.ReadByte("HASCHEL_FIX" + Globals.DISC) != 0x80) {
+            if (Emulator.Memory.PartySlot[0] == 4 && Emulator.ReadByte("HASCHEL_FIX" + Globals.DISC) != 0x80) {
                 MemoryController.Battle.NoDart.HaschelFix(Globals.DISC);
             }
 
-            if (slot1FinalBlow.Contains(Emulator.BattleController.EncounterID) && sharanda.Contains(Emulator.MemoryController.PartySlot[0])) {
+            if (slot1FinalBlow.Contains(Emulator.Battle.EncounterID) && sharanda.Contains(Emulator.Memory.PartySlot[0])) {
                 //ShanaFix(0);
             }
-            if (slot2FinalBlow.Contains(Emulator.BattleController.EncounterID) && sharanda.Contains(Emulator.MemoryController.PartySlot[1])) {
+            if (slot2FinalBlow.Contains(Emulator.Battle.EncounterID) && sharanda.Contains(Emulator.Memory.PartySlot[1])) {
                 //ShanaFix(1);
             }
 
@@ -126,8 +128,8 @@ namespace Dragoon_Modifier {
             }
 
             public override void Init() {
-                if (Emulator.BattleController.CharacterTable[_slot].DragoonTurns > 1) {
-                    Emulator.BattleController.CharacterTable[_slot].DragoonTurns = 1;
+                if (Emulator.Battle.CharacterTable[_slot].DragoonTurns > 1) {
+                    Emulator.Battle.CharacterTable[_slot].DragoonTurns = 1;
                     Constants.WriteGLogOutput($"Slot {_slot + 1} will exit Dragoon after next action.");
                 }
                 Globals.LAST_HOTKEY = Constants.GetTime();

@@ -14,6 +14,10 @@
         private readonly int _gold;
         private readonly int _menuUnlock;
         private readonly int _shopID;
+        private readonly int _basePoint;
+        private readonly int _encounterID;
+        private readonly int _monsterSize;
+        private readonly int _uniqueMonsterSize;
 
         public Collections.UInt PartySlot { get; private set; }
         public byte Disc { get { return Emulator.ReadByte(_disc); } }
@@ -37,8 +41,14 @@
         public CurrentShop CurrentShop { get; private set; }
         public byte ShopID { get { return Emulator.ReadByte(_shopID); } set { Emulator.WriteByte(_shopID, value); } }
         public Item[] Item { get; private set; }
-
-
+        // public CharacterStatTable[] CharacterStatTable { get; private set; }
+        public AdditionTable[] MenuAdditionTable { get; private set; }
+        public uint BattlePointBase { get { return Emulator.ReadUInt24(_basePoint - 0x18); } }
+        public uint CharacterPoint { get { return Emulator.ReadUInt24(_basePoint); } }
+        public uint MonsterPoint { get { return Emulator.ReadUInt24(_basePoint + 0x14); } }
+        public ushort EncounterID { get { return Emulator.ReadUShort(_encounterID); } set { Emulator.WriteUShort(_encounterID, value); } }
+        public byte MonsterSize { get { return Emulator.ReadByte(_monsterSize); } }
+        public byte UniqueMonsterSize { get { return Emulator.ReadByte(_uniqueMonsterSize); } }
         public GameState GameState { get { return GetGameState(); } }
 
         internal Controller() {
@@ -95,10 +105,12 @@
             for (int i = 0; i < _dragoonStatTable.Length; i++) {
                 _dragoonStatTable[i] = new DragoonStatTable(dragoonStatTableAddr, i);
             }
+            */
             var addTableAddr = Emulator.GetAddress("MENU_ADDITION_TABLE_FLAT");
             var addMultiAddr = Emulator.GetAddress("MENU_ADDITION_TABLE_MULTI");
-            for (int i = 0; i < _addTable.Length; i++) {
-                _addTable[i] = new AdditionTable(addTableAddr, addMultiAddr, i);
+            MenuAdditionTable = new AdditionTable[41];
+            for (int i = 0; i < MenuAdditionTable.Length; i++) {
+                MenuAdditionTable[i] = new AdditionTable(addTableAddr, addMultiAddr, i);
             }
             _basePoint = Emulator.GetAddress("C_POINT");
             _encounterID = Emulator.GetAddress("ENCOUNTER_ID");
@@ -106,7 +118,6 @@
             _uniqueMonsterSize = Emulator.GetAddress("UNIQUE_MONSTER_SIZE");
             var encounterMapAddr = 0xF64AC; // TODO
             var encounterTableAddr = 0xF74C4; // TODO
-            */
         }
 
         private GameState GetGameState() {

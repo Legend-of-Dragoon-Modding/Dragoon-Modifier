@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Dragoon_Modifier.Core;
 
 namespace Dragoon_Modifier {
     public static class GameController {
@@ -12,7 +13,7 @@ namespace Dragoon_Modifier {
         public static void Run() {
             while (Constants.RUN) {
                 try { 
-                    switch (Emulator.MemoryController.GameState) {
+                    switch (Emulator.Memory.GameState) {
                         case GameState.Battle:
                             if (StatsChanged) {
                                 BattleController2.Run();

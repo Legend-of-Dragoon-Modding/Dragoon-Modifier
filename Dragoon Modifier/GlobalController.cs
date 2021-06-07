@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using Dragoon_Modifier.Core;
 
 namespace Dragoon_Modifier {
     class GlobalController {
