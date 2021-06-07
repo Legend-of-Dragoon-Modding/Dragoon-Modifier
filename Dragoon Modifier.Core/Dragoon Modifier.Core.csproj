@@ -93,6 +93,7 @@
     <Compile Include="Memory\Shop.cs" />
     <Compile Include="Memory\UsableItem.cs" />
     <Compile Include="ModVersion.cs" />
+    <Compile Include="Output.cs" />
     <Compile Include="ProcessMemory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

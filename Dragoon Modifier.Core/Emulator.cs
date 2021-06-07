@@ -78,7 +78,8 @@ namespace Dragoon_Modifier.Core {
                 ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, 1, out long lpNumberOfBytesRead);
                 return buffer[0];
             }
-            throw new IncorrectAddressException(address);
+            Output.WriteError($"Incorrect addres key {address}.");
+            return 0;
         }
 
         public static void WriteByte(long address, byte value) {
@@ -92,7 +93,7 @@ namespace Dragoon_Modifier.Core {
                 ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, val, 1, out int lpNumberOfBytesWritten);
                 return;
             }
-            throw new IncorrectAddressException(address);
+            Output.WriteError($"Incorrect addres key {address}.");
         }
 
         #endregion
@@ -110,7 +111,8 @@ namespace Dragoon_Modifier.Core {
                 ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, 1, out long lpNumberOfBytesRead);
                 return (sbyte) buffer[0];
             }
-            throw new IncorrectAddressException(address);
+            Output.WriteError($"Incorrect addres key {address}.");
+            return 0;
         }
 
         public static void WriteSByte(long address, sbyte value) {
@@ -124,7 +126,7 @@ namespace Dragoon_Modifier.Core {
                 ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, val, 1, out int lpNumberOfBytesWritten);
                 return;
             }
-            throw new IncorrectAddressException(address);
+            Output.WriteError($"Incorrect addres key {address}.");
         }
 
         #endregion
@@ -142,7 +144,8 @@ namespace Dragoon_Modifier.Core {
                 ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, 2, out long lpNumberOfBytesRead);
                 return BitConverter.ToInt16(buffer, 0);
             }
-            throw new IncorrectAddressException(address);
+            Output.WriteError($"Incorrect addres key {address}.");
+            return 0;
         }
 
         public static void WriteShort(long address, short value) {
@@ -155,7 +158,7 @@ namespace Dragoon_Modifier.Core {
                 ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, val, 2, out int lpNumberOfBytesWritten);
                 return;
             }
-            throw new IncorrectAddressException(address);
+            Output.WriteError($"Incorrect addres key {address}.");
         }
 
         #endregion
@@ -174,7 +177,8 @@ namespace Dragoon_Modifier.Core {
                 ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, 2, out long lpNumberOfBytesRead);
                 return BitConverter.ToUInt16(buffer, 0);
             }
-            throw new IncorrectAddressException(address);
+            Output.WriteError($"Incorrect addres key {address}.");
+            return 0;
         }
 
         public static void WriteUShort(long address, ushort value) {
@@ -188,7 +192,7 @@ namespace Dragoon_Modifier.Core {
                 ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, val, 2, out int lpNumberOfBytesWritten);
                 return;
             }
-            throw new IncorrectAddressException(address);
+            Output.WriteError($"Incorrect addres key {address}.");
         }
 
         #endregion
@@ -207,7 +211,8 @@ namespace Dragoon_Modifier.Core {
                 ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, 3, out long lpNumberOfBytesRead);
                 return BitConverter.ToUInt32(buffer, 0);
             }
-            throw new IncorrectAddressException(address);
+            Output.WriteError($"Incorrect addres key {address}.");
+            return 0;
         }
 
         public static void WriteUInt24(long address, UInt32 value) {
@@ -223,7 +228,7 @@ namespace Dragoon_Modifier.Core {
                 ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, val, 3, out int lpNumberOfBytesWritten);
                 return;
             }
-            throw new IncorrectAddressException(address);
+            Output.WriteError($"Incorrect addres key {address}.");
         }
 
         #endregion
@@ -242,7 +247,8 @@ namespace Dragoon_Modifier.Core {
                 ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, 4, out long lpNumberOfBytesRead);
                 return BitConverter.ToInt32(buffer, 0);
             }
-            throw new IncorrectAddressException(address);
+            Output.WriteError($"Incorrect addres key {address}.");
+            return 0;
         }
 
         public static void WriteInt(long address, Int32 value) {
@@ -256,7 +262,7 @@ namespace Dragoon_Modifier.Core {
                 ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, val, 4, out int lpNumberOfBytesWritten);
                 return;
             }
-            throw new IncorrectAddressException(address);
+            Output.WriteError($"Incorrect addres key {address}.");
         }
 
         #endregion
@@ -275,7 +281,8 @@ namespace Dragoon_Modifier.Core {
                 ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, 4, out long lpNumberOfBytesRead);
                 return BitConverter.ToUInt32(buffer, 0);
             }
-            throw new IncorrectAddressException(address);
+            Output.WriteError($"Incorrect addres key {address}.");
+            return 0;
         }
 
         public static void WriteUInt(long address, UInt32 value) {
@@ -289,7 +296,7 @@ namespace Dragoon_Modifier.Core {
                 ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, val, 4, out int lpNumberOfBytesWritten);
                 return;
             }
-            throw new IncorrectAddressException(address);
+            Output.WriteError($"Incorrect addres key {address}.");
         }
 
         #endregion
@@ -308,7 +315,8 @@ namespace Dragoon_Modifier.Core {
                 ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, 8, out long lpNumberOfBytesRead);
                 return BitConverter.ToInt64(buffer, 0);
             }
-            throw new IncorrectAddressException(address);
+            Output.WriteError($"Incorrect addres key {address}.");
+            return 0;
         }
 
         public static void WriteLong(long address, long value) {
@@ -322,7 +330,7 @@ namespace Dragoon_Modifier.Core {
                 ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, val, 8, out int lpNumberOfBytesWritten);
                 return;
             }
-            throw new IncorrectAddressException(address);
+            Output.WriteError($"Incorrect addres key {address}.");
         }
 
         #endregion
@@ -341,7 +349,8 @@ namespace Dragoon_Modifier.Core {
                 ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, 8, out long lpNumberOfBytesRead);
                 return BitConverter.ToUInt64(buffer, 0);
             }
-            throw new IncorrectAddressException(address);
+            Output.WriteError($"Incorrect addres key {address}.");
+            return 0;
         }
 
         public static void WriteULong(long address, ulong value) {
@@ -354,7 +363,7 @@ namespace Dragoon_Modifier.Core {
                 var val = BitConverter.GetBytes(value);
                 ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, val, 8, out int lpNumberOfBytesWritten);
             }
-            throw new IncorrectAddressException(address);
+            Output.WriteError($"Incorrect addres key {address}.");
         }
 
         #endregion
@@ -374,7 +383,8 @@ namespace Dragoon_Modifier.Core {
                 ProcessMemory.ReadProcessMemory(_processHandle, key + EmulatorOffset + offset, buffer, length, out long lpNumberOfBytesRead);
                 return buffer;
             }
-            throw new IncorrectAddressException(address);
+            Output.WriteError($"Incorrect addres key {address}.");
+            return new byte[0];
         }
 
         public static void WriteAoB(long address, string values) {
@@ -394,7 +404,7 @@ namespace Dragoon_Modifier.Core {
                     arr[i] = Convert.ToByte(strArr[i], 16);
                 }
                 ProcessMemory.WriteProcessMemory(_processHandle, key + EmulatorOffset + offset, arr, arr.Length, out int lpNumberOfBytesWritten);
-                throw new IncorrectAddressException(address);
+                Output.WriteError($"Incorrect addres key {address}.");
             }
         }
 
@@ -448,7 +458,8 @@ namespace Dragoon_Modifier.Core {
             if (_regionalAddresses.TryGetValue(address, out var key)) {
                 return key;
             }
-            throw new IncorrectAddressException(address);
+            Output.WriteError($"Incorrect addres key {address}.");
+            return 0;
         }
 
         private static bool Verify(long offset) {

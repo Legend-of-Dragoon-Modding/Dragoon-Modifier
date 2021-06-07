@@ -336,6 +336,7 @@
     <Compile Include="SubWindow.xaml.cs">
       <DependentUpon>SubWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TextBoxOutput.cs" />
     <Compile Include="UIControls.cs" />
     <Compile Include="UniformTabPanel.cs" />
     <Page Include="InputWindow.xaml">

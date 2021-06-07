@@ -376,6 +376,7 @@ namespace Dragoon_Modifier {
         public MainWindow() {
             try {
                 InitializeComponent();
+                Console.SetOut(new TextBoxOutput(txtOutput));
                 Constants.CONSOLE = txtOutput;
                 Constants.GLOG = stsGame;
                 Constants.PLOG = stsProgram;
@@ -8179,5 +8180,8 @@ namespace Dragoon_Modifier {
             SaveSubKey();
         }
         #endregion
+
+        
+
     }
 }
