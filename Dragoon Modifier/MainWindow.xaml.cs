@@ -382,7 +382,6 @@ namespace Dragoon_Modifier {
                 Constants.Init();
                 InitUI();
                 LoadKey();
-                LoDDictionary.Dictionary.Init(Globals.MOD);
 
                 if (!ModVersion.IsCurrent(Constants.VERSION, out var newVersion, out var uri)) {
                     Constants.WriteOutput($"Current version {Constants.VERSION} is outdated. You can download version {newVersion} at {uri}");
@@ -394,6 +393,7 @@ namespace Dragoon_Modifier {
                 } else {
                     Constants.WriteOutput("Please pick an emulator to use in the settings menu.");
                 }
+                LoDDictionary.Dictionary.Init(Globals.MOD);
 
                 SetupScripts();
                 if (miOpenPreset.IsChecked) {

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace Dragoon_Modifier.Core {
     public static class Emulator {
@@ -447,8 +448,7 @@ namespace Dragoon_Modifier.Core {
             if (_regionalAddresses.TryGetValue(address, out var key)) {
                 return key;
             }
-            return 0;
-            // throw new IncorrectAddressException(address);
+            throw new IncorrectAddressException(address);
         }
 
         private static bool Verify(long offset) {
@@ -590,6 +590,8 @@ namespace Dragoon_Modifier.Core {
             }
 
             _regionalAddresses = LoadRegionalAddresses(Region);
+
+            Thread.Sleep(500);
 
             Memory = new Memory.Controller();
 
