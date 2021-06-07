@@ -131,9 +131,6 @@ namespace Dragoon_Modifier {
             } else {
                 Console.WriteLine(text.ToString());
             }
-            if (!CONSOLE.IsFocused) {
-                CONSOLE.ScrollToEnd();
-            }
         }
 
         public static void WriteDebug(object text) {
@@ -142,9 +139,6 @@ namespace Dragoon_Modifier {
                     Console.WriteLine("-----LOGCUT-----\r\n[DEBUG] " + text.ToString());
                 } else {
                     Console.WriteLine("[DEBUG] " + text.ToString());
-                }
-                if (!CONSOLE.IsFocused) {
-                    CONSOLE.ScrollToEnd();
                 }
             }
         }
@@ -156,9 +150,6 @@ namespace Dragoon_Modifier {
                 } else {
                     Console.WriteLine("[DEBUG] " + text.ToString());
                 }
-                if (!CONSOLE.IsFocused) {
-                    CONSOLE.ScrollToEnd();
-                }
                 PLOG.Text = "[DEBUG] " + text.ToString();
             });
         }
@@ -168,9 +159,6 @@ namespace Dragoon_Modifier {
                 Console.WriteLine("-----LOGCUT-----\r\n[ERROR] " + text.ToString());
             } else {
                 Console.WriteLine("[ERROR] " + text.ToString());
-            }
-            if (!CONSOLE.IsFocused) {
-                CONSOLE.ScrollToEnd();
             }
         }
 
