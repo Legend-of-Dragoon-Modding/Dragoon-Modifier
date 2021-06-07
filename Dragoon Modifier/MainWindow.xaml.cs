@@ -384,7 +384,10 @@ namespace Dragoon_Modifier {
                 LoadKey();
                 LoDDictionary.Dictionary.Init(Globals.MOD);
 
-                ModVersion.Check();
+                if (!ModVersion.IsCurrent(Constants.VERSION, out var newVersion, out var uri)) {
+                    Constants.WriteOutput($"Current version {Constants.VERSION} is outdated. You can download version {newVersion} at {uri}");
+                    Constants.WriteGLog($"Newer version ({newVersion}) available.");
+                }
                 
                 if (Constants.EMULATOR_ID != 255) {
                     SetupEmulator(true);
