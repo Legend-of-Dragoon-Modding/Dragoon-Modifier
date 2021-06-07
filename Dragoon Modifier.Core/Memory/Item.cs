@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.Core.Memory {
     public class Item {
+
         protected int _baseAddress;
         protected int _namePointerAddress;
         protected int _descriptionPointerAddress;

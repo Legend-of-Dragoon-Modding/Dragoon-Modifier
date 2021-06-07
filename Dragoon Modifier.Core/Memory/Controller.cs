@@ -13,6 +13,7 @@
         private readonly int _transition;
         private readonly int _gold;
         private readonly int _menuUnlock;
+        private readonly int _shopID;
 
         public Collections.UInt PartySlot { get; private set; }
         public byte Disc { get { return Emulator.ReadByte(_disc); } }
@@ -32,10 +33,13 @@
         public byte MenuUnlock { get { return Emulator.ReadByte(_menuUnlock); } set { Emulator.WriteByte(_menuUnlock, value); } }
         public CharacterTable[] CharacterTable { get; private set; }
         public SecondaryCharacterTable[] SecondaryCharacterTable { get; private set; }
-        // Shop
-        // CurrentShop
-        // ShopID
+        public Shop[] Shop { get; private set; }
+        public CurrentShop CurrentShop { get; private set; }
+        public byte ShopID { get { return Emulator.ReadByte(_shopID); } set { Emulator.WriteByte(_shopID, value); } }
         public Item[] Item { get; private set; }
+
+
+        public GameState GameState { get { return GetGameState(); } }
 
         internal Controller() {
             PartySlot = new Collections.UInt(Emulator.GetAddress("PARTY_SLOT"), 4, 3);
@@ -62,15 +66,18 @@
                 CharacterTable[i] = new CharacterTable(charTableAddr, i);
                 SecondaryCharacterTable[i] = new SecondaryCharacterTable(secondCharTableAddr, i);
             }
-
-            // shop stuff
-
+            var shopListAddr = Emulator.GetAddress("SHOP_LIST");
+            Shop = new Shop[45]; // Most likely up to 64 shops. But most of it is unused, so I chose a safe number.
+            for (int i = 0; i < Shop.Length; i++) {
+                Shop[i] = new Shop(shopListAddr, i);
+            }
+            CurrentShop = new CurrentShop(Emulator.GetAddress("SHOP_CONTENT"));
+            _shopID = Emulator.GetAddress("SHOP_ID");
             var equipTableAddr = Emulator.GetAddress("ITEM_TABLE") - 1; // Fix for wrong address
             var itemTableAddr = Emulator.GetAddress("THROWN_ITEM_TABLE");
             int itemNamePtr = Emulator.GetAddress("ITEM_NAME_PTR");
             int itemDescPtr = Emulator.GetAddress("ITEM_DESC_PTR");
             var itemSellPriceAddr = Emulator.GetAddress("SHOP_PRICE");
-
             Item = new Item[256];
             for (int i = 0; i < 192; i++) {
                 Item[i] = new Equipment(equipTableAddr, itemNamePtr, itemDescPtr, itemSellPriceAddr, i);
@@ -79,7 +86,63 @@
                 Item[i] = new UsableItem(itemTableAddr, itemNamePtr, itemDescPtr, itemSellPriceAddr, i);
             }
 
+            /*
+            var charStatTableAddr = Emulator.GetAddress("CHAR_STAT_TABLE");
+            for (int i = 0; i < _charStatTable.Length; i++) {
+                _charStatTable[i] = new CharacterStatTable(charStatTableAddr, i);
+            }
+            var dragoonStatTableAddr = Emulator.GetAddress("DRAGOON_TABLE");
+            for (int i = 0; i < _dragoonStatTable.Length; i++) {
+                _dragoonStatTable[i] = new DragoonStatTable(dragoonStatTableAddr, i);
+            }
+            var addTableAddr = Emulator.GetAddress("MENU_ADDITION_TABLE_FLAT");
+            var addMultiAddr = Emulator.GetAddress("MENU_ADDITION_TABLE_MULTI");
+            for (int i = 0; i < _addTable.Length; i++) {
+                _addTable[i] = new AdditionTable(addTableAddr, addMultiAddr, i);
+            }
+            _basePoint = Emulator.GetAddress("C_POINT");
+            _encounterID = Emulator.GetAddress("ENCOUNTER_ID");
+            _monsterSize = Emulator.GetAddress("MONSTER_SIZE");
+            _uniqueMonsterSize = Emulator.GetAddress("UNIQUE_MONSTER_SIZE");
+            var encounterMapAddr = 0xF64AC; // TODO
+            var encounterTableAddr = 0xF74C4; // TODO
+            */
+        }
 
+        private GameState GetGameState() {
+            switch (Menu) {
+                case 0:
+                    if (BattleValue == 41215) {
+                        return GameState.Battle;
+                    }
+
+                    var overworldSegment = OverworldSegment; // 0 on field, or when behind Seles (unaccessible part of overworld map)
+                    var overwoldCheck = OverworldCheck; // Added extra check to cover behind Seles and transitions
+
+                    if (overworldSegment == 0 && overwoldCheck == 1) {
+                        return GameState.Field;
+                    }
+
+                    if (overworldSegment != 0 && overwoldCheck == 3) {
+                        return GameState.Overworld;
+                    }
+                    return GameState.None;
+                case 4:
+                    return GameState.Menu;
+                case 9:
+                    return GameState.Shop;
+                case 14:
+                    return GameState.LoadingScreen;
+                case 19:
+                    return GameState.EndOfDisc;
+                case 24:
+                    return GameState.ReplacePrompt;
+                case 29:
+                    return GameState.BattleResult;
+                default:
+                    return GameState.None;
+
+            }
         }
     }
 }
