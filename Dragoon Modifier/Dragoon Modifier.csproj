@@ -292,9 +292,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="BattleController.cs" />
-    <Compile Include="BattleController2.cs" />
-    <Compile Include="FieldController.cs" />
-    <Compile Include="GameController.cs" />
+    <Compile Include="Controller\Battle.cs" />
+    <Compile Include="Controller\Field.cs" />
+    <Compile Include="Controller\Main.cs" />
     <Compile Include="HardMode.cs" />
     <Compile Include="LoDDict2\Addition.cs" />
     <Compile Include="LoDDict2\AdditionHit.cs" />
@@ -323,7 +323,6 @@
     <Compile Include="MemoryController\DragoonLevel.cs" />
     <Compile Include="MemoryController\DragoonStatTable.cs" />
     <Compile Include="MemoryController\Level.cs" />
-    <Compile Include="ProcessMemory.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

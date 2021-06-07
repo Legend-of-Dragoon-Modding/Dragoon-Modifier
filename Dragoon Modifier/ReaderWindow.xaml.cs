@@ -131,7 +131,7 @@ namespace Dragoon_Modifier {
         }
 
         public void WriteToText() {
-            if (Emulator.Memory.GameState == GameState.Battle && GameController.StatsChanged) {
+            if (Emulator.Memory.GameState == GameState.Battle && Controller.Main.StatsChanged) {
                 try {
                     int partySize = 0;
                     for (int i = 0; i < 3; i++) {
@@ -644,7 +644,7 @@ namespace Dragoon_Modifier {
 
             public void UpdateLabel(Object source, ElapsedEventArgs e) {
                 this.Dispatcher.BeginInvoke(new Action(() => {
-                    if (Emulator.Memory.GameState == GameState.Battle && GameController.StatsChanged) {
+                    if (Emulator.Memory.GameState == GameState.Battle && Controller.Main.StatsChanged) {
                         if (character) {
                             if (Globals.PARTY_SLOT[slot - 1] > 8) {
                                 this.Content = "";
@@ -970,7 +970,7 @@ namespace Dragoon_Modifier {
 
             public void UpdateBar(Object source, ElapsedEventArgs e) {
                 this.Dispatcher.BeginInvoke(new Action(() => {
-                    if (Emulator.Memory.GameState == GameState.Battle && GameController.StatsChanged) {
+                    if (Emulator.Memory.GameState == GameState.Battle && Controller.Main.StatsChanged) {
                         if (character) {
                             if (Globals.PARTY_SLOT[slot - 1] > 8) {
                                 this.Value = this.Minimum;
@@ -1370,7 +1370,7 @@ namespace Dragoon_Modifier {
 
             public void UpdateBar(Object source, ElapsedEventArgs e) {
                 this.Dispatcher.BeginInvoke(new Action(() => {
-                    if (Emulator.Memory.GameState == GameState.Battle && GameController.StatsChanged) {
+                    if (Emulator.Memory.GameState == GameState.Battle && Controller.Main.StatsChanged) {
                         if (character) {
                             if (Globals.PARTY_SLOT[slot - 1] > 8) {
                                 this.Value = this.Minimum;

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using Dragoon_Modifier.Core;
 
-namespace Dragoon_Modifier {
-    public static class FieldController {
+namespace Dragoon_Modifier.Controller {
+    public static class Field {
         static readonly ushort[] shopMaps = new ushort[] { 16, 23, 83, 84, 122, 145, 175, 180, 193, 204, 211, 214, 247,
         287, 309, 329, 332, 349, 357, 384, 435, 479, 515, 530, 564, 619, 624}; // Some maps missing??
 
@@ -15,71 +16,21 @@ namespace Dragoon_Modifier {
         static bool shopDiscSwap = false;
         static bool shopListChanged = false;
 
-
-        public static void Field() {
-            try {
-                if (GameController.StatsChanged) {
-                    ItemChange();
-                    GameController.StatsChanged = false;
-                }
-                if (GameController.InventorySize != 32) {
-                    ExtendInventory(GameController.InventorySize);
-                }
-
-                if (Globals.SHOP_CHANGE) {
-                    ShopTableChange();
-                }
-
-                if (UIControls.SaveAnywhere) {
-
-                }
-
-                if (UIControls.SoloMode) {
-
-                }
-
-                if (UIControls.DuoMode) {
-
-                }
-
-                if (UIControls.HPCapBreak) {
-
-                }
-
-                if (UIControls.KillBGM) {
-
-                }
-
-                if (UIControls.AutoCharmPotion) {
-
-                }
-
-                if (UIControls.EarlyAdditions) {
-
-                }
-
-                // UltimateBossFiled
-
-                if (UIControls.IncreaseTextSpeed) {
-
-                }
-
-                if (UIControls.AutoText) {
-
-                }
-
-            } catch (Exception ex) {
-                Constants.RUN = false;
-                Constants.WriteGLog("Program stopped.");
-                Constants.WritePLogOutput("INTERNAL FIELD SCRIPT ERROR");
-                Constants.WriteOutput("Fatal Error. Closing all threads. Please see error log in Settings console.");
-                Constants.WriteError(ex.ToString());
-            }
+        public static void Setup() {
+            ItemChange();
         }
 
-        public static void Overworld() {
-            if (GameController.InventorySize != 32) {
-                ExtendInventory(GameController.InventorySize);
+        public static void Run() {
+            if (Main.InventorySize != 32) {
+                ExtendInventory(Main.InventorySize);
+            }
+
+            if (Globals.SHOP_CHANGE) {
+                ShopTableChange();
+            }
+
+            if (UIControls.SaveAnywhere) {
+
             }
 
             if (UIControls.SoloMode) {
@@ -107,24 +58,17 @@ namespace Dragoon_Modifier {
             }
 
             // UltimateBossFiled
-        }
 
-        static void ExtendInventory(byte inventorySize) { // TODO account for UltimateBossDefeatCheck
+            if (UIControls.IncreaseTextSpeed) {
 
-        }
-
-        static void ShopTableChange() {
-            if (!shopListChanged && shopMaps.Contains(Emulator.Memory.MapID)) {
-                if (Emulator.Memory.Transition != 12) { // Map transition in progress
-                    return;
-                }
-                // TODO run
-                return;
             }
-            shopListChanged = false;
+
+            if (UIControls.AutoText) {
+
+            }
         }
 
-        static void ItemChange() {
+        private static void ItemChange() {
             if (Globals.ITEM_ICON_CHANGE) {
                 ItemIconChange();
             }
@@ -139,21 +83,21 @@ namespace Dragoon_Modifier {
             }
         }
 
-        static void ItemIconChange() {
+        private static void ItemIconChange() {
             Constants.WriteOutput("Changing Item Icons...");
             for (int i = 0; i < Emulator.Memory.Item.Length; i++) {
                 Emulator.Memory.Item[i].Icon = LoDDictionary.Dictionary.Items[i].Icon;
             }
         }
 
-        static void ItemNameDescChange() {
+        private static void ItemNameDescChange() {
             Constants.WriteOutput("Changing Item Names and Descriptions...");
 
             int address = Emulator.GetAddress("ITEM_NAME");
             int address2 = Emulator.GetAddress("ITEM_DESC");
             Emulator.WriteAoB(address, LoDDictionary.Dictionary.EncodedNames);
             Emulator.WriteAoB(address2, LoDDictionary.Dictionary.EncodedDescriptions);
- 
+
 
             for (int i = 0; i < Emulator.Memory.Item.Length; i++) {
                 Emulator.Memory.Item[i].NamePointer = (uint) LoDDictionary.Dictionary.Items[i].NamePointer;
@@ -161,7 +105,7 @@ namespace Dragoon_Modifier {
             }
         }
 
-        static void ItemStatChange() {
+        private static void ItemStatChange() {
             for (int i = 0; i < 192; i++) {
                 var equip = (LoDDictionary.Equipment) LoDDictionary.Dictionary.Items[i];
                 var mem = (Core.Memory.Equipment) Emulator.Memory.Item[i];
@@ -190,7 +134,7 @@ namespace Dragoon_Modifier {
             }
         }
 
-        static void ThrownItemChange() {
+        private static void ThrownItemChange() {
             for (int i = 192; i < 255; i++) {
                 var item = (LoDDictionary.UsableItem) LoDDictionary.Dictionary.Items[i];
                 var mem = (Core.Memory.UsableItem) Emulator.Memory.Item[i];
@@ -208,5 +152,19 @@ namespace Dragoon_Modifier {
             }
         }
 
+        private static void ExtendInventory(byte inventorySize) { // TODO account for UltimateBossDefeatCheck
+
+        }
+
+        private static void ShopTableChange() {
+            if (!shopListChanged && shopMaps.Contains(Emulator.Memory.MapID)) {
+                if (Emulator.Memory.Transition != 12) { // Map transition in progress
+                    return;
+                }
+                // TODO run
+                return;
+            }
+            shopListChanged = false;
+        }
     }
 }

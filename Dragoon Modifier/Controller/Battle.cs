@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
 using Dragoon_Modifier.Core;
 
-namespace Dragoon_Modifier {
-    public static class BattleController2 {
+namespace Dragoon_Modifier.Controller {
+    public static class Battle {
         static readonly uint[] sharanda = new uint[] { 0x2, 0x8 };
         static readonly ushort[] slot1FinalBlow = new ushort[] { 414, 408, 409, 392, 431 };      // Urobolus, Wounded Virage, Complete Virage, Lloyd, Zackwell
         static readonly ushort[] slot2FinalBlow = new ushort[] { 387, 403 };                     // Fruegel II, Gehrich
@@ -63,10 +62,8 @@ namespace Dragoon_Modifier {
             Constants.WriteDebug($"Monster Size:        {Emulator.Battle.MonsterTable.Length}");
 
             if (Globals.NoDart != 0 && Globals.NoDart != 255) {
-                MemoryController.Battle.NoDart.Initialize(Globals.NoDart);
+                MemoryController.Battle.NoDart.Initialize(Globals.NoDart); // TODO
             }
-
-            GameController.StatsChanged = true;
         }
 
         public static void Run() {
@@ -94,7 +91,7 @@ namespace Dragoon_Modifier {
             */
 
             if (_difficulty != Difficulty.Normal) {
-                HardMode.EquipChangesRun(GameController.InventorySize);
+                HardMode.EquipChangesRun(Main.InventorySize);
                 /*
                 if (!Globals.CheckDMScript("btnDivineRed")) {
                     HardMode.DartBurnStackHandler();
@@ -117,8 +114,6 @@ namespace Dragoon_Modifier {
                 }
             }
         }
-
-
 
         class ExitDragoonSlot : Hotkey {
             byte _slot;
@@ -148,5 +143,5 @@ namespace Dragoon_Modifier {
                 return;
             }
         }
-    }   
+    }
 }
