@@ -126,30 +126,45 @@ namespace Dragoon_Modifier {
         }
 
         public static void WriteOutput(object text) {
-            if (CONSOLE.LineCount == 1 || CONSOLE.LineCount > 2000) {
-                Console.WriteLine("-----LOGCUT-----\r\n" + text.ToString());
-            } else {
-                Console.WriteLine(text.ToString());
-            }
+            CONSOLE.Dispatcher.Invoke(() => {
+                if (CONSOLE.LineCount == 1 || CONSOLE.LineCount > 2000) {
+                    Console.WriteLine("-----LOGCUT-----\r\n" + text.ToString());
+                } else {
+                    Console.WriteLine(text.ToString());
+                }
+                if (!CONSOLE.IsFocused) {
+                    CONSOLE.ScrollToEnd();
+                }
+            });
         }
 
         public static void WriteDebug(object text) {
             if (DEBUG_MODE) {
-                if (CONSOLE.LineCount == 1 || CONSOLE.LineCount > 2000) {
-                    Console.WriteLine("-----LOGCUT-----\r\n[DEBUG] " + text.ToString());
-                } else {
-                    Console.WriteLine("[DEBUG] " + text.ToString());
-                }
+                CONSOLE.Dispatcher.Invoke(() => {
+                    if (CONSOLE.LineCount == 1 || CONSOLE.LineCount > 2000) {
+                        Console.WriteLine("-----LOGCUT-----\r\n[DEBUG] " + text.ToString());
+                    } else {
+                        Console.WriteLine("[DEBUG] " + text.ToString());
+                    }
+                    if (!CONSOLE.IsFocused) {
+                        CONSOLE.ScrollToEnd();
+                    }
+                });
             }
         }
 
         public static void WriteDebugProgram(object text) {
-            Application.Current.Dispatcher.Invoke(() => {
+            CONSOLE.Dispatcher.Invoke(() => {
                 if (CONSOLE.LineCount == 1 || CONSOLE.LineCount > 2000) {
                     Console.WriteLine("-----LOGCUT-----\r\n[DEBUG] " + text.ToString());
                 } else {
                     Console.WriteLine("[DEBUG] " + text.ToString());
                 }
+                if (!CONSOLE.IsFocused) {
+                    CONSOLE.ScrollToEnd();
+                }
+            });
+            Application.Current.Dispatcher.Invoke(() => {
                 PLOG.Text = "[DEBUG] " + text.ToString();
             });
         }
@@ -160,6 +175,11 @@ namespace Dragoon_Modifier {
             } else {
                 Console.WriteLine("[ERROR] " + text.ToString());
             }
+            CONSOLE.Dispatcher.Invoke(() => {
+                if (!CONSOLE.IsFocused) {
+                    CONSOLE.ScrollToEnd();
+                }
+            });
         }
 
         public static void WriteGLog(object text) {
