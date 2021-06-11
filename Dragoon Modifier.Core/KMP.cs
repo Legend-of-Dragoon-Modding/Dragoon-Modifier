@@ -110,5 +110,55 @@ namespace Dragoon_Modifier.Core {
             return substringIndex;
         }
 
+        internal static List<long> UnmaskedSearch(byte[] pattern, byte[] array, bool findAll = false) {
+            var indexList = new List<long>();
+            var substringIndex = CalculateUnmaskedSubstringIndexes(pattern);
+
+            int arrayIndex = 0;
+            int patternIndex = 0;
+            while (arrayIndex < array.Length - pattern.Length + 1) {
+                if (array[arrayIndex] == pattern[patternIndex]) {
+                    arrayIndex++;
+                    patternIndex++;
+                } else {
+                    if (patternIndex != 0) {
+                        patternIndex = substringIndex[patternIndex - 1];
+                    } else {
+                        arrayIndex++;
+                    }
+                }
+                if (patternIndex == pattern.Length) {
+                    indexList.Add(arrayIndex - patternIndex);
+                    if (!findAll) {
+                        break;
+                    }
+                    patternIndex = substringIndex[patternIndex - 1];
+                }
+            }
+
+            return indexList;
+        }
+
+        private static byte[] CalculateUnmaskedSubstringIndexes(byte[] pattern) {
+            var substringIndex = new byte[pattern.Length];
+            substringIndex[0] = 0;
+            int len = 0;
+            int i = 1;
+            while (i < pattern.Length) {
+                if (pattern[i] == pattern[len]) {
+                    substringIndex[i] = (byte) (len + 1);
+                    len++;
+                    i++;
+                } else {
+                    if (len != 0) {
+                        len = substringIndex[len - 1];
+                    } else {
+                        substringIndex[i] = 0;
+                        i++;
+                    }
+                }
+            }
+            return substringIndex;
+        }
     }
 }

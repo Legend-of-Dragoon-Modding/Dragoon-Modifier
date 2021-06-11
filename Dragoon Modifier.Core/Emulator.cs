@@ -10,8 +10,8 @@ namespace Dragoon_Modifier.Core {
     public static class Emulator {
         const uint versionAddr = 0x9E19;
         const uint versionStringLen = 11;
-        const string AoBCheck = "50 53 2D 58 20 45 58 45";
-        const string duckstationCheck = "53 6F 6E 79 20 43 6F 6D 70 75 74 65 72 20 45 6E 74 65 72 74 61 69 6E 6D 65 6E 74 20 49 6E 63";
+        static readonly byte[] AoBCheck = new byte[] { 0x50, 0x53, 0x2D, 0x58, 0x20, 0x45, 0x58, 0x45};
+        static readonly byte[] duckstationCheck = new byte[] { 0x53, 0x6F, 0x6E, 0x79, 0x20, 0x43, 0x6F, 0x6D, 0x70, 0x75, 0x74, 0x65, 0x72, 0x20, 0x45, 0x6E, 0x74, 0x65, 0x72, 0x74, 0x61, 0x69, 0x6E, 0x6D, 0x65, 0x6E, 0x74, 0x20, 0x49, 0x6E, 0x63 };
 
         static readonly int[] duckstationOffsets = new int[] { 0x110, 0x118 };
         static readonly Dictionary<string, Region> versions = new Dictionary<string, Region> {
@@ -428,6 +428,24 @@ namespace Dragoon_Modifier.Core {
             return results;
         }
 
+        public static List<long> ScanAoB(long start, long end, byte[] pattern, bool useOffset = true, bool addOffset = false) {
+            long offset = 0;
+            if (!useOffset) {
+                offset -= EmulatorOffset;
+            }
+
+            List<long> results = KMP.UnmaskedSearch(pattern, ReadAoB(start + offset, end + offset), true);
+
+            for (int i = 0; i < results.Count; i++) {
+                results[i] += start;
+                if (addOffset) {
+                    results[i] += EmulatorOffset;
+                }
+            }
+
+            return results;
+        }
+
         public static void WriteText(long address, string values) {
             string[] strArr = values.Split(' ');
             byte[] arr = new byte[strArr.Length];
@@ -492,7 +510,7 @@ namespace Dragoon_Modifier.Core {
             EmulatorOffset = 0;
             var start = (long) proc.MainModule.BaseAddress;
             var end = start + proc.MainModule.ModuleMemorySize;
-            var results = KMP.Search(AoBCheck, ReadAoB(start, end), true);
+            var results = KMP.UnmaskedSearch(AoBCheck, ReadAoB(start, end), true);
             foreach (var result in results) {
                 var tempOffset = start + result - 0xB070;
                 if (Verify(tempOffset)) {
@@ -509,7 +527,7 @@ namespace Dragoon_Modifier.Core {
                 var start = (long) proc.MainModule.BaseAddress;
                 var end = start + 0x1000008;
                 for (int i = 0; i < 17; i++) {
-                    var results = KMP.Search(AoBCheck, ReadAoB(start, end), true);
+                    var results = KMP.UnmaskedSearch(AoBCheck, ReadAoB(start, end), true);
                     foreach (var result in results) {
                         var tempOffset = start + result - 0xB070;
                         if (Verify(tempOffset)) {
@@ -531,7 +549,7 @@ namespace Dragoon_Modifier.Core {
             EmulatorOffset = 0;
             var start = (long) proc.MainModule.BaseAddress;
             var end = start + proc.MainModule.ModuleMemorySize;
-            var results = KMP.Search(duckstationCheck, ReadAoB(start, end), true);
+            var results = KMP.UnmaskedSearch(duckstationCheck, ReadAoB(start, end), true);
             foreach (var result in results) {
                 foreach (var offset in duckstationOffsets) {
                     var pointer = ReadLong(result + start - offset);
@@ -562,7 +580,7 @@ namespace Dragoon_Modifier.Core {
                 while ((line = reader.ReadLine()) != null) {
                     string[] values = line.Split(',');
                     if (addresses.ContainsKey(values[0])) {
-                        // Constants.WriteDebug("Same key warning: " + values[0]);
+                        Output.WriteError("Same key warning: " + values[0]);
                     } else {
                         addresses.Add(values[0], Convert.ToInt32(values[(int) region + 1], 16));
                     }
@@ -575,7 +593,7 @@ namespace Dragoon_Modifier.Core {
                     while ((line = reader.ReadLine()) != null) {
                         string[] values = line.Split(',');
                         if (addresses.ContainsKey(values[0])) {
-                            // Constants.WriteDebug("Same key warning: " + values[0]);
+                            Output.WriteError("Same key warning: " + values[0]);
                         } else {
                             addresses.Add(values[0], Convert.ToInt32(values[(int) region + 1], 16));
                         }
@@ -591,7 +609,7 @@ namespace Dragoon_Modifier.Core {
             if (emulatorName.ToLower().Contains(".exe")) {
                 emulatorName = emulatorName.Replace("exe", "");
             }
-
+     
             Process proc = FindEmulatorProcess(emulatorName);
 
             _processHandle = ProcessMemory.GetProcessHandle(proc);

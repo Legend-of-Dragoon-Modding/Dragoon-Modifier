@@ -73,6 +73,10 @@
     <Compile Include="Enums.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="KMP.cs" />
+    <Compile Include="LoDDictionary.cs" />
+    <Compile Include="LoDDict\Equipment.cs" />
+    <Compile Include="LoDDict\Item.cs" />
+    <Compile Include="LoDDict\UsableItem.cs" />
     <Compile Include="Memory\AdditionTable.cs" />
     <Compile Include="Memory\Battle\BattleEntity.cs" />
     <Compile Include="Memory\Battle\Character.cs" />
@@ -101,5 +105,6 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
