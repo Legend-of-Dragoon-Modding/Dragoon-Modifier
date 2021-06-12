@@ -304,7 +304,6 @@
     <Compile Include="LoDDictionary\Item.cs" />
     <Compile Include="LoDDictionary\UsableItem.cs" />
     <Compile Include="MemoryController\Battle\AdditionSwap.cs" />
-    <Compile Include="GlobalController.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Hotkey.cs" />

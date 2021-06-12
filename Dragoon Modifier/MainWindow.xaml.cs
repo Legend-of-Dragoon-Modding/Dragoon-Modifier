@@ -31,7 +31,7 @@ namespace Dragoon_Modifier {
     public partial class MainWindow {
         #region Variables
         #region Program Variables
-        public Thread globalThread, newBattleThread, fieldThread, battleThread, hotkeyThread, otherThread, ultimateThread;
+        public Thread newBattleThread, fieldThread, battleThread, hotkeyThread, otherThread, ultimateThread;
         public string preset = "";
         public bool presetHotkeys = true;
         public bool dualDifficultySwitch = false;
@@ -58,8 +58,6 @@ namespace Dragoon_Modifier {
         static bool SHOP_DISC_SWAP = false;
         static int[] SHOP_MAPS = new int[] { 16, 23, 83, 84, 122, 145, 175, 180, 193, 204, 211, 214, 247,
         287, 309, 329, 332, 349, 357, 384, 435, 479, 515, 530, 564, 619, 624}; // Some maps missing??
-        //Icon Changes
-        public bool wroteIcons = false;
         //Solo/Duo Mode
         public bool addSoloPartyMembers = false;
         public bool alwaysAddSoloPartyMembers = false;
@@ -6110,7 +6108,6 @@ namespace Dragoon_Modifier {
                     }
 
                     Constants.RUN = true;
-                    globalThread = new Thread(GlobalController.Run);
                     newBattleThread = new Thread(Controller.Main.Run);
                
                     
@@ -6120,7 +6117,6 @@ namespace Dragoon_Modifier {
                     otherThread = new Thread(OtherController);
                     ultimateThread = new Thread(UltimateController);
                     newBattleThread.Start();
-                    globalThread.Start();
                     fieldThread.Start();
                     battleThread.Start();
                     hotkeyThread.Start();
