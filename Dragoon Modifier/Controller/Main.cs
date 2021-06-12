@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Dragoon_Modifier.Core;
 
@@ -29,6 +30,7 @@ namespace Dragoon_Modifier.Controller {
                             Field.Run();
                             break;
                     }
+                    Thread.Sleep(250);
                 } catch (Exception ex) {
                     Constants.RUN = false;
                     Constants.WriteGLog("Program stopped.");

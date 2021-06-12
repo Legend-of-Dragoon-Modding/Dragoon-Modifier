@@ -381,8 +381,8 @@ namespace Dragoon_Modifier {
                 Constants.GLOG = stsGame;
                 Constants.PLOG = stsProgram;
                 Constants.Init();
-                InitUI();
-                LoadKey();
+                
+                
 
                 if (!ModVersion.IsCurrent(Constants.VERSION, out var newVersion, out var uri)) {
                     Constants.WriteOutput($"Current version {Constants.VERSION} is outdated. You can download version {newVersion} at {uri}");
@@ -396,6 +396,8 @@ namespace Dragoon_Modifier {
                 }
                 LoDDictionary.Dictionary.Init(Globals.MOD);
 
+                InitUI();
+                LoadKey();
                 SetupScripts();
                 if (miOpenPreset.IsChecked) {
                     Constants.LoadPreset(preset);
@@ -6103,14 +6105,15 @@ namespace Dragoon_Modifier {
                 try {
                     Emulator.Attach(Constants.EMULATOR_NAME, Constants.OFFSET);
 
-                    Constants.RUN = true;
-                    globalThread = new Thread(delegate () { GlobalController.Run(); });
-                    
-                    newBattleThread = new Thread(Controller.Main.Run);
+                    if (Emulator.Memory.BattleValue < 9999) {
+                        Controller.Main.StatsChanged = true;
+                    }
 
-                    globalThread.Start();
-                    newBattleThread.Start();
-                    /*
+                    Constants.RUN = true;
+                    globalThread = new Thread(GlobalController.Run);
+                    newBattleThread = new Thread(Controller.Main.Run);
+               
+                    
                     fieldThread = new Thread(FieldController);
                     battleThread = new Thread(BattleController1);
                     hotkeyThread = new Thread(HotkeysController);
@@ -6122,7 +6125,7 @@ namespace Dragoon_Modifier {
                     battleThread.Start();
                     hotkeyThread.Start();
                     otherThread.Start();
-                    */
+                    
 
                     if (Emulator.Memory.BattleValue < 9999) {
                         Controller.Main.StatsChanged = true;

@@ -1343,7 +1343,7 @@
                             <ListView x:Name="lstBattle" Grid.Column="1" Grid.Row="1" FontFamily="Consolas" MouseDoubleClick="lstBattle_MouseDoubleClick" ScrollViewer.ScrollChanged="lstBattle_ScrollChanged"/>
                             <ListView x:Name="lstHotkey" Grid.Column="2" Grid.Row="1" FontFamily="Consolas" MouseDoubleClick="lstHotkey_MouseDoubleClick" ScrollViewer.ScrollChanged="lstHotkey_ScrollChanged"/>
                             <ListView x:Name="lstOther" Grid.Column="3" Grid.Row="1" FontFamily="Consolas" MouseDoubleClick="lstOther_MouseDoubleClick" ScrollViewer.ScrollChanged="lstOther_ScrollChanged"/>
-                            <TextBox x:Name="txtOutput" Grid.Row="2" Grid.ColumnSpan="4" Text="-----LOGCUT-----" FontFamily="Consolas" Background="#FFB6B6B6" Foreground="White" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible"/>
+                            <TextBox x:Name="txtOutput" Grid.Row="2" Grid.ColumnSpan="4" Text="-----LOGCUT-----&#x0a;" FontFamily="Consolas" Background="#FFB6B6B6" Foreground="White" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible"/>
                         </Grid>
                     </DockPanel>
                 </Grid>
