@@ -225,7 +225,7 @@ namespace Dragoon_Modifier.LoDDictionary {
 
         private static string CreateItemNameString() {
             int offset = 0;
-            int start = Emulator.GetAddress("ITEM_NAME");
+            int start = Core.Emulator.GetAddress("ITEM_NAME");
             LoDDictionary.Item[] sortedArr = Items.OrderByDescending(o => o.Name.Length).ToArray();
             List<string> stringList = new List<string>();
             foreach (LoDDictionary.Item item in sortedArr) {
@@ -251,7 +251,7 @@ namespace Dragoon_Modifier.LoDDictionary {
 
         private static string CreateItemDescriptionString() {
             int offset = 0;
-            int start = Emulator.GetAddress("ITEM_DESC");
+            int start = Core.Emulator.GetAddress("ITEM_DESC");
             Item[] sortedArr = Items.OrderByDescending(o => o.Description.Length).ToArray();
             List<string> stringList = new List<string>();
             foreach (Item item in sortedArr) {

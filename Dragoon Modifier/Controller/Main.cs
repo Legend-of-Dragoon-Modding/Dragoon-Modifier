@@ -14,7 +14,7 @@ namespace Dragoon_Modifier.Controller {
         public static void Run() {
             while (Constants.RUN) {
                 try {
-                    switch (Emulator.Memory.GameState) {
+                    switch (Core.Emulator.Memory.GameState) {
                         case GameState.Battle:
                             if (!StatsChanged) {
                                 Battle.Setup();

@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.Emulator {
     public class Factory {
-        public static IEmulator Create(string emulatorName, int previousOffset, Dictionary<string, int[]> addresses) {
+        public static IEmulator Create(string emulatorName, long previousOffset, Dictionary<string, int[]> addresses) {
             return new Emulator(emulatorName, previousOffset, addresses);
         }
 
-        public static IEmulator Emulator(string emulatorName, int previousOffset) {
+        public static IEmulator Emulator(string emulatorName, long previousOffset) {
             return new Emulator(emulatorName, previousOffset);
         }
 

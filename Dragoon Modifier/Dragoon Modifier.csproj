@@ -434,6 +434,10 @@
       <Project>{06c5fd14-0541-4918-b5ab-af58da13c174}</Project>
       <Name>Dragoon Modifier.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Dragoon Modifier.Emulator\Dragoon Modifier.Emulator.csproj">
+      <Project>{f4e87665-0894-4017-bd08-590f49323f1a}</Project>
+      <Name>Dragoon Modifier.Emulator</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

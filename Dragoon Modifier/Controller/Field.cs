@@ -85,30 +85,30 @@ namespace Dragoon_Modifier.Controller {
 
         private static void ItemIconChange() {
             Constants.WriteOutput("Changing Item Icons...");
-            for (int i = 0; i < Emulator.Memory.Item.Length; i++) {
-                Emulator.Memory.Item[i].Icon = LoDDictionary.Dictionary.Items[i].Icon;
+            for (int i = 0; i < Core.Emulator.Memory.Item.Length; i++) {
+                Core.Emulator.Memory.Item[i].Icon = LoDDictionary.Dictionary.Items[i].Icon;
             }
         }
 
         private static void ItemNameDescChange() {
             Constants.WriteOutput("Changing Item Names and Descriptions...");
 
-            int address = Emulator.GetAddress("ITEM_NAME");
-            int address2 = Emulator.GetAddress("ITEM_DESC");
-            Emulator.WriteAoB(address, LoDDictionary.Dictionary.EncodedNames);
-            Emulator.WriteAoB(address2, LoDDictionary.Dictionary.EncodedDescriptions);
+            int address = Core.Emulator.GetAddress("ITEM_NAME");
+            int address2 = Core.Emulator.GetAddress("ITEM_DESC");
+            Core.Emulator.WriteAoB(address, LoDDictionary.Dictionary.EncodedNames);
+            Core.Emulator.WriteAoB(address2, LoDDictionary.Dictionary.EncodedDescriptions);
 
 
-            for (int i = 0; i < Emulator.Memory.Item.Length; i++) {
-                Emulator.Memory.Item[i].NamePointer = (uint) LoDDictionary.Dictionary.Items[i].NamePointer;
-                Emulator.Memory.Item[i].DescriptionPointer = (uint) LoDDictionary.Dictionary.Items[i].DescriptionPointer;
+            for (int i = 0; i < Core.Emulator.Memory.Item.Length; i++) {
+                Core.Emulator.Memory.Item[i].NamePointer = (uint) LoDDictionary.Dictionary.Items[i].NamePointer;
+                Core.Emulator.Memory.Item[i].DescriptionPointer = (uint) LoDDictionary.Dictionary.Items[i].DescriptionPointer;
             }
         }
 
         private static void ItemStatChange() {
             for (int i = 0; i < 192; i++) {
                 var equip = (LoDDictionary.Equipment) LoDDictionary.Dictionary.Items[i];
-                var mem = (Core.Memory.Equipment) Emulator.Memory.Item[i];
+                var mem = (Core.Memory.Equipment) Core.Emulator.Memory.Item[i];
                 mem.WhoEquips = equip.WhoEquips;
                 mem.ItemType = equip.Type;
                 mem.WeaponElement = equip.WeaponElement;
@@ -137,7 +137,7 @@ namespace Dragoon_Modifier.Controller {
         private static void ThrownItemChange() {
             for (int i = 192; i < 255; i++) {
                 var item = (LoDDictionary.UsableItem) LoDDictionary.Dictionary.Items[i];
-                var mem = (Core.Memory.UsableItem) Emulator.Memory.Item[i];
+                var mem = (Core.Memory.UsableItem) Core.Emulator.Memory.Item[i];
                 mem.Target = item.Target;
                 mem.Element = item.Element;
                 mem.Damage = item.Damage;
@@ -157,8 +157,8 @@ namespace Dragoon_Modifier.Controller {
         }
 
         private static void ShopTableChange() {
-            if (!shopListChanged && shopMaps.Contains(Emulator.Memory.MapID)) {
-                if (Emulator.Memory.Transition != 12) { // Map transition in progress
+            if (!shopListChanged && shopMaps.Contains(Core.Emulator.Memory.MapID)) {
+                if (Core.Emulator.Memory.Transition != 12) { // Map transition in progress
                     return;
                 }
                 // TODO run
