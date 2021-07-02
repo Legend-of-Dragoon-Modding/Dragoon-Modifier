@@ -370,6 +370,9 @@ namespace Dragoon_Modifier {
         #endregion
         #endregion
 
+
+        static Emulator.IEmulator emulator;
+
         #region Startup
         public MainWindow() {
             try {
@@ -396,7 +399,7 @@ namespace Dragoon_Modifier {
                 } else {
                     Constants.WriteOutput("Please pick an emulator to use in the settings menu.");
                 }
-                //LoDDictionary.Dictionary.Init(Globals.MOD);
+                LoDDictionary.Dictionary.Init(emulator, Globals.MOD);
 
                 InitUI();
                 LoadKey();
@@ -6105,7 +6108,7 @@ namespace Dragoon_Modifier {
                 //Globals.MemoryController = new MemoryController.MemoryController();
 
                 try {
-                    var emulator = Emulator.Factory.Create(Constants.EMULATOR_NAME, Constants.OFFSET);
+                    emulator = Emulator.Factory.Create(Constants.EMULATOR_NAME, Constants.OFFSET);
 
                     Constants.RUN = true;
                     newBattleThread = new Thread(() => Controller.Main.Run(emulator));
@@ -6606,7 +6609,7 @@ namespace Dragoon_Modifier {
 
                 if (Globals.MOD != (string) mod.SelectedValue) {
                     Globals.MOD = (string) mod.SelectedValue;
-                    //LoDDictionary.Dictionary.Init(Globals.MOD);
+                    LoDDictionary.Dictionary.Init(emulator, Globals.MOD);
                     Constants.WriteOutput("Changing Mod");
                 }
 
@@ -6919,7 +6922,7 @@ namespace Dragoon_Modifier {
                 btn.Background = enrageBoss ? (new SolidColorBrush(Color.FromArgb(255, 168, 211, 255))) : (new SolidColorBrush(Color.FromArgb(0, 0, 0, 0)));
             }
 
-            //LoDDictionary.Dictionary.Init(Globals.MOD);
+            LoDDictionary.Dictionary.Init(emulator, Globals.MOD);
             SHOP_CHANGED = false;
             if (Core.Emulator.ReadShort("BATTLE_VALUE") < 9999) {
                 Controller.Main.StatsChanged = true;
