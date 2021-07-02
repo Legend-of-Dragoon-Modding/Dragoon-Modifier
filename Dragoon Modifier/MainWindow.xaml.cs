@@ -6109,6 +6109,7 @@ namespace Dragoon_Modifier {
 
                 try {
                     emulator = Emulator.Factory.Create(Constants.EMULATOR_NAME, Constants.OFFSET);
+                    LoDDictionary.Dictionary.Init(emulator, Globals.MOD);
 
                     Constants.RUN = true;
                     newBattleThread = new Thread(() => Controller.Main.Run(emulator));

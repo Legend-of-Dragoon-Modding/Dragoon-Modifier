@@ -80,17 +80,6 @@ namespace Dragoon_Modifier.Emulator {
             { "ITEM_DESC_PTR", new int[] { 0x117A10, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 } },
             { "ITEM_BTL_DESC", new int[] { 0x50BF0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 } },
             { "ITEM_BTL_DESC_PTR", new int[] { 0x51758, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 } },
-            
-
-
-
-
-
-
-
-
-
-
         };
 
         private readonly IntPtr _processHandle;
