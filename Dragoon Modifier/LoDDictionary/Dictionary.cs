@@ -174,9 +174,9 @@ namespace Dragoon_Modifier.LoDDictionary {
         public static string EncodedBattleNames { get; private set; }
         public static string EncodedBattleDescriptions { get; private set; }
 
-        public static void Init(string mod) {
+        public static void Init(Emulator.IEmulator emulator, string mod) {
             string cwd = AppDomain.CurrentDomain.BaseDirectory;
-            GetItems(cwd, mod);
+            GetItems(emulator, cwd, mod);
         }
 
         public static bool Item2Num(string name, out byte id) {
@@ -223,9 +223,9 @@ namespace Dragoon_Modifier.LoDDictionary {
             }
         }
 
-        private static string CreateItemNameString() {
+        private static string CreateItemNameString(Emulator.IEmulator emulator) {
             int offset = 0;
-            int start = Core.Emulator.GetAddress("ITEM_NAME");
+            int start = emulator.GetAddress("ITEM_NAME");
             LoDDictionary.Item[] sortedArr = Items.OrderByDescending(o => o.Name.Length).ToArray();
             List<string> stringList = new List<string>();
             foreach (LoDDictionary.Item item in sortedArr) {
@@ -239,7 +239,7 @@ namespace Dragoon_Modifier.LoDDictionary {
                 }
             }
             string result = String.Join(" ", stringList);
-            long end = Constants.GetAddress("ITEM_NAME_PTR");
+            long end = emulator.GetAddress("ITEM_NAME_PTR");
             int len1 = result.Replace(" ", "").Length / 4;
             int len2 = (int) (end - start) / 2;
             if (len1 >= len2) {
@@ -249,9 +249,9 @@ namespace Dragoon_Modifier.LoDDictionary {
 
         }
 
-        private static string CreateItemDescriptionString() {
+        private static string CreateItemDescriptionString(Emulator.IEmulator emulator) {
             int offset = 0;
-            int start = Core.Emulator.GetAddress("ITEM_DESC");
+            int start = emulator.GetAddress("ITEM_DESC");
             Item[] sortedArr = Items.OrderByDescending(o => o.Description.Length).ToArray();
             List<string> stringList = new List<string>();
             foreach (Item item in sortedArr) {
@@ -265,7 +265,7 @@ namespace Dragoon_Modifier.LoDDictionary {
                 }
             }
             string result = String.Join(" ", stringList);
-            long end = Constants.GetAddress("ITEM_DESC_PTR");
+            long end = emulator.GetAddress("ITEM_DESC_PTR");
             int len1 = result.Replace(" ", "").Length / 4;
             int len2 = (int) (end - start) / 2;
             if (len1 >= len2) {
@@ -275,9 +275,9 @@ namespace Dragoon_Modifier.LoDDictionary {
             return result;
         }
 
-        private static string CreateItemBattleNameString() {
+        private static string CreateItemBattleNameString(Emulator.IEmulator emulator) {
             int offset = 0;
-            int start = Constants.GetAddress("ITEM_BTL_NAME");
+            int start = emulator.GetAddress("ITEM_BTL_NAME");
             Item[] sortedArr = Items.Skip(193).Take(63).OrderBy(o => o.Description.Length).ToArray();
             List<string> stringList = new List<string>();
             foreach (UsableItem item in sortedArr) {
@@ -291,7 +291,7 @@ namespace Dragoon_Modifier.LoDDictionary {
                 }
             }
             string result = String.Join(" ", stringList);
-            long end = Constants.GetAddress("ITEM_BTL_NAME_PTR");
+            long end = emulator.GetAddress("ITEM_BTL_NAME_PTR");
             int len1 = result.Replace(" ", "").Length / 4;
             int len2 = (int) (end - start) / 2;
             if (len1 >= len2) {
@@ -301,9 +301,9 @@ namespace Dragoon_Modifier.LoDDictionary {
             return result;
         }
 
-        private static string CreateItemBattleDescriptionString() {
+        private static string CreateItemBattleDescriptionString(Emulator.IEmulator emulator) {
             long offset = 0;
-            long start = Constants.GetAddress("ITEM_BTL_DESC");
+            long start = emulator.GetAddress("ITEM_BTL_DESC");
             Item[] sortedArr = Items.Skip(193).Take(63).OrderBy(o => o.Description.Length).ToArray();
             List<string> stringList = new List<string>();
             foreach (UsableItem item in sortedArr) {
@@ -317,7 +317,7 @@ namespace Dragoon_Modifier.LoDDictionary {
                 }
             }
             string result = String.Join(" ", stringList);
-            long end = Constants.GetAddress("ITEM_BTL_DESC_PTR");
+            long end = emulator.GetAddress("ITEM_BTL_DESC_PTR");
             int len1 = result.Replace(" ", "").Length / 4;
             int len2 = (int) (end - start) / 2;
             if (len1 >= len2) {
@@ -327,7 +327,7 @@ namespace Dragoon_Modifier.LoDDictionary {
             return result;
         }
 
-        private static void GetItems(string cwd, string mod) {
+        private static void GetItems(Emulator.IEmulator emulator, string cwd, string mod) {
             try {
                 GetEquipment(cwd, mod);
             } catch (Exception ex) {
@@ -341,10 +341,10 @@ namespace Dragoon_Modifier.LoDDictionary {
             }
 
             try {
-                EncodedNames = CreateItemNameString();
-                EncodedDescriptions = CreateItemDescriptionString();
-                EncodedBattleNames = CreateItemBattleNameString();
-                EncodedBattleDescriptions = CreateItemBattleDescriptionString();
+                EncodedNames = CreateItemNameString(emulator);
+                EncodedDescriptions = CreateItemDescriptionString(emulator);
+                EncodedBattleNames = CreateItemBattleNameString(emulator);
+                EncodedBattleDescriptions = CreateItemBattleDescriptionString(emulator);
             } catch (Exception ex) {
                 Constants.WriteError(ex);
             }

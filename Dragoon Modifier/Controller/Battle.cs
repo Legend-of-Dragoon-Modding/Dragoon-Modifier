@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Dragoon_Modifier.Core;
 
 namespace Dragoon_Modifier.Controller {
     public static class Battle {
@@ -12,7 +11,7 @@ namespace Dragoon_Modifier.Controller {
         static readonly ushort[] slot1FinalBlow = new ushort[] { 414, 408, 409, 392, 431 };      // Urobolus, Wounded Virage, Complete Virage, Lloyd, Zackwell
         static readonly ushort[] slot2FinalBlow = new ushort[] { 387, 403 };                     // Fruegel II, Gehrich
 
-        static Difficulty _difficulty = Difficulty.Normal;
+        static Emulator.Difficulty _difficulty = Emulator.Difficulty.Normal;
         static int _aspectRatioOption = 0;
         static int _cameraOption = 0;
         static int _killBGM = 0;
@@ -24,7 +23,7 @@ namespace Dragoon_Modifier.Controller {
             new AdditionSwap(Hotkey.KEY_L1 + Hotkey.KEY_R1)
         };
 
-        public static void Setup() {
+        public static void Setup(Emulator.IEmulator emulator) {
             Constants.WriteOutput("Battle detected. Loading...");
 
             // _difficulty = 
@@ -51,7 +50,7 @@ namespace Dragoon_Modifier.Controller {
 
             uint tableBase = Core.Emulator.Memory.BattlePointBase; // Base address in the Battle Pointer Table
             while (tableBase == Core.Emulator.Memory.CharacterPoint || tableBase == Core.Emulator.Memory.MonsterPoint) { // Wait until both C_Point and M_Point were set
-                if (Core.Emulator.Memory.GameState != GameState.Battle) {
+                if (emulator.Memory.GameState != Emulator.GameState.Battle) {
                     return;
                 }
                 Thread.Sleep(50);
@@ -66,7 +65,7 @@ namespace Dragoon_Modifier.Controller {
             }
         }
 
-        public static void Run() {
+        public static void Run(Emulator.IEmulator emulator) {
             if (Core.Emulator.Memory.PartySlot[0] == 4 && Core.Emulator.ReadByte("HASCHEL_FIX" + Globals.DISC) != 0x80) {
                 MemoryController.Battle.NoDart.HaschelFix(Globals.DISC);
             }
@@ -90,7 +89,7 @@ namespace Dragoon_Modifier.Controller {
             }
             */
 
-            if (_difficulty != Difficulty.Normal) {
+            if (_difficulty != Emulator.Difficulty.Normal) {
                 HardMode.EquipChangesRun(Main.InventorySize);
                 /*
                 if (!Globals.CheckDMScript("btnDivineRed")) {
@@ -106,7 +105,7 @@ namespace Dragoon_Modifier.Controller {
                     hotkey.Init();
                 }
             }
-            if (_difficulty != Difficulty.Normal) {
+            if (_difficulty != Emulator.Difficulty.Normal) {
                 foreach (var hotkey in HardMode.Hotkeys) {
                     if (hotkey.ButtonPress == Globals.HOTKEY) {
                         hotkey.Init();

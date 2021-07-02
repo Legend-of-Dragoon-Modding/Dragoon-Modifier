@@ -10,7 +10,7 @@ namespace Dragoon_Modifier.Emulator {
             return new Emulator(emulatorName, previousOffset, addresses);
         }
 
-        public static IEmulator Emulator(string emulatorName, long previousOffset) {
+        public static IEmulator Create(string emulatorName, long previousOffset) {
             return new Emulator(emulatorName, previousOffset);
         }
 

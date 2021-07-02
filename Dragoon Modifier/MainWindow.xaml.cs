@@ -375,12 +375,16 @@ namespace Dragoon_Modifier {
             try {
                 InitializeComponent();
                 Console.SetOut(new TextBoxOutput(txtOutput));
+                Debug.Listeners.Add(new DebugOutput(txtOutput));
+
                 Constants.CONSOLE = txtOutput;
                 Constants.GLOG = stsGame;
                 Constants.PLOG = stsProgram;
                 Constants.Init();
-                
-                
+
+
+                Constants.EMULATOR_NAME = "ePSXe";
+                Constants.EMULATOR_ID = 2;
 
                 if (!ModVersion.IsCurrent(Constants.VERSION, out var newVersion, out var uri)) {
                     Constants.WriteOutput($"Current version {Constants.VERSION} is outdated. You can download version {newVersion} at {uri}");
@@ -392,7 +396,7 @@ namespace Dragoon_Modifier {
                 } else {
                     Constants.WriteOutput("Please pick an emulator to use in the settings menu.");
                 }
-                LoDDictionary.Dictionary.Init(Globals.MOD);
+                //LoDDictionary.Dictionary.Init(Globals.MOD);
 
                 InitUI();
                 LoadKey();
@@ -6101,29 +6105,25 @@ namespace Dragoon_Modifier {
                 //Globals.MemoryController = new MemoryController.MemoryController();
 
                 try {
-                    Core.Emulator.Attach(Constants.EMULATOR_NAME, Constants.OFFSET);
-
-                    if (Core.Emulator.Memory.BattleValue < 9999) {
-                        Controller.Main.StatsChanged = true;
-                    }
+                    var emulator = Emulator.Factory.Create(Constants.EMULATOR_NAME, Constants.OFFSET);
 
                     Constants.RUN = true;
-                    newBattleThread = new Thread(Controller.Main.Run);
+                    newBattleThread = new Thread(() => Controller.Main.Run(emulator));
                
                     
-                    fieldThread = new Thread(FieldController);
-                    battleThread = new Thread(BattleController1);
-                    hotkeyThread = new Thread(HotkeysController);
-                    otherThread = new Thread(OtherController);
-                    ultimateThread = new Thread(UltimateController);
+                    //fieldThread = new Thread(FieldController);
+                    //battleThread = new Thread(BattleController1);
+                    //hotkeyThread = new Thread(HotkeysController);
+                    //otherThread = new Thread(OtherController);
+                    //ultimateThread = new Thread(UltimateController);
                     newBattleThread.Start();
-                    fieldThread.Start();
-                    battleThread.Start();
-                    hotkeyThread.Start();
-                    otherThread.Start();
+                    //fieldThread.Start();
+                    //battleThread.Start();
+                    //hotkeyThread.Start();
+                    //otherThread.Start();
                     
 
-                    if (Core.Emulator.Memory.BattleValue < 9999) {
+                    if (emulator.Memory.BattleValue < 9999) {
                         Controller.Main.StatsChanged = true;
                     }
 
@@ -6606,7 +6606,7 @@ namespace Dragoon_Modifier {
 
                 if (Globals.MOD != (string) mod.SelectedValue) {
                     Globals.MOD = (string) mod.SelectedValue;
-                    LoDDictionary.Dictionary.Init(Globals.MOD);
+                    //LoDDictionary.Dictionary.Init(Globals.MOD);
                     Constants.WriteOutput("Changing Mod");
                 }
 
@@ -6919,7 +6919,7 @@ namespace Dragoon_Modifier {
                 btn.Background = enrageBoss ? (new SolidColorBrush(Color.FromArgb(255, 168, 211, 255))) : (new SolidColorBrush(Color.FromArgb(0, 0, 0, 0)));
             }
 
-            LoDDictionary.Dictionary.Init(Globals.MOD);
+            //LoDDictionary.Dictionary.Init(Globals.MOD);
             SHOP_CHANGED = false;
             if (Core.Emulator.ReadShort("BATTLE_VALUE") < 9999) {
                 Controller.Main.StatsChanged = true;

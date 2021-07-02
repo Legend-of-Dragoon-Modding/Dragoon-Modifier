@@ -126,6 +126,8 @@ namespace Dragoon_Modifier {
         }
 
         public static void WriteOutput(object text) {
+            Console.WriteLine(text.ToString());
+            /*
             CONSOLE.Dispatcher.Invoke(() => {
                 if (CONSOLE.LineCount == 1 || CONSOLE.LineCount > 2000) {
                     Console.WriteLine("-----LOGCUT-----\r\n" + text.ToString());
@@ -136,6 +138,7 @@ namespace Dragoon_Modifier {
                     CONSOLE.ScrollToEnd();
                 }
             });
+            */
         }
 
         public static void WriteDebug(object text) {

@@ -4,30 +4,29 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Dragoon_Modifier.Core;
 
 namespace Dragoon_Modifier.Controller {
     public static class Main {
         public static byte InventorySize = 32;
         public static bool StatsChanged = false;
 
-        public static void Run() {
+        public static void Run(Emulator.IEmulator emulator) {
             while (Constants.RUN) {
                 try {
-                    switch (Core.Emulator.Memory.GameState) {
-                        case GameState.Battle:
+                    switch (emulator.Memory.GameState) {
+                        case Emulator.GameState.Battle:
                             if (!StatsChanged) {
-                                Battle.Setup();
+                                Battle.Setup(emulator);
                                 StatsChanged = true;
                             }
-                            Battle.Run();
+                            Battle.Run(emulator);
                             break;
-                        case GameState.Field:
+                        case Emulator.GameState.Field:
                             if (StatsChanged) {
-                                Field.Setup();
+                                Field.Setup(emulator);
                                 StatsChanged = false;
                             }
-                            Field.Run();
+                            Field.Run(emulator);
                             break;
                     }
                     Thread.Sleep(250);

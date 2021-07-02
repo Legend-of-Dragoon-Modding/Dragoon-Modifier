@@ -295,6 +295,7 @@
     <Compile Include="Controller\Battle.cs" />
     <Compile Include="Controller\Field.cs" />
     <Compile Include="Controller\Main.cs" />
+    <Compile Include="DebugOutput.cs" />
     <Compile Include="HardMode.cs" />
     <Compile Include="LoDDict2\Addition.cs" />
     <Compile Include="LoDDict2\AdditionHit.cs" />
