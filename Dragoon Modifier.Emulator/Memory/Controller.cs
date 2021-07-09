@@ -92,7 +92,7 @@ namespace Dragoon_Modifier.Emulator.Memory {
             }
             CurrentShop = new CurrentShop(_emulator, _emulator.GetAddress("SHOP_CONTENT"));
             _shopID = _emulator.GetAddress("SHOP_ID");
-            var equipTableAddr = _emulator.GetAddress("ITEM_TABLE") - 1; // Fix for wrong address
+            var equipTableAddr = _emulator.GetAddress("ITEM_TABLE");
             var itemTableAddr = _emulator.GetAddress("THROWN_ITEM_TABLE");
             int itemNamePtr = _emulator.GetAddress("ITEM_NAME_PTR");
             int itemDescPtr = _emulator.GetAddress("ITEM_DESC_PTR");

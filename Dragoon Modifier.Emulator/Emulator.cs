@@ -70,7 +70,7 @@ namespace Dragoon_Modifier.Emulator {
             { "SHOP_CONTENT", new int[] { 0x11E0F8, 0x119368, 0x11E3E0, 0x0, 0x0, 0x11E6A8, 0x11E438 } },
             { "SHOP_ID", new int[] { 0x7A3B4, 0x790B4, 0x0, 0x0, 0x0, 0x7A6DC, 0x7A5EC } },
             { "SHOP_PRICE", new int[] { 0x114310, 0x112AA4, 0x0, 0x0, 0x0, 0x1145BC, 0x11145C } },
-            { "ITEM_TABLE", new int[] { 0x111FF1, 0x110785, 0x0, 0x0, 0x0, 0x11229D, 0x11213D } },
+            { "ITEM_TABLE", new int[] { 0x111FF0, 0x110784, 0x0, 0x0, 0x0, 0x11229E, 0x11213E } },
             { "THROWN_ITEM_TABLE", new int[] { 0x4F2AC, 0x4EA8C, 0x0, 0x0, 0x0, 0x4F614 ,0x4F4D0 } },
             { "ITEM_NAME", new int[] { 0x117E10, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 } },
             { "ITEM_NAME_PTR", new int[] { 0x11972C, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 } },
@@ -111,7 +111,7 @@ namespace Dragoon_Modifier.Emulator {
 
             Memory = Factory.MemoryController(this);
 
-            Debug.WriteLine($"[DEBUG] Succesfully attached to emulator {emulatorName}");
+            Debug.WriteLine($"[DEBUG] Succesfully attached to emulator {emulatorName}.");
         }
 
         internal Emulator(string emulatorName, long previousOffset, Dictionary<string, int[]> addresses) {
@@ -134,7 +134,7 @@ namespace Dragoon_Modifier.Emulator {
 
             Memory = Factory.MemoryController(this);
 
-            Debug.WriteLine($"[DEBUG] Succesfully attached to emulator {emulatorName}");
+            Debug.WriteLine($"[DEBUG] Succesfully attached to emulator {emulatorName}.");
         }
 
 
@@ -467,7 +467,7 @@ namespace Dragoon_Modifier.Emulator {
                 }
                 result += LoDEncoding.GetChar(temp);
                 i += 2;
-                if (i > 499) {
+                if (i > 200) {
                     return result;
                 }
             }

@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,6 +31,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup />
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -67,14 +69,16 @@
     <Compile Include="Memory\Controller.cs" />
     <Compile Include="Memory\CurrentShop.cs" />
     <Compile Include="Memory\Equipment.cs" />
+    <Compile Include="Memory\IEquipment.cs" />
+    <Compile Include="Memory\IItem.cs" />
     <Compile Include="Memory\IMemory.cs" />
     <Compile Include="Memory\Item.cs" />
+    <Compile Include="Memory\IUsableItem.cs" />
     <Compile Include="Memory\SecondaryCharacterTable.cs" />
     <Compile Include="Memory\Shop.cs" />
     <Compile Include="Memory\UsableItem.cs" />
     <Compile Include="ProcessMemory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

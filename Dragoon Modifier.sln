@@ -14,6 +14,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dragoon Modifier.Core", "Dr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dragoon Modifier.Emulator", "Dragoon Modifier.Emulator\Dragoon Modifier.Emulator.csproj", "{F4E87665-0894-4017-BD08-590F49323F1A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dragoon Modifier.UI", "Dragoon Modifier.UI\Dragoon Modifier.UI.csproj", "{D20A8E1C-E458-4776-B855-ECE86C3DA28D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dragoon Modifier.DraMod", "Dragoon Modifier.DraMod\Dragoon Modifier.DraMod.csproj", "{58D0C948-2C4F-40C1-BEE9-93DB6420B2F9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,17 +25,23 @@ Global
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{9CD15924-6299-436B-8ADA-A16E3CA32BDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9CD15924-6299-436B-8ADA-A16E3CA32BDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9CD15924-6299-436B-8ADA-A16E3CA32BDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9CD15924-6299-436B-8ADA-A16E3CA32BDF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{06C5FD14-0541-4918-B5AB-AF58DA13C174}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{06C5FD14-0541-4918-B5AB-AF58DA13C174}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06C5FD14-0541-4918-B5AB-AF58DA13C174}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06C5FD14-0541-4918-B5AB-AF58DA13C174}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F4E87665-0894-4017-BD08-590F49323F1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F4E87665-0894-4017-BD08-590F49323F1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4E87665-0894-4017-BD08-590F49323F1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4E87665-0894-4017-BD08-590F49323F1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D20A8E1C-E458-4776-B855-ECE86C3DA28D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D20A8E1C-E458-4776-B855-ECE86C3DA28D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D20A8E1C-E458-4776-B855-ECE86C3DA28D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D20A8E1C-E458-4776-B855-ECE86C3DA28D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58D0C948-2C4F-40C1-BEE9-93DB6420B2F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58D0C948-2C4F-40C1-BEE9-93DB6420B2F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58D0C948-2C4F-40C1-BEE9-93DB6420B2F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58D0C948-2C4F-40C1-BEE9-93DB6420B2F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.Emulator.Memory {
-    public class UsableItem : Item {
+    public class UsableItem : Item, IUsableItem {
         public byte Target { get { return _emulator.ReadByte(_baseAddress); } set { _emulator.WriteByte(_baseAddress, value); } }
         public byte Element { get { return _emulator.ReadByte(_baseAddress + 0x1); } set { _emulator.WriteByte(_baseAddress + 0x1, value); } }
         public byte Damage { get { return _emulator.ReadByte(_baseAddress + 0x2); } set { _emulator.WriteByte(_baseAddress + 0x2, value); } }
