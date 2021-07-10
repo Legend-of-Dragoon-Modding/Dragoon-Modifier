@@ -16,5 +16,8 @@ namespace Dragoon_Modifier.DraMod {
         public static bool NoDecaySoulEater = false;
 
         public static byte NoDart = 255;
+        public static byte FlowerStorm = 0;
+        public static byte KillBGMMode = 0;
+        public static byte AspectRatioMode = 0;
     }
 }
