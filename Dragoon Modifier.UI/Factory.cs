@@ -7,8 +7,8 @@ using System.Windows.Controls;
 
 namespace Dragoon_Modifier.UI {
     public static class Factory {
-        public static DraMod.UI.IUIControl UIControl(TextBlock[,] monsterDisplay, TextBlock[,] characterDisplay, TextBlock glog, TextBlock plog) {
-            return new UIControl(monsterDisplay, characterDisplay, glog, plog);
+        public static DraMod.UI.IUIControl UIControl(TextBlock[,] monsterDisplay, TextBlock[,] characterDisplay, TextBlock glog, TextBlock plog, TextBlock[] fieldDisplay) {
+            return new UIControl(monsterDisplay, characterDisplay, glog, plog, fieldDisplay);
         }
     }
 }

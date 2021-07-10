@@ -12,12 +12,14 @@ namespace Dragoon_Modifier.UI {
         private readonly TextBlock[,] _characterDisplay;
         private readonly TextBlock _glog;
         private readonly TextBlock _plog;
+        private readonly TextBlock[] _fieldDisplay;
 
-        internal UIControl(TextBlock[,] monsterDisplay, TextBlock[,] characterDisplay, TextBlock glog, TextBlock plog) {
+        internal UIControl(TextBlock[,] monsterDisplay, TextBlock[,] characterDisplay, TextBlock glog, TextBlock plog, TextBlock[] fieldDisplay) {
             _monsterDisplay = monsterDisplay;
             _characterDisplay = characterDisplay;
             _glog = glog;
             _plog = plog;
+            _fieldDisplay = fieldDisplay;
         }
         public void UpdateMonster(int index, DraMod.UI.MonsterUpdate data) {
             Application.Current.Dispatcher.Invoke(() => {
@@ -43,6 +45,14 @@ namespace Dragoon_Modifier.UI {
                 _characterDisplay[index, 6].Text = $" {data.DDF}\r\n\r\n {data.DMDF}";
                 _characterDisplay[index, 7].Text = $" {data.SPD}\r\n\r\n {data.SP}";
                 _characterDisplay[index, 8].Text = $" {data.Turn}";
+            });
+        }
+
+        public void UpdateField(uint battleValue, uint encounterID, uint map) {
+            Application.Current.Dispatcher.Invoke(() => {
+                _fieldDisplay[0].Text = $"Encounter Value: {battleValue}";
+                _fieldDisplay[1].Text = $"Enemy ID: {encounterID}";
+                _fieldDisplay[2].Text = $"Map ID: {map}";
             });
         }
 

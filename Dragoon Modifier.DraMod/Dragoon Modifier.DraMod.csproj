@@ -73,6 +73,7 @@
     <Compile Include="Controller\Battle.cs" />
     <Compile Include="Controller\Field.cs" />
     <Compile Include="Controller\Main.cs" />
+    <Compile Include="Controller\NoDart.cs" />
     <Compile Include="UI\CharacterUpdate.cs" />
     <Compile Include="UI\IUIControl.cs" />
     <Compile Include="ModVersion.cs" />

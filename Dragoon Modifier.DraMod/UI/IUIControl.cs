@@ -4,5 +4,6 @@
         void UpdateCharacter(int index, CharacterUpdate data);
         void WriteGLog(object text);
         void WritePLog(object text);
+        void UpdateField(uint battleValue, uint encounterID, uint map);
     }
 }

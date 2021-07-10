@@ -14,5 +14,7 @@ namespace Dragoon_Modifier.DraMod {
         public static bool MonsterHPAsNames = false;
         public static bool NeverGuard = false;
         public static bool NoDecaySoulEater = false;
+
+        public static byte NoDart = 255;
     }
 }

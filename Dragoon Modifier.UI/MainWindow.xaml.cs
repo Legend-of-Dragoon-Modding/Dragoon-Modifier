@@ -53,7 +53,10 @@ namespace Dragoon_Modifier.UI {
                 { lblCharacter2Name, lblCharacter2HMP, lblCharacter2ATK, lblCharacter2DEF, lblCharacter2VHIT, lblCharacter2DATK, lblCharacter2DDEF, lblCharacter2SPD, lblCharacter2TRN },
                 { lblCharacter3Name, lblCharacter3HMP, lblCharacter3ATK, lblCharacter3DEF, lblCharacter3VHIT, lblCharacter3DATK, lblCharacter3DDEF, lblCharacter3SPD, lblCharacter3TRN }
             };
-            UIControl = Factory.UIControl(monsterLables, characterLables, stsGame, stsProgram);
+            TextBlock[] fieldLables = new TextBlock[3] {
+                lblEncounter, lblEnemyID, lblMapID
+            };
+            UIControl = Factory.UIControl(monsterLables, characterLables, stsGame, stsProgram, fieldLables);
             
         }
 

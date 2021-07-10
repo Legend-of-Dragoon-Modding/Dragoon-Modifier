@@ -14,7 +14,18 @@ namespace Dragoon_Modifier.DraMod.Controller {
         }
 
         internal static void Run(Emulator.IEmulator emulator, UI.IUIControl uiControl) {
+            if (Settings.AutoCharmPotion) {
+                AutoCharmPotion(emulator);
+            }
 
+            uiControl.UpdateField(emulator.Memory.BattleValue, emulator.Memory.EncounterID, emulator.Memory.MapID);
+        }
+
+        private static void AutoCharmPotion(Emulator.IEmulator emulator) {
+            if (emulator.Memory.BattleValue > 3850 && emulator.Memory.Gold >= 8) {
+                emulator.Memory.Gold -= 8;
+                emulator.Memory.BattleValue = 0;
+            }
         }
     }
 }

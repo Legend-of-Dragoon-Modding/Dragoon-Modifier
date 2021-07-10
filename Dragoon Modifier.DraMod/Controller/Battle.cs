@@ -25,6 +25,10 @@ namespace Dragoon_Modifier.DraMod.Controller {
             emulator.LoadBattle();
 
             UpdateUI(emulator, uiControl);
+
+            if (Settings.NoDart != 0 && Settings.NoDart != 255) {
+                NoDart.Initialize(emulator, Settings.NoDart);
+            }
         }
 
         public static void Run(Emulator.IEmulator emulator, UI.IUIControl uiControl) {
