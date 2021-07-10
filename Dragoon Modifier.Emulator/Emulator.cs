@@ -80,6 +80,9 @@ namespace Dragoon_Modifier.Emulator {
             { "ITEM_DESC_PTR", new int[] { 0x117A10, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 } },
             { "ITEM_BTL_DESC", new int[] { 0x50BF0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 } },
             { "ITEM_BTL_DESC_PTR", new int[] { 0x51758, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 } },
+            { "BATTLE_BASE_POINT", new int[] { 0xBC1C0, 0xBAEC0, 0xBC4A8, 0x0, 0x0, 0xBC4E8, 0xBC3F8 } },
+            { "MONSTER_NAMES", new int[] { 0xC69D0, 0xC56F0, 0xC6C08, 0x0, 0x0, 0xC6CF8, 0xC6C08 } },
+            { "MONSTER_SIZE", new int[] { 0xC6768, 0xC5488, 0xC6A50, 0x0, 0x0, 0xC6A90, 0xC69A0 } }
         };
 
         private readonly IntPtr _processHandle;
@@ -89,7 +92,7 @@ namespace Dragoon_Modifier.Emulator {
         public long EmulatorOffset { get; private set; }
         public Region Region { get; private set; }
         public Memory.IMemory Memory { get; private set; }
-        public Memory.Battle.IBattle Battle { get { return GetBattle(); } private set { Battle = value; } }
+        public Memory.Battle.IBattle Battle { get; private set; }
 
         internal Emulator(string emulatorName, long previousOffset) {
             EmulatorOffset = previousOffset;
@@ -495,14 +498,7 @@ namespace Dragoon_Modifier.Emulator {
         }
 
         public void LoadBattle() {
-            // Battle = Factory.MemoryController<Memory.Battle.IBattle>(this);
-        }
-
-        private Memory.Battle.IBattle GetBattle() {
-            if (Battle != null) {
-                return Battle;
-            }
-            throw new BattleNotInitializedException();
+            Battle = Factory.BattleController(this);
         }
 
         private bool Emulators(Process proc, string emulatorName) {

@@ -14,7 +14,7 @@ namespace Dragoon_Modifier.Emulator.Memory.Battle {
         public byte DLV { get { return _emulator.ReadByte(_baseAddress - 0x2); } set { _emulator.WriteByte(_baseAddress - 0x2, value); } }
         public byte Dragoon { get { return _emulator.ReadByte(_baseAddress + 0x7); } set { _emulator.WriteByte(_baseAddress + 0x7, value); } }
         public ushort MP { get { return _emulator.ReadUShort(_baseAddress + 0x4); } set { _emulator.WriteUShort(_baseAddress + 0x4, value); } }
-        public ushort Max_MP { get { return _emulator.ReadUShort(_baseAddress + 0xA); } set { _emulator.WriteUShort(_baseAddress + 0xA, value); } }
+        public ushort MaxMP { get { return _emulator.ReadUShort(_baseAddress + 0xA); } set { _emulator.WriteUShort(_baseAddress + 0xA, value); } }
         public ushort SP { get { return _emulator.ReadUShort(_baseAddress + 0x2); } set { _emulator.WriteUShort(_baseAddress + 0x2, value); } }
         public byte Weapon { get { return _emulator.ReadByte(_baseAddress + 0x116); } set { _emulator.WriteByte(_baseAddress + 0x116, value); } }
         public byte Helmet { get { return _emulator.ReadByte(_baseAddress + 0x118); } set { _emulator.WriteByte(_baseAddress + 0x118, value); } }

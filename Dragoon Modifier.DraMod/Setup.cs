@@ -2,24 +2,29 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod {
     public class Setup {
-        public static void Run() {
-            CheckVersion();
-            Attach();
+        public static void Run(UI.IUIControl uiControl) {
+            CheckVersion(uiControl);
+            var emulator = Attach();
+
+            Thread t = new Thread(() => Controller.Main.Run(emulator, uiControl));
+
+            t.Start();
         }
 
-        public static void Attach() {
+        public static Emulator.IEmulator Attach() {
             var emulator = Emulator.Factory.Create("ePSXe", 0);
-            Console.WriteLine(emulator.Memory.Item[3].Name);
+            return emulator;
         }
 
-        public static void CheckVersion() {
+        public static void CheckVersion(UI.IUIControl uiControl) {
             if (!ModVersion.IsCurrent(Constants.Version, out var newVersion, out var uri)) {
                 Console.WriteLine($"Current version {Constants.Version} is outdated. You can download version {newVersion} at {uri}");
-                //Constants.WriteGLog($"Newer version ({newVersion}) available.");
+                uiControl.WriteGLog($"Newer version ({newVersion}) available.");
             }
         }
     }

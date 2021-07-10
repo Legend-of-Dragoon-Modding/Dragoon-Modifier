@@ -16,9 +16,9 @@ namespace Dragoon_Modifier.Emulator.Memory.Battle {
 
         public uint BaseAddress { get { return _emulator.ReadUInt24(_baseAddress - 0x108) + 0x108; } }
         public byte Action { get { return _emulator.ReadByte(_baseAddress - 0xA8); } set { _emulator.WriteByte(_baseAddress - 0xA8, value); } }
-        public byte Spell_Cast { get { return _emulator.ReadByte(_baseAddress + 0x46); } set { _emulator.WriteByte(_baseAddress + 0x46, value); } }
+        public byte SpellCast { get { return _emulator.ReadByte(_baseAddress + 0x46); } set { _emulator.WriteByte(_baseAddress + 0x46, value); } }
         public ushort HP { get { return _emulator.ReadUShort(_baseAddress); } set { _emulator.WriteUShort(_baseAddress, value); } }
-        public ushort Max_HP { get { return _emulator.ReadUShort(_baseAddress + 0x8); } set { _emulator.WriteUShort(_baseAddress + 0x8, value); } }
+        public ushort MaxHP { get { return _emulator.ReadUShort(_baseAddress + 0x8); } set { _emulator.WriteUShort(_baseAddress + 0x8, value); } }
         public byte Status { get { return _emulator.ReadByte(_baseAddress + 0x6); } set { _emulator.WriteByte(_baseAddress + 0x6, value); } }
         public byte StatusResist { get { return _emulator.ReadByte(_baseAddress + 0x1C); } set { _emulator.WriteByte(_baseAddress + 0x1C, value); } }
         public byte SpecialEffect { get { return _emulator.ReadByte(_baseAddress + 0xC); } set { _emulator.WriteByte(_baseAddress + 0xC, value); } } // Old Death_Res

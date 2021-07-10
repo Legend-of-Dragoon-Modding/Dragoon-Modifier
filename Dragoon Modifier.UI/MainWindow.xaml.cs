@@ -28,13 +28,33 @@ namespace Dragoon_Modifier.UI {
         private static readonly SolidColorBrush _offColor = new SolidColorBrush(Color.FromArgb(255, 255, 168, 168));
         private static readonly SolidColorBrush _onColor = new SolidColorBrush(Color.FromArgb(255, 168, 211, 255));
 
+        public static DraMod.UI.IUIControl UIControl;
+
         public MainWindow() {
             InitializeComponent();
+            InitUI();
             this.Title += DraMod.Constants.Version;
             Console.SetOut(new TextBoxOutput(txtOutput));
             Debug.Listeners.Add(new DebugOutput(txtOutput));
 
-            DraMod.Setup.Run();
+            DraMod.Setup.Run(UIControl);
+        }
+
+        private void InitUI() {
+            TextBlock[,] monsterLables = new TextBlock[5, 6] {
+                {lblEnemy1Name,  lblEnemy1HP, lblEnemy1ATK, lblEnemy1DEF, lblEnemy1SPD, lblEnemy1TRN},
+                {lblEnemy2Name,  lblEnemy2HP, lblEnemy2ATK, lblEnemy2DEF, lblEnemy2SPD, lblEnemy2TRN},
+                {lblEnemy3Name,  lblEnemy3HP, lblEnemy3ATK, lblEnemy3DEF, lblEnemy3SPD, lblEnemy3TRN},
+                {lblEnemy4Name,  lblEnemy4HP, lblEnemy4ATK, lblEnemy4DEF, lblEnemy4SPD, lblEnemy4TRN},
+                {lblEnemy5Name,  lblEnemy5HP, lblEnemy5ATK, lblEnemy5DEF, lblEnemy5SPD, lblEnemy5TRN}
+            };
+            TextBlock[,] characterLables = new TextBlock[3, 9] {
+                { lblCharacter1Name, lblCharacter1HMP, lblCharacter1ATK, lblCharacter1DEF, lblCharacter1VHIT, lblCharacter1DATK, lblCharacter1DDEF, lblCharacter1SPD, lblCharacter1TRN },
+                { lblCharacter2Name, lblCharacter2HMP, lblCharacter2ATK, lblCharacter2DEF, lblCharacter2VHIT, lblCharacter2DATK, lblCharacter2DDEF, lblCharacter2SPD, lblCharacter2TRN },
+                { lblCharacter3Name, lblCharacter3HMP, lblCharacter3ATK, lblCharacter3DEF, lblCharacter3VHIT, lblCharacter3DATK, lblCharacter3DDEF, lblCharacter3SPD, lblCharacter3TRN }
+            };
+            UIControl = Factory.UIControl(monsterLables, characterLables, stsGame, stsProgram);
+            
         }
 
         private void miAttach_Click(object sender, RoutedEventArgs e) {

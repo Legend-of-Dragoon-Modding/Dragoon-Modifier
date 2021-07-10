@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.Emulator.Memory {
     public interface IMemory {
-        uint BattlePointBase { get; }
+        uint BattleBasePoint { get; }
         ushort BattleValue { get; set; }
         Memory.CurrentShop CurrentShop { get; }
         byte Disc { get; }

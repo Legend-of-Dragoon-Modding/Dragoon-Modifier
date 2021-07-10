@@ -51,9 +51,9 @@ namespace Dragoon_Modifier.Emulator.Memory {
         public Item[] Item { get; private set; } = new Item[256];
         // public CharacterStatTable[] CharacterStatTable { get; private set; }
         public AdditionTable[] MenuAdditionTable { get; private set; }
-        public uint BattlePointBase { get { return _emulator.ReadUInt24(_basePoint - 0x18); } }
-        public uint CharacterPoint { get { return _emulator.ReadUInt24(_basePoint); } }
-        public uint MonsterPoint { get { return _emulator.ReadUInt24(_basePoint + 0x14); } }
+        public uint BattleBasePoint { get { return _emulator.ReadUInt24(_basePoint); } }
+        public uint CharacterPoint { get { return _emulator.ReadUInt24(_basePoint + 0x18 ); } }
+        public uint MonsterPoint { get { return _emulator.ReadUInt24(_basePoint + 0x2C); } }
         public ushort EncounterID { get { return _emulator.ReadUShort(_encounterID); } set { _emulator.WriteUShort(_encounterID, value); } }
         public byte MonsterSize { get { return _emulator.ReadByte(_monsterSize); } }
         public byte UniqueMonsterSize { get { return _emulator.ReadByte(_uniqueMonsterSize); } }
@@ -120,7 +120,7 @@ namespace Dragoon_Modifier.Emulator.Memory {
             for (int i = 0; i < MenuAdditionTable.Length; i++) {
                 MenuAdditionTable[i] = new AdditionTable(_emulator, addTableAddr, addMultiAddr, i);
             }
-            _basePoint = _emulator.GetAddress("C_POINT");
+            _basePoint = emulator.GetAddress("BATTLE_BASE_POINT");
             _encounterID = _emulator.GetAddress("ENCOUNTER_ID");
             _monsterSize = _emulator.GetAddress("MONSTER_SIZE");
             _uniqueMonsterSize = _emulator.GetAddress("UNIQUE_MONSTER_SIZE");
