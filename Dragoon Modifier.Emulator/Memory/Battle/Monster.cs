@@ -25,7 +25,7 @@ namespace Dragoon_Modifier.Emulator.Memory.Battle {
         public Monster(IEmulator emulator, uint m_point, int slot, int position, int battleOffset) : base(emulator, m_point, slot, position) {
             _rewardsAddress = _emulator.GetAddress("MONSTER_REWARDS");
             _idAddress = _emulator.GetAddress("MONSTER_ID") + battleOffset + slot * 0x8;
-            _nameAddress = _emulator.GetAddress("MONSTER_NAMES") + (0x2C + slot);
+            _nameAddress = _emulator.GetAddress("MONSTER_NAMES") + (0x2C * slot);
         }
     }
 }

@@ -33,11 +33,9 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
         private static void UpdateUI(Emulator.IEmulator emulator, UI.IUIControl uiControl) {
             for (int i = 0; i < emulator.Battle.MonsterTable.Length; i++) {
-                Console.WriteLine($"Monster Table {emulator.Battle.MonsterTable.Length}");
                 uiControl.UpdateMonster(i, new UI.MonsterUpdate(emulator, i));
             }
             for (int i = 0; i < emulator.Battle.CharacterTable.Length; i++) {
-                Console.WriteLine($"Character Table {emulator.Battle.CharacterTable.Length}");
                 uiControl.UpdateCharacter(i, new UI.CharacterUpdate(emulator, i));
             }
         }
