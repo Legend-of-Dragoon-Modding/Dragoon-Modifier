@@ -19,7 +19,7 @@ namespace Dragoon_Modifier.Emulator.Memory {
         byte Chapter { get; }
         uint CharacterPoint { get; }
         Memory.CharacterTable[] CharacterTable { get; }
-        Memory.Item[] Item { get; }
+        Memory.IItem[] Item { get; }
         Collections.IAddress<byte> ItemInventory { get; }
         ushort MapID { get; set; }
         byte Menu { get; set; }

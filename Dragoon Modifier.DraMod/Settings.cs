@@ -19,5 +19,7 @@ namespace Dragoon_Modifier.DraMod {
         public static byte FlowerStorm = 0;
         public static byte KillBGMMode = 0;
         public static byte AspectRatioMode = 0;
+
+        public static string Mod = "US_Base";
     }
 }

@@ -106,7 +106,7 @@ namespace Dragoon_Modifier.Controller {
         private static void ItemStatChange(Emulator.IEmulator emulator) {
             for (int i = 0; i < 192; i++) {
                 var equip = (LoDDictionary.Equipment) LoDDictionary.Dictionary.Items[i];
-                var mem = (Emulator.Memory.Equipment) emulator.Memory.Item[i];
+                var mem = (Emulator.Memory.IEquipment) emulator.Memory.Item[i];
                 mem.WhoEquips = equip.WhoEquips;
                 mem.ItemType = equip.Type;
                 mem.WeaponElement = equip.WeaponElement;
@@ -135,7 +135,7 @@ namespace Dragoon_Modifier.Controller {
         private static void ThrownItemChange(Emulator.IEmulator emulator) {
             for (int i = 192; i < 255; i++) {
                 var item = (LoDDictionary.UsableItem) LoDDictionary.Dictionary.Items[i];
-                var mem = (Emulator.Memory.UsableItem) emulator.Memory.Item[i];
+                var mem = (Emulator.Memory.IUsableItem) emulator.Memory.Item[i];
                 mem.Target = item.Target;
                 mem.Element = item.Element;
                 mem.Damage = item.Damage;

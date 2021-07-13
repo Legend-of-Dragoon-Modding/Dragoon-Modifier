@@ -16,7 +16,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             uint tableBase = emulator.Memory.BattleBasePoint;
             while (tableBase == emulator.Memory.CharacterPoint || tableBase == emulator.Memory.MonsterPoint) { // Wait until both C_Point and M_Point were set
-                if (emulator.Memory.GameState != Emulator.GameState.Battle) { // TODO add Constants.RUN check
+                if (Constants.Run && emulator.Memory.GameState != Emulator.GameState.Battle) {
                     return;
                 }
                 Thread.Sleep(50);

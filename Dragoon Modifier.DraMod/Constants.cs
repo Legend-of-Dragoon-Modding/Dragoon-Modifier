@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod {
     public static class Constants {
-        public static string Version = "3.2"; // Lower version for testing
+        public const string Version = "3.2"; // Lower version for testing
+        public static  bool Run = false;
+        public static string EmulatorName = "ePSXe";
+        public static long PreviousOffset = 0xA579A0;
     }
 }

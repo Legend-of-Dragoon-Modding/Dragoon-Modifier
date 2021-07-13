@@ -125,7 +125,7 @@ namespace Dragoon_Modifier.Emulator {
 
             Memory = Factory.MemoryController(this);
 
-            Debug.WriteLine($"[DEBUG] Succesfully attached to emulator {emulatorName}.");
+            Console.WriteLine($"Succesfully attached to {emulatorName}.");
         }
 
         internal Emulator(string emulatorName, long previousOffset, Dictionary<string, int[]> addresses) {

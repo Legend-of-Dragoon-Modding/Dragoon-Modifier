@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.Emulator.Memory {
-    public class Item : IItem {
+    internal class Item : IItem {
 
         protected int _baseAddress;
         protected int _namePointerAddress;

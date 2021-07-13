@@ -17,7 +17,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             if (emulator.Battle.EncounterID == 413) { // Jiango has to have it's initial move. Otherwise he never gets a turn.
                 emulator.Battle.MonsterTable[0].Action = 12; // Play the "This is Jiango" part
                 while (emulator.Battle.MonsterTable[0].Action != 44) { // Jiango's initial move is over.
-                    if (emulator.Memory.GameState != Emulator.GameState.Battle) { // TODO Constants.RUN check
+                    if (Constants.Run && emulator.Memory.GameState != Emulator.GameState.Battle) {
                         return;
                     }
                     Thread.Sleep(50);
@@ -27,7 +27,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             emulator.Battle.CharacterTable[0].Action = 10; // Force character's turn in Dragoon form.
 
             while (emulator.Battle.CharacterTable[0].Menu != 96) { // Wait for the NoDart's character turn to start
-                if (emulator.Memory.GameState != Emulator.GameState.Battle) { // TODO Constants.RUN check
+                if (Constants.Run && emulator.Memory.GameState != Emulator.GameState.Battle) {
                     return;
                 }
                 Thread.Sleep(50);
@@ -134,7 +134,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 emulator.Battle.CharacterTable[0].Menu = 16;
             }
             while (emulator.Battle.CharacterTable[0].Action != 9) {
-                if (emulator.Memory.GameState != Emulator.GameState.Battle) { // Exit function if battle ends
+                if (Constants.Run && emulator.Memory.GameState != Emulator.GameState.Battle) {
                     return;
                 }
                 Thread.Sleep(50);

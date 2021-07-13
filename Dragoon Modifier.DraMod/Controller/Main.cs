@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 namespace Dragoon_Modifier.DraMod.Controller {
     internal static class Main {
         internal static bool StatsChanged = false;
-        internal static void Run(Emulator.IEmulator emulator, UI.IUIControl uiControl) {
-            while (true) { // TODO Constants.RUN
+        internal static void Run(Emulator.IEmulator emulator, UI.IUIControl uiControl, LoDDict.ILoDDictionary LoDDict) {
+            while (Constants.Run) {
                 try {
                     switch (emulator.Memory.GameState) {
                         case Emulator.GameState.Battle:

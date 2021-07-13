@@ -11,9 +11,9 @@ namespace Dragoon_Modifier.DraMod {
             CheckVersion(uiControl);
             var emulator = Attach();
 
-            Thread t = new Thread(() => Controller.Main.Run(emulator, uiControl));
+            //Thread t = new Thread(() => Controller.Main.Run(emulator, uiControl));
 
-            t.Start();
+            //t.Start();
         }
 
         public static Emulator.IEmulator Attach() {

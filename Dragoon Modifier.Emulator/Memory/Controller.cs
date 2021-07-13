@@ -48,7 +48,7 @@ namespace Dragoon_Modifier.Emulator.Memory {
         public Shop[] Shop { get; private set; } = new Shop[45]; // Most likely up to 64 shops. But most of it is unused, so I chose a safe number
         public CurrentShop CurrentShop { get; private set; }
         public byte ShopID { get { return _emulator.ReadByte(_shopID); } set { _emulator.WriteByte(_shopID, value); } }
-        public Item[] Item { get; private set; } = new Item[256];
+        public IItem[] Item { get; private set; } = new IItem[256];
         // public CharacterStatTable[] CharacterStatTable { get; private set; }
         public AdditionTable[] MenuAdditionTable { get; private set; }
         public uint BattleBasePoint { get { return _emulator.ReadUInt24(_basePoint); } }
@@ -98,10 +98,10 @@ namespace Dragoon_Modifier.Emulator.Memory {
             int itemDescPtr = _emulator.GetAddress("ITEM_DESC_PTR");
             var itemSellPriceAddr = _emulator.GetAddress("SHOP_PRICE");
             for (int i = 0; i < 192; i++) {
-                Item[i] = new Equipment(_emulator, equipTableAddr, itemNamePtr, itemDescPtr, itemSellPriceAddr, i);
+                Item[i] = new Equipment(_emulator, equipTableAddr, itemNamePtr, itemDescPtr, itemSellPriceAddr, i); // TODO Factory
             }
             for (int i = 192; i < 256; i++) {
-                Item[i] = new UsableItem(_emulator, itemTableAddr, itemNamePtr, itemDescPtr, itemSellPriceAddr, i);
+                Item[i] = new UsableItem(_emulator, itemTableAddr, itemNamePtr, itemDescPtr, itemSellPriceAddr, i); // TODO Factory
             }
 
             /*

@@ -34,7 +34,7 @@ namespace Dragoon_Modifier.UI {
 
         public void UpdateCharacter(int index, DraMod.UI.CharacterUpdate data) {
             Application.Current.Dispatcher.Invoke(() => {
-                // _characterDisplay[i, 0].Text = Constants.GetCharName(Globals.PARTY_SLOT[i]);
+                _characterDisplay[index, 0].Text = data.Name;
                 _characterDisplay[index, 1].Text = $" {data.HP} / {data.MaxHP}\r\n\r\n {data.MP} / {data.MaxMP}";
                 
                 _characterDisplay[index, 2].Text = $" {data.AT}\r\n\r\n {data.MAT}";
@@ -45,6 +45,30 @@ namespace Dragoon_Modifier.UI {
                 _characterDisplay[index, 6].Text = $" {data.DDF}\r\n\r\n {data.DMDF}";
                 _characterDisplay[index, 7].Text = $" {data.SPD}\r\n\r\n {data.SP}";
                 _characterDisplay[index, 8].Text = $" {data.Turn}";
+            });
+        }
+
+        public void ResetBattle() {
+            Application.Current.Dispatcher.Invoke(() => {
+                for (int i = 0; i < 5; i++) {
+                    _monsterDisplay[i, 0].Text = "";
+                    _monsterDisplay[i, 1].Text = "";
+                    _monsterDisplay[i, 2].Text = "";
+                    _monsterDisplay[i, 3].Text = "";
+                    _monsterDisplay[i, 4].Text = "";
+                    _monsterDisplay[i, 5].Text = "";
+                }
+                for (int i = 0; i < 3; i++) {
+                    _characterDisplay[i, 0].Text = "";
+                    _characterDisplay[i, 1].Text = "";
+                    _characterDisplay[i, 2].Text = "";
+                    _characterDisplay[i, 3].Text = "";
+                    _characterDisplay[i, 4].Text = "";
+                    _characterDisplay[i, 5].Text = "";
+                    _characterDisplay[i, 6].Text = "";
+                    _characterDisplay[i, 7].Text = "";
+                    _characterDisplay[i, 8].Text = "";
+                }
             });
         }
 

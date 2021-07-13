@@ -27,38 +27,22 @@ namespace Dragoon_Modifier.UI {
     public partial class MainWindow : MetroWindow {
         private static readonly SolidColorBrush _offColor = new SolidColorBrush(Color.FromArgb(255, 255, 168, 168));
         private static readonly SolidColorBrush _onColor = new SolidColorBrush(Color.FromArgb(255, 168, 211, 255));
+        private static readonly SolidColorBrush _grayOffColor = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
 
-        public static DraMod.UI.IUIControl UIControl;
+        public readonly DraMod.UI.IUIControl UIControl;
+        public readonly DraMod.IDraMod DragoonModifier;
 
         public MainWindow() {
             InitializeComponent();
-            InitUI();
+            UIControl = InitUI();
+            DragoonModifier = DraMod.Factory.DraMod(UIControl);
+
             this.Title += DraMod.Constants.Version;
             Console.SetOut(new TextBoxOutput(txtOutput));
             Debug.Listeners.Add(new DebugOutput(txtOutput));
-
-            DraMod.Setup.Run(UIControl);
         }
 
-        private void InitUI() {
-            TextBlock[,] monsterLables = new TextBlock[5, 6] {
-                {lblEnemy1Name,  lblEnemy1HP, lblEnemy1ATK, lblEnemy1DEF, lblEnemy1SPD, lblEnemy1TRN},
-                {lblEnemy2Name,  lblEnemy2HP, lblEnemy2ATK, lblEnemy2DEF, lblEnemy2SPD, lblEnemy2TRN},
-                {lblEnemy3Name,  lblEnemy3HP, lblEnemy3ATK, lblEnemy3DEF, lblEnemy3SPD, lblEnemy3TRN},
-                {lblEnemy4Name,  lblEnemy4HP, lblEnemy4ATK, lblEnemy4DEF, lblEnemy4SPD, lblEnemy4TRN},
-                {lblEnemy5Name,  lblEnemy5HP, lblEnemy5ATK, lblEnemy5DEF, lblEnemy5SPD, lblEnemy5TRN}
-            };
-            TextBlock[,] characterLables = new TextBlock[3, 9] {
-                { lblCharacter1Name, lblCharacter1HMP, lblCharacter1ATK, lblCharacter1DEF, lblCharacter1VHIT, lblCharacter1DATK, lblCharacter1DDEF, lblCharacter1SPD, lblCharacter1TRN },
-                { lblCharacter2Name, lblCharacter2HMP, lblCharacter2ATK, lblCharacter2DEF, lblCharacter2VHIT, lblCharacter2DATK, lblCharacter2DDEF, lblCharacter2SPD, lblCharacter2TRN },
-                { lblCharacter3Name, lblCharacter3HMP, lblCharacter3ATK, lblCharacter3DEF, lblCharacter3VHIT, lblCharacter3DATK, lblCharacter3DDEF, lblCharacter3SPD, lblCharacter3TRN }
-            };
-            TextBlock[] fieldLables = new TextBlock[3] {
-                lblEncounter, lblEnemyID, lblMapID
-            };
-
-            UIControl = Factory.UIControl(monsterLables, characterLables, stsGame, stsProgram, fieldLables);
-
+        private DraMod.UI.IUIControl InitUI() {
             cboSoloLeader.Items.Add("Slot 1");
             cboSoloLeader.Items.Add("Slot 2");
             cboSoloLeader.Items.Add("Slot 3");
@@ -250,14 +234,39 @@ namespace Dragoon_Modifier.UI {
             cboReaderOffHotkey.SelectedIndex = 0;
             cboReaderFieldHotkey.SelectedIndex = 0;
             cboHelpTopic.SelectedIndex = 0;
+
+            TextBlock[,] monsterLables = new TextBlock[5, 6] {
+                {lblEnemy1Name,  lblEnemy1HP, lblEnemy1ATK, lblEnemy1DEF, lblEnemy1SPD, lblEnemy1TRN},
+                {lblEnemy2Name,  lblEnemy2HP, lblEnemy2ATK, lblEnemy2DEF, lblEnemy2SPD, lblEnemy2TRN},
+                {lblEnemy3Name,  lblEnemy3HP, lblEnemy3ATK, lblEnemy3DEF, lblEnemy3SPD, lblEnemy3TRN},
+                {lblEnemy4Name,  lblEnemy4HP, lblEnemy4ATK, lblEnemy4DEF, lblEnemy4SPD, lblEnemy4TRN},
+                {lblEnemy5Name,  lblEnemy5HP, lblEnemy5ATK, lblEnemy5DEF, lblEnemy5SPD, lblEnemy5TRN}
+            };
+            TextBlock[,] characterLables = new TextBlock[3, 9] {
+                { lblCharacter1Name, lblCharacter1HMP, lblCharacter1ATK, lblCharacter1DEF, lblCharacter1VHIT, lblCharacter1DATK, lblCharacter1DDEF, lblCharacter1SPD, lblCharacter1TRN },
+                { lblCharacter2Name, lblCharacter2HMP, lblCharacter2ATK, lblCharacter2DEF, lblCharacter2VHIT, lblCharacter2DATK, lblCharacter2DDEF, lblCharacter2SPD, lblCharacter2TRN },
+                { lblCharacter3Name, lblCharacter3HMP, lblCharacter3ATK, lblCharacter3DEF, lblCharacter3VHIT, lblCharacter3DATK, lblCharacter3DDEF, lblCharacter3SPD, lblCharacter3TRN }
+            };
+            TextBlock[] fieldLables = new TextBlock[3] {
+                lblEncounter, lblEnemyID, lblMapID
+            };
+
+            return Factory.UIControl(monsterLables, characterLables, stsGame, stsProgram, fieldLables);
         }
 
         private void miAttach_Click(object sender, RoutedEventArgs e) {
-          
+            if (DraMod.Constants.Run) {
+                DraMod.Constants.Run = false;
+                miAttach.Header = "Attach";
+            } else {
+                if (DragoonModifier.Attach(DraMod.Constants.EmulatorName, DraMod.Constants.PreviousOffset)) {
+                    miAttach.Header = "Detach";
+                }
+            }
         }
 
         private void miEmulator_Click(object sender, RoutedEventArgs e) {
-  
+            
         }
 
         public void SetupEmulator(bool onOpen) {
@@ -266,10 +275,6 @@ namespace Dragoon_Modifier.UI {
 
         public void SetupScripts() {
 
-        }
-
-        private void miRegion_Click(object sender, RoutedEventArgs e) {
-  
         }
 
         private void miSaveSlot_Click(object sender, RoutedEventArgs e) {
@@ -426,10 +431,10 @@ namespace Dragoon_Modifier.UI {
         }
 
         private void ToggleButton(ref Button btn, ref bool value) {
-            if (!value) {
-                btn.Background = _onColor;
-            } else {
+            if (value) {
                 btn.Background = _offColor;
+            } else {
+                btn.Background = _onColor;
             }
             value = !value;
         }
@@ -458,7 +463,52 @@ namespace Dragoon_Modifier.UI {
         }
 
         public void DifficultyButton(object sender, EventArgs e) {
+            Button btn = (Button) sender;
 
+            switch (btn.Name) {
+                case "btnNormal":
+                    btn.Background = _onColor;
+                    btnNormalHard.Background = _grayOffColor;
+                    btnHard.Background = _grayOffColor;
+                    btnHardHell.Background = _grayOffColor;
+                    btnHell.Background = _grayOffColor;
+                    DraMod.Settings.Mod = "US_Base";
+                    break;
+                case "btnNormalHard":
+                    btnNormal.Background = _grayOffColor;
+                    btn.Background = _onColor;
+                    btnHard.Background = _grayOffColor;
+                    btnHardHell.Background = _grayOffColor;
+                    btnHell.Background = _grayOffColor;
+                    DraMod.Settings.Mod = "Hard_Mode";
+                    break;
+                case "btnHard":
+                    btnNormal.Background = _grayOffColor;
+                    btnNormalHard.Background = _grayOffColor;
+                    btn.Background = _onColor;
+                    btnHardHell.Background = _grayOffColor;
+                    btnHell.Background = _grayOffColor;
+                    DraMod.Settings.Mod = "Hard_Mode";
+                    break;
+                case "btnHardHell":
+                    btnNormal.Background = _grayOffColor;
+                    btnNormalHard.Background = _grayOffColor;
+                    btnHard.Background = _grayOffColor;
+                    btn.Background = _onColor;
+                    btnHell.Background = _grayOffColor;
+                    DraMod.Settings.Mod = "Hell_Mode";
+                    break;
+                case "btnHell":
+                    btnNormal.Background = _grayOffColor;
+                    btnNormalHard.Background = _grayOffColor;
+                    btnHard.Background = _grayOffColor;
+                    btnHardHell.Background = _grayOffColor;
+                    btn.Background = _onColor;
+                    DraMod.Settings.Mod = "Hell_Mode";
+                    break;
+            }
+
+            DragoonModifier.ChangeLoDDirectory(DraMod.Settings.Mod);
         }
 
         private void Slider_ValueChanged(object sender, EventArgs e) {

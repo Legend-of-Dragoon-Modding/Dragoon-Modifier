@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.UI {
     public class CharacterUpdate {
+        private static readonly string[] _characterNames = new string[] { "Dart", "Lavitz", "Shana", "Rose", "Haschel", "Albert", "Meru", "Kongol", "Miranda" };
+
+        public string Name;
         public ushort HP;
         public ushort MaxHP;
         public ushort MP;
@@ -27,6 +30,7 @@ namespace Dragoon_Modifier.DraMod.UI {
         public ushort Turn;
 
         internal CharacterUpdate(Emulator.IEmulator emulator, int index) {
+            Name = _characterNames[emulator.Memory.PartySlot[index]];
             HP = emulator.Battle.CharacterTable[index].HP;
             MaxHP = emulator.Battle.CharacterTable[index].MaxHP;
             MP = emulator.Battle.CharacterTable[index].MP;
