@@ -98,10 +98,10 @@ namespace Dragoon_Modifier.Emulator.Memory {
             int itemDescPtr = _emulator.GetAddress("ITEM_DESC_PTR");
             var itemSellPriceAddr = _emulator.GetAddress("SHOP_PRICE");
             for (int i = 0; i < 192; i++) {
-                Item[i] = new Equipment(_emulator, equipTableAddr, itemNamePtr, itemDescPtr, itemSellPriceAddr, i); // TODO Factory
+                Item[i] = Factory.Equipment(_emulator, equipTableAddr, itemNamePtr, itemDescPtr, itemSellPriceAddr, i);
             }
             for (int i = 192; i < 256; i++) {
-                Item[i] = new UsableItem(_emulator, itemTableAddr, itemNamePtr, itemDescPtr, itemSellPriceAddr, i); // TODO Factory
+                Item[i] = Factory.UsableItem(_emulator, itemTableAddr, itemNamePtr, itemDescPtr, itemSellPriceAddr, i);
             }
 
             /*

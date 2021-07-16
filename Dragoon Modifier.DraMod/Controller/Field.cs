@@ -9,8 +9,20 @@ namespace Dragoon_Modifier.DraMod.Controller {
         private static readonly ushort[] shopMaps = new ushort[] { 16, 23, 83, 84, 122, 145, 175, 180, 193, 204, 211, 214, 247,
         287, 309, 329, 332, 349, 357, 384, 435, 479, 515, 530, 564, 619, 624}; // Some maps missing?? 
 
-        internal static void Setup(Emulator.IEmulator emulator, UI.IUIControl uiControl) {
+        internal static void Setup(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict, UI.IUIControl uiControl) {
             uiControl.ResetBattle();
+            if (Settings.ItemIconChange) {
+                ItemIconChange(emulator, LoDDict);
+            }
+
+            if (Settings.ItemNameDescChange) {
+                ItemNameDescChange(emulator, LoDDict);
+            }
+
+            if (Settings.ItemStatChange) {
+                ItemStatChange(emulator, LoDDict);
+            }
+            
         }
 
         internal static void Run(Emulator.IEmulator emulator, UI.IUIControl uiControl) {
@@ -28,9 +40,10 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
         }
 
-        private static void ItemStatChange(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDictionary) {
+        private static void ItemStatChange(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict) {
+            Console.WriteLine("Changing Item Stats...");
             for (int i = 0; i < 192; i++) {
-                var equip = (LoDDict.IEquipment) LoDDictionary.Item[i];
+                var equip = (LoDDict.IEquipment) LoDDict.Item[i];
                 var mem = (Emulator.Memory.IEquipment) emulator.Memory.Item[i];
                 mem.WhoEquips = equip.WhoEquips;
                 mem.ItemType = equip.Type;
@@ -57,9 +70,9 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
         }
 
-        private static void ThrownItemChange(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDictionary) {
+        private static void ThrownItemChange(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict) {
             for (int i = 192; i < 255; i++) {
-                var item = (LoDDict.IUsableItem) LoDDictionary.Item[i];
+                var item = (LoDDict.IUsableItem) LoDDict.Item[i];
                 var mem = (Emulator.Memory.IUsableItem) emulator.Memory.Item[i];
                 mem.Target = item.Target;
                 mem.Element = item.Element;
@@ -72,6 +85,27 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 mem.Percentage = item.Percentage;
                 mem.Unknown2 = item.Unknown2;
                 mem.BaseSwitch = item.BaseSwitch;
+            }
+        }
+
+        private static void ItemIconChange(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict) {
+            Console.WriteLine("Changing Item Icons...");
+            for (int i = 0; i < emulator.Memory.Item.Length; i++) {
+                emulator.Memory.Item[i].Icon = LoDDict.Item[i].Icon;
+            }
+        }
+
+        private static void ItemNameDescChange(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict) {
+            Console.WriteLine("Changing Item Names and Descriptions...");
+
+            int address = emulator.GetAddress("ITEM_NAME");
+            int address2 = emulator.GetAddress("ITEM_DESC");
+            emulator.WriteAoB(address, LoDDict.ItemNames);
+            emulator.WriteAoB(address2, LoDDict.ItemDescriptions);
+
+            for (int i = 0; i < emulator.Memory.Item.Length; i++) {
+                emulator.Memory.Item[i].NamePointer = (uint) LoDDict.Item[i].NamePointer;
+                emulator.Memory.Item[i].DescriptionPointer = (uint) LoDDict.Item[i].DescriptionPointer;
             }
         }
     }

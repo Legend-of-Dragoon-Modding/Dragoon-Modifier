@@ -46,5 +46,14 @@ namespace Dragoon_Modifier.Emulator {
         internal static ILoDEncoding CustomEncoding(Dictionary<char, ushort> char2ushort) {
             return new LoDEncoding(char2ushort);
         }
+
+        internal static Memory.IEquipment Equipment(IEmulator emulator, int equipTableAddr, int itemNamePtr, int itemDescPtr, int itemSellPriceAddr, int item) {
+            return new Memory.Equipment(emulator, equipTableAddr, itemNamePtr, itemDescPtr, itemSellPriceAddr, item);
+        }
+
+        internal static Memory.IUsableItem UsableItem(IEmulator emulator, int itemTableAddr, int itemNamePtr, int itemDescPtr, int itemSellPriceAddr, int item) {
+            return new Memory.UsableItem(emulator, itemTableAddr, itemNamePtr, itemDescPtr, itemSellPriceAddr, item);
+        }
+        
     }
 }

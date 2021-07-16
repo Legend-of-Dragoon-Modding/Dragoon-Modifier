@@ -7,6 +7,7 @@ namespace Dragoon_Modifier.Emulator {
         long EmulatorOffset { get; }
         IMemory Memory { get; }
         Region Region { get; }
+        ILoDEncoding LoDEncoding { get; }
 
         int GetAddress(string address);
         void LoadBattle();
@@ -32,6 +33,7 @@ namespace Dragoon_Modifier.Emulator {
         ushort ReadUShort(long address);
         ushort ReadUShort(string address, int offset = 0);
         void WriteAoB(long startAddress, byte[] bytes);
+        void WriteAoB(long startAddress, string byteString);
         void WriteByte(long address, byte value);
         void WriteByte(string address, byte value, int offset = 0);
         void WriteInt(long address, int value);

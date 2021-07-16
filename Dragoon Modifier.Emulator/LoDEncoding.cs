@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.Emulator {
     internal class LoDEncoding : ILoDEncoding {
+        private static readonly Regex _regex = new Regex(@"(<[\s\S]+?>)", RegexOptions.Compiled);
         private static readonly Dictionary<char, ushort> NTA = new Dictionary<char, ushort>() {
             {' ', 0x00 },
             {',', 0x01 },
@@ -95,6 +97,14 @@ namespace Dragoon_Modifier.Emulator {
 
 
         };
+        private static readonly Dictionary<string, ushort> _textCodes = new Dictionary<string, ushort>() {
+            { "<END>", 0xA0FF },
+            {"<LINE>", 0xA1FF },
+            {"<GOLD>", 0xA8 },
+            {"<WHITE>", 0xA7 },
+            {"<RED>", 0xA705 },
+            {"<YELLOW>", 0xA708 }
+        };
         private static readonly byte[] empty = new byte[] { 0x0, 0x0 };
         private readonly Dictionary<char, ushort> _char2ushort;
         private readonly Dictionary<ushort, char> _ushort2char;
@@ -122,6 +132,30 @@ namespace Dragoon_Modifier.Emulator {
                 }
                 result.AddRange(empty);
             }
+            return result.ToArray();
+        }
+
+        public byte[] GetBytes2(string text) {
+            var result = new List<byte>();
+            string[] parts = _regex.Split(text).Where(l => l != string.Empty).ToArray();
+            foreach (var segment in parts) {
+                if (segment.StartsWith("<")) {
+                    if (_textCodes.TryGetValue(segment, out var key)) {
+                        result.AddRange(BitConverter.GetBytes(key));
+                    }
+                } else {
+                    foreach (char c in segment) {
+                        if (_char2ushort.TryGetValue(c, out var key)) {
+                            result.AddRange(BitConverter.GetBytes(key));
+                            continue;
+                        }
+                        result.AddRange(empty);
+                    }
+                }
+            }
+
+
+
             return result.ToArray();
         }
 

@@ -35,7 +35,7 @@ namespace Dragoon_Modifier.UI {
         public MainWindow() {
             InitializeComponent();
             UIControl = InitUI();
-            DragoonModifier = DraMod.Factory.DraMod(UIControl);
+            DragoonModifier = DraMod.Factory.DraMod(UIControl, Directory.GetCurrentDirectory());
 
             this.Title += DraMod.Constants.Version;
             Console.SetOut(new TextBoxOutput(txtOutput));
@@ -472,7 +472,7 @@ namespace Dragoon_Modifier.UI {
                     btnHard.Background = _grayOffColor;
                     btnHardHell.Background = _grayOffColor;
                     btnHell.Background = _grayOffColor;
-                    DraMod.Settings.Mod = "US_Base";
+                    DragoonModifier.ChangeLoDDirectory("US_Base");
                     break;
                 case "btnNormalHard":
                     btnNormal.Background = _grayOffColor;
@@ -480,7 +480,7 @@ namespace Dragoon_Modifier.UI {
                     btnHard.Background = _grayOffColor;
                     btnHardHell.Background = _grayOffColor;
                     btnHell.Background = _grayOffColor;
-                    DraMod.Settings.Mod = "Hard_Mode";
+                    DragoonModifier.ChangeLoDDirectory("Hard_Mode");
                     break;
                 case "btnHard":
                     btnNormal.Background = _grayOffColor;
@@ -488,7 +488,7 @@ namespace Dragoon_Modifier.UI {
                     btn.Background = _onColor;
                     btnHardHell.Background = _grayOffColor;
                     btnHell.Background = _grayOffColor;
-                    DraMod.Settings.Mod = "Hard_Mode";
+                    DragoonModifier.ChangeLoDDirectory("Hard_Mode");
                     break;
                 case "btnHardHell":
                     btnNormal.Background = _grayOffColor;
@@ -496,7 +496,7 @@ namespace Dragoon_Modifier.UI {
                     btnHard.Background = _grayOffColor;
                     btn.Background = _onColor;
                     btnHell.Background = _grayOffColor;
-                    DraMod.Settings.Mod = "Hell_Mode";
+                    DragoonModifier.ChangeLoDDirectory("Hell_Mode");
                     break;
                 case "btnHell":
                     btnNormal.Background = _grayOffColor;
@@ -504,7 +504,7 @@ namespace Dragoon_Modifier.UI {
                     btnHard.Background = _grayOffColor;
                     btnHardHell.Background = _grayOffColor;
                     btn.Background = _onColor;
-                    DraMod.Settings.Mod = "Hell_Mode";
+                    DragoonModifier.ChangeLoDDirectory("Hell_Mode");
                     break;
             }
 

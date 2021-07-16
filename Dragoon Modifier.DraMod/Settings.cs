@@ -21,5 +21,9 @@ namespace Dragoon_Modifier.DraMod {
         public static byte AspectRatioMode = 0;
 
         public static string Mod = "US_Base";
+
+        public static bool ItemStatChange = true;
+        public static bool ItemIconChange = true;
+        public static bool ItemNameDescChange = true;
     }
 }

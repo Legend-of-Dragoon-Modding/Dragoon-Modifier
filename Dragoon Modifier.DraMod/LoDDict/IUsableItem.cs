@@ -2,8 +2,8 @@
     public interface IUsableItem : IItem {
         byte BaseSwitch { get; }
         string BattleDescription { get; }
-        long BattleDescriptionPointer { get; set; }
-        long BattleNamePointer { get; set; }
+        int BattleDescriptionPointer { get; set; }
+        int BattleNamePointer { get; set; }
         byte Damage { get; }
         byte Element { get; }
         string EncodedBattleDescription { get; }

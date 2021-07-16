@@ -21,7 +21,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                             break;
                         case Emulator.GameState.Field:
                             if (StatsChanged) {
-                                Field.Setup(emulator, uiControl);
+                                Field.Setup(emulator, LoDDict, uiControl);
                                 StatsChanged = false;
                             }
                             Field.Run(emulator, uiControl);

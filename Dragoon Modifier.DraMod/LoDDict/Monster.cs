@@ -28,6 +28,10 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
         public ushort Gold { get; private set; } = 0;
         public byte DropItem { get; private set; } = 255;
         public byte DropChance { get; private set; } = 0;
+
+        internal Monster() {
+
+        }
         
     }
 }

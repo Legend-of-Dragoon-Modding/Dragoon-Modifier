@@ -98,12 +98,13 @@ namespace Dragoon_Modifier.Emulator {
 
         private readonly IntPtr _processHandle;
 
-        public ILoDEncoding LoDEncoding;
+        
 
         public long EmulatorOffset { get; private set; }
         public Region Region { get; private set; }
         public Memory.IMemory Memory { get; private set; }
         public Memory.Battle.IBattle Battle { get; private set; }
+        public ILoDEncoding LoDEncoding { get; private set; }
 
         internal Emulator(string emulatorName, long previousOffset) {
             EmulatorOffset = previousOffset;
@@ -467,6 +468,16 @@ namespace Dragoon_Modifier.Emulator {
             ProcessMemory.WriteProcessMemory(_processHandle, startAddress + EmulatorOffset, bytes, bytes.Length, out int lpNumberOfBytesWritten);
         }
 
+        public void WriteAoB(long startAddress, string byteString) {
+            string[] str = byteString.Split(' ');
+
+            byte[] bytes = new byte[str.Length];
+            for (int i = 0; i < str.Length; i++) {
+                bytes[i] = Convert.ToByte(str[i], 16);
+            }
+            ProcessMemory.WriteProcessMemory(_processHandle, startAddress + EmulatorOffset, bytes, bytes.Length, out int lpNumberOfBytesWritten);
+        }
+
         public string ReadText(long startAddress, long endAddress) {
             return LoDEncoding.GetString(ReadAoB(startAddress, endAddress));
         }
@@ -488,7 +499,7 @@ namespace Dragoon_Modifier.Emulator {
         }
 
         public void WriteText(long address, string text) {
-            WriteAoB(address, LoDEncoding.GetBytes(text));
+            WriteAoB(address, LoDEncoding.GetBytes2(text));
         }
 
         public int GetAddress(string address) {

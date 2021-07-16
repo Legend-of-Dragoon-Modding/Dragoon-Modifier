@@ -10,9 +10,11 @@ namespace Dragoon_Modifier.DraMod {
         private Emulator.IEmulator _emulator;
         private readonly UI.IUIControl _uiControl;
         private LoDDict.ILoDDictionary _LoDDict;
+        private string _cwd;
 
-        internal DragoonModifier(UI.IUIControl uiControl) {
+        internal DragoonModifier(UI.IUIControl uiControl, string cwd) {
             _uiControl = uiControl;
+            _cwd = cwd;
         }
 
         public bool Attach(string emulatorName, long previousOffset) {
@@ -21,7 +23,7 @@ namespace Dragoon_Modifier.DraMod {
                 Console.WriteLine($"Emulator offset:        {Convert.ToString(_emulator.EmulatorOffset, 16).ToUpper()}");
                 Console.WriteLine($"Region:                 {_emulator.Region}");
 
-                _LoDDict = Factory.LoDDictionary(_emulator, Settings.Mod);
+                _LoDDict = Factory.LoDDictionary(_emulator, _cwd, Settings.Mod);
 
                 Constants.Run = true;
                 Thread t = new Thread(() => Controller.Main.Run(_emulator, _uiControl, _LoDDict));
@@ -41,7 +43,7 @@ namespace Dragoon_Modifier.DraMod {
         public void ChangeLoDDirectory(string mod) {
             Settings.Mod = mod;
             if (Constants.Run) {
-                _LoDDict = Factory.LoDDictionary(_emulator, mod);
+                _LoDDict = Factory.LoDDictionary(_emulator, _cwd, mod);
             }
         }
     }
