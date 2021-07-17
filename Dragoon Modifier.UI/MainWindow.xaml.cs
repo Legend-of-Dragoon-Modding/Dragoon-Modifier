@@ -512,7 +512,27 @@ namespace Dragoon_Modifier.UI {
         }
 
         private void Slider_ValueChanged(object sender, EventArgs e) {
-
+            var slider = sender as Slider;
+            switch (slider.Name) {
+                case "sldHP":
+                    DraMod.Settings.HPMulti = slider.Value;
+                    break;
+                case "sldATK":
+                    DraMod.Settings.ATMulti = slider.Value;
+                    break;
+                case "sldDEF":
+                    DraMod.Settings.DFMulti = slider.Value;
+                    break;
+                case "sldMAT":
+                    DraMod.Settings.MATMulti = slider.Value;
+                    break;
+                case "sldMDF":
+                    DraMod.Settings.MDFMulti = slider.Value;
+                    break;
+                case "sldSPD":
+                    DraMod.Settings.SPDMulti = slider.Value;
+                    break;
+            }
         }
 
         private void Window_Closing(object sender, CancelEventArgs e) {

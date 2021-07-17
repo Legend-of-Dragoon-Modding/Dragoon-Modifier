@@ -34,7 +34,7 @@ namespace Dragoon_Modifier.Emulator.Memory.Battle {
             MonsterTable = new Monster[monsterCount];
             MonsterID = new ushort[monsterCount];
             for (int i = 0; i < MonsterTable.Length; i++) {
-                MonsterTable[i] = new Monster(_emulator, MonsterPoint, i, i, 0);
+                MonsterTable[i] = new Monster(_emulator, MonsterPoint, i, i, BattleOffset);
                 MonsterID[i] = MonsterTable[i].ID;
             }
             int partySize = 0;

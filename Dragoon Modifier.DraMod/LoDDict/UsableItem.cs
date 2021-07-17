@@ -63,7 +63,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
         public byte Unknown2 { get; private set; } = 0;
         public byte BaseSwitch { get; private set; } = 0;
 
-        internal UsableItem(Emulator.IEmulator emulator, byte index, string[] values) {
+        internal UsableItem(Emulator.IEmulator emulator, byte index, string[] values, Dictionary<string, byte> element2num, Dictionary<string, byte> status2num) {
             List<string> error = new List<string>();
 
             ID = index;
@@ -79,7 +79,11 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
                 error.Add($"{values[1]} couldn't be parsed as Target.");
             }
 
-            // 2 Element
+            if (element2num.TryGetValue(values[2], out bkey)) {
+                Element = bkey;
+            } else if (values[2] != "") {
+                error.Add($"{values[2]} not found as Element.");
+            }
 
             if (_damageBases.TryGetValue(values[3], out bkey)) {
                 Damage = bkey;
@@ -129,7 +133,11 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
                 error.Add($"{values[8]} not found as Icon.");
             }
 
-            // 9 Status
+            if (status2num.TryGetValue(values[9], out bkey)) {
+                Status = bkey;
+            } else if (values[9] != "") {
+                error.Add($"{values[9]} not found as Status.");
+            }
 
             if (Byte.TryParse(values[10], out bkey)) {
                 Percentage = bkey;

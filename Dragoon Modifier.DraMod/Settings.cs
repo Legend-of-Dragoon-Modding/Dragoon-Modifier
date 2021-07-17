@@ -25,5 +25,13 @@ namespace Dragoon_Modifier.DraMod {
         public static bool ItemStatChange = true;
         public static bool ItemIconChange = true;
         public static bool ItemNameDescChange = true;
+        public static bool MonsterStatChange = true;
+
+        public static double HPMulti = 1;
+        public static double ATMulti = 1;
+        public static double MATMulti = 1;
+        public static double DFMulti = 1;
+        public static double MDFMulti = 1;
+        public static double SPDMulti = 1;
     }
 }

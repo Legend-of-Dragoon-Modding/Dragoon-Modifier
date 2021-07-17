@@ -44,6 +44,7 @@ namespace Dragoon_Modifier.DraMod {
             Settings.Mod = mod;
             if (Constants.Run) {
                 _LoDDict = Factory.LoDDictionary(_emulator, _cwd, mod);
+                Controller.Main.StatsChanged = false;
             }
         }
     }

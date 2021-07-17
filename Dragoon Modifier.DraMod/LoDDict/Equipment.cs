@@ -88,7 +88,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
         public byte SpecialBonusAmmount { get; private set; } = 0;
         public byte SpecialEffect { get; private set; } = 0;
 
-        internal Equipment(Emulator.IEmulator emulator, byte index, string[] values) {
+        internal Equipment(Emulator.IEmulator emulator, byte index, string[] values, Dictionary<string, byte> element2num, Dictionary<string, byte> status2num) {
             var error = new List<string>();
 
             ID = index;
@@ -122,9 +122,17 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
                 error.Add($"{values[3]} not found as Icon.");
             }
 
-            // 4 Element
+            if (element2num.TryGetValue(values[4].ToLower(), out bkey)) {
+                WeaponElement = bkey;
+            } else {
+                error.Add($"{values[4]} not found as Weapon Element");
+            }
 
-            // 5 OnHitStatus
+            if (status2num.TryGetValue(values[5].ToLower(), out bkey)) {
+                OnHitStatus = bkey;
+            } else {
+                error.Add($"{values[5]} not found as On Hit Status");
+            }
 
             if (Byte.TryParse(values[6], out bkey)) {
                 OnHitStatusChance = bkey;
@@ -186,11 +194,41 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
                 error.Add($"Couldn't parse {values[15]} as A_AV.");
             }
 
-            // 16 ElementalResistance
+            errorTemp = new List<string>();
+            foreach (string sub in values[16].Replace(" ", "").ToLower().Split(',')) {
+                if (element2num.TryGetValue(sub, out bkey)) {
+                    ElementalResistance |= bkey;
+                } else {
+                    errorTemp.Add(sub);
+                }
+            }
+            if (errorTemp.Count != 0) {
+                error.Add($"{String.Join(", ", errorTemp)} not found as Elemental Resistance.");
+            }
 
-            // 17 ElementalImmunity
+            errorTemp = new List<string>();
+            foreach (string sub in values[17].Replace(" ", "").ToLower().Split(',')) {
+                if (element2num.TryGetValue(sub, out bkey)) {
+                    ElementalImmunity |= bkey;
+                } else {
+                    errorTemp.Add(sub);
+                }
+            }
+            if (errorTemp.Count != 0) {
+                error.Add($"{String.Join(", ", errorTemp)} not found as Elemental Immunity.");
+            }
 
-            // 18 Status Resist
+            errorTemp = new List<string>();
+            foreach (string sub in values[18].Replace(" ", "").ToLower().Split(',')) {
+                if (status2num.TryGetValue(sub, out bkey)) {
+                    StatusResistance |= bkey;
+                } else {
+                    errorTemp.Add(sub);
+                }
+            }
+            if (errorTemp.Count != 0) {
+                error.Add($"{String.Join(", ", errorTemp)} not found as Status Resistance.");
+            }
 
             errorTemp = new List<string>();
             foreach (string sub in values[19].Replace(" ", "").ToLower().Split(',')) {
