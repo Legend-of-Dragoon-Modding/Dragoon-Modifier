@@ -143,5 +143,17 @@
       <Name>Dragoon Modifier.DraMod</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Mods\" />
+    <Folder Include="Presets\" />
+    <Folder Include="Reader\" />
+    <Folder Include="Scripts\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "$(ProjectDir)Scripts\*.*" "$(ProjectDir)bin\$(ConfigurationName)\Scripts\" /E /Y
+xcopy "$(ProjectDir)Presets\*.*" "$(ProjectDir)bin\$(ConfigurationName)\Presets\" /E /Y
+xcopy "$(ProjectDir)Mods\*.*" "$(ProjectDir)bin\$(ConfigurationName)\Mods\" /E /Y
+xcopy "$(ProjectDir)Reader\*.*" "$(ProjectDir)bin\$(ConfigurationName)\Reader\" /E /Y</PostBuildEvent>
+  </PropertyGroup>
 </Project>

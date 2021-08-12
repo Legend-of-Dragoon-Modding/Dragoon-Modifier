@@ -66,6 +66,8 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
             HP = Math.Round(HP);
 
+            Console.WriteLine("Monster ID: " + id + " HP: " + HP);
+
             emulator.Battle.MonsterTable[slot].HP = (ushort) HP;
             emulator.Battle.MonsterTable[slot].MaxHP = (ushort) HP;
             emulator.Battle.MonsterTable[slot].AT = (ushort) Math.Round(LoDDict.Monster[id].AT * Settings.ATMulti);

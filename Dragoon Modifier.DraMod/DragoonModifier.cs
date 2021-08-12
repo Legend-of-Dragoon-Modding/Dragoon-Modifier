@@ -9,7 +9,7 @@ namespace Dragoon_Modifier.DraMod {
     internal class DragoonModifier : IDraMod {
         private Emulator.IEmulator _emulator;
         private readonly UI.IUIControl _uiControl;
-        private LoDDict.ILoDDictionary _LoDDict;
+        private static LoDDict.ILoDDictionary _LoDDict;
         private string _cwd;
 
         internal DragoonModifier(UI.IUIControl uiControl, string cwd) {
@@ -26,7 +26,7 @@ namespace Dragoon_Modifier.DraMod {
                 _LoDDict = Factory.LoDDictionary(_emulator, _cwd, Settings.Mod);
 
                 Constants.Run = true;
-                Thread t = new Thread(() => Controller.Main.Run(_emulator, _uiControl, _LoDDict));
+                Thread t = new Thread(() => Controller.Main.Run(ref _emulator, _uiControl, ref _LoDDict));
 
                 t.Start();
                 return true;
@@ -43,6 +43,7 @@ namespace Dragoon_Modifier.DraMod {
         public void ChangeLoDDirectory(string mod) {
             Settings.Mod = mod;
             if (Constants.Run) {
+                _uiControl.WritePLog("Changing mod directory to " + mod);
                 _LoDDict = Factory.LoDDictionary(_emulator, _cwd, mod);
                 Controller.Main.StatsChanged = false;
             }
