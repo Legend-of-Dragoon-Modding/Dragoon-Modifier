@@ -255,5 +255,27 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
                 Console.WriteLine($"[ERROR] Incorrect fromat of {file} at line {i + 1}");
             }
         }
+
+        public void SwapMonsters(string cwd, string mod) {
+            string file = $"{cwd}\\Mods\\{mod}\\Monster_Data.tsv";
+            int i = 0;
+            Monster.Clear();
+            try {
+                using (var monsterData = new StreamReader(file)) {
+                    monsterData.ReadLine(); // Skip first line
+                    while (!monsterData.EndOfStream) {
+                        var line = monsterData.ReadLine();
+                        var values = line.Split('\t').ToArray();
+                        if (UInt16.TryParse(values[0], out var uskey)) {
+                            Monster.Add(uskey, new Monster(values, this, Status2Num, Element2Num));
+                        }
+                    }
+                }
+            } catch (IOException) {
+                Console.WriteLine($"[ERROR] {file} not found.");
+            } catch (IndexOutOfRangeException) {
+                Console.WriteLine($"[ERROR] Incorrect fromat of {file} at line {i + 1}");
+            }
+        }
     }
 }

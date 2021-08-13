@@ -73,7 +73,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="DebugOutput.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="TextBoxOutput.cs" />
     <Compile Include="UIControl.cs" />

@@ -22,6 +22,9 @@ namespace Dragoon_Modifier.Emulator.Memory {
         private readonly int _gold;
         private readonly int _menuUnlock;
         private readonly int _shopID;
+        private readonly int _savePoint;
+        private readonly int _textSpeed;
+        private readonly int _autoText;
         private readonly int _basePoint;
         private readonly int _encounterID;
         private readonly int _monsterSize;
@@ -49,6 +52,9 @@ namespace Dragoon_Modifier.Emulator.Memory {
         public CurrentShop CurrentShop { get; private set; }
         public byte ShopID { get { return _emulator.ReadByte(_shopID); } set { _emulator.WriteByte(_shopID, value); } }
         public IItem[] Item { get; private set; } = new IItem[256];
+        public byte SavePoint { get { return _emulator.ReadByte(_savePoint); } set { _emulator.WriteByte(_savePoint, value); } }
+        public ushort TextSpeed { get { return _emulator.ReadUShort(_textSpeed); } set { _emulator.WriteUShort(_textSpeed, value); } }
+        public ushort AutoText { get { return _emulator.ReadUShort(_autoText); } set { _emulator.WriteUShort(_autoText, value); } }
         // public CharacterStatTable[] CharacterStatTable { get; private set; }
         public AdditionTable[] MenuAdditionTable { get; private set; }
         public uint BattleBasePoint { get { return _emulator.ReadUInt24(_basePoint); } }
@@ -92,6 +98,9 @@ namespace Dragoon_Modifier.Emulator.Memory {
             }
             CurrentShop = new CurrentShop(_emulator, _emulator.GetAddress("SHOP_CONTENT"));
             _shopID = _emulator.GetAddress("SHOP_ID");
+            _savePoint = _emulator.GetAddress("SAVE_POINT");
+            _textSpeed = _emulator.GetAddress("TEXT_SPEED");
+            _autoText = _emulator.GetAddress("AUTO_TEXT");
             var equipTableAddr = _emulator.GetAddress("ITEM_TABLE");
             var itemTableAddr = _emulator.GetAddress("THROWN_ITEM_TABLE");
             int itemNamePtr = _emulator.GetAddress("ITEM_NAME_PTR");

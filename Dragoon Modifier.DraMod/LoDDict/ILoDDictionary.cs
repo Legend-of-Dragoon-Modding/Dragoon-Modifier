@@ -11,5 +11,6 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
         Dictionary<ushort, Monster> Monster { get; }
 
         bool TryItem2Num(string name, out byte id);
+        void SwapMonsters(string cwd, string mod);
     }
 }

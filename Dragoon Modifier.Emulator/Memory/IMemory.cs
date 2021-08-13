@@ -36,5 +36,8 @@ namespace Dragoon_Modifier.Emulator.Memory {
         byte ShopID { get; set; }
         byte Transition { get; set; }
         byte UniqueMonsterSize { get; }
+        byte SavePoint { get; set; }
+        ushort TextSpeed { get; set; }
+        ushort AutoText { get; set; }
     }
 }

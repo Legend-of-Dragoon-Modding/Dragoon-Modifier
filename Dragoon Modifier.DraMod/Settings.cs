@@ -45,6 +45,7 @@ namespace Dragoon_Modifier.DraMod {
         public static byte KillBGMMode = 0;
 
         //Hard/Hell Mode
+        public static bool DualDifficulty = false;
 
         //Battle Rows
 

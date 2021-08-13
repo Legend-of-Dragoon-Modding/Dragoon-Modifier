@@ -30,7 +30,37 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 AutoCharmPotion(emulator);
             }
 
+            if (Settings.SaveAnywhere) {
+                SaveAnywhere(emulator);
+            }
+
+            if (Settings.IncreaseTextSpeed) {
+                IncreaseTextSpeed(emulator);
+            }
+
+            if (Settings.AutoAdvanceText) {
+                AutoText(emulator);
+            }
+
             uiControl.UpdateField(emulator.Memory.BattleValue, emulator.Memory.EncounterID, emulator.Memory.MapID);
+        }
+
+        private static void AutoText(Emulator.IEmulator emulator) {
+            if (emulator.Memory.AutoText != 13378) {
+                emulator.Memory.AutoText = 13378;
+            }
+        }
+
+        private static void IncreaseTextSpeed(Emulator.IEmulator emulator) {
+            if (emulator.Memory.TextSpeed != 1) {
+                emulator.Memory.TextSpeed = 1;
+            }
+        }
+
+        private static void SaveAnywhere(Emulator.IEmulator emulator) {
+            if (emulator.Memory.SavePoint == 0) {
+                emulator.Memory.SavePoint = 1;
+            }
         }
 
         private static void AutoCharmPotion(Emulator.IEmulator emulator) {

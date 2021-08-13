@@ -92,7 +92,10 @@ namespace Dragoon_Modifier.Emulator {
             { "MONSTER_ID", new int[] { 0x1CF910, 0x1CE918, 0x1CF8E0, 0x0, 0x0, 0x1CF910, 0x1CF910 } },
             { "DRAGOON_TURNS", new int[] { 0x6E62C, 0x6D32C, 0x0, 0x0, 0x0, 0x6E954, 0x6E864 } },
             { "DRAGOON_SPELL_SLOT", new int[] { 0xC6960, 0xC5680, 0x0, 0x0, 0x0, 0x0, 0xC6B98 } },
-            { "WARGOD", new int[] { 0x6E814, 0x6D514, 0x0, 0x0, 0x0, 0x0, 0x6EA4C } }
+            { "WARGOD", new int[] { 0x6E814, 0x6D514, 0x0, 0x0, 0x0, 0x0, 0x6EA4C } },
+            { "SAVE_POINT", new int[] { 0x5A368, 0x59068, 0x5A5A0, 0x0, 0x0, 0x5A690, 0x5A5A0 } },
+            { "TEXT_SPEED", new int[] { 0x26948, 0x26530, 0x0, 0x0, 0x0, 0x26CC0, 0x26B7C } },
+            { "AUTO_TEXT", new int[] { 0x26CDA, 0x268C2, 0x0, 0x0, 0x0, 0x27052, 0x26F0E } }
 
         };
 
@@ -149,7 +152,7 @@ namespace Dragoon_Modifier.Emulator {
 
             Memory = Factory.MemoryController(this);
 
-            Debug.WriteLine($"[DEBUG] Succesfully attached to emulator {emulatorName}.");
+            Console.WriteLine($"[DEBUG] Succesfully attached to emulator {emulatorName}.");
         }
 
 
@@ -525,7 +528,7 @@ namespace Dragoon_Modifier.Emulator {
 
         private bool Emulators(Process proc, string emulatorName) {
             if (Verify(EmulatorOffset)) {
-                Debug.WriteLine($"[DEBUG] Previous offset {Convert.ToString(EmulatorOffset, 16).ToUpper()} succesful.");
+                Console.WriteLine($"[DEBUG] Previous offset {Convert.ToString(EmulatorOffset, 16).ToUpper()} succesful.");
                 return true;
             } else {
                 if (emulatorName.ToLower() == "retroarch") {

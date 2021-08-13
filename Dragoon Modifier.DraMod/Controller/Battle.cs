@@ -1,5 +1,9 @@
-﻿using System;
+﻿using Dragoon_Modifier.Emulator;
+
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -24,6 +28,13 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             emulator.LoadBattle();
 
+            uiControl.UpdateField(emulator.Memory.BattleValue, emulator.Memory.EncounterID, emulator.Memory.MapID);
+
+            if (DraMod.Settings.DualDifficulty) {
+                Console.WriteLine("[DEBUG] [Dual Difficulty] Changing monster stats...");
+                SwitchDualDifficulty(emulator, LoDDict);
+            }
+
             MonsterChanges(emulator, LoDDict);
 
             UpdateUI(emulator, uiControl);
@@ -44,6 +55,67 @@ namespace Dragoon_Modifier.DraMod.Controller {
             for (int i = 0; i < emulator.Battle.CharacterTable.Length; i++) {
                 uiControl.UpdateCharacter(i, new UI.CharacterUpdate(emulator, i));
             }
+        }
+
+        private static void SwitchDualDifficulty(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict) {
+            bool boss = false;
+            string cwd = Directory.GetCurrentDirectory();
+            string mod;
+
+            if (emulator.Battle.EncounterID == 384 || //Commander
+                emulator.Battle.EncounterID == 386 || //Fruegel I
+                emulator.Battle.EncounterID == 414 || //Urobolus
+                emulator.Battle.EncounterID == 385 || //Sandora Elite
+                emulator.Battle.EncounterID == 388 || //Kongol I
+                emulator.Battle.EncounterID == 408 || //Virage I
+                emulator.Battle.EncounterID == 415 || //Fire Bird
+                emulator.Battle.EncounterID == 393 || //Greham + Feyrbrand
+                emulator.Battle.EncounterID == 412 || //Drake the Bandit
+                emulator.Battle.EncounterID == 413 || //Jiango
+                emulator.Battle.EncounterID == 387 || //Fruegel II
+                emulator.Battle.EncounterID == 461 || //Sandora Elite II
+                emulator.Battle.EncounterID == 389 || //Kongol II
+                emulator.Battle.EncounterID == 390 || //Emperor Doel
+                emulator.Battle.EncounterID == 402 || //Mappi
+                emulator.Battle.EncounterID == 409 || //Virage II
+                emulator.Battle.EncounterID == 403 || //Gehrich + Mappi
+                emulator.Battle.EncounterID == 396 || //Lenus
+                emulator.Battle.EncounterID == 417 || //Ghost Commander
+                emulator.Battle.EncounterID == 397 || //Lenus + Regole
+                emulator.Battle.EncounterID == 418 || //Kamuy
+                emulator.Battle.EncounterID == 410 || //S Virage
+                emulator.Battle.EncounterID == 416 || //Grand Jewel
+                emulator.Battle.EncounterID == 394 || //Divine Dragon
+                emulator.Battle.EncounterID == 422 || //Windigo
+                emulator.Battle.EncounterID == 392 || //Lloyd
+                emulator.Battle.EncounterID == 423 || //Polter Set
+                emulator.Battle.EncounterID == 398 || //Damia
+                emulator.Battle.EncounterID == 399 || //Syuveil
+                emulator.Battle.EncounterID == 400 || //Belzac
+                emulator.Battle.EncounterID == 401 || //Kanzas
+                emulator.Battle.EncounterID == 420 || //Magician Faust
+                emulator.Battle.EncounterID == 432 || //Last Kraken
+                emulator.Battle.EncounterID == 430 || //Executioners
+                emulator.Battle.EncounterID == 449 || //Spirit (Feyrbrand)
+                emulator.Battle.EncounterID == 448 || //Spirit (Regole)
+                emulator.Battle.EncounterID == 447 || //Spirit (Divine Dragon)
+                emulator.Battle.EncounterID == 431 || //Zackwell
+                emulator.Battle.EncounterID == 433 || //Imago
+                emulator.Battle.EncounterID == 411 || //S Virage II
+                emulator.Battle.EncounterID == 442 || //Zieg
+                emulator.Battle.EncounterID == 443) { //Melbu Fraahma
+                boss = true;
+            }
+
+            if (!boss) {
+                mod = DraMod.Settings.Mod.Equals("Hell_Mode") ? "Hard_Mode" : "US_Base";
+                LoDDict.SwapMonsters(cwd, mod);
+                Console.WriteLine("[DEBUG] [Dual Difficulty] Mod selected: " +  mod); 
+            } else {
+                LoDDict.SwapMonsters(cwd, DraMod.Settings.Mod);
+                Console.WriteLine("[DEBUG] [Dual Difficulty] Mod selected: " + DraMod.Settings.Mod);
+            }
+
         }
 
         private static void MonsterChanges(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict) {

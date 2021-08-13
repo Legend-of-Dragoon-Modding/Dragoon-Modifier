@@ -29,7 +29,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                     }
                     Thread.Sleep(250);
                 } catch (Exception ex) {
-                    // Constants.RUN = false;
+                    Constants.Run = false;
                     uiControl.WriteGLog("Program stopped.");
                     uiControl.WritePLog("INTERNAL SCRIPT ERROR");
                     Console.WriteLine("INTERNAL SCRIPT ERROR\nFatal Error. Closing all threads.");

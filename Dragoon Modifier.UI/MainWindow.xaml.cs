@@ -32,16 +32,14 @@ namespace Dragoon_Modifier.UI {
         public readonly DraMod.UI.IUIControl UIControl;
         public readonly DraMod.IDraMod DragoonModifier;
 
-        public Thread uiThread;
+        public Thread uiThread; //TODO Track maximize event
 
         public MainWindow() {
             InitializeComponent();
             UIControl = InitUI();
             DragoonModifier = DraMod.Factory.DraMod(UIControl, Directory.GetCurrentDirectory());
-
+            Console.SetOut(new TextBoxOutput(txtOutput));
             this.Title += DraMod.Constants.Version;
-            //Console.SetOut(new TextBoxOutput(txtOutput));
-            Debug.Listeners.Add(new DebugOutput(txtOutput));
         }
 
         private DraMod.UI.IUIControl InitUI() {
@@ -111,6 +109,8 @@ namespace Dragoon_Modifier.UI {
             } else {
                 if (DragoonModifier.Attach(DraMod.Constants.EmulatorName, DraMod.Constants.PreviousOffset)) {
                     miAttach.Header = "Detach";
+                    UIControl.WriteGLog("Game Log");
+                    UIControl.WritePLog("Program Log");
                 }
             }
         }
@@ -214,6 +214,7 @@ namespace Dragoon_Modifier.UI {
 
         public void DifficultyButton(object sender, EventArgs e) {
             Button btn = (Button) sender;
+            DraMod.Settings.DualDifficulty = false;
 
             switch (btn.Name) {
                 case "btnNormal":
@@ -231,6 +232,7 @@ namespace Dragoon_Modifier.UI {
                     btnHardHell.Background = _grayOffColor;
                     btnHell.Background = _grayOffColor;
                     DragoonModifier.ChangeLoDDirectory("Hard_Mode");
+                    DraMod.Settings.DualDifficulty = true;
                     break;
                 case "btnHard":
                     btnNormal.Background = _grayOffColor;
@@ -247,6 +249,7 @@ namespace Dragoon_Modifier.UI {
                     btn.Background = _onColor;
                     btnHell.Background = _grayOffColor;
                     DragoonModifier.ChangeLoDDirectory("Hell_Mode");
+                    DraMod.Settings.DualDifficulty = true;
                     break;
                 case "btnHell":
                     btnNormal.Background = _grayOffColor;
