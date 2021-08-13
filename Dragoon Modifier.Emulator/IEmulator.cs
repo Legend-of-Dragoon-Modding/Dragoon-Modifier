@@ -1,6 +1,8 @@
 ﻿using Dragoon_Modifier.Emulator.Memory;
 using Dragoon_Modifier.Emulator.Memory.Battle;
 
+using System.Collections.Generic;
+
 namespace Dragoon_Modifier.Emulator {
     public interface IEmulator {
         IBattle Battle { get; }
@@ -34,6 +36,7 @@ namespace Dragoon_Modifier.Emulator {
         ushort ReadUShort(string address, int offset = 0);
         void WriteAoB(long startAddress, byte[] bytes);
         void WriteAoB(long startAddress, string byteString);
+        List<long> ScanAoB(long start, long end, string pattern, bool useOffset = true, bool addOffset = false);
         void WriteByte(long address, byte value);
         void WriteByte(string address, byte value, int offset = 0);
         void WriteInt(long address, int value);

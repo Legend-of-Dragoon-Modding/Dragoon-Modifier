@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -95,7 +96,8 @@ namespace Dragoon_Modifier.Emulator {
             { "WARGOD", new int[] { 0x6E814, 0x6D514, 0x0, 0x0, 0x0, 0x0, 0x6EA4C } },
             { "SAVE_POINT", new int[] { 0x5A368, 0x59068, 0x5A5A0, 0x0, 0x0, 0x5A690, 0x5A5A0 } },
             { "TEXT_SPEED", new int[] { 0x26948, 0x26530, 0x0, 0x0, 0x0, 0x26CC0, 0x26B7C } },
-            { "AUTO_TEXT", new int[] { 0x26CDA, 0x268C2, 0x0, 0x0, 0x0, 0x27052, 0x26F0E } }
+            { "AUTO_TEXT", new int[] { 0x26CDA, 0x268C2, 0x0, 0x0, 0x0, 0x27052, 0x26F0E } },
+            { "DAMAGE_CAP", new int[] { 0xF2A5C,0xF15A4,0x0,0x0,0x0,0xF32DC,0xF72CC } }
 
         };
 
@@ -479,6 +481,24 @@ namespace Dragoon_Modifier.Emulator {
                 bytes[i] = Convert.ToByte(str[i], 16);
             }
             ProcessMemory.WriteProcessMemory(_processHandle, startAddress + EmulatorOffset, bytes, bytes.Length, out int lpNumberOfBytesWritten);
+        }
+
+        public List<long> ScanAoB(long start, long end, string pattern, bool useOffset = true, bool addOffset = false) {
+            long offset = 0;
+            if (!useOffset) {
+                offset -= EmulatorOffset;
+            }
+
+            List<long> results = KMP.UnmaskedSearch(pattern.Split().Select(t => byte.Parse(t, NumberStyles.AllowHexSpecifier)).ToArray(), ReadAoB(start, end), true);
+
+            for (int i = 0; i < results.Count; i++) {
+                results[i] += start;
+                if (addOffset) {
+                    results[i] += EmulatorOffset;
+                }
+            }
+
+            return results;
         }
 
         public string ReadText(long startAddress, long endAddress) {

@@ -14,9 +14,13 @@ namespace Dragoon_Modifier.DraMod.Controller {
         static readonly uint[] sharanda = new uint[] { 0x2, 0x8 };
         static readonly ushort[] slot1FinalBlow = new ushort[] { 414, 408, 409, 392, 431 };      // Urobolus, Wounded Virage, Complete Virage, Lloyd, Zackwell
         static readonly ushort[] slot2FinalBlow = new ushort[] { 387, 403 };                     // Fruegel II, Gehrich
+        static bool firstDamageCapRemoval = false;
+        static int lastItemUsedDamageCap = 0;
 
         public static void Setup(Emulator.IEmulator emulator, UI.IUIControl uiControl, LoDDict.ILoDDictionary LoDDict) {
-            Console.WriteLine("Battle detected. Loading...");
+            Console.WriteLine("Battle detected. Loading..."); 
+            firstDamageCapRemoval = false;
+            lastItemUsedDamageCap = 0;
 
             uint tableBase = emulator.Memory.BattleBasePoint;
             while (tableBase == emulator.Memory.CharacterPoint || tableBase == emulator.Memory.MonsterPoint) { // Wait until both C_Point and M_Point were set
@@ -30,7 +34,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             uiControl.UpdateField(emulator.Memory.BattleValue, emulator.Memory.EncounterID, emulator.Memory.MapID);
 
-            if (DraMod.Settings.DualDifficulty) {
+            if (Settings.DualDifficulty) {
                 Console.WriteLine("[DEBUG] [Dual Difficulty] Changing monster stats...");
                 SwitchDualDifficulty(emulator, LoDDict);
             }
@@ -46,6 +50,10 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
         public static void Run(Emulator.IEmulator emulator, UI.IUIControl uiControl) {
             UpdateUI(emulator, uiControl);
+
+            if (Settings.RemoveDamageCaps) {
+                RemoveDamageCaps(emulator);
+            }
         }
 
         private static void UpdateUI(Emulator.IEmulator emulator, UI.IUIControl uiControl) {
@@ -110,7 +118,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             if (!boss) {
                 mod = DraMod.Settings.Mod.Equals("Hell_Mode") ? "Hard_Mode" : "US_Base";
                 LoDDict.SwapMonsters(cwd, mod);
-                Console.WriteLine("[DEBUG] [Dual Difficulty] Mod selected: " +  mod); 
+                Console.WriteLine("[DEBUG] [Dual Difficulty] Mod selected: " + mod);
             } else {
                 LoDDict.SwapMonsters(cwd, DraMod.Settings.Mod);
                 Console.WriteLine("[DEBUG] [Dual Difficulty] Mod selected: " + DraMod.Settings.Mod);
@@ -129,7 +137,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
         private static void MonsterStatChange(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict, int slot) {
             ushort id = emulator.Battle.MonsterID[slot];
-            double HP = LoDDict.Monster[id].HP; // TODO add the slider
+            double HP = Math.Round(LoDDict.Monster[id].HP * Settings.HPMulti);
 
             double resup = 1;
             if (HP > 65535) {
@@ -137,8 +145,6 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 HP = 65535;
             }
             HP = Math.Round(HP);
-
-            Console.WriteLine("Monster ID: " + id + " HP: " + HP);
 
             emulator.Battle.MonsterTable[slot].HP = (ushort) HP;
             emulator.Battle.MonsterTable[slot].MaxHP = (ushort) HP;
@@ -164,5 +170,49 @@ namespace Dragoon_Modifier.DraMod.Controller {
             emulator.Battle.MonsterTable[slot].StatusResist = LoDDict.Monster[id].StatusResist;
             emulator.Battle.MonsterTable[slot].SpecialEffect = LoDDict.Monster[id].SpecialEffect;
         }
+
+        private static void RemoveDamageCaps(Emulator.IEmulator emulator) {
+            if (!firstDamageCapRemoval) {
+                emulator.WriteInt("DAMAGE_CAP", 50000);
+                emulator.WriteInt("DAMAGE_CAP", 50000, 0x8);
+                emulator.WriteInt("DAMAGE_CAP", 50000, 0x14);
+                DamageCapScan(emulator);
+                firstDamageCapRemoval = true;
+            } else {
+                if (lastItemUsedDamageCap != emulator.Battle.ItemUsed) {
+                    lastItemUsedDamageCap = emulator.Battle.ItemUsed;
+                    if ((lastItemUsedDamageCap >= 0xC1 && lastItemUsedDamageCap <= 0xCA) || (lastItemUsedDamageCap >= 0xCF && lastItemUsedDamageCap <= 0xD2) || lastItemUsedDamageCap == 0xD6 || lastItemUsedDamageCap == 0xD8 || lastItemUsedDamageCap == 0xDC || (lastItemUsedDamageCap >= 0xF1 && lastItemUsedDamageCap <= 0xF8) || lastItemUsedDamageCap == 0xFA) {
+                        DamageCapScan(emulator);
+                    }
+                }
+                for (int i = 0; i < 3; i++) {
+                    if (emulator.Memory.PartySlot[i] < 9) {
+                        if (emulator.Battle.CharacterTable[i].Action == 24) {
+                            DamageCapScan(emulator);
+                        }
+                    }
+                }
+                for (int i = 0; i < emulator.Memory.MonsterSize; i++) {
+                    if (emulator.Battle.MonsterTable[i].Action == 28) { // Most used, not all monsters use action code 28 for item spells
+                        DamageCapScan(emulator);
+                    }
+                }
+            }
+        }
+
+        public static void DamageCapScan(Emulator.IEmulator emulator) {
+            var damageCapScan = emulator.ScanAoB(0xA8660, 0x2A865F, "0F 27");
+            long lastAddress = 0;
+            foreach (var address in damageCapScan) {
+                long capAddress = (long) address;
+                Console.WriteLine("[DEBUG][Damage Cap] Adddress:" + address + " - Value: "+ emulator.ReadUShort(capAddress));
+                if (emulator.ReadUShort(capAddress) == 9999 && (lastAddress + 0x10) == capAddress) {
+                    emulator.WriteUInt(capAddress, 50000);
+                    emulator.WriteUInt(lastAddress, 50000);
+                }
+                lastAddress = capAddress;
+            }
+        }
+    
     }
 }
