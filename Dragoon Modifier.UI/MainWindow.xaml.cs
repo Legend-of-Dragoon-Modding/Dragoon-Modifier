@@ -43,6 +43,18 @@ namespace Dragoon_Modifier.UI {
         }
 
         private DraMod.UI.IUIControl InitUI() {
+            cboAspectRatio.Items.Add("4:3");
+            cboAspectRatio.Items.Add("16:9");
+            cboAspectRatio.Items.Add("16:10");
+            cboAspectRatio.Items.Add("21:9");
+            cboAspectRatio.Items.Add("32:9");
+
+            cboCamera.Items.Add("Default");
+            cboCamera.Items.Add("Advanced");
+
+            cboAspectRatio.SelectedIndex = 0;
+            cboCamera.SelectedIndex = 0;
+
             TextBlock[,] monsterLables = new TextBlock[5, 6] {
                 {lblEnemy1Name,  lblEnemy1HP, lblEnemy1ATK, lblEnemy1DEF, lblEnemy1SPD, lblEnemy1TRN},
                 {lblEnemy2Name,  lblEnemy2HP, lblEnemy2ATK, lblEnemy2DEF, lblEnemy2SPD, lblEnemy2TRN},
@@ -141,8 +153,14 @@ namespace Dragoon_Modifier.UI {
                 case "btnHPNames":
                     ToggleButton(ref btn, ref DraMod.Settings.MonsterHPAsNames);
                     break;
-                case "btnEnrageMode":
+                case "btnEnrage":
                     ToggleButton(ref btn, ref DraMod.Settings.EnrageMode);
+
+                    if (DraMod.Settings.EnrageBossOnly) {
+                        btnEnrageBoss.Background = _grayOffColor;
+                        DraMod.Settings.EnrageBossOnly = false;
+                        UIControl.WritePLog("Enrage Boss Only can't be turned on when Enrage Mode is on.");
+                    }
                     break;
                 case "btnDamageTracker":
                     ToggleButton(ref btn, ref DraMod.Settings.DamageTracker);
@@ -201,6 +219,9 @@ namespace Dragoon_Modifier.UI {
                     break;
                 case "cboAspectRatio":
                     ChangeComboBox(cbo, ref DraMod.Settings.AspectRatioMode);
+                    break;
+                case "cboCamera":
+                    ChangeComboBox(cbo, ref DraMod.Settings.AdvancedCameraMode);
                     break;
                 case "cboKillBGM":
                     ChangeComboBox(cbo, ref DraMod.Settings.KillBGMMode);
@@ -266,6 +287,10 @@ namespace Dragoon_Modifier.UI {
                         btn.Background = _onColor;
                     }
                     DraMod.Settings.EnrageBossOnly = !DraMod.Settings.EnrageBossOnly;
+                    if (DraMod.Settings.EnrageMode) {
+                        ToggleButton(ref btnEnrage, ref DraMod.Settings.EnrageMode);
+                        UIControl.WritePLog("Enrage Mode can't be turned on when Enrage Boss Only Mode is on.");
+                    }
                     break;
 
             }

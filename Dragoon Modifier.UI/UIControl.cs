@@ -23,7 +23,9 @@ namespace Dragoon_Modifier.UI {
         }
         public void UpdateMonster(int index, DraMod.UI.MonsterUpdate data) {
             Application.Current.Dispatcher.Invoke(() => {
-                _monsterDisplay[index, 0].Text = data.Name;
+                if (!data.Name.All(char.IsDigit)) {
+                    _monsterDisplay[index, 0].Text = data.Name;
+                }
                 _monsterDisplay[index, 1].Text = $" {data.HP} / {data.MaxHP}";
                 _monsterDisplay[index, 2].Text = $" {data.AT} / {data.MAT}";
                 _monsterDisplay[index, 3].Text = $" {data.DF} / {data.MDF}";

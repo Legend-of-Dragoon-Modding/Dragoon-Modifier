@@ -17,7 +17,7 @@ namespace Dragoon_Modifier.Emulator.Memory.Battle {
         public int BattleOffset { get; private set; }
         public ushort BattleMenuCount { get { return _emulator.ReadUShort(MonsterPoint + 0xE3A); } set { _emulator.WriteUShort(MonsterPoint + 0xE3A, value); } }
         public byte BattleMenuChosenSlot { get { return _emulator.ReadByte(MonsterPoint + 0xE4E); } set { _emulator.WriteByte(MonsterPoint + 0xE4E, value); } }
-        public ushort ItemUsed { get { return _emulator.ReadUShort(MonsterPoint + 0xABC); } set { _emulator.WriteUShort(MonsterPoint + 0xABC, value); } }
+        public byte ItemUsed { get { return _emulator.ReadByte(MonsterPoint + 0xBC4); } set { _emulator.WriteByte(MonsterPoint + 0xBC4, value); } }
         public Collections.IAddress<byte> BattleMenuSlot { get; private set; }
 
         internal Controller(IEmulator emulator) {
