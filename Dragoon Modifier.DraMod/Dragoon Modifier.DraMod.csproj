@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
+    <Compile Include="Controller\AdditionSwap.cs" />
     <Compile Include="Controller\Battle.cs" />
     <Compile Include="Controller\Field.cs" />
     <Compile Include="Controller\Main.cs" />
@@ -77,6 +78,8 @@
     <Compile Include="DragoonModifier.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="IDraMod.cs" />
+    <Compile Include="LoDDict\BaseStats.cs" />
+    <Compile Include="LoDDict\Character.cs" />
     <Compile Include="LoDDict\Equipment.cs" />
     <Compile Include="LoDDict\IEquipment.cs" />
     <Compile Include="LoDDict\IItem.cs" />
