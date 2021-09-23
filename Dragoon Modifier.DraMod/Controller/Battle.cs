@@ -37,6 +37,8 @@ namespace Dragoon_Modifier.DraMod.Controller {
         static int[] dmgTrkChr = new int[3];
         static int dmgTrkSlot = 0;
 
+        static readonly List<Hotkey> hotkeys = BattleHotkeys.Load();
+
         public static void Setup(Emulator.IEmulator emulator, UI.IUIControl uiControl, LoDDict.ILoDDictionary LoDDict) {
             Console.WriteLine("Battle detected. Loading..."); 
 
@@ -147,6 +149,12 @@ namespace Dragoon_Modifier.DraMod.Controller {
             if (Settings.EnrageMode || Settings.EnrageBossOnly) {
                 for (int i = 0; i < emulator.Memory.MonsterSize; i++) {
                     EnrageMode(emulator, i); 
+                }
+            }
+
+            foreach (var hotkey in hotkeys) {
+                if (hotkey.KeyPress == emulator.Memory.Hotkey) {
+                    hotkey.Run(emulator);
                 }
             }
         }
