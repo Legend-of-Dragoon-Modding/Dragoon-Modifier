@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.Controller {
     abstract internal class Hotkey {
+        private static readonly Stopwatch _time = Stopwatch.StartNew();
         internal const ushort L2 = 1;
         internal const ushort R2 = 2;
         internal const ushort L1 = 4;
@@ -24,12 +26,21 @@ namespace Dragoon_Modifier.DraMod.Controller {
         internal const ushort Left = 32768;
 
         public readonly ushort KeyPress;
+        private long _lastPressed = 0;
 
         internal Hotkey(ushort keyPress) {
             this.KeyPress = keyPress;
         }
 
-        abstract public void Run(Emulator.IEmulator emulator);
+        internal void Run(Emulator.IEmulator emulator) {
+            var ms = _time.ElapsedMilliseconds;
+            if (emulator.Memory.Hotkey == KeyPress && ms - 1000 > _lastPressed) {
+                _lastPressed = ms;
+                Func(emulator);
+            }
+        }
+
+        abstract internal void Func(Emulator.IEmulator emulator);
     }
 
     

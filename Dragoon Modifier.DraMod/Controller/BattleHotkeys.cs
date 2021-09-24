@@ -30,7 +30,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 this.slot = slot;
             }
 
-            public override void Run(Emulator.IEmulator emulator) {
+            internal override void Func(Emulator.IEmulator emulator) {
                 if (emulator.Battle.CharacterTable.Length <= slot) {
                     Console.WriteLine($"Cannot exit dragoon for character slot {slot + 1}. Not enough characters.");
                     return;

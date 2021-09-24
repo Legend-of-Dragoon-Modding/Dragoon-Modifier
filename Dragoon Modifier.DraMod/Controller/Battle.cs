@@ -153,9 +153,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
 
             foreach (var hotkey in hotkeys) {
-                if (hotkey.KeyPress == emulator.Memory.Hotkey) {
-                    hotkey.Run(emulator);
-                }
+                hotkey.Run(emulator);
             }
         }
 
