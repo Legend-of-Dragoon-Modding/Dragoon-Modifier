@@ -36,10 +36,15 @@ namespace Dragoon_Modifier.DraMod.Controller {
         static int[] dmgTrkHP = new int[5];
         static int[] dmgTrkChr = new int[3];
         static int dmgTrkSlot = 0;
+        //Solo/Duo Mode
+        static bool addSoloPartyMembers = false;
+        static bool alwaysAddSoloPartyMembers = false;
+        static bool soloModeOnBattleEntry = false;
+        static bool duoModeOnBattleEntry = false;
 
         static readonly List<Hotkey> hotkeys = BattleHotkeys.Load();
 
-        public static void Setup(Emulator.IEmulator emulator, UI.IUIControl uiControl, LoDDict.ILoDDictionary LoDDict) {
+        public static void Setup(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict, UI.IUIControl uiControl) {
             Console.WriteLine("Battle detected. Loading..."); 
 
             firstDamageCapRemoval = false;
@@ -85,6 +90,14 @@ namespace Dragoon_Modifier.DraMod.Controller {
             MonsterChanges(emulator, LoDDict);
 
             UpdateUI(emulator, uiControl);
+
+            if (Settings.SoloMode) {
+                SoloModeBattle(emulator, uiControl);
+            }
+
+            if (Settings.DuoMode) {
+                DuoModeBattle(emulator, uiControl);
+            }
 
             if (Settings.NoDart != 0 && Settings.NoDart != 255) {
                 NoDart.Initialize(emulator, Settings.NoDart);
@@ -582,6 +595,65 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             if (Settings.AdvancedCameraMode == 1)
                 emulator.WriteUShort("ADVANCED_CAMERA", aspectRatio);
+        }
+
+        private static void SoloModeBattle(Emulator.IEmulator emulator, UI.IUIControl uiControl) {
+            byte soloLeader = Settings.SoloLeader;
+
+            for (int i = 0; i < 3; i++) {
+                if (i != soloLeader) {
+                    if (emulator.Memory.PartySlot[i] == emulator.Memory.PartySlot[soloLeader]) {
+                        soloLeader = 2;
+                    }
+                }
+            }
+
+            for (int i = 0; i < 3; i++) {
+                if (emulator.Memory.PartySlot[i] < 9) {
+                    if (i != soloLeader) {
+                        emulator.Battle.CharacterTable[i].Action = 192;
+                        emulator.Battle.CharacterTable[i].Pos_FB = 255;
+                        emulator.Battle.CharacterTable[i].Pos_UD = 255;
+                        emulator.Battle.CharacterTable[i].Pos_RL = 255;
+                    } else {
+                        emulator.Battle.CharacterTable[i].Pos_FB = 9;
+                        emulator.Battle.CharacterTable[i].Pos_UD = 0;
+                        emulator.Battle.CharacterTable[i].Pos_RL = 0;
+                    }
+                }
+            }
+
+            SoloDuoExit(emulator);
+        }
+
+        private static void DuoModeBattle(Emulator.IEmulator emulator, UI.IUIControl uiControl) {
+            if (emulator.Memory.PartySlot[2] < 9) {
+                emulator.Battle.CharacterTable[2].Action = 192;
+                emulator.Battle.CharacterTable[2].Turn = 10000;
+                emulator.Battle.CharacterTable[2].Pos_FB = 255;
+                emulator.Battle.CharacterTable[2].Pos_UD = 255;
+                emulator.Battle.CharacterTable[2].Pos_RL = 255;
+                emulator.Battle.CharacterTable[0].Pos_FB = 10;
+                emulator.Battle.CharacterTable[0].Pos_UD = 0;
+                emulator.Battle.CharacterTable[0].Pos_RL = 251;
+                emulator.Battle.CharacterTable[1].Pos_FB = 10;
+                emulator.Battle.CharacterTable[1].Pos_UD = 0;
+                emulator.Battle.CharacterTable[1].Pos_RL = 4;
+            }
+
+            SoloDuoExit(emulator);
+        }
+
+        private static void SoloDuoExit(Emulator.IEmulator emulator) {
+            if (Settings.ReduceSoloDuoEXP) {
+                for (int i = 0; i < 5; i++) {
+                    emulator.WriteUShort("MONSTER_REWARDS", (ushort) Math.Ceiling((double) (emulator.ReadShort(emulator.GetAddress("MONSTER_REWARDS") + (i * 0x1A8)) * (Settings.SoloMode ? (1d / 3) : (2d / 3)))), (i * 0x1A8));
+                }
+            }
+
+            if (!Settings.AlwaysAddSoloPartyMembers) {
+                Settings.AddSoloPartyMembers = false;
+            }
         }
     }
 }
