@@ -12,7 +12,6 @@ namespace Dragoon_Modifier.DraMod.Controller {
         static int musicKillCount = 0;
 
         public static void Run(Emulator.IEmulator emulator, UI.IUIControl uiControl) {
-            Console.WriteLine("Current: " + emulator.Memory.GameState + " | Before: " + previousState);
             if (previousState != emulator.Memory.GameState) {
                 switch (emulator.Memory.GameState) {
                     case Emulator.GameState.Field:

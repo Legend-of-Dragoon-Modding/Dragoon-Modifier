@@ -47,13 +47,13 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
         private static void SwitchSlotOne(Emulator.IEmulator emulator, UI.IUIControl uiControl) {
             if (emulator.ReadByte("CHAR_TABLE", 0x2C * Settings.Slot1Select + 0x4) == 0x3 || emulator.ReadByte("CHAR_TABLE", 0x2C * Settings.Slot1Select + 0x4) == 0x23) {
-                if (Settings.SoloMode || Settings.DuoMode) {
+                //if (Settings.SoloMode || Settings.DuoMode) {
                     emulator.WriteByte("PARTY_SLOT", Settings.Slot1Select);
                     Console.WriteLine("Switched character " + Settings.Slot1Select + ".");
                     uiControl.WritePLog("Switched character " + Settings.Slot1Select + ".");
-                } else {
+                //} else {
                     //TODO: No Dart
-                }
+                //}
             } else {
                 Console.WriteLine("The selected character is not in the party.");
                 uiControl.WritePLog("The selected character is not in the party.");

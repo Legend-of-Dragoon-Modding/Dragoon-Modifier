@@ -33,7 +33,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
         static bool noHPDecayOnBattleEntry = false;
         //Damage Tracker
         static bool damageTrackerOnBattleEntry = false;
-        static int[] dmgTrkHP = new int[5];
+        static int[] dmgTrkHP = new int[6];
         static int[] dmgTrkChr = new int[3];
         static int dmgTrkSlot = 0;
         //Solo/Duo Mode
@@ -58,18 +58,6 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             noHPDecayOnBattleEntry = false;
 
-            for (int i = 0; i < emulator.Memory.PartySlot[i]; i++) {
-                /*if (ultimateHP[i] > 0) { //TODO Ultimate boss
-                    dmgTrkHP[i] = ultimateHP[i];
-                } else {*/
-                    dmgTrkHP[i] = emulator.Battle.MonsterTable[i].HP;
-                //}
-            }
-            for (int i = 0; i < 3; i++) {
-                dmgTrkChr[i] = 0;
-            }
-            damageTrackerOnBattleEntry = true;
-
             uint tableBase = emulator.Memory.BattleBasePoint;
             while (tableBase == emulator.Memory.CharacterPoint || tableBase == emulator.Memory.MonsterPoint) { // Wait until both C_Point and M_Point were set
                 if (Constants.Run && emulator.Memory.GameState != Emulator.GameState.Battle) {
@@ -79,6 +67,18 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
 
             emulator.LoadBattle();
+
+            for (int i = 0; i < emulator.Memory.MonsterSize; i++) {
+                /*if (ultimateHP[i] > 0) { //TODO Ultimate boss
+                    dmgTrkHP[i] = ultimateHP[i];
+                } else {*/
+                dmgTrkHP[i] = emulator.Battle.MonsterTable[i].HP;
+                //}
+            }
+            for (int i = 0; i < 3; i++) {
+                dmgTrkChr[i] = 0;
+            }
+            damageTrackerOnBattleEntry = true;
 
             uiControl.UpdateField(emulator.Memory.BattleValue, emulator.Memory.EncounterID, emulator.Memory.MapID);
 
