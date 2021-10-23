@@ -13,6 +13,7 @@ namespace Dragoon_Modifier.DraMod {
         public static double DFMulti = 1;
         public static double MDFMulti = 1;
         public static double SPDMulti = 1;
+        public static string Difficulty = "Normal";
 
         //Field
         public static bool SaveAnywhere = false;
@@ -38,9 +39,20 @@ namespace Dragoon_Modifier.DraMod {
         public static byte NoDart = 255;
         public static byte FlowerStorm = 0;
         public static byte AspectRatioMode = 0;
-        public static byte AdvancedCameraMode = 0; 
+        public static byte AdvancedCameraMode = 0;
 
         //Field & Battle
+        public static bool AddPartyMembers = false;
+        public static bool AddSoloPartyMembers = false;
+        public static bool AlwaysAddSoloPartyMembers = false;
+        public static bool SwitchSlot1 = false;
+        public static byte Slot1Select = 0;
+        public static bool SoloMode = false;
+        public static bool DuoMode = false;
+        public static byte SwitchEXPSlot1 = 0;
+        public static byte SwitchEXPSlot2 = 0;
+        public static bool ReduceSoloDuoEXP = false;
+        public static byte SoloLeader = 0;
         public static bool KillBGM = false;
         public static byte KillBGMMode = 0;
 
@@ -50,6 +62,10 @@ namespace Dragoon_Modifier.DraMod {
         //Battle Rows
 
         //Turn Battle System
+
+        //Green Buttons
+        public static bool BtnAddPartyMembers = false;
+        public static bool BtnSwitchExp = false;
 
         //Other
         public static string Mod = "US_Base";

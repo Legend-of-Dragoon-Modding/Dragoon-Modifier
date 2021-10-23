@@ -73,10 +73,14 @@
     <Compile Include="Controller\AdditionSwap.cs" />
     <Compile Include="Controller\Battle.cs" />
     <Compile Include="Controller\BattleHotkeys.cs" />
+    <Compile Include="Controller\BattleResult.cs" />
     <Compile Include="Controller\Field.cs" />
     <Compile Include="Controller\Hotkey.cs" />
+    <Compile Include="Controller\KillBGM.cs" />
     <Compile Include="Controller\Main.cs" />
+    <Compile Include="Controller\Menu.cs" />
     <Compile Include="Controller\NoDart.cs" />
+    <Compile Include="Controller\GreenButton.cs" />
     <Compile Include="DragoonModifier.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="IDraMod.cs" />

@@ -60,7 +60,68 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 }
             }
 
+            if (Settings.SoloMode) {
+                SoloModeField(emulator);
+            }
+
+            if (Settings.DuoMode) {
+                DuoModeField(emulator);
+            }
+
+            if (Settings.AlwaysAddSoloPartyMembers) {
+                AddSoloPartyMembers(emulator);
+            }
+
             uiControl.UpdateField(emulator.Memory.BattleValue, emulator.Memory.EncounterID, emulator.Memory.MapID);
+        }
+
+        private static void SoloModeField(Emulator.IEmulator emulator) {
+            if (!Settings.AddSoloPartyMembers) {
+                if (emulator.ReadByte("PARTY_SLOT", 0x4) != 255 || emulator.ReadByte("PARTY_SLOT", 0x8) != 255) {
+                    for (int i = 0; i < 8; i++) {
+                        emulator.WriteByte("PARTY_SLOT", 255, i + 0x4);
+                    }
+                    emulator.WriteByte("CHAR_TABLE", 3, emulator.ReadByte("PARTY_SLOT") * 0x2C + 0x4);
+                }
+            }
+        }
+
+        private static void DuoModeField(Emulator.IEmulator emulator) {
+            if (!Settings.AddSoloPartyMembers) {
+                if (emulator.ReadByte("PARTY_SLOT", 0x4) == 255) {
+                    emulator.WriteByte("PARTY_SLOT", emulator.ReadByte("PARTY_SLOT"), 0x4);
+                    emulator.WriteByte("PARTY_SLOT", 0, 0x5);
+                    emulator.WriteByte("PARTY_SLOT", 0, 0x6);
+                    emulator.WriteByte("PARTY_SLOT", 0, 0x7);
+                    emulator.WriteByte("CHAR_TABLE", 3, emulator.ReadByte("PARTY_SLOT") * 0x2C + 0x4);
+                }
+
+                if (emulator.ReadByte("PARTY_SLOT", 0x8) != 255) {
+                    for (int i = 0; i < 4; i++) {
+                        emulator.WriteByte("PARTY_SLOT", 255, i + 0x8);
+                    }
+                }
+            }
+        }
+
+        private static void AddSoloPartyMembers(Emulator.IEmulator emulator) {
+            if (Settings.SoloMode && emulator.Memory.PartySlot[1] > 8) {
+                Settings.AddSoloPartyMembers = true;
+                emulator.WriteByte("PARTY_SLOT", emulator.ReadByte("PARTY_SLOT"), 0x4);
+                emulator.WriteByte("PARTY_SLOT", 0, 0x5);
+                emulator.WriteByte("PARTY_SLOT", 0, 0x6);
+                emulator.WriteByte("PARTY_SLOT", 0, 0x7);
+                emulator.WriteByte("PARTY_SLOT", emulator.ReadByte("PARTY_SLOT"), 0x8);
+                emulator.WriteByte("PARTY_SLOT", 0, 0x9);
+                emulator.WriteByte("PARTY_SLOT", 0, 0xA);
+                emulator.WriteByte("PARTY_SLOT", 0, 0xB);
+            } else if (Settings.DuoMode && emulator.Memory.PartySlot[2] > 8) {
+                Settings.AddSoloPartyMembers = true;
+                emulator.WriteByte("PARTY_SLOT", emulator.ReadByte("PARTY_SLOT"), 0x8);
+                emulator.WriteByte("PARTY_SLOT", 0, 0x9);
+                emulator.WriteByte("PARTY_SLOT", 0, 0xA);
+                emulator.WriteByte("PARTY_SLOT", 0, 0xB);
+            }
         }
 
         private static void EarlyAdditions(Emulator.IEmulator emulator) {

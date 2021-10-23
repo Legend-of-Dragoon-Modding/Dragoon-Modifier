@@ -28,6 +28,7 @@ namespace Dragoon_Modifier.UI {
         private static readonly SolidColorBrush _offColor = new SolidColorBrush(Color.FromArgb(255, 255, 168, 168));
         private static readonly SolidColorBrush _onColor = new SolidColorBrush(Color.FromArgb(255, 168, 211, 255));
         private static readonly SolidColorBrush _grayOffColor = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+        private static readonly string[] characters = { "Dart", "Lavitz", "Shana", "Rose", "Haschel", "Albert", "Meru", "Kongol", "Miranda" };
 
         public readonly DraMod.UI.IUIControl UIControl;
         public readonly DraMod.IDraMod DragoonModifier;
@@ -52,8 +53,27 @@ namespace Dragoon_Modifier.UI {
             cboCamera.Items.Add("Default");
             cboCamera.Items.Add("Advanced");
 
+            cboSoloLeader.Items.Add("Slot 1");
+            cboSoloLeader.Items.Add("Slot 2");
+            cboSoloLeader.Items.Add("Slot 3");
+
+            cboKillBGM.Items.Add("Field");
+            cboKillBGM.Items.Add("Battle");
+            cboKillBGM.Items.Add("Both");
+
+            for (int i = 0; i < characters.Length; i++) {
+                cboSwitchChar.Items.Add(characters[i]);
+                cboSwitch1.Items.Add(characters[i]);
+                cboSwitch2.Items.Add(characters[i]);
+            }
+
             cboAspectRatio.SelectedIndex = 0;
             cboCamera.SelectedIndex = 0;
+            cboSoloLeader.SelectedIndex = 0;
+            cboSwitchChar.SelectedIndex = 0;
+            cboSwitch1.SelectedIndex = 0;
+            cboSwitch2.SelectedIndex = 0;
+            cboKillBGM.SelectedIndex = 1;
 
             TextBlock[,] monsterLables = new TextBlock[5, 6] {
                 {lblEnemy1Name,  lblEnemy1HP, lblEnemy1ATK, lblEnemy1DEF, lblEnemy1SPD, lblEnemy1TRN},
@@ -187,14 +207,29 @@ namespace Dragoon_Modifier.UI {
                     ToggleButton(ref btn, ref DraMod.Settings.AspectRatio);
                     break;
                 //Field & Battle
+                case "btnSoloMode":
+                    ToggleButton(ref btn, ref DraMod.Settings.SoloMode);
+                    break;
+                case "btnDuoMode":
+                    ToggleButton(ref btn, ref DraMod.Settings.DuoMode);
+                    break;
+                case "btnAddPartyMembersOn":
+                    ToggleButton(ref btn, ref DraMod.Settings.AlwaysAddSoloPartyMembers);
+                    DraMod.Settings.AddPartyMembers = DraMod.Settings.AlwaysAddSoloPartyMembers;
+                    DraMod.Settings.BtnAddPartyMembers = DraMod.Settings.AlwaysAddSoloPartyMembers;
+                    DraMod.Settings.AddSoloPartyMembers = DraMod.Settings.AlwaysAddSoloPartyMembers;
+                    break;
                 case "btnKillBGM":
                     ToggleButton(ref btn, ref DraMod.Settings.KillBGM);
                     break;
-                //Hard & Hell Mode
+                case "btnReduceSDEXP":
+                    ToggleButton(ref btn, ref DraMod.Settings.ReduceSoloDuoEXP);
+                    break;
+                    //Hard & Hell Mode
 
-                //Battle Rows
+                    //Battle Rows
 
-                //Turn Battle System
+                    //Turn Battle System
             }
         }
 
@@ -208,7 +243,19 @@ namespace Dragoon_Modifier.UI {
         }
 
         public void GreenButton(object sender, EventArgs e) {
-
+            Button btn = (Button) sender;
+            switch (btn.Name) {
+                //Field & Battle
+                case "btnAddPartyMembers":
+                    DraMod.Settings.BtnAddPartyMembers = true;
+                    break;
+                case "btnSwitchSoloChar":
+                    DraMod.Settings.SwitchSlot1 = true;
+                    break;
+                case "btnSwitchExp":
+                    DraMod.Settings.BtnSwitchExp = true;
+                    break;
+            }
         }
 
         public void ComboBox(object sender, EventArgs e) {
@@ -225,6 +272,18 @@ namespace Dragoon_Modifier.UI {
                     break;
                 case "cboKillBGM":
                     ChangeComboBox(cbo, ref DraMod.Settings.KillBGMMode);
+                    break;
+                case "cboSoloLeader":
+                    ChangeComboBox(cbo, ref DraMod.Settings.SoloLeader);
+                    break;
+                case "cboSwitchChar":
+                    ChangeComboBox(cbo, ref DraMod.Settings.Slot1Select);
+                    break;
+                case "cboSwitch1":
+                    ChangeComboBox(cbo, ref DraMod.Settings.SwitchEXPSlot1);
+                    break;
+                case "cboSwitch2":
+                    ChangeComboBox(cbo, ref DraMod.Settings.SwitchEXPSlot2);
                     break;
             }
         }
@@ -245,6 +304,7 @@ namespace Dragoon_Modifier.UI {
                     btnHardHell.Background = _grayOffColor;
                     btnHell.Background = _grayOffColor;
                     DragoonModifier.ChangeLoDDirectory("US_Base");
+                    DraMod.Settings.Difficulty = "Normal";
                     break;
                 case "btnNormalHard":
                     btnNormal.Background = _grayOffColor;
@@ -254,6 +314,7 @@ namespace Dragoon_Modifier.UI {
                     btnHell.Background = _grayOffColor;
                     DragoonModifier.ChangeLoDDirectory("Hard_Mode");
                     DraMod.Settings.DualDifficulty = true;
+                    DraMod.Settings.Difficulty = "Hard";
                     break;
                 case "btnHard":
                     btnNormal.Background = _grayOffColor;
@@ -262,6 +323,7 @@ namespace Dragoon_Modifier.UI {
                     btnHardHell.Background = _grayOffColor;
                     btnHell.Background = _grayOffColor;
                     DragoonModifier.ChangeLoDDirectory("Hard_Mode");
+                    DraMod.Settings.Difficulty = "Hard";
                     break;
                 case "btnHardHell":
                     btnNormal.Background = _grayOffColor;
@@ -271,6 +333,7 @@ namespace Dragoon_Modifier.UI {
                     btnHell.Background = _grayOffColor;
                     DragoonModifier.ChangeLoDDirectory("Hell_Mode");
                     DraMod.Settings.DualDifficulty = true;
+                    DraMod.Settings.Difficulty = "Hell";
                     break;
                 case "btnHell":
                     btnNormal.Background = _grayOffColor;
@@ -279,6 +342,7 @@ namespace Dragoon_Modifier.UI {
                     btnHardHell.Background = _grayOffColor;
                     btn.Background = _onColor;
                     DragoonModifier.ChangeLoDDirectory("Hell_Mode");
+                    DraMod.Settings.Difficulty = "Hell";
                     break;
                 case "btnEnrageBoss":
                     if (DraMod.Settings.EnrageBossOnly) {

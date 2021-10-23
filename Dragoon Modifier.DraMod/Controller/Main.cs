@@ -8,13 +8,14 @@ using System.Threading.Tasks;
 namespace Dragoon_Modifier.DraMod.Controller {
     internal static class Main {
         internal static bool StatsChanged = false;
+        internal static bool MenuEntered = false;
         internal static void Run(ref Emulator.IEmulator emulator, UI.IUIControl uiControl, ref LoDDict.ILoDDictionary LoDDict) {
             while (Constants.Run) {
                 try {
                     switch (emulator.Memory.GameState) {
                         case Emulator.GameState.Battle:
                             if (!StatsChanged) {
-                                Battle.Setup(emulator, uiControl, LoDDict);
+                                Battle.Setup(emulator, LoDDict, uiControl);
                                 StatsChanged = true;
                             }
                             Battle.Run(emulator, uiControl);
@@ -24,9 +25,32 @@ namespace Dragoon_Modifier.DraMod.Controller {
                                 Field.Setup(emulator, LoDDict, uiControl);
                                 StatsChanged = false;
                             }
+                            /*if (MenuEntered) {
+                                Menu.Exit(emulator, uiControl);
+                                MenuEntered = false;
+                            }*/
+                            Field.Run(emulator, uiControl);
+                            //MenuEntered = false;
+                            break;
+
+                        case Emulator.GameState.Menu:
+                            /*if (!MenuEntered) {
+                                Menu.Setup(emulator, LoDDict, uiControl);
+                                MenuEntered = true;
+                            }*/
                             Field.Run(emulator, uiControl);
                             break;
+                        case Emulator.GameState.BattleResult:
+                            BattleResult.Setup(emulator, LoDDict, uiControl);
+                            break;
                     }
+
+                    GreenButton.Run(emulator, uiControl);
+
+                    if (Settings.KillBGM) {
+                        KillBGM.Run(emulator, uiControl);
+                    }
+
                     Thread.Sleep(250);
                 } catch (Exception ex) {
                     Constants.Run = false;
