@@ -272,6 +272,27 @@ namespace Dragoon_Modifier.DraMod.Controller {
             emulator.Battle.MonsterTable[slot].SpecialEffect = LoDDict.Monster[id].SpecialEffect;
         }
 
+        private static void CharacterChanges(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict) {
+          for (byte character = 0; character < 9; character++) {
+                ushort maxHP;
+
+                if (Settings.CharacterStatChange) {
+                    byte level = emulator.Memory.CharacterTable[character].Level;
+                    emulator.Memory.SecondaryCharacterTable[character].BodyAT = LoDDict.Character[character].BaseStats.AT[level];
+                }
+            }
+        }
+
+        private static void CharacterStatChange(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict, int character) {
+            byte level = emulator.Memory.CharacterTable[character].Level;
+
+            emulator.Memory.SecondaryCharacterTable[character].BodyAT = LoDDict.Character[character].BaseStats.AT[level];
+            emulator.Memory.SecondaryCharacterTable[character].BodyMAT = LoDDict.Character[character].BaseStats.MAT[level];
+            emulator.Memory.SecondaryCharacterTable[character].BodyDF = LoDDict.Character[character].BaseStats.DF[level];
+            emulator.Memory.SecondaryCharacterTable[character].BodyMDF = LoDDict.Character[character].BaseStats.MDF[level];
+            emulator.Memory.SecondaryCharacterTable[character].BodySPD = LoDDict.Character[character].BaseStats.SPD[level];
+        }
+
         private static void RemoveDamageCaps(Emulator.IEmulator emulator) {
             if (!firstDamageCapRemoval) {
                 emulator.WriteInt("DAMAGE_CAP", 50000);

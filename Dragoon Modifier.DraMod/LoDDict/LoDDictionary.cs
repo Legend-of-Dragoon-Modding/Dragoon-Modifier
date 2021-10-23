@@ -44,6 +44,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
 
         public IItem[] Item { get; private set; } = new IItem[256];
         public Dictionary<ushort, Monster> Monster { get; private set; } = new Dictionary<ushort, Monster>();
+        public Character[] Character = new Character[9];
 
         public string ItemNames { get; private set; } = String.Empty;
         public string ItemDescriptions { get; private set; } = String.Empty;

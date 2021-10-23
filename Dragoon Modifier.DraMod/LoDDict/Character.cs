@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.LoDDict {
-    internal class Character {
-
+    public class Character {
+        public BaseStats BaseStats;
     }
 }

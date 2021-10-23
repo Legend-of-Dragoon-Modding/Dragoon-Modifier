@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.LoDDict {
-    internal class BaseStats {
+    public class BaseStats {
         public ushort[] HP = new ushort[61];
         public byte[] AT = new byte[61];
         public byte[] MAT = new byte[61];
