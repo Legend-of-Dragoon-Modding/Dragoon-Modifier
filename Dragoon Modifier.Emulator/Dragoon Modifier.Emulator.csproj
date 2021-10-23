@@ -52,6 +52,7 @@
     <Compile Include="KMP.cs" />
     <Compile Include="LoDEncoding.cs" />
     <Compile Include="Memory\AdditionTable.cs" />
+    <Compile Include="Memory\Battle\AdditionHit.cs" />
     <Compile Include="Memory\Battle\Character.cs" />
     <Compile Include="Memory\Battle\Controller.cs" />
     <Compile Include="Memory\Battle\Entity.cs" />
