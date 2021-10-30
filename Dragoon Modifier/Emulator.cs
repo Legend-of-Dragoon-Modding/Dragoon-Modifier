@@ -87,11 +87,11 @@ namespace Dragoon_Modifier {
                     if (emuName.ToLower() == "retroarch") { // RetroArch hotfix
                         bool found = false;
                         try {
-                            for (int i = 1; i < 17; i++) {
-                                start = 0x00000000 + (0x10000000 * i);
-                                end = 0x001F4000 + (0x10000000 * i);
+                            for (int i = 1; i < 256; i++) {
+                                start = 0x00000000L + (0x10000000L * i);
+                                end = 0x001F4000L + (0x10000000L * i);
 
-                                Constants.WriteOutput("Start RetroArch Scan (" + i + "/16): " + Convert.ToString(start, 16).ToUpper() + " - " + Convert.ToString(end, 16).ToUpper());
+                                Constants.WriteOutput("Start RetroArch Scan (" + i + "/256): " + Convert.ToString(start, 16).ToUpper() + " - " + Convert.ToString(end, 16).ToUpper());
                                 var results = ScanAoB(start, end, AoBCheck, false, true);
                                 foreach (long x in results) {
                                     Constants.OFFSET = x - (long) 0xB070;
@@ -104,27 +104,34 @@ namespace Dragoon_Modifier {
                                         Constants.OFFSET = 0;
                                     }
                                 }
-
+                                
                                 if (found) break;
                             }
                         } catch (Exception e) {
                             Constants.WriteOutput("RetroArch scan failed.");
                         }
                     } else if (emuName.ToLower().Contains("duckstation")) {
-                        string duckstation = "53 6F 6E 79 20 43 6F 6D 70 75 74 65 72 20 45 6E 74 65 72 74 61 69 6E 6D 65 6E 74 20 49 6E 63";
+                        long start = process.MainModule.BaseAddress.ToInt64();
+                        long end = start + process.MainModule.ModuleMemorySize;
+                        bool found = false;
+                        string duckstation = "53 6F 6E 79 20 43 6F 6D 70 75 74 65 72 20 45 6E 74 65 72 74 61 69 6E 6D 65 6E 74 20 49 6E 63"; //Sony Computer Enterainment Inc.
                         Constants.WriteOutput("Start DuckStation Scan: " + Convert.ToString(start, 16).ToUpper() + " - " + Convert.ToString(end, 16).ToUpper());
                         var results = ScanAoB(start, end, duckstation, false, true);
                         foreach (long x in results) {
-                            byte[] psxPointer = ReadAoB(x - 0x118, x - 0x110);
-                            psxPointer.Reverse();
-                            Constants.OFFSET = BitConverter.ToInt64(psxPointer, 0);
-                            if (ReadUInt("STARTUP_SEARCH") == 320386 || ReadUShort("BATTLE_VALUE") == 32776 || ReadUShort("BATTLE_VALUE") == 41215) {
-                                Constants.KEY.SetValue("Offset", Constants.OFFSET);
-                                Constants.WriteOutput("Base scan success.");
-                                break;
-                            } else {
-                                Constants.OFFSET = 0;
+                            for (int i = 0; i < 64; i++) {
+                                byte[] psxPointer = ReadAoB(x - ((i * 0x8) + 0x8), x - (i * 0x8));
+                                psxPointer.Reverse();
+                                Constants.OFFSET = BitConverter.ToInt64(psxPointer, 0);
+                                if (ReadUInt("STARTUP_SEARCH") == 320386 || ReadUShort("BATTLE_VALUE") == 32776 || ReadUShort("BATTLE_VALUE") == 41215) {
+                                    Constants.KEY.SetValue("Offset", Constants.OFFSET);
+                                    Constants.WriteOutput("Base scan success.");
+                                    found = true;
+                                    break;
+                                } else {
+                                    Constants.OFFSET = 0;
+                                }
                             }
+                            if (found) break;
                         }
                     }
                 }
