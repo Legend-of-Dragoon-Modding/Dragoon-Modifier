@@ -84,6 +84,8 @@
     <Compile Include="DragoonModifier.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="IDraMod.cs" />
+    <Compile Include="LoDDict\Addition.cs" />
+    <Compile Include="LoDDict\AdditionHit.cs" />
     <Compile Include="LoDDict\BaseStats.cs" />
     <Compile Include="LoDDict\Character.cs" />
     <Compile Include="LoDDict\Equipment.cs" />
