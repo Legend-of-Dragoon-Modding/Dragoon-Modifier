@@ -7,5 +7,6 @@ using System.Threading.Tasks;
 namespace Dragoon_Modifier.DraMod.LoDDict {
     public class Character {
         public BaseStats BaseStats;
+        public List<Addition> Additions = new List<Addition>();
     }
 }
