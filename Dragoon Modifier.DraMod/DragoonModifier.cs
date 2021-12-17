@@ -23,7 +23,7 @@ namespace Dragoon_Modifier.DraMod {
                 Console.WriteLine($"Emulator offset:        {Convert.ToString(_emulator.EmulatorOffset, 16).ToUpper()}");
                 Console.WriteLine($"Region:                 {_emulator.Region}");
 
-                _LoDDict = Factory.LoDDictionary(_emulator, _cwd, Settings.Mod);
+                _LoDDict = Factory.LoDDictionary(_emulator, _uiControl, _cwd, Settings.Mod);
 
                 Constants.Run = true;
                 Thread t = new Thread(() => Controller.Main.Run(ref _emulator, _uiControl, ref _LoDDict));
@@ -44,7 +44,7 @@ namespace Dragoon_Modifier.DraMod {
             Settings.Mod = mod;
             if (Constants.Run) {
                 _uiControl.WritePLog("Changing mod directory to " + mod);
-                _LoDDict = Factory.LoDDictionary(_emulator, _cwd, mod);
+                _LoDDict = Factory.LoDDictionary(_emulator, _uiControl, _cwd, mod);
                 Controller.Main.StatsChanged = false;
             }
         }

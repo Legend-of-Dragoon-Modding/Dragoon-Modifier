@@ -51,9 +51,28 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
         public string ItemBattleNames { get; private set; } = String.Empty;
         public string ItemBattleDescriptions { get; private set; } = String.Empty;
 
-        internal LoDDictionary(Emulator.IEmulator emulator, string cwd, string mod) {
+        internal Scripts.IItemScript ItemScript { get; private set; } = new Scripts.DummyItemScript();
+
+        internal LoDDictionary(Emulator.IEmulator emulator, UI.IUIControl uiControl, string cwd, string mod) {
             GetItems(emulator, cwd, mod);
             GetMonsters(cwd, mod);
+
+            ParseScripts($"{cwd}\\Mods\\{mod}", emulator, uiControl);
+        }
+
+        private void ParseScripts(string path, Emulator.IEmulator emulator, UI.IUIControl uiControl) {
+            foreach (var file in Directory.GetFiles(path, "*.cs")) {
+                if (file.EndsWith("ItemScript.cs")) {
+                    try {
+                        ItemScript = new Scripts.CustomItemScript(file, emulator, uiControl);
+                        Console.WriteLine("Custom item script inserted.");
+                    } catch (ApplicationException ex) {
+                        Console.WriteLine($"[ERROR] Item script not compatible.");
+                        Console.WriteLine($"[ERROR] {ex}");
+                    }
+                    continue;
+                }
+            }
         }
 
         public bool TryItem2Num(string name, out byte id) {
