@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +12,7 @@ namespace Dragoon_Modifier.DraMod {
         private Emulator.IEmulator _emulator;
         private readonly UI.IUIControl _uiControl;
         private static LoDDict.ILoDDictionary _LoDDict;
-        private string _cwd;
+        private readonly string _cwd;
 
         internal DragoonModifier(UI.IUIControl uiControl, string cwd) {
             _uiControl = uiControl;
@@ -23,7 +25,7 @@ namespace Dragoon_Modifier.DraMod {
                 Console.WriteLine($"Emulator offset:        {Convert.ToString(_emulator.EmulatorOffset, 16).ToUpper()}");
                 Console.WriteLine($"Region:                 {_emulator.Region}");
 
-                _LoDDict = Factory.LoDDictionary(_emulator, _uiControl, _cwd, Settings.Mod);
+                _LoDDict = new LoDDict.LoDDictionary(_emulator, _uiControl, _cwd, Settings.Mod); //This has to include presets
 
                 Constants.Run = true;
                 Thread t = new Thread(() => Controller.Main.Run(ref _emulator, _uiControl, ref _LoDDict));
@@ -41,12 +43,59 @@ namespace Dragoon_Modifier.DraMod {
         }
 
         public void ChangeLoDDirectory(string mod) {
+            Settings.DualDifficulty = false;
             Settings.Mod = mod;
             if (Constants.Run) {
                 _uiControl.WritePLog("Changing mod directory to " + mod);
-                _LoDDict = Factory.LoDDictionary(_emulator, _uiControl, _cwd, mod);
+                _LoDDict = new LoDDict.LoDDictionary(_emulator, _uiControl, _cwd, mod);
                 Controller.Main.StatsChanged = false;
             }
+        }
+
+        public void ChangeLoDDirectory(Preset mod) {
+            string modString = GetEnumDescription(mod);
+            Settings.Difficulty = mod.ToString();
+
+            Settings.DualDifficulty = false;
+            if (mod == Preset.NormalHard || mod == Preset.HardHell) {
+                Settings.DualDifficulty = true;
+            }
+            Settings.Mod = modString;
+            if (Constants.Run) {
+
+                LoDDict.Scripts.DummyItemScript ItemScript = new LoDDict.Scripts.DummyItemScript();
+
+                _uiControl.WritePLog("Changing mod directory to " + modString);
+                _LoDDict = new LoDDict.LoDDictionary(_emulator, _uiControl, _cwd, modString, ItemScript);
+                Controller.Main.StatsChanged = false;
+            }
+        }
+
+        private static string GetEnumDescription(Preset mod) {
+            FieldInfo fi = mod.GetType().GetField(mod.ToString());
+
+            DescriptionAttribute[] attributes = fi.GetCustomAttributes(typeof(DescriptionAttribute), false) as DescriptionAttribute[];
+
+            if (attributes != null && attributes.Any()) {
+                return attributes.First().Description;
+            }
+
+            return mod.ToString();
+        }
+
+        private static Preset GetValueFromDescription(string description) {
+            foreach (var field in typeof(Preset).GetFields()) {
+                if (Attribute.GetCustomAttribute(field,
+                typeof(DescriptionAttribute)) is DescriptionAttribute attribute) {
+                    if (attribute.Description == description)
+                        return (Preset) field.GetValue(null);
+                } else {
+                    if (field.Name == description)
+                        return (Preset) field.GetValue(null);
+                }
+            }
+
+            throw new ArgumentException("Not found.", nameof(description));
         }
     }
 }

@@ -51,13 +51,23 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
         public string ItemBattleNames { get; private set; } = String.Empty;
         public string ItemBattleDescriptions { get; private set; } = String.Empty;
 
-        internal Scripts.IItemScript ItemScript { get; private set; } = new Scripts.DummyItemScript();
+        public Scripts.IItemScript ItemScript { get; private set; } = new Scripts.DummyItemScript();
 
         internal LoDDictionary(Emulator.IEmulator emulator, UI.IUIControl uiControl, string cwd, string mod) {
-            GetItems(emulator, cwd, mod);
-            GetMonsters(cwd, mod);
+            Load(emulator, uiControl, cwd, mod);
 
             ParseScripts($"{cwd}\\Mods\\{mod}", emulator, uiControl);
+        }
+
+        internal LoDDictionary(Emulator.IEmulator emulator, UI.IUIControl uiControl, string cwd, string mod, Scripts.IItemScript itemScript) {
+            Load(emulator, uiControl, cwd, mod);
+
+            ItemScript = itemScript;
+        }
+
+        private void Load(Emulator.IEmulator emulator, UI.IUIControl uiControl, string cwd, string mod) {
+            GetItems(emulator, cwd, mod);
+            GetMonsters(cwd, mod);
         }
 
         private void ParseScripts(string path, Emulator.IEmulator emulator, UI.IUIControl uiControl) {

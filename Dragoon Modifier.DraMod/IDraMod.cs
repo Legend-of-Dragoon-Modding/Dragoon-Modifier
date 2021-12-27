@@ -3,5 +3,7 @@
 
         bool Attach(string emulatorName, long previousOffset);
         void ChangeLoDDirectory(string mod);
+
+        void ChangeLoDDirectory(Preset mod);
     }
 }

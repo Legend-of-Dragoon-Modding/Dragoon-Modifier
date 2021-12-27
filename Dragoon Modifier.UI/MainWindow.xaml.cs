@@ -294,7 +294,6 @@ namespace Dragoon_Modifier.UI {
 
         public void DifficultyButton(object sender, EventArgs e) {
             Button btn = (Button) sender;
-            DraMod.Settings.DualDifficulty = false;
 
             switch (btn.Name) {
                 case "btnNormal":
@@ -303,8 +302,7 @@ namespace Dragoon_Modifier.UI {
                     btnHard.Background = _grayOffColor;
                     btnHardHell.Background = _grayOffColor;
                     btnHell.Background = _grayOffColor;
-                    DragoonModifier.ChangeLoDDirectory("US_Base");
-                    DraMod.Settings.Difficulty = "Normal";
+                    DragoonModifier.ChangeLoDDirectory(DraMod.Preset.Normal);
                     break;
                 case "btnNormalHard":
                     btnNormal.Background = _grayOffColor;
@@ -312,9 +310,7 @@ namespace Dragoon_Modifier.UI {
                     btnHard.Background = _grayOffColor;
                     btnHardHell.Background = _grayOffColor;
                     btnHell.Background = _grayOffColor;
-                    DragoonModifier.ChangeLoDDirectory("Hard_Mode");
-                    DraMod.Settings.DualDifficulty = true;
-                    DraMod.Settings.Difficulty = "Hard";
+                    DragoonModifier.ChangeLoDDirectory(DraMod.Preset.NormalHard);
                     break;
                 case "btnHard":
                     btnNormal.Background = _grayOffColor;
@@ -322,8 +318,7 @@ namespace Dragoon_Modifier.UI {
                     btn.Background = _onColor;
                     btnHardHell.Background = _grayOffColor;
                     btnHell.Background = _grayOffColor;
-                    DragoonModifier.ChangeLoDDirectory("Hard_Mode");
-                    DraMod.Settings.Difficulty = "Hard";
+                    DragoonModifier.ChangeLoDDirectory(DraMod.Preset.Hard);
                     break;
                 case "btnHardHell":
                     btnNormal.Background = _grayOffColor;
@@ -331,9 +326,7 @@ namespace Dragoon_Modifier.UI {
                     btnHard.Background = _grayOffColor;
                     btn.Background = _onColor;
                     btnHell.Background = _grayOffColor;
-                    DragoonModifier.ChangeLoDDirectory("Hell_Mode");
-                    DraMod.Settings.DualDifficulty = true;
-                    DraMod.Settings.Difficulty = "Hell";
+                    DragoonModifier.ChangeLoDDirectory(DraMod.Preset.HardHell);
                     break;
                 case "btnHell":
                     btnNormal.Background = _grayOffColor;
@@ -341,8 +334,7 @@ namespace Dragoon_Modifier.UI {
                     btnHard.Background = _grayOffColor;
                     btnHardHell.Background = _grayOffColor;
                     btn.Background = _onColor;
-                    DragoonModifier.ChangeLoDDirectory("Hell_Mode");
-                    DraMod.Settings.Difficulty = "Hell";
+                    DragoonModifier.ChangeLoDDirectory(DraMod.Preset.Hell);
                     break;
                 case "btnEnrageBoss":
                     if (DraMod.Settings.EnrageBossOnly) {

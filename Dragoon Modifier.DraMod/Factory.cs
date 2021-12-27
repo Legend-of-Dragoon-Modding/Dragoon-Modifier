@@ -9,9 +9,5 @@ namespace Dragoon_Modifier.DraMod {
         public static IDraMod DraMod(UI.IUIControl uiControl, string cwd) {
             return new DragoonModifier(uiControl, cwd);
         }
-
-        public static LoDDict.ILoDDictionary LoDDictionary(Emulator.IEmulator emulator, UI.IUIControl uiControl, string cwd, string mod) {
-            return new LoDDict.LoDDictionary(emulator, uiControl, cwd, mod);
-        }
     }
 }
