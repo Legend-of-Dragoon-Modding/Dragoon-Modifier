@@ -13,6 +13,7 @@ namespace Dragoon_Modifier.DraMod {
         private readonly UI.IUIControl _uiControl;
         private static LoDDict.ILoDDictionary _LoDDict;
         private readonly string _cwd;
+        private static readonly List<string> presetMods = new List<string> { "Normal", "NormalHard", "Hard", "HardHell", "Hell" };
 
         internal DragoonModifier(UI.IUIControl uiControl, string cwd) {
             _uiControl = uiControl;
@@ -25,9 +26,15 @@ namespace Dragoon_Modifier.DraMod {
                 Console.WriteLine($"Emulator offset:        {Convert.ToString(_emulator.EmulatorOffset, 16).ToUpper()}");
                 Console.WriteLine($"Region:                 {_emulator.Region}");
 
-                _LoDDict = new LoDDict.LoDDictionary(_emulator, _uiControl, _cwd, Settings.Mod); //This has to include presets
-
                 Constants.Run = true;
+
+                if (presetMods.Contains(Settings.Mod)) {
+                    ChangeLoDDirectory(GetValueFromDescription(Settings.Mod));
+                } else {
+                    ChangeLoDDirectory(Settings.Mod);
+                }
+
+                
                 Thread t = new Thread(() => Controller.Main.Run(ref _emulator, _uiControl, ref _LoDDict));
 
                 t.Start();
