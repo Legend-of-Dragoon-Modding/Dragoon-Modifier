@@ -16,6 +16,52 @@ namespace Dragoon_Modifier.DraMod.Controller {
         static readonly ushort[] slot2FinalBlow = new ushort[] { 387, 403 };                     // Fruegel II, Gehrich
         static double[,] originalCharacterStats = new double[3, 10];
         static double[,] originalMonsterStats = new double[5, 6];
+
+        static readonly ushort[] bosses = new ushort[] {
+            384, //Commander
+            386, //Fruegel I
+            414, //Urobolus
+            385, //Sandora Elite
+            388, //Kongol I
+            408, //Virage I
+            415, //Fire Bird
+            393, //Greham + Feyrbrand
+            412, //Drake the Bandit
+            413, //Jiango
+            387, //Fruegel II
+            461, //Sandora Elite II
+            389, //Kongol II
+            390, //Emperor Doel
+            402, //Mappi
+            409, //Virage II
+            403, //Gehrich + Mappi
+            396, //Lenus
+            417, //Ghost Commander
+            397, //Lenus + Regole
+            418, //Kamuy
+            410, //S Virage
+            416, //Grand Jewel
+            394, //Divine Dragon
+            422, //Windigo
+            392, //Lloyd
+            423, //Polter Set
+            398, //Damia
+            399, //Syuveil
+            400, //Belzac
+            401, //Kanzas
+            420, //Magician Faust
+            432, //Last Kraken
+            430, //Executioners
+            449, //Spirit (Feyrbrand)
+            448, //Spirit (Regole)
+            447, //Spirit (Divine Dragon)
+            431, //Zackwell
+            433, //Imago
+            411, //S Virage II
+            442, //Zieg
+            443 //Melbu Fraahma
+            };
+
         //Damage Cap Scan
         static bool firstDamageCapRemoval = false;
         static int lastItemUsedDamageCap = 0;
@@ -180,64 +226,18 @@ namespace Dragoon_Modifier.DraMod.Controller {
         }
 
         private static void SwitchDualDifficulty(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict) {
-            bool boss = false;
             string cwd = Directory.GetCurrentDirectory();
             string mod;
 
-            if (emulator.Battle.EncounterID == 384 || //Commander
-                emulator.Battle.EncounterID == 386 || //Fruegel I
-                emulator.Battle.EncounterID == 414 || //Urobolus
-                emulator.Battle.EncounterID == 385 || //Sandora Elite
-                emulator.Battle.EncounterID == 388 || //Kongol I
-                emulator.Battle.EncounterID == 408 || //Virage I
-                emulator.Battle.EncounterID == 415 || //Fire Bird
-                emulator.Battle.EncounterID == 393 || //Greham + Feyrbrand
-                emulator.Battle.EncounterID == 412 || //Drake the Bandit
-                emulator.Battle.EncounterID == 413 || //Jiango
-                emulator.Battle.EncounterID == 387 || //Fruegel II
-                emulator.Battle.EncounterID == 461 || //Sandora Elite II
-                emulator.Battle.EncounterID == 389 || //Kongol II
-                emulator.Battle.EncounterID == 390 || //Emperor Doel
-                emulator.Battle.EncounterID == 402 || //Mappi
-                emulator.Battle.EncounterID == 409 || //Virage II
-                emulator.Battle.EncounterID == 403 || //Gehrich + Mappi
-                emulator.Battle.EncounterID == 396 || //Lenus
-                emulator.Battle.EncounterID == 417 || //Ghost Commander
-                emulator.Battle.EncounterID == 397 || //Lenus + Regole
-                emulator.Battle.EncounterID == 418 || //Kamuy
-                emulator.Battle.EncounterID == 410 || //S Virage
-                emulator.Battle.EncounterID == 416 || //Grand Jewel
-                emulator.Battle.EncounterID == 394 || //Divine Dragon
-                emulator.Battle.EncounterID == 422 || //Windigo
-                emulator.Battle.EncounterID == 392 || //Lloyd
-                emulator.Battle.EncounterID == 423 || //Polter Set
-                emulator.Battle.EncounterID == 398 || //Damia
-                emulator.Battle.EncounterID == 399 || //Syuveil
-                emulator.Battle.EncounterID == 400 || //Belzac
-                emulator.Battle.EncounterID == 401 || //Kanzas
-                emulator.Battle.EncounterID == 420 || //Magician Faust
-                emulator.Battle.EncounterID == 432 || //Last Kraken
-                emulator.Battle.EncounterID == 430 || //Executioners
-                emulator.Battle.EncounterID == 449 || //Spirit (Feyrbrand)
-                emulator.Battle.EncounterID == 448 || //Spirit (Regole)
-                emulator.Battle.EncounterID == 447 || //Spirit (Divine Dragon)
-                emulator.Battle.EncounterID == 431 || //Zackwell
-                emulator.Battle.EncounterID == 433 || //Imago
-                emulator.Battle.EncounterID == 411 || //S Virage II
-                emulator.Battle.EncounterID == 442 || //Zieg
-                emulator.Battle.EncounterID == 443) { //Melbu Fraahma
-                boss = true;
-            }
-
-            if (!boss) {
+            if (bosses.Contains(emulator.Battle.EncounterID)) {
                 mod = DraMod.Settings.Mod.Equals("Hell_Mode") ? "Hard_Mode" : "US_Base";
                 LoDDict.SwapMonsters(cwd, mod);
                 Console.WriteLine("[DEBUG] [Dual Difficulty] Mod selected: " + mod);
-            } else {
-                LoDDict.SwapMonsters(cwd, DraMod.Settings.Mod);
-                Console.WriteLine("[DEBUG] [Dual Difficulty] Mod selected: " + DraMod.Settings.Mod);
+                return;
             }
 
+            LoDDict.SwapMonsters(cwd, DraMod.Settings.Mod);
+            Console.WriteLine("[DEBUG] [Dual Difficulty] Mod selected: " + DraMod.Settings.Mod);
         }
 
         private static void MonsterChanges(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict) {
@@ -260,50 +260,108 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
             HP = Math.Round(HP);
 
-            emulator.Battle.MonsterTable[slot].HP = (ushort) HP;
-            emulator.Battle.MonsterTable[slot].MaxHP = (ushort) HP;
-            emulator.Battle.MonsterTable[slot].AT = (ushort) Math.Round(LoDDict.Monster[id].AT * Settings.ATMulti);
-            emulator.Battle.MonsterTable[slot].OG_AT = (ushort) Math.Round(LoDDict.Monster[id].AT * Settings.ATMulti);
-            emulator.Battle.MonsterTable[slot].MAT = (ushort) Math.Round(LoDDict.Monster[id].MAT * Settings.MATMulti);
-            emulator.Battle.MonsterTable[slot].OG_MAT = (ushort) Math.Round(LoDDict.Monster[id].MAT * Settings.MATMulti);
-            emulator.Battle.MonsterTable[slot].DF = (ushort) Math.Round(LoDDict.Monster[id].DF * Settings.DFMulti * resup);
-            emulator.Battle.MonsterTable[slot].OG_DF = (ushort) Math.Round(LoDDict.Monster[id].DF * Settings.DFMulti * resup);
-            emulator.Battle.MonsterTable[slot].MDF = (ushort) Math.Round(LoDDict.Monster[id].MDF * Settings.MDFMulti * resup);
-            emulator.Battle.MonsterTable[slot].OG_MDF = (ushort) Math.Round(LoDDict.Monster[id].MDF * Settings.MDFMulti * resup);
-            emulator.Battle.MonsterTable[slot].SPD = (ushort) Math.Round(LoDDict.Monster[id].SPD * Settings.SPDMulti);
-            emulator.Battle.MonsterTable[slot].OG_SPD = (ushort) Math.Round(LoDDict.Monster[id].SPD * Settings.SPDMulti);
-            emulator.Battle.MonsterTable[slot].A_AV = LoDDict.Monster[id].A_AV;
-            emulator.Battle.MonsterTable[slot].M_AV = LoDDict.Monster[id].M_AV;
-            emulator.Battle.MonsterTable[slot].P_Immune = LoDDict.Monster[id].PhysicalImmunity;
-            emulator.Battle.MonsterTable[slot].M_Immune = LoDDict.Monster[id].MagicalImmunity;
-            emulator.Battle.MonsterTable[slot].P_Half = LoDDict.Monster[id].PhysicalResistance;
-            emulator.Battle.MonsterTable[slot].M_Half = LoDDict.Monster[id].MagicalResistance;
-            emulator.Battle.MonsterTable[slot].Element = LoDDict.Monster[id].Element;
-            emulator.Battle.MonsterTable[slot].ElementalImmunity = LoDDict.Monster[id].ElementalImmunity;
-            emulator.Battle.MonsterTable[slot].ElementalResistance = LoDDict.Monster[id].ElementalResistance;
-            emulator.Battle.MonsterTable[slot].StatusResist = LoDDict.Monster[id].StatusResist;
-            emulator.Battle.MonsterTable[slot].SpecialEffect = LoDDict.Monster[id].SpecialEffect;
+            Emulator.Memory.Battle.Monster monster = emulator.Battle.MonsterTable[slot];
+
+            monster.HP = (ushort) HP;
+            monster.MaxHP = (ushort) HP;
+            monster.AT = (ushort) Math.Round(LoDDict.Monster[id].AT * Settings.ATMulti);
+            monster.OG_AT = (ushort) Math.Round(LoDDict.Monster[id].AT * Settings.ATMulti);
+            monster.MAT = (ushort) Math.Round(LoDDict.Monster[id].MAT * Settings.MATMulti);
+            monster.OG_MAT = (ushort) Math.Round(LoDDict.Monster[id].MAT * Settings.MATMulti);
+            monster.DF = (ushort) Math.Round(LoDDict.Monster[id].DF * Settings.DFMulti * resup);
+            monster.OG_DF = (ushort) Math.Round(LoDDict.Monster[id].DF * Settings.DFMulti * resup);
+            monster.MDF = (ushort) Math.Round(LoDDict.Monster[id].MDF * Settings.MDFMulti * resup);
+            monster.OG_MDF = (ushort) Math.Round(LoDDict.Monster[id].MDF * Settings.MDFMulti * resup);
+            monster.SPD = (ushort) Math.Round(LoDDict.Monster[id].SPD * Settings.SPDMulti);
+            monster.OG_SPD = (ushort) Math.Round(LoDDict.Monster[id].SPD * Settings.SPDMulti);
+            monster.A_AV = LoDDict.Monster[id].A_AV;
+            monster.M_AV = LoDDict.Monster[id].M_AV;
+            monster.P_Immune = LoDDict.Monster[id].PhysicalImmunity;
+            monster.M_Immune = LoDDict.Monster[id].MagicalImmunity;
+            monster.P_Half = LoDDict.Monster[id].PhysicalResistance;
+            monster.M_Half = LoDDict.Monster[id].MagicalResistance;
+            monster.Element = LoDDict.Monster[id].Element;
+            monster.ElementalImmunity = LoDDict.Monster[id].ElementalImmunity;
+            monster.ElementalResistance = LoDDict.Monster[id].ElementalResistance;
+            monster.StatusResist = LoDDict.Monster[id].StatusResist;
+            monster.SpecialEffect = LoDDict.Monster[id].SpecialEffect;
         }
 
-        private static void CharacterChanges(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict) {
-          for (byte character = 0; character < 9; character++) {
-                ushort maxHP;
+        private static void CharacterChanges(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict, UI.IUIControl uiControl) {
+            for (byte character = 0; character < 9; character++) {
 
                 if (Settings.CharacterStatChange) {
-                    byte level = emulator.Memory.CharacterTable[character].Level;
-                    emulator.Memory.SecondaryCharacterTable[character].BodyAT = LoDDict.Character[character].BaseStats.AT[level];
+                    CharacterStatChange(emulator, LoDDict, character);
+                }
+
+                if (Settings.ItemStatChange) {
+                    ItemStatChange(emulator, LoDDict, character);
                 }
             }
+
+            LoDDict.ItemScript.BattleSetup(emulator, uiControl);
+
+            foreach (var slot in emulator.Battle.CharacterTable) {
+                // Reset Stats
+            }
+
         }
 
         private static void CharacterStatChange(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict, int character) {
             byte level = emulator.Memory.CharacterTable[character].Level;
 
-            emulator.Memory.SecondaryCharacterTable[character].BodyAT = LoDDict.Character[character].BaseStats.AT[level];
-            emulator.Memory.SecondaryCharacterTable[character].BodyMAT = LoDDict.Character[character].BaseStats.MAT[level];
-            emulator.Memory.SecondaryCharacterTable[character].BodyDF = LoDDict.Character[character].BaseStats.DF[level];
-            emulator.Memory.SecondaryCharacterTable[character].BodyMDF = LoDDict.Character[character].BaseStats.MDF[level];
-            emulator.Memory.SecondaryCharacterTable[character].BodySPD = LoDDict.Character[character].BaseStats.SPD[level];
+            Emulator.Memory.SecondaryCharacterTable secondaryTable = emulator.Memory.SecondaryCharacterTable[character];
+
+            secondaryTable.BodyAT = LoDDict.Character[character].BaseStats.AT[level];
+            secondaryTable.BodyMAT = LoDDict.Character[character].BaseStats.MAT[level];
+            secondaryTable.BodyDF = LoDDict.Character[character].BaseStats.DF[level];
+            secondaryTable.BodyMDF = LoDDict.Character[character].BaseStats.MDF[level];
+            secondaryTable.BodySPD = LoDDict.Character[character].BaseStats.SPD[level];
+        }
+
+        private static void ItemStatChange(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict, int character) {
+            LoDDict.IEquipment weapon = (LoDDict.IEquipment) LoDDict.Item[emulator.Memory.CharacterTable[character].Weapon];
+            LoDDict.IEquipment helmet = (LoDDict.IEquipment) LoDDict.Item[emulator.Memory.CharacterTable[character].Helmet];
+            LoDDict.IEquipment armor = (LoDDict.IEquipment) LoDDict.Item[emulator.Memory.CharacterTable[character].Armor];
+            LoDDict.IEquipment shoes = (LoDDict.IEquipment) LoDDict.Item[emulator.Memory.CharacterTable[character].Shoes];
+            LoDDict.IEquipment accessory = (LoDDict.IEquipment) LoDDict.Item[emulator.Memory.CharacterTable[character].Accessory];
+            LoDDict.IEquipment[] equipment = new LoDDict.IEquipment[5] { weapon, helmet, armor, shoes, accessory };
+
+            Emulator.Memory.SecondaryCharacterTable secondaryTable = emulator.Memory.SecondaryCharacterTable[character];
+
+            secondaryTable.EquipAT = (ushort) equipment.Sum(item => item.AT);
+            secondaryTable.EquipMAT = (ushort) equipment.Sum(item => item.MAT);
+            secondaryTable.EquipDF = (ushort) equipment.Sum(item => item.DF);
+            secondaryTable.EquipMDF = (ushort) equipment.Sum(item => item.MDF);
+            secondaryTable.EquipSPD = (ushort) equipment.Sum(item => item.SPD);
+
+            secondaryTable.StatusResist = (byte) (weapon.StatusResistance | helmet.StatusResistance | armor.StatusResistance | shoes.StatusResistance | accessory.StatusResistance);
+            secondaryTable.E_Half = (byte) (weapon.ElementalResistance | helmet.ElementalResistance | armor.ElementalResistance | shoes.ElementalResistance | accessory.ElementalResistance);
+            secondaryTable.E_Immune = (byte) (weapon.ElementalImmunity | helmet.ElementalImmunity | armor.ElementalImmunity | shoes.ElementalImmunity | accessory.ElementalImmunity);
+            secondaryTable.EquipA_AV = (short) equipment.Sum(item => item.A_AV);
+            secondaryTable.EquipM_AV = (short) equipment.Sum(item => item.M_AV);
+            secondaryTable.EquipA_HIT = (short) equipment.Sum(item => item.A_HIT);
+            secondaryTable.EquipM_HIT = (short) equipment.Sum(item => item.M_HIT);
+            secondaryTable.P_Half = (byte) (((weapon.SpecialBonus1 | helmet.SpecialBonus1 | armor.SpecialBonus1 | shoes.SpecialBonus1 | accessory.SpecialBonus1) >> 5) & 0x1);
+            secondaryTable.M_Half = (byte) (((weapon.SpecialBonus2 | helmet.SpecialBonus2 | armor.SpecialBonus2 | shoes.SpecialBonus2 | accessory.SpecialBonus2) >> 4) & 0x1);
+            secondaryTable.OnHitStatus = weapon.OnHitStatus;
+            secondaryTable.OnHitStatusChance = weapon.OnHitStatusChance;
+
+            secondaryTable.MP_M_Hit = (short) equipment.Sum(item => (item.SpecialBonus1 & 0x1) * item.SpecialBonusAmmount);
+            secondaryTable.SP_M_Hit = (short) equipment.Sum(item => ((item.SpecialBonus1 >> 1) & 0x1) * item.SpecialBonusAmmount);
+            secondaryTable.MP_P_Hit = (short) equipment.Sum(item => ((item.SpecialBonus1 >> 2) & 0x1) * item.SpecialBonusAmmount);
+            secondaryTable.SP_P_Hit = (short) equipment.Sum(item => ((item.SpecialBonus1 >> 3) & 0x1) * item.SpecialBonusAmmount);
+            secondaryTable.SP_Multi = (short) equipment.Sum(item => ((item.SpecialBonus1 >> 4) & 0x1) * item.SpecialBonusAmmount);
+
+            secondaryTable.MP_Multi = (byte) equipment.Sum(item => (item.SpecialBonus2 & 0x1) * item.SpecialBonusAmmount);
+            secondaryTable.HP_Multi = (byte) equipment.Sum(item => ((item.SpecialBonus2 >> 2) & 0x1) * item.SpecialBonusAmmount);
+            secondaryTable.Revive = (byte) equipment.Sum(item => ((item.SpecialBonus2 >> 3) & 0x1) * item.SpecialBonusAmmount);
+            secondaryTable.SP_Regen = (short) equipment.Sum(item => ((item.SpecialBonus2 >> 4) & 0x1) * item.SpecialBonusAmmount);
+            secondaryTable.MP_Regen = (short) equipment.Sum(item => ((item.SpecialBonus2 >> 5) & 0x1) * item.SpecialBonusAmmount);
+            secondaryTable.HP_Regen = (short) equipment.Sum(item => ((item.SpecialBonus2 >> 6) & 0x1) * item.SpecialBonusAmmount);
+           
+            secondaryTable.SpecialEffect = (byte) (weapon.SpecialEffect | helmet.SpecialEffect | armor.SpecialEffect | shoes.SpecialEffect | accessory.SpecialEffect);
+            secondaryTable.WeaponElement = weapon.WeaponElement;
         }
 
         private static void RemoveDamageCaps(Emulator.IEmulator emulator) {
