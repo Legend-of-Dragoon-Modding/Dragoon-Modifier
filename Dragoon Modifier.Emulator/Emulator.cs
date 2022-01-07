@@ -492,7 +492,25 @@ namespace Dragoon_Modifier.Emulator {
                 offset -= EmulatorOffset;
             }
 
-            List<long> results = KMP.UnmaskedSearch(pattern.Split().Select(t => byte.Parse(t, NumberStyles.AllowHexSpecifier)).ToArray(), ReadAoB(start, end), true);
+            List<long> results = KMP.Search(pattern, ReadAoB(start, end), true);
+
+            for (int i = 0; i < results.Count; i++) {
+                results[i] += start;
+                if (addOffset) {
+                    results[i] += EmulatorOffset;
+                }
+            }
+
+            return results;
+        }
+
+        public List<long> ScanAoB(long start, long end, byte[] pattern, bool useOffset = true, bool addOffset = false) {
+            long offset = 0;
+            if (!useOffset) {
+                offset -= EmulatorOffset;
+            }
+
+            List<long> results = KMP.UnmaskedSearch(pattern, ReadAoB(start, end), true);
 
             for (int i = 0; i < results.Count; i++) {
                 results[i] += start;

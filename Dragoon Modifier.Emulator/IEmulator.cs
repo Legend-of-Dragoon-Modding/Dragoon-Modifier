@@ -37,6 +37,7 @@ namespace Dragoon_Modifier.Emulator {
         void WriteAoB(long startAddress, byte[] bytes);
         void WriteAoB(long startAddress, string byteString);
         List<long> ScanAoB(long start, long end, string pattern, bool useOffset = true, bool addOffset = false);
+        List<long> ScanAoB(long start, long end, byte[] pattern, bool useOffset = true, bool addOffset = false);
         void WriteByte(long address, byte value);
         void WriteByte(string address, byte value, int offset = 0);
         void WriteInt(long address, int value);

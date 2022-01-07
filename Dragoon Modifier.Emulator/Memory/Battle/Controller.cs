@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace Dragoon_Modifier.Emulator.Memory.Battle {
     public class Controller : IBattle {
         private readonly IEmulator _emulator;
+        private readonly int _damageCap;
         public uint CharacterPoint { get; private set; }
         public uint MonsterPoint { get; private set; }
         public ushort EncounterID { get; private set; }
@@ -19,6 +20,7 @@ namespace Dragoon_Modifier.Emulator.Memory.Battle {
         public byte BattleMenuChosenSlot { get { return _emulator.ReadByte(MonsterPoint + 0xE4E); } set { _emulator.WriteByte(MonsterPoint + 0xE4E, value); } }
         public byte ItemUsed { get { return _emulator.ReadByte(MonsterPoint + 0xBC4); } set { _emulator.WriteByte(MonsterPoint + 0xBC4, value); } }
         public Collections.IAddress<byte> BattleMenuSlot { get; private set; }
+        public ushort DamageCap { get { return GetDamageCap(); } set { SetDamageCap(value); } }
 
         internal Controller(IEmulator emulator) {
             _emulator = emulator;
@@ -50,6 +52,8 @@ namespace Dragoon_Modifier.Emulator.Memory.Battle {
                 CharacterTable[i] = new Character(_emulator, CharacterPoint, i, i + monsterCount);
             }
             BattleMenuSlot = Factory.AddressCollection<byte>(emulator, (int) MonsterPoint + 0xE3C, 2, 9);
+
+            _damageCap = emulator.GetAddress("DAMAGE_CAP");
         }
 
         private int GetOffset() {
@@ -78,6 +82,21 @@ namespace Dragoon_Modifier.Emulator.Memory.Battle {
 
                 return discOffset[_emulator.Memory.Disc - 1] - partyOffset;
             }
+        }
+
+        private ushort GetDamageCap() {
+            return new ushort[] { _emulator.ReadUShort(_damageCap), _emulator.ReadUShort(_damageCap + 0x8), _emulator.ReadUShort(_damageCap + 0x14) }.Min();
+        }
+
+        private void SetDamageCap(ushort cap) {
+            if (cap > 50000) {
+                Console.WriteLine("[ERROR] It's over 50000! Setting damage cap to 50k.");
+                cap = 50000;
+            }
+
+            _emulator.WriteUShort(_damageCap, cap);
+            _emulator.WriteUShort(_damageCap + 0x8, cap);
+            _emulator.WriteUShort(_damageCap + 0x14, cap);
         }
     }
 }

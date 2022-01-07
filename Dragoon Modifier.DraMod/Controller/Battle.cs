@@ -61,6 +61,62 @@ namespace Dragoon_Modifier.DraMod.Controller {
             442, //Zieg
             443 //Melbu Fraahma
             };
+        static readonly ushort[] enrageBosses = new ushort[] {
+                384,
+                385,
+                386,
+                387,
+                388,
+                389,
+                390,
+                391,
+                392,
+                393,
+                394,
+                395,
+                396,
+                397,
+                398,
+                399,
+                400,
+                401,
+                402,
+                403,
+                408,
+                409,
+                410,
+                411,
+                412,
+                413,
+                414,
+                415,
+                416,
+                417,
+                418,
+                421,
+                422,
+                423,
+                430,
+                431,
+                432,
+                433,
+                434,
+                435,
+                436,
+                437,
+                438,
+                439,
+                442,
+                443,
+                444,
+                445,
+                446,
+                447,
+                448,
+                449,
+                489
+            };
+        static readonly byte[] damageCapScanPattern = new byte[] { 0x0F, 0x27 };
 
         //Damage Cap Scan
         static bool firstDamageCapRemoval = false;
@@ -75,8 +131,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
         //Enrage
         static byte[] enragedMode = { 0, 0, 0, 0, 0 };
         static bool enrageBoss = false;
-        //Soul Eater
-        static bool noHPDecayOnBattleEntry = false;
+
         //Damage Tracker
         static bool damageTrackerOnBattleEntry = false;
         static int[] dmgTrkHP = new int[6];
@@ -101,8 +156,6 @@ namespace Dragoon_Modifier.DraMod.Controller {
             eleBombElement = 255;
             eleBombSlot = 255;
             eleBombItemUsed = 255;
-
-            noHPDecayOnBattleEntry = false;
 
             uint tableBase = emulator.Memory.BattleBasePoint;
             while (tableBase == emulator.Memory.CharacterPoint || tableBase == emulator.Memory.MonsterPoint) { // Wait until both C_Point and M_Point were set
@@ -191,10 +244,6 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             if (Settings.MonsterHPAsNames) {
                 MonsterHPNames(emulator);
-            }
-
-            if (Settings.NoDecaySoulEater && !noHPDecayOnBattleEntry) {
-                NoHPDecaySoulEater(emulator);
             }
 
             if (Settings.NeverGuard) {
@@ -299,6 +348,10 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 }
             }
 
+            if (Settings.NoDecaySoulEater) {
+                NoHPDecaySoulEater(emulator, LoDDict);
+            }
+
             LoDDict.ItemScript.BattleSetup(emulator, uiControl);
 
             foreach (var slot in emulator.Battle.CharacterTable) {
@@ -366,39 +419,45 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
         private static void RemoveDamageCaps(Emulator.IEmulator emulator) {
             if (!firstDamageCapRemoval) {
-                emulator.WriteInt("DAMAGE_CAP", 50000);
-                emulator.WriteInt("DAMAGE_CAP", 50000, 0x8);
-                emulator.WriteInt("DAMAGE_CAP", 50000, 0x14);
+                emulator.Battle.DamageCap = 50000;
                 DamageCapScan(emulator);
                 firstDamageCapRemoval = true;
-            } else {
-                if (lastItemUsedDamageCap != emulator.Battle.ItemUsed) {
-                    lastItemUsedDamageCap = emulator.Battle.ItemUsed;
-                    if ((lastItemUsedDamageCap >= 0xC1 && lastItemUsedDamageCap <= 0xCA) || (lastItemUsedDamageCap >= 0xCF && lastItemUsedDamageCap <= 0xD2) || lastItemUsedDamageCap == 0xD6 || lastItemUsedDamageCap == 0xD8 || lastItemUsedDamageCap == 0xDC || (lastItemUsedDamageCap >= 0xF1 && lastItemUsedDamageCap <= 0xF8) || lastItemUsedDamageCap == 0xFA) {
+                return;
+            }
+
+            if (lastItemUsedDamageCap != emulator.Battle.ItemUsed) {
+                lastItemUsedDamageCap = emulator.Battle.ItemUsed;
+
+                switch (lastItemUsedDamageCap) {
+                    case int a when (a >= 0xC1 && a <= 0xCA):
+                    case int b when (b >= 0xCF && b <= 0xD2):
+                    case 0xD6:
+                    case 0xD8:
+                    case 0xDC:
+                    case int c when (c >= 0xF1 && c <= 0xF8):
+                    case 0xFA:
                         DamageCapScan(emulator);
-                    }
+                        break;
                 }
-                for (int i = 0; i < 3; i++) {
-                    if (emulator.Memory.PartySlot[i] < 9) {
-                        if (emulator.Battle.CharacterTable[i].Action == 24) {
-                            DamageCapScan(emulator);
-                        }
-                    }
+            }
+            foreach (var character in emulator.Battle.CharacterTable) {
+                if (character.Action == 24) {
+                    DamageCapScan(emulator);
                 }
-                for (int i = 0; i < emulator.Memory.MonsterSize; i++) {
-                    if (emulator.Battle.MonsterTable[i].Action == 28) { // Most used, not all monsters use action code 28 for item spells
-                        DamageCapScan(emulator);
-                    }
+            }
+            foreach (var monster in emulator.Battle.MonsterTable) {
+                if (monster.Action == 28) { // Most used, not all monsters use action code 28 for item spells
+                    DamageCapScan(emulator);
                 }
             }
         }
 
         private static void DamageCapScan(Emulator.IEmulator emulator) {
-            var damageCapScan = emulator.ScanAoB(0xA8660, 0x2A865F, "0F 27");
+            var damageCapScan = emulator.ScanAoB(0xA8660, 0x2A865F, damageCapScanPattern);
             long lastAddress = 0;
             foreach (var address in damageCapScan) {
-                long capAddress = (long) address;
-                if (emulator.ReadUShort(capAddress) == 9999 && (lastAddress + 0x10) == capAddress) {
+                long capAddress = address;
+                if ((emulator.ReadUShort(capAddress) == 9999) && ((lastAddress + 0x10) == capAddress)) {
                     emulator.WriteUInt(capAddress, 50000);
                     emulator.WriteUInt(lastAddress, 50000);
                 }
@@ -413,121 +472,142 @@ namespace Dragoon_Modifier.DraMod.Controller {
             if (eleBombTurns == 0) {
                 eleBombItemUsed = emulator.Battle.ItemUsed;
                 if ((eleBombItemUsed >= 241 && eleBombItemUsed <= 248) || eleBombItemUsed == 250) {
-                    if (emulator.Memory.PartySlot[2] < 9) {
-                        Console.WriteLine("[DEBUG][Elemental Bomb] Trio party...");
-                        byte player1Action = emulator.Battle.CharacterTable[0].Action;
-                        byte player2Action = emulator.Battle.CharacterTable[1].Action;
-                        byte player3Action = emulator.Battle.CharacterTable[2].Action;
-                        if (player1Action == 24 && (player2Action == 16 || player2Action == 18 || player2Action == 208) && (player3Action == 16 || player3Action == 18 || player3Action == 208)) {
-                            eleBombSlot = 0;
-                            eleBombTurns = 7;
-                            eleBombChange = false;
-                            Console.WriteLine("[DEBUG][Elemental Bomb] Bomb slot 1.");
-                        }
-                        if (player2Action == 24 && (player1Action == 16 || player1Action == 18 || player1Action == 208) && (player3Action == 16 || player3Action == 18 || player3Action == 208)) {
-                            eleBombSlot = 1;
-                            eleBombTurns = 7;
-                            eleBombChange = false;
-                            Console.WriteLine("[DEBUG][Elemental Bomb] Bomb slot 2.");
-                        }
-                        if (player3Action == 24 && (player1Action == 16 || player1Action == 18 || player1Action == 208) && (player2Action == 16 || player2Action == 18 || player2Action == 208)) {
-                            eleBombSlot = 2;
-                            eleBombTurns = 7;
-                            eleBombChange = false;
-                            Console.WriteLine("[DEBUG][Elemental Bomb] Bomb slot 3.");
-                        }
-                    } else if (emulator.Memory.PartySlot[1] < 9) {
-                        Console.WriteLine("[DEBUG][Elemental Bomb] Duo party...");
-                        byte player1Action = emulator.Battle.CharacterTable[0].Action;
-                        byte player2Action = emulator.Battle.CharacterTable[1].Action;
-                        if (player1Action == 24 && (player2Action == 16 || player2Action == 18 || player2Action == 208)) {
-                            eleBombSlot = 0;
-                            eleBombTurns = 7;
-                            eleBombChange = false;
-                            Console.WriteLine("[DEBUG][Elemental Bomb] Bomb slot 1.");
-                        }
-                        if (player2Action == 24 && (player1Action == 16 || player1Action == 18 || player1Action == 208)) {
-                            eleBombSlot = 1;
-                            eleBombTurns = 7;
-                            eleBombChange = false;
-                            Console.WriteLine("[DEBUG][Elemental Bomb] Bomb slot 2.");
-                        }
-                    } else {
-                        byte player1Action = emulator.Battle.CharacterTable[0].Action;
-                        Console.WriteLine("[DEBUG][Elemental Bomb] Solo party...");
-                        if (player1Action == 24) {
-                            eleBombSlot = 0;
-                            eleBombTurns = 7;
-                            eleBombChange = false;
-                        }
+                    byte player1Action;
+                    byte player2Action;
+                    byte player3Action;
+                    switch (emulator.Battle.CharacterTable.Length) {
+                        case 3:
+                            Console.WriteLine("[DEBUG][Elemental Bomb] Trio party...");
+                            player1Action = emulator.Battle.CharacterTable[0].Action;
+                            player2Action = emulator.Battle.CharacterTable[1].Action;
+                            player3Action = emulator.Battle.CharacterTable[2].Action;
+                            if (player1Action == 24 && (player2Action == 16 || player2Action == 18 || player2Action == 208) && (player3Action == 16 || player3Action == 18 || player3Action == 208)) {
+                                eleBombSlot = 0;
+                                eleBombTurns = 7;
+                                eleBombChange = false;
+                                Console.WriteLine("[DEBUG][Elemental Bomb] Bomb slot 1.");
+                            }
+                            if (player2Action == 24 && (player1Action == 16 || player1Action == 18 || player1Action == 208) && (player3Action == 16 || player3Action == 18 || player3Action == 208)) {
+                                eleBombSlot = 1;
+                                eleBombTurns = 7;
+                                eleBombChange = false;
+                                Console.WriteLine("[DEBUG][Elemental Bomb] Bomb slot 2.");
+                            }
+                            if (player3Action == 24 && (player1Action == 16 || player1Action == 18 || player1Action == 208) && (player2Action == 16 || player2Action == 18 || player2Action == 208)) {
+                                eleBombSlot = 2;
+                                eleBombTurns = 7;
+                                eleBombChange = false;
+                                Console.WriteLine("[DEBUG][Elemental Bomb] Bomb slot 3.");
+                            }
+                            break;
+                        case 2:
+                            Console.WriteLine("[DEBUG][Elemental Bomb] Duo party...");
+                            player1Action = emulator.Battle.CharacterTable[0].Action;
+                            player2Action = emulator.Battle.CharacterTable[1].Action;
+                            if (player1Action == 24 && (player2Action == 16 || player2Action == 18 || player2Action == 208)) {
+                                eleBombSlot = 0;
+                                eleBombTurns = 7;
+                                eleBombChange = false;
+                                Console.WriteLine("[DEBUG][Elemental Bomb] Bomb slot 1.");
+                            }
+                            if (player2Action == 24 && (player1Action == 16 || player1Action == 18 || player1Action == 208)) {
+                                eleBombSlot = 1;
+                                eleBombTurns = 7;
+                                eleBombChange = false;
+                                Console.WriteLine("[DEBUG][Elemental Bomb] Bomb slot 2.");
+                            }
+                            break;
+                        default:
+                            player1Action = emulator.Battle.CharacterTable[0].Action;
+                            Console.WriteLine("[DEBUG][Elemental Bomb] Solo party...");
+                            if (player1Action == 24) {
+                                eleBombSlot = 0;
+                                eleBombTurns = 7;
+                                eleBombChange = false;
+                            }
+                            break;
                     }
                 }
+                Console.WriteLine($"[DEBUG] Item: {eleBombItemUsed} | Slot: {eleBombSlot} | Turns: {eleBombTurns} | Change {eleBombChange}");
+                return;
 
-                //Constants.WriteDebug("Item: " + eleBombItemUsed + " | Slot: " + eleBombSlot + " | Turns: " + eleBombTurns + " | Change: " + eleBombChange);
-            } else {
-                //Constants.WriteDebug("Item: " + eleBombItemUsed + " | Slot: " + eleBombSlot + " | Turns: " + eleBombTurns + " | Change: " + eleBombChange + " | Element: " + eleBombElement + " | Action: " + Core.Emulator.Battle.CharacterTable[eleBombSlot].Read("Action"));
-                if (eleBombSlot >= 0) {
-                    if ((emulator.Battle.CharacterTable[eleBombSlot].Action == 8 || emulator.Battle.CharacterTable[eleBombSlot].Action == 10) && !eleBombChange) {
-                        eleBombChange = true;
-                        if (eleBombTurns == 7) {
-                            ushort element = 0;
+            }
 
-                            if (eleBombItemUsed == 241)
-                                element = 0;
-                            else if (eleBombItemUsed == 242)
-                                element = 128;
-                            else if (eleBombItemUsed == 243)
-                                element = 1;
-                            else if (eleBombItemUsed == 244)
-                                element = 64;
-                            else if (eleBombItemUsed == 245)
-                                element = 2;
-                            else if (eleBombItemUsed == 246)
-                                element = 32;
-                            else if (eleBombItemUsed == 247)
-                                element = 4;
-                            else if (eleBombItemUsed == 248)
-                                element = 16;
-                            else if (eleBombItemUsed == 250)
-                                element = 8;
+            Console.WriteLine($"[DEBUG] Item: {eleBombItemUsed} | Slot: {eleBombSlot} | Turns: {eleBombTurns} | Change {eleBombChange} | Element {eleBombElement} | Action {emulator.Battle.CharacterTable[eleBombSlot].Action}");
+            
+            if (eleBombSlot < 0) {
+                return;
+            }
 
-                            eleBombElement = (byte) element;
-
-                            for (int i = 0; i < emulator.Memory.MonsterSize; i++) {
-                                eleBombOldElement[i] = emulator.Battle.MonsterTable[i].Element;
-                                emulator.Battle.MonsterTable[i].Element = (byte) element;
-                                emulator.Battle.MonsterTable[i].Display_Element = (byte) element;
-                            }
-
-                            eleBombTurns -= 1;
-                            Console.WriteLine("[DEBUG][Elemental Bomb][1] Turns left: " + eleBombTurns);
-                        }
+            if ((emulator.Battle.CharacterTable[eleBombSlot].Action == 8 || emulator.Battle.CharacterTable[eleBombSlot].Action == 10) && !eleBombChange) {
+                eleBombChange = true;
+                if (eleBombTurns == 7) {
+                    byte element;
+                    switch (eleBombItemUsed) {
+                        case 242:
+                            element = 128;
+                            break;
+                        case 243:
+                            element = 1;
+                            break;
+                        case 244:
+                            element = 64;
+                            break;
+                        case 245:
+                            element = 2;
+                            break;
+                        case 246:
+                            element = 32;
+                            break;
+                        case 247:
+                            element = 4;
+                            break;
+                        case 248:
+                            element = 16;
+                            break;
+                        case 250:
+                            element = 8;
+                            break;
+                        default:
+                            element = 0;
+                            break;
                     }
 
-                    if (eleBombChange && (emulator.Battle.CharacterTable[eleBombSlot].Action == 0 || emulator.Battle.CharacterTable[eleBombSlot].Action == 2)) {
-                        eleBombChange = false;
-                        eleBombTurns -= 1;
-                        Console.WriteLine("[DEBUG][Elemental Bomb][2] Turns left: " + eleBombTurns);
-                        if (eleBombTurns <= 0) {
-                            for (int i = 0; i < emulator.Memory.MonsterSize; i++) {
-                                emulator.Battle.MonsterTable[i].Element = (byte) eleBombOldElement[i];
-                                emulator.Battle.MonsterTable[i].Display_Element = (byte) eleBombOldElement[i];
-                            }
-                        }
+                    eleBombElement = element;
+
+                    for (int i = 0; i < emulator.Memory.MonsterSize; i++) {
+                        eleBombOldElement[i] = emulator.Battle.MonsterTable[i].Element;
+                        emulator.Battle.MonsterTable[i].Element = element;
+                        emulator.Battle.MonsterTable[i].Display_Element = element;
                     }
 
-                    if (emulator.Battle.CharacterTable[eleBombSlot].Action == 192) {
-                        for (int i = 0; i < emulator.Memory.MonsterSize; i++) {
-                            emulator.Battle.MonsterTable[i].Element = (byte) eleBombOldElement[i];
-                            emulator.Battle.MonsterTable[i].Display_Element = (byte) eleBombOldElement[i];
-                        }
-                        eleBombChange = false;
-                        eleBombTurns = 0;
-                        eleBombElement = 255;
-                        eleBombSlot = 255;
-                        eleBombItemUsed = 255;
+                    eleBombTurns -= 1;
+                    Console.WriteLine($"[DEBUG][Elemental Bomb][1] Turns left: {eleBombTurns}");
+                }
+            }
+
+            if (eleBombChange && (emulator.Battle.CharacterTable[eleBombSlot].Action == 0 || emulator.Battle.CharacterTable[eleBombSlot].Action == 2)) {
+                eleBombChange = false;
+                eleBombTurns -= 1;
+                Console.WriteLine($"[DEBUG][Elemental Bomb][2] Turns left: {eleBombTurns}");
+                if (eleBombTurns <= 0) {
+                    for (int i = 0; i < emulator.Memory.MonsterSize; i++) {
+                        emulator.Battle.MonsterTable[i].Element = (byte) eleBombOldElement[i];
+                        emulator.Battle.MonsterTable[i].Display_Element = (byte) eleBombOldElement[i];
                     }
                 }
+            }
+
+            if (emulator.Battle.CharacterTable[eleBombSlot].Action == 192) {
+                for (int i = 0; i < emulator.Memory.MonsterSize; i++) {
+                    emulator.Battle.MonsterTable[i].Element = (byte) eleBombOldElement[i];
+                    emulator.Battle.MonsterTable[i].Display_Element = (byte) eleBombOldElement[i];
+                }
+                eleBombChange = false;
+                eleBombTurns = 0;
+                eleBombElement = 255;
+                eleBombSlot = 255;
+                eleBombItemUsed = 255;
             }
         }
 
@@ -549,71 +629,60 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
         private static void EnrageMode(Emulator.IEmulator emulator, int i = 0) {
             if ((Settings.EnrageBossOnly && CheckEnrageBoss(emulator)) || Settings.EnrageMode) { //TODO Ultimate Boss
-                if ((emulator.Battle.MonsterTable[i].HP <= (emulator.Battle.MonsterTable[i].MaxHP / 2)) && enragedMode[i] == 0) {
-                    emulator.Battle.MonsterTable[i].AT = (ushort) Math.Round(originalMonsterStats[i, 1] * 1.1);
-                    emulator.Battle.MonsterTable[i].MAT = (ushort) Math.Round(originalMonsterStats[i, 2] * 1.1);
-                    emulator.Battle.MonsterTable[i].DF = (ushort) Math.Round(originalMonsterStats[i, 3] * 1.1);
-                    emulator.Battle.MonsterTable[i].MDF = (ushort) Math.Round(originalMonsterStats[i, 4] * 1.1);
-                    enragedMode[i] = 1;
-                } else if ((emulator.Battle.MonsterTable[i].HP <= (emulator.Battle.MonsterTable[i].MaxHP / 4)) && enragedMode[i] == 1) {
-                    emulator.Battle.MonsterTable[i].AT = (ushort) Math.Round(originalMonsterStats[i, 1] * 1.25);
-                    emulator.Battle.MonsterTable[i].MAT = (ushort) Math.Round(originalMonsterStats[i, 2] * 1.25);
-                    emulator.Battle.MonsterTable[i].DF = (ushort) Math.Round(originalMonsterStats[i, 3] * 1.25);
-                    emulator.Battle.MonsterTable[i].MDF = (ushort) Math.Round(originalMonsterStats[i, 4] * 1.25);
-                    enragedMode[i] = 2;
+                var monster = emulator.Battle.MonsterTable[i];
+                if (enragedMode[i] == 0 && (monster.HP <= (monster.MaxHP / 2))) {
+                    monster.AT = (ushort) Math.Round(monster.OG_AT * 1.1);
+                    monster.MAT = (ushort) Math.Round(monster.OG_MAT * 1.1);
+                    monster.DF = (ushort) Math.Round(monster.OG_DF * 1.1);
+                    monster.MDF = (ushort) Math.Round(monster.OG_MDF * 1.1);
+                    return;
+                }
+
+                if (enragedMode[i] == 1 && (monster.HP <= (monster.MaxHP / 4))) {
+                    monster.AT = (ushort) Math.Round(monster.OG_AT * 1.25);
+                    monster.MAT = (ushort) Math.Round(monster.OG_MAT * 1.25);
+                    monster.DF = (ushort) Math.Round(monster.OG_DF * 1.25);
+                    monster.MDF = (ushort) Math.Round(monster.OG_MDF * 1.25);
                 }
             }
         }
 
         private static bool CheckEnrageBoss(Emulator.IEmulator emulator) {
             if (enrageBoss) {
-                if (emulator.Memory.EncounterID == 384 || emulator.Memory.EncounterID == 385 || emulator.Memory.EncounterID == 386 || emulator.Memory.EncounterID == 387 || emulator.Memory.EncounterID == 388 || emulator.Memory.EncounterID == 389 || emulator.Memory.EncounterID == 390 || emulator.Memory.EncounterID == 391 || emulator.Memory.EncounterID == 392 || emulator.Memory.EncounterID == 393 || emulator.Memory.EncounterID == 394 || emulator.Memory.EncounterID == 395 || emulator.Memory.EncounterID == 396 || emulator.Memory.EncounterID == 397 || emulator.Memory.EncounterID == 398 || emulator.Memory.EncounterID == 399 || emulator.Memory.EncounterID == 400 || emulator.Memory.EncounterID == 401 || emulator.Memory.EncounterID == 402 || emulator.Memory.EncounterID == 403 || emulator.Memory.EncounterID == 408 || emulator.Memory.EncounterID == 409 || emulator.Memory.EncounterID == 410 || emulator.Memory.EncounterID == 411 || emulator.Memory.EncounterID == 412 || emulator.Memory.EncounterID == 413 || emulator.Memory.EncounterID == 414 || emulator.Memory.EncounterID == 415 || emulator.Memory.EncounterID == 416 || emulator.Memory.EncounterID == 417 || emulator.Memory.EncounterID == 418 || emulator.Memory.EncounterID == 421 || emulator.Memory.EncounterID == 422 || emulator.Memory.EncounterID == 423 || emulator.Memory.EncounterID == 430 || emulator.Memory.EncounterID == 431 || emulator.Memory.EncounterID == 432 || emulator.Memory.EncounterID == 433 || emulator.Memory.EncounterID == 434 || emulator.Memory.EncounterID == 435 || emulator.Memory.EncounterID == 436 || emulator.Memory.EncounterID == 437 || emulator.Memory.EncounterID == 438 || emulator.Memory.EncounterID == 439 || emulator.Memory.EncounterID == 442 || emulator.Memory.EncounterID == 443 || emulator.Memory.EncounterID == 444 || emulator.Memory.EncounterID == 445 || emulator.Memory.EncounterID == 446 || emulator.Memory.EncounterID == 447 || emulator.Memory.EncounterID == 448 || emulator.Memory.EncounterID == 449 || emulator.Memory.EncounterID == 489) {
+                if (enrageBosses.Contains(emulator.Memory.EncounterID)) {
                     return true;
-                } else {
-                    return false;
                 }
-            } else {
-                return false;
             }
+            return false;
         }
 
-        private static void NoHPDecaySoulEater(Emulator.IEmulator emulator) {
-            if (!noHPDecayOnBattleEntry) {
-                for (int i = 0; i < 3; i++) {
-                    if (emulator.Memory.PartySlot[i] == 0) {
-                        if (emulator.Battle.CharacterTable[i].HP_Regen == 246 || emulator.Battle.CharacterTable[i].HP_Regen == -10) { //Default
-                            emulator.Battle.CharacterTable[i].HP_Regen = 0;
-                        } else if (emulator.Battle.CharacterTable[i].HP_Regen == -3) { //Heal Ring
-                            emulator.Battle.CharacterTable[i].HP_Regen = 7;
-                        } else if (emulator.Battle.CharacterTable[i].HP_Regen == 256) {
-                            emulator.Battle.CharacterTable[i].HP_Regen = 10;
-                        } else if (emulator.Battle.CharacterTable[i].HP_Regen == 0 && emulator.ReadByte("CHAR_TABLE", 0 * 0x2C + 0x18) == 0x7D) { //Therapy Ring
-                            emulator.Battle.CharacterTable[i].HP_Regen = 10;
-                        }
-                    }
-                }
-                noHPDecayOnBattleEntry = true;
+        private static void NoHPDecaySoulEater(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict) {
+            if (!(emulator.Memory.CharacterTable[0].Weapon == 7)) {
+                return;
             }
+
+            if (Settings.ItemStatChange) {
+                LoDDict.IEquipment soulEater = (LoDDict.IEquipment) LoDDict.Item[7];
+                emulator.Memory.SecondaryCharacterTable[0].HP_Regen -= (sbyte) soulEater.SpecialBonusAmmount;
+                return;
+            }
+
+            emulator.Memory.SecondaryCharacterTable[0].HP_Regen += 10;
         }
 
         private static void NeverGuard(Emulator.IEmulator emulator) {
-            for (int i = 0; i < 3; i++) {
-                if (emulator.Memory.PartySlot[i] > 8) {
-                    break;
-                }
-                emulator.Battle.CharacterTable[i].Guard = 0;
+            foreach (var character in emulator.Battle.CharacterTable) {
+                character.Guard = 0;
             }
         }
 
         private static void DamageTracker(Emulator.IEmulator emulator, UI.IUIControl uiControl) {
             bool partyAttacking = false;
-            for (int i = 0; i < 3; i++) {
-                if (emulator.Memory.PartySlot[i] < 9) {
-                    byte action = emulator.Battle.CharacterTable[i].Action;
-                    if (action == 24 || action == 26 || action == 136 || action == 138) {
-                        partyAttacking = true;
-                        dmgTrkSlot = i;
-                    }
+            for (int i = 0; i < emulator.Battle.CharacterTable.Length; i++) {
+                byte action = emulator.Battle.CharacterTable[i].Action;
+                if (action == 24 || action == 26 || action == 136 || action == 138) {
+                    partyAttacking = true;
+                    dmgTrkSlot = i;
                 }
             }
 
@@ -630,8 +699,8 @@ namespace Dragoon_Modifier.DraMod.Controller {
                     if (emulator.Battle.MonsterTable[i].HP < dmgTrkHP[i]) {
                         dmgTrkChr[dmgTrkSlot] += dmgTrkHP[i] - emulator.Battle.MonsterTable[i].HP;
                         dmgTrkHP[i] = emulator.Battle.MonsterTable[i].HP;
-                        Console.WriteLine("Damage Track: " + dmgTrkChr[0] + " / " + dmgTrkChr[1] + " / " + dmgTrkChr[2]);
-                        uiControl.WriteGLog("Damage Track: " + dmgTrkChr[0] + " / " + dmgTrkChr[1] + " / " + dmgTrkChr[2]);
+                        Console.WriteLine($"Damage Track: {dmgTrkChr[0]} / {dmgTrkChr[1]} / {dmgTrkChr[2]}");
+                        uiControl.WriteGLog($"Damage Track: {dmgTrkChr[0]} / {dmgTrkChr[1]} / {dmgTrkChr[2]}");
                     } else if (emulator.Battle.MonsterTable[i].HP > dmgTrkHP[i]) {
                         dmgTrkHP[i] = emulator.Battle.MonsterTable[i].HP;
                     }
@@ -644,31 +713,33 @@ namespace Dragoon_Modifier.DraMod.Controller {
         }
 
         private static void NoDragoonMode(Emulator.IEmulator emulator) {
-            for (int slot = 0; slot < 3; slot++) {
-                if (emulator.Memory.PartySlot[slot] > 8) {
-                    break;
-                }
-                emulator.Battle.CharacterTable[slot].Dragoon = 0;
-                emulator.Battle.CharacterTable[slot].SP = 0;
+            foreach (var character in emulator.Battle.CharacterTable) {
+                character.Dragoon = 0;
+                character.SP = 0;
             }
         }
 
         private static void ChangeAspectRatio(Emulator.IEmulator emulator, UI.IUIControl uiControl) {
-            ushort aspectRatio = 4096;
-            int aspectRatioOption = Settings.AspectRatioMode;
+            Console.WriteLine($"[DEBUG][Aspect Ratio] {Settings.AspectRatioMode}");
 
-            Console.WriteLine("[DEBUG][Aspect Ratio] " + aspectRatioOption);
-
-            if (aspectRatioOption == 0)
-                aspectRatio = 4096;
-            else if (aspectRatioOption == 1)
-                aspectRatio = 3072;
-            else if (aspectRatioOption == 2)
-                aspectRatio = 3413;
-            else if (aspectRatioOption == 3)
-                aspectRatio = 2340;
-            else if (aspectRatioOption == 4)
-                aspectRatio = 2048;
+            ushort aspectRatio;
+            switch (Settings.AspectRatioMode) {
+                case 1:
+                    aspectRatio = 3072;
+                    break;
+                case 2:
+                    aspectRatio = 3413;
+                    break;
+                case 3:
+                    aspectRatio = 2340;
+                    break;
+                case 4:
+                    aspectRatio = 2048;
+                    break;
+                default:
+                    aspectRatio = 4096;
+                    break;
+            }
 
             emulator.WriteUShort("ASPECT_RATIO", aspectRatio);
 
