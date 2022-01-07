@@ -80,5 +80,61 @@ namespace Dragoon_Modifier.Emulator.Memory.Battle {
             Detransform1 += 0x4478;
             Detransform2 = 27;
         }
+
+        public void SetStats(uint character) {
+            Console.WriteLine(character);
+            var primaryTable = _emulator.Memory.CharacterTable[character];
+            var secondaryTable = _emulator.Memory.SecondaryCharacterTable[character];
+
+            HP = secondaryTable.HP;
+            MaxHP = secondaryTable.MaxHP;
+            MP = secondaryTable.MP;
+            MaxMP = secondaryTable.MaxMP;
+            SP = secondaryTable.SP;
+
+            ushort at = (ushort) (secondaryTable.BodyAT + secondaryTable.EquipAT);
+            AT = at;
+            OG_AT = at;
+
+            ushort mat = (ushort) (secondaryTable.BodyMAT + secondaryTable.EquipMAT);
+            MAT = mat;
+            OG_MAT = mat;
+
+            ushort df = (ushort) (secondaryTable.BodyDF + secondaryTable.EquipDF);
+            DF = df;
+            OG_DF = df;
+
+            ushort mdf = (ushort) (secondaryTable.BodyMDF + secondaryTable.EquipMDF);
+            MDF = mdf;
+            OG_MDF = mdf;
+
+            ushort spd = (ushort) (secondaryTable.BodySPD + secondaryTable.EquipSPD);
+            SPD = spd;
+            OG_SPD = spd;
+
+            StatusResist = secondaryTable.StatusResist;
+            ElementalResistance = secondaryTable.E_Half;
+            ElementalImmunity = secondaryTable.E_Immune;
+            A_AV = secondaryTable.EquipA_AV;
+            M_AV = secondaryTable.EquipM_AV;
+            A_HIT = secondaryTable.EquipA_HIT;
+            M_HIT = secondaryTable.EquipM_HIT;
+            P_Half = secondaryTable.P_Half;
+            M_Half = secondaryTable.M_Half;
+
+            MP_M_Hit = secondaryTable.MP_M_Hit;
+            SP_M_Hit = secondaryTable.SP_M_Hit;
+            MP_P_Hit = secondaryTable.MP_P_Hit;
+            SP_P_Hit = secondaryTable.SP_P_Hit;
+            
+            SP_Multi = secondaryTable.SP_Multi;
+
+            Revive = secondaryTable.Revive;
+            SpecialEffect = secondaryTable.SpecialEffect;
+
+            Weapon_Element = secondaryTable.WeaponElement;
+            On_Hit_Status = secondaryTable.OnHitStatus;
+            On_Hit_Status_Chance = secondaryTable.OnHitStatusChance;
+        }
     }
 }

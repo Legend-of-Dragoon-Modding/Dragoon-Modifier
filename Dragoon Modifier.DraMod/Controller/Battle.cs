@@ -14,8 +14,6 @@ namespace Dragoon_Modifier.DraMod.Controller {
         static readonly uint[] sharanda = new uint[] { 0x2, 0x8 };
         static readonly ushort[] slot1FinalBlow = new ushort[] { 414, 408, 409, 392, 431 };      // Urobolus, Wounded Virage, Complete Virage, Lloyd, Zackwell
         static readonly ushort[] slot2FinalBlow = new ushort[] { 387, 403 };                     // Fruegel II, Gehrich
-        static double[,] originalCharacterStats = new double[3, 10];
-        static double[,] originalMonsterStats = new double[5, 6];
 
         static readonly ushort[] bosses = new ushort[] {
             384, //Commander
@@ -188,6 +186,9 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             MonsterChanges(emulator, LoDDict);
 
+            CharacterChanges(emulator, LoDDict, uiControl);
+
+            Console.WriteLine("Updating UI...");
             UpdateUI(emulator, uiControl);
 
             if (Settings.SoloMode) {
@@ -208,26 +209,6 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             if (Settings.AspectRatio) {
                 ChangeAspectRatio(emulator, uiControl);
-            }
-
-            for (int i = 0; i < 3; i++) { //Should execute last
-                if (emulator.Memory.PartySlot[i] < 9) {
-                    originalCharacterStats[i, 0] = emulator.Battle.CharacterTable[i].MaxHP;
-                    originalCharacterStats[i, 1] = emulator.Battle.CharacterTable[i].AT;
-                    originalCharacterStats[i, 2] = emulator.Battle.CharacterTable[i].MAT;
-                    originalCharacterStats[i, 3] = emulator.Battle.CharacterTable[i].DF;
-                    originalCharacterStats[i, 4] = emulator.Battle.CharacterTable[i].MDF;
-                }
-            }
-
-            for (int i = 0; i < emulator.Memory.MonsterSize; i++) {
-                originalMonsterStats[i, 0] = emulator.Battle.MonsterTable[i].MaxHP;
-                originalMonsterStats[i, 1] = emulator.Battle.MonsterTable[i].AT;
-                originalMonsterStats[i, 2] = emulator.Battle.MonsterTable[i].MAT;
-                originalMonsterStats[i, 3] = emulator.Battle.MonsterTable[i].DF;
-                originalMonsterStats[i, 4] = emulator.Battle.MonsterTable[i].MDF;
-                originalMonsterStats[i, 5] = emulator.Battle.MonsterTable[i].SPD;
-                enragedMode[i] = 0;
             }
         }
 
@@ -337,10 +318,11 @@ namespace Dragoon_Modifier.DraMod.Controller {
         }
 
         private static void CharacterChanges(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict, UI.IUIControl uiControl) {
+            Console.WriteLine("Loading Character stats...");
             for (byte character = 0; character < 9; character++) {
 
                 if (Settings.CharacterStatChange) {
-                    CharacterStatChange(emulator, LoDDict, character);
+                    CharacterStatChange(emulator, LoDDict, character); //TODO LoDDict
                 }
 
                 if (Settings.ItemStatChange) {
@@ -354,10 +336,17 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             LoDDict.ItemScript.BattleSetup(emulator, uiControl);
 
-            foreach (var slot in emulator.Battle.CharacterTable) {
-                // Reset Stats
-            }
+            Console.WriteLine("Setting Character stats...");
+            uint characterID;
+            for (int slot = 0; slot < emulator.Battle.CharacterTable.Length; slot++){
+                if (slot == 0 && Settings.NoDart != 255) {
+                    characterID = Settings.NoDart;
+                } else {
+                    characterID = emulator.Memory.PartySlot[slot];
+                }
 
+                emulator.Battle.CharacterTable[slot].SetStats(characterID);
+            }
         }
 
         private static void CharacterStatChange(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict, int character) {
@@ -397,24 +386,25 @@ namespace Dragoon_Modifier.DraMod.Controller {
             secondaryTable.EquipM_HIT = (short) equipment.Sum(item => item.M_HIT);
             secondaryTable.P_Half = (byte) (((weapon.SpecialBonus1 | helmet.SpecialBonus1 | armor.SpecialBonus1 | shoes.SpecialBonus1 | accessory.SpecialBonus1) >> 5) & 0x1);
             secondaryTable.M_Half = (byte) (((weapon.SpecialBonus2 | helmet.SpecialBonus2 | armor.SpecialBonus2 | shoes.SpecialBonus2 | accessory.SpecialBonus2) >> 4) & 0x1);
-            secondaryTable.OnHitStatus = weapon.OnHitStatus;
-            secondaryTable.OnHitStatusChance = weapon.OnHitStatusChance;
 
             secondaryTable.MP_M_Hit = (short) equipment.Sum(item => (item.SpecialBonus1 & 0x1) * item.SpecialBonusAmmount);
             secondaryTable.SP_M_Hit = (short) equipment.Sum(item => ((item.SpecialBonus1 >> 1) & 0x1) * item.SpecialBonusAmmount);
             secondaryTable.MP_P_Hit = (short) equipment.Sum(item => ((item.SpecialBonus1 >> 2) & 0x1) * item.SpecialBonusAmmount);
             secondaryTable.SP_P_Hit = (short) equipment.Sum(item => ((item.SpecialBonus1 >> 3) & 0x1) * item.SpecialBonusAmmount);
-            secondaryTable.SP_Multi = (short) equipment.Sum(item => ((item.SpecialBonus1 >> 4) & 0x1) * item.SpecialBonusAmmount);
-
-            secondaryTable.MP_Multi = (byte) equipment.Sum(item => (item.SpecialBonus2 & 0x1) * item.SpecialBonusAmmount);
-            secondaryTable.HP_Multi = (byte) equipment.Sum(item => ((item.SpecialBonus2 >> 2) & 0x1) * item.SpecialBonusAmmount);
-            secondaryTable.Revive = (byte) equipment.Sum(item => ((item.SpecialBonus2 >> 3) & 0x1) * item.SpecialBonusAmmount);
             secondaryTable.SP_Regen = (short) equipment.Sum(item => ((item.SpecialBonus2 >> 4) & 0x1) * item.SpecialBonusAmmount);
             secondaryTable.MP_Regen = (short) equipment.Sum(item => ((item.SpecialBonus2 >> 5) & 0x1) * item.SpecialBonusAmmount);
             secondaryTable.HP_Regen = (short) equipment.Sum(item => ((item.SpecialBonus2 >> 6) & 0x1) * item.SpecialBonusAmmount);
-           
+
+            secondaryTable.SP_Multi = (short) equipment.Sum(item => ((item.SpecialBonus1 >> 4) & 0x1) * item.SpecialBonusAmmount);
+            secondaryTable.MP_Multi = (byte) equipment.Sum(item => (item.SpecialBonus2 & 0x1) * item.SpecialBonusAmmount);
+            secondaryTable.HP_Multi = (byte) equipment.Sum(item => ((item.SpecialBonus2 >> 2) & 0x1) * item.SpecialBonusAmmount);
+
+            secondaryTable.Revive = (byte) equipment.Sum(item => ((item.SpecialBonus2 >> 3) & 0x1) * item.SpecialBonusAmmount);
             secondaryTable.SpecialEffect = (byte) (weapon.SpecialEffect | helmet.SpecialEffect | armor.SpecialEffect | shoes.SpecialEffect | accessory.SpecialEffect);
+
             secondaryTable.WeaponElement = weapon.WeaponElement;
+            secondaryTable.OnHitStatus = weapon.OnHitStatus;
+            secondaryTable.OnHitStatusChance = weapon.OnHitStatusChance;
         }
 
         private static void RemoveDamageCaps(Emulator.IEmulator emulator) {
