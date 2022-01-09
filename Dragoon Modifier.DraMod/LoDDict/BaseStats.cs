@@ -15,52 +15,58 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
         public byte[] SPD = new byte[61];
 
         internal BaseStats(string path) {
-            using (var itemData = new StreamReader(path)) {
-                itemData.ReadLine(); // Skip first line
-                int index = 0;
-                while (!itemData.EndOfStream && index < 61) {
-                    var line = itemData.ReadLine();
-                    var values = line.Split('\t').ToArray();
-                   
-                    if (UInt16.TryParse(values[0], out var uskey)) {
-                        HP[index] = uskey;
-                    } else {
-                        // error
-                    }
+            path += "\\BaseStats.tsv";
+            try {
+                using (var itemData = new StreamReader(path)) {
+                    itemData.ReadLine(); // Skip first line
+                    int index = 0;
+                    while (!itemData.EndOfStream && index < 61) {
+                        var line = itemData.ReadLine();
+                        var values = line.Split('\t').ToArray();
 
-                    if (Byte.TryParse(values[1], out var bkey)) {
-                        AT[index] = bkey;
-                    } else {
-                        // error
-                    }
+                        if (UInt16.TryParse(values[0], out var uskey)) {
+                            HP[index] = uskey;
+                        } else {
+                            // error
+                        }
 
-                    if (Byte.TryParse(values[2], out bkey)) {
-                        MAT[index] = bkey;
-                    } else {
-                        // error
-                    }
+                        if (Byte.TryParse(values[1], out var bkey)) {
+                            AT[index] = bkey;
+                        } else {
+                            // error
+                        }
 
-                    if (Byte.TryParse(values[3], out bkey)) {
-                        DF[index] = bkey;
-                    } else {
-                        // error
-                    }
+                        if (Byte.TryParse(values[2], out bkey)) {
+                            MAT[index] = bkey;
+                        } else {
+                            // error
+                        }
 
-                    if (Byte.TryParse(values[4], out bkey)) {
-                        MDF[index] = bkey;
-                    } else {
-                        // error
-                    }
+                        if (Byte.TryParse(values[3], out bkey)) {
+                            DF[index] = bkey;
+                        } else {
+                            // error
+                        }
 
-                    if (Byte.TryParse(values[5], out bkey)) {
-                        SPD[index] = bkey;
-                    } else {
-                        // error
-                    }
+                        if (Byte.TryParse(values[4], out bkey)) {
+                            MDF[index] = bkey;
+                        } else {
+                            // error
+                        }
 
-                    index++;
+                        if (Byte.TryParse(values[5], out bkey)) {
+                            SPD[index] = bkey;
+                        } else {
+                            // error
+                        }
+
+                        index++;
+                    }
                 }
+            } catch (FileNotFoundException) {
+                Console.WriteLine($"[ERROR] File {path} not found.");
             }
+            
         }
     }
 

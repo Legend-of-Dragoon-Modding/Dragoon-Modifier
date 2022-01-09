@@ -336,7 +336,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             LoDDict.ItemScript.BattleSetup(emulator, uiControl);
 
-            Console.WriteLine("Setting Character stats...");
+            Console.WriteLine("Changing Character stats...");
             uint characterID;
             for (int slot = 0; slot < emulator.Battle.CharacterTable.Length; slot++){
                 if (slot == 0 && Settings.NoDart != 255) {

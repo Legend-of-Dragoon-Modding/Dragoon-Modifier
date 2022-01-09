@@ -66,8 +66,11 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
         }
 
         private void Load(Emulator.IEmulator emulator, UI.IUIControl uiControl, string cwd, string mod) {
-            GetItems(emulator, cwd, mod);
-            GetMonsters(cwd, mod);
+            string modPath = $"{cwd}\\Mods\\{mod}";
+
+            GetItems(emulator, modPath);
+            GetMonsters(modPath);
+            GetCharacters(modPath);
         }
 
         private void ParseScripts(string path, Emulator.IEmulator emulator, UI.IUIControl uiControl) {
@@ -99,17 +102,17 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
             return false;
         }
 
-        private void GetItems(Emulator.IEmulator emulator, string cwd, string mod) {
-            GetEquipment(emulator, cwd, mod);
-            GetUsableItems(emulator, cwd, mod);
+        private void GetItems(Emulator.IEmulator emulator, string modPath) {
+            GetEquipment(emulator, modPath);
+            GetUsableItems(emulator, modPath);
             ItemNames = CreateItemNameString(emulator);
             ItemDescriptions = CreateItemDescriptionString(emulator);
             ItemBattleNames = CreateItemBattleNameString(emulator);
             ItemBattleDescriptions = CreateItemBattleDescriptionString(emulator);
         }
 
-        private void GetEquipment(Emulator.IEmulator emulator, string cwd, string mod) {
-            string file = $"{cwd}\\Mods\\{mod}\\Equipment.tsv";
+        private void GetEquipment(Emulator.IEmulator emulator, string modPath) {
+            string file = $"{modPath}\\Equipment.tsv";
             int i = 0;
             try {
                 using (var itemData = new StreamReader(file)) {
@@ -128,8 +131,8 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
             }
         }
 
-        private void GetUsableItems(Emulator.IEmulator emulator, string cwd, string mod) {
-            string file = $"{cwd}\\Mods\\{mod}\\Items.tsv";
+        private void GetUsableItems(Emulator.IEmulator emulator, string modPath) {
+            string file = $"{modPath}\\Items.tsv";
             int i = 192;
             try {
                 using (var itemData = new StreamReader(file)) {
@@ -265,8 +268,8 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
             return result;
         }
 
-        private void GetMonsters(string cwd, string mod) {
-            string file = $"{cwd}\\Mods\\{mod}\\Monster_Data.tsv";
+        private void GetMonsters(string modPath) {
+            string file = $"{modPath}\\Monster_Data.tsv";
             int i = 0;
             try {
                 using (var monsterData = new StreamReader(file)) {
@@ -305,6 +308,12 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
                 Console.WriteLine($"[ERROR] {file} not found.");
             } catch (IndexOutOfRangeException) {
                 Console.WriteLine($"[ERROR] Incorrect fromat of {file} at line {i + 1}");
+            }
+        }
+
+        private void GetCharacters(string modPath) {
+            for (byte i = 0; i < 9; i++) {
+                Character[i] = new Character(i, modPath);
             }
         }
     }
