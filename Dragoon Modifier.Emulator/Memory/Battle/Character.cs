@@ -8,6 +8,7 @@ namespace Dragoon_Modifier.Emulator.Memory.Battle {
     public class Character : Entity {
         private readonly int _menuBlock;
         private readonly int _dragoonTurns;
+        private readonly int _slot;
 
         public byte Menu { get { return _emulator.ReadByte(_baseAddress - 0xA4); } set { _emulator.WriteByte(_baseAddress - 0xA4, value); } }
         public byte LV { get { return _emulator.ReadByte(_baseAddress - 0x4); } set { _emulator.WriteByte(_baseAddress - 0x4, value); } }
@@ -63,14 +64,16 @@ namespace Dragoon_Modifier.Emulator.Memory.Battle {
         public byte DragoonTurns { get { return _emulator.ReadByte(_dragoonTurns); } set { _emulator.WriteByte(_dragoonTurns, value); } }
         public byte IsDragoon { get { return _emulator.ReadByte(_baseAddress - 0x48); } set { _emulator.WriteByte(_baseAddress - 0x48, value); } }
         public AdditionHit[] Addition = new AdditionHit[8];
+        public uint ID { get { return _emulator.Memory.PartySlot[_slot]; } set { _emulator.Memory.PartySlot[_slot] = value; } }
 
         internal Character(IEmulator emulator, uint c_point, int slot, int position, int battleOffset) : base(emulator, c_point, slot, position) {
             _menuBlock = 0x6E3B0 + slot * 0x20; // TODO This has to get an address
             _dragoonTurns = _emulator.GetAddress("DRAGOON_TURNS") + slot * 0x4;
+            _slot = slot;
 
             var additionAddress = _emulator.GetAddress("ADDITION") + battleOffset;
             for (int i = 0; i < Addition.Length; i++) {
-                Addition[i] = new AdditionHit(_emulator, additionAddress + (i * 0x20) + slot * (0x100));
+                Addition[i] = new AdditionHit(_emulator, additionAddress + (i * 0x20) + _slot * (0x100));
             }
         }
 

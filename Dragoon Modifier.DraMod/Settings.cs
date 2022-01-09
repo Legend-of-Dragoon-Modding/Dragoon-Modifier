@@ -75,5 +75,6 @@ namespace Dragoon_Modifier.DraMod {
         public static bool ItemNameDescChange = true;
         public static bool MonsterStatChange = true;
         public static bool CharacterStatChange = true;
+        public static bool AdditionChange = true;
     }
 }

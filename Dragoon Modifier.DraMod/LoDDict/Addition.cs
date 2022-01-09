@@ -11,6 +11,17 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
         public const ushort RegularAddition = 0xC0;
         public const ushort MasterAddition = 0xE0;
         public static readonly AdditionHit Empty = new AdditionHit();
+        public static readonly byte[][] AdditionIDs = new byte[][] {
+            new byte[] { 0, 1, 2, 3, 4, 5, 6 },
+            new byte[] { 8, 9, 10, 11, 12 },
+            new byte[] { 255 },
+            new byte[] { 14, 15, 16, 17 },
+            new byte[] { 29, 30, 31, 32, 33, 34 },
+            new byte[] { 8, 9, 10, 11, 12 },
+            new byte[] { 23, 24, 25, 26, 27 },
+            new byte[] { 19, 20, 21 },
+            new byte[] { 255 }
+        };
 
         public readonly byte ID = 0;
         public readonly byte Level = 0;
@@ -30,7 +41,10 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
 
                 line = file.ReadLine().Split('\t').ToArray();
 
-                if (Byte.TryParse(line[1], out bkey)) {
+
+                if (line[1] == "Final") {
+                    Level = 255;
+                } else if (Byte.TryParse(line[1], out bkey)) {
                     Level = bkey;
                 }
 
