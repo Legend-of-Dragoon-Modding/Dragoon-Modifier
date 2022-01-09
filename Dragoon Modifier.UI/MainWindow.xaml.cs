@@ -138,12 +138,13 @@ namespace Dragoon_Modifier.UI {
             if (DraMod.Constants.Run) {
                 DraMod.Constants.Run = false;
                 miAttach.Header = "Attach";
-            } else {
-                if (DragoonModifier.Attach(DraMod.Constants.EmulatorName, DraMod.Constants.PreviousOffset)) {
-                    miAttach.Header = "Detach";
-                    UIControl.WriteGLog("Game Log");
-                    UIControl.WritePLog("Program Log");
-                }
+                return;
+            }
+
+            if (DragoonModifier.Attach(DraMod.Constants.EmulatorName, DraMod.Constants.PreviousOffset)) {
+                miAttach.Header = "Detach";
+                UIControl.WriteGLog("Game Log");
+                UIControl.WritePLog("Program Log");
             }
         }
 

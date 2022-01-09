@@ -10,11 +10,12 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
         public const ushort EndFlag = 0x4;
         public const ushort RegularAddition = 0xC0;
         public const ushort MasterAddition = 0xE0;
+        public static readonly AdditionHit Empty = new AdditionHit();
 
         public readonly byte ID = 0;
         public readonly byte Level = 0;
-        public readonly byte[] DamageIncrease = new byte[5];
-        public readonly byte[] SPIncrease = new byte[5];
+        public readonly byte[] DamageIncrease = new byte[5] { 0, 0, 0, 0, 0 };
+        public readonly byte[] SPIncrease = new byte[5] { 0, 0, 0, 0, 0 };
         public readonly byte StartTime = 0;
 
         public readonly List<AdditionHit> AdditionHit = new List<AdditionHit>();

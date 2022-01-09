@@ -1,0 +1,15 @@
+ID	16											
+Level	19											
+												
+	Level 1	Level 2	Level 3	Level 4	level 5							
+Damage increase	0	55	119	182	246							
+SP Increase	0	0	0	0	0							
+												
+Start Time	11											
+	Damage	SP	Next Hit	Blue Time	Gray Time	Camera Pan Distance	Lock on Camera Distance	Lock on Camera Distance 2	Monster Distance	Vertical Distance	UU1	UU2
+Hit 1	22	10	11	5	3	0	2	2	9	12	32	0
+Hit 2	22	5	17	11	3	0	10	2	8	8	32	0
+Hit 3	22	5	22	16	2	0	0	2	0	12	32	0
+Hit 4	22	5	11	5	3	0	0	2	0	7	32	0
+Hit 5	12	5	22	15	3	0	13	2	13	12	32	0
+Hit 6	10	5	17	12	2	65528	10	3	8	12	32	0

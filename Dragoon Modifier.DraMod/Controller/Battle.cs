@@ -322,7 +322,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             for (byte character = 0; character < 9; character++) {
 
                 if (Settings.CharacterStatChange) {
-                    CharacterStatChange(emulator, LoDDict, character); //TODO LoDDict
+                    CharacterStatChange(emulator, LoDDict, character);
                 }
 
                 if (Settings.ItemStatChange) {

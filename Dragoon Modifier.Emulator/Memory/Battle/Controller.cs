@@ -49,7 +49,7 @@ namespace Dragoon_Modifier.Emulator.Memory.Battle {
             }
             CharacterTable = new Character[partySize];
             for (int i = 0; i < CharacterTable.Length; i++) {
-                CharacterTable[i] = new Character(_emulator, CharacterPoint, i, i + monsterCount);
+                CharacterTable[i] = new Character(_emulator, CharacterPoint, i, i + monsterCount, BattleOffset);
             }
             BattleMenuSlot = Factory.AddressCollection<byte>(emulator, (int) MonsterPoint + 0xE3C, 2, 9);
 

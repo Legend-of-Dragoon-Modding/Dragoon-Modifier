@@ -18,6 +18,14 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
         public readonly byte Unknown = 0;
         public readonly byte Unknown2 = 0;
 
+
+        /// <summary>
+        /// Used to generate an empty addition hit data.
+        /// </summary>
+        internal AdditionHit() {
+
+        }
+
         internal AdditionHit(string[] values) {
             if (UInt16.TryParse(values[1], out var uskey)) {
                 Damage = uskey;

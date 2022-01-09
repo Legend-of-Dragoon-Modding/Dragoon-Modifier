@@ -66,6 +66,8 @@ namespace Dragoon_Modifier.DraMod {
             Settings.DualDifficulty = false;
             if (mod == Preset.NormalHard || mod == Preset.HardHell) {
                 Settings.DualDifficulty = true;
+            } else {
+                Settings.DualDifficulty = false;
             }
             Settings.Mod = modString;
             if (Constants.Run) {

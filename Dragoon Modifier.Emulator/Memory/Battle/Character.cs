@@ -64,11 +64,11 @@ namespace Dragoon_Modifier.Emulator.Memory.Battle {
         public byte IsDragoon { get { return _emulator.ReadByte(_baseAddress - 0x48); } set { _emulator.WriteByte(_baseAddress - 0x48, value); } }
         public AdditionHit[] Addition = new AdditionHit[8];
 
-        internal Character(IEmulator emulator, uint c_point, int slot, int position) : base(emulator, c_point, slot, position) {
+        internal Character(IEmulator emulator, uint c_point, int slot, int position, int battleOffset) : base(emulator, c_point, slot, position) {
             _menuBlock = 0x6E3B0 + slot * 0x20; // TODO This has to get an address
             _dragoonTurns = _emulator.GetAddress("DRAGOON_TURNS") + slot * 0x4;
 
-            var additionAddress = _emulator.GetAddress("ADDITION");
+            var additionAddress = _emulator.GetAddress("ADDITION") + battleOffset;
             for (int i = 0; i < Addition.Length; i++) {
                 Addition[i] = new AdditionHit(_emulator, additionAddress + (i * 0x20) + slot * (0x100));
             }
