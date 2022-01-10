@@ -32,15 +32,15 @@ namespace Dragoon_Modifier.DraMod.Controller {
             this.KeyPress = keyPress;
         }
 
-        internal void Run(Emulator.IEmulator emulator) {
+        internal void Run(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDictionary) {
             var ms = _time.ElapsedMilliseconds;
             if (emulator.Memory.Hotkey == KeyPress && ms - 1000 > _lastPressed) {
                 _lastPressed = ms;
-                Func(emulator);
+                Func(emulator, LoDDictionary);
             }
         }
 
-        abstract internal void Func(Emulator.IEmulator emulator);
+        abstract internal void Func(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDictionary);
     }
 
     

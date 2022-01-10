@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Dragoon_Modifier.Emulator;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,12 +16,14 @@ namespace Dragoon_Modifier.DraMod.Controller {
             hotkeys.Add(new ExitDragoon(0, (Hotkey.L1 + Hotkey.Up)));
             hotkeys.Add(new ExitDragoon(1, (Hotkey.L1 + Hotkey.Right)));
             hotkeys.Add(new ExitDragoon(2, (Hotkey.L1 + Hotkey.Left)));
+            hotkeys.Add(new AdditionSwap(Hotkey.L1 + Hotkey.R1));
+           
 
             return hotkeys;
         }
 
         
-
+        
 
 
 
@@ -30,7 +34,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 this.slot = slot;
             }
 
-            internal override void Func(Emulator.IEmulator emulator) {
+            internal override void Func(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDictionary) {
                 if (emulator.Battle.CharacterTable.Length <= slot) {
                     Console.WriteLine($"Cannot exit dragoon for character slot {slot + 1}. Not enough characters.");
                     return;
@@ -42,6 +46,17 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 }
 
                 emulator.Battle.CharacterTable[slot].DragoonTurns = 1;
+            }
+        }
+
+        private class AdditionSwap : Hotkey {
+            
+            internal AdditionSwap(ushort keyPress) : base(keyPress) {
+
+            }
+
+            internal override void Func(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDictionary) {
+                Addition.Swap(emulator, LoDDictionary);
             }
         }
     }

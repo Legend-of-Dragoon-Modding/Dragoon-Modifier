@@ -212,7 +212,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
         }
 
-        public static void Run(Emulator.IEmulator emulator, UI.IUIControl uiControl) {
+        public static void Run(Emulator.IEmulator emulator, UI.IUIControl uiControl, LoDDict.ILoDDictionary LoDDictionary) {
             UpdateUI(emulator, uiControl);
 
             if (Settings.RemoveDamageCaps) {
@@ -242,7 +242,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
 
             foreach (var hotkey in hotkeys) {
-                hotkey.Run(emulator);
+                hotkey.Run(emulator, LoDDictionary);
             }
         }
 
@@ -414,59 +414,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
         private static void AdditionChange(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDictionary) {
             Console.WriteLine("Changing Additions...");
             foreach (var character in emulator.Battle.CharacterTable) {
-                var characterID = character.ID;
-
-                if (sharanda.Contains(characterID)) {
-                    return;
-                }
-
-                var additionID = emulator.Memory.CharacterTable[characterID].ChosenAddition;
-                var addition = LoDDictionary.Character[characterID].Additions[Array.IndexOf(LoDDict.Addition.AdditionIDs[characterID], additionID)];
-
-                int hitIndex = 0;
-                foreach (var hit in addition.AdditionHit) {
-                    character.Addition[hitIndex].MasterAddition = LoDDict.Addition.RegularAddition;
-                    character.Addition[hitIndex].NextHit = hit.NextHit;
-                    character.Addition[hitIndex].BlueSquare = hit.BlueTime;
-                    character.Addition[hitIndex].GrayHit = hit.GrayTime;
-                    character.Addition[hitIndex].Damage = hit.Damage;
-                    character.Addition[hitIndex].SP = hit.SP;
-                    character.Addition[hitIndex].ID = 0;
-                    character.Addition[hitIndex].FinalHit = 0;
-                    character.Addition[hitIndex].PanCameraDistance = hit.CameraPanDistance;
-                    character.Addition[hitIndex].LockOnCameraDistance1 = hit.LockOnCameraDistance;
-                    character.Addition[hitIndex].LockOnCameraDistance2 = hit.LockOnCameraDistance2;
-                    character.Addition[hitIndex].MonsterDistance = hit.MonsterDistance;
-                    character.Addition[hitIndex].VerticalDistance = hit.VerticaDistance;
-                    character.Addition[hitIndex].Unknown1 = hit.Unknown;
-                    character.Addition[hitIndex].Unknown2 = hit.Unknown2;
-                    character.Addition[hitIndex].StartTime = 0;
-
-                    hitIndex++;
-                }
-
-                for (int rest = hitIndex; rest < 8; rest++) {
-                    character.Addition[hitIndex].MasterAddition = 0;
-                    character.Addition[hitIndex].NextHit = 0;
-                    character.Addition[hitIndex].BlueSquare = 0;
-                    character.Addition[hitIndex].GrayHit = 0;
-                    character.Addition[hitIndex].Damage = 0;
-                    character.Addition[hitIndex].SP = 0;
-                    character.Addition[hitIndex].ID = 0;
-                    character.Addition[hitIndex].FinalHit = 0;
-                    character.Addition[hitIndex].PanCameraDistance = 0;
-                    character.Addition[hitIndex].LockOnCameraDistance1 = 0;
-                    character.Addition[hitIndex].LockOnCameraDistance2 = 0;
-                    character.Addition[hitIndex].MonsterDistance = 0;
-                    character.Addition[hitIndex].VerticalDistance = 0;
-                    character.Addition[hitIndex].Unknown1 = 0;
-                    character.Addition[hitIndex].Unknown2 = 0;
-                    character.Addition[hitIndex].StartTime = 0;
-                }
-
-                character.Addition[0].ID = addition.ID;
-                character.Addition[0].StartTime = addition.StartTime;
-                character.Addition[addition.AdditionHit.Count - 1].FinalHit = LoDDict.Addition.EndFlag;
+                Addition.ResetAdditionTable(emulator, character, LoDDictionary);
             }
         }
 

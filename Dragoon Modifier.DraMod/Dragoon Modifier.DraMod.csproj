@@ -112,7 +112,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
-    <Compile Include="Controller\AdditionSwap.cs" />
+    <Compile Include="Controller\Addition.cs" />
     <Compile Include="Controller\Battle.cs" />
     <Compile Include="Controller\BattleHotkeys.cs" />
     <Compile Include="Controller\BattleResult.cs" />
