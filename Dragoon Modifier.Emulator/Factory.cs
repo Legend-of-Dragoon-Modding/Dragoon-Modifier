@@ -51,8 +51,8 @@ namespace Dragoon_Modifier.Emulator {
             return new Memory.Equipment(emulator, equipTableAddr, itemNamePtr, itemDescPtr, itemSellPriceAddr, item);
         }
 
-        internal static Memory.IUsableItem UsableItem(IEmulator emulator, int itemTableAddr, int itemNamePtr, int itemDescPtr, int itemSellPriceAddr, int item) {
-            return new Memory.UsableItem(emulator, itemTableAddr, itemNamePtr, itemDescPtr, itemSellPriceAddr, item);
+        internal static Memory.IUsableItem UsableItem(IEmulator emulator, int itemTableAddr, int itemNamePtr, int itemDescPtr, int itemBattleNamePtr, int itemBattleDescPtr, int itemSellPriceAddr, int item) {
+            return new Memory.UsableItem(emulator, itemTableAddr, itemNamePtr, itemDescPtr, itemBattleNamePtr, itemBattleDescPtr, itemSellPriceAddr, item);
         }
         
     }

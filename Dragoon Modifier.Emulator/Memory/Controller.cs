@@ -38,7 +38,7 @@ namespace Dragoon_Modifier.Emulator.Memory {
         public byte OverworldSegment { get { return _emulator.ReadByte(_overworldSegment); } set { _emulator.WriteByte(_overworldSegment, value); } }
         public byte OverworldCheck { get { return _emulator.ReadByte(_overworldCheck); } set { _emulator.WriteByte(_overworldCheck, value); } }
         public byte DragoonSpirits { get { return _emulator.ReadByte(_dragoonSpirits); } set { _emulator.WriteByte(_dragoonSpirits, value); } }
-        public ushort Hotkey { get { return _emulator.ReadUShort(_hotkey); } set { _emulator.WriteUShort(_hotkey, value); } } // Should be writing here allowed?
+        public ushort Hotkey { get { return _emulator.ReadUShort(_hotkey); } set { _emulator.WriteUShort(_hotkey, value); } } // Should writing here be allowed?
         public ushort BattleValue { get { return _emulator.ReadUShort(_battleValue); } set { _emulator.WriteUShort(_battleValue, value); } }
         public Collections.IAddress<byte> EquipmentInventory { get; private set; }
         public Collections.IAddress<byte> ItemInventory { get; private set; }
@@ -103,14 +103,16 @@ namespace Dragoon_Modifier.Emulator.Memory {
             _autoText = _emulator.GetAddress("AUTO_TEXT");
             var equipTableAddr = _emulator.GetAddress("ITEM_TABLE");
             var itemTableAddr = _emulator.GetAddress("THROWN_ITEM_TABLE");
-            int itemNamePtr = _emulator.GetAddress("ITEM_NAME_PTR");
-            int itemDescPtr = _emulator.GetAddress("ITEM_DESC_PTR");
+            var itemNamePtr = _emulator.GetAddress("ITEM_NAME_PTR");
+            var itemDescPtr = _emulator.GetAddress("ITEM_DESC_PTR");
+            var itemBattleNamePtr = _emulator.GetAddress("ITEM_BTL_NAME_PTR");
+            var itemBattleDescPtr = _emulator.GetAddress("ITEM_BTL_DESC_PTR");
             var itemSellPriceAddr = _emulator.GetAddress("SHOP_PRICE");
             for (int i = 0; i < 192; i++) {
                 Item[i] = Factory.Equipment(_emulator, equipTableAddr, itemNamePtr, itemDescPtr, itemSellPriceAddr, i);
             }
             for (int i = 192; i < 256; i++) {
-                Item[i] = Factory.UsableItem(_emulator, itemTableAddr, itemNamePtr, itemDescPtr, itemSellPriceAddr, i);
+                Item[i] = Factory.UsableItem(_emulator, itemTableAddr, itemNamePtr, itemDescPtr, itemBattleNamePtr, itemBattleDescPtr, itemSellPriceAddr, i);
             }
 
             /*

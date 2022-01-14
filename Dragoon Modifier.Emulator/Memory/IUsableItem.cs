@@ -11,5 +11,9 @@
         byte Target { get; set; }
         byte Unknown1 { get; set; }
         byte Unknown2 { get; set; }
+        uint BattleNamePointer { get; set; }
+        string BattleName { get; }
+        uint BattleDescriptionPointer { get; set; }
+        string BattleDescription { get; }
     }
 }

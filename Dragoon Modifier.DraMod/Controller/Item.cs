@@ -107,12 +107,32 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
         }
 
-        internal static void ItemNameDescChange(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDictionary) {
-            int itemNameAddr = emulator.GetAddress("ITEM_NAME");
-            int itemDescAddr = emulator.GetAddress("ITEM_DESC");
+        /// <summary>
+        /// Changes all usable item names and descriptions according to <paramref name="LoDDictionary"/>.
+        /// </summary>
+        /// <param name="emulator"></param>
+        /// <param name="LoDDictionary"></param>
+        internal static void BattleItemNameDescChange(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDictionary) {
+            emulator.WriteAoB(emulator.GetAddress("ITEM_BTL_NAME"), LoDDictionary.ItemBattleNames);
+            emulator.WriteAoB(emulator.GetAddress("ITEM_BTL_DESC"), LoDDictionary.ItemBattleDescriptions);
 
-            emulator.WriteAoB(itemNameAddr, LoDDictionary.ItemNames); // TODO Make these into a byte[] to improve performance
-            emulator.WriteAoB(itemDescAddr, LoDDictionary.ItemDescriptions);
+            for (int itemID = equipmentAmmount; itemID < 256; itemID++) {
+                var memory = (Emulator.Memory.IUsableItem) emulator.Memory.Item[itemID];
+                var itemData = (LoDDict.IUsableItem) LoDDictionary.Item[itemID];
+
+                memory.BattleNamePointer = (uint) itemData.BattleNamePointer;
+                memory.BattleDescriptionPointer = (uint) itemData.BattleDescriptionPointer;
+            }
+        }
+
+        /// <summary>
+        /// Changes all item names and descriptions according to <paramref name="LoDDictionary"/>.
+        /// </summary>
+        /// <param name="emulator"></param>
+        /// <param name="LoDDictionary"></param>
+        internal static void FieldItemNameDescChange(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDictionary) {
+            emulator.WriteAoB(emulator.GetAddress("ITEM_NAME"), LoDDictionary.ItemNames); // TODO Make these into a byte[] to improve performance
+            emulator.WriteAoB(emulator.GetAddress("ITEM_DESC"), LoDDictionary.ItemDescriptions);
 
             for (int itemID = 0; itemID < emulator.Memory.Item.Length; itemID++) {
                 emulator.Memory.Item[itemID].NamePointer = (uint) LoDDictionary.Item[itemID].NamePointer;
