@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dragoon_Modifier.DraMod {
+namespace Dragoon_Modifier.DraMod.Controller {
     internal static class Character {
 
         /// <summary>

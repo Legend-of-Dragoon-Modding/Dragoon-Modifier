@@ -111,12 +111,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Character.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Controller\Addition.cs" />
     <Compile Include="Controller\Battle.cs" />
     <Compile Include="Controller\BattleHotkeys.cs" />
     <Compile Include="Controller\BattleResult.cs" />
+    <Compile Include="Controller\Character.cs" />
     <Compile Include="Controller\Field.cs" />
     <Compile Include="Controller\Hotkey.cs" />
     <Compile Include="Controller\Item.cs" />
