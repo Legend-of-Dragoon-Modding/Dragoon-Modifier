@@ -11,13 +11,9 @@ namespace Dragoon_Modifier.DraMod.Controller {
         private static readonly ushort[] shopMaps = new ushort[] { 16, 23, 83, 84, 122, 145, 175, 180, 193, 204, 211, 214, 247,
         287, 309, 329, 332, 349, 357, 384, 435, 479, 515, 530, 564, 619, 624}; // Some maps missing?? 
 
-        //Early Additions
-        static bool earlyAdditionsOnFieldEntry = false;
-
         internal static void Setup(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict, UI.IUIControl uiControl) {
             uiControl.ResetBattle();
 
-            earlyAdditionsOnFieldEntry = false;
 
             if (Settings.ItemIconChange) {
                 Console.WriteLine("Changing Item Icons...");
@@ -25,11 +21,16 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
 
             if (Settings.ItemNameDescChange) {
-                ItemNameDescChange(emulator, LoDDict);
+                Console.WriteLine("Changing Item names and descriptions...");
+                Item.FieldItemNameDescChange(emulator, LoDDict);
             }
 
             if (Settings.ItemStatChange) {
                 Item.FieldEquipmentChange(emulator, LoDDict);
+            }
+
+            if (Settings.EarlyAdditions) {
+                EarlyAdditions(emulator);
             }
             
         }
@@ -49,16 +50,6 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             if (Settings.AutoAdvanceText) {
                 AutoText(emulator);
-            }
-
-            if (Settings.EarlyAdditions) {
-                if (!earlyAdditionsOnFieldEntry && emulator.Memory.GameState == GameState.Field) {
-                    EarlyAdditions(emulator);
-                }
-            } else {
-                if (earlyAdditionsOnFieldEntry && emulator.Memory.GameState == GameState.Field) {
-                    TurnOffEarlyAdditions(emulator);
-                }
             }
 
             if (Settings.SoloMode) {
@@ -201,7 +192,6 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 emulator.ReadByte(address2 + 0xB0 + 0x4) >= 80) {
                 emulator.WriteByte(address + 0xE * 5 + 0x196, 25); //Omni-Sweep 
             }
-            earlyAdditionsOnFieldEntry = true;
         }
 
         private static void TurnOffEarlyAdditions(Emulator.IEmulator emulator) {
@@ -233,7 +223,6 @@ namespace Dragoon_Modifier.DraMod.Controller {
             emulator.WriteByte(address * 0xE * 3 + 0x196, 22); //5 Ring Shattering
             emulator.WriteByte(address * 0xE * 4 + 0x196, 26); //Hex Hammer
             emulator.WriteByte(address * 0xE * 5 + 0x196, 255); //Omni-Sweep   
-            earlyAdditionsOnFieldEntry = false;
         }
 
         private static void AutoText(Emulator.IEmulator emulator) {

@@ -7,6 +7,23 @@ using System.Threading.Tasks;
 namespace Dragoon_Modifier.DraMod.Controller {
     internal static class BattleResult {
         public static void Setup(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict, UI.IUIControl uiControl) {
+            uiControl.ResetBattle();
+
+            if (Settings.ItemIconChange) {
+                Console.WriteLine("Changing Item Icons...");
+                Item.IconChange(emulator, LoDDict);
+            }
+
+            if (Settings.ItemNameDescChange) {
+                Console.WriteLine("Changing Item names and descriptions...");
+                Item.FieldItemNameDescChange(emulator, LoDDict);
+            }
+
+            if (Settings.ItemStatChange) {
+                Item.FieldEquipmentChange(emulator, LoDDict);
+            }
+
+
             if (Settings.SoloMode || Settings.DuoMode) {
                 RemoveExtraPartyMembers(emulator);
             }
