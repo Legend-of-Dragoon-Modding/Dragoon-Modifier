@@ -54,7 +54,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                         KillBGM.Run(emulator, uiControl);
                     }
 
-                    Thread.Sleep(250);
+                    Thread.Sleep(Settings.LoopDelay);
                 } catch (Exception ex) {
                     Constants.Run = false;
                     uiControl.WriteGLog("Program stopped.");

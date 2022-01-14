@@ -132,7 +132,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                         }
 
                         additionIndex = emulator.Battle.BattleMenuChosenSlot;
-                        Thread.Sleep(50);
+                        Thread.Sleep(Settings.WaitDelay);
                     }
 
                     emulator.Memory.CharacterTable[characterID].ChosenAddition = LoDDict.Addition.AdditionIDs[characterID][additionIndex];
@@ -160,7 +160,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                             break;
                         }
 
-                        Thread.Sleep(50);
+                        Thread.Sleep(Settings.WaitDelay);
                     }
 
                     character.SP = SP;

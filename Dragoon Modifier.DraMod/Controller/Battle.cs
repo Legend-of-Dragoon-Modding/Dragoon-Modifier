@@ -160,7 +160,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 if (Constants.Run && emulator.Memory.GameState != Emulator.GameState.Battle) {
                     return;
                 }
-                Thread.Sleep(50);
+                Thread.Sleep(Settings.WaitDelay);
             }
 
             emulator.LoadBattle();

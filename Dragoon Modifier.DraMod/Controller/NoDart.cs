@@ -23,7 +23,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                     if (Constants.Run && emulator.Memory.GameState != Emulator.GameState.Battle) {
                         return;
                     }
-                    Thread.Sleep(50);
+                    Thread.Sleep(Settings.WaitDelay);
                 }
             }
 
@@ -33,7 +33,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 if (Constants.Run && emulator.Memory.GameState != Emulator.GameState.Battle) {
                     return;
                 }
-                Thread.Sleep(50);
+                Thread.Sleep(Settings.WaitDelay);
             }
 
             battleCharacterTable.Dragoon = 0x20; // Make sure we have Red-Eye Dragoon
@@ -140,7 +140,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 if (Constants.Run && emulator.Memory.GameState != Emulator.GameState.Battle) {
                     return;
                 }
-                Thread.Sleep(50);
+                Thread.Sleep(Settings.WaitDelay);
             }
 
             battleCharacterTable.DLV = dlv;
