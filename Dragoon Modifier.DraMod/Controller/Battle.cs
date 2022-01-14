@@ -328,10 +328,11 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 if (Settings.ItemStatChange) {
                     Item.BattleEquipmentChange(emulator, LoDDict, character);
                 }
+            }
 
-                if (Settings.ItemNameDescChange && emulator.Region == Region.NTA) { // TODO Remove Region check, when other encoding tables work.
-                    Item.BattleItemNameDescChange(emulator, LoDDict);
-                }
+            if (Settings.ItemNameDescChange && emulator.Region == Region.NTA) { // TODO Remove Region check, when other encoding tables work.
+                Console.WriteLine("Changing Usable Item names and descriptions...");
+                Item.BattleItemNameDescChange(emulator, LoDDict);
             }
 
             if (Settings.NoDecaySoulEater) {
