@@ -2,8 +2,8 @@
     public interface IItem {
         string Description { get; }
         int DescriptionPointer { get; set; }
-        string EncodedDescription { get; }
-        string EncodedName { get; }
+        byte[] EncodedDescription { get; }
+        byte[] EncodedName { get; }
         byte Icon { get; }
         byte ID { get; }
         string Name { get; }

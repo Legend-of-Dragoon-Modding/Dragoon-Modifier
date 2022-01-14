@@ -322,11 +322,11 @@ namespace Dragoon_Modifier.DraMod.Controller {
             for (byte character = 0; character < 9; character++) {
 
                 if (Settings.CharacterStatChange) {
-                    CharacterStatChange(emulator, LoDDict, character);
+                    Character.ChangeStats(emulator, LoDDict, character);
                 }
 
                 if (Settings.ItemStatChange) {
-                    ItemStatChange(emulator, LoDDict, character);
+                    Item.BattleEquipmentChange(emulator, LoDDict, character);
                 }
             }
 
@@ -349,72 +349,10 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
 
             if (Settings.AdditionChange) {
-                AdditionChange(emulator, LoDDict);
-            }
-        }
-
-        private static void CharacterStatChange(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict, int character) {
-            byte level = emulator.Memory.CharacterTable[character].Level;
-
-            Emulator.Memory.SecondaryCharacterTable secondaryTable = emulator.Memory.SecondaryCharacterTable[character];
-
-            secondaryTable.BodyAT = LoDDict.Character[character].BaseStats.AT[level];
-            secondaryTable.BodyMAT = LoDDict.Character[character].BaseStats.MAT[level];
-            secondaryTable.BodyDF = LoDDict.Character[character].BaseStats.DF[level];
-            secondaryTable.BodyMDF = LoDDict.Character[character].BaseStats.MDF[level];
-            secondaryTable.BodySPD = LoDDict.Character[character].BaseStats.SPD[level];
-        }
-
-        private static void ItemStatChange(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict, int character) {
-            LoDDict.IEquipment weapon = (LoDDict.IEquipment) LoDDict.Item[emulator.Memory.CharacterTable[character].Weapon];
-            LoDDict.IEquipment helmet = (LoDDict.IEquipment) LoDDict.Item[emulator.Memory.CharacterTable[character].Helmet];
-            LoDDict.IEquipment armor = (LoDDict.IEquipment) LoDDict.Item[emulator.Memory.CharacterTable[character].Armor];
-            LoDDict.IEquipment shoes = (LoDDict.IEquipment) LoDDict.Item[emulator.Memory.CharacterTable[character].Shoes];
-            LoDDict.IEquipment accessory = (LoDDict.IEquipment) LoDDict.Item[emulator.Memory.CharacterTable[character].Accessory];
-            LoDDict.IEquipment[] equipment = new LoDDict.IEquipment[5] { weapon, helmet, armor, shoes, accessory };
-
-            Emulator.Memory.SecondaryCharacterTable secondaryTable = emulator.Memory.SecondaryCharacterTable[character];
-
-            secondaryTable.EquipAT = (ushort) equipment.Sum(item => item.AT);
-            secondaryTable.EquipMAT = (ushort) equipment.Sum(item => item.MAT);
-            secondaryTable.EquipDF = (ushort) equipment.Sum(item => item.DF);
-            secondaryTable.EquipMDF = (ushort) equipment.Sum(item => item.MDF);
-            secondaryTable.EquipSPD = (ushort) equipment.Sum(item => item.SPD);
-
-            secondaryTable.StatusResist = (byte) (weapon.StatusResistance | helmet.StatusResistance | armor.StatusResistance | shoes.StatusResistance | accessory.StatusResistance);
-            secondaryTable.E_Half = (byte) (weapon.ElementalResistance | helmet.ElementalResistance | armor.ElementalResistance | shoes.ElementalResistance | accessory.ElementalResistance);
-            secondaryTable.E_Immune = (byte) (weapon.ElementalImmunity | helmet.ElementalImmunity | armor.ElementalImmunity | shoes.ElementalImmunity | accessory.ElementalImmunity);
-            secondaryTable.EquipA_AV = (short) equipment.Sum(item => item.A_AV);
-            secondaryTable.EquipM_AV = (short) equipment.Sum(item => item.M_AV);
-            secondaryTable.EquipA_HIT = (short) equipment.Sum(item => item.A_HIT);
-            secondaryTable.EquipM_HIT = (short) equipment.Sum(item => item.M_HIT);
-            secondaryTable.P_Half = (byte) (((weapon.SpecialBonus1 | helmet.SpecialBonus1 | armor.SpecialBonus1 | shoes.SpecialBonus1 | accessory.SpecialBonus1) >> 5) & 0x1);
-            secondaryTable.M_Half = (byte) (((weapon.SpecialBonus2 | helmet.SpecialBonus2 | armor.SpecialBonus2 | shoes.SpecialBonus2 | accessory.SpecialBonus2) >> 4) & 0x1);
-
-            secondaryTable.MP_M_Hit = (short) equipment.Sum(item => (item.SpecialBonus1 & 0x1) * item.SpecialBonusAmmount);
-            secondaryTable.SP_M_Hit = (short) equipment.Sum(item => ((item.SpecialBonus1 >> 1) & 0x1) * item.SpecialBonusAmmount);
-            secondaryTable.MP_P_Hit = (short) equipment.Sum(item => ((item.SpecialBonus1 >> 2) & 0x1) * item.SpecialBonusAmmount);
-            secondaryTable.SP_P_Hit = (short) equipment.Sum(item => ((item.SpecialBonus1 >> 3) & 0x1) * item.SpecialBonusAmmount);
-            secondaryTable.SP_Regen = (short) equipment.Sum(item => ((item.SpecialBonus2 >> 4) & 0x1) * item.SpecialBonusAmmount);
-            secondaryTable.MP_Regen = (short) equipment.Sum(item => ((item.SpecialBonus2 >> 5) & 0x1) * item.SpecialBonusAmmount);
-            secondaryTable.HP_Regen = (short) equipment.Sum(item => ((item.SpecialBonus2 >> 6) & 0x1) * item.SpecialBonusAmmount);
-
-            secondaryTable.SP_Multi = (short) equipment.Sum(item => ((item.SpecialBonus1 >> 4) & 0x1) * item.SpecialBonusAmmount);
-            secondaryTable.MP_Multi = (byte) equipment.Sum(item => (item.SpecialBonus2 & 0x1) * item.SpecialBonusAmmount);
-            secondaryTable.HP_Multi = (byte) equipment.Sum(item => ((item.SpecialBonus2 >> 2) & 0x1) * item.SpecialBonusAmmount);
-
-            secondaryTable.Revive = (byte) equipment.Sum(item => ((item.SpecialBonus2 >> 3) & 0x1) * item.SpecialBonusAmmount);
-            secondaryTable.SpecialEffect = (byte) (weapon.SpecialEffect | helmet.SpecialEffect | armor.SpecialEffect | shoes.SpecialEffect | accessory.SpecialEffect);
-
-            secondaryTable.WeaponElement = weapon.WeaponElement;
-            secondaryTable.OnHitStatus = weapon.OnHitStatus;
-            secondaryTable.OnHitStatusChance = weapon.OnHitStatusChance;
-        }
-
-        private static void AdditionChange(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDictionary) {
-            Console.WriteLine("Changing Additions...");
-            foreach (var character in emulator.Battle.CharacterTable) {
-                Addition.ResetAdditionTable(emulator, character, LoDDictionary);
+                Console.WriteLine("Changing Additions...");
+                foreach (var character in emulator.Battle.CharacterTable) {
+                    Addition.ResetAdditionTable(emulator, character, LoDDict);
+                }
             }
         }
 

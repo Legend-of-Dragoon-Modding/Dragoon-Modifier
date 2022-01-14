@@ -544,7 +544,7 @@ namespace Dragoon_Modifier.Emulator {
         }
 
         public void WriteText(long address, string text) {
-            WriteAoB(address, LoDEncoding.GetBytes2(text));
+            WriteAoB(address, LoDEncoding.GetBytes(text));
         }
 
         public int GetAddress(string address) {
@@ -572,16 +572,21 @@ namespace Dragoon_Modifier.Emulator {
             if (Verify(EmulatorOffset)) {
                 Console.WriteLine($"[DEBUG] Previous offset {Convert.ToString(EmulatorOffset, 16).ToUpper()} succesful.");
                 return true;
-            } else {
-                if (emulatorName.ToLower() == "retroarch") {
-                    return RetroArch(proc);
-                } else if (emulatorName.ToLower().Contains("duckstation")) {
-                    return DuckStation(proc);
-                } else if (emulatorName.Contains("ePSXe")) {
-                    return ePSXe(proc);
-                }
-                return false;
             }
+
+            if (emulatorName.ToLower() == "retroarch") {
+                return RetroArch(proc);
+            }
+
+            if (emulatorName.ToLower().Contains("duckstation")) {
+                return DuckStation(proc);
+            }
+
+            if (emulatorName.Contains("ePSXe")) {
+                return ePSXe(proc);
+            }
+
+            return false;
         }
 
         private bool DuckStation(Process proc) {

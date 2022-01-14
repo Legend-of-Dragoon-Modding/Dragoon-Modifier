@@ -33,7 +33,6 @@ namespace Dragoon_Modifier.DraMod {
                 } else {
                     ChangeLoDDirectory(Settings.Mod);
                 }
-
                 
                 Thread t = new Thread(() => Controller.Main.Run(ref _emulator, _uiControl, ref _LoDDict));
 

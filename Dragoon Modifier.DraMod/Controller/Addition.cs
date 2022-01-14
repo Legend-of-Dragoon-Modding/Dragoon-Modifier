@@ -8,8 +8,13 @@ using System.Threading.Tasks;
 namespace Dragoon_Modifier.DraMod.Controller {
     internal static class Addition {
 
-
-
+        /// <summary>
+        /// Sets addition table of <paramref name="character"/> according to <paramref name="LoDDictionary"/>.
+        /// For Shana and Miranda, it sets the addition table to blank and reloads their SP per hit.
+        /// </summary>
+        /// <param name="emulator"></param>
+        /// <param name="character"></param>
+        /// <param name="LoDDictionary"></param>
         internal static void ResetAdditionTable(Emulator.IEmulator emulator, Emulator.Memory.Battle.Character character, LoDDict.ILoDDictionary LoDDictionary) {
             var characterID = character.ID;
 
@@ -17,6 +22,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 for (byte i = 0; i < 8; i++) {
                     BlankAdditionHit(character, i);
                 }
+                // TODO: Set Sharanda SP per hit table
                 return;
             }
 
@@ -78,7 +84,11 @@ namespace Dragoon_Modifier.DraMod.Controller {
             character.Addition[hit].StartTime = 0;
         }
 
-
+        /// <summary>
+        /// Finds the character whose turn it currently is. Replaces all menu options to Dragoon transformation, then switches the addition based on the index of Dragoon transformation chosen.
+        /// </summary>
+        /// <param name="emulator"></param>
+        /// <param name="LoDDictionary"></param>
         internal static void Swap(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDictionary) {
             if (GetActionSlot(emulator, out var slot)) {
                 var character = emulator.Battle.CharacterTable[slot];
@@ -104,8 +114,6 @@ namespace Dragoon_Modifier.DraMod.Controller {
                         menu += (byte) Math.Pow(2, i);
                     }
                     character.Menu = menu;
-
-                    Thread.Sleep(50);
 
                     emulator.Battle.BattleMenuCount = additionCount;
                     for (byte addition = 0; addition < additionCount; addition++) {
@@ -179,6 +187,29 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
             turnSlot = 0;
             return false;
+        }
+
+        /// <summary>
+        /// Sets all menu addition tables according to <paramref name="LoDDictionary"/>. Albert is skipped, since it's a duplicate of Lavitz's additions.
+        /// </summary>
+        /// <param name="emulator"></param>
+        /// <param name="LoDDictionary"></param>
+        internal static void MenuTableChange(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDictionary) {
+            for (int character = 0; character < 8; character++) {
+                if (character == 5) { // Skip Albert
+                    continue;
+                }
+
+                foreach (var addition in LoDDictionary.Character[character].Additions) {
+                    var table = emulator.Memory.MenuAdditionTable[addition.ID];
+
+                    table.Damage = (ushort) addition.AdditionHit.Sum(add => add.Damage);
+                    for (int addLvl = 0; addLvl < 5; addLvl++) {
+                        table.SP[addLvl] = (ushort) addition.AdditionHit.Sum(hit => (hit.SP * (100 + addition.SPIncrease[addLvl])) / 100);
+                        table.DamageLevelMultiplier[addLvl] = addition.DamageIncrease[addLvl];
+                    }
+                }
+            }
         }
     }
 }

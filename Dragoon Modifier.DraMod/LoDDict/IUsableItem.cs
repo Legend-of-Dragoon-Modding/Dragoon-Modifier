@@ -6,7 +6,7 @@
         int BattleNamePointer { get; set; }
         byte Damage { get; }
         byte Element { get; }
-        string EncodedBattleDescription { get; }
+        byte[] EncodedBattleDescription { get; }
         byte Percentage { get; }
         byte Special1 { get; }
         byte Special2 { get; }

@@ -20,7 +20,8 @@ namespace Dragoon_Modifier.DraMod.Controller {
             earlyAdditionsOnFieldEntry = false;
 
             if (Settings.ItemIconChange) {
-                ItemIconChange(emulator, LoDDict);
+                Console.WriteLine("Changing Item Icons...");
+                Item.IconChange(emulator, LoDDict);
             }
 
             if (Settings.ItemNameDescChange) {
@@ -28,7 +29,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
 
             if (Settings.ItemStatChange) {
-                ItemStatChange(emulator, LoDDict);
+                Item.FieldEquipmentChange(emulator, LoDDict);
             }
             
         }
@@ -260,36 +261,6 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
         }
 
-        private static void ItemStatChange(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict) {
-            Console.WriteLine("Changing Item Stats...");
-            for (int i = 0; i < 192; i++) {
-                var equip = (LoDDict.IEquipment) LoDDict.Item[i];
-                var mem = (Emulator.Memory.IEquipment) emulator.Memory.Item[i];
-                mem.WhoEquips = equip.WhoEquips;
-                mem.ItemType = equip.Type;
-                mem.WeaponElement = equip.WeaponElement;
-                mem.Status = equip.OnHitStatus;
-                mem.StatusChance = equip.OnHitStatusChance;
-                mem.AT = (byte) Math.Min(equip.AT, (ushort) 255);
-                mem.AT2 = (byte) Math.Max(Math.Min(equip.AT - 255, 255), 0);
-                mem.MAT = equip.MAT;
-                mem.DF = equip.DF;
-                mem.MDF = equip.MDF;
-                mem.SPD = equip.SPD;
-                mem.A_HIT = equip.A_HIT;
-                mem.M_HIT = equip.M_HIT;
-                mem.A_AV = equip.A_AV;
-                mem.M_AV = equip.M_AV;
-                mem.E_Half = equip.ElementalResistance;
-                mem.E_Immune = equip.ElementalImmunity;
-                mem.StatusResist = equip.StatusResistance;
-                mem.Special1 = equip.SpecialBonus1;
-                mem.Special2 = equip.SpecialBonus2;
-                mem.SpecialAmmount = equip.SpecialBonusAmmount;
-                mem.SpecialEffect = equip.SpecialEffect;
-            }
-        }
-
         private static void ThrownItemChange(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict) {
             for (int i = 192; i < 255; i++) {
                 var item = (LoDDict.IUsableItem) LoDDict.Item[i];
@@ -305,13 +276,6 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 mem.Percentage = item.Percentage;
                 mem.Unknown2 = item.Unknown2;
                 mem.BaseSwitch = item.BaseSwitch;
-            }
-        }
-
-        private static void ItemIconChange(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict) {
-            Console.WriteLine("Changing Item Icons...");
-            for (int i = 0; i < emulator.Memory.Item.Length; i++) {
-                emulator.Memory.Item[i].Icon = LoDDict.Item[i].Icon;
             }
         }
 

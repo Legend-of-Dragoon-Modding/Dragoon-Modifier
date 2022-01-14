@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.Emulator {
-    internal static class KMP {
+    public static class KMP {
         private static readonly Dictionary<string, byte[]> _mask = new Dictionary<string, byte[]>() {
             {"??", new byte[] { 0x00, 0x00} },
             {"0?", new byte[] { 0x00, 0xF0} },
@@ -43,7 +43,7 @@ namespace Dragoon_Modifier.Emulator {
             {"?F", new byte[] { 0x0F, 0x0F} },
         };
 
-        internal static List<long> Search(string pattern, byte[] array, bool findAll = false) {
+        public static List<long> Search(string pattern, byte[] array, bool findAll = false) {
             var splitString = pattern.Split(' ');
 
             var patternValue = new byte[splitString.Length];
@@ -109,7 +109,7 @@ namespace Dragoon_Modifier.Emulator {
             return substringIndex;
         }
 
-        internal static List<long> UnmaskedSearch(byte[] pattern, byte[] array, bool findAll = false) {
+        public static List<long> UnmaskedSearch(byte[] pattern, byte[] array, bool findAll = false) {
             var indexList = new List<long>();
             var substringIndex = CalculateUnmaskedSubstringIndexes(pattern);
 

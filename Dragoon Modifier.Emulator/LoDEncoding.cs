@@ -105,7 +105,7 @@ namespace Dragoon_Modifier.Emulator {
             {"<RED>", 0xA705 },
             {"<YELLOW>", 0xA708 }
         };
-        private static readonly byte[] empty = new byte[] { 0x0, 0x0 };
+        private static readonly byte[] _empty = new byte[] { 0x0, 0x0 };
         private readonly Dictionary<char, ushort> _char2ushort;
         private readonly Dictionary<ushort, char> _ushort2char;
 
@@ -125,38 +125,48 @@ namespace Dragoon_Modifier.Emulator {
 
         public byte[] GetBytes(string text) {
             var result = new List<byte>();
-            foreach (char c in text) {
-                if (_char2ushort.TryGetValue(c, out var key)) {
-                    result.AddRange(BitConverter.GetBytes(key));
-                    continue;
+            foreach (var segment in SplitOnCodes(text)) {
+                if (segment.StartsWith("<")) {
+                    if (TryEncodeCode(segment, out var key)) {
+                        result.AddRange(key);
+                    }
+               
+                } else {
+                    foreach (char c in segment) {
+                        if (TryEncodeChar(c, out var key)) {
+                            result.AddRange(key);
+                        }
+                    }
                 }
-                result.AddRange(empty);
             }
             return result.ToArray();
         }
 
-        public byte[] GetBytes2(string text) {
-            var result = new List<byte>();
-            string[] parts = _regex.Split(text).Where(l => l != string.Empty).ToArray();
-            foreach (var segment in parts) {
-                if (segment.StartsWith("<")) {
-                    if (_textCodes.TryGetValue(segment, out var key)) {
-                        result.AddRange(BitConverter.GetBytes(key));
-                    }
-                } else {
-                    foreach (char c in segment) {
-                        if (_char2ushort.TryGetValue(c, out var key)) {
-                            result.AddRange(BitConverter.GetBytes(key));
-                            continue;
-                        }
-                        result.AddRange(empty);
-                    }
-                }
+        private static string[] SplitOnCodes(string text) {
+            return _regex.Split(text).Where(l => l != string.Empty).ToArray();
+        }
+
+
+        private bool TryEncodeCode(string code, out byte[] encoded) {
+            if (_textCodes.TryGetValue(code, out var key)) {
+                encoded = BitConverter.GetBytes(key);
+                return true;
             }
 
+            Console.WriteLine($"[ERROR] Code {code} couldn't be encoded.");
+            encoded = _empty;
+            return false;
+        }
 
+        private bool TryEncodeChar(char character, out byte[] encoded) {
+            if (_char2ushort.TryGetValue(character, out var key)) {
+                encoded = BitConverter.GetBytes(key);
+                return true;
+            }
 
-            return result.ToArray();
+            Console.WriteLine($"[ERROR] Character {character} couldn't be encoded.");
+            encoded = _empty;
+            return false;
         }
 
         public string GetString(byte[] bytes) {

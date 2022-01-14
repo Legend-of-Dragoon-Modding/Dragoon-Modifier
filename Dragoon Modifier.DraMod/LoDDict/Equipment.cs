@@ -95,7 +95,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
             
             if (!(values[0] == "" || values[0] == " ")) {
                 Name = values[0];
-                EncodedName = BitConverter.ToString(emulator.LoDEncoding.GetBytes2(values[0])).Replace("-", " ") + " FF A0";
+                EncodedName = emulator.LoDEncoding.GetBytes(Name).Concat(new byte[] { 0xFF, 0xA0}).ToArray();
             }
 
             if (_types.TryGetValue(values[1].ToLower(), out byte bkey)) {
@@ -245,7 +245,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
             errorTemp = new List<string>();
             foreach (string sub in values[20].Replace(" ", "").ToLower().Split(',')) {
                 if (_specials2.TryGetValue(sub, out bkey)) {
-                    SpecialBonus1 |= bkey;
+                    SpecialBonus2 |= bkey;
                 } else {
                     errorTemp.Add(sub);
                 }
@@ -274,7 +274,8 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
 
             if (!(values[23] == "" || values[23] == " ")) {
                 Description = values[23];
-                EncodedDescription = BitConverter.ToString(emulator.LoDEncoding.GetBytes2(values[23])).Replace("-", " ") + " FF A0";
+       
+                EncodedDescription = emulator.LoDEncoding.GetBytes(Description).Concat(new byte[] { 0xFF, 0xA0 }).ToArray();
             }
 
             if (UInt16.TryParse(values[24], out uskey)) {

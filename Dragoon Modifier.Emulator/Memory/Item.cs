@@ -20,5 +20,6 @@ namespace Dragoon_Modifier.Emulator.Memory {
         public uint DescriptionPointer { get { return _emulator.ReadUInt24(_descriptionPointerAddress); } set { _emulator.WriteUInt24(_descriptionPointerAddress, value); } }
         public string Description { get { return _emulator.ReadText(DescriptionPointer); } }
         public ushort SellPrice { get { return _emulator.ReadUShort(_sellPriceAddress); } set { _emulator.WriteUShort(_sellPriceAddress, value); } }
+
     }
 }

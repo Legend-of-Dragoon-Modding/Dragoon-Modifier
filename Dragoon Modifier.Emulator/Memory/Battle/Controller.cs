@@ -6,8 +6,14 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.Emulator.Memory.Battle {
     public class Controller : IBattle {
+        private readonly int[] _discOffset = { 0xD80, 0x0, 0x1458, 0x1B0 };
+        private readonly int[] _charOffset = { 0x0, 0x180, -0x180, 0x420, 0x540, 0x180, 0x350, 0x2F0, -0x180 };
+        private readonly int[] _duoCharOffset = { 0x0, -0x180, 0x180, -0x420, -0x180, -0x540, -0x350, -0x350, -0x2F0 };
+        private readonly int[] _duoDartOffset = { 0x0, 0x470, 0x170, 0x710, 0x830, 0x470, 0x640, 0x640, 0x170 };
+
         private readonly IEmulator _emulator;
         private readonly int _damageCap;
+        private readonly int _haschelFix;
         public uint CharacterPoint { get; private set; }
         public uint MonsterPoint { get; private set; }
         public ushort EncounterID { get; private set; }
@@ -21,6 +27,7 @@ namespace Dragoon_Modifier.Emulator.Memory.Battle {
         public byte ItemUsed { get { return _emulator.ReadByte(MonsterPoint + 0xBC4); } set { _emulator.WriteByte(MonsterPoint + 0xBC4, value); } }
         public Collections.IAddress<byte> BattleMenuSlot { get; private set; }
         public ushort DamageCap { get { return GetDamageCap(); } set { SetDamageCap(value); } }
+        public byte[] HaschelFix { get { return _emulator.ReadAoB(_haschelFix + _discOffset[_emulator.Memory.Disc - 1], _haschelFix + _discOffset[_emulator.Memory.Disc - 1] + 116); } set { _emulator.WriteAoB(_haschelFix + _discOffset[_emulator.Memory.Disc - 1], value); } }
 
         internal Controller(IEmulator emulator) {
             _emulator = emulator;
@@ -54,34 +61,31 @@ namespace Dragoon_Modifier.Emulator.Memory.Battle {
             BattleMenuSlot = Factory.AddressCollection<byte>(emulator, (int) MonsterPoint + 0xE3C, 2, 9);
 
             _damageCap = emulator.GetAddress("DAMAGE_CAP");
+            _haschelFix = emulator.GetAddress("HASCHEL_FIX");
         }
 
         private int GetOffset() {
             if (_emulator.Region == Region.NTA || _emulator.Region == Region.ENG) {
                 return _emulator.ReadUShort("BATTLE_OFFSET") - 0x8F44;
-            } else {
-                int[] discOffset = { 0xD80, 0x0, 0x1458, 0x1B0 };
-                int[] charOffset = { 0x0, 0x180, -0x180, 0x420, 0x540, 0x180, 0x350, 0x2F0, -0x180 };
-                int[] duoCharOffset = { 0x0, -0x180, 0x180, -0x420, -0x180, -0x540, -0x350, -0x350, -0x2F0 };
-                int[] duoDartOffset = { 0x0, 0x470, 0x170, 0x710, 0x830, 0x470, 0x640, 0x640, 0x170 };
-                int partyOffset = 0;
-
-                if (_emulator.Memory.PartySlot[2] == 0xFFFFFFFF && _emulator.Memory.PartySlot[1] < 9) {
-                    if (_emulator.Memory.PartySlot[0] == 0) {
-                        partyOffset = duoDartOffset[_emulator.Memory.PartySlot[1]];
-                    } else if (_emulator.Memory.PartySlot[1] == 0) {
-                        partyOffset = duoDartOffset[_emulator.Memory.PartySlot[0]];
-                    } else {
-                        partyOffset = charOffset[_emulator.Memory.PartySlot[0]] + charOffset[_emulator.Memory.PartySlot[1]];
-                    }
-                } else {
-                    if (_emulator.Memory.PartySlot[0] < 9 && _emulator.Memory.PartySlot[1] < 9 && _emulator.Memory.PartySlot[2] < 9) {
-                        partyOffset = charOffset[_emulator.Memory.PartySlot[1]] + charOffset[_emulator.Memory.PartySlot[2]];
-                    }
-                }
-
-                return discOffset[_emulator.Memory.Disc - 1] - partyOffset;
             }
+
+            int partyOffset = 0;
+
+            if (_emulator.Memory.PartySlot[2] == 0xFFFFFFFF && _emulator.Memory.PartySlot[1] < 9) {
+                if (_emulator.Memory.PartySlot[0] == 0) {
+                    partyOffset = _duoDartOffset[_emulator.Memory.PartySlot[1]];
+                } else if (_emulator.Memory.PartySlot[1] == 0) {
+                    partyOffset = _duoDartOffset[_emulator.Memory.PartySlot[0]];
+                } else {
+                    partyOffset = _charOffset[_emulator.Memory.PartySlot[0]] + _charOffset[_emulator.Memory.PartySlot[1]];
+                }
+            } else {
+                if (_emulator.Memory.PartySlot[0] < 9 && _emulator.Memory.PartySlot[1] < 9 && _emulator.Memory.PartySlot[2] < 9) {
+                    partyOffset = _charOffset[_emulator.Memory.PartySlot[1]] + _charOffset[_emulator.Memory.PartySlot[2]];
+                }
+            }
+
+            return _discOffset[_emulator.Memory.Disc - 1] - partyOffset;
         }
 
         private ushort GetDamageCap() {

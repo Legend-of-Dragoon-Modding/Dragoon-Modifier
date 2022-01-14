@@ -48,7 +48,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
         };
 
         public string BattleDescription { get; private set; } = "<END>";
-        public string EncodedBattleDescription { get; private set; } = "FF A0 FF A0";
+        public byte[] EncodedBattleDescription { get; private set; } = new byte[] { 0xFF, 0xA0, 0xFF, 0xA0};
         public int BattleDescriptionPointer { get; set; } = 0;
         public int BattleNamePointer { get; set; } = 0;
         public byte Target { get; private set; } = 0;
@@ -70,7 +70,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
 
             if (!(values[0] == "" || values[0] == " ")) {
                 Name = values[0];
-                EncodedName = BitConverter.ToString(emulator.LoDEncoding.GetBytes2(values[0])).Replace("-", " ") + " FF A0";
+                EncodedName = emulator.LoDEncoding.GetBytes(Name).Concat(new byte[] { 0xFF, 0xA0 }).ToArray();
             }
 
             if (Byte.TryParse(values[1], out var bkey)) {
@@ -165,7 +165,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
 
             if (!(values[13] == "" || values[13] == " ")) {
                 Description = values[13];
-                EncodedDescription = BitConverter.ToString(emulator.LoDEncoding.GetBytes2(values[13])).Replace("-", " ") + " FF A0";
+                EncodedDescription = emulator.LoDEncoding.GetBytes(Description).Concat(new byte[] { 0xFF, 0xA0 }).ToArray();
             }
 
             if (UInt16.TryParse(values[14], out var uskey)) {
@@ -176,7 +176,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
 
             if (!(values[15] == "" || values[15] == " ")) {
                 BattleDescription = values[15];
-                EncodedBattleDescription = BitConverter.ToString(emulator.LoDEncoding.GetBytes2(values[15])).Replace("-", " ") + " FF A0";
+                EncodedBattleDescription = emulator.LoDEncoding.GetBytes(BattleDescription).Concat(new byte[] { 0xFF, 0xA0 }).ToArray();
             }
         }
     }

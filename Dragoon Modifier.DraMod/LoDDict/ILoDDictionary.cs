@@ -6,10 +6,10 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
 
         Character[] Character { get; }
 
-        string ItemNames { get; }
-        string ItemDescriptions { get; }
-        string ItemBattleNames { get; }
-        string ItemBattleDescriptions { get; }
+        byte[] ItemNames { get; }
+        byte[] ItemDescriptions { get; }
+        byte[] ItemBattleNames { get; }
+        byte[] ItemBattleDescriptions { get; }
         Dictionary<ushort, Monster> Monster { get; }
 
         Scripts.IItemScript ItemScript { get;}

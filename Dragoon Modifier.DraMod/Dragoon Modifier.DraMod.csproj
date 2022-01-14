@@ -111,6 +111,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Character.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Controller\Addition.cs" />
     <Compile Include="Controller\Battle.cs" />
@@ -118,6 +119,7 @@
     <Compile Include="Controller\BattleResult.cs" />
     <Compile Include="Controller\Field.cs" />
     <Compile Include="Controller\Hotkey.cs" />
+    <Compile Include="Controller\Item.cs" />
     <Compile Include="Controller\KillBGM.cs" />
     <Compile Include="Controller\Main.cs" />
     <Compile Include="Controller\Menu.cs" />

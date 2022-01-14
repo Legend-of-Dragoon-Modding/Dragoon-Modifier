@@ -46,10 +46,10 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
         public Dictionary<ushort, Monster> Monster { get; private set; } = new Dictionary<ushort, Monster>();
         public Character[] Character { get; } = new Character[9];
 
-        public string ItemNames { get; private set; } = String.Empty;
-        public string ItemDescriptions { get; private set; } = String.Empty;
-        public string ItemBattleNames { get; private set; } = String.Empty;
-        public string ItemBattleDescriptions { get; private set; } = String.Empty;
+        public byte[] ItemNames { get; private set; } = new byte[0];
+        public byte[] ItemDescriptions { get; private set; } = new byte[0];
+        public byte[] ItemBattleNames { get; private set; } = new byte[0];
+        public byte[] ItemBattleDescriptions { get; private set; } = new byte[0];
 
         public Scripts.IItemScript ItemScript { get; private set; } = new Scripts.DummyItemScript();
 
@@ -105,10 +105,11 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
         private void GetItems(Emulator.IEmulator emulator, string modPath) {
             GetEquipment(emulator, modPath);
             GetUsableItems(emulator, modPath);
-            ItemNames = CreateItemNameString(emulator);
-            ItemDescriptions = CreateItemDescriptionString(emulator);
-            ItemBattleNames = CreateItemBattleNameString(emulator);
-            ItemBattleDescriptions = CreateItemBattleDescriptionString(emulator);
+
+            ItemNames = GetEncodedNames(emulator);
+            ItemDescriptions = GetEncodedDescriptions(emulator);
+            ItemBattleNames = GetEncodedBattleNames(emulator);
+            ItemBattleDescriptions = GetEncodedBattleDescriptions(emulator);
         }
 
         private void GetEquipment(Emulator.IEmulator emulator, string modPath) {
@@ -151,120 +152,103 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
             }
         }
 
-        private string CreateItemNameString(Emulator.IEmulator emulator) {
-            int offset = 0;
+        private byte[] GetEncodedNames(Emulator.IEmulator emulator) {
             int start = emulator.GetAddress("ITEM_NAME");
-            IItem[] sorted = Item.OrderByDescending(o => o.Name.Length).ToArray();
-            List<string> names = new List<string>();
+
+            var sorted = Item.OrderByDescending(item => item.Name.Length);
+            byte[] result = new byte[0];
+
             foreach (var item in sorted) {
-                if (names.Any(l => l.Contains(item.EncodedName))) {
-                    int index = Array.IndexOf(sorted, Array.Find(sorted, x => x.EncodedName.Contains(item.EncodedName)));
-                    item.NamePointer = sorted[index].NamePointer + (sorted[index].Name.Length - item.Name.Length) * 2;
+                var search = Emulator.KMP.UnmaskedSearch(item.EncodedName, result);
+                if (search.Count != 0) {
+                    item.NamePointer = start + (int) search[0];
                 } else {
-                    names.Add(item.EncodedName);
-                    item.NamePointer = start + offset;
-                    offset += (item.EncodedName.Replace(" ", "").Length / 2);
+                    item.NamePointer = start + result.Length;
+                    result = result.Concat(item.EncodedName).ToArray();
                 }
             }
-            string result = String.Join(" ", names);
-            int end = emulator.GetAddress("ITEM_NAME_PTR");
-            int len1 = result.Replace(" ", "").Length / 4;
-            int len2 = (end - start) / 2;
-            if (len1 >= len2) {
-                Console.WriteLine($"Item name character limit exceeded! {len1} / {len2} characters. Turning off Name and Description changes.");
+
+            var end = emulator.GetAddress("ITEM_NAME_PTR");
+            if (result.Length > end - start) {
+                Console.WriteLine($"Item name character limit exceeded! {result.Length} / {end - start} characters. Turning off Name and Description changes.");
                 Settings.ItemNameDescChange = false;
             }
+
             return result;
         }
 
-        private string CreateItemDescriptionString(Emulator.IEmulator emulator) {
-            int offset = 0;
-            int start = emulator.GetAddress("ITEM_DESC");
-            IItem[] sorted = Item.OrderByDescending(o => o.Description.Length).ToArray();
-            List<string> descriptions = new List<string>();
+        private byte[] GetEncodedDescriptions(Emulator.IEmulator emulator) {
+            int start = emulator.GetAddress("ITEM_DESC"); ;
+
+            var sorted = Item.OrderByDescending(item => item.Description.Length);
+            byte[] result = new byte[0];
 
             foreach (var item in sorted) {
-                if (descriptions.Any(l => l.Contains(item.EncodedDescription))) {
-                    int index = Array.IndexOf(sorted, Array.Find(sorted, x => x.EncodedDescription.Contains(item.EncodedDescription)));
-                    item.DescriptionPointer = sorted[index].DescriptionPointer + (sorted[index].Description.Length - item.Description.Length) * 2;
+                var search = Emulator.KMP.UnmaskedSearch(item.EncodedDescription, result);
+                if (search.Count != 0) {
+                    item.DescriptionPointer = start + (int) search[0];
                 } else {
-                    descriptions.Add(item.EncodedDescription);
-                    item.DescriptionPointer = start + offset;
-                    offset += (item.EncodedDescription.Replace(" ", "").Length / 2);
+                    item.DescriptionPointer = start + result.Length;
+                    result = result.Concat(item.EncodedDescription).ToArray();
                 }
             }
-            string result = String.Join(" ", descriptions);
-            int end = emulator.GetAddress("ITEM_DESC_PTR");
-            int len1 = result.Replace(" ", "").Length / 4;
-            int len2 = (end - start) / 2;
-            if (len1 >= len2) {
-                Console.WriteLine($"Item description character limit exceeded! {len1} / {len2} characters. Turning off Name and Description changes.");
+
+            var end = emulator.GetAddress("ITEM_DESC_PTR");
+            if (result.Length > end - start) {
+                Console.WriteLine($"Item description character limit exceeded! {result.Length} / {end - start} characters. Turning off Name and Description changes.");
                 Settings.ItemNameDescChange = false;
             }
+
             return result;
         }
 
-        private string CreateItemBattleNameString(Emulator.IEmulator emulator) {
-            int offset = 0;
+        private byte[] GetEncodedBattleNames(Emulator.IEmulator emulator) {
             int start = emulator.GetAddress("ITEM_BTL_NAME");
-            var temp = new List<IUsableItem>();
-            foreach (var item in Item) {
-                if (item is IUsableItem usableItem) {
-                    temp.Add(usableItem);
-                }
-            }
-            IUsableItem[] sorted = temp.OrderBy(o => o.BattleDescription.Length).ToArray();
-            List<string> names = new List<string>();
-            foreach (IUsableItem item in sorted) {
-                if (names.Any(l => l.Contains(item.EncodedName))) {
-                    int index = Array.IndexOf(sorted, Array.Find(sorted, x => x.EncodedName.Contains(item.EncodedName)));
-                    item.BattleNamePointer = sorted[index].BattleNamePointer + (sorted[index].Name.Length - item.Name.Length) * 2;
+
+            var sorted = Item.Where(item => item is IUsableItem).Cast<IUsableItem>().OrderByDescending(item => item.Name.Length);
+            byte[] result = new byte[0];
+
+            foreach (var item in sorted) {
+                var search = Emulator.KMP.UnmaskedSearch(item.EncodedName, result);
+                if (search.Count != 0) {
+                    item.BattleNamePointer = start + (int) search[0];
                 } else {
-                    names.Add(item.EncodedName);
-                    item.BattleNamePointer = start + offset;
-                    offset += (item.EncodedName.Replace(" ", "").Length / 2);
+                    item.BattleNamePointer = start + result.Length;
+                    result = result.Concat(item.EncodedName).ToArray();
                 }
             }
-            string result = String.Join(" ", names);
-            int end = emulator.GetAddress("ITEM_BTL_NAME_PTR");
-            int len1 = result.Replace(" ", "").Length / 4;
-            int len2 = (end - start) / 2;
-            if (len1 >= len2) {
-                Console.WriteLine($"Item battle name character limit exceeded! {len1} / {len2} characters. Turning off Name and Description changes.");
+
+            var end = emulator.GetAddress("ITEM_BTL_NAME_PTR");
+            if (result.Length > end - start) {
+                Console.WriteLine($"Item battle name character limit exceeded! {result.Length} / {end - start} characters. Turning off Name and Description changes.");
                 Settings.ItemNameDescChange = false;
             }
+
             return result;
         }
 
-        private string CreateItemBattleDescriptionString(Emulator.IEmulator emulator) {
-            int offset = 0;
+        private byte[] GetEncodedBattleDescriptions(Emulator.IEmulator emulator) {
             int start = emulator.GetAddress("ITEM_BTL_DESC");
-            var temp = new List<IUsableItem>();
-            foreach (var item in Item) {
-                if (item is IUsableItem usableItem) {
-                    temp.Add(usableItem);
-                }
-            }
-            IUsableItem[] sorted = temp.OrderBy(o => o.BattleDescription.Length).ToArray();
-            List<string> battleDescriptions = new List<string>();
-            foreach (IUsableItem item in sorted) {
-                if (battleDescriptions.Any(l => l.Contains(item.EncodedBattleDescription))) {
-                    int index = Array.IndexOf(sorted, Array.Find(sorted, x => x.EncodedBattleDescription.Contains(item.EncodedBattleDescription)));
-                    item.BattleDescriptionPointer = sorted[index].BattleDescriptionPointer + (sorted[index].BattleDescription.Length - item.BattleDescription.Length) * 2;
+
+            var sorted = Item.Where(item => item is IUsableItem).Cast<IUsableItem>().OrderByDescending(item => item.BattleDescription.Length);
+            byte[] result = new byte[0];
+
+            foreach (var item in sorted) {
+                var search = Emulator.KMP.UnmaskedSearch(item.EncodedBattleDescription, result);
+                if (search.Count != 0) {
+                    item.BattleDescriptionPointer = start + (int) search[0];
                 } else {
-                    battleDescriptions.Add(item.EncodedBattleDescription);
-                    item.BattleDescriptionPointer = start + offset;
-                    offset += (item.EncodedBattleDescription.Replace(" ", "").Length / 2);
+                    item.BattleDescriptionPointer = start + result.Length;
+                    result = result.Concat(item.EncodedBattleDescription).ToArray();
                 }
             }
-            string result = String.Join(" ", battleDescriptions);
-            int end = emulator.GetAddress("ITEM_BTL_DESC_PTR");
-            int len1 = result.Replace(" ", "").Length / 4;
-            int len2 = (end - start) / 2;
-            if (len1 >= len2) {
-                Console.WriteLine($"Item battle description character limit exceeded! {len1} / {len2} characters. Turning off Name and Description changes.");
+
+            var end = emulator.GetAddress("ITEM_BTL_DESC_PTR");
+            if (result.Length > end - start) {
+                Console.WriteLine($"Item battle description character limit exceeded! {result.Length} / {end - start} characters. Turning off Name and Description changes.");
                 Settings.ItemNameDescChange = false;
             }
+
             return result;
         }
 
