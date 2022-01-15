@@ -10,7 +10,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             uiControl.ResetBattle();
 
             if (Settings.ItemIconChange) {
-                Console.WriteLine("Changing Item Icons...");
+                Console.WriteLine("Changing Item icons...");
                 Item.IconChange(emulator, LoDDict);
             }
 
@@ -20,7 +20,13 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
 
             if (Settings.ItemStatChange) {
+                Console.WriteLine("Changing Items stats...");
                 Item.FieldEquipmentChange(emulator, LoDDict);
+            }
+
+            if (Settings.AdditionChange) {
+                Console.WriteLine("Changing Additions...");
+                Addition.MenuTableChange(emulator, LoDDict);
             }
 
 

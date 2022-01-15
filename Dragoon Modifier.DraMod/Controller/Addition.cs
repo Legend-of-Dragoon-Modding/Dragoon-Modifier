@@ -205,7 +205,12 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
                     table.Damage = (ushort) addition.AdditionHit.Sum(add => add.Damage);
                     for (int addLvl = 0; addLvl < 5; addLvl++) {
-                        table.SP[addLvl] = (ushort) addition.AdditionHit.Sum(hit => (hit.SP * (100 + addition.SPIncrease[addLvl])) / 100);
+                        
+                        ushort sp = 0;
+                        foreach (var hit in addition.AdditionHit) {
+                            sp += (ushort) ((hit.SP * (100 + addition.SPIncrease[addLvl])) / 100);
+                        }
+                        table.SP[addLvl] = sp;
                         table.DamageLevelMultiplier[addLvl] = addition.DamageIncrease[addLvl];
                     }
                 }

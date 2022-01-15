@@ -26,7 +26,13 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
 
             if (Settings.ItemStatChange) {
+                Console.WriteLine("Changing Equipment stats...");
                 Item.FieldEquipmentChange(emulator, LoDDict);
+            }
+
+            if (Settings.AdditionChange) {
+                Console.WriteLine("Changing Additions...");
+                Addition.MenuTableChange(emulator, LoDDict);
             }
 
             if (Settings.EarlyAdditions) {

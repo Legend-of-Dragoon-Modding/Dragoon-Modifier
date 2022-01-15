@@ -66,7 +66,6 @@ namespace Dragoon_Modifier.DraMod.Controller {
         /// <param name="emulator"></param>
         /// <param name="LoDDictionary"></param>
         internal static void FieldEquipmentChange(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDictionary) {
-            Console.WriteLine("Changing Item Stats...");
             for (int i = 0; i < equipmentAmmount; i++) {
                 var equipment = (LoDDict.IEquipment) LoDDictionary.Item[i];
                 var itemSlot = (Emulator.Memory.IEquipment) emulator.Memory.Item[i];

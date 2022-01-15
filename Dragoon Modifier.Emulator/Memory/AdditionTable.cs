@@ -20,7 +20,7 @@ namespace Dragoon_Modifier.Emulator.Memory {
             _emulator = emulator;
             _baseAddress = baseAddress + addition * 0xE;
             _multiAddress = multiAddress + addition * 0x18;
-            SP = Factory.AddressCollection<ushort>(_emulator, _baseAddress, 2, 5);
+            SP = Factory.AddressCollection<ushort>(_emulator, (_baseAddress + 0x2), 2, 5);
             DamageLevelMultiplier = Factory.AddressCollection<byte>(_emulator, _multiAddress, 4, 5);
         }
     }
