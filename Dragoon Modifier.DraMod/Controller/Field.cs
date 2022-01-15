@@ -38,7 +38,9 @@ namespace Dragoon_Modifier.DraMod.Controller {
             if (Settings.EarlyAdditions) {
                 EarlyAdditions(emulator);
             }
-            
+
+            LoDDict.ItemScript.FieldSetup(emulator, uiControl);
+
         }
 
         internal static void Run(Emulator.IEmulator emulator, UI.IUIControl uiControl) {

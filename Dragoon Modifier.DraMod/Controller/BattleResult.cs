@@ -33,6 +33,8 @@ namespace Dragoon_Modifier.DraMod.Controller {
             if (Settings.SoloMode || Settings.DuoMode) {
                 RemoveExtraPartyMembers(emulator);
             }
+
+            LoDDict.ItemScript.FieldSetup(emulator, uiControl);
         }
 
         public static void RemoveExtraPartyMembers(Emulator.IEmulator emulator) {

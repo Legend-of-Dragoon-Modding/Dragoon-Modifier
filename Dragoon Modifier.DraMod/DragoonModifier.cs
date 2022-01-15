@@ -71,7 +71,15 @@ namespace Dragoon_Modifier.DraMod {
             Settings.Mod = modString;
             if (Constants.Run) {
 
-                LoDDict.Scripts.DummyItemScript ItemScript = new LoDDict.Scripts.DummyItemScript();
+                LoDDict.Scripts.IItemScript ItemScript = new LoDDict.Scripts.DummyItemScript();
+                switch (mod) {
+                    case Preset.Hell:
+                    case Preset.HardHell:
+                    case Preset.Hard:
+                        ItemScript = new LoDDict.Scripts.HardMode.ItemScript();
+                        break;
+                }
+                
 
                 _uiControl.WritePLog("Changing mod directory to " + modString);
                 _LoDDict = new LoDDict.LoDDictionary(_emulator, _uiControl, _cwd, modString, ItemScript);

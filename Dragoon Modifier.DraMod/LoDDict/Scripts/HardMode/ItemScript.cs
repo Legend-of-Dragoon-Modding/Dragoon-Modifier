@@ -26,6 +26,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts.HardMode {
 
         public void BattleSetup(IEmulator emulator, IUIControl uiControl) {
             BattleChapter3Buffs(emulator);
+            KongolSpeedNerf(emulator);
         }
 
         public void FieldRun(IEmulator emulator, IUIControl uiControl) {
@@ -69,7 +70,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts.HardMode {
         private static void FieldChapter3Buffs(IEmulator emulator) {
             if (emulator.Memory.Chapter < 3) {
                 var morningStar = emulator.Memory.Item[morningStarID];
-                emulator.WriteUInt(morningStar.DescriptionPointer, 0xFFA0FFA0);
+                emulator.WriteUInt(morningStar.DescriptionPointer, 0xA0FFA0FF); // Double end flag
                 return;
             }
 
@@ -84,6 +85,10 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts.HardMode {
 
             item = (Emulator.Memory.IEquipment) emulator.Memory.Item[morningStarID];
             item.AT = (byte) (item.AT + morningStarID);
+        }
+
+        private static void KongolSpeedNerf(IEmulator emulator) {
+            emulator.Memory.SecondaryCharacterTable[7].EquipSPD = (ushort) (emulator.Memory.SecondaryCharacterTable[7].EquipSPD / 2);
         }
     }
 }
