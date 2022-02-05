@@ -14,7 +14,15 @@ namespace Dragoon_Modifier.DraMod.Controller {
         internal static void Setup(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict, UI.IUIControl uiControl) {
             uiControl.ResetBattle();
 
+            if (Settings.EarlyAdditions) {
+                EarlyAdditions(emulator);
+            }
 
+            LoDDict.ItemScript.FieldSetup(emulator, uiControl);
+
+        }
+
+        internal static void ItemSetup(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict) {
             if (Settings.ItemIconChange) {
                 Console.WriteLine("Changing Item Icons...");
                 Item.IconChange(emulator, LoDDict);
@@ -29,18 +37,13 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 Console.WriteLine("Changing Equipment stats...");
                 Item.FieldEquipmentChange(emulator, LoDDict);
             }
+        }
 
+        internal static void AdditionSetup(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict) {
             if (Settings.AdditionChange) {
                 Console.WriteLine("Changing Additions...");
                 Addition.MenuTableChange(emulator, LoDDict);
             }
-
-            if (Settings.EarlyAdditions) {
-                EarlyAdditions(emulator);
-            }
-
-            LoDDict.ItemScript.FieldSetup(emulator, uiControl);
-
         }
 
         internal static void Run(Emulator.IEmulator emulator, UI.IUIControl uiControl) {

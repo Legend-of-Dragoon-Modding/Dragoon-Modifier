@@ -54,7 +54,10 @@ namespace Dragoon_Modifier.DraMod {
             if (Constants.Run) {
                 _uiControl.WritePLog("Changing mod directory to " + mod);
                 _LoDDict = new LoDDict.LoDDictionary(_emulator, _uiControl, _cwd, mod);
-                Controller.Main.StatsChanged = false;
+                Controller.Main.BattleSetup = false;
+                Controller.Main.AdditionsChanged = false;
+                Controller.Main.ItemsChanged = false;
+                Controller.Main.ShopChanged = false;
             }
         }
 
@@ -83,7 +86,10 @@ namespace Dragoon_Modifier.DraMod {
 
                 _uiControl.WritePLog("Changing mod directory to " + modString);
                 _LoDDict = new LoDDict.LoDDictionary(_emulator, _uiControl, _cwd, modString, ItemScript);
-                Controller.Main.StatsChanged = false;
+                Controller.Main.BattleSetup = false;
+                Controller.Main.AdditionsChanged = false;
+                Controller.Main.ItemsChanged = false;
+                Controller.Main.ShopChanged = false;
             }
         }
 

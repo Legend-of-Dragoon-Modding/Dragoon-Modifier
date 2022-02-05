@@ -7,43 +7,104 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.Controller {
     internal static class Main {
-        internal static bool StatsChanged = false;
         internal static bool MenuEntered = false;
+
+        internal static bool BattleSetup = false;
+        internal static bool AdditionsChanged = false;
+        internal static bool ItemsChanged = false;
+        internal static bool ShopChanged = false;
+        private static bool ShopFix = false;
+
         internal static void Run(ref Emulator.IEmulator emulator, UI.IUIControl uiControl, ref LoDDict.ILoDDictionary LoDDict) {
             while (Constants.Run) {
                 try {
                     switch (emulator.Memory.GameState) {
                         case Emulator.GameState.Battle:
-                            if (!StatsChanged) {
+                            if (!BattleSetup) {
                                 Battle.Setup(emulator, LoDDict, uiControl);
-                                StatsChanged = true;
+                                BattleSetup = true;
+                                AdditionsChanged = false;
+                                ItemsChanged = false;
+                                ShopChanged = false;
                             }
                             Battle.Run(emulator, uiControl, LoDDict);
                             break;
+
                         case Emulator.GameState.Field:
-                            if (StatsChanged) {
-                                Field.Setup(emulator, LoDDict, uiControl);
-                                StatsChanged = false;
+                            BattleSetup = false;
+
+                            if (!ShopChanged) {
+                                if (Settings.ShopChange) {
+                                    Shop.TableChange(emulator, LoDDict);
+                                }
+                                ShopChanged = true;
                             }
-                            /*if (MenuEntered) {
-                                Menu.Exit(emulator, uiControl);
+
+                            if (MenuEntered && Settings.NoDart != 255) {
                                 MenuEntered = false;
-                            }*/
+                                emulator.Memory.PartySlot[0] = 0;
+                            }
                             Field.Run(emulator, uiControl);
-                            //MenuEntered = false;
+                            break;
+
+                        case Emulator.GameState.Overworld:
+                            BattleSetup = false;
+                            ShopChanged = false;
                             break;
 
                         case Emulator.GameState.Menu:
-                            /*if (!MenuEntered) {
-                                Menu.Setup(emulator, LoDDict, uiControl);
+                            BattleSetup = false;
+
+                            if (!ItemsChanged) {
+                                Field.ItemSetup(emulator, LoDDict);
+                                ItemsChanged = true;
+                            }
+
+                            if (!AdditionsChanged) {
+                                Field.AdditionSetup(emulator, LoDDict);
+                                AdditionsChanged = true;
+                            }
+
+                            if (!MenuEntered && Settings.NoDart != 255) {
+                                emulator.Memory.PartySlot[0] = Settings.NoDart;
                                 MenuEntered = true;
-                            }*/
-                            Field.Run(emulator, uiControl);
+                            }
                             break;
+
                         case Emulator.GameState.BattleResult:
-                            if (StatsChanged) {
-                                BattleResult.Setup(emulator, LoDDict, uiControl);
-                                StatsChanged = false;
+                            BattleSetup = false;
+                            if (!ItemsChanged) {
+                                Field.ItemSetup(emulator, LoDDict);
+                                ItemsChanged = true;
+                            }
+                            break;
+
+                        case Emulator.GameState.ChangeDisc:
+                            ItemsChanged = false;
+                            AdditionsChanged = false;
+                            ShopChanged = false;
+                            BattleSetup = false;
+                            ShopFix = true;
+                            break;
+
+                        case Emulator.GameState.Shop:
+                            BattleSetup = false;
+                            if (!ItemsChanged) {
+                                Field.ItemSetup(emulator, LoDDict);
+                                ItemsChanged = true;
+                            }
+
+                            if (ShopFix) {
+                                ShopChanged = false;
+                                ShopFix = false;
+                                Shop.ContentChange(emulator, LoDDict);
+                            }
+
+                            if (!ShopChanged) {
+                                if (Settings.ShopChange) {
+                                    Shop.TableChange(emulator, LoDDict);
+                                }
+                                ShopChanged = true;
                             }
                             break;
                     }

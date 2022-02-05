@@ -125,6 +125,7 @@
     <Compile Include="Controller\Menu.cs" />
     <Compile Include="Controller\NoDart.cs" />
     <Compile Include="Controller\GreenButton.cs" />
+    <Compile Include="Controller\Shop.cs" />
     <Compile Include="DragoonModifier.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="IDraMod.cs" />

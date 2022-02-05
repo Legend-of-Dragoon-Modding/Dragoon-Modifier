@@ -51,6 +51,8 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
         public byte[] ItemBattleNames { get; private set; } = new byte[0];
         public byte[] ItemBattleDescriptions { get; private set; } = new byte[0];
 
+        public List<byte>[] Shop { get; private set; } = new List<byte>[45];
+
         public Scripts.IItemScript ItemScript { get; private set; } = new Scripts.DummyItemScript();
 
         internal LoDDictionary(Emulator.IEmulator emulator, UI.IUIControl uiControl, string cwd, string mod) {
@@ -71,6 +73,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
             GetItems(emulator, modPath);
             GetMonsters(modPath);
             GetCharacters(modPath);
+            GetShops(modPath);
         }
 
         private void ParseScripts(string path, Emulator.IEmulator emulator, UI.IUIControl uiControl) {
@@ -298,6 +301,33 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
         private void GetCharacters(string modPath) {
             for (byte i = 0; i < 9; i++) {
                 Character[i] = new Character(i, modPath);
+            }
+        }
+
+        private void GetShops(string modPath) {
+            string file = $"{modPath}\\Shops.tsv";
+            for (int i = 0; i < Shop.Length; i++) {
+                Shop[i] = new List<byte>();
+            }
+
+            try {
+                using (var shopData = new StreamReader(file)) {
+                    shopData.ReadLine(); // Skip first line
+                    for (int shop = 0; shop < 45; shop++) {
+                        var line = shopData.ReadLine();
+                        var values = line.Split('\t').ToArray();
+                        for (int item = 1; item < 17; item++) {
+                            if (TryItem2Num(values[item], out var itemID)) {
+                                if (itemID == 255) {
+                                    break;
+                                }
+                                Shop[shop].Add(itemID);
+                            }
+                        }
+                    }
+                }
+            } catch (IOException) {
+                Console.WriteLine($"[ERROR] {file} not found.");
             }
         }
     }

@@ -11,6 +11,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
         byte[] ItemBattleNames { get; }
         byte[] ItemBattleDescriptions { get; }
         Dictionary<ushort, Monster> Monster { get; }
+        List<byte>[] Shop { get; }
 
         Scripts.IItemScript ItemScript { get;}
 

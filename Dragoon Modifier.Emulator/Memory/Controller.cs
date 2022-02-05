@@ -29,6 +29,7 @@ namespace Dragoon_Modifier.Emulator.Memory {
         private readonly int _encounterID;
         private readonly int _monsterSize;
         private readonly int _uniqueMonsterSize;
+        private readonly int _discChangeCheck;
 
         public Collections.IAddress<uint> PartySlot { get; private set; }
         public byte Disc { get { return _emulator.ReadByte(_disc); } }
@@ -64,6 +65,7 @@ namespace Dragoon_Modifier.Emulator.Memory {
         public byte MonsterSize { get { return _emulator.ReadByte(_monsterSize); } }
         public byte UniqueMonsterSize { get { return _emulator.ReadByte(_uniqueMonsterSize); } }
         public GameState GameState { get { return GetGameState(); } }
+        public byte DiscGameCheck { get { return _emulator.ReadByte(_discChangeCheck); } }
 
 
         internal Controller(IEmulator emulator) {
@@ -137,6 +139,7 @@ namespace Dragoon_Modifier.Emulator.Memory {
             _uniqueMonsterSize = _emulator.GetAddress("UNIQUE_MONSTER_SIZE");
             var encounterMapAddr = 0xF64AC; // TODO
             var encounterTableAddr = 0xF74C4; // TODO
+            _discChangeCheck = 0x4DD30;
 
         }
 
@@ -145,6 +148,10 @@ namespace Dragoon_Modifier.Emulator.Memory {
                 case 0:
                     if (BattleValue == 41215) {
                         return GameState.Battle;
+                    }
+
+                    if (DiscGameCheck == 1) {
+                        return GameState.ChangeDisc;
                     }
 
                     var overworldSegment = OverworldSegment; // 0 on field, or when behind Seles (unaccessible part of overworld map)

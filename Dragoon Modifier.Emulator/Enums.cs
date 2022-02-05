@@ -25,6 +25,7 @@ namespace Dragoon_Modifier.Emulator {
         ReplacePrompt = 6,
         BattleResult = 7,
         Overworld = 8,
+        ChangeDisc = 9,
         None = 255
     };
 
