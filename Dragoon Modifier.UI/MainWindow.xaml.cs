@@ -328,6 +328,49 @@ namespace Dragoon_Modifier.UI {
                 case "btnAspectRatio":
                     ToggleButton(ref btn, ref DraMod.Settings.AspectRatio);
                     break;
+                case "btnBattleUI":
+                    ToggleButton(ref btn, ref DraMod.Settings.RGBBattleUI);
+
+                    if (DraMod.Settings.RGBBattleUI) {
+                        InputWindow RGBBattleWindow = new InputWindow("RGB Battle UI Window");
+                        RadioButton ColourModeSingle = new RadioButton();
+                        RadioButton ColourModeCharacter = new RadioButton();
+                        RadioButton ColourModeCycle = new RadioButton();
+                        ColorPicker ColourPicker = new ColorPicker();
+
+                        ColourPicker.IsEnabled = false;
+                        ColourModeSingle.IsChecked = true;
+                        ColourModeSingle.Content = "Single";
+                        ColourModeCharacter.Content = "Character";
+                        ColourModeCycle.Content = "Cycle";
+
+                        ColourModeSingle.Checked += new RoutedEventHandler(delegate (Object o, RoutedEventArgs r) {
+                            ColourPicker.IsEnabled = true;
+                        });
+
+                        ColourModeCharacter.Checked += new RoutedEventHandler(delegate (Object o, RoutedEventArgs r) {
+                            ColourPicker.IsEnabled = false;
+                        });
+
+                        ColourModeCycle.Checked += new RoutedEventHandler(delegate (Object o, RoutedEventArgs r) {
+                            ColourPicker.IsEnabled = false;
+                        });
+
+                        ColourPicker.SelectedColor = Color.FromRgb(255, 0, 0);
+                        ColourPicker.IsColorPalettesTabVisible = false;
+                        ColourPicker.SelectedColorChanged += new RoutedPropertyChangedEventHandler<Color?>(delegate (Object o, RoutedPropertyChangedEventArgs<Color?> c) {
+                            Color newColour = (Color) ColourPicker.SelectedColor;
+                            newColour.A = 255;
+                            ColourPicker.SelectedColor = (Color?) newColour;
+                        });
+
+                        RGBBattleWindow.AddObject(ColourPicker);
+                        RGBBattleWindow.AddObject(ColourModeCycle);
+                        RGBBattleWindow.AddObject(ColourModeCharacter);
+                        RGBBattleWindow.AddObject(ColourModeSingle);
+                        RGBBattleWindow.ShowDialog();
+                    }
+                    break;
                 //Field & Battle
                 case "btnSoloMode":
                     ToggleButton(ref btn, ref DraMod.Settings.SoloMode);
@@ -498,6 +541,11 @@ namespace Dragoon_Modifier.UI {
                     DraMod.Settings.SPDMulti = slider.Value;
                     break;
             }
+        }
+
+        private void miLog_Click(object sender, RoutedEventArgs e) {
+            rdLog.Height = miLog.Header.Equals("Expand Log") ? new GridLength(9999, GridUnitType.Star) : new GridLength(2, GridUnitType.Star);
+            miLog.Header = miLog.Header.Equals("Expand Log") ? "Collapse Log" : "Expand Log";
         }
     }
 }

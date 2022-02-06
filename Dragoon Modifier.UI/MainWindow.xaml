@@ -1383,6 +1383,7 @@
                                     <Button x:Name="btnEarlyAdditions" Grid.Column="2" Grid.Row="2" Content="Early Additions" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                                     <Button x:Name="btnAdditionLevel" Grid.Column="0" Grid.Row="3" Content="Addition Level Up in Battle" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                                     <Button x:Name="btnSaveHP" Grid.Column="1" Grid.Row="3" Content="Save HP > 9999" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                                    <Button x:Name="btnBattleUI" Grid.Column="2" Grid.Row="3" Content="RGB Battle UI" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                                     <Button x:Name="btnAspectRatio" Grid.Column="0" Grid.Row="4" Content="Aspect Ratio" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                                     <ComboBox x:Name="cboAspectRatio" Grid.Column="1" Grid.Row="4" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" Foreground="Black" SelectionChanged="ComboBox"/>
                                     <ComboBox x:Name="cboCamera" Grid.Column="3" Grid.Row="4" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" Foreground="Black" SelectionChanged="ComboBox"/>
@@ -1712,7 +1713,7 @@
                                 </MenuItem>
                                 <MenuItem x:Name="miVersion" Background="#FFB6B6B6" Foreground="White" Header="Version"/>
                             </MenuItem>
-                            <MenuItem x:Name="miLog" Header="Expand Log" Background="#FFB6B6B6" Foreground="White"/>
+                            <MenuItem x:Name="miLog" Header="Expand Log" Background="#FFB6B6B6" Foreground="White" Click="miLog_Click"/>
                         </Menu>
                         <Grid>
                             <Grid.RowDefinitions>

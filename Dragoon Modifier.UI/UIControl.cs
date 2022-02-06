@@ -52,7 +52,7 @@ namespace Dragoon_Modifier.UI {
 
         public void ResetBattle() {
             Application.Current.Dispatcher.Invoke(() => {
-                for (int i = 0; i < 5; i++) {
+                for (int i = 0; i < 6; i++) {
                     _monsterDisplay[i, 0].Text = "";
                     _monsterDisplay[i, 1].Text = "";
                     _monsterDisplay[i, 2].Text = "";

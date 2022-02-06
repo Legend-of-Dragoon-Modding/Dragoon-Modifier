@@ -11,13 +11,11 @@ namespace Dragoon_Modifier.DraMod.Controller {
         private static readonly ushort[] shopMaps = new ushort[] { 16, 23, 83, 84, 122, 145, 175, 180, 193, 204, 211, 214, 247,
         287, 309, 329, 332, 349, 357, 384, 435, 479, 515, 530, 564, 619, 624}; // Some maps missing?? 
 
+        private static bool EarlyAdditionsSet = false;
+
         internal static void Setup(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict, UI.IUIControl uiControl) {
             uiControl.ResetBattle();
-
-            if (Settings.EarlyAdditions) {
-                EarlyAdditions(emulator);
-            }
-
+            EarlyAdditionsSet = false;
             LoDDict.ItemScript.FieldSetup(emulator, uiControl);
 
         }
@@ -73,6 +71,16 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             if (Settings.AlwaysAddSoloPartyMembers) {
                 AddSoloPartyMembers(emulator);
+            }
+
+            if (Settings.EarlyAdditions && !EarlyAdditionsSet) {
+                EarlyAdditions(emulator);
+                EarlyAdditionsSet = true;
+            }
+
+            if (EarlyAdditionsSet && !Settings.EarlyAdditions) {
+                TurnOffEarlyAdditions(emulator);
+                EarlyAdditionsSet = false;
             }
 
             Settings.NoDart = (byte) emulator.Memory.PartySlot[0];
@@ -145,26 +153,22 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 emulator.ReadByte(address2 + 0x5) >= 80) {
                 emulator.WriteByte(address + 0xE * 6, 29); //Blazying Dynamo
             }
-            //Lavitz
+            //Lavitz & Albert
             emulator.WriteByte(address + 0xE * 2 + 0x70, 10); //Rod Typhoon
             emulator.WriteByte(address + 0xE * 3 + 0x70, 16); //Gust of Wind Dance
             emulator.WriteByte(address + 0xE * 4 + 0x70, 60); //Flower Storm
-            if (emulator.ReadByte(address2 + 0x2C) >= 80 &&
+
+            if ((emulator.ReadByte(address2 + 0x2C) >= 80 &&
                 emulator.ReadByte(address2 + 0x2C + 0x1) >= 80 &&
                 emulator.ReadByte(address2 + 0x2C + 0x2) >= 80 &&
-                emulator.ReadByte(address2 + 0x2C + 0x3) >= 80) {
-                emulator.WriteByte(address + 0xE * 4 + 0x70, 21); //Flower Storm
-            }
-            //Albert
-            emulator.WriteByte(address + 0xE * 2 + 0x70, 10); //Rod Typhoon
-            emulator.WriteByte(address + 0xE * 3 + 0x70, 16); //Gust of Wind Dance
-            emulator.WriteByte(address + 0xE * 4 + 0x70, 60); //Flower Storm
-            if (emulator.ReadByte(address2 + 0xDC) >= 80 &&
+                emulator.ReadByte(address2 + 0x2C + 0x3) >= 80) || 
+                (emulator.ReadByte(address2 + 0xDC) >= 80 &&
                 emulator.ReadByte(address2 + 0xDC + 0x1) >= 80 &&
                 emulator.ReadByte(address2 + 0xDC + 0x2) >= 80 &&
-                emulator.ReadByte(address2 + 0xDC + 0x3) >= 80) {
+                emulator.ReadByte(address2 + 0xDC + 0x3) >= 80)) {
                 emulator.WriteByte(address + 0xE * 4 + 0x70, 21); //Flower Storm
             }
+
             //Rose
             emulator.WriteByte(address + 0xE * 1 + 0xC4, 8); //More & More
             emulator.WriteByte(address + 0xE * 2 + 0xC4, 15); //Hard Blade

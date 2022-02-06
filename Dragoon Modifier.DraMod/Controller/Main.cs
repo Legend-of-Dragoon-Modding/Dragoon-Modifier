@@ -37,6 +37,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                             BattleSetup = false;
 
                             if (!ShopChanged) {
+                                uiControl.ResetBattle();
                                 if (Settings.ShopChange) {
                                     Shop.TableChange(emulator, LoDDict);
                                 }

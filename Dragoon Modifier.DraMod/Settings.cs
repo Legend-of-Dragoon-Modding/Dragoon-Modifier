@@ -36,6 +36,7 @@ namespace Dragoon_Modifier.DraMod {
         public static bool AdditionLevel = false;
         public static bool SaveHP = false;
         public static bool AspectRatio = false;
+        public static bool RGBBattleUI = false;
         public static byte NoDart = 255;
         public static byte FlowerStorm = 0;
         public static byte AspectRatioMode = 0;
