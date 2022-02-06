@@ -18,7 +18,7 @@ namespace Dragoon_Modifier.Emulator.Memory.Battle {
         public uint MonsterPoint { get; private set; }
         public ushort EncounterID { get; private set; }
         public ushort[] MonsterID { get; private set; }
-        public ushort[] UniqueMonsterID { get; private set; }
+        public Collections.IAddress<ushort> UniqueMonsterID { get; }
         public Monster[] MonsterTable { get; private set; }
         public Character[] CharacterTable { get; private set; }
         public int BattleOffset { get; private set; }
@@ -37,11 +37,7 @@ namespace Dragoon_Modifier.Emulator.Memory.Battle {
             EncounterID = _emulator.Memory.EncounterID;
             var monsterCount = _emulator.Memory.MonsterSize;
             var uniqueMonsterSize = _emulator.Memory.UniqueMonsterSize;
-            UniqueMonsterID = new ushort[uniqueMonsterSize];
-            for (int i = 0; i < UniqueMonsterID.Length; i++) {
-                // TODO
-                UniqueMonsterID[i] = _emulator.ReadUShort("UNIQUE_SLOT", (i * 0x1A8));
-            }
+            UniqueMonsterID = Factory.AddressCollection<ushort>(_emulator, _emulator.ReadUShort("UNIQUE_SLOT"), 0x1A8, uniqueMonsterSize);
             MonsterTable = new Monster[monsterCount];
             MonsterID = new ushort[monsterCount];
             for (int i = 0; i < MonsterTable.Length; i++) {

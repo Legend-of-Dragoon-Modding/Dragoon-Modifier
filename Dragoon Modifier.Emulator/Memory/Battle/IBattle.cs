@@ -16,7 +16,7 @@ namespace Dragoon_Modifier.Emulator.Memory.Battle {
         ushort[] MonsterID { get; }
         uint MonsterPoint { get; }
         Monster[] MonsterTable { get; }
-        ushort[] UniqueMonsterID { get; }
+        Collections.IAddress<ushort> UniqueMonsterID { get; }
         byte ItemUsed { get; set; }
         ushort DamageCap { get; set; }
     }
