@@ -74,9 +74,16 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Factory.cs" />
+    <Compile Include="InputWindow.xaml.cs">
+      <DependentUpon>InputWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TextBoxOutput.cs" />
     <Compile Include="UIControl.cs" />
     <Compile Include="UniformTabPanel.cs" />
+    <Page Include="InputWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

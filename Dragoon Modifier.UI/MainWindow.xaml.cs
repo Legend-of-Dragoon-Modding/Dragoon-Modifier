@@ -75,12 +75,13 @@ namespace Dragoon_Modifier.UI {
             cboSwitch2.SelectedIndex = 0;
             cboKillBGM.SelectedIndex = 1;
 
-            TextBlock[,] monsterLables = new TextBlock[5, 6] {
-                {lblEnemy1Name,  lblEnemy1HP, lblEnemy1ATK, lblEnemy1DEF, lblEnemy1SPD, lblEnemy1TRN},
-                {lblEnemy2Name,  lblEnemy2HP, lblEnemy2ATK, lblEnemy2DEF, lblEnemy2SPD, lblEnemy2TRN},
-                {lblEnemy3Name,  lblEnemy3HP, lblEnemy3ATK, lblEnemy3DEF, lblEnemy3SPD, lblEnemy3TRN},
-                {lblEnemy4Name,  lblEnemy4HP, lblEnemy4ATK, lblEnemy4DEF, lblEnemy4SPD, lblEnemy4TRN},
-                {lblEnemy5Name,  lblEnemy5HP, lblEnemy5ATK, lblEnemy5DEF, lblEnemy5SPD, lblEnemy5TRN}
+            TextBlock[,] monsterLables = new TextBlock[6, 6] {
+                {lblEnemy1Name, lblEnemy1HP, lblEnemy1ATK, lblEnemy1DEF, lblEnemy1SPD, lblEnemy1TRN},
+                {lblEnemy2Name, lblEnemy2HP, lblEnemy2ATK, lblEnemy2DEF, lblEnemy2SPD, lblEnemy2TRN},
+                {lblEnemy3Name, lblEnemy3HP, lblEnemy3ATK, lblEnemy3DEF, lblEnemy3SPD, lblEnemy3TRN},
+                {lblEnemy4Name, lblEnemy4HP, lblEnemy4ATK, lblEnemy4DEF, lblEnemy4SPD, lblEnemy4TRN},
+                {lblEnemy5Name, lblEnemy5HP, lblEnemy5ATK, lblEnemy5DEF, lblEnemy5SPD, lblEnemy5TRN},
+                {lblEnemy6Name, lblEnemy6HP, lblEnemy6ATK, lblEnemy6DEF, lblEnemy6SPD, lblEnemy6TRN}
             };
             TextBlock[,] characterLables = new TextBlock[3, 9] {
                 { lblCharacter1Name, lblCharacter1HMP, lblCharacter1ATK, lblCharacter1DEF, lblCharacter1VHIT, lblCharacter1DATK, lblCharacter1DDEF, lblCharacter1SPD, lblCharacter1TRN },
@@ -145,6 +146,126 @@ namespace Dragoon_Modifier.UI {
                 miAttach.Header = "Detach";
                 UIControl.WriteGLog("Game Log");
                 UIControl.WritePLog("Program Log");
+            }
+        }
+
+        private void miModOptions_Click(object sender, RoutedEventArgs e) {
+            if (!DraMod.Settings.Difficulty.Equals("Normal")) {
+                UIControl.WritePLog("You can't change preset options while using a built-in preset.");
+            } else {
+                InputWindow openModWindow = new InputWindow("Mod Options");
+                ComboBox mod = new ComboBox();
+                CheckBox monsterStat = new CheckBox();
+                CheckBox monsterDrop = new CheckBox();
+                CheckBox monsterExpGold = new CheckBox();
+                CheckBox characterStat = new CheckBox();
+                CheckBox addition = new CheckBox();
+                CheckBox dragoonStats = new CheckBox();
+                CheckBox dragoonSpell = new CheckBox();
+                CheckBox dragoonAddition = new CheckBox();
+                CheckBox dragoonDescription = new CheckBox();
+                CheckBox itemStat = new CheckBox();
+                CheckBox itemIcon = new CheckBox();
+                CheckBox itemNameDescription = new CheckBox();
+                CheckBox shop = new CheckBox();
+
+                monsterStat.Content = "Monster Stats";
+                if (DraMod.Settings.MonsterStatChange)
+                    monsterStat.IsChecked = true;
+
+                monsterDrop.Content = "Drop";
+                if (DraMod.Settings.MonsterDropChange)
+                    monsterDrop.IsChecked = true;
+
+                monsterExpGold.Content = "Exp + Gold";
+                if (DraMod.Settings.MonsterExpGoldChange)
+                    monsterExpGold.IsChecked = true;
+
+                characterStat.Content = "Character Stats";
+                if (DraMod.Settings.CharacterStatChange)
+                    characterStat.IsChecked = true;
+
+                addition.Content = "Addition";
+                if (DraMod.Settings.AdditionChange)
+                    addition.IsChecked = true;
+
+                dragoonStats.Content = "Dragoon Stats";
+                if (DraMod.Settings.DragoonStatChange)
+                    dragoonStats.IsChecked = true;
+
+                dragoonSpell.Content = "Dragoon Spells";
+                if (DraMod.Settings.DragoonSpellChange)
+                    dragoonSpell.IsChecked = true;
+
+                dragoonAddition.Content = "Dragoon Additions";
+                if (DraMod.Settings.DragoonAdditionChange)
+                    dragoonAddition.IsChecked = true;
+
+                dragoonDescription.Content = "Dragoon Descriptions";
+                if (DraMod.Settings.DragoonDescriptionChange)
+                    dragoonDescription.IsChecked = true;
+
+                itemStat.Content = "Item Stats";
+                if (DraMod.Settings.ItemStatChange)
+                    itemStat.IsChecked = true;
+
+                itemIcon.Content = "Item Icons";
+                if (DraMod.Settings.ItemIconChange)
+                    itemIcon.IsChecked = true;
+
+                itemNameDescription.Content = "Item Names + Descriptions";
+                if (DraMod.Settings.ItemNameDescChange)
+                    itemNameDescription.IsChecked = true;
+
+                shop.Content = "Shop";
+                if (DraMod.Settings.ShopChange)
+                    shop.IsChecked = true;
+
+                string[] dirs = Directory.GetDirectories(AppDomain.CurrentDomain.BaseDirectory + "Mods\\");
+                foreach (string dir in dirs) {
+                    mod.Items.Add(new DirectoryInfo(dir).Name);
+                }
+
+                mod.SelectedValue = DraMod.Settings.Mod;
+
+                openModWindow.AddObject(mod);
+                openModWindow.AddTextBlock("Database");
+                openModWindow.AddObject(shop);
+                openModWindow.AddObject(itemNameDescription);
+                openModWindow.AddObject(itemIcon);
+                openModWindow.AddObject(itemStat);
+                openModWindow.AddObject(dragoonDescription);
+                openModWindow.AddObject(dragoonAddition);
+                openModWindow.AddObject(dragoonSpell);
+                openModWindow.AddObject(dragoonStats);
+                openModWindow.AddObject(addition);
+                openModWindow.AddObject(characterStat);
+                openModWindow.AddObject(monsterExpGold);
+                openModWindow.AddObject(monsterDrop);
+                openModWindow.AddObject(monsterStat);
+                openModWindow.AddTextBlock("Please select the mods you want to turn on or off.");
+                openModWindow.ShowDialog();
+
+                DraMod.Settings.MonsterStatChange = (bool) monsterStat.IsChecked;
+                DraMod.Settings.MonsterDropChange = (bool) monsterDrop.IsChecked;
+                DraMod.Settings.MonsterExpGoldChange = (bool) monsterExpGold.IsChecked;
+                DraMod.Settings.CharacterStatChange = (bool) characterStat.IsChecked;
+                DraMod.Settings.AdditionChange = (bool) addition.IsChecked;
+                DraMod.Settings.DragoonStatChange = (bool) dragoonStats.IsChecked;
+                DraMod.Settings.DragoonSpellChange = (bool) dragoonSpell.IsChecked;
+                DraMod.Settings.DragoonAdditionChange = (bool) dragoonAddition.IsChecked;
+                DraMod.Settings.DragoonDescriptionChange = (bool) dragoonDescription.IsChecked;
+                DraMod.Settings.ItemStatChange = (bool) itemStat.IsChecked;
+                DraMod.Settings.ItemIconChange = (bool) itemIcon.IsChecked;
+                DraMod.Settings.ItemNameDescChange = (bool) itemNameDescription.IsChecked;
+                DraMod.Settings.ShopChange = (bool) shop.IsChecked;
+
+                if (DraMod.Settings.Mod != (string) mod.SelectedValue) {
+                    DraMod.Settings.Mod = (string) mod.SelectedValue;
+                    DragoonModifier.ChangeLoDDirectory(DraMod.Settings.Mod);
+                }
+
+                UIControl.WritePLog("Mod directory: " + DraMod.Settings.Mod);
             }
         }
 

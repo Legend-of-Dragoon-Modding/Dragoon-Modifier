@@ -277,6 +277,20 @@ namespace Dragoon_Modifier.DraMod.Controller {
                     MonsterStatChange(emulator, LoDDict, slot);
                 }
             }
+
+            if (Settings.MonsterDropChange) {
+                Console.WriteLine("Changing monster drops...");
+                for (int slot = 0; slot < emulator.Memory.UniqueMonsterSize; slot++) {
+                    MonsterDropChanges(emulator, LoDDict, slot);
+                }
+            }
+
+            if (Settings.MonsterExpGoldChange) {
+                Console.WriteLine("Changing monster exp and gold Rewards...");
+                for (int slot = 0; slot < emulator.Memory.UniqueMonsterSize; slot++) {
+                    MonsterExpGoldChange(emulator, LoDDict, slot);
+                }
+            }
         }
 
         private static void MonsterStatChange(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict, int slot) {
@@ -315,6 +329,18 @@ namespace Dragoon_Modifier.DraMod.Controller {
             monster.ElementalResistance = LoDDict.Monster[id].ElementalResistance;
             monster.StatusResist = LoDDict.Monster[id].StatusResist;
             monster.SpecialEffect = LoDDict.Monster[id].SpecialEffect;
+        }
+
+        private static void MonsterDropChanges(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict, int slot) {
+            ushort id = emulator.Battle.UniqueMonsterID[slot];
+            emulator.WriteByte("MONSTER_REWARDS", (byte) LoDDict.Monster[id].DropChance, 0x4 + slot * 0x1A8);
+            emulator.WriteByte("MONSTER_REWARDS", (byte) LoDDict.Monster[id].DropItem, 0x5 + slot * 0x1A8);
+        }
+
+        private static void MonsterExpGoldChange(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict, int slot) {
+            ushort id = emulator.Battle.UniqueMonsterID[slot];
+            emulator.WriteByte("MONSTER_REWARDS", (byte) LoDDict.Monster[id].EXP, slot * 0x1A8);
+            emulator.WriteByte("MONSTER_REWARDS", (byte) LoDDict.Monster[id].Gold, 0x2 + slot * 0x1A8);
         }
 
         private static void CharacterChanges(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict, UI.IUIControl uiControl) {

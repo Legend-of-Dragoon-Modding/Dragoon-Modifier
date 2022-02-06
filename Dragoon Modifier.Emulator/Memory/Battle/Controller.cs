@@ -40,6 +40,7 @@ namespace Dragoon_Modifier.Emulator.Memory.Battle {
             UniqueMonsterID = new ushort[uniqueMonsterSize];
             for (int i = 0; i < UniqueMonsterID.Length; i++) {
                 // TODO
+                UniqueMonsterID[i] = _emulator.ReadUShort("UNIQUE_SLOT", (i * 0x1A8));
             }
             MonsterTable = new Monster[monsterCount];
             MonsterID = new ushort[monsterCount];

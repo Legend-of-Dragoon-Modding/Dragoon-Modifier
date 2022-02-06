@@ -21,6 +21,9 @@ namespace Dragoon_Modifier.DraMod.Controller {
                     switch (emulator.Memory.GameState) {
                         case Emulator.GameState.Battle:
                             if (!BattleSetup) {
+                                if (Settings.NoDart > 0) {
+                                    emulator.Memory.PartySlot[0] = 0;
+                                }
                                 Battle.Setup(emulator, LoDDict, uiControl);
                                 BattleSetup = true;
                                 AdditionsChanged = false;

@@ -75,6 +75,8 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 AddSoloPartyMembers(emulator);
             }
 
+            Settings.NoDart = (byte) emulator.Memory.PartySlot[0];
+
             uiControl.UpdateField(emulator.Memory.BattleValue, emulator.Memory.EncounterID, emulator.Memory.MapID);
         }
 

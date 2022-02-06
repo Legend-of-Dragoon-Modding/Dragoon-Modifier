@@ -1,0 +1,22 @@
+﻿<mah:MetroWindow x:Class="Dragoon_Modifier.UI.InputWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Dragoon_Modifier.UI"
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        mc:Ignorable="d"
+        ShowIconOnTitleBar="True"
+        ShowTitleBar="True"
+        Title="InputWindow" Width="400" MinWidth="400"
+        ResizeMode="NoResize"
+        SizeToContent="WidthAndHeight"
+        FontSize="18">
+    <Grid>
+        <DockPanel>
+            <StackPanel x:Name="pnlMain">
+                <Button x:Name="btnOk" Content="Ok" Width="Auto" Click="btnOk_Click" IsDefault="True"/>
+            </StackPanel>
+        </DockPanel>
+    </Grid>
+</mah:MetroWindow>

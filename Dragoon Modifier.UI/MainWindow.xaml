@@ -404,7 +404,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="30*"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="50*"/>
+                        <RowDefinition Height="40*"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="5*"/>
                         <RowDefinition Height="Auto"/>
@@ -429,6 +429,8 @@
                     <DockPanel Grid.Row="2" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" Grid.ColumnSpan="2" >
                         <Grid HorizontalAlignment="Stretch" Margin="0"  >
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="17*"/>
+                                <RowDefinition Height="3*"/>
                                 <RowDefinition Height="17*"/>
                                 <RowDefinition Height="3*"/>
                                 <RowDefinition Height="17*"/>
@@ -478,6 +480,12 @@
                             <Border Grid.Row="8" Grid.Column="3" Background="#FF8ADAA4" />
                             <Border Grid.Row="8" Grid.Column="4" Background="#FFE3A8FF" />
                             <Border Grid.Row="8" Grid.Column="5" Background="#FFA8A8FF" />
+                            <Border Grid.Row="10" Grid.Column="0" Background="#FFA8D3FF" />
+                            <Border Grid.Row="10" Grid.Column="1" Background="#FFFFA8A8" />
+                            <Border Grid.Row="10" Grid.Column="2" Background="#FFFFC8A8" />
+                            <Border Grid.Row="10" Grid.Column="3" Background="#FF8ADAA4" />
+                            <Border Grid.Row="10" Grid.Column="4" Background="#FFE3A8FF" />
+                            <Border Grid.Row="10" Grid.Column="5" Background="#FFA8A8FF" />
                             <TextBlock x:Name="lblEnemy1Name" Grid.Row="0" Grid.Column="0" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" />
                             <DockPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
                                 <Grid HorizontalAlignment="Center" Margin="0"  >
@@ -693,6 +701,49 @@
                             </DockPanel>
                             <TextBlock x:Name="lblEnemy5TRN" Grid.Row="8" Grid.Column="5" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#Segoe WP Semibold"/>
 
+                            <TextBlock x:Name="lblEnemy6Name" Grid.Row="10" Grid.Column="0" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" />
+                            <DockPanel Grid.Row="10" Grid.Column="1" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
+                                <Grid HorizontalAlignment="Center" Margin="0"  >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="&#xe0cb;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblEnemy6HP" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
+                                </Grid>
+                            </DockPanel>
+                            <DockPanel Grid.Row="10" Grid.Column="2" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
+                                <Grid HorizontalAlignment="Center" Margin="0"  >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="&#xe0bf;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblEnemy6ATK" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
+                                </Grid>
+                            </DockPanel>
+                            <DockPanel Grid.Row="10" Grid.Column="3" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
+                                <Grid HorizontalAlignment="Center" Margin="0"  >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="&#xe2bd;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblEnemy6DEF" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
+                                </Grid>
+                            </DockPanel>
+                            <DockPanel Grid.Row="10" Grid.Column="4" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
+                                <Grid HorizontalAlignment="Center" Margin="0"  >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="&#xe002;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblEnemy6SPD" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
+                                </Grid>
+                            </DockPanel>
+                            <TextBlock x:Name="lblEnemy6TRN" Grid.Row="10" Grid.Column="5" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#Segoe WP Semibold"/>
+
                             <Border Grid.Row="1" Grid.Column="0" Background="#FFA8D3FF" />
                             <Border Grid.Row="1" Grid.Column="1" Background="#FFFFA8A8" />
                             <Border Grid.Row="1" Grid.Column="2" Background="#FFFFC8A8" />
@@ -754,11 +805,18 @@
                             <Border Grid.Row="9" Grid.Column="4" Background="#FFB6B6B6" />
                             <Border Grid.Row="9" Grid.Column="5" Background="#FFB6B6B6" />
                             <Border Grid.Row="3" Grid.Column="1" Background="#FFB6B6B6" />
+                            <Border Grid.Row="11" Grid.Column="0" Background="#FFB6B6B6" />
+                            <Border Grid.Row="11" Grid.Column="1" Background="#FFB6B6B6" />
+                            <Border Grid.Row="11" Grid.Column="2" Background="#FFB6B6B6" />
+                            <Border Grid.Row="11" Grid.Column="3" Background="#FFB6B6B6" />
+                            <Border Grid.Row="11" Grid.Column="4" Background="#FFB6B6B6" />
+                            <Border Grid.Row="11" Grid.Column="5" Background="#FFB6B6B6" />
                             <ProgressBar x:Name="pgrEATBM1" Grid.Row="1" Grid.ColumnSpan="6" Value="0" Maximum="7000" Background="{x:Null}" BorderBrush="{x:Null}" />
                             <ProgressBar x:Name="pgrEATBM2" Grid.Row="3" Grid.ColumnSpan="6" Value="0" Maximum="8000" Background="{x:Null}" BorderBrush="{x:Null}" />
                             <ProgressBar x:Name="pgrEATBM3" Grid.Row="5" Grid.ColumnSpan="6" Value="0" Maximum="9000" Background="{x:Null}" BorderBrush="{x:Null}" />
                             <ProgressBar x:Name="pgrEATBM4" Grid.Row="7" Grid.ColumnSpan="6" Value="0" Maximum="10000" Background="{x:Null}" BorderBrush="{x:Null}" />
                             <ProgressBar x:Name="pgrEATBM5" Grid.Row="9" Grid.ColumnSpan="6" Value="0" Maximum="11000" Background="{x:Null}" BorderBrush="{x:Null}" />
+                            <ProgressBar x:Name="pgrEATBM6" Grid.Row="11" Grid.ColumnSpan="6" Value="0" Maximum="12000" Background="{x:Null}" BorderBrush="{x:Null}" />
 
 
                         </Grid>
@@ -1637,7 +1695,7 @@
                                     <MenuItem Header="15" Background="#FFB6B6B6" Foreground="White" IsCheckable="True"/>
                                 </MenuItem>
                                 <MenuItem x:Name="miOpenPreset" Header="Open Preset on Open" Background="#FFB6B6B6" Foreground="White"/>
-                                <MenuItem x:Name="miModOptions" Header="Mod Options" Background="#FFB6B6B6" Foreground="White"/>
+                                <MenuItem x:Name="miModOptions" Header="Mod Options" Background="#FFB6B6B6" Foreground="White" Click="miModOptions_Click"/>
                                 <MenuItem x:Name="miPresetHotkeys" Header="Preset Hotkeys" Background="#FFB6B6B6" Foreground="White"/>
                                 <MenuItem x:Name="miEatbSound" Header="EATB Beeps" Background="#FFB6B6B6" Foreground="White"/>
                                 <MenuItem x:Name="miManualOffset" Header="Manual Emulator Offset Entry" Background="#FFB6B6B6" Foreground="White"/>
