@@ -113,11 +113,11 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 special_effect |= 1;
             }
 
-            if (battleCharacterTable.Accessory == 157) { // Wargod Sash
+            if (battleCharacterTable.Accessory == 156) { // Wargod Sash
                 special_effect |= 2;
             }
 
-            if (battleCharacterTable.Accessory == 158) { // Ultimate Wargod
+            if (battleCharacterTable.Accessory == 157) { // Ultimate Wargod
                 special_effect |= 6;
             }
 

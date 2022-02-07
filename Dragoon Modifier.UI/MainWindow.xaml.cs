@@ -338,7 +338,6 @@ namespace Dragoon_Modifier.UI {
                         RadioButton ColourModeCycle = new RadioButton();
                         ColorPicker ColourPicker = new ColorPicker();
 
-                        ColourPicker.IsEnabled = false;
                         ColourModeSingle.IsChecked = true;
                         ColourModeSingle.Content = "Single";
                         ColourModeCharacter.Content = "Character";

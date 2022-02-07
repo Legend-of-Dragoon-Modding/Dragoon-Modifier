@@ -584,7 +584,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
         private static void MonsterHPNames(Emulator.IEmulator emulator) {
             for (int i = 0; i < emulator.Memory.MonsterSize; i++) {
                 int lastX = 0;
-                long hpName = emulator.GetAddress("MONSTERS_NAMES") + (i * 0x2C);
+                long hpName = emulator.GetAddress("MONSTER_NAMES") + (i * 0x2C);
                 char[] hpArray = emulator.Battle.MonsterTable[i].HP.ToString().ToCharArray();
                 /*if (ultimateHP[i] > 0) {
                     hpArray = ultimateHP[i].ToString().ToCharArray();
