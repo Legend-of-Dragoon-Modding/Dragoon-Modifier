@@ -333,14 +333,14 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
         private static void MonsterDropChanges(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict, int slot) {
             ushort id = emulator.Battle.UniqueMonsterID[slot];
-            emulator.WriteByte("MONSTER_REWARDS", (byte) LoDDict.Monster[id].DropChance, 0x4 + slot * 0x1A8);
-            emulator.WriteByte("MONSTER_REWARDS", (byte) LoDDict.Monster[id].DropItem, 0x5 + slot * 0x1A8);
+            emulator.Battle.RewardsDropChance[slot] = LoDDict.Monster[id].DropChance;
+            emulator.Battle.RewardsItemDrop[slot] = LoDDict.Monster[id].DropItem;
         }
 
         private static void MonsterExpGoldChange(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict, int slot) {
             ushort id = emulator.Battle.UniqueMonsterID[slot];
-            emulator.WriteByte("MONSTER_REWARDS", (byte) LoDDict.Monster[id].EXP, slot * 0x1A8);
-            emulator.WriteByte("MONSTER_REWARDS", (byte) LoDDict.Monster[id].Gold, 0x2 + slot * 0x1A8);
+            emulator.Battle.RewardsExp[slot] = LoDDict.Monster[id].EXP;
+            emulator.Battle.RewardsGold[slot] = LoDDict.Monster[id].Gold;
         }
 
         private static void CharacterChanges(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict, UI.IUIControl uiControl) {

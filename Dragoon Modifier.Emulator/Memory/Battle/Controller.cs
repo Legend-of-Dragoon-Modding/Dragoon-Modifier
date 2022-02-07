@@ -18,7 +18,11 @@ namespace Dragoon_Modifier.Emulator.Memory.Battle {
         public uint MonsterPoint { get; private set; }
         public ushort EncounterID { get; private set; }
         public ushort[] MonsterID { get; private set; }
-        public Collections.IAddress<ushort> UniqueMonsterID { get; }
+        public Collections.IAddress<ushort> UniqueMonsterID { get; private set; }
+        public Collections.IAddress<ushort> RewardsExp { get; private set; }
+        public Collections.IAddress<ushort> RewardsGold { get; private set; }
+        public Collections.IAddress<byte> RewardsItemDrop { get; private set; }
+        public Collections.IAddress<byte> RewardsDropChance { get; private set; }
         public Monster[] MonsterTable { get; private set; }
         public Character[] CharacterTable { get; private set; }
         public int BattleOffset { get; private set; }
@@ -38,6 +42,11 @@ namespace Dragoon_Modifier.Emulator.Memory.Battle {
             var monsterCount = _emulator.Memory.MonsterSize;
             var uniqueMonsterSize = _emulator.Memory.UniqueMonsterSize;
             UniqueMonsterID = Factory.AddressCollection<ushort>(_emulator, _emulator.ReadUShort("UNIQUE_SLOT"), 0x1A8, uniqueMonsterSize);
+            var rewardsAddress = _emulator.GetAddress("MONSTER_REWARDS");
+            RewardsExp = Factory.AddressCollection<ushort>(_emulator, rewardsAddress, 0x1A8, uniqueMonsterSize);
+            RewardsGold = Factory.AddressCollection<ushort>(_emulator, rewardsAddress + 2, 0x1A8, uniqueMonsterSize);
+            RewardsDropChance = Factory.AddressCollection<byte>(_emulator, rewardsAddress + 4, 0x1A8, uniqueMonsterSize);
+            RewardsItemDrop = Factory.AddressCollection<byte>(_emulator, rewardsAddress + 5, 0x1A8, uniqueMonsterSize);
             MonsterTable = new Monster[monsterCount];
             MonsterID = new ushort[monsterCount];
             for (int i = 0; i < MonsterTable.Length; i++) {
