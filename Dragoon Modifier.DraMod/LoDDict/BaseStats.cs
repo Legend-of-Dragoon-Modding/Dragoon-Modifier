@@ -18,9 +18,15 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
             path += "\\BaseStats.tsv";
             try {
                 using (var itemData = new StreamReader(path)) {
+                    HP[0] = 0;
+                    AT[0] = 0;
+                    MAT[0] = 0;
+                    DF[0] = 0;
+                    MDF[0] = 0;
+                    SPD[0] = 0;
                     itemData.ReadLine(); // Skip first line
-                    int index = 0;
-                    while (!itemData.EndOfStream && index < 61) {
+                    int index = 1;
+                    while (!itemData.EndOfStream && index < 62) {
                         var line = itemData.ReadLine();
                         var values = line.Split('\t').ToArray();
 
