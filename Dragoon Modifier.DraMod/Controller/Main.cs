@@ -14,6 +14,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
         internal static bool ItemsChanged = false;
         internal static bool ShopChanged = false;
         private static bool ShopFix = false;
+        private static bool HPCapSet = false;
 
         internal static void Run(ref Emulator.IEmulator emulator, UI.IUIControl uiControl, ref LoDDict.ILoDDictionary LoDDict) {
             while (Constants.Run) {
@@ -29,6 +30,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                                 AdditionsChanged = false;
                                 ItemsChanged = false;
                                 ShopChanged = false;
+                                HPCapSet = false;
                             }
                             Battle.Run(emulator, uiControl, LoDDict);
                             break;
@@ -46,14 +48,31 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
                             if (MenuEntered && Settings.NoDart != 255) {
                                 MenuEntered = false;
+                                
+
                                 emulator.Memory.PartySlot[0] = 0;
                             }
+
+                            if (!HPCapSet) {
+                                HPCapSet = true;
+                                if (Settings.RemoveHPCap) {
+                                    emulator.Memory.FieldHPCap = 30000;
+                                }
+                            }
+
                             Field.Run(emulator, uiControl);
                             break;
 
                         case Emulator.GameState.Overworld:
                             BattleSetup = false;
                             ShopChanged = false;
+
+                            if (!HPCapSet) {
+                                HPCapSet = true;
+                                if (Settings.RemoveHPCap) {
+                                    emulator.Memory.FieldHPCap = 30000;
+                                }
+                            }
                             break;
 
                         case Emulator.GameState.Menu:
@@ -73,6 +92,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                                 emulator.Memory.PartySlot[0] = Settings.NoDart;
                                 MenuEntered = true;
                             }
+
                             break;
 
                         case Emulator.GameState.BattleResult:
@@ -89,6 +109,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                             ShopChanged = false;
                             BattleSetup = false;
                             ShopFix = true;
+                            HPCapSet = false;
                             break;
 
                         case Emulator.GameState.Shop:

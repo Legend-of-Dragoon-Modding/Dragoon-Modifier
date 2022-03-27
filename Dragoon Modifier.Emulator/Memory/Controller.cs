@@ -30,6 +30,10 @@ namespace Dragoon_Modifier.Emulator.Memory {
         private readonly int _monsterSize;
         private readonly int _uniqueMonsterSize;
         private readonly int _discChangeCheck;
+        private readonly int _fieldHPCap1;
+        private readonly int _fieldHPCap2;
+        private readonly int _fieldHPCap3;
+        private readonly int _fieldHPCap4;
 
         public Collections.IAddress<uint> PartySlot { get; private set; }
         public byte Disc { get { return _emulator.ReadByte(_disc); } }
@@ -66,6 +70,7 @@ namespace Dragoon_Modifier.Emulator.Memory {
         public byte UniqueMonsterSize { get { return _emulator.ReadByte(_uniqueMonsterSize); } }
         public GameState GameState { get { return GetGameState(); } }
         public byte DiscGameCheck { get { return _emulator.ReadByte(_discChangeCheck); } }
+        public ushort FieldHPCap { get { return _emulator.ReadUShort(_fieldHPCap1); } set { SetFieldHPCap(value); } }
 
 
         internal Controller(IEmulator emulator) {
@@ -140,6 +145,10 @@ namespace Dragoon_Modifier.Emulator.Memory {
             var encounterMapAddr = 0xF64AC; // TODO
             var encounterTableAddr = 0xF74C4; // TODO
             _discChangeCheck = 0x4DD30;
+            _fieldHPCap1 = 0x10536C;
+            _fieldHPCap2 = 0x1056B0;
+            _fieldHPCap3 = 0x1056D0;
+            _fieldHPCap4 = 0x1105E0;
 
         }
 
@@ -181,6 +190,13 @@ namespace Dragoon_Modifier.Emulator.Memory {
                     return GameState.None;
 
             }
+        }
+
+        private void SetFieldHPCap(ushort value) {
+            _emulator.WriteUShort(_fieldHPCap1, value);
+            _emulator.WriteUShort(_fieldHPCap2, value);
+            _emulator.WriteUShort(_fieldHPCap3, value);
+            _emulator.WriteUShort(_fieldHPCap4, value);
         }
     }
 }

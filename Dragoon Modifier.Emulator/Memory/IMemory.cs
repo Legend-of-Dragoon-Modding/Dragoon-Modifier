@@ -39,5 +39,6 @@ namespace Dragoon_Modifier.Emulator.Memory {
         byte SavePoint { get; set; }
         ushort TextSpeed { get; set; }
         ushort AutoText { get; set; }
+        ushort FieldHPCap { get; set; }
     }
 }

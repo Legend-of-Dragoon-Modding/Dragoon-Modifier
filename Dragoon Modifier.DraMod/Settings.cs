@@ -76,14 +76,15 @@ namespace Dragoon_Modifier.DraMod {
         public static bool ItemNameDescChange = false;
         public static bool MonsterStatChange = false;
         public static bool CharacterStatChange = false;
-        public static bool AdditionChange = false;
-        public static bool ShopChange = false;
+        public static bool AdditionChange = true;
+        public static bool ShopChange = true;
         public static bool MonsterDropChange = false;
         public static bool MonsterExpGoldChange = false;
         public static bool DragoonStatChange = false;
         public static bool DragoonSpellChange = false;
         public static bool DragoonAdditionChange = false;
         public static bool DragoonDescriptionChange = false;
+        public static bool RemoveHPCap = true;
 
         public static int LoopDelay = 250;
         public static int WaitDelay = 50;

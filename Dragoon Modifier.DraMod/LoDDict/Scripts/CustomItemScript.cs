@@ -16,7 +16,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts {
         private readonly MethodDelegate fieldRun;
         private readonly MethodDelegate fieldSetup;
 
-        internal CustomItemScript(string file, Emulator.IEmulator emulator, UI.IUIControl uiControl) {
+        internal CustomItemScript(string file, Emulator.IEmulator emulator, ILoDDictionary loDDictionary, UI.IUIControl uiControl) {
             this.file = Path.GetFullPath(file);
             script = CSScript.LoadFile(file, null, true);
             battleRun = script.GetStaticMethod("*.BattleRun", emulator, uiControl);
@@ -25,7 +25,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts {
             fieldSetup = script.GetStaticMethod("*.FieldSetup", emulator, uiControl);
         }
 
-        public void BattleRun(Emulator.IEmulator emulator, UI.IUIControl uiControl) {
+        public void BattleRun(Emulator.IEmulator emulator, ILoDDictionary loDDictionary, UI.IUIControl uiControl) {
             try {
                 battleRun(emulator, uiControl);
             } catch (Exception ex) {
@@ -37,7 +37,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts {
             }
         }
 
-        public void BattleSetup(Emulator.IEmulator emulator, UI.IUIControl uiControl) {
+        public void BattleSetup(Emulator.IEmulator emulator, ILoDDictionary loDDictionary, UI.IUIControl uiControl) {
             try {
                 battleSetup(emulator, uiControl);
             } catch (Exception ex) {
@@ -49,7 +49,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts {
             }
         }
 
-        public void FieldRun(Emulator.IEmulator emulator, UI.IUIControl uiControl) {
+        public void FieldRun(Emulator.IEmulator emulator, ILoDDictionary loDDictionary, UI.IUIControl uiControl) {
             try {
                 fieldRun(emulator, uiControl);
             } catch (Exception ex) {
@@ -61,7 +61,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts {
             }
         }
 
-        public void FieldSetup(Emulator.IEmulator emulator, UI.IUIControl uiControl) {
+        public void FieldSetup(Emulator.IEmulator emulator, ILoDDictionary loDDictionary, UI.IUIControl uiControl) {
             try {
                 fieldSetup(emulator, uiControl);
             } catch (Exception ex) {
