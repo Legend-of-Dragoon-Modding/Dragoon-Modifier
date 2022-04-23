@@ -90,6 +90,7 @@ namespace Dragoon_Modifier {
         public bool killedBGMBattle = false;
         public bool reKilledBGMField = false;
         public byte saveMusicSpeed = 0;
+        public static ArrayList musicSSsq = new ArrayList();
         //Elemental Bomb
         public byte eleBombTurns = 0;
         public byte eleBombItemUsed = 0;
@@ -368,6 +369,9 @@ namespace Dragoon_Modifier {
         public bool faustBattle = false;
         public bool saveFaust = false;
         public int faustCount = 0;
+        //Battle UI
+        public Color battleUiColour;
+        public bool battleUiOnEntry = false;
         #endregion
         #endregion
 
@@ -721,7 +725,6 @@ namespace Dragoon_Modifier {
             cboReaderOffHotkey.SelectedIndex = 0;
             cboReaderFieldHotkey.SelectedIndex = 0;
             cboHelpTopic.SelectedIndex = 0;
-
         }
 
         public void LoadKey() {
@@ -1178,6 +1181,8 @@ namespace Dragoon_Modifier {
                         QTB();
                     if (!Globals.DIFFICULTY_MODE.Equals("Normal"))
                         DoubleRepeat();
+                    if (Globals.CheckDMScript("btnBattleColourUI"))
+                        BattleColourUI();
                     if (Globals.CheckDMScript("btnReader") && uiCombo["cboReaderUIRemoval"] > 0)
                         ReaderRemoveUI();
                     if (Globals.CheckDMScript("btnReader") && uiCombo["cboReaderOnHotkey"] > 0 && uiCombo["cboReaderOffHotkey"] > 0 && uiCombo["cboReaderFieldHotkey"] > 0)
@@ -2056,26 +2061,22 @@ namespace Dragoon_Modifier {
                     Emulator.ReadByte(address2 + 0x5) >= 80) {
                     Emulator.WriteByte(address + 0xE * 6, 29); //Blazying Dynamo
                 }
-                //Lavitz
+                //Lavitz & Albert
                 Emulator.WriteByte(address + 0xE * 2 + 0x70, 10); //Rod Typhoon
                 Emulator.WriteByte(address + 0xE * 3 + 0x70, 16); //Gust of Wind Dance
                 Emulator.WriteByte(address + 0xE * 4 + 0x70, 60); //Flower Storm
-                if (Emulator.ReadByte(address2 + 0x2C) >= 80 &&
+
+                if ((Emulator.ReadByte(address2 + 0x2C) >= 80 &&
                     Emulator.ReadByte(address2 + 0x2C + 0x1) >= 80 &&
                     Emulator.ReadByte(address2 + 0x2C + 0x2) >= 80 &&
-                    Emulator.ReadByte(address2 + 0x2C + 0x3) >= 80) {
-                    Emulator.WriteByte(address + 0xE * 4 + 0x70, 21); //Flower Storm
-                }
-                //Albert
-                Emulator.WriteByte(address + 0xE * 2 + 0x70, 10); //Rod Typhoon
-                Emulator.WriteByte(address + 0xE * 3 + 0x70, 16); //Gust of Wind Dance
-                Emulator.WriteByte(address + 0xE * 4 + 0x70, 60); //Flower Storm
-                if (Emulator.ReadByte(address2 + 0xDC) >= 80 &&
+                    Emulator.ReadByte(address2 + 0x2C + 0x3) >= 80) ||
+                    (Emulator.ReadByte(address2 + 0xDC) >= 80 &&
                     Emulator.ReadByte(address2 + 0xDC + 0x1) >= 80 &&
                     Emulator.ReadByte(address2 + 0xDC + 0x2) >= 80 &&
-                    Emulator.ReadByte(address2 + 0xDC + 0x3) >= 80) {
+                    Emulator.ReadByte(address2 + 0xDC + 0x3) >= 80)) {
                     Emulator.WriteByte(address + 0xE * 4 + 0x70, 21); //Flower Storm
                 }
+                
                 //Rose
                 Emulator.WriteByte(address + 0xE * 1 + 0xC4, 8); //More & More
                 Emulator.WriteByte(address + 0xE * 2 + 0xC4, 15); //Hard Blade
@@ -2514,10 +2515,19 @@ namespace Dragoon_Modifier {
 
         public void KillBGM() {
             List<long> bgmScan = Emulator.ScanAoB(0xA8660, 0x2A865F, "53 53 73 71");
+            musicSSsq = new ArrayList();
             foreach (var address in bgmScan) {
+                musicSSsq.Add(address);
                 for (int i = 0; i <= 255; i++) {
-                    Emulator.WriteByteDirect((long) address + i, (byte) 0);
-                    Thread.Sleep(10);
+                    Emulator.WriteByte((long) address + i, (byte) 0);
+                    //Thread.Sleep(10);
+                }
+            }
+
+            foreach (var address in musicSSsq) {
+                for (int i = 0; i <= 255; i++) {
+                    Emulator.WriteByte((long) address + i, (byte) 0);
+                    //Thread.Sleep(10);
                 }
             }
             Constants.WriteGLogOutput("Killed BGM.");
@@ -3877,6 +3887,19 @@ namespace Dragoon_Modifier {
                 }
             }
 
+        }
+
+        public void BattleColourUI() {
+            if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED) {
+                Emulator.WriteByte(0xC7004, battleUiColour.R);
+                Emulator.WriteByte(0xC7005, battleUiColour.G);
+                Emulator.WriteByte(0xC7006, battleUiColour.B);
+                battleUiOnEntry = true;
+            } else {
+                if (Globals.GAME_STATE != 1 && battleUiOnEntry) {
+                    battleUiOnEntry = false;
+                }
+            }
         }
         #endregion
 
@@ -6791,8 +6814,19 @@ namespace Dragoon_Modifier {
                 btn.Background = new SolidColorBrush(Color.FromArgb(255, 255, 168, 168));
                 Constants.WritePLogOutput("No Dart turned off.");
             }
+
             if (btn.Name.Equals("btnAutoTransform")) {
                 Globals.AUTO_TRANSFORM = !Globals.AUTO_TRANSFORM;
+            }
+
+            if (btn.Name.Equals("btnBattleColourUI") && Globals.dmScripts[btn.Name]) {
+                InputWindow readerConfigWindow = new InputWindow("Reader Window Config");
+                Xceed.Wpf.Toolkit.ColorPicker colour = new Xceed.Wpf.Toolkit.ColorPicker();
+
+                readerConfigWindow.AddObject(colour);
+                readerConfigWindow.ShowDialog();
+
+                battleUiColour = (Color) colour.SelectedColor;
             }
         }
 

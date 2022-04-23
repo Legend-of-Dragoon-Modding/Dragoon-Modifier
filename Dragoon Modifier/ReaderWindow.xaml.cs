@@ -300,7 +300,7 @@ namespace Dragoon_Modifier {
             //
         }
 
-        public bool AddLabel(string id, string content, string fontFamily, string fontSize, string x, string y, string z, int alignment, string width, ColorPicker foreground, ColorPicker background) {
+        public bool AddLabel(string id, string content, string fontFamily, string fontSize, string x, string y, string z, int alignment, string width, Xceed.Wpf.Toolkit.ColorPicker foreground, Xceed.Wpf.Toolkit.ColorPicker background) {
             try {
                 double tempWidth;
                 if (!Double.TryParse(width, out tempWidth))
@@ -314,7 +314,7 @@ namespace Dragoon_Modifier {
             }
         }
 
-        public bool AddBattleLabel(string id, string fontFamily, string fontSize, string x, string y, string z, bool player, string slotSelect, string data, string ms, int alignment, string width, ColorPicker foreground, ColorPicker background) {
+        public bool AddBattleLabel(string id, string fontFamily, string fontSize, string x, string y, string z, bool player, string slotSelect, string data, string ms, int alignment, string width, Xceed.Wpf.Toolkit.ColorPicker foreground, Xceed.Wpf.Toolkit.ColorPicker background) {
             try {
                 double tempWidth;
                 int slot;
@@ -340,7 +340,7 @@ namespace Dragoon_Modifier {
             }
         }
 
-        public bool AddProgressBar(string id, string x, string y, string z, bool player, string slotSelect, string data, string min, string max, string width, string height, string ms, ColorPicker foreground, ColorPicker background) {
+        public bool AddProgressBar(string id, string x, string y, string z, bool player, string slotSelect, string data, string min, string max, string width, string height, string ms, Xceed.Wpf.Toolkit.ColorPicker foreground, Xceed.Wpf.Toolkit.ColorPicker background) {
             try {
                 double tempWidth = 0;
                 double tempHeight = 0;
@@ -371,7 +371,7 @@ namespace Dragoon_Modifier {
             }
         }
 
-        public bool AddRadialBar(string idx, string x, string y, string z, bool player, string slotSelect, string data, string minV, string maxV, string size, string arcW, string bArcW, int direction, string arcDegree, string arcRotation, string ms, ColorPicker foreground, ColorPicker background) {
+        public bool AddRadialBar(string idx, string x, string y, string z, bool player, string slotSelect, string data, string minV, string maxV, string size, string arcW, string bArcW, int direction, string arcDegree, string arcRotation, string ms, Xceed.Wpf.Toolkit.ColorPicker foreground, Xceed.Wpf.Toolkit.ColorPicker background) {
             try {
                 double tempSize = 0;
                 double tempArcDegree = 0;
@@ -462,8 +462,8 @@ namespace Dragoon_Modifier {
                 TextBox txtZ = new TextBox();
                 ComboBox cboAlignment = new ComboBox();
                 TextBox txtWidth = new TextBox();
-                ColorPicker clpForeground = new ColorPicker();
-                ColorPicker clpBackground = new ColorPicker();
+                Xceed.Wpf.Toolkit.ColorPicker clpForeground = new Xceed.Wpf.Toolkit.ColorPicker();
+                Xceed.Wpf.Toolkit.ColorPicker clpBackground = new Xceed.Wpf.Toolkit.ColorPicker();
 
                 lbl1.Content = "ID";
                 lbl2.Content = "Content";
@@ -733,8 +733,8 @@ namespace Dragoon_Modifier {
                     TextBox txtMS = new TextBox();
                     ComboBox cboAlignment = new ComboBox();
                     TextBox txtWidth = new TextBox();
-                    ColorPicker clpForeground = new ColorPicker();
-                    ColorPicker clpBackground = new ColorPicker();
+                    Xceed.Wpf.Toolkit.ColorPicker clpForeground = new Xceed.Wpf.Toolkit.ColorPicker();
+                    Xceed.Wpf.Toolkit.ColorPicker clpBackground = new Xceed.Wpf.Toolkit.ColorPicker();
 
                     lbl1.Content = "ID";
                     lbl2.Content = "Font Family";
@@ -1078,8 +1078,8 @@ namespace Dragoon_Modifier {
                     TextBox txtWidth = new TextBox();
                     TextBox txtHeight = new TextBox();
                     TextBox txtMS = new TextBox();
-                    ColorPicker clpForeground = new ColorPicker();
-                    ColorPicker clpBackground = new ColorPicker();
+                    Xceed.Wpf.Toolkit.ColorPicker clpForeground = new Xceed.Wpf.Toolkit.ColorPicker();
+                    Xceed.Wpf.Toolkit.ColorPicker clpBackground = new Xceed.Wpf.Toolkit.ColorPicker();
 
                     lbl1.Content = "ID";
                     lbl2.Content = "X";
@@ -1455,8 +1455,8 @@ namespace Dragoon_Modifier {
                     TextBox txtRenderDegree = new TextBox();
                     TextBox txtRotationDegree = new TextBox();
                     TextBox txtMS = new TextBox();
-                    ColorPicker clpForeground = new ColorPicker();
-                    ColorPicker clpBackground = new ColorPicker();
+                    Xceed.Wpf.Toolkit.ColorPicker clpForeground = new Xceed.Wpf.Toolkit.ColorPicker();
+                    Xceed.Wpf.Toolkit.ColorPicker clpBackground = new Xceed.Wpf.Toolkit.ColorPicker();
 
                     lbl1.Content = "ID";
                     lbl2.Content = "X";

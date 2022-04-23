@@ -12,7 +12,7 @@
         Icon="1.ico"
         ShowIconOnTitleBar="True"
         ShowTitleBar="True"
-        Title=" Dragoon Modifier v3.4" Height="750" Width="1075" MinWidth="750" MinHeight="560" WindowStartupLocation="CenterScreen" Background="White">
+        Title=" Dragoon Modifier v3.5" Height="750" Width="1075" MinWidth="750" MinHeight="560" WindowStartupLocation="CenterScreen" Background="White">
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Template">
@@ -1158,6 +1158,7 @@
                         <RowDefinition />
                         <RowDefinition />
                         <RowDefinition />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
@@ -1166,6 +1167,17 @@
                     <Button x:Name="btnBlackRoom" Grid.Row="2" Grid.Column="0" Content="Black Room" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                     <Button x:Name="btnAutoText" Grid.Row="1" Grid.Column="0" Content="Auto Advance Text" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
                     <DockPanel Grid.Row="3" Grid.Column="0" HorizontalAlignment="Stretch" Margin="0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Button x:Name="btnBattleColourUI" Grid.Row="0" Grid.Column="0" Content="Battle UI Color" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                        </Grid>
+                    </DockPanel>
+                    <DockPanel Grid.Row="4" Grid.Column="0" HorizontalAlignment="Stretch" Margin="0">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition/>
