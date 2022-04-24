@@ -143,7 +143,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
         static readonly List<Hotkey> hotkeys = BattleHotkeys.Load();
 
-        public static void Setup(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict, UI.IUIControl uiControl) {
+        public static void Setup(Emulator.IEmulator emulator, LoDDict.ILoDDictionary loDDictionary, UI.IUIControl uiControl) {
             Console.WriteLine("Battle detected. Loading..."); 
 
             firstDamageCapRemoval = false;
@@ -181,12 +181,12 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             if (Settings.DualDifficulty) {
                 Console.WriteLine("[DEBUG] [Dual Difficulty] Changing monster stats...");
-                SwitchDualDifficulty(emulator, LoDDict);
+                SwitchDualDifficulty(emulator, loDDictionary);
             }
 
-            MonsterChanges(emulator, LoDDict);
+            MonsterChanges(emulator, loDDictionary);
 
-            CharacterChanges(emulator, LoDDict, uiControl);
+            CharacterChanges(emulator, loDDictionary, uiControl);
 
             Console.WriteLine("Updating UI...");
             UpdateUI(emulator, uiControl);
@@ -200,7 +200,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
 
             if (Settings.NoDart != 0 && Settings.NoDart != 255) {
-                NoDart.Initialize(emulator, Settings.NoDart);
+                NoDart.Initialize(emulator, loDDictionary, Settings.NoDart);
             }
 
             if (Settings.NoDragoon) {
@@ -212,7 +212,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
         }
 
-        public static void Run(Emulator.IEmulator emulator, UI.IUIControl uiControl, LoDDict.ILoDDictionary LoDDictionary) {
+        public static void Run(Emulator.IEmulator emulator, UI.IUIControl uiControl, LoDDict.ILoDDictionary loDDictionary) {
             UpdateUI(emulator, uiControl);
 
             if (Settings.RemoveDamageCaps) {
@@ -242,7 +242,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
 
             foreach (var hotkey in hotkeys) {
-                hotkey.Run(emulator, LoDDictionary);
+                hotkey.Run(emulator, loDDictionary);
             }
         }
 
@@ -255,18 +255,18 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
         }
 
-        private static void SwitchDualDifficulty(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict) {
+        private static void SwitchDualDifficulty(Emulator.IEmulator emulator, LoDDict.ILoDDictionary loDDictionary) {
             string cwd = Directory.GetCurrentDirectory();
             string mod;
 
             if (bosses.Contains(emulator.Battle.EncounterID)) {
                 mod = DraMod.Settings.Mod.Equals("Hell_Mode") ? "Hard_Mode" : "US_Base";
-                LoDDict.SwapMonsters(cwd, mod);
+                loDDictionary.SwapMonsters(cwd, mod);
                 Console.WriteLine("[DEBUG] [Dual Difficulty] Mod selected: " + mod);
                 return;
             }
 
-            LoDDict.SwapMonsters(cwd, DraMod.Settings.Mod);
+            loDDictionary.SwapMonsters(cwd, DraMod.Settings.Mod);
             Console.WriteLine("[DEBUG] [Dual Difficulty] Mod selected: " + DraMod.Settings.Mod);
         }
 
