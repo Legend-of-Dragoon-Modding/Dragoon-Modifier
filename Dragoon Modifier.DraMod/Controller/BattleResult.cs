@@ -6,27 +6,27 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.Controller {
     internal static class BattleResult {
-        public static void Setup(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict, UI.IUIControl uiControl) {
+        public static void Setup(Emulator.IEmulator emulator, LoDDict.ILoDDictionary loDDictionary, UI.IUIControl uiControl) {
             uiControl.ResetBattle();
 
             if (Settings.ItemIconChange) {
                 Console.WriteLine("Changing Item icons...");
-                Item.IconChange(emulator, LoDDict);
+                Item.IconChange(emulator, loDDictionary);
             }
 
             if (Settings.ItemNameDescChange) {
                 Console.WriteLine("Changing Item names and descriptions...");
-                Item.FieldItemNameDescChange(emulator, LoDDict);
+                Item.FieldItemNameDescChange(emulator, loDDictionary);
             }
 
             if (Settings.ItemStatChange) {
                 Console.WriteLine("Changing Items stats...");
-                Item.FieldEquipmentChange(emulator, LoDDict);
+                Item.FieldEquipmentChange(emulator, loDDictionary);
             }
 
             if (Settings.AdditionChange) {
                 Console.WriteLine("Changing Additions...");
-                Addition.MenuTableChange(emulator, LoDDict);
+                Addition.MenuTableChange(emulator, loDDictionary);
             }
 
 
@@ -34,7 +34,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 RemoveExtraPartyMembers(emulator);
             }
 
-            LoDDict.ItemScript.FieldSetup(emulator, uiControl);
+            loDDictionary.ItemScript.FieldSetup(emulator, loDDictionary, uiControl);
         }
 
         public static void RemoveExtraPartyMembers(Emulator.IEmulator emulator) {

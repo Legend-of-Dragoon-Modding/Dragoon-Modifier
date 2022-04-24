@@ -13,38 +13,38 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
         private static bool EarlyAdditionsSet = false;
 
-        internal static void Setup(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict, UI.IUIControl uiControl) {
+        internal static void Setup(Emulator.IEmulator emulator, LoDDict.ILoDDictionary loDDictionary, UI.IUIControl uiControl) {
             uiControl.ResetBattle();
             EarlyAdditionsSet = false;
-            LoDDict.ItemScript.FieldSetup(emulator, uiControl);
+            loDDictionary.ItemScript.FieldSetup(emulator, loDDictionary, uiControl);
 
         }
 
-        internal static void ItemSetup(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict) {
+        internal static void ItemSetup(Emulator.IEmulator emulator, LoDDict.ILoDDictionary loDDictionary) {
             if (Settings.ItemIconChange) {
                 Console.WriteLine("Changing Item Icons...");
-                Item.IconChange(emulator, LoDDict);
+                Item.IconChange(emulator, loDDictionary);
             }
 
             if (Settings.ItemNameDescChange) {
                 Console.WriteLine("Changing Item names and descriptions...");
-                Item.FieldItemNameDescChange(emulator, LoDDict);
+                Item.FieldItemNameDescChange(emulator, loDDictionary);
             }
 
             if (Settings.ItemStatChange) {
                 Console.WriteLine("Changing Equipment stats...");
-                Item.FieldEquipmentChange(emulator, LoDDict);
+                Item.FieldEquipmentChange(emulator, loDDictionary);
             }
         }
 
-        internal static void AdditionSetup(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict) {
+        internal static void AdditionSetup(IEmulator emulator, LoDDict.ILoDDictionary loDDictionary) {
             if (Settings.AdditionChange) {
                 Console.WriteLine("Changing Additions...");
-                Addition.MenuTableChange(emulator, LoDDict);
+                Addition.MenuTableChange(emulator, loDDictionary);
             }
         }
 
-        internal static void Run(Emulator.IEmulator emulator, UI.IUIControl uiControl) {
+        internal static void Run(IEmulator emulator, UI.IUIControl uiControl) {
             if (Settings.AutoCharmPotion) {
                 AutoCharmPotion(emulator);
             }
@@ -99,7 +99,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
         }
 
-        private static void DuoModeField(Emulator.IEmulator emulator) {
+        private static void DuoModeField(IEmulator emulator) {
             if (!Settings.AddSoloPartyMembers) {
                 if (emulator.ReadByte("PARTY_SLOT", 0x4) == 255) {
                     emulator.WriteByte("PARTY_SLOT", emulator.ReadByte("PARTY_SLOT"), 0x4);
@@ -117,7 +117,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
         }
 
-        private static void AddSoloPartyMembers(Emulator.IEmulator emulator) {
+        private static void AddSoloPartyMembers(IEmulator emulator) {
             if (Settings.SoloMode && emulator.Memory.PartySlot[1] > 8) {
                 Settings.AddSoloPartyMembers = true;
                 emulator.WriteByte("PARTY_SLOT", emulator.ReadByte("PARTY_SLOT"), 0x4);
@@ -137,7 +137,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
         }
 
-        private static void EarlyAdditions(Emulator.IEmulator emulator) {
+        private static void EarlyAdditions(IEmulator emulator) {
             long address = emulator.GetAddress("MENU_ADDITION_TABLE_FLAT");
             long address2 = emulator.GetAddress("CHAR_TABLE") + 0x22;
             //Dart
@@ -242,34 +242,34 @@ namespace Dragoon_Modifier.DraMod.Controller {
             emulator.WriteByte(address * 0xE * 5 + 0x196, 255); //Omni-Sweep   
         }
 
-        private static void AutoText(Emulator.IEmulator emulator) {
+        private static void AutoText(IEmulator emulator) {
             if (emulator.Memory.AutoText != 13378) {
                 emulator.Memory.AutoText = 13378;
             }
         }
 
-        private static void IncreaseTextSpeed(Emulator.IEmulator emulator) {
+        private static void IncreaseTextSpeed(IEmulator emulator) {
             if (emulator.Memory.TextSpeed != 1) {
                 emulator.Memory.TextSpeed = 1;
             }
         }
 
-        private static void SaveAnywhere(Emulator.IEmulator emulator) {
+        private static void SaveAnywhere(IEmulator emulator) {
             if (emulator.Memory.SavePoint == 0) {
                 emulator.Memory.SavePoint = 1;
             }
         }
 
-        private static void AutoCharmPotion(Emulator.IEmulator emulator) {
+        private static void AutoCharmPotion(IEmulator emulator) {
             if (emulator.Memory.BattleValue > 3850 && emulator.Memory.Gold >= 8) {
                 emulator.Memory.Gold -= 8;
                 emulator.Memory.BattleValue = 0;
             }
         }
 
-        private static void ThrownItemChange(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict) {
+        private static void ThrownItemChange(IEmulator emulator, LoDDict.ILoDDictionary loDDictionary) {
             for (int i = 192; i < 255; i++) {
-                var item = (LoDDict.IUsableItem) LoDDict.Item[i];
+                var item = (LoDDict.IUsableItem) loDDictionary.Item[i];
                 var mem = (Emulator.Memory.IUsableItem) emulator.Memory.Item[i];
                 mem.Target = item.Target;
                 mem.Element = item.Element;
@@ -285,17 +285,17 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
         }
 
-        private static void ItemNameDescChange(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict) {
+        private static void ItemNameDescChange(IEmulator emulator, LoDDict.ILoDDictionary loDDictionary) {
             Console.WriteLine("Changing Item Names and Descriptions...");
 
             int address = emulator.GetAddress("ITEM_NAME");
             int address2 = emulator.GetAddress("ITEM_DESC");
-            emulator.WriteAoB(address, LoDDict.ItemNames);
-            emulator.WriteAoB(address2, LoDDict.ItemDescriptions);
+            emulator.WriteAoB(address, loDDictionary.ItemNames);
+            emulator.WriteAoB(address2, loDDictionary.ItemDescriptions);
 
             for (int i = 0; i < emulator.Memory.Item.Length; i++) {
-                emulator.Memory.Item[i].NamePointer = (uint) LoDDict.Item[i].NamePointer;
-                emulator.Memory.Item[i].DescriptionPointer = (uint) LoDDict.Item[i].DescriptionPointer;
+                emulator.Memory.Item[i].NamePointer = (uint) loDDictionary.Item[i].NamePointer;
+                emulator.Memory.Item[i].DescriptionPointer = (uint) loDDictionary.Item[i].DescriptionPointer;
             }
         }
     }
