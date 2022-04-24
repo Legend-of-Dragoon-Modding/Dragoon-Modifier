@@ -79,9 +79,9 @@ namespace Dragoon_Modifier.Emulator.Memory {
             _disc = _emulator.GetAddress("DISC");
             _chapter = _emulator.GetAddress("CHAPTER");
             _mapId = _emulator.GetAddress("MAP");
-            _overworldContinent = 0xBF0B0; // TODO
-            _overworldSegment = 0xC67AC; // TODO
-            _overworldCheck = 0xBB10C; // TODO
+            _overworldContinent = _emulator.GetAddress("OVERWORLD_CONTINENT");
+            _overworldSegment = _emulator.GetAddress("OVERWORLD_SEGMENT");
+            _overworldCheck = _emulator.GetAddress("OVERWORLD_CHECK");
             _dragoonSpirits = _emulator.GetAddress("DRAGOON_SPIRITS");
             _hotkey = _emulator.GetAddress("HOTKEY");
             _battleValue = _emulator.GetAddress("BATTLE_VALUE");
@@ -138,17 +138,17 @@ namespace Dragoon_Modifier.Emulator.Memory {
             for (int i = 0; i < MenuAdditionTable.Length; i++) {
                 MenuAdditionTable[i] = new AdditionTable(_emulator, addTableAddr, addMultiAddr, i);
             }
-            _basePoint = emulator.GetAddress("BATTLE_BASE_POINT");
+            _basePoint = _emulator.GetAddress("BATTLE_BASE_POINT");
             _encounterID = _emulator.GetAddress("ENCOUNTER_ID");
             _monsterSize = _emulator.GetAddress("MONSTER_SIZE");
             _uniqueMonsterSize = _emulator.GetAddress("UNIQUE_MONSTER_SIZE");
-            var encounterMapAddr = 0xF64AC; // TODO
-            var encounterTableAddr = 0xF74C4; // TODO
-            _discChangeCheck = 0x4DD30;
-            _fieldHPCap1 = 0x10536C;
-            _fieldHPCap2 = 0x1056B0;
-            _fieldHPCap3 = 0x1056D0;
-            _fieldHPCap4 = 0x1105E0;
+            var encounterMapAddr = _emulator.GetAddress("ENCOUNTER_MAP");
+            var encounterTableAddr = _emulator.GetAddress("ENCOUNTER_TABLE");
+            _discChangeCheck = _emulator.GetAddress("DISC_CHANGE_CHECK");
+            _fieldHPCap1 = _emulator.GetAddress("FIELD_HP_CAP_1");
+            _fieldHPCap2 = _emulator.GetAddress("FIELD_HP_CAP_2");
+            _fieldHPCap3 = _emulator.GetAddress("FIELD_HP_CAP_3");
+            _fieldHPCap4 = _emulator.GetAddress("FIELD_HP_CAP_4");
 
         }
 
