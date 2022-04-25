@@ -46,12 +46,11 @@ namespace Dragoon_Modifier.DraMod.Controller {
                                 ShopChanged = true;
                             }
 
-                            if (MenuEntered && Settings.NoDart != 255) {
-                                MenuEntered = false;
-                                
-
+                            if (Settings.NoDart != 255 && emulator.Memory.PartySlot[0] != 0) {
+                                Settings.NoDart = (byte) emulator.Memory.PartySlot[0];
                                 emulator.Memory.PartySlot[0] = 0;
                             }
+                            
 
                             if (!HPCapSet) {
                                 HPCapSet = true;
@@ -88,9 +87,13 @@ namespace Dragoon_Modifier.DraMod.Controller {
                                 AdditionsChanged = true;
                             }
 
-                            if (!MenuEntered && Settings.NoDart != 255) {
-                                emulator.Memory.PartySlot[0] = Settings.NoDart;
-                                MenuEntered = true;
+                            if (Settings.NoDart != 255) {
+                                if (emulator.Memory.MenuSubTypes == Emulator.MenuSubTypes.Replace) {
+                                    Settings.NoDart = (byte) emulator.Memory.PartySlot[0];
+                                } else if (emulator.Memory.MenuSubTypes == Emulator.MenuSubTypes.FirstMenu) {
+                                    emulator.Memory.MenuUnlock = 1;
+                                    emulator.Memory.PartySlot[0] = Settings.NoDart;
+                                }
                             }
 
                             break;

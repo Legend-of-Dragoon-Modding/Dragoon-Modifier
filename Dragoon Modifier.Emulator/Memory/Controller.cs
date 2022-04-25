@@ -18,6 +18,7 @@ namespace Dragoon_Modifier.Emulator.Memory {
         private readonly int _hotkey;
         private readonly int _battleValue;
         private readonly int _menu;
+        private readonly int _menuSubType;
         private readonly int _transition;
         private readonly int _gold;
         private readonly int _menuUnlock;
@@ -48,6 +49,7 @@ namespace Dragoon_Modifier.Emulator.Memory {
         public Collections.IAddress<byte> EquipmentInventory { get; private set; }
         public Collections.IAddress<byte> ItemInventory { get; private set; }
         public byte Menu { get { return _emulator.ReadByte(_menu); } set { _emulator.WriteByte(_menu, value); } }
+        public byte MenuSubType { get { return _emulator.ReadByte(_menuSubType); } set { _emulator.WriteByte(_menuSubType, value); } }
         public byte Transition { get { return _emulator.ReadByte(_transition); } set { _emulator.WriteByte(_transition, value); } }
         public uint Gold { get { return _emulator.ReadUInt(_gold); } set { _emulator.WriteUInt(_gold, value); } }
         public byte MenuUnlock { get { return _emulator.ReadByte(_menuUnlock); } set { _emulator.WriteByte(_menuUnlock, value); } }
@@ -69,6 +71,7 @@ namespace Dragoon_Modifier.Emulator.Memory {
         public byte MonsterSize { get { return _emulator.ReadByte(_monsterSize); } }
         public byte UniqueMonsterSize { get { return _emulator.ReadByte(_uniqueMonsterSize); } }
         public GameState GameState { get { return GetGameState(); } }
+        public MenuSubTypes MenuSubTypes { get { return GetMenuSubType(); } }
         public byte DiscGameCheck { get { return _emulator.ReadByte(_discChangeCheck); } }
         public ushort FieldHPCap { get { return _emulator.ReadUShort(_fieldHPCap1); } set { SetFieldHPCap(value); } }
 
@@ -88,6 +91,7 @@ namespace Dragoon_Modifier.Emulator.Memory {
             EquipmentInventory = Factory.AddressCollection<Byte>(_emulator, _emulator.GetAddress("ARMOR_INVENTORY"), 1, 256);
             ItemInventory = Factory.AddressCollection<byte>(_emulator, _emulator.GetAddress("INVENTORY"), 1, 64);
             _menu = _emulator.GetAddress("MENU");
+            _menuSubType = _emulator.GetAddress("MENU_SUBTYPE");
             _transition = _emulator.GetAddress("TRANSITION");
             _gold = _emulator.GetAddress("GOLD");
             _menuUnlock = _emulator.GetAddress("MENU_UNLOCK");
@@ -189,6 +193,31 @@ namespace Dragoon_Modifier.Emulator.Memory {
                 default:
                     return GameState.None;
 
+            }
+        }
+
+        private MenuSubTypes GetMenuSubType() {
+            switch (MenuSubType) {
+                case 20:
+                    return MenuSubTypes.Status;
+                case 26:
+                    return MenuSubTypes.UseIt;
+                case 31:
+                    return MenuSubTypes.Discard;
+                case 16:
+                    return MenuSubTypes.List;
+                case 35:
+                    return MenuSubTypes.Goods;
+                case 12:
+                    return MenuSubTypes.Armed;
+                case 23:
+                    return MenuSubTypes.Addition;
+                case 8:
+                    return MenuSubTypes.Replace;
+                case 125:
+                    return MenuSubTypes.FirstMenu;
+                default:
+                    return MenuSubTypes.Default;
             }
         }
 

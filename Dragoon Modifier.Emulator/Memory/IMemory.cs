@@ -14,6 +14,7 @@ namespace Dragoon_Modifier.Emulator.Memory {
         ushort EncounterID { get; set; }
         Collections.IAddress<byte> EquipmentInventory { get; }
         GameState GameState { get; }
+        MenuSubTypes MenuSubTypes { get; }
         uint Gold { get; set; }
         ushort Hotkey { get; set; }
         byte Chapter { get; }
@@ -23,6 +24,7 @@ namespace Dragoon_Modifier.Emulator.Memory {
         Collections.IAddress<byte> ItemInventory { get; }
         ushort MapID { get; set; }
         byte Menu { get; set; }
+        byte MenuSubType { get; set; }
         Memory.AdditionTable[] MenuAdditionTable { get; }
         byte MenuUnlock { get; set; }
         uint MonsterPoint { get; }

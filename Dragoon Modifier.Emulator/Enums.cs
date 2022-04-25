@@ -36,4 +36,16 @@ namespace Dragoon_Modifier.Emulator {
         HardHell = 3,
         Hell = 4
     }
+    public enum MenuSubTypes : byte {
+        Status = 20,
+        UseIt = 26,
+        Discard = 31,
+        List = 16,
+        Goods = 35,
+        Armed = 12,
+        Addition = 23,
+        Replace = 8,
+        FirstMenu = 125,
+        Default = 2
+    }
 }
