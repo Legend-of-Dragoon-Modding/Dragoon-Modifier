@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.LoDDict.Scripts {
-    internal class DummyItemScript : IItemScript {
+    internal class DummyScript : IScript {
         public void BattleRun(IEmulator emulator, ILoDDictionary loDDictionary, IUIControl uiControl) {}
 
         public void BattleSetup(IEmulator emulator, ILoDDictionary loDDictionary, IUIControl uiControl) {}

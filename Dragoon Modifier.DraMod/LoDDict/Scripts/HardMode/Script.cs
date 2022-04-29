@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.LoDDict.Scripts.HardMode {
-    class ItemScript : IItemScript {
+    class Script : IScript {
         
         const short heatBladeBuff = 7;
         const short shadowCutterBuff = 9;

@@ -8,7 +8,7 @@ using CSScriptLibrary;
 using System.Reflection;
 
 namespace Dragoon_Modifier.DraMod.LoDDict.Scripts {
-    internal class CustomItemScript : IItemScript {
+    internal class CustomScript : IScript {
         private readonly string file;
         private readonly Assembly script;
         private readonly MethodDelegate battleRun;
@@ -16,7 +16,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts {
         private readonly MethodDelegate fieldRun;
         private readonly MethodDelegate fieldSetup;
 
-        internal CustomItemScript(string file, Emulator.IEmulator emulator, ILoDDictionary loDDictionary, UI.IUIControl uiControl) {
+        internal CustomScript(string file, Emulator.IEmulator emulator, ILoDDictionary loDDictionary, UI.IUIControl uiControl) {
             this.file = Path.GetFullPath(file);
             script = CSScript.LoadFile(file, null, true);
             battleRun = script.GetStaticMethod("*.BattleRun", emulator, uiControl);

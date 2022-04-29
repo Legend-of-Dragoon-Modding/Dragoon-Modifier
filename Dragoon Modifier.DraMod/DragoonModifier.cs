@@ -74,12 +74,12 @@ namespace Dragoon_Modifier.DraMod {
             Settings.Mod = modString;
             if (Constants.Run) {
 
-                LoDDict.Scripts.IItemScript ItemScript = new LoDDict.Scripts.DummyItemScript();
+                LoDDict.Scripts.IScript ItemScript = new LoDDict.Scripts.DummyScript();
                 switch (mod) {
                     case Preset.Hell:
                     case Preset.HardHell:
                     case Preset.Hard:
-                        ItemScript = new LoDDict.Scripts.HardMode.ItemScript();
+                        ItemScript = new LoDDict.Scripts.HardMode.Script();
                         break;
                 }
                 
