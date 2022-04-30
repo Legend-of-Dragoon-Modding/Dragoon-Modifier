@@ -6436,6 +6436,7 @@ namespace Dragoon_Modifier {
 
             if (!txt.Text.Equals("")) {
                 if (Constants.LoadPreset(txt.Text)) {
+                    preset = txt.Text;
                     ChangeTitle(txt.Text);
                     DisableScripts();
                     LoadPreset();
@@ -6517,6 +6518,7 @@ namespace Dragoon_Modifier {
                             presetFile.WriteLine(Globals.MOD + ",0");
                         }
 
+                        preset = txt.Text;
                         Constants.WriteOutput("Saved preset '" + txt.Text + "'.");
                     } catch (Exception ex) {
                         Constants.WriteOutput("Error writing file.");

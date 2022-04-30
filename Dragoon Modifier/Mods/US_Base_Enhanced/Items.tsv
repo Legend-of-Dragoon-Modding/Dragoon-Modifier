@@ -1,0 +1,65 @@
+Item Name	Target	Element	Damage	Specail 1	Special 2	UU1	Special Ammount	Icon	Status	Percentage	UU2	Base Switch	Description	Price(even)	Battle Description
+	76	None						Magic						4	
+Detonate Rock	78	None	100					Magic					Detonates and<LINE>attacks all.	10	Detonates & attacks all.
+Spark Net	76	Thunder	150					Magic					Thunder-based,<LINE>single-target<LINE>(multi).	10	S attack(thunder, multi).
+Burn Out	76	Fire	150					Magic					Fire-based,<LINE>single-target<LINE>(multi).	10	S attack(fire, multi).
+		None											 	2	
+Pellet	76	Earth	150					Magic					Earth-based,<LINE>single-target<LINE>(multi).	10	S attack(earth, multi).
+Spear Frost	76	Water	150					Magic					Water-based,<LINE>single-target<LINE>(multi).	10	S attack(water, multi).
+Spinning Gale	76	Wind	150					Magic					Wind-based,<LINE>single-target<LINE>(multi).	10	S attack(wind, multi).
+Attack Ball	76	None						Sack					Generates a random<LINE>attack item.	100	Generates 1 attack item.
+Trans Light	76	Light	150					Magic					Light-based,<LINE>single-target<LINE>(multi).	10	S attack(light, multi).
+Dark Mist	76	Dark	150					Magic					Dark-based,<LINE>single-target<LINE>(multi).	10	S attack(dark, multi).
+Healing Potion	88	None						Blue Potion		50		HP	Recovers half of<LINE>maximum HP.	10	Recovers 1/2 of max HP.
+Depetrifier	72	None						Green Potion	PE			Status_Cure	Dissolves<LINE>petrification.	30	Dissolves petrification.
+Mind Purifier	88	None						Green Potion	BE,CN,FE,DS			Status_Cure	Dispels confusion,<LINE>bewitchment, fear,<LINE>and dispiriting.	20	Dissolves B, C, F, D.
+Body Purifier	88	None						Green Potion	ST,AB,PO			Status_Cure	Nullifies poison,<LINE>stunning, and<LINE>arm blocking.	10	Dissolves P, S, A-Block.
+Thunderbolt	78	Thunder	100					Magic					Thunder-based,<LINE>targets all<LINE>(multi).	20	A attack(thndr, multi).
+Meteor Fall	78	Earth	100					Magic					Earth-based,<LINE>targets all<LINE>(multi).	20	A attack(earth, multi).
+Gushing Magma	78	Fire	100					Magic					Fire-based,<LINE>targets all<LINE>(multi).	20	A attack(flame, multi).
+Dancing Ray	78	Light	100					Magic					Light-based,<LINE>targets all<LINE>(multi).	20	A attack(light, multi).
+Spirit Potion	72	None						Red Potion		100		SP	Recovers 100 pts.<LINE>of SP.	20	Recovers 100SP in combat.
+Panic Bell	76	None						Skull	CN			Status_Cause	Confuses minor<LINE>enemies.	20	Confuses minor enemy.
+	90	None								50		HP	 	2	
+Fatal Blizzard	78	Water	100					Magic					Water-based,<LINE>targets all<LINE>(multi).	20	A attack(water, multi).
+Stunning Hammer	76	None						Skull	ST			Status_Cause	Stuns minor<LINE>enemies.	20	Stuns minor enemy.
+Black Rain	78	Dark	100					Magic					Dark-based,<LINE>targets all<LINE>(multi).	20	A attack(dark, multi).
+Poison Needle	76	None						Skull	PO			Status_Cause	Poisons minor<LINE>enemies.	20	Poisons minor enemy.
+Midnight Terror	76	None						Skull	FE			Status_Cause	Frightens minor<LINE>enemies.	20	Frightens minor enemy.
+		None											 	2	
+Rave Twister	78	Wind	100					Magic					Wind-based<LINE>targets all<LINE>(multi).	20	A attack (wing, multi).
+Total Vanishing	204	None						Sack					Destroys<LINE>minor enemies.	20	Eliminates minor enemy.
+Angel's Prayer	8	None						Angel's Prayer		32		Revive	Revives and<LINE>recovers half<LINE>of maximum HP.	30	Revitalizes & Recover 1/2HP.
+Charm Potion	80	None						Charm					Reduces encounter<LINE>risk.	4	Avoids minor enemy 3x.
+Pandemonium	64	None						Charm					Minor enemies only<LINE>attack target for<LINE>3 turns (repeat).	400	Allow minor enemy attack 3x.
+Recovery Ball	64	None						Sack					Generates a random<LINE>recovery item.	100	Generates 1 recovery item.
+	72	None			magic_res,physical_res			Shield					 	2	
+Magic Shield	72	None			magic_res			Shield					Nullifies magical<LINE>attacks for 3 turns<LINE>(repeat).	400	Nullify magical attack 3x.
+Material Shield	72	None			physical_res			Shield					Nullifies physical<LINE>attacks for 3 turns<LINE>(repeat).	400	Nulify physical attack 3x.
+Sun Rhapsody	88	None						Yellow Potion		100		MP	Completely<LINE>recovers MP.	50	Completely recovers MP.
+Smoke Ball	72	None						Smoke Ball					Guaranteed escape<LINE>from minor enemies<LINE>(repeat).	400	Escape a minor enemy.
+Healing Fog	88	None						Blue Potion		100		HP	Completely<LINE>recovers HP.	30	Completely recovers HP.
+Magic Sig Stone	76	None						Sig Stone					Blocks enemy's<LINE>move for 3 turns<LINE>(repeat).	400	Blocks enemy move 3x (rep).
+Healing Rain	90	None						Blue Potion		100		HP	Completely<LINE>recovers HP<LINE>for all.	120	Recovers 100% HP for all.
+Moon Serenade	90	None						Yellow Potion		100		SP	Completely<LINE>recovers MP<LINE>for all.	200	Recovers 100% MP for all.
+Power Up	72	None		power1,power2,power3,power4			50	Up					Increases strength<LINE>for 3 turns<LINE>(repeat).	400	3 turns powerful (rep).
+Power Down	76	None		power1,power2,power3,power4			-50	Down					Weakens enemy<LINE>for 3 turns<LINE>(repeat).	400	3 turns weak (rep).
+Speed Up	72	None			speed_up			Up					Doubles speed<LINE>for 3 turns<LINE>(repeat).	400	Doubles agility 3x(rep).
+Speed Down	76	None			speed_down			Down					Halves speed<LINE>for 3 turns<LINE>(repeat).	400	Halves agility 3x(rep).
+	72	None						Blue Potion		30		HP	 	2	
+Sachet	76	None						Sack					Gives off a<LINE>subtle, pleasant<LINE>aroma.	400	Gives subtle good aroma.
+Psyche Bomb	78	Non-Elemental	400					Magic					Non-elemental-<LINE>based, targets all<LINE>(multi).	20	A attack(non, multi).
+Burning Wave	78	Fire	300					Magic					Powerful fire-<LINE>based attack,<LINE>targets all.	20	Powerful A attack(Fire).
+Frozen Jet	78	Water	300					Magic					Powerful water-<LINE>based attack,<LINE>targets all.	20	Powerful A attack(Water).
+Down Burst	78	Wind	300					Magic					Powerful wind-<LINE>based attack,<LINE>targets all.	20	Powerful A attack(Wind).
+Gravity Grabber	78	Earth	300					Magic					Powerful earth-<LINE>based attack,<LINE>targets all.	20	Powerful A attack(Earth).
+Spectral Flash	78	Light	300					Magic					Powerful light-<LINE>based attack,<LINE>targets all.	20	Powerful A attack(Light).
+Night Raid	78	Dark	300					Magic					Powerful dark-<LINE>based attack,<LINE>targets all.	20	Powerful A attack(Dark).
+Flash Hall	78	Thunder	300					Magic					Powerful thunder-<LINE>based attack,<LINE>targets all.	20	Powerful A attack(Thndr).
+Healing Breeze	90	None						Blue Potion		50		HP	Recovers half of<LINE>maximum HP for all.	50	Recovers 1/2HP for all.
+Psyche Bomb X	110	Non-Elemental	200					Magic					Non-elemental-<LINE>based, targets all<LINE>(multi)(repeat).	400	A attack(non, multi, rep).
+		None											 	0	
+		None											 	0	
+		None											 	0	
+		None											 	0	
+None														0	
