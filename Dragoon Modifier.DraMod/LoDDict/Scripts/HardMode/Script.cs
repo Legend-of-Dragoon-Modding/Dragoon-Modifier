@@ -50,6 +50,8 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts.HardMode {
         private byte soasSiphonRingSlot = 0;
         private byte soasAnkhSlot = 0;
 
+        private List<int>[] customEquip = new List<int>[9];
+
 
         public void BattleRun(IEmulator emulator, ILoDDictionary loDDictionary, IUIControl uiControl) {
             for (byte slot = 0; slot < emulator.Battle.CharacterTable.Length; slot++) {
@@ -89,12 +91,20 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts.HardMode {
             KongolSpeedNerf(emulator);
         }
 
+
         public void FieldRun(IEmulator emulator, ILoDDictionary loDDictionary, IUIControl uiControl) {
             throw new NotImplementedException();
         }
 
         public void FieldSetup(IEmulator emulator, ILoDDictionary loDDictionary, IUIControl uiControl) {
             FieldChapter3Buffs(emulator);
+        }
+
+        private void CustomEquipSetup(IEmulator emulator) {
+            customEquip = new List<int>[9];
+            for (byte character = 0; character <9; character++) {
+
+            }
         }
 
         private static void BattleChapter3Buffs(IEmulator emulator) {

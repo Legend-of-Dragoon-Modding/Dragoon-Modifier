@@ -99,12 +99,13 @@ namespace Dragoon_Modifier.Emulator {
         };
         private static readonly Dictionary<string, ushort> _textCodes = new Dictionary<string, ushort>() {
             { "<END>", 0xA0FF },
-            {"<LINE>", 0xA1FF },
-            {"<GOLD>", 0xA8 },
-            {"<WHITE>", 0xA7 },
-            {"<RED>", 0xA705 },
-            {"<YELLOW>", 0xA708 }
+            { "<LINE>", 0xA1FF },
+            { "<GOLD>", 0x00A8 },
+            { "<WHITE>", 0x00A7 },
+            { "<RED>", 0xA705 },
+            { "<YELLOW>", 0xA708 }
         };
+        private readonly Dictionary<ushort, string> _textCodesReversed;
         private static readonly byte[] _empty = new byte[] { 0x0, 0x0 };
         private readonly Dictionary<char, ushort> _char2ushort;
         private readonly Dictionary<ushort, char> _ushort2char;
@@ -112,6 +113,7 @@ namespace Dragoon_Modifier.Emulator {
         internal LoDEncoding(Dictionary<char, ushort> char2ushort) {
             _char2ushort = char2ushort;
             _ushort2char = _char2ushort.ToDictionary(x => x.Value, x => x.Key);
+            _textCodesReversed = _textCodes.ToDictionary(x => x.Value, x => x.Key);
         }
 
         internal LoDEncoding(Region region) {
@@ -121,6 +123,7 @@ namespace Dragoon_Modifier.Emulator {
                     break;
             }
             _ushort2char = _char2ushort.ToDictionary(x => x.Value, x => x.Key);
+            _textCodesReversed = _textCodes.ToDictionary(x => x.Value, x => x.Key);
         }
 
         public byte[] GetBytes(string text) {
@@ -172,12 +175,20 @@ namespace Dragoon_Modifier.Emulator {
         public string GetString(byte[] bytes) {
             string result = String.Empty;
             for (int i = 0; i < bytes.Length / 2; i++) {
-                if (_ushort2char.TryGetValue(BitConverter.ToUInt16(bytes, i * 2), out var key)) {
+                var val = BitConverter.ToUInt16(bytes, i * 2);
+                if (_ushort2char.TryGetValue(val, out var key)) {
                     result += key;
                     continue;
                 }
+
+                if (_textCodesReversed.TryGetValue(val, out var stringKey)) {
+                    result += stringKey;
+                    continue;
+                }
+
                 result += string.Empty;
             }
+            
             return result;
         }
 
@@ -187,5 +198,6 @@ namespace Dragoon_Modifier.Emulator {
             }
             return ' ';
         }
+
     }
 }

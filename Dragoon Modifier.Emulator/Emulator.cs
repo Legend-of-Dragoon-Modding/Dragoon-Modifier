@@ -541,6 +541,18 @@ namespace Dragoon_Modifier.Emulator {
         }
 
         public string ReadText(long startAddress) {
+            var arr = new List<ushort>();
+            int i = 0;
+            while (i < 200) {
+                i += 2;
+                if (ReadUShort(startAddress + i) == 0xA0FF) { // END
+                    break;
+                }
+            }
+            return LoDEncoding.GetString(ReadAoB(startAddress, startAddress + i + 2));
+
+
+            /*
             var result = String.Empty;
             int i = 0;
             while (true) {
@@ -554,6 +566,7 @@ namespace Dragoon_Modifier.Emulator {
                     return result;
                 }
             }
+            */
         }
 
         public void WriteText(long address, string text) {
