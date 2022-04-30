@@ -143,6 +143,9 @@
     <Compile Include="LoDDict\Monster.cs" />
     <Compile Include="LoDDict\Scripts\CustomScript.cs" />
     <Compile Include="LoDDict\Scripts\DummyScript.cs" />
+    <Compile Include="LoDDict\Scripts\HardMode\Characters\Dart.cs" />
+    <Compile Include="LoDDict\Scripts\HardMode\Characters\ICharacter.cs" />
+    <Compile Include="LoDDict\Scripts\HardMode\IHardItem.cs" />
     <Compile Include="LoDDict\Scripts\HardMode\Script.cs" />
     <Compile Include="LoDDict\Scripts\IScript.cs" />
     <Compile Include="LoDDict\UsableItem.cs" />

@@ -50,12 +50,24 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts.HardMode {
         private byte soasSiphonRingSlot = 0;
         private byte soasAnkhSlot = 0;
 
-        private List<int>[] customEquip = new List<int>[9];
+        private Characters.ICharacter[] _character = new Characters.ICharacter[9] {
+            new Characters.Dart(),
+            new Characters.Dart(), // Placeholder
+            new Characters.Dart(), // Placeholder
+            new Characters.Dart(), // Placeholder
+            new Characters.Dart(), // Placeholder
+            new Characters.Dart(), // Placeholder
+            new Characters.Dart(), // Placeholder
+            new Characters.Dart(), // Placeholder
+            new Characters.Dart() // Placeholder
+        };
 
 
         public void BattleRun(IEmulator emulator, ILoDDictionary loDDictionary, IUIControl uiControl) {
             for (byte slot = 0; slot < emulator.Battle.CharacterTable.Length; slot++) {
                 var character = emulator.Battle.CharacterTable[slot];
+                byte dragoonSpecialAttack = 0;
+                _character[character.ID].Run(emulator, slot, dragoonSpecialAttack);
                 switch (character.ID) {
                     case 0: // Dart
                         SoulEater(emulator, loDDictionary, character, slot);
@@ -98,13 +110,6 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts.HardMode {
 
         public void FieldSetup(IEmulator emulator, ILoDDictionary loDDictionary, IUIControl uiControl) {
             FieldChapter3Buffs(emulator);
-        }
-
-        private void CustomEquipSetup(IEmulator emulator) {
-            customEquip = new List<int>[9];
-            for (byte character = 0; character <9; character++) {
-
-            }
         }
 
         private static void BattleChapter3Buffs(IEmulator emulator) {

@@ -213,6 +213,8 @@ namespace Dragoon_Modifier.DraMod.Controller {
         }
 
         public static void Run(Emulator.IEmulator emulator, UI.IUIControl uiControl, LoDDict.ILoDDictionary loDDictionary) {
+            loDDictionary.ItemScript.BattleRun(emulator, loDDictionary, uiControl);
+
             UpdateUI(emulator, uiControl);
 
             if (Settings.RemoveDamageCaps) {
