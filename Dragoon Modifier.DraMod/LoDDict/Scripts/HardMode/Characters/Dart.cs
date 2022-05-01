@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Dragoon_Modifier.Core;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,15 +33,15 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts.HardMode.Characters {
         private ushort previousMP = 100;
         private double multi = 1;
 
-        public void Run(Emulator.IEmulator emulator, byte slot, byte dragoonSpecialAttack) {
-            var battleTable = emulator.Battle.CharacterTable[slot];
+        public void Run(byte slot, byte dragoonSpecialAttack) {
+            var battleTable = Emulator.Memory.Battle.CharacterTable[slot];
             // Let's also ignore DragonBlockStuff for now.
 
             DragoonAttack(battleTable, dragoonSpecialAttack);
 
             currentMP = battleTable.MP;
             if (currentMP < previousMP) {
-                byte spell = emulator.Battle.CharacterTable[slot].SpellCast;
+                byte spell = Emulator.Memory.Battle.CharacterTable[slot].SpellCast;
 
                 if (DivineRedEye) {
                     DivineRedEyeSpells(battleTable, spell);
@@ -51,7 +53,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts.HardMode.Characters {
             previousMP = currentMP;
         }
 
-        private void DragoonAttack(Emulator.Memory.Battle.Character battleTable, byte dragoonSpecialAttack) {
+        private void DragoonAttack(Core.Memory.Battle.Character battleTable, byte dragoonSpecialAttack) {
             if (dragoonSpecialAttack == 0 || dragoonSpecialAttack == 9) {
                 if (DivineDragoon) {
                     battleTable.DAT = (ushort) (DivineSpecialDAT * multi);
@@ -84,7 +86,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts.HardMode.Characters {
             battleTable.DAT = (ushort) (DAT * multi);
         }
 
-        private void RegularSpells(Emulator.Memory.Battle.Character battleTable, byte spell) {
+        private void RegularSpells(Core.Memory.Battle.Character battleTable, byte spell) {
             switch (spell) {
                 case 0: // Flameshot
                     battleTable.DMAT = (ushort) (flameshot * multi);
@@ -111,7 +113,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts.HardMode.Characters {
             }
         }
 
-        private void DivineRedEyeSpells(Emulator.Memory.Battle.Character battleTable, byte spell) {
+        private void DivineRedEyeSpells(Core.Memory.Battle.Character battleTable, byte spell) {
             if (spell == 1) {
                 battleTable.DMAT = (ushort) (explosionDivineRedEye * multi);
                 return;

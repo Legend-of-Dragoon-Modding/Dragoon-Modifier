@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dragoon_Modifier.Core;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -55,32 +56,32 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
 
         public Scripts.IScript ItemScript { get; private set; } = new Scripts.DummyScript();
 
-        internal LoDDictionary(Emulator.IEmulator emulator, UI.IUIControl uiControl, string cwd, string mod) {
-            Load(emulator, uiControl, cwd, mod);
+        internal LoDDictionary(UI.IUIControl uiControl, string cwd, string mod) {
+            Load(uiControl, cwd, mod);
 
-            ParseScripts($"{cwd}\\Mods\\{mod}", emulator, uiControl);
+            // ParseScripts($"{cwd}\\Mods\\{mod}", uiControl);
         }
 
-        internal LoDDictionary(Emulator.IEmulator emulator, UI.IUIControl uiControl, string cwd, string mod, Scripts.IScript itemScript) {
-            Load(emulator, uiControl, cwd, mod);
+        internal LoDDictionary(UI.IUIControl uiControl, string cwd, string mod, Scripts.IScript itemScript) {
+            Load(uiControl, cwd, mod);
 
             ItemScript = itemScript;
         }
 
-        private void Load(Emulator.IEmulator emulator, UI.IUIControl uiControl, string cwd, string mod) {
+        private void Load(UI.IUIControl uiControl, string cwd, string mod) {
             string modPath = $"{cwd}\\Mods\\{mod}";
 
-            GetItems(emulator, modPath);
+            GetItems(modPath);
             GetMonsters(modPath);
             GetCharacters(modPath);
             GetShops(modPath);
         }
 
-        private void ParseScripts(string path, Emulator.IEmulator emulator, UI.IUIControl uiControl) {
+        private void ParseScripts(string path, UI.IUIControl uiControl) {
             foreach (var file in Directory.GetFiles(path, "*.cs")) {
                 if (file.EndsWith("ItemScript.cs")) {
                     try {
-                        ItemScript = new Scripts.CustomScript(file, emulator, this, uiControl);
+                        ItemScript = new Scripts.CustomScript(file, this, uiControl);
                         Console.WriteLine("Custom item script inserted.");
                     } catch (ApplicationException ex) {
                         Console.WriteLine($"[ERROR] Item script not compatible.");
@@ -105,17 +106,17 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
             return false;
         }
 
-        private void GetItems(Emulator.IEmulator emulator, string modPath) {
-            GetEquipment(emulator, modPath);
-            GetUsableItems(emulator, modPath);
+        private void GetItems(string modPath) {
+            GetEquipment(modPath);
+            GetUsableItems(modPath);
 
-            ItemNames = GetEncodedNames(emulator);
-            ItemDescriptions = GetEncodedDescriptions(emulator);
-            ItemBattleNames = GetEncodedBattleNames(emulator);
-            ItemBattleDescriptions = GetEncodedBattleDescriptions(emulator);
+            ItemNames = GetEncodedNames();
+            ItemDescriptions = GetEncodedDescriptions();
+            ItemBattleNames = GetEncodedBattleNames();
+            ItemBattleDescriptions = GetEncodedBattleDescriptions();
         }
 
-        private void GetEquipment(Emulator.IEmulator emulator, string modPath) {
+        private void GetEquipment(string modPath) {
             string file = $"{modPath}\\Equipment.tsv";
             int i = 0;
             try {
@@ -124,7 +125,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
                     while (!itemData.EndOfStream) {
                         var line = itemData.ReadLine();
                         var values = line.Split('\t').ToArray();
-                        Item[i] = new Equipment(emulator, (byte) i, values, Element2Num, Status2Num); // TODO Factory
+                        Item[i] = new Equipment((byte) i, values, Element2Num, Status2Num); // TODO Factory
                         i++;
                     }
                 }
@@ -135,7 +136,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
             }
         }
 
-        private void GetUsableItems(Emulator.IEmulator emulator, string modPath) {
+        private void GetUsableItems(string modPath) {
             string file = $"{modPath}\\Items.tsv";
             int i = 192;
             try {
@@ -144,7 +145,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
                     while (!itemData.EndOfStream) {
                         var line = itemData.ReadLine();
                         var values = line.Split('\t').ToArray();
-                        Item[i] = new UsableItem(emulator, (byte) i, values, Element2Num, Status2Num); // TODO Factory
+                        Item[i] = new UsableItem((byte) i, values, Element2Num, Status2Num); // TODO Factory
                         i++;
                     }
                 }
@@ -155,14 +156,14 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
             }
         }
 
-        private byte[] GetEncodedNames(Emulator.IEmulator emulator) {
-            int start = emulator.GetAddress("ITEM_NAME");
+        private byte[] GetEncodedNames() {
+            int start = Emulator.GetAddress("ITEM_NAME");
 
             var sorted = Item.OrderByDescending(item => item.Name.Length);
             byte[] result = new byte[0];
 
             foreach (var item in sorted) {
-                var search = Emulator.KMP.UnmaskedSearch(item.EncodedName, result);
+                var search = KMP.UnmaskedSearch(item.EncodedName, result);
                 if (search.Count != 0) {
                     item.NamePointer = start + (int) search[0];
                 } else {
@@ -171,7 +172,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
                 }
             }
 
-            var end = emulator.GetAddress("ITEM_NAME_PTR");
+            var end = Emulator.GetAddress("ITEM_NAME_PTR");
             if (result.Length > end - start) {
                 Console.WriteLine($"Item name character limit exceeded! {result.Length} / {end - start} characters. Turning off Name and Description changes.");
                 Settings.ItemNameDescChange = false;
@@ -180,14 +181,14 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
             return result;
         }
 
-        private byte[] GetEncodedDescriptions(Emulator.IEmulator emulator) {
-            int start = emulator.GetAddress("ITEM_DESC"); ;
+        private byte[] GetEncodedDescriptions() {
+            int start = Emulator.GetAddress("ITEM_DESC"); ;
 
             var sorted = Item.OrderByDescending(item => item.Description.Length);
             byte[] result = new byte[0];
 
             foreach (var item in sorted) {
-                var search = Emulator.KMP.UnmaskedSearch(item.EncodedDescription, result);
+                var search = KMP.UnmaskedSearch(item.EncodedDescription, result);
                 if (search.Count != 0) {
                     item.DescriptionPointer = start + (int) search[0];
                 } else {
@@ -196,7 +197,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
                 }
             }
 
-            var end = emulator.GetAddress("ITEM_DESC_PTR");
+            var end = Emulator.GetAddress("ITEM_DESC_PTR");
             if (result.Length > end - start) {
                 Console.WriteLine($"Item description character limit exceeded! {result.Length} / {end - start} characters. Turning off Name and Description changes.");
                 Settings.ItemNameDescChange = false;
@@ -205,14 +206,14 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
             return result;
         }
 
-        private byte[] GetEncodedBattleNames(Emulator.IEmulator emulator) {
-            int start = emulator.GetAddress("ITEM_BTL_NAME");
+        private byte[] GetEncodedBattleNames() {
+            int start = Emulator.GetAddress("ITEM_BTL_NAME");
 
             var sorted = Item.Where(item => item is IUsableItem).Cast<IUsableItem>().OrderByDescending(item => item.Name.Length);
             byte[] result = new byte[0];
 
             foreach (var item in sorted) {
-                var search = Emulator.KMP.UnmaskedSearch(item.EncodedName, result);
+                var search = KMP.UnmaskedSearch(item.EncodedName, result);
                 if (search.Count != 0) {
                     item.BattleNamePointer = start + (int) search[0];
                 } else {
@@ -221,7 +222,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
                 }
             }
 
-            var end = emulator.GetAddress("ITEM_BTL_NAME_PTR");
+            var end = Emulator.GetAddress("ITEM_BTL_NAME_PTR");
             if (result.Length > end - start) {
                 Console.WriteLine($"Item battle name character limit exceeded! {result.Length} / {end - start} characters. Turning off Name and Description changes.");
                 Settings.ItemNameDescChange = false;
@@ -230,14 +231,14 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
             return result;
         }
 
-        private byte[] GetEncodedBattleDescriptions(Emulator.IEmulator emulator) {
-            int start = emulator.GetAddress("ITEM_BTL_DESC");
+        private byte[] GetEncodedBattleDescriptions() {
+            int start = Emulator.GetAddress("ITEM_BTL_DESC");
 
             var sorted = Item.Where(item => item is IUsableItem).Cast<IUsableItem>().OrderByDescending(item => item.BattleDescription.Length);
             byte[] result = new byte[0];
 
             foreach (var item in sorted) {
-                var search = Emulator.KMP.UnmaskedSearch(item.EncodedBattleDescription, result);
+                var search = KMP.UnmaskedSearch(item.EncodedBattleDescription, result);
                 if (search.Count != 0) {
                     item.BattleDescriptionPointer = start + (int) search[0];
                 } else {
@@ -246,7 +247,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
                 }
             }
 
-            var end = emulator.GetAddress("ITEM_BTL_DESC_PTR");
+            var end = Emulator.GetAddress("ITEM_BTL_DESC_PTR");
             if (result.Length > end - start) {
                 Console.WriteLine($"Item battle description character limit exceeded! {result.Length} / {end - start} characters. Turning off Name and Description changes.");
                 Settings.ItemNameDescChange = false;

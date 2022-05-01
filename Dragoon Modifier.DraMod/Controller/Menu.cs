@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.Controller {
     internal static class Menu {
-        public static void Setup(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDict, UI.IUIControl uiControl) {
+        public static void Setup(LoDDict.ILoDDictionary LoDDict, UI.IUIControl uiControl) {
             
         }
 
-        public static void Exit(Emulator.IEmulator emulator, UI.IUIControl uiControl) {
+        public static void Exit(UI.IUIControl uiControl) {
 
         }
     }

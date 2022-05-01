@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dragoon_Modifier.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,16 +17,16 @@ namespace Dragoon_Modifier.DraMod.UI {
         public ushort SPD;
         public ushort Turn;
 
-        internal MonsterUpdate(Emulator.IEmulator emulator, int index) {
-            Name = emulator.Battle.MonsterTable[index].Name;
-            HP = emulator.Battle.MonsterTable[index].HP;
-            MaxHP = emulator.Battle.MonsterTable[index].MaxHP;
-            AT = emulator.Battle.MonsterTable[index].AT;
-            MAT = emulator.Battle.MonsterTable[index].MAT;
-            DF = emulator.Battle.MonsterTable[index].DF;
-            MDF = emulator.Battle.MonsterTable[index].MDF;
-            SPD = emulator.Battle.MonsterTable[index].SPD;
-            Turn = emulator.Battle.MonsterTable[index].Turn;
+        internal MonsterUpdate(int index) {
+            Name = Emulator.Memory.Battle.MonsterTable[index].Name;
+            HP = Emulator.Memory.Battle.MonsterTable[index].HP;
+            MaxHP = Emulator.Memory.Battle.MonsterTable[index].MaxHP;
+            AT = Emulator.Memory.Battle.MonsterTable[index].AT;
+            MAT = Emulator.Memory.Battle.MonsterTable[index].MAT;
+            DF = Emulator.Memory.Battle.MonsterTable[index].DF;
+            MDF = Emulator.Memory.Battle.MonsterTable[index].MDF;
+            SPD = Emulator.Memory.Battle.MonsterTable[index].SPD;
+            Turn = Emulator.Memory.Battle.MonsterTable[index].Turn;
         }
     }
 }

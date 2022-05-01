@@ -1,4 +1,4 @@
-﻿using Dragoon_Modifier.Emulator;
+﻿using Dragoon_Modifier.Core;
 
 using System;
 using System.Collections.Generic;
@@ -34,18 +34,18 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 this.slot = slot;
             }
 
-            internal override void Func(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDictionary) {
-                if (emulator.Battle.CharacterTable.Length <= slot) {
+            internal override void Func(LoDDict.ILoDDictionary LoDDictionary) {
+                if (Emulator.Memory.Battle.CharacterTable.Length <= slot) {
                     Console.WriteLine($"Cannot exit dragoon for character slot {slot + 1}. Not enough characters.");
                     return;
                 }
 
-                if (emulator.Battle.CharacterTable[slot].DragoonTurns < 1) {
+                if (Emulator.Memory.Battle.CharacterTable[slot].DragoonTurns < 1) {
                     Console.WriteLine($"Cannot exit dragoon for character slot {slot + 1}. No longer in dragoon form.");
                     return;
                 }
 
-                emulator.Battle.CharacterTable[slot].DragoonTurns = 1;
+                Emulator.Memory.Battle.CharacterTable[slot].DragoonTurns = 1;
             }
         }
 
@@ -55,8 +55,8 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             }
 
-            internal override void Func(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDictionary) {
-                Addition.Swap(emulator, LoDDictionary);
+            internal override void Func(LoDDict.ILoDDictionary LoDDictionary) {
+                Addition.Swap(LoDDictionary);
             }
         }
     }

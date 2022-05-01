@@ -1,5 +1,5 @@
 ﻿using Dragoon_Modifier.DraMod.UI;
-using Dragoon_Modifier.Emulator;
+using Dragoon_Modifier.Core;
 
 using System;
 using System.Collections.Generic;
@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.LoDDict.Scripts {
     internal class DummyScript : IScript {
-        public void BattleRun(IEmulator emulator, ILoDDictionary loDDictionary, IUIControl uiControl) {}
+        public void BattleRun(ILoDDictionary loDDictionary, IUIControl uiControl) {}
 
-        public void BattleSetup(IEmulator emulator, ILoDDictionary loDDictionary, IUIControl uiControl) {}
+        public void BattleSetup(ILoDDictionary loDDictionary, IUIControl uiControl) {}
 
-        public void FieldRun(IEmulator emulator, ILoDDictionary loDDictionary, IUIControl uiControl) {}
+        public void FieldRun(ILoDDictionary loDDictionary, IUIControl uiControl) {}
 
-        public void FieldSetup(IEmulator emulator, ILoDDictionary loDDictionary, IUIControl uiControl) {}
+        public void FieldSetup(ILoDDictionary loDDictionary, IUIControl uiControl) {}
     }
 }

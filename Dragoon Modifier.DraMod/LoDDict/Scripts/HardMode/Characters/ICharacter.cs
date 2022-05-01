@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.LoDDict.Scripts.HardMode.Characters {
     internal interface ICharacter {
-        void Run(Emulator.IEmulator emulator, byte slot, byte dragoonSpecialAttack);
+        void Run(byte slot, byte dragoonSpecialAttack);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dragoon_Modifier.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,27 +30,27 @@ namespace Dragoon_Modifier.DraMod.UI {
         public ushort SP;
         public ushort Turn;
 
-        internal CharacterUpdate(Emulator.IEmulator emulator, int index) {
-            Name = _characterNames[emulator.Memory.PartySlot[index]];
-            HP = emulator.Battle.CharacterTable[index].HP;
-            MaxHP = emulator.Battle.CharacterTable[index].MaxHP;
-            MP = emulator.Battle.CharacterTable[index].MP;
-            MaxMP = emulator.Battle.CharacterTable[index].MaxMP;
-            AT = emulator.Battle.CharacterTable[index].AT;
-            MAT = emulator.Battle.CharacterTable[index].MAT;
-            DF = emulator.Battle.CharacterTable[index].DF;
-            MDF = emulator.Battle.CharacterTable[index].MDF;
-            A_HIT = emulator.Battle.CharacterTable[index].A_HIT;
-            M_HIT = emulator.Battle.CharacterTable[index].M_HIT;
-            A_AV = emulator.Battle.CharacterTable[index].A_AV;
-            M_AV = emulator.Battle.CharacterTable[index].M_AV;
-            DAT = emulator.Battle.CharacterTable[index].DAT;
-            DMAT = emulator.Battle.CharacterTable[index].DMAT;
-            DDF = emulator.Battle.CharacterTable[index].DDF;
-            DMDF = emulator.Battle.CharacterTable[index].DMDF;
-            SPD = emulator.Battle.CharacterTable[index].SPD;
-            SP = emulator.Battle.CharacterTable[index].SP;
-            Turn = emulator.Battle.CharacterTable[index].Turn;
+        internal CharacterUpdate(int index) {
+            Name = _characterNames[Emulator.Memory.PartySlot[index]];
+            HP = Emulator.Memory.Battle.CharacterTable[index].HP;
+            MaxHP = Emulator.Memory.Battle.CharacterTable[index].MaxHP;
+            MP = Emulator.Memory.Battle.CharacterTable[index].MP;
+            MaxMP = Emulator.Memory.Battle.CharacterTable[index].MaxMP;
+            AT = Emulator.Memory.Battle.CharacterTable[index].AT;
+            MAT = Emulator.Memory.Battle.CharacterTable[index].MAT;
+            DF = Emulator.Memory.Battle.CharacterTable[index].DF;
+            MDF = Emulator.Memory.Battle.CharacterTable[index].MDF;
+            A_HIT = Emulator.Memory.Battle.CharacterTable[index].A_HIT;
+            M_HIT = Emulator.Memory.Battle.CharacterTable[index].M_HIT;
+            A_AV = Emulator.Memory.Battle.CharacterTable[index].A_AV;
+            M_AV = Emulator.Memory.Battle.CharacterTable[index].M_AV;
+            DAT = Emulator.Memory.Battle.CharacterTable[index].DAT;
+            DMAT = Emulator.Memory.Battle.CharacterTable[index].DMAT;
+            DDF = Emulator.Memory.Battle.CharacterTable[index].DDF;
+            DMDF = Emulator.Memory.Battle.CharacterTable[index].DMDF;
+            SPD = Emulator.Memory.Battle.CharacterTable[index].SPD;
+            SP = Emulator.Memory.Battle.CharacterTable[index].SP;
+            Turn = Emulator.Memory.Battle.CharacterTable[index].Turn;
         }
     }
 }

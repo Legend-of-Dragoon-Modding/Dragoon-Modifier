@@ -16,18 +16,18 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts {
         private readonly MethodDelegate fieldRun;
         private readonly MethodDelegate fieldSetup;
 
-        internal CustomScript(string file, Emulator.IEmulator emulator, ILoDDictionary loDDictionary, UI.IUIControl uiControl) {
+        internal CustomScript(string file, ILoDDictionary loDDictionary, UI.IUIControl uiControl) {
             this.file = Path.GetFullPath(file);
             script = CSScript.LoadFile(file, null, true);
-            battleRun = script.GetStaticMethod("*.BattleRun", emulator, uiControl);
-            battleSetup = script.GetStaticMethod("*.BattleSetup", emulator, uiControl);
-            fieldRun = script.GetStaticMethod("*.FieldRun", emulator, uiControl);
-            fieldSetup = script.GetStaticMethod("*.FieldSetup", emulator, uiControl);
+            battleRun = script.GetStaticMethod("*.BattleRun", loDDictionary, uiControl);
+            battleSetup = script.GetStaticMethod("*.BattleSetup", loDDictionary, uiControl);
+            fieldRun = script.GetStaticMethod("*.FieldRun", loDDictionary, uiControl);
+            fieldSetup = script.GetStaticMethod("*.FieldSetup", loDDictionary, uiControl);
         }
 
-        public void BattleRun(Emulator.IEmulator emulator, ILoDDictionary loDDictionary, UI.IUIControl uiControl) {
+        public void BattleRun(ILoDDictionary loDDictionary, UI.IUIControl uiControl) {
             try {
-                battleRun(emulator, uiControl);
+                battleRun(loDDictionary, uiControl);
             } catch (Exception ex) {
                 Constants.Run = false;
                 uiControl.WriteGLog("Program stopped.");
@@ -37,9 +37,9 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts {
             }
         }
 
-        public void BattleSetup(Emulator.IEmulator emulator, ILoDDictionary loDDictionary, UI.IUIControl uiControl) {
+        public void BattleSetup(ILoDDictionary loDDictionary, UI.IUIControl uiControl) {
             try {
-                battleSetup(emulator, uiControl);
+                battleSetup(loDDictionary, uiControl);
             } catch (Exception ex) {
                 Constants.Run = false;
                 uiControl.WriteGLog("Program stopped.");
@@ -49,9 +49,9 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts {
             }
         }
 
-        public void FieldRun(Emulator.IEmulator emulator, ILoDDictionary loDDictionary, UI.IUIControl uiControl) {
+        public void FieldRun(ILoDDictionary loDDictionary, UI.IUIControl uiControl) {
             try {
-                fieldRun(emulator, uiControl);
+                fieldRun(loDDictionary, uiControl);
             } catch (Exception ex) {
                 Constants.Run = false;
                 uiControl.WriteGLog("Program stopped.");
@@ -61,9 +61,9 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts {
             }
         }
 
-        public void FieldSetup(Emulator.IEmulator emulator, ILoDDictionary loDDictionary, UI.IUIControl uiControl) {
+        public void FieldSetup(ILoDDictionary loDDictionary, UI.IUIControl uiControl) {
             try {
-                fieldSetup(emulator, uiControl);
+                fieldSetup(loDDictionary, uiControl);
             } catch (Exception ex) {
                 Constants.Run = false;
                 uiControl.WriteGLog("Program stopped.");

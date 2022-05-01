@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dragoon_Modifier.Core;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -88,14 +89,14 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
         public byte SpecialBonusAmmount { get; private set; } = 0;
         public byte SpecialEffect { get; private set; } = 0;
 
-        internal Equipment(Emulator.IEmulator emulator, byte index, string[] values, Dictionary<string, byte> element2num, Dictionary<string, byte> status2num) {
+        internal Equipment(byte index, string[] values, Dictionary<string, byte> element2num, Dictionary<string, byte> status2num) {
             var error = new List<string>();
 
             ID = index;
             
             if (!(values[0] == "" || values[0] == " ")) {
                 Name = values[0];
-                EncodedName = emulator.LoDEncoding.GetBytes(Name).Concat(new byte[] { 0xFF, 0xA0}).ToArray();
+                EncodedName = Emulator.TextEncoding.GetBytes(Name).Concat(new byte[] { 0xFF, 0xA0}).ToArray();
             }
 
             if (_types.TryGetValue(values[1].ToLower(), out byte bkey)) {
@@ -275,7 +276,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
             if (!(values[23] == "" || values[23] == " ")) {
                 Description = values[23];
        
-                EncodedDescription = emulator.LoDEncoding.GetBytes(Description).Concat(new byte[] { 0xFF, 0xA0 }).ToArray();
+                EncodedDescription = Emulator.TextEncoding.GetBytes(Description).Concat(new byte[] { 0xFF, 0xA0 }).ToArray();
             }
 
             if (UInt16.TryParse(values[24], out uskey)) {

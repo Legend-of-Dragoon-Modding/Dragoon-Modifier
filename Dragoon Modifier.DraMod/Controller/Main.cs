@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dragoon_Modifier.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,97 +17,97 @@ namespace Dragoon_Modifier.DraMod.Controller {
         private static bool ShopFix = false;
         private static bool HPCapSet = false;
 
-        internal static void Run(ref Emulator.IEmulator emulator, UI.IUIControl uiControl, ref LoDDict.ILoDDictionary LoDDict) {
+        internal static void Run(UI.IUIControl uiControl, ref LoDDict.ILoDDictionary LoDDict) {
             while (Constants.Run) {
                 try {
-                    switch (emulator.Memory.GameState) {
-                        case Emulator.GameState.Battle:
+                    switch (Emulator.Memory.GameState) {
+                        case GameState.Battle:
                             if (!BattleSetup) {
                                 if (Settings.NoDart > 0) {
-                                    emulator.Memory.PartySlot[0] = 0;
+                                    Emulator.Memory.PartySlot[0] = 0;
                                 }
-                                Battle.Setup(emulator, LoDDict, uiControl);
+                                Battle.Setup(LoDDict, uiControl);
                                 BattleSetup = true;
                                 AdditionsChanged = false;
                                 ItemsChanged = false;
                                 ShopChanged = false;
                                 HPCapSet = false;
                             }
-                            Battle.Run(emulator, uiControl, LoDDict);
+                            Battle.Run(uiControl, LoDDict);
                             break;
 
-                        case Emulator.GameState.Field:
+                        case GameState.Field:
                             BattleSetup = false;
 
                             if (!ShopChanged) {
                                 uiControl.ResetBattle();
                                 if (Settings.ShopChange) {
-                                    Shop.TableChange(emulator, LoDDict);
+                                    Shop.TableChange(LoDDict);
                                 }
                                 ShopChanged = true;
                             }
 
-                            if (Settings.NoDart != 255 && emulator.Memory.PartySlot[0] != 0) {
-                                Settings.NoDart = (byte) emulator.Memory.PartySlot[0];
-                                emulator.Memory.PartySlot[0] = 0;
+                            if (Settings.NoDart != 255 && Emulator.Memory.PartySlot[0] != 0) {
+                                Settings.NoDart = (byte) Emulator.Memory.PartySlot[0];
+                                Emulator.Memory.PartySlot[0] = 0;
                             }
                             
 
                             if (!HPCapSet) {
                                 HPCapSet = true;
                                 if (Settings.RemoveHPCap) {
-                                    emulator.Memory.FieldHPCap = 30000;
+                                    Emulator.Memory.FieldHPCap = 30000;
                                 }
                             }
 
-                            Field.Run(emulator, uiControl);
+                            Field.Run(uiControl);
                             break;
 
-                        case Emulator.GameState.Overworld:
+                        case GameState.Overworld:
                             BattleSetup = false;
                             ShopChanged = false;
 
                             if (!HPCapSet) {
                                 HPCapSet = true;
                                 if (Settings.RemoveHPCap) {
-                                    emulator.Memory.FieldHPCap = 30000;
+                                    Emulator.Memory.FieldHPCap = 30000;
                                 }
                             }
                             break;
 
-                        case Emulator.GameState.Menu:
+                        case GameState.Menu:
                             BattleSetup = false;
 
                             if (!ItemsChanged) {
-                                Field.ItemSetup(emulator, LoDDict);
+                                Field.ItemSetup(LoDDict);
                                 ItemsChanged = true;
                             }
 
                             if (!AdditionsChanged) {
-                                Field.AdditionSetup(emulator, LoDDict);
+                                Field.AdditionSetup(LoDDict);
                                 AdditionsChanged = true;
                             }
 
                             if (Settings.NoDart != 255) {
-                                if (emulator.Memory.MenuSubTypes == Emulator.MenuSubTypes.Replace) {
-                                    Settings.NoDart = (byte) emulator.Memory.PartySlot[0];
-                                } else if (emulator.Memory.MenuSubTypes == Emulator.MenuSubTypes.FirstMenu) {
-                                    emulator.Memory.MenuUnlock = 1;
-                                    emulator.Memory.PartySlot[0] = Settings.NoDart;
+                                if (Emulator.Memory.MenuSubTypes == MenuSubTypes.Replace) {
+                                    Settings.NoDart = (byte) Emulator.Memory.PartySlot[0];
+                                } else if (Emulator.Memory.MenuSubTypes == MenuSubTypes.FirstMenu) {
+                                    Emulator.Memory.MenuUnlock = 1;
+                                    Emulator.Memory.PartySlot[0] = Settings.NoDart;
                                 }
                             }
 
                             break;
 
-                        case Emulator.GameState.BattleResult:
+                        case GameState.BattleResult:
                             BattleSetup = false;
                             if (!ItemsChanged) {
-                                Field.ItemSetup(emulator, LoDDict);
+                                Field.ItemSetup(LoDDict);
                                 ItemsChanged = true;
                             }
                             break;
 
-                        case Emulator.GameState.ChangeDisc:
+                        case GameState.ChangeDisc:
                             ItemsChanged = false;
                             AdditionsChanged = false;
                             ShopChanged = false;
@@ -115,32 +116,32 @@ namespace Dragoon_Modifier.DraMod.Controller {
                             HPCapSet = false;
                             break;
 
-                        case Emulator.GameState.Shop:
+                        case GameState.Shop:
                             BattleSetup = false;
                             if (!ItemsChanged) {
-                                Field.ItemSetup(emulator, LoDDict);
+                                Field.ItemSetup(LoDDict);
                                 ItemsChanged = true;
                             }
 
                             if (ShopFix) {
                                 ShopChanged = false;
                                 ShopFix = false;
-                                Shop.ContentChange(emulator, LoDDict);
+                                Shop.ContentChange(LoDDict);
                             }
 
                             if (!ShopChanged) {
                                 if (Settings.ShopChange) {
-                                    Shop.TableChange(emulator, LoDDict);
+                                    Shop.TableChange(LoDDict);
                                 }
                                 ShopChanged = true;
                             }
                             break;
                     }
 
-                    GreenButton.Run(emulator, uiControl);
+                    GreenButton.Run(uiControl);
 
                     if (Settings.KillBGM) {
-                        KillBGM.Run(emulator, uiControl);
+                        KillBGM.Run(uiControl);
                     }
 
                     Thread.Sleep(Settings.LoopDelay);

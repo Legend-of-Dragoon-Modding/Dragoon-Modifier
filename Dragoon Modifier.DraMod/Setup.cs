@@ -9,16 +9,10 @@ namespace Dragoon_Modifier.DraMod {
     public class Setup {
         public static void Run(UI.IUIControl uiControl) {
             CheckVersion(uiControl);
-            var emulator = Attach();
 
             //Thread t = new Thread(() => Controller.Main.Run(emulator, uiControl));
 
             //t.Start();
-        }
-
-        public static Emulator.IEmulator Attach() {
-            var emulator = Emulator.Factory.Create("ePSXe", 0);
-            return emulator;
         }
 
         public static void CheckVersion(UI.IUIControl uiControl) {

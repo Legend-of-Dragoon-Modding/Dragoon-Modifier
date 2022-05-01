@@ -1,5 +1,5 @@
 ﻿using Dragoon_Modifier.DraMod.UI;
-using Dragoon_Modifier.Emulator;
+using Dragoon_Modifier.Core;
 
 using System;
 using System.Collections.Generic;
@@ -63,64 +63,64 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts.HardMode {
         };
 
 
-        public void BattleRun(IEmulator emulator, ILoDDictionary loDDictionary, IUIControl uiControl) {
-            for (byte slot = 0; slot < emulator.Battle.CharacterTable.Length; slot++) {
-                var character = emulator.Battle.CharacterTable[slot];
+        public void BattleRun(ILoDDictionary loDDictionary, IUIControl uiControl) {
+            for (byte slot = 0; slot < Emulator.Memory.Battle.CharacterTable.Length; slot++) {
+                var character = Emulator.Memory.Battle.CharacterTable[slot];
                 byte dragoonSpecialAttack = 0;
-                _character[character.ID].Run(emulator, slot, dragoonSpecialAttack);
+                _character[character.ID].Run(slot, dragoonSpecialAttack);
                 switch (character.ID) {
                     case 0: // Dart
-                        SoulEater(emulator, loDDictionary, character, slot);
+                        SoulEater(loDDictionary, character, slot);
                         break;
                     case 1: // Lavitz
                     case 5: // Albert
-                        Harpoon(emulator, loDDictionary, character, slot);
+                        Harpoon(loDDictionary, character, slot);
                         break;
                     case 2: // Shana
                     case 8: // Miranda
                         // Elemental Arrow
                         break;
                     case 3: // Rose
-                        DragonBeater(emulator, loDDictionary, character, slot);
+                        DragonBeater(loDDictionary, character, slot);
                         break;
                     case 4: // Haschel
-                        BatteryGlove(emulator, loDDictionary, character, slot);
+                        BatteryGlove(loDDictionary, character, slot);
                         break;
                     case 6: // Meru
                         break;
                     case 7: // Kongol
-                        GiantAxe(emulator, loDDictionary, character, slot);
+                        GiantAxe(loDDictionary, character, slot);
                         break;
                 }
 
             }
         }
 
-        public void BattleSetup(IEmulator emulator, ILoDDictionary loDDictionary, IUIControl uiControl) {
+        public void BattleSetup(ILoDDictionary loDDictionary, IUIControl uiControl) {
             
 
-            BattleChapter3Buffs(emulator);
-            KongolSpeedNerf(emulator);
+            BattleChapter3Buffs();
+            KongolSpeedNerf();
         }
 
 
-        public void FieldRun(IEmulator emulator, ILoDDictionary loDDictionary, IUIControl uiControl) {
+        public void FieldRun(ILoDDictionary loDDictionary, IUIControl uiControl) {
             throw new NotImplementedException();
         }
 
-        public void FieldSetup(IEmulator emulator, ILoDDictionary loDDictionary, IUIControl uiControl) {
-            FieldChapter3Buffs(emulator);
+        public void FieldSetup(ILoDDictionary loDDictionary, IUIControl uiControl) {
+            FieldChapter3Buffs();
         }
 
-        private static void BattleChapter3Buffs(IEmulator emulator) {
-            if (emulator.Memory.Chapter < 3) {
+        private static void BattleChapter3Buffs() {
+            if (Emulator.Memory.Chapter < 3) {
                 return;
             }
 
             for (int character = 0; character < 9; character++) {
                 short modif = 0;
     
-                switch (emulator.Memory.CharacterTable[character].Weapon) {
+                switch (Emulator.Memory.CharacterTable[character].Weapon) {
                     case heatBladeID:
                         modif = heatBladeBuff;
                         break;
@@ -138,52 +138,52 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts.HardMode {
                         break;
                 }
 
-                emulator.Memory.SecondaryCharacterTable[character].EquipAT = (ushort) (emulator.Memory.SecondaryCharacterTable[character].EquipAT + modif);
+                Emulator.Memory.SecondaryCharacterTable[character].EquipAT = (ushort) (Emulator.Memory.SecondaryCharacterTable[character].EquipAT + modif);
             }
         }
 
-        private static void FieldChapter3Buffs(IEmulator emulator) {
-            if (emulator.Memory.Chapter < 3) {
-                var morningStar = emulator.Memory.Item[morningStarID];
-                emulator.WriteUInt(morningStar.DescriptionPointer, 0xA0FFA0FF); // Double end flag
+        private static void FieldChapter3Buffs() {
+            if (Emulator.Memory.Chapter < 3) {
+                var morningStar = Emulator.Memory.Item[morningStarID];
+                Emulator.DirectAccess.WriteUInt(morningStar.DescriptionPointer, 0xA0FFA0FF); // Double end flag
                 return;
             }
 
-            Emulator.Memory.IEquipment item = (Emulator.Memory.IEquipment) emulator.Memory.Item[heatBladeID];
+            Core.Memory.IEquipment item = (Core.Memory.IEquipment) Emulator.Memory.Item[heatBladeID];
             item.AT = (byte) (item.AT + heatBladeBuff);
 
-            item = (Emulator.Memory.IEquipment) emulator.Memory.Item[shadowCutterID];
+            item = (Core.Memory.IEquipment) Emulator.Memory.Item[shadowCutterID];
             item.AT = (byte) (item.AT + shadowCutterBuff);
 
-            item = (Emulator.Memory.IEquipment) emulator.Memory.Item[sparkleArrowID];
+            item = (Core.Memory.IEquipment) Emulator.Memory.Item[sparkleArrowID];
             item.AT = (byte) (item.AT + shadowCutterBuff);
 
-            item = (Emulator.Memory.IEquipment) emulator.Memory.Item[morningStarID];
+            item = (Core.Memory.IEquipment) Emulator.Memory.Item[morningStarID];
             item.AT = (byte) (item.AT + morningStarID);
         }
 
-        private static void KongolSpeedNerf(IEmulator emulator) {
-            emulator.Memory.SecondaryCharacterTable[7].EquipSPD = (ushort) (emulator.Memory.SecondaryCharacterTable[7].EquipSPD / 2);
+        private static void KongolSpeedNerf() {
+            Emulator.Memory.SecondaryCharacterTable[7].EquipSPD = (ushort) (Emulator.Memory.SecondaryCharacterTable[7].EquipSPD / 2);
         }
 
-        private void SoulEater(IEmulator emulator, ILoDDictionary loDDictionary, Emulator.Memory.Battle.Character character, byte slot) {
+        private void SoulEater(ILoDDictionary loDDictionary, Core.Memory.Battle.Character character, byte slot) {
             if ((spiritEaterSlot & (1 << slot)) == 0) {
                 return;
             }
 
             if (character.SP == character.DLV * 100) {
                 var spiritEater = (IEquipment) loDDictionary.Item[159];
-                character.SP_Regen = (short) (emulator.Memory.SecondaryCharacterTable[0].SP_Regen - spiritEater.SpecialBonusAmmount);
+                character.SP_Regen = (short) (Emulator.Memory.SecondaryCharacterTable[0].SP_Regen - spiritEater.SpecialBonusAmmount);
                 spiritEaterCheck = true;
                 return;
             }
 
             if (spiritEaterCheck) {
-                character.SP_Regen = emulator.Memory.SecondaryCharacterTable[character.ID].SP_Regen;
+                character.SP_Regen = Emulator.Memory.SecondaryCharacterTable[character.ID].SP_Regen;
             }
         }
 
-        private void Harpoon(IEmulator emulator, ILoDDictionary loDDictionary, Emulator.Memory.Battle.Character character, byte slot) {
+        private void Harpoon(ILoDDictionary loDDictionary, Core.Memory.Battle.Character character, byte slot) {
             if ((harpoonSlot & (1 << slot)) == 0) {
                 return;
             }
@@ -214,12 +214,12 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts.HardMode {
 
         // Elemental Arrow
 
-        private void DragonBeater(IEmulator emulator, ILoDDictionary loDDictionary, Emulator.Memory.Battle.Character character, byte slot) {
+        private void DragonBeater(ILoDDictionary loDDictionary, Core.Memory.Battle.Character character, byte slot) {
             if ((dragonBeaterSlot & (1 << slot)) == 0) {
                 return;
             }
 
-            ushort damageSlot = emulator.ReadUShort("DAMAGE_SLOT1");
+            ushort damageSlot = Emulator.DirectAccess.ReadUShort("DAMAGE_SLOT1");
 
             if (damageSlot == 0) {
                 return;
@@ -227,10 +227,10 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts.HardMode {
 
             ushort HP = character.HP;
             character.HP = (ushort) Math.Min(HP + Math.Round(damageSlot * 0.02) + 2, HP);
-            emulator.WriteUShort("DAMAGE_SLOT1", 0);
+            Emulator.DirectAccess.WriteUShort("DAMAGE_SLOT1", 0);
         }
 
-        private void BatteryGlove(IEmulator emulator, ILoDDictionary loDDictionary, Emulator.Memory.Battle.Character character, byte slot) {
+        private void BatteryGlove(ILoDDictionary loDDictionary, Core.Memory.Battle.Character character, byte slot) {
             if ((batteryGloveSlot & (1 << slot)) == 0) {
                 return;
             }
@@ -250,7 +250,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts.HardMode {
             batteryGloveLastAction = action;
         }
 
-        private void GiantAxe(IEmulator emulator, ILoDDictionary loDDictionary, Emulator.Memory.Battle.Character character, byte slot) {
+        private void GiantAxe(ILoDDictionary loDDictionary, Core.Memory.Battle.Character character, byte slot) {
             if ((giantAxeSlot & (1 << slot)) == 0) {
                 return;
             }
@@ -294,9 +294,9 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts.HardMode {
             soasAnkhSlot = 0;
         }
 
-        private void SetItems(IEmulator emulator, ILoDDictionary loDDictionary) {
-            for (byte slot = 0; slot < emulator.Battle.CharacterTable.Length; slot++) {
-                var character = emulator.Battle.CharacterTable[slot];
+        private void SetItems(ILoDDictionary loDDictionary) {
+            for (byte slot = 0; slot < Emulator.Memory.Battle.CharacterTable.Length; slot++) {
+                var character = Emulator.Memory.Battle.CharacterTable[slot];
                 switch (character.ID) {
                     case 0: // Dart
                         if (character.Weapon == 159) { // Spirit Eater

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dragoon_Modifier.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,20 +8,20 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.Controller {
     internal static class NoDart {
-        internal static void Initialize(Emulator.IEmulator emulator, LoDDict.ILoDDictionary loDDictionary, byte character) {
+        internal static void Initialize(LoDDict.ILoDDictionary loDDictionary, byte character) {
             Console.WriteLine("Initializing No Dart.");
-            if (emulator.Memory.PartySlot[1] == character || emulator.Memory.PartySlot[2] == character) {
+            if (Emulator.Memory.PartySlot[1] == character || Emulator.Memory.PartySlot[2] == character) {
                 Console.WriteLine("No Dart character already present.");
                 return;
             }
 
-            var battleCharacterTable = emulator.Battle.CharacterTable[0];
+            var battleCharacterTable = Emulator.Memory.Battle.CharacterTable[0];
 
-            battleCharacterTable.Status = emulator.Memory.CharacterTable[character].Status;
-            if (emulator.Battle.EncounterID == 413) { // Jiango has to have it's initial move. Otherwise he never gets a turn.
-                emulator.Battle.MonsterTable[0].Action = 12; // Play the "This is Jiango" part
-                while (emulator.Battle.MonsterTable[0].Action != 44) { // Jiango's initial move is over.
-                    if (Constants.Run && emulator.Memory.GameState != Emulator.GameState.Battle) {
+            battleCharacterTable.Status = Emulator.Memory.CharacterTable[character].Status;
+            if (Emulator.Memory.Battle.EncounterID == 413) { // Jiango has to have it's initial move. Otherwise he never gets a turn.
+                Emulator.Memory.Battle.MonsterTable[0].Action = 12; // Play the "This is Jiango" part
+                while (Emulator.Memory.Battle.MonsterTable[0].Action != 44) { // Jiango's initial move is over.
+                    if (Constants.Run && Emulator.Memory.GameState != GameState.Battle) {
                         return;
                     }
                     Thread.Sleep(Settings.WaitDelay);
@@ -30,7 +31,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             battleCharacterTable.Action = 10; // Force character's turn in Dragoon form.
 
             while (battleCharacterTable.Menu != 96) { // Wait for the NoDart's character turn to start
-                if (Constants.Run && emulator.Memory.GameState != Emulator.GameState.Battle) {
+                if (Constants.Run && Emulator.Memory.GameState != GameState.Battle) {
                     return;
                 }
                 Thread.Sleep(Settings.WaitDelay);
@@ -38,21 +39,21 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             battleCharacterTable.Dragoon = 0x20; // Make sure we have Red-Eye Dragoon
 
-            emulator.Memory.PartySlot[0] = character;
-            emulator.WriteByte("PARTY_SLOT", character, 0x234E); // Secondary ID
+            Emulator.Memory.PartySlot[0] = character;
+            Emulator.DirectAccess.WriteByte("PARTY_SLOT", character, 0x234E); // Secondary ID
 
             battleCharacterTable.Image = character;
-            battleCharacterTable.Weapon = emulator.Memory.CharacterTable[character].Weapon;
-            battleCharacterTable.Helmet = emulator.Memory.CharacterTable[character].Helmet;
-            battleCharacterTable.Armor = emulator.Memory.CharacterTable[character].Armor;
-            battleCharacterTable.Shoes = emulator.Memory.CharacterTable[character].Shoes;
-            battleCharacterTable.Accessory = emulator.Memory.CharacterTable[character].Accessory;
+            battleCharacterTable.Weapon = Emulator.Memory.CharacterTable[character].Weapon;
+            battleCharacterTable.Helmet = Emulator.Memory.CharacterTable[character].Helmet;
+            battleCharacterTable.Armor = Emulator.Memory.CharacterTable[character].Armor;
+            battleCharacterTable.Shoes = Emulator.Memory.CharacterTable[character].Shoes;
+            battleCharacterTable.Accessory = Emulator.Memory.CharacterTable[character].Accessory;
 
-            battleCharacterTable.LV = emulator.Memory.CharacterTable[character].Level;
+            battleCharacterTable.LV = Emulator.Memory.CharacterTable[character].Level;
             battleCharacterTable.DLV = 1;
             battleCharacterTable.SP = 100;
 
-            byte dlv = emulator.Memory.SecondaryCharacterTable[character].DragoonLevel;
+            byte dlv = Emulator.Memory.SecondaryCharacterTable[character].DragoonLevel;
 
             battleCharacterTable.DragoonSpellID = character; // ID has to match, otherwise you get all Flameshots
             Dictionary<byte, byte> dmagic5 = new Dictionary<byte, byte> { // TODO this shouldn't be hardcoded, in case we want to change Dragoon Magic
@@ -123,7 +124,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             battleCharacterTable.AdditionSpecial = special_effect;
 
-            Addition.ResetAdditionTable(emulator, battleCharacterTable, loDDictionary);
+            Addition.ResetAdditionTable(battleCharacterTable, loDDictionary);
 
             battleCharacterTable.SetStats(character);
 
@@ -133,7 +134,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 battleCharacterTable.Menu = 16;
             }
             while (battleCharacterTable.Action != 9) {
-                if (Constants.Run && emulator.Memory.GameState != Emulator.GameState.Battle) {
+                if (Constants.Run && Emulator.Memory.GameState != GameState.Battle) {
                     return;
                 }
                 Thread.Sleep(Settings.WaitDelay);
@@ -143,7 +144,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             if (dlv == 0) {
                 battleCharacterTable.Dragoon = 0;
             }
-            battleCharacterTable.SP = emulator.Memory.SecondaryCharacterTable[character].SP;
+            battleCharacterTable.SP = Emulator.Memory.SecondaryCharacterTable[character].SP;
 
             Console.WriteLine("No Dart complete.");
         }

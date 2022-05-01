@@ -159,9 +159,9 @@
     <Compile Include="UI\MonsterUpdate.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Dragoon Modifier.Emulator\Dragoon Modifier.Emulator.csproj">
-      <Project>{f4e87665-0894-4017-bd08-590f49323f1a}</Project>
-      <Name>Dragoon Modifier.Emulator</Name>
+    <ProjectReference Include="..\Dragoon Modifier.Core\Dragoon Modifier.Core.csproj">
+      <Project>{6a5f3409-d399-4718-8e76-a365be205d8f}</Project>
+      <Name>Dragoon Modifier.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

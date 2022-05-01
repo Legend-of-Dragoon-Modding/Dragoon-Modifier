@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Dragoon_Modifier.Core;
+
 namespace Dragoon_Modifier.DraMod.Controller {
     internal static class Addition {
 
@@ -12,10 +14,9 @@ namespace Dragoon_Modifier.DraMod.Controller {
         /// Sets addition table of <paramref name="character"/> according to <paramref name="LoDDictionary"/>.
         /// For Shana and Miranda, it sets the addition table to blank and reloads their SP per hit.
         /// </summary>
-        /// <param name="emulator"></param>
         /// <param name="character"></param>
         /// <param name="LoDDictionary"></param>
-        internal static void ResetAdditionTable(Emulator.IEmulator emulator, Emulator.Memory.Battle.Character character, LoDDict.ILoDDictionary LoDDictionary) {
+        internal static void ResetAdditionTable(Core.Memory.Battle.Character character, LoDDict.ILoDDictionary LoDDictionary) {
             var characterID = character.ID;
 
             if (characterID == 2 || characterID == 8) {
@@ -26,7 +27,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 return;
             }
 
-            var additionID = emulator.Memory.CharacterTable[characterID].ChosenAddition;
+            var additionID = Emulator.Memory.CharacterTable[characterID].ChosenAddition;
             var additionIndex = Array.IndexOf(LoDDict.Addition.AdditionIDs[characterID], additionID);
             var addition = LoDDictionary.Character[characterID].Additions[additionIndex];
 
@@ -60,12 +61,12 @@ namespace Dragoon_Modifier.DraMod.Controller {
             character.Addition[0].StartTime = addition.StartTime;
             character.Addition[addition.AdditionHit.Count - 1].FinalHit = LoDDict.Addition.EndFlag;
 
-            var additionLevel = emulator.Memory.CharacterTable[characterID].AdditionLevel[additionIndex] - 1;
+            var additionLevel = Core.Emulator.Memory.CharacterTable[characterID].AdditionLevel[additionIndex] - 1;
             character.Add_DMG_Multi = addition.DamageIncrease[additionLevel];
             character.Add_SP_Multi = addition.SPIncrease[additionLevel];
         }
 
-        private static void BlankAdditionHit(Emulator.Memory.Battle.Character character, byte hit) {
+        private static void BlankAdditionHit(Core.Memory.Battle.Character character, byte hit) {
             character.Addition[hit].MasterAddition = 0;
             character.Addition[hit].NextHit = 0;
             character.Addition[hit].BlueSquare = 0;
@@ -89,13 +90,13 @@ namespace Dragoon_Modifier.DraMod.Controller {
         /// </summary>
         /// <param name="emulator"></param>
         /// <param name="LoDDictionary"></param>
-        internal static void Swap(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDictionary) {
-            if (GetActionSlot(emulator, out var slot)) {
-                var character = emulator.Battle.CharacterTable[slot];
+        internal static void Swap(LoDDict.ILoDDictionary LoDDictionary) {
+            if (GetActionSlot(out var slot)) {
+                var character = Core.Emulator.Memory.Battle.CharacterTable[slot];
                 uint characterID = character.ID;
 
                 byte additionCount = 0;
-                foreach (var additionLevel in emulator.Memory.SecondaryCharacterTable[characterID].AdditionLevel) {
+                foreach (var additionLevel in Core.Emulator.Memory.SecondaryCharacterTable[characterID].AdditionLevel) {
                     if (additionLevel != 0) {
                         additionCount++;
                     }
@@ -115,15 +116,15 @@ namespace Dragoon_Modifier.DraMod.Controller {
                     }
                     character.Menu = menu;
 
-                    emulator.Battle.BattleMenuCount = additionCount;
+                    Core.Emulator.Memory.Battle.BattleMenuCount = additionCount;
                     for (byte addition = 0; addition < additionCount; addition++) {
-                        emulator.Battle.BattleMenuSlot[addition] = 2; // Set each slot to Dragoon Transform
+                        Core.Emulator.Memory.Battle.BattleMenuSlot[addition] = 2; // Set each slot to Dragoon Transform
                     }
 
                     byte additionIndex = 0;
 
                     while (true) {
-                        if (emulator.Memory.GameState != Emulator.GameState.Battle) {
+                        if (Core.Emulator.Memory.GameState != Core.GameState.Battle) {
                             return;
                         }
 
@@ -131,13 +132,13 @@ namespace Dragoon_Modifier.DraMod.Controller {
                             break;
                         }
 
-                        additionIndex = emulator.Battle.BattleMenuChosenSlot;
+                        additionIndex = Core.Emulator.Memory.Battle.BattleMenuChosenSlot;
                         Thread.Sleep(Settings.WaitDelay);
                     }
 
-                    emulator.Memory.CharacterTable[characterID].ChosenAddition = LoDDict.Addition.AdditionIDs[characterID][additionIndex];
+                    Core.Emulator.Memory.CharacterTable[characterID].ChosenAddition = LoDDict.Addition.AdditionIDs[characterID][additionIndex];
 
-                    ResetAdditionTable(emulator, character, LoDDictionary);
+                    ResetAdditionTable(character, LoDDictionary);
 
                     var turn = character.Turn;
                     character.Turn = 800;
@@ -152,7 +153,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                     character.MP_Regen = 1;
 
                     while (true) {
-                        if (emulator.Memory.GameState != Emulator.GameState.Battle) {
+                        if (Emulator.Memory.GameState != GameState.Battle) {
                             return;
                         }
 
@@ -178,9 +179,9 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
         }
 
-        private static bool GetActionSlot(Emulator.IEmulator emulator, out byte turnSlot) {
-            for (byte slot = 0; slot < emulator.Battle.CharacterTable.Length; slot++) {
-                if (emulator.Battle.CharacterTable[slot].Action == 8) {
+        private static bool GetActionSlot(out byte turnSlot) {
+            for (byte slot = 0; slot < Core.Emulator.Memory.Battle.CharacterTable.Length; slot++) {
+                if (Core.Emulator.Memory.Battle.CharacterTable[slot].Action == 8) {
                     turnSlot = slot;
                     return true;
                 }
@@ -194,14 +195,14 @@ namespace Dragoon_Modifier.DraMod.Controller {
         /// </summary>
         /// <param name="emulator"></param>
         /// <param name="LoDDictionary"></param>
-        internal static void MenuTableChange(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDictionary) {
+        internal static void MenuTableChange(LoDDict.ILoDDictionary LoDDictionary) {
             for (int character = 0; character < 8; character++) {
                 if (character == 5) { // Skip Albert
                     continue;
                 }
 
                 foreach (var addition in LoDDictionary.Character[character].Additions) {
-                    var table = emulator.Memory.MenuAdditionTable[addition.ID];
+                    var table = Emulator.Memory.MenuAdditionTable[addition.ID];
 
                     table.Damage = (ushort) addition.AdditionHit.Sum(add => add.Damage);
                     for (int addLvl = 0; addLvl < 5; addLvl++) {

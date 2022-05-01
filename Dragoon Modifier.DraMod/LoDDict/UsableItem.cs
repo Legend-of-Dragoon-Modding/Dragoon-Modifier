@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dragoon_Modifier.Core;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -63,14 +64,14 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
         public byte Unknown2 { get; private set; } = 0;
         public byte BaseSwitch { get; private set; } = 0;
 
-        internal UsableItem(Emulator.IEmulator emulator, byte index, string[] values, Dictionary<string, byte> element2num, Dictionary<string, byte> status2num) {
+        internal UsableItem(byte index, string[] values, Dictionary<string, byte> element2num, Dictionary<string, byte> status2num) {
             List<string> error = new List<string>();
 
             ID = index;
 
             if (!(values[0] == "" || values[0] == " ")) {
                 Name = values[0];
-                EncodedName = emulator.LoDEncoding.GetBytes(Name).Concat(new byte[] { 0xFF, 0xA0 }).ToArray();
+                EncodedName = Emulator.TextEncoding.GetBytes(Name).Concat(new byte[] { 0xFF, 0xA0 }).ToArray();
             }
 
             if (Byte.TryParse(values[1], out var bkey)) {
@@ -165,7 +166,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
 
             if (!(values[13] == "" || values[13] == " ")) {
                 Description = values[13];
-                EncodedDescription = emulator.LoDEncoding.GetBytes(Description).Concat(new byte[] { 0xFF, 0xA0 }).ToArray();
+                EncodedDescription = Emulator.TextEncoding.GetBytes(Description).Concat(new byte[] { 0xFF, 0xA0 }).ToArray();
             }
 
             if (UInt16.TryParse(values[14], out var uskey)) {
@@ -176,7 +177,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
 
             if (!(values[15] == "" || values[15] == " ")) {
                 BattleDescription = values[15];
-                EncodedBattleDescription = emulator.LoDEncoding.GetBytes(BattleDescription).Concat(new byte[] { 0xFF, 0xA0 }).ToArray();
+                EncodedBattleDescription = Emulator.TextEncoding.GetBytes(BattleDescription).Concat(new byte[] { 0xFF, 0xA0 }).ToArray();
             }
         }
     }

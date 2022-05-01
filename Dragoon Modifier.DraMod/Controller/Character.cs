@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dragoon_Modifier.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,11 +11,10 @@ namespace Dragoon_Modifier.DraMod.Controller {
         /// <summary>
         /// Changes the character <paramref name="characterID"/> according to <paramref name="LoDDictionary"/>.
         /// </summary>
-        /// <param name="emulator"></param>
         /// <param name="LoDDictionary"></param>
         /// <param name="characterID"></param>
-        internal static void ChangeStats(Emulator.IEmulator emulator, LoDDict.ILoDDictionary LoDDictionary, int characterID) {
-            var character = emulator.Memory.SecondaryCharacterTable[characterID];
+        internal static void ChangeStats(LoDDict.ILoDDictionary LoDDictionary, int characterID) {
+            var character = Emulator.Memory.SecondaryCharacterTable[characterID];
             var baseStats = LoDDictionary.Character[characterID].BaseStats;
 
             byte level = character.Level;
