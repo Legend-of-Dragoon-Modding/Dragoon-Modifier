@@ -368,14 +368,14 @@ namespace Dragoon_Modifier {
                 startAddr += Constants.OFFSET;
                 endAddr += Constants.OFFSET;
             }
-            if (endAddr > end) {
+            /*if (endAddr > end) {
                 endAddr = end;
                 Constants.WriteDebug("Limiting AoB Scan to emulator memory");
             }
             if (startAddr >= endAddr) {
                 Constants.WriteDebug("Incorrect start/end address");
                 return results;
-            }
+            }*/
             string[] maskStr = values.Split(' ');
             byte[] pattern = new byte[maskStr.Length];
             byte[] maskArr = new byte[maskStr.Length];
