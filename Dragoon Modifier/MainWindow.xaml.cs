@@ -2517,7 +2517,6 @@ namespace Dragoon_Modifier {
             List<long> bgmScan = Emulator.ScanAoB(0xA8660, 0x2A865F, "53 53 73 71");
             musicSSsq = new ArrayList();
             foreach (var address in bgmScan) {
-                Constants.WriteGLogOutput("[Kill BGM]" + Convert.ToString(address, 16).ToUpper());
                 musicSSsq.Add(address);
                 for (int i = 0; i <= 255; i++) {
                     Emulator.WriteByte((long) address + i, (byte) 0);
