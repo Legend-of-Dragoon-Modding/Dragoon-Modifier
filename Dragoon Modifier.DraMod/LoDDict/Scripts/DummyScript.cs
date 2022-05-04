@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.LoDDict.Scripts {
     internal class DummyScript : IScript {
-        public void BattleRun(ILoDDictionary loDDictionary, IUIControl uiControl) {}
+        public void BattleRun(ILoDDictionary loDDictionary) {}
 
-        public void BattleSetup(ILoDDictionary loDDictionary, IUIControl uiControl) {}
+        public void BattleSetup(ILoDDictionary loDDictionary) {}
 
-        public void FieldRun(ILoDDictionary loDDictionary, IUIControl uiControl) {}
+        public void FieldRun(ILoDDictionary loDDictionary) {}
 
-        public void FieldSetup(ILoDDictionary loDDictionary, IUIControl uiControl) {}
+        public void FieldSetup(ILoDDictionary loDDictionary) {}
     }
 }

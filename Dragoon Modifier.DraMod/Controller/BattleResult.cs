@@ -34,7 +34,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 RemoveExtraPartyMembers();
             }
 
-            loDDictionary.ItemScript.FieldSetup(loDDictionary, uiControl);
+            loDDictionary.ItemScript.FieldSetup(loDDictionary);
         }
 
         public static void RemoveExtraPartyMembers() {

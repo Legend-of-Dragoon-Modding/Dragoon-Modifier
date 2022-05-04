@@ -16,58 +16,58 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts {
         private readonly MethodDelegate fieldRun;
         private readonly MethodDelegate fieldSetup;
 
-        internal CustomScript(string file, ILoDDictionary loDDictionary, UI.IUIControl uiControl) {
+        internal CustomScript(string file, ILoDDictionary loDDictionary) {
             this.file = Path.GetFullPath(file);
             script = CSScript.LoadFile(file, null, true);
-            battleRun = script.GetStaticMethod("*.BattleRun", loDDictionary, uiControl);
-            battleSetup = script.GetStaticMethod("*.BattleSetup", loDDictionary, uiControl);
-            fieldRun = script.GetStaticMethod("*.FieldRun", loDDictionary, uiControl);
-            fieldSetup = script.GetStaticMethod("*.FieldSetup", loDDictionary, uiControl);
+            battleRun = script.GetStaticMethod("*.BattleRun", loDDictionary);
+            battleSetup = script.GetStaticMethod("*.BattleSetup", loDDictionary);
+            fieldRun = script.GetStaticMethod("*.FieldRun", loDDictionary);
+            fieldSetup = script.GetStaticMethod("*.FieldSetup", loDDictionary);
         }
 
-        public void BattleRun(ILoDDictionary loDDictionary, UI.IUIControl uiControl) {
+        public void BattleRun(ILoDDictionary loDDictionary) {
             try {
-                battleRun(loDDictionary, uiControl);
+                battleRun(loDDictionary);
             } catch (Exception ex) {
                 Constants.Run = false;
-                uiControl.WriteGLog("Program stopped.");
-                uiControl.WritePLog("CUSTOM ITEM SCRIPT ERROR");
+                Constants.UIControl.WriteGLog("Program stopped.");
+                Constants.UIControl.WritePLog("CUSTOM ITEM SCRIPT ERROR");
                 Console.WriteLine("CUSTOM ITEM SCRIPT ERROR\nFatal Error. Closing all threads.");
                 Console.WriteLine(ex.ToString());
             }
         }
 
-        public void BattleSetup(ILoDDictionary loDDictionary, UI.IUIControl uiControl) {
+        public void BattleSetup(ILoDDictionary loDDictionary) {
             try {
-                battleSetup(loDDictionary, uiControl);
+                battleSetup(loDDictionary);
             } catch (Exception ex) {
                 Constants.Run = false;
-                uiControl.WriteGLog("Program stopped.");
-                uiControl.WritePLog("CUSTOM ITEM SCRIPT ERROR");
+                Constants.UIControl.WriteGLog("Program stopped.");
+                Constants.UIControl.WritePLog("CUSTOM ITEM SCRIPT ERROR");
                 Console.WriteLine("CUSTOM ITEM SCRIPT ERROR\nFatal Error. Closing all threads.");
                 Console.WriteLine(ex.ToString());
             }
         }
 
-        public void FieldRun(ILoDDictionary loDDictionary, UI.IUIControl uiControl) {
+        public void FieldRun(ILoDDictionary loDDictionary) {
             try {
-                fieldRun(loDDictionary, uiControl);
+                fieldRun(loDDictionary);
             } catch (Exception ex) {
                 Constants.Run = false;
-                uiControl.WriteGLog("Program stopped.");
-                uiControl.WritePLog("CUSTOM ITEM SCRIPT ERROR");
+                Constants.UIControl.WriteGLog("Program stopped.");
+                Constants.UIControl.WritePLog("CUSTOM ITEM SCRIPT ERROR");
                 Console.WriteLine("CUSTOM ITEM SCRIPT ERROR\nFatal Error. Closing all threads.");
                 Console.WriteLine(ex.ToString());
             }
         }
 
-        public void FieldSetup(ILoDDictionary loDDictionary, UI.IUIControl uiControl) {
+        public void FieldSetup(ILoDDictionary loDDictionary) {
             try {
-                fieldSetup(loDDictionary, uiControl);
+                fieldSetup(loDDictionary);
             } catch (Exception ex) {
                 Constants.Run = false;
-                uiControl.WriteGLog("Program stopped.");
-                uiControl.WritePLog("CUSTOM ITEM SCRIPT ERROR");
+                Constants.UIControl.WriteGLog("Program stopped.");
+                Constants.UIControl.WritePLog("CUSTOM ITEM SCRIPT ERROR");
                 Console.WriteLine("CUSTOM ITEM SCRIPT ERROR\nFatal Error. Closing all threads.");
                 Console.WriteLine(ex.ToString());
             }

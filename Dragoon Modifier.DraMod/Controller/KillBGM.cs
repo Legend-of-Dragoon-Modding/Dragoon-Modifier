@@ -15,7 +15,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
         static int musicKillCount = 0;
         static ArrayList musicSSsq = new ArrayList(); 
 
-        public static void Run(UI.IUIControl uiControl) {
+        public static void Run() {
             if (previousState != Emulator.Memory.GameState) {
                 switch (Emulator.Memory.GameState) {
                     case GameState.Field:

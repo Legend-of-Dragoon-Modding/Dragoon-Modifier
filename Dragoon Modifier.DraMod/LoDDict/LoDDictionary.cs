@@ -56,19 +56,19 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
 
         public Scripts.IScript ItemScript { get; private set; } = new Scripts.DummyScript();
 
-        internal LoDDictionary(UI.IUIControl uiControl, string cwd, string mod) {
-            Load(uiControl, cwd, mod);
+        internal LoDDictionary(string cwd, string mod) {
+            Load(cwd, mod);
 
-            // ParseScripts($"{cwd}\\Mods\\{mod}", uiControl);
+            ParseScripts($"{cwd}\\Mods\\{mod}");
         }
 
-        internal LoDDictionary(UI.IUIControl uiControl, string cwd, string mod, Scripts.IScript itemScript) {
-            Load(uiControl, cwd, mod);
+        internal LoDDictionary(string cwd, string mod, Scripts.IScript itemScript) {
+            Load(cwd, mod);
 
             ItemScript = itemScript;
         }
 
-        private void Load(UI.IUIControl uiControl, string cwd, string mod) {
+        private void Load(string cwd, string mod) {
             string modPath = $"{cwd}\\Mods\\{mod}";
 
             GetItems(modPath);
@@ -77,11 +77,11 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
             GetShops(modPath);
         }
 
-        private void ParseScripts(string path, UI.IUIControl uiControl) {
+        private void ParseScripts(string path) {
             foreach (var file in Directory.GetFiles(path, "*.cs")) {
                 if (file.EndsWith("ItemScript.cs")) {
                     try {
-                        ItemScript = new Scripts.CustomScript(file, this, uiControl);
+                        ItemScript = new Scripts.CustomScript(file, this);
                         Console.WriteLine("Custom item script inserted.");
                     } catch (ApplicationException ex) {
                         Console.WriteLine($"[ERROR] Item script not compatible.");

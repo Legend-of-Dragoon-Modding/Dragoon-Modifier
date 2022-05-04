@@ -10,13 +10,12 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod {
     internal class DragoonModifier : IDraMod {
-        private readonly UI.IUIControl _uiControl;
         private static LoDDict.ILoDDictionary _LoDDict;
         private readonly string _cwd;
         private static readonly List<string> presetMods = new List<string> { "Normal", "NormalHard", "Hard", "HardHell", "Hell" };
 
         internal DragoonModifier(UI.IUIControl uiControl, string cwd) {
-            _uiControl = uiControl;
+            Constants.LoadUIControl(uiControl);
             _cwd = cwd;
         }
 
@@ -35,7 +34,7 @@ namespace Dragoon_Modifier.DraMod {
                     ChangeLoDDirectory(Settings.Mod);
                 }
                 
-                Thread t = new Thread(() => Controller.Main.Run(_uiControl, ref _LoDDict));
+                Thread t = new Thread(() => Controller.Main.Run(ref _LoDDict));
 
                 t.Start();
                 return true;
@@ -53,8 +52,8 @@ namespace Dragoon_Modifier.DraMod {
             Settings.DualDifficulty = false;
             Settings.Mod = mod;
             if (Constants.Run) {
-                _uiControl.WritePLog("Changing mod directory to " + mod);
-                _LoDDict = new LoDDict.LoDDictionary(_uiControl, _cwd, mod);
+                Constants.UIControl.WritePLog("Changing mod directory to " + mod);
+                _LoDDict = new LoDDict.LoDDictionary(_cwd, mod);
                 Controller.Main.BattleSetup = false;
                 Controller.Main.AdditionsChanged = false;
                 Controller.Main.ItemsChanged = false;
@@ -85,8 +84,8 @@ namespace Dragoon_Modifier.DraMod {
                 }
                 
 
-                _uiControl.WritePLog("Changing mod directory to " + modString);
-                _LoDDict = new LoDDict.LoDDictionary(_uiControl, _cwd, modString, ItemScript);
+                Constants.UIControl.WritePLog("Changing mod directory to " + modString);
+                _LoDDict = new LoDDict.LoDDictionary(_cwd, modString, ItemScript);
                 Controller.Main.BattleSetup = false;
                 Controller.Main.AdditionsChanged = false;
                 Controller.Main.ItemsChanged = false;

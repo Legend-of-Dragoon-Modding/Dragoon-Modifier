@@ -63,7 +63,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts.HardMode {
         };
 
 
-        public void BattleRun(ILoDDictionary loDDictionary, IUIControl uiControl) {
+        public void BattleRun(ILoDDictionary loDDictionary) {
             for (byte slot = 0; slot < Emulator.Memory.Battle.CharacterTable.Length; slot++) {
                 var character = Emulator.Memory.Battle.CharacterTable[slot];
                 byte dragoonSpecialAttack = 0;
@@ -96,7 +96,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts.HardMode {
             }
         }
 
-        public void BattleSetup(ILoDDictionary loDDictionary, IUIControl uiControl) {
+        public void BattleSetup(ILoDDictionary loDDictionary) {
             
 
             BattleChapter3Buffs();
@@ -104,11 +104,11 @@ namespace Dragoon_Modifier.DraMod.LoDDict.Scripts.HardMode {
         }
 
 
-        public void FieldRun(ILoDDictionary loDDictionary, IUIControl uiControl) {
+        public void FieldRun(ILoDDictionary loDDictionary) {
             throw new NotImplementedException();
         }
 
-        public void FieldSetup(ILoDDictionary loDDictionary, IUIControl uiControl) {
+        public void FieldSetup(ILoDDictionary loDDictionary) {
             FieldChapter3Buffs();
         }
 

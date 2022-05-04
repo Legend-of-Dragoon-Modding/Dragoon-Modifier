@@ -143,7 +143,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
         static readonly List<Hotkey> hotkeys = BattleHotkeys.Load();
 
-        public static void Setup(LoDDict.ILoDDictionary loDDictionary, UI.IUIControl uiControl) {
+        public static void Setup(LoDDict.ILoDDictionary loDDictionary) {
             Console.WriteLine("Battle detected. Loading..."); 
 
             firstDamageCapRemoval = false;
@@ -177,7 +177,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
             damageTrackerOnBattleEntry = true;
 
-            uiControl.UpdateField(Emulator.Memory.BattleValue, Emulator.Memory.EncounterID, Emulator.Memory.MapID);
+            Constants.UIControl.UpdateField(Emulator.Memory.BattleValue, Emulator.Memory.EncounterID, Emulator.Memory.MapID);
 
             if (Settings.DualDifficulty) {
                 Console.WriteLine("[DEBUG] [Dual Difficulty] Changing monster stats...");
@@ -186,17 +186,17 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             MonsterChanges(loDDictionary);
 
-            CharacterChanges(loDDictionary, uiControl);
+            CharacterChanges(loDDictionary);
 
             Console.WriteLine("Updating UI...");
-            UpdateUI(uiControl);
+            UpdateUI();
 
             if (Settings.SoloMode) {
-                SoloModeBattle(uiControl);
+                SoloModeBattle();
             }
 
             if (Settings.DuoMode) {
-                DuoModeBattle(uiControl);
+                DuoModeBattle();
             }
 
             if (Settings.NoDart != 0 && Settings.NoDart != 255) {
@@ -208,14 +208,14 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
 
             if (Settings.AspectRatio) {
-                ChangeAspectRatio(uiControl);
+                ChangeAspectRatio();
             }
         }
 
-        public static void Run(UI.IUIControl uiControl, LoDDict.ILoDDictionary loDDictionary) {
-            loDDictionary.ItemScript.BattleRun(loDDictionary, uiControl);
+        public static void Run(LoDDict.ILoDDictionary loDDictionary) {
+            loDDictionary.ItemScript.BattleRun(loDDictionary);
 
-            UpdateUI(uiControl);
+            UpdateUI();
 
             if (Settings.RemoveDamageCaps) {
                 RemoveDamageCaps();
@@ -234,7 +234,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
 
             if (Settings.DamageTracker) {
-                DamageTracker(uiControl);
+                DamageTracker();
             }
 
             if (Settings.EnrageMode || Settings.EnrageBossOnly) {
@@ -248,12 +248,12 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
         }
 
-        private static void UpdateUI(UI.IUIControl uiControl) {
+        private static void UpdateUI() {
             for (int i = 0; i < Emulator.Memory.Battle.MonsterTable.Length; i++) {
-                uiControl.UpdateMonster(i, new UI.MonsterUpdate(i));
+                Constants.UIControl.UpdateMonster(i, new UI.MonsterUpdate(i));
             }
             for (int i = 0; i < Emulator.Memory.Battle.CharacterTable.Length; i++) {
-                uiControl.UpdateCharacter(i, new UI.CharacterUpdate(i));
+                Constants.UIControl.UpdateCharacter(i, new UI.CharacterUpdate(i));
             }
         }
 
@@ -345,7 +345,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             Emulator.Memory.Battle.RewardsGold[slot] = LoDDict.Monster[id].Gold;
         }
 
-        private static void CharacterChanges(LoDDict.ILoDDictionary loDDictionary, UI.IUIControl uiControl) {
+        private static void CharacterChanges(LoDDict.ILoDDictionary loDDictionary) {
             Console.WriteLine("Loading Character stats...");
             for (byte character = 0; character < 9; character++) {
 
@@ -367,7 +367,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 NoHPDecaySoulEater(loDDictionary);
             }
 
-            loDDictionary.ItemScript.BattleSetup(loDDictionary, uiControl);
+            loDDictionary.ItemScript.BattleSetup(loDDictionary);
 
             Console.WriteLine("Changing Character stats...");
             uint characterID = 0;
@@ -648,7 +648,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
         }
 
-        private static void DamageTracker(UI.IUIControl uiControl) {
+        private static void DamageTracker() {
             bool partyAttacking = false;
             for (int i = 0; i < Emulator.Memory.Battle.CharacterTable.Length; i++) {
                 byte action = Emulator.Memory.Battle.CharacterTable[i].Action;
@@ -672,7 +672,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                         dmgTrkChr[dmgTrkSlot] += dmgTrkHP[i] - Emulator.Memory.Battle.MonsterTable[i].HP;
                         dmgTrkHP[i] = Emulator.Memory.Battle.MonsterTable[i].HP;
                         Console.WriteLine($"Damage Track: {dmgTrkChr[0]} / {dmgTrkChr[1]} / {dmgTrkChr[2]}");
-                        uiControl.WriteGLog($"Damage Track: {dmgTrkChr[0]} / {dmgTrkChr[1]} / {dmgTrkChr[2]}");
+                        Constants.UIControl.WriteGLog($"Damage Track: {dmgTrkChr[0]} / {dmgTrkChr[1]} / {dmgTrkChr[2]}");
                     } else if (Emulator.Memory.Battle.MonsterTable[i].HP > dmgTrkHP[i]) {
                         dmgTrkHP[i] = Emulator.Memory.Battle.MonsterTable[i].HP;
                     }
@@ -691,7 +691,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
         }
 
-        private static void ChangeAspectRatio(UI.IUIControl uiControl) {
+        private static void ChangeAspectRatio() {
             Console.WriteLine($"[DEBUG][Aspect Ratio] {Settings.AspectRatioMode}");
 
             ushort aspectRatio;
@@ -719,7 +719,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 Emulator.DirectAccess.WriteUShort("ADVANCED_CAMERA", aspectRatio);
         }
 
-        private static void SoloModeBattle(UI.IUIControl uiControl) {
+        private static void SoloModeBattle() {
             byte soloLeader = Settings.SoloLeader;
 
             for (int i = 0; i < 3; i++) {
@@ -748,7 +748,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             SoloDuoExit();
         }
 
-        private static void DuoModeBattle(UI.IUIControl uiControl) {
+        private static void DuoModeBattle() {
             if (Emulator.Memory.PartySlot[2] < 9) {
                 Emulator.Memory.Battle.CharacterTable[2].Action = 192;
                 Emulator.Memory.Battle.CharacterTable[2].Turn = 10000;

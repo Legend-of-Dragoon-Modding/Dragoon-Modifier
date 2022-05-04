@@ -13,10 +13,10 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
         private static bool EarlyAdditionsSet = false;
 
-        internal static void Setup(LoDDict.ILoDDictionary loDDictionary, UI.IUIControl uiControl) {
-            uiControl.ResetBattle();
+        internal static void Setup(LoDDict.ILoDDictionary loDDictionary) {
+            Constants.UIControl.ResetBattle();
             EarlyAdditionsSet = false;
-            loDDictionary.ItemScript.FieldSetup(loDDictionary, uiControl);
+            loDDictionary.ItemScript.FieldSetup(loDDictionary);
 
         }
 
@@ -44,7 +44,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
         }
 
-        internal static void Run(UI.IUIControl uiControl) {
+        internal static void Run() {
             if (Settings.AutoCharmPotion) {
                 AutoCharmPotion();
             }
@@ -83,7 +83,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 EarlyAdditionsSet = false;
             }
 
-            uiControl.UpdateField(Emulator.Memory.BattleValue, Emulator.Memory.EncounterID, Emulator.Memory.MapID);
+            Constants.UIControl.UpdateField(Emulator.Memory.BattleValue, Emulator.Memory.EncounterID, Emulator.Memory.MapID);
         }
 
         private static void SoloModeField() {

@@ -17,7 +17,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
         private static bool ShopFix = false;
         private static bool HPCapSet = false;
 
-        internal static void Run(UI.IUIControl uiControl, ref LoDDict.ILoDDictionary LoDDict) {
+        internal static void Run(ref LoDDict.ILoDDictionary LoDDict) {
             while (Constants.Run) {
                 try {
                     switch (Emulator.Memory.GameState) {
@@ -26,21 +26,21 @@ namespace Dragoon_Modifier.DraMod.Controller {
                                 if (Settings.NoDart > 0) {
                                     Emulator.Memory.PartySlot[0] = 0;
                                 }
-                                Battle.Setup(LoDDict, uiControl);
+                                Battle.Setup(LoDDict);
                                 BattleSetup = true;
                                 AdditionsChanged = false;
                                 ItemsChanged = false;
                                 ShopChanged = false;
                                 HPCapSet = false;
                             }
-                            Battle.Run(uiControl, LoDDict);
+                            Battle.Run(LoDDict);
                             break;
 
                         case GameState.Field:
                             BattleSetup = false;
 
                             if (!ShopChanged) {
-                                uiControl.ResetBattle();
+                                Constants.UIControl.ResetBattle();
                                 if (Settings.ShopChange) {
                                     Shop.TableChange(LoDDict);
                                 }
@@ -60,7 +60,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                                 }
                             }
 
-                            Field.Run(uiControl);
+                            Field.Run();
                             break;
 
                         case GameState.Overworld:
@@ -138,17 +138,17 @@ namespace Dragoon_Modifier.DraMod.Controller {
                             break;
                     }
 
-                    GreenButton.Run(uiControl);
+                    GreenButton.Run();
 
                     if (Settings.KillBGM) {
-                        KillBGM.Run(uiControl);
+                        KillBGM.Run();
                     }
 
                     Thread.Sleep(Settings.LoopDelay);
                 } catch (Exception ex) {
                     Constants.Run = false;
-                    uiControl.WriteGLog("Program stopped.");
-                    uiControl.WritePLog("INTERNAL SCRIPT ERROR");
+                    Constants.UIControl.WriteGLog("Program stopped.");
+                    Constants.UIControl.WritePLog("INTERNAL SCRIPT ERROR");
                     Console.WriteLine("INTERNAL SCRIPT ERROR\nFatal Error. Closing all threads.");
                     Console.WriteLine(ex.ToString());
                 }

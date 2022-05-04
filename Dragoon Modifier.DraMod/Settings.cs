@@ -88,5 +88,16 @@ namespace Dragoon_Modifier.DraMod {
 
         public static int LoopDelay = 250;
         public static int WaitDelay = 50;
+
+        private static Object _dataset = null;
+
+        public static Object Dataset {
+            get {
+                if (_dataset == null) {
+                    _dataset = new Object();
+                }
+                return _dataset;
+            }
+        }
     }
 }

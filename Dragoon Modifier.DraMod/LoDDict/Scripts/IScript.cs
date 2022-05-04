@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.LoDDict.Scripts {
     public interface IScript {
-        void BattleSetup(ILoDDictionary loDDictionary, UI.IUIControl uiControl);
-        void BattleRun(ILoDDictionary loDDictionary, UI.IUIControl uiControl);
-        void FieldSetup(ILoDDictionary loDDictionary, UI.IUIControl uiControl);
-        void FieldRun(ILoDDictionary loDDictionary, UI.IUIControl uiControl);
+        void BattleSetup(ILoDDictionary loDDictionary);
+        void BattleRun(ILoDDictionary loDDictionary);
+        void FieldSetup(ILoDDictionary loDDictionary);
+        void FieldRun(ILoDDictionary loDDictionary);
     }
 }
