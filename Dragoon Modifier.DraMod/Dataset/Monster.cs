@@ -5,8 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dragoon_Modifier.DraMod.LoDDict {
-    public class Monster {
+namespace Dragoon_Modifier.DraMod.Dataset {
+    internal class Monster : IMonster {
         private static readonly Dictionary<string, byte> _specialEffects = new Dictionary<string, byte>() {
             { "", 0 },
             { "none", 0 },
@@ -20,7 +20,6 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
             { "unknown7", 64 },
             { "death_resist", 128 },
         };
-
         public string Name { get; private set; } = "Monster";
         public byte Element { get; private set; } = 128;
         public uint HP { get; private set; } = 1;
@@ -44,12 +43,12 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
         public byte DropItem { get; private set; } = 255;
         public byte DropChance { get; private set; } = 0;
 
-        internal Monster(string[] values, ILoDDictionary LoDDict, Dictionary<string, byte> status2num, Dictionary<string, byte> element2num) {
+        internal Monster(string[] values, LoDDictionary.MyFunc<string, byte> tryEncodeItem) {
             var error = new List<string>();
 
             Name = values[1];
 
-            if (element2num.TryGetValue(values[2].ToLower(), out var bkey)) {
+            if (LoDDictionary.TryEncodeElement(values[2], out var bkey)) {
                 Element = bkey;
             } else {
                 error.Add($"{values[2]} not found as Element.");
@@ -129,7 +128,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
 
             var errorTemp = new List<string>();
             foreach (string sub in values[15].Replace(" ", "").ToLower().Split(',')) {
-                if (element2num.TryGetValue(sub, out bkey)) {
+                if (LoDDictionary.TryEncodeElement(sub, out bkey)) {
                     ElementalImmunity |= bkey;
                 } else if (Byte.TryParse(sub, out bkey)) {
                     ElementalImmunity |= bkey;
@@ -143,7 +142,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
 
             errorTemp = new List<string>();
             foreach (string sub in values[16].Replace(" ", "").ToLower().Split(',')) {
-                if (element2num.TryGetValue(sub, out bkey)) {
+                if (LoDDictionary.TryEncodeElement(sub, out bkey)) {
                     ElementalResistance |= bkey;
                 } else if (Byte.TryParse(sub, out bkey)) {
                     ElementalResistance |= bkey;
@@ -157,7 +156,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
 
             errorTemp = new List<string>();
             foreach (string sub in values[17].Replace(" ", "").ToLower().Split(',')) {
-                if (status2num.TryGetValue(sub, out bkey)) {
+                if (LoDDictionary.TryEncodeStatus(sub, out bkey)) {
                     StatusResist |= bkey;
                 } else if (Byte.TryParse(sub, out bkey)) {
                     StatusResist |= bkey;
@@ -195,7 +194,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
                 error.Add($"{values[20]} couldn't be parsed as Gold.");
             }
 
-            if (LoDDict.TryItem2Num(values[21], out bkey)) {
+            if (tryEncodeItem(values[21], out bkey)) {
                 DropItem = bkey;
             } else {
                 error.Add($"{values[21]} not found as Item");
@@ -214,6 +213,5 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
                 }
             }
         }
-        
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.Controller {
     internal static class Menu {
-        public static void Setup(LoDDict.ILoDDictionary LoDDict, UI.IUIControl uiControl) {
+        public static void Setup() {
             
         }
 

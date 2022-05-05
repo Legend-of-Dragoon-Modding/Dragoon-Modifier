@@ -5,25 +5,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dragoon_Modifier.DraMod.LoDDict {
-    public class BaseStats {
-        public ushort[] HP = new ushort[61];
-        public byte[] AT = new byte[61];
-        public byte[] MAT = new byte[61];
-        public byte[] DF = new byte[61];
-        public byte[] MDF = new byte[61];
-        public byte[] SPD = new byte[61];
+namespace Dragoon_Modifier.DraMod.Dataset {
+    internal class BaseStats : IBaseStats {
+        public ushort[] HP { get; private set; } = new ushort[61];
+        public byte[] AT { get; private set; } = new byte[61];
+        public byte[] MAT { get; private set; } = new byte[61];
+        public byte[] DF { get; private set; } = new byte[61];
+        public byte[] MDF { get; private set; } = new byte[61];
+        public byte[] SPD { get; private set; } = new byte[61];
 
         internal BaseStats(string path) {
             path += "\\BaseStats.tsv";
+            HP[0] = 0;
+            AT[0] = 0;
+            MAT[0] = 0;
+            DF[0] = 0;
+            MDF[0] = 0;
+            SPD[0] = 0;
             try {
                 using (var itemData = new StreamReader(path)) {
-                    HP[0] = 0;
-                    AT[0] = 0;
-                    MAT[0] = 0;
-                    DF[0] = 0;
-                    MDF[0] = 0;
-                    SPD[0] = 0;
                     itemData.ReadLine(); // Skip first line
                     int index = 1;
                     while (!itemData.EndOfStream && index < 62) {
@@ -70,11 +70,8 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
                     }
                 }
             } catch (FileNotFoundException) {
-                Console.WriteLine($"[ERROR] File {path} not found.");
+            Console.WriteLine($"[ERROR] File {path} not found.");
             }
-            
         }
     }
-
-    
 }

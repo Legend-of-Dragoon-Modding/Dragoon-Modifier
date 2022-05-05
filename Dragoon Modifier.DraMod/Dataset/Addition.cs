@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dragoon_Modifier.DraMod.LoDDict {
+namespace Dragoon_Modifier.DraMod.Dataset {
     public class Addition {
         public const ushort EndFlag = 0x4;
         public const ushort RegularAddition = 0xC0;
         public const ushort MasterAddition = 0xE0;
-        public static readonly AdditionHit Empty = new AdditionHit();
+        public static readonly AdditionHit EmptyAddition = new AdditionHit();
         public static readonly byte[][] AdditionIDs = new byte[][] {
             new byte[] { 0, 1, 2, 3, 4, 5, 6 },
             new byte[] { 8, 9, 10, 11, 12 },
@@ -31,8 +31,8 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
 
         public readonly List<AdditionHit> AdditionHit = new List<AdditionHit>();
 
-        public Addition(string filePath) {
-            using(var file = new StreamReader(filePath)) {
+        internal Addition(string filePath) {
+            using (var file = new StreamReader(filePath)) {
                 var line = file.ReadLine().Split('\t').ToArray();
 
                 if (Byte.TryParse(line[1], out var bkey)) {
@@ -83,6 +83,5 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
                 }
             }
         }
-
     }
 }

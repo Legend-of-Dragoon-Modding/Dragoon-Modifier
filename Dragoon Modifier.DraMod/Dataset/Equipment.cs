@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dragoon_Modifier.DraMod.LoDDict {
+namespace Dragoon_Modifier.DraMod.Dataset {
     internal class Equipment : Item, IEquipment {
         private static readonly Dictionary<string, byte> _types = new Dictionary<string, byte>() {
             {"weapon", 128 },
@@ -89,14 +89,14 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
         public byte SpecialBonusAmmount { get; private set; } = 0;
         public byte SpecialEffect { get; private set; } = 0;
 
-        internal Equipment(byte index, string[] values, Dictionary<string, byte> element2num, Dictionary<string, byte> status2num) {
+        internal Equipment(byte index, string[] values) {
             var error = new List<string>();
 
             ID = index;
-            
+
             if (!(values[0] == "" || values[0] == " ")) {
                 Name = values[0];
-                EncodedName = Emulator.TextEncoding.GetBytes(Name).Concat(new byte[] { 0xFF, 0xA0}).ToArray();
+                EncodedName = Emulator.TextEncoding.GetBytes(Name).Concat(new byte[] { 0xFF, 0xA0 }).ToArray();
             }
 
             if (_types.TryGetValue(values[1].ToLower(), out byte bkey)) {
@@ -117,19 +117,19 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
                 error.Add($"{String.Join(", ", errorTemp)} not found as character.");
             }
 
-            if (_icons.TryGetValue(values[3].ToLower(), out bkey)) {
+            if (LoDDictionary.TryEncodeIcon(values[3].ToLower(), out bkey)) {
                 Icon = bkey;
             } else {
                 error.Add($"{values[3]} not found as Icon.");
             }
 
-            if (element2num.TryGetValue(values[4].ToLower(), out bkey)) {
+            if (LoDDictionary.TryEncodeElement(values[4].ToLower(), out bkey)) {
                 WeaponElement = bkey;
             } else {
                 error.Add($"{values[4]} not found as Weapon Element");
             }
 
-            if (status2num.TryGetValue(values[5].ToLower(), out bkey)) {
+            if (LoDDictionary.TryEncodeStatus(values[5].ToLower(), out bkey)) {
                 OnHitStatus = bkey;
             } else {
                 error.Add($"{values[5]} not found as On Hit Status");
@@ -197,7 +197,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
 
             errorTemp = new List<string>();
             foreach (string sub in values[16].Replace(" ", "").ToLower().Split(',')) {
-                if (element2num.TryGetValue(sub, out bkey)) {
+                if (LoDDictionary.TryEncodeElement(sub, out bkey)) {
                     ElementalResistance |= bkey;
                 } else {
                     errorTemp.Add(sub);
@@ -209,7 +209,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
 
             errorTemp = new List<string>();
             foreach (string sub in values[17].Replace(" ", "").ToLower().Split(',')) {
-                if (element2num.TryGetValue(sub, out bkey)) {
+                if (LoDDictionary.TryEncodeElement(sub, out bkey)) {
                     ElementalImmunity |= bkey;
                 } else {
                     errorTemp.Add(sub);
@@ -221,7 +221,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
 
             errorTemp = new List<string>();
             foreach (string sub in values[18].Replace(" ", "").ToLower().Split(',')) {
-                if (status2num.TryGetValue(sub, out bkey)) {
+                if (LoDDictionary.TryEncodeStatus(sub, out bkey)) {
                     StatusResistance |= bkey;
                 } else {
                     errorTemp.Add(sub);
@@ -275,7 +275,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
 
             if (!(values[23] == "" || values[23] == " ")) {
                 Description = values[23];
-       
+
                 EncodedDescription = Emulator.TextEncoding.GetBytes(Description).Concat(new byte[] { 0xFF, 0xA0 }).ToArray();
             }
 
@@ -287,7 +287,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
 
             if (error.Count != 0) {
                 Console.WriteLine($"[ERROR] Item {ID} - {Name}");
-                foreach(var er in error) {
+                foreach (var er in error) {
                     Console.WriteLine($"\t{er}");
                 }
             }

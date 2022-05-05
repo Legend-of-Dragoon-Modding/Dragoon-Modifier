@@ -34,7 +34,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 this.slot = slot;
             }
 
-            internal override void Func(LoDDict.ILoDDictionary LoDDictionary) {
+            internal override void Func() {
                 if (Emulator.Memory.Battle.CharacterTable.Length <= slot) {
                     Console.WriteLine($"Cannot exit dragoon for character slot {slot + 1}. Not enough characters.");
                     return;
@@ -55,8 +55,8 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             }
 
-            internal override void Func(LoDDict.ILoDDictionary LoDDictionary) {
-                Addition.Swap(LoDDictionary);
+            internal override void Func() {
+                Addition.Swap();
             }
         }
     }

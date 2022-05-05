@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.Controller {
     internal static class NoDart {
-        internal static void Initialize(LoDDict.ILoDDictionary loDDictionary, byte character) {
+        internal static void Initialize(byte character) {
             Console.WriteLine("Initializing No Dart.");
             if (Emulator.Memory.PartySlot[1] == character || Emulator.Memory.PartySlot[2] == character) {
                 Console.WriteLine("No Dart character already present.");
@@ -124,7 +124,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             battleCharacterTable.AdditionSpecial = special_effect;
 
-            Addition.ResetAdditionTable(battleCharacterTable, loDDictionary);
+            Addition.ResetAdditionTable(battleCharacterTable);
 
             battleCharacterTable.SetStats(character);
 

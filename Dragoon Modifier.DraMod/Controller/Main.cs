@@ -17,7 +17,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
         private static bool ShopFix = false;
         private static bool HPCapSet = false;
 
-        internal static void Run(ref LoDDict.ILoDDictionary LoDDict) {
+        internal static void Run() {
             while (Constants.Run) {
                 try {
                     switch (Emulator.Memory.GameState) {
@@ -26,14 +26,14 @@ namespace Dragoon_Modifier.DraMod.Controller {
                                 if (Settings.NoDart > 0) {
                                     Emulator.Memory.PartySlot[0] = 0;
                                 }
-                                Battle.Setup(LoDDict);
+                                Battle.Setup();
                                 BattleSetup = true;
                                 AdditionsChanged = false;
                                 ItemsChanged = false;
                                 ShopChanged = false;
                                 HPCapSet = false;
                             }
-                            Battle.Run(LoDDict);
+                            Battle.Run();
                             break;
 
                         case GameState.Field:
@@ -42,7 +42,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                             if (!ShopChanged) {
                                 Constants.UIControl.ResetBattle();
                                 if (Settings.ShopChange) {
-                                    Shop.TableChange(LoDDict);
+                                    Shop.TableChange();
                                 }
                                 ShopChanged = true;
                             }
@@ -79,12 +79,12 @@ namespace Dragoon_Modifier.DraMod.Controller {
                             BattleSetup = false;
 
                             if (!ItemsChanged) {
-                                Field.ItemSetup(LoDDict);
+                                Field.ItemSetup();
                                 ItemsChanged = true;
                             }
 
                             if (!AdditionsChanged) {
-                                Field.AdditionSetup(LoDDict);
+                                Field.AdditionSetup();
                                 AdditionsChanged = true;
                             }
 
@@ -102,7 +102,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                         case GameState.BattleResult:
                             BattleSetup = false;
                             if (!ItemsChanged) {
-                                Field.ItemSetup(LoDDict);
+                                Field.ItemSetup();
                                 ItemsChanged = true;
                             }
                             break;
@@ -119,19 +119,19 @@ namespace Dragoon_Modifier.DraMod.Controller {
                         case GameState.Shop:
                             BattleSetup = false;
                             if (!ItemsChanged) {
-                                Field.ItemSetup(LoDDict);
+                                Field.ItemSetup();
                                 ItemsChanged = true;
                             }
 
                             if (ShopFix) {
                                 ShopChanged = false;
                                 ShopFix = false;
-                                Shop.ContentChange(LoDDict);
+                                Shop.ContentChange();
                             }
 
                             if (!ShopChanged) {
                                 if (Settings.ShopChange) {
-                                    Shop.TableChange(LoDDict);
+                                    Shop.TableChange();
                                 }
                                 ShopChanged = true;
                             }

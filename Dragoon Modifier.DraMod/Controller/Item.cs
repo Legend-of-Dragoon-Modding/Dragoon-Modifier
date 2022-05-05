@@ -15,13 +15,13 @@ namespace Dragoon_Modifier.DraMod.Controller {
         /// </summary>
         /// <param name="LoDDictionary"></param>
         /// <param name="characterID"></param>
-        internal static void BattleEquipmentChange(LoDDict.ILoDDictionary LoDDictionary, uint characterID) {
-            LoDDict.IEquipment weapon = (LoDDict.IEquipment) LoDDictionary.Item[Emulator.Memory.CharacterTable[characterID].Weapon];
-            LoDDict.IEquipment helmet = (LoDDict.IEquipment) LoDDictionary.Item[Emulator.Memory.CharacterTable[characterID].Helmet];
-            LoDDict.IEquipment armor = (LoDDict.IEquipment) LoDDictionary.Item[Emulator.Memory.CharacterTable[characterID].Armor];
-            LoDDict.IEquipment shoes = (LoDDict.IEquipment) LoDDictionary.Item[Emulator.Memory.CharacterTable[characterID].Shoes];
-            LoDDict.IEquipment accessory = (LoDDict.IEquipment) LoDDictionary.Item[Emulator.Memory.CharacterTable[characterID].Accessory];
-            LoDDict.IEquipment[] equipment = new LoDDict.IEquipment[5] { weapon, helmet, armor, shoes, accessory };
+        internal static void BattleEquipmentChange(uint characterID) {
+            Dataset.IEquipment weapon = (Dataset.IEquipment) Settings.Dataset.Item[Emulator.Memory.CharacterTable[characterID].Weapon];
+            Dataset.IEquipment helmet = (Dataset.IEquipment) Settings.Dataset.Item[Emulator.Memory.CharacterTable[characterID].Helmet];
+            Dataset.IEquipment armor = (Dataset.IEquipment) Settings.Dataset.Item[Emulator.Memory.CharacterTable[characterID].Armor];
+            Dataset.IEquipment shoes = (Dataset.IEquipment) Settings.Dataset.Item[Emulator.Memory.CharacterTable[characterID].Shoes];
+            Dataset.IEquipment accessory = (Dataset.IEquipment) Settings.Dataset.Item[Emulator.Memory.CharacterTable[characterID].Accessory];
+            Dataset.IEquipment[] equipment = new Dataset.IEquipment[5] { weapon, helmet, armor, shoes, accessory };
 
             Core.Memory.SecondaryCharacterTable secondaryTable = Emulator.Memory.SecondaryCharacterTable[characterID];
 
@@ -66,9 +66,9 @@ namespace Dragoon_Modifier.DraMod.Controller {
         /// </summary>
         /// <param name="emulator"></param>
         /// <param name="LoDDictionary"></param>
-        internal static void FieldEquipmentChange(LoDDict.ILoDDictionary LoDDictionary) {
+        internal static void FieldEquipmentChange() {
             for (int i = 0; i < equipmentAmmount; i++) {
-                var equipment = (LoDDict.IEquipment) LoDDictionary.Item[i];
+                var equipment = (Dataset.IEquipment) Settings.Dataset.Item[i];
                 var itemSlot = (Core.Memory.IEquipment) Emulator.Memory.Item[i];
 
                 itemSlot.WhoEquips = equipment.WhoEquips;
@@ -101,9 +101,9 @@ namespace Dragoon_Modifier.DraMod.Controller {
         /// </summary>
         /// <param name="emulator"></param>
         /// <param name="LoDDictionary"></param>
-        internal static void IconChange(LoDDict.ILoDDictionary LoDDictionary) {
-            for (int itemID = 0; itemID < LoDDictionary.Item.Length; itemID++) {
-                Emulator.Memory.Item[itemID].Icon = LoDDictionary.Item[itemID].Icon;
+        internal static void IconChange() {
+            for (int itemID = 0; itemID < Settings.Dataset.Item.Length; itemID++) {
+                Emulator.Memory.Item[itemID].Icon = Settings.Dataset.Item[itemID].Icon;
             }
         }
 
@@ -111,13 +111,13 @@ namespace Dragoon_Modifier.DraMod.Controller {
         /// Changes all usable item names and descriptions according to <paramref name="LoDDictionary"/>.
         /// </summary>
         /// <param name="LoDDictionary"></param>
-        internal static void BattleItemNameDescChange(LoDDict.ILoDDictionary LoDDictionary) {
-            Emulator.DirectAccess.WriteAoB(Emulator.GetAddress("ITEM_BTL_NAME"), LoDDictionary.ItemBattleNames);
-            Emulator.DirectAccess.WriteAoB(Emulator.GetAddress("ITEM_BTL_DESC"), LoDDictionary.ItemBattleDescriptions);
+        internal static void BattleItemNameDescChange() {
+            Emulator.DirectAccess.WriteAoB(Emulator.GetAddress("ITEM_BTL_NAME"), Settings.Dataset.ItemBattleNames);
+            Emulator.DirectAccess.WriteAoB(Emulator.GetAddress("ITEM_BTL_DESC"), Settings.Dataset.ItemBattleDescriptions);
 
             for (int itemID = equipmentAmmount; itemID < 256; itemID++) {
                 var memory = (Core.Memory.IUsableItem) Emulator.Memory.Item[itemID];
-                var itemData = (LoDDict.IUsableItem) LoDDictionary.Item[itemID];
+                var itemData = (Dataset.IUsableItem) Settings.Dataset.Item[itemID];
 
                 memory.BattleNamePointer = (uint) itemData.BattleNamePointer;
                 memory.BattleDescriptionPointer = (uint) itemData.BattleDescriptionPointer;
@@ -128,13 +128,13 @@ namespace Dragoon_Modifier.DraMod.Controller {
         /// Changes all item names and descriptions according to <paramref name="LoDDictionary"/>.
         /// </summary>
         /// <param name="LoDDictionary"></param>
-        internal static void FieldItemNameDescChange(LoDDict.ILoDDictionary LoDDictionary) {
-            Emulator.DirectAccess.WriteAoB(Emulator.GetAddress("ITEM_NAME"), LoDDictionary.ItemNames); // TODO Make these into a byte[] to improve performance
-            Emulator.DirectAccess.WriteAoB(Emulator.GetAddress("ITEM_DESC"), LoDDictionary.ItemDescriptions);
+        internal static void FieldItemNameDescChange() {
+            Emulator.DirectAccess.WriteAoB(Emulator.GetAddress("ITEM_NAME"), Settings.Dataset.ItemNames); // TODO Make these into a byte[] to improve performance
+            Emulator.DirectAccess.WriteAoB(Emulator.GetAddress("ITEM_DESC"), Settings.Dataset.ItemDescriptions);
 
             for (int itemID = 0; itemID < Emulator.Memory.Item.Length; itemID++) {
-                Emulator.Memory.Item[itemID].NamePointer = (uint) LoDDictionary.Item[itemID].NamePointer;
-                Emulator.Memory.Item[itemID].DescriptionPointer = (uint) LoDDictionary.Item[itemID].DescriptionPointer;
+                Emulator.Memory.Item[itemID].NamePointer = (uint) Settings.Dataset.Item[itemID].NamePointer;
+                Emulator.Memory.Item[itemID].DescriptionPointer = (uint) Settings.Dataset.Item[itemID].DescriptionPointer;
             }
         }
     }

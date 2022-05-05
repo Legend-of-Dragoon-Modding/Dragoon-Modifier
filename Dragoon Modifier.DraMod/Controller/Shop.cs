@@ -9,36 +9,36 @@ using System.Threading.Tasks;
 namespace Dragoon_Modifier.DraMod.Controller {
     internal static class Shop {
 
-        internal static void TableChange(LoDDict.ILoDDictionary LoDDictionary) {
-            for (int shop = 0; shop < LoDDictionary.Shop.Length; shop++) {
-                if (LoDDictionary.Shop[shop].Count != 0) {
-                    Emulator.Memory.Shop[shop].WeaponItemFlag = LoDDictionary.Shop[shop][0] >= 192 ? (byte) 1 : (byte) 0;
+        internal static void TableChange() {
+            for (int shop = 0; shop < Settings.Dataset.Shop.Length; shop++) {
+                if (Settings.Dataset.Shop[shop].Count != 0) {
+                    Emulator.Memory.Shop[shop].WeaponItemFlag = Settings.Dataset.Shop[shop][0] >= 192 ? (byte) 1 : (byte) 0;
                 }
-                for (int item = 0; item < LoDDictionary.Shop[shop].Count; item++) {
-                    Emulator.Memory.Shop[shop].Item[item] = LoDDictionary.Shop[shop][item];
+                for (int item = 0; item < Settings.Dataset.Shop[shop].Count; item++) {
+                    Emulator.Memory.Shop[shop].Item[item] = Settings.Dataset.Shop[shop][item];
                 }
             }
 
             for (int item = 0; item < 255; item++) {
-                Emulator.Memory.Item[item].SellPrice = (ushort) LoDDictionary.Item[item].SellPrice;
+                Emulator.Memory.Item[item].SellPrice = (ushort) Settings.Dataset.Item[item].SellPrice;
             }
 
             Console.WriteLine("Changing Shop Table and Prices...");
         }
 
-        internal static void ContentChange(LoDDict.ILoDDictionary LoDDictionary) {
+        internal static void ContentChange() {
             var shopID = Emulator.Memory.ShopID;
 
-            if (LoDDictionary.Shop[shopID].Count != 0) {
-                Emulator.Memory.CurrentShop.WeaponItemFlag = LoDDictionary.Shop[shopID][0] >= 192 ? (byte) 1 : (byte) 0;
+            if (Settings.Dataset.Shop[shopID].Count != 0) {
+                Emulator.Memory.CurrentShop.WeaponItemFlag = Settings.Dataset.Shop[shopID][0] >= 192 ? (byte) 1 : (byte) 0;
             }
 
-            Emulator.Memory.CurrentShop.ItemCount = (byte) LoDDictionary.Shop[shopID].Count;
+            Emulator.Memory.CurrentShop.ItemCount = (byte) Settings.Dataset.Shop[shopID].Count;
 
             int item = 0;
-            foreach (var itemID in LoDDictionary.Shop[shopID]) {
+            foreach (var itemID in Settings.Dataset.Shop[shopID]) {
                 Emulator.Memory.CurrentShop.ItemID[item] = itemID;
-                Emulator.Memory.CurrentShop.ItemPrice[item] = (ushort) (LoDDictionary.Item[itemID].SellPrice * 2);
+                Emulator.Memory.CurrentShop.ItemPrice[item] = (ushort) (Settings.Dataset.Item[itemID].SellPrice * 2);
                 item++;
             }
 

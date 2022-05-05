@@ -89,15 +89,20 @@ namespace Dragoon_Modifier.DraMod {
         public static int LoopDelay = 250;
         public static int WaitDelay = 50;
 
-        private static Object _dataset = null;
+        private static Dataset.ILoDDictionary _dataset = null;
 
-        public static Object Dataset {
+        public static Dataset.ILoDDictionary Dataset {
             get {
                 if (_dataset == null) {
-                    _dataset = new Object();
+                    throw new Exception(); // TODO handeling for non-initialized LoDDict. Probably never happens. Can be lazy loaded?
                 }
                 return _dataset;
             }
+        }
+
+        public static void LoadDataset(string cwd, string mod) {
+            Mod = mod;
+            _dataset = new Dataset.LoDDictionary(cwd, Mod);
         }
     }
 }

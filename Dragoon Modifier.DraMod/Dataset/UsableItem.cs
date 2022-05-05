@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dragoon_Modifier.DraMod.LoDDict {
+namespace Dragoon_Modifier.DraMod.Dataset {
     internal class UsableItem : Item, IUsableItem {
         private static readonly Dictionary<string, byte> _damageBases = new Dictionary<string, byte>() {
             {"", 0x0 },
@@ -49,7 +49,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
         };
 
         public string BattleDescription { get; private set; } = "<END>";
-        public byte[] EncodedBattleDescription { get; private set; } = new byte[] { 0xFF, 0xA0, 0xFF, 0xA0};
+        public byte[] EncodedBattleDescription { get; private set; } = new byte[] { 0xFF, 0xA0, 0xFF, 0xA0 };
         public int BattleDescriptionPointer { get; set; } = 0;
         public int BattleNamePointer { get; set; } = 0;
         public byte Target { get; private set; } = 0;
@@ -64,7 +64,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
         public byte Unknown2 { get; private set; } = 0;
         public byte BaseSwitch { get; private set; } = 0;
 
-        internal UsableItem(byte index, string[] values, Dictionary<string, byte> element2num, Dictionary<string, byte> status2num) {
+        internal UsableItem(byte index, string[] values) {
             List<string> error = new List<string>();
 
             ID = index;
@@ -80,7 +80,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
                 error.Add($"{values[1]} couldn't be parsed as Target.");
             }
 
-            if (element2num.TryGetValue(values[2], out bkey)) {
+            if (LoDDictionary.TryEncodeElement(values[2], out bkey)) {
                 Element = bkey;
             } else if (values[2] != "") {
                 error.Add($"{values[2]} not found as Element.");
@@ -128,13 +128,13 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
                 error.Add($"{values[7]} couldn't be parsed as Special Ammount");
             }
 
-            if (_icons.TryGetValue(values[8].ToLower(), out bkey)) {
+            if (LoDDictionary.TryEncodeIcon(values[8].ToLower(), out bkey)) {
                 Icon = bkey;
             } else {
                 error.Add($"{values[8]} not found as Icon.");
             }
 
-            if (status2num.TryGetValue(values[9], out bkey)) {
+            if (LoDDictionary.TryEncodeStatus(values[9], out bkey)) {
                 Status = bkey;
             } else if (values[9] != "") {
                 error.Add($"{values[9]} not found as Status.");

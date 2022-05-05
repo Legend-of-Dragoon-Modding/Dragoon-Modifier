@@ -16,7 +16,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
         /// </summary>
         /// <param name="character"></param>
         /// <param name="LoDDictionary"></param>
-        internal static void ResetAdditionTable(Core.Memory.Battle.Character character, LoDDict.ILoDDictionary LoDDictionary) {
+        internal static void ResetAdditionTable(Core.Memory.Battle.Character character) {
             var characterID = character.ID;
 
             if (characterID == 2 || characterID == 8) {
@@ -28,12 +28,12 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
 
             var additionID = Emulator.Memory.CharacterTable[characterID].ChosenAddition;
-            var additionIndex = Array.IndexOf(LoDDict.Addition.AdditionIDs[characterID], additionID);
-            var addition = LoDDictionary.Character[characterID].Additions[additionIndex];
+            var additionIndex = Array.IndexOf(Dataset.Addition.AdditionIDs[characterID], additionID);
+            var addition = Settings.Dataset.Character[characterID].Additions[additionIndex];
 
             byte hitIndex = 0;
             foreach (var hit in addition.AdditionHit) {
-                character.Addition[hitIndex].MasterAddition = LoDDict.Addition.RegularAddition;
+                character.Addition[hitIndex].MasterAddition = Dataset.Addition.RegularAddition;
                 character.Addition[hitIndex].NextHit = hit.NextHit;
                 character.Addition[hitIndex].BlueSquare = hit.BlueTime;
                 character.Addition[hitIndex].GrayHit = hit.GrayTime;
@@ -59,7 +59,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             character.Addition[0].ID = addition.ID;
             character.Addition[0].StartTime = addition.StartTime;
-            character.Addition[addition.AdditionHit.Count - 1].FinalHit = LoDDict.Addition.EndFlag;
+            character.Addition[addition.AdditionHit.Count - 1].FinalHit = Dataset.Addition.EndFlag;
 
             var additionLevel = Core.Emulator.Memory.CharacterTable[characterID].AdditionLevel[additionIndex] - 1;
             character.Add_DMG_Multi = addition.DamageIncrease[additionLevel];
@@ -90,7 +90,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
         /// </summary>
         /// <param name="emulator"></param>
         /// <param name="LoDDictionary"></param>
-        internal static void Swap(LoDDict.ILoDDictionary LoDDictionary) {
+        internal static void Swap() {
             if (GetActionSlot(out var slot)) {
                 var character = Core.Emulator.Memory.Battle.CharacterTable[slot];
                 uint characterID = character.ID;
@@ -136,9 +136,9 @@ namespace Dragoon_Modifier.DraMod.Controller {
                         Thread.Sleep(Settings.WaitDelay);
                     }
 
-                    Core.Emulator.Memory.CharacterTable[characterID].ChosenAddition = LoDDict.Addition.AdditionIDs[characterID][additionIndex];
+                    Core.Emulator.Memory.CharacterTable[characterID].ChosenAddition = Dataset.Addition.AdditionIDs[characterID][additionIndex];
 
-                    ResetAdditionTable(character, LoDDictionary);
+                    ResetAdditionTable(character);
 
                     var turn = character.Turn;
                     character.Turn = 800;
@@ -195,13 +195,13 @@ namespace Dragoon_Modifier.DraMod.Controller {
         /// </summary>
         /// <param name="emulator"></param>
         /// <param name="LoDDictionary"></param>
-        internal static void MenuTableChange(LoDDict.ILoDDictionary LoDDictionary) {
+        internal static void MenuTableChange() {
             for (int character = 0; character < 8; character++) {
                 if (character == 5) { // Skip Albert
                     continue;
                 }
 
-                foreach (var addition in LoDDictionary.Character[character].Additions) {
+                foreach (var addition in Settings.Dataset.Character[character].Additions) {
                     var table = Emulator.Memory.MenuAdditionTable[addition.ID];
 
                     table.Damage = (ushort) addition.AdditionHit.Sum(add => add.Damage);

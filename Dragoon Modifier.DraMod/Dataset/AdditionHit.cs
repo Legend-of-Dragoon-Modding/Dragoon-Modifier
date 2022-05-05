@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dragoon_Modifier.DraMod.LoDDict {
+namespace Dragoon_Modifier.DraMod.Dataset {
     public class AdditionHit {
         public readonly ushort Damage = 0;
         public readonly ushort SP = 0;
@@ -18,7 +18,6 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
         public readonly byte VerticaDistance = 0;
         public readonly byte Unknown = 0;
         public readonly byte Unknown2 = 0;
-
 
         /// <summary>
         /// Used to generate an empty addition hit data.
@@ -37,7 +36,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
             }
 
             if (Byte.TryParse(values[3], out var bkey)) {
-                NextHit  = bkey;
+                NextHit = bkey;
             }
 
             if (Byte.TryParse(values[4], out bkey)) {

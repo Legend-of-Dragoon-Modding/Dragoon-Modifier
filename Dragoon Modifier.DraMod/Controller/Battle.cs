@@ -143,7 +143,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
         static readonly List<Hotkey> hotkeys = BattleHotkeys.Load();
 
-        public static void Setup(LoDDict.ILoDDictionary loDDictionary) {
+        public static void Setup() {
             Console.WriteLine("Battle detected. Loading..."); 
 
             firstDamageCapRemoval = false;
@@ -181,12 +181,12 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             if (Settings.DualDifficulty) {
                 Console.WriteLine("[DEBUG] [Dual Difficulty] Changing monster stats...");
-                SwitchDualDifficulty(loDDictionary);
+                SwitchDualDifficulty();
             }
 
-            MonsterChanges(loDDictionary);
+            MonsterChanges();
 
-            CharacterChanges(loDDictionary);
+            CharacterChanges();
 
             Console.WriteLine("Updating UI...");
             UpdateUI();
@@ -200,7 +200,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
 
             if (Settings.NoDart != 0 && Settings.NoDart != 255) {
-                NoDart.Initialize(loDDictionary, Settings.NoDart);
+                NoDart.Initialize(Settings.NoDart);
             }
 
             if (Settings.NoDragoon) {
@@ -212,8 +212,8 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
         }
 
-        public static void Run(LoDDict.ILoDDictionary loDDictionary) {
-            loDDictionary.ItemScript.BattleRun(loDDictionary);
+        public static void Run() {
+            Settings.Dataset.Script.BattleRun();
 
             UpdateUI();
 
@@ -244,7 +244,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
 
             foreach (var hotkey in hotkeys) {
-                hotkey.Run(loDDictionary);
+                hotkey.Run();
             }
         }
 
@@ -257,47 +257,47 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
         }
 
-        private static void SwitchDualDifficulty(LoDDict.ILoDDictionary loDDictionary) {
+        private static void SwitchDualDifficulty() {
             string cwd = Directory.GetCurrentDirectory();
             string mod;
 
             if (bosses.Contains(Emulator.Memory.Battle.EncounterID)) {
                 mod = DraMod.Settings.Mod.Equals("Hell_Mode") ? "Hard_Mode" : "US_Base";
-                loDDictionary.SwapMonsters(cwd, mod);
+                // loDDictionary.SwapMonsters(cwd, mod); TODO
                 Console.WriteLine("[DEBUG] [Dual Difficulty] Mod selected: " + mod);
                 return;
             }
 
-            loDDictionary.SwapMonsters(cwd, DraMod.Settings.Mod);
+            // loDDictionary.SwapMonsters(cwd, DraMod.Settings.Mod); TODO
             Console.WriteLine("[DEBUG] [Dual Difficulty] Mod selected: " + DraMod.Settings.Mod);
         }
 
-        private static void MonsterChanges(LoDDict.ILoDDictionary LoDDict) {
+        private static void MonsterChanges() {
             if (Settings.MonsterStatChange) {
                 Console.WriteLine("Changing monster stats...");
                 for (int slot = 0; slot < Emulator.Memory.Battle.MonsterTable.Length; slot++) {
-                    MonsterStatChange(LoDDict, slot);
+                    MonsterStatChange(slot);
                 }
             }
 
             if (Settings.MonsterDropChange) {
                 Console.WriteLine("Changing monster drops...");
                 for (int slot = 0; slot < Emulator.Memory.UniqueMonsterSize; slot++) {
-                    MonsterDropChanges(LoDDict, slot);
+                    MonsterDropChanges(slot);
                 }
             }
 
             if (Settings.MonsterExpGoldChange) {
                 Console.WriteLine("Changing monster exp and gold Rewards...");
                 for (int slot = 0; slot < Emulator.Memory.UniqueMonsterSize; slot++) {
-                    MonsterExpGoldChange(LoDDict, slot);
+                    MonsterExpGoldChange(slot);
                 }
             }
         }
 
-        private static void MonsterStatChange(LoDDict.ILoDDictionary LoDDict, int slot) {
+        private static void MonsterStatChange(int slot) {
             ushort id = Emulator.Memory.Battle.MonsterID[slot];
-            double HP = Math.Round(LoDDict.Monster[id].HP * Settings.HPMulti);
+            double HP = Math.Round(Settings.Dataset.Monster[id].HP * Settings.HPMulti);
 
             double resup = 1;
             if (HP > 65535) {
@@ -310,64 +310,64 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             monster.HP = (ushort) HP;
             monster.MaxHP = (ushort) HP;
-            monster.AT = (ushort) Math.Round(LoDDict.Monster[id].AT * Settings.ATMulti);
-            monster.OG_AT = (ushort) Math.Round(LoDDict.Monster[id].AT * Settings.ATMulti);
-            monster.MAT = (ushort) Math.Round(LoDDict.Monster[id].MAT * Settings.MATMulti);
-            monster.OG_MAT = (ushort) Math.Round(LoDDict.Monster[id].MAT * Settings.MATMulti);
-            monster.DF = (ushort) Math.Round(LoDDict.Monster[id].DF * Settings.DFMulti * resup);
-            monster.OG_DF = (ushort) Math.Round(LoDDict.Monster[id].DF * Settings.DFMulti * resup);
-            monster.MDF = (ushort) Math.Round(LoDDict.Monster[id].MDF * Settings.MDFMulti * resup);
-            monster.OG_MDF = (ushort) Math.Round(LoDDict.Monster[id].MDF * Settings.MDFMulti * resup);
-            monster.SPD = (ushort) Math.Round(LoDDict.Monster[id].SPD * Settings.SPDMulti);
-            monster.OG_SPD = (ushort) Math.Round(LoDDict.Monster[id].SPD * Settings.SPDMulti);
-            monster.A_AV = LoDDict.Monster[id].A_AV;
-            monster.M_AV = LoDDict.Monster[id].M_AV;
-            monster.P_Immune = LoDDict.Monster[id].PhysicalImmunity;
-            monster.M_Immune = LoDDict.Monster[id].MagicalImmunity;
-            monster.P_Half = LoDDict.Monster[id].PhysicalResistance;
-            monster.M_Half = LoDDict.Monster[id].MagicalResistance;
-            monster.Element = LoDDict.Monster[id].Element;
-            monster.ElementalImmunity = LoDDict.Monster[id].ElementalImmunity;
-            monster.ElementalResistance = LoDDict.Monster[id].ElementalResistance;
-            monster.StatusResist = LoDDict.Monster[id].StatusResist;
-            monster.SpecialEffect = LoDDict.Monster[id].SpecialEffect;
+            monster.AT = (ushort) Math.Round(Settings.Dataset.Monster[id].AT * Settings.ATMulti);
+            monster.OG_AT = (ushort) Math.Round(Settings.Dataset.Monster[id].AT * Settings.ATMulti);
+            monster.MAT = (ushort) Math.Round(Settings.Dataset.Monster[id].MAT * Settings.MATMulti);
+            monster.OG_MAT = (ushort) Math.Round(Settings.Dataset.Monster[id].MAT * Settings.MATMulti);
+            monster.DF = (ushort) Math.Round(Settings.Dataset.Monster[id].DF * Settings.DFMulti * resup);
+            monster.OG_DF = (ushort) Math.Round(Settings.Dataset.Monster[id].DF * Settings.DFMulti * resup);
+            monster.MDF = (ushort) Math.Round(Settings.Dataset.Monster[id].MDF * Settings.MDFMulti * resup);
+            monster.OG_MDF = (ushort) Math.Round(Settings.Dataset.Monster[id].MDF * Settings.MDFMulti * resup);
+            monster.SPD = (ushort) Math.Round(Settings.Dataset.Monster[id].SPD * Settings.SPDMulti);
+            monster.OG_SPD = (ushort) Math.Round(Settings.Dataset.Monster[id].SPD * Settings.SPDMulti);
+            monster.A_AV = Settings.Dataset.Monster[id].A_AV;
+            monster.M_AV = Settings.Dataset.Monster[id].M_AV;
+            monster.P_Immune = Settings.Dataset.Monster[id].PhysicalImmunity;
+            monster.M_Immune = Settings.Dataset.Monster[id].MagicalImmunity;
+            monster.P_Half = Settings.Dataset.Monster[id].PhysicalResistance;
+            monster.M_Half = Settings.Dataset.Monster[id].MagicalResistance;
+            monster.Element = Settings.Dataset.Monster[id].Element;
+            monster.ElementalImmunity = Settings.Dataset.Monster[id].ElementalImmunity;
+            monster.ElementalResistance = Settings.Dataset.Monster[id].ElementalResistance;
+            monster.StatusResist = Settings.Dataset.Monster[id].StatusResist;
+            monster.SpecialEffect = Settings.Dataset.Monster[id].SpecialEffect;
         }
 
-        private static void MonsterDropChanges(LoDDict.ILoDDictionary LoDDict, int slot) {
+        private static void MonsterDropChanges(int slot) {
             ushort id = Emulator.Memory.Battle.UniqueMonsterID[slot];
-            Emulator.Memory.Battle.RewardsDropChance[slot] = LoDDict.Monster[id].DropChance;
-            Emulator.Memory.Battle.RewardsItemDrop[slot] = LoDDict.Monster[id].DropItem;
+            Emulator.Memory.Battle.RewardsDropChance[slot] = Settings.Dataset.Monster[id].DropChance;
+            Emulator.Memory.Battle.RewardsItemDrop[slot] = Settings.Dataset.Monster[id].DropItem;
         }
 
-        private static void MonsterExpGoldChange(LoDDict.ILoDDictionary LoDDict, int slot) {
+        private static void MonsterExpGoldChange(int slot) {
             ushort id = Emulator.Memory.Battle.UniqueMonsterID[slot];
-            Emulator.Memory.Battle.RewardsExp[slot] = LoDDict.Monster[id].EXP;
-            Emulator.Memory.Battle.RewardsGold[slot] = LoDDict.Monster[id].Gold;
+            Emulator.Memory.Battle.RewardsExp[slot] = Settings.Dataset.Monster[id].EXP;
+            Emulator.Memory.Battle.RewardsGold[slot] = Settings.Dataset.Monster[id].Gold;
         }
 
-        private static void CharacterChanges(LoDDict.ILoDDictionary loDDictionary) {
+        private static void CharacterChanges() {
             Console.WriteLine("Loading Character stats...");
             for (byte character = 0; character < 9; character++) {
 
                 if (Settings.CharacterStatChange) {
-                    Character.ChangeStats(loDDictionary, character);
+                    Character.ChangeStats(character);
                 }
 
                 if (Settings.ItemStatChange) {
-                    Item.BattleEquipmentChange(loDDictionary, character);
+                    Item.BattleEquipmentChange(character);
                 }
             }
 
             if (Settings.ItemNameDescChange && Emulator.Region == Region.NTA) { // TODO Remove Region check, when other encoding tables work.
                 Console.WriteLine("Changing Usable Item names and descriptions...");
-                Item.BattleItemNameDescChange(loDDictionary);
+                Item.BattleItemNameDescChange();
             }
 
             if (Settings.NoDecaySoulEater) {
-                NoHPDecaySoulEater(loDDictionary);
+                NoHPDecaySoulEater();
             }
 
-            loDDictionary.ItemScript.BattleSetup(loDDictionary);
+            Settings.Dataset.Script.BattleSetup();
 
             Console.WriteLine("Changing Character stats...");
             uint characterID = 0;
@@ -384,7 +384,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             if (Settings.AdditionChange) {
                 Console.WriteLine("Changing Additions...");
                 foreach (var character in Emulator.Memory.Battle.CharacterTable) {
-                    Addition.ResetAdditionTable(character, loDDictionary);
+                    Addition.ResetAdditionTable(character);
                 }
             }
         }
@@ -628,13 +628,13 @@ namespace Dragoon_Modifier.DraMod.Controller {
             return false;
         }
 
-        private static void NoHPDecaySoulEater(LoDDict.ILoDDictionary LoDDict) {
+        private static void NoHPDecaySoulEater() {
             if (!(Emulator.Memory.CharacterTable[0].Weapon == 7)) {
                 return;
             }
 
             if (Settings.ItemStatChange) {
-                LoDDict.IEquipment soulEater = (LoDDict.IEquipment) LoDDict.Item[7];
+                Dataset.IEquipment soulEater = (Dataset.IEquipment) Settings.Dataset.Item[7];
                 Emulator.Memory.SecondaryCharacterTable[0].HP_Regen -= (sbyte) soulEater.SpecialBonusAmmount;
                 return;
             }

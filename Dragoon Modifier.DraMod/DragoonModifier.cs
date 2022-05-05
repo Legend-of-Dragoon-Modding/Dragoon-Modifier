@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod {
     internal class DragoonModifier : IDraMod {
-        private static LoDDict.ILoDDictionary _LoDDict;
         private readonly string _cwd;
         private static readonly List<string> presetMods = new List<string> { "Normal", "NormalHard", "Hard", "HardHell", "Hell" };
 
@@ -22,6 +21,7 @@ namespace Dragoon_Modifier.DraMod {
         public bool Attach(string emulatorName, long previousOffset) {
             try {
                 Emulator.Attach(emulatorName, previousOffset);
+                Settings.LoadDataset(_cwd, Settings.Mod);
                 
                 Console.WriteLine($"Emulator offset:        {Convert.ToString(Emulator.EmulatorOffset, 16).ToUpper()}");
                 Console.WriteLine($"Region:                 {Emulator.Region}");
@@ -34,7 +34,7 @@ namespace Dragoon_Modifier.DraMod {
                     ChangeLoDDirectory(Settings.Mod);
                 }
                 
-                Thread t = new Thread(() => Controller.Main.Run(ref _LoDDict));
+                Thread t = new Thread(() => Controller.Main.Run());
 
                 t.Start();
                 return true;
@@ -53,7 +53,7 @@ namespace Dragoon_Modifier.DraMod {
             Settings.Mod = mod;
             if (Constants.Run) {
                 Constants.UIControl.WritePLog("Changing mod directory to " + mod);
-                _LoDDict = new LoDDict.LoDDictionary(_cwd, mod);
+                Settings.LoadDataset(_cwd, mod);
                 Controller.Main.BattleSetup = false;
                 Controller.Main.AdditionsChanged = false;
                 Controller.Main.ItemsChanged = false;
@@ -74,18 +74,20 @@ namespace Dragoon_Modifier.DraMod {
             Settings.Mod = modString;
             if (Constants.Run) {
 
-                LoDDict.Scripts.IScript ItemScript = new LoDDict.Scripts.DummyScript();
+
+                Dataset.Scripts.IScript ItemScript = new Dataset.Scripts.DummyScript();
                 switch (mod) {
                     case Preset.Hell:
                     case Preset.HardHell:
                     case Preset.Hard:
-                        ItemScript = new LoDDict.Scripts.HardMode.Script();
+                        // ItemScript = new Dataset.Scripts.HardMode.Script(); TODO
                         break;
                 }
                 
 
                 Constants.UIControl.WritePLog("Changing mod directory to " + modString);
-                _LoDDict = new LoDDict.LoDDictionary(_cwd, modString, ItemScript);
+                // _LoDDict = new LoDDict.LoDDictionary(_cwd, modString, ItemScript);
+                Settings.LoadDataset(_cwd, modString); // TODO add Script
                 Controller.Main.BattleSetup = false;
                 Controller.Main.AdditionsChanged = false;
                 Controller.Main.ItemsChanged = false;

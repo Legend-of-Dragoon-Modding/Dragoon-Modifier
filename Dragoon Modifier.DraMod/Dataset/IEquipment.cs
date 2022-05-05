@@ -1,4 +1,10 @@
-﻿namespace Dragoon_Modifier.DraMod.LoDDict {
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Dragoon_Modifier.DraMod.Dataset {
     public interface IEquipment : IItem {
         byte A_AV { get; }
         byte A_HIT { get; }

@@ -13,34 +13,34 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
         private static bool EarlyAdditionsSet = false;
 
-        internal static void Setup(LoDDict.ILoDDictionary loDDictionary) {
+        internal static void Setup() {
             Constants.UIControl.ResetBattle();
             EarlyAdditionsSet = false;
-            loDDictionary.ItemScript.FieldSetup(loDDictionary);
+            Settings.Dataset.Script.FieldSetup();
 
         }
 
-        internal static void ItemSetup(LoDDict.ILoDDictionary loDDictionary) {
+        internal static void ItemSetup() {
             if (Settings.ItemIconChange) {
                 Console.WriteLine("Changing Item Icons...");
-                Item.IconChange(loDDictionary);
+                Item.IconChange();
             }
 
             if (Settings.ItemNameDescChange) {
                 Console.WriteLine("Changing Item names and descriptions...");
-                Item.FieldItemNameDescChange(loDDictionary);
+                Item.FieldItemNameDescChange();
             }
 
             if (Settings.ItemStatChange) {
                 Console.WriteLine("Changing Equipment stats...");
-                Item.FieldEquipmentChange(loDDictionary);
+                Item.FieldEquipmentChange();
             }
         }
 
-        internal static void AdditionSetup(LoDDict.ILoDDictionary loDDictionary) {
+        internal static void AdditionSetup() {
             if (Settings.AdditionChange) {
                 Console.WriteLine("Changing Additions...");
-                Addition.MenuTableChange(loDDictionary);
+                Addition.MenuTableChange();
             }
         }
 
@@ -265,9 +265,9 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
         }
 
-        private static void ThrownItemChange(LoDDict.ILoDDictionary loDDictionary) {
+        private static void ThrownItemChange() {
             for (int i = 192; i < 255; i++) {
-                var item = (LoDDict.IUsableItem) loDDictionary.Item[i];
+                var item = (Dataset.IUsableItem) Settings.Dataset.Item[i];
                 var mem = (Core.Memory.IUsableItem) Emulator.Memory.Item[i];
                 mem.Target = item.Target;
                 mem.Element = item.Element;
@@ -283,17 +283,17 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
         }
 
-        private static void ItemNameDescChange(LoDDict.ILoDDictionary loDDictionary) {
+        private static void ItemNameDescChange() {
             Console.WriteLine("Changing Item Names and Descriptions...");
 
             int address = Emulator.GetAddress("ITEM_NAME");
             int address2 = Emulator.GetAddress("ITEM_DESC");
-            Emulator.DirectAccess.WriteAoB(address, loDDictionary.ItemNames);
-            Emulator.DirectAccess.WriteAoB(address2, loDDictionary.ItemDescriptions);
+            Emulator.DirectAccess.WriteAoB(address, Settings.Dataset.ItemNames);
+            Emulator.DirectAccess.WriteAoB(address2, Settings.Dataset.ItemDescriptions);
 
             for (int i = 0; i < Emulator.Memory.Item.Length; i++) {
-                Emulator.Memory.Item[i].NamePointer = (uint) loDDictionary.Item[i].NamePointer;
-                Emulator.Memory.Item[i].DescriptionPointer = (uint) loDDictionary.Item[i].DescriptionPointer;
+                Emulator.Memory.Item[i].NamePointer = (uint) Settings.Dataset.Item[i].NamePointer;
+                Emulator.Memory.Item[i].DescriptionPointer = (uint) Settings.Dataset.Item[i].DescriptionPointer;
             }
         }
     }

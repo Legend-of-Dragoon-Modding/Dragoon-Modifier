@@ -6,27 +6,27 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.Controller {
     internal static class BattleResult {
-        public static void Setup(LoDDict.ILoDDictionary loDDictionary, UI.IUIControl uiControl) {
-            uiControl.ResetBattle();
+        public static void Setup() {
+            Constants.UIControl.ResetBattle();
 
             if (Settings.ItemIconChange) {
                 Console.WriteLine("Changing Item icons...");
-                Item.IconChange(loDDictionary);
+                Item.IconChange();
             }
 
             if (Settings.ItemNameDescChange) {
                 Console.WriteLine("Changing Item names and descriptions...");
-                Item.FieldItemNameDescChange(loDDictionary);
+                Item.FieldItemNameDescChange();
             }
 
             if (Settings.ItemStatChange) {
                 Console.WriteLine("Changing Items stats...");
-                Item.FieldEquipmentChange(loDDictionary);
+                Item.FieldEquipmentChange();
             }
 
             if (Settings.AdditionChange) {
                 Console.WriteLine("Changing Additions...");
-                Addition.MenuTableChange(loDDictionary);
+                Addition.MenuTableChange();
             }
 
 
@@ -34,7 +34,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 RemoveExtraPartyMembers();
             }
 
-            loDDictionary.ItemScript.FieldSetup(loDDictionary);
+            Settings.Dataset.Script.FieldSetup();
         }
 
         public static void RemoveExtraPartyMembers() {

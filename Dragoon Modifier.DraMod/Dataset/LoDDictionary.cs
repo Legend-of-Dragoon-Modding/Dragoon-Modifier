@@ -1,4 +1,5 @@
 ﻿using Dragoon_Modifier.Core;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dragoon_Modifier.DraMod.LoDDict {
-    internal class LoDDictionary : ILoDDictionary {
-        public static readonly Dictionary<string, byte> Status2Num = new Dictionary<string, byte>() {
+namespace Dragoon_Modifier.DraMod.Dataset {
+    internal sealed class LoDDictionary : ILoDDictionary {
+        private static readonly Dictionary<string, byte> _status2Num = new Dictionary<string, byte>() {
             {"none", 0 },
             {"", 0 },
             {"petrification", 1 },
@@ -29,7 +30,18 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
             {"po", 128 },
             {"all", 255 }
         };
-        public static readonly Dictionary<string, byte> Element2Num = new Dictionary<string, byte>() {
+        private static readonly Dictionary<byte, string> _num2Status = new Dictionary<byte, string> {
+            {0, "None" },
+            {1, "Petrification" },
+            {2, "Bewitchment" },
+            {4, "Confusion" },
+            {8, "Fear" },
+            {16, "Stun" },
+            {32, "Armblocking" },
+            {64, "Dispirit" },
+            {128, "Poison" }
+        };
+        private static readonly Dictionary<string, byte> _element2Num = new Dictionary<string, byte>() {
             {"", 0 },
             {"none", 0 },
             {"null", 0 },
@@ -42,34 +54,142 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
             {"wind", 64 },
             {"fire", 128 }
         };
+        private static readonly Dictionary<byte, string> _num2Element = new Dictionary<byte, string>() {
+            {0, "None" },
+            {1, "Water" },
+            {2, "Earth" },
+            {4, "Dark" },
+            {8, "Non-Elemental" },
+            {16, "Thunder" },
+            {32, "Light" },
+            {64, "Wind" },
+            {128, "Fire" }
+        };
+        private static readonly Dictionary<string, byte> _icon2Num = new Dictionary<string, byte>() {
+            { "sword", 0 },
+            { "axe", 1 },
+            { "hammer", 2 },
+            { "spear", 3 },
+            { "bow", 4 },
+            { "mace", 5 },
+            { "knuckle", 6 },
+            { "boxing glove", 7 },
+            { "clothes", 8 },
+            { "robe", 9 },
+            { "armor", 10 },
+            { "breastplate", 11 },
+            { "red dress", 12 },
+            { "loincloth", 13 },
+            { "warrior dress", 14 },
+            { "crown", 15 },
+            { "hairband", 16 },
+            { "bandana", 16 },
+            { "hat", 17 },
+            { "helm", 18 },
+            { "shoes", 19 },
+            { "kneepiece", 20 },
+            { "boots", 21 },
+            { "bracelet", 22 },
+            { "ring", 23 },
+            { "amulet", 24 },
+            { "stone", 25 },
+            { "jewellery", 26 },
+            { "ankh", 27 },
+            { "bell", 28 },
+            { "bag", 29 },
+            { "cloak", 30 },
+            { "scarf", 30 },
+            { "glove", 31 },
+            { "horn", 32 },
+            { "blue potion", 33 },
+            { "yellow potion", 34 },
+            { "red potion", 35 },
+            { "angel's prayer", 36 },
+            { "green potion", 37 },
+            { "magic", 38 },
+            { "skull", 39 },
+            { "up", 40 },
+            { "down", 41 },
+            { "shield", 42 },
+            { "smoke ball", 43 },
+            { "sig stone", 44 },
+            { "charm", 45 },
+            { "sack", 46 },
+            { "invalid", 57 },
+            { "waring", 58 },
+            {"none", 64 },
+            {"", 64 }
+        };
 
-        public IItem[] Item { get; private set; } = new IItem[256];
-        public Dictionary<ushort, Monster> Monster { get; private set; } = new Dictionary<ushort, Monster>();
-        public Character[] Character { get; } = new Character[9];
+        private readonly string _cwd;
+        private readonly string _mod;
+        private readonly string _secondaryMod;
+        private bool _dualMonster = false;
+        private Dictionary<ushort, IMonster> _monsters = new Dictionary<ushort, IMonster>();
+        private Dictionary<ushort, IMonster> _secondaryMonsters = new Dictionary<ushort, IMonster>();
+
+        public IItem[] Item { get; } = new IItem[256];
+        public Dictionary<ushort, IMonster> Monster {
+            get {
+                if (_dualMonster && _secondaryMonsters.Count > 0) {
+                    return _secondaryMonsters;
+                }
+                return _monsters;
+            }
+        }
+
+        public ICharacter[] Character { get; } = new ICharacter[9];
 
         public byte[] ItemNames { get; private set; } = new byte[0];
         public byte[] ItemDescriptions { get; private set; } = new byte[0];
         public byte[] ItemBattleNames { get; private set; } = new byte[0];
         public byte[] ItemBattleDescriptions { get; private set; } = new byte[0];
 
-        public List<byte>[] Shop { get; private set; } = new List<byte>[45];
+        public List<byte>[] Shop { get; } = new List<byte>[45];
 
-        public Scripts.IScript ItemScript { get; private set; } = new Scripts.DummyScript();
+        public Scripts.IScript Script { get; private set; } = new Scripts.DummyScript();
+
+        internal delegate bool MyFunc<T1, T2>(T1 a, out T2 b);
+        private MyFunc<string, byte> _tryEncodeItemDelegate;
 
         internal LoDDictionary(string cwd, string mod) {
-            Load(cwd, mod);
+            _cwd = cwd;
+            _mod = mod;
+            _dualMonster = false;
 
-            ParseScripts($"{cwd}\\Mods\\{mod}");
+            ParseScript();
+
+            Load();
         }
 
-        internal LoDDictionary(string cwd, string mod, Scripts.IScript itemScript) {
-            Load(cwd, mod);
+        internal LoDDictionary(string cwd, string mod, Scripts.IScript script) {
+            _cwd = cwd;
+            _mod = mod;
+            _dualMonster = false;
 
-            ItemScript = itemScript;
+            Script = script;
+
+            Load();
         }
 
-        private void Load(string cwd, string mod) {
-            string modPath = $"{cwd}\\Mods\\{mod}";
+        private void ParseScript() {
+            foreach (var file in Directory.GetFiles($"{_cwd}\\Mods\\{_mod}", "*.cs")) {
+                if (file.Equals("Script.cs")) {
+                    try {
+                        // Script = new Scripts.CustomScript(file, this);
+                        Console.WriteLine("Custom script inserted.");
+                        return;
+                    } catch (ApplicationException ex) {
+                        Console.WriteLine($"[ERROR] Script {file} not compatible.");
+                        Console.WriteLine($"[ERROR] {ex}");
+                    }
+                }
+            }
+        }
+
+        private void Load() {
+            string modPath = $"{_cwd}\\Mods\\{_mod}";
+            _tryEncodeItemDelegate = TryEncodeItem;
 
             GetItems(modPath);
             GetMonsters(modPath);
@@ -77,22 +197,71 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
             GetShops(modPath);
         }
 
-        private void ParseScripts(string path) {
-            foreach (var file in Directory.GetFiles(path, "*.cs")) {
-                if (file.EndsWith("ItemScript.cs")) {
-                    try {
-                        ItemScript = new Scripts.CustomScript(file, this);
-                        Console.WriteLine("Custom item script inserted.");
-                    } catch (ApplicationException ex) {
-                        Console.WriteLine($"[ERROR] Item script not compatible.");
-                        Console.WriteLine($"[ERROR] {ex}");
-                    }
-                    continue;
-                }
+        public static string GetStatus(byte status) {
+            if (_num2Status.TryGetValue(status, out var result)) {
+                return result;
             }
+            Console.WriteLine($"[ERROR] {status} not found as Status.");
+            return String.Empty;
         }
 
-        public bool TryItem2Num(string name, out byte id) {
+        public static byte EncodeStatus(string status) {
+            if (_status2Num.TryGetValue(status.ToLower(), out var result)) {
+                return result;
+            }
+            Console.WriteLine($"[ERROR] {status} couldn't be encoded as Status.");
+            return 0;
+        }
+
+        public static bool TryEncodeStatus(string status, out byte result) {
+            if (_status2Num.TryGetValue(status.ToLower(), out result)) {
+                return true;
+            }
+            result = 0;
+            return false;
+        }
+
+        public static string GetElement(byte element) {
+            if (_num2Element.TryGetValue(element, out var result)) {
+                return result;
+            }
+            Console.WriteLine($"[ERROR] {element} not found as Element.");
+            return String.Empty;
+        }
+
+        public static byte EncodeElement(string element) {
+            if (_element2Num.TryGetValue(element.ToLower(), out var result)) {
+                return result;
+            }
+            Console.WriteLine($"[ERROR] {element} couldn't be encoded as Element.");
+            return 0;
+        }
+
+        public static bool TryEncodeElement(string element, out byte result) {
+            if (_element2Num.TryGetValue(element.ToLower(), out result)) {
+                return true;
+            }
+            result = 0;
+            return false;
+        }
+
+        public static byte EncodeIcon(string icon) {
+            if (_icon2Num.TryGetValue(icon.ToLower(), out var result)) {
+                return result;
+            }
+            Console.WriteLine($"[ERROR] {icon} couldn't be encoded as Icon.");
+            return 0;
+        }
+
+        public static bool TryEncodeIcon(string icon, out byte result) {
+            if (_icon2Num.TryGetValue(icon.ToLower(), out result)) {
+                return true;
+            }
+            result = 0;
+            return false;
+        }
+
+        public bool TryEncodeItem(string name, out byte id) {
             if (name == "" || name == " ") {
                 id = 255;
                 return true;
@@ -125,7 +294,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
                     while (!itemData.EndOfStream) {
                         var line = itemData.ReadLine();
                         var values = line.Split('\t').ToArray();
-                        Item[i] = new Equipment((byte) i, values, Element2Num, Status2Num); // TODO Factory
+                        Item[i] = new Equipment((byte) i, values); // TODO Factory
                         i++;
                     }
                 }
@@ -145,7 +314,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
                     while (!itemData.EndOfStream) {
                         var line = itemData.ReadLine();
                         var values = line.Split('\t').ToArray();
-                        Item[i] = new UsableItem((byte) i, values, Element2Num, Status2Num); // TODO Factory
+                        Item[i] = new UsableItem((byte) i, values); // TODO Factory
                         i++;
                     }
                 }
@@ -266,29 +435,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
                         var line = monsterData.ReadLine();
                         var values = line.Split('\t').ToArray();
                         if (UInt16.TryParse(values[0], out var uskey)) {
-                            Monster.Add(uskey, new Monster(values, this, Status2Num, Element2Num));
-                        }
-                    }
-                }
-            } catch (IOException) {
-                Console.WriteLine($"[ERROR] {file} not found.");
-            } catch (IndexOutOfRangeException) {
-                Console.WriteLine($"[ERROR] Incorrect fromat of {file} at line {i + 1}");
-            }
-        }
-
-        public void SwapMonsters(string cwd, string mod) {
-            string file = $"{cwd}\\Mods\\{mod}\\Monster_Data.tsv";
-            int i = 0;
-            Monster.Clear();
-            try {
-                using (var monsterData = new StreamReader(file)) {
-                    monsterData.ReadLine(); // Skip first line
-                    while (!monsterData.EndOfStream) {
-                        var line = monsterData.ReadLine();
-                        var values = line.Split('\t').ToArray();
-                        if (UInt16.TryParse(values[0], out var uskey)) {
-                            Monster.Add(uskey, new Monster(values, this, Status2Num, Element2Num));
+                            Monster.Add(uskey, new Monster(values, _tryEncodeItemDelegate));
                         }
                     }
                 }
@@ -318,7 +465,7 @@ namespace Dragoon_Modifier.DraMod.LoDDict {
                         var line = shopData.ReadLine();
                         var values = line.Split('\t').ToArray();
                         for (int item = 1; item < 17; item++) {
-                            if (TryItem2Num(values[item], out var itemID)) {
+                            if (TryEncodeItem(values[item], out var itemID)) {
                                 if (itemID == 255) {
                                     break;
                                 }
