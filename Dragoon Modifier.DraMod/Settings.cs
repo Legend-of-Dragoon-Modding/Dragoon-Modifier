@@ -104,5 +104,10 @@ namespace Dragoon_Modifier.DraMod {
             Mod = mod;
             _dataset = new Dataset.LoDDictionary(cwd, Mod);
         }
+
+        public static void LoadDataset(string cwd, string mod, Dataset.Scripts.IScript script) {
+            Mod = mod;
+            _dataset = new Dataset.LoDDictionary(cwd, mod, script);
+        }
     }
 }

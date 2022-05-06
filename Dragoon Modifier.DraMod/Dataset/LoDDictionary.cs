@@ -126,15 +126,15 @@ namespace Dragoon_Modifier.DraMod.Dataset {
         private readonly string _secondaryMod;
         private bool _dualMonster = false;
         private Dictionary<ushort, IMonster> _monsters = new Dictionary<ushort, IMonster>();
-        private Dictionary<ushort, IMonster> _secondaryMonsters = new Dictionary<ushort, IMonster>();
+        private Dictionary<ushort, IMonster> _secondaryMonsters = null;
 
         public IItem[] Item { get; } = new IItem[256];
         public Dictionary<ushort, IMonster> Monster {
             get {
-                if (_dualMonster && _secondaryMonsters.Count > 0) {
-                    return _secondaryMonsters;
+                if (!_dualMonster || _secondaryMonsters == null) {
+                    return _monsters;
                 }
-                return _monsters;
+                return _secondaryMonsters;
             }
         }
 
@@ -156,6 +156,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             _cwd = cwd;
             _mod = mod;
             _dualMonster = false;
+            _secondaryMonsters = null;
 
             ParseScript();
 
@@ -166,6 +167,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             _cwd = cwd;
             _mod = mod;
             _dualMonster = false;
+            _secondaryMonsters = null;
 
             Script = script;
 
