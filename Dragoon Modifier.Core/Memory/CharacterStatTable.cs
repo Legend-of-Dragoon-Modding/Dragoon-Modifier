@@ -10,9 +10,12 @@ namespace Dragoon_Modifier.Core.Memory {
 
         private readonly StatTable[] _statTable = new StatTable[7];
 
-        internal CharacterStatTable(int baseAddress) {
+        internal CharacterStatTable() {
+            var statTableAddr = Emulator.GetAddress("CHAR_STAT_TABLE");
+            var expTableAddr = 0x1134F4;
+
             for (int i = 0; i < _statTable.Length; i++) {
-                _statTable[i] = new StatTable(baseAddress + i * 0x1E8);
+                _statTable[i] = new StatTable(statTableAddr + i * 0x1E8, expTableAddr + i * 0xF4);
             }
         }
 
@@ -30,14 +33,16 @@ namespace Dragoon_Modifier.Core.Memory {
             public Collections.IAddress<byte> MAT;
             public Collections.IAddress<byte> DF;
             public Collections.IAddress<byte> MDF;
+            public Collections.IAddress<uint> NextLvlExp;
 
-            internal StatTable(int baseAddress) {
-                MaxHP = Collections.Factory.Create<ushort>(baseAddress, 8, 61);
-                SPD = Collections.Factory.Create<byte>(baseAddress + 0x3, 8, 61);
-                AT = Collections.Factory.Create<byte>(baseAddress + 0x4, 8, 61);
-                MAT = Collections.Factory.Create<byte>(baseAddress + 0x5, 8, 61);
-                DF = Collections.Factory.Create<byte>(baseAddress + 0x6, 8, 61);
-                MDF = Collections.Factory.Create<byte>(baseAddress + 0x7, 8, 61);
+            internal StatTable(int statTableAddr, int expTableAddr) {
+                MaxHP = Collections.Factory.Create<ushort>(statTableAddr, 8, 61);
+                SPD = Collections.Factory.Create<byte>(statTableAddr + 0x3, 8, 61);
+                AT = Collections.Factory.Create<byte>(statTableAddr + 0x4, 8, 61);
+                MAT = Collections.Factory.Create<byte>(statTableAddr + 0x5, 8, 61);
+                DF = Collections.Factory.Create<byte>(statTableAddr + 0x6, 8, 61);
+                MDF = Collections.Factory.Create<byte>(statTableAddr + 0x7, 8, 61);
+                NextLvlExp = Collections.Factory.Create<uint>(expTableAddr, 4, 60);
             }
 
 
