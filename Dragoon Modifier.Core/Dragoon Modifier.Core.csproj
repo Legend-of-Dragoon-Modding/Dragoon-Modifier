@@ -53,6 +53,7 @@
     <Compile Include="Memory\Battle\Entity.cs" />
     <Compile Include="Memory\Battle\IController.cs" />
     <Compile Include="Memory\Battle\Monster.cs" />
+    <Compile Include="Memory\CharacterStatTable.cs" />
     <Compile Include="Memory\CharacterTable.cs" />
     <Compile Include="Memory\Collections\Address.cs" />
     <Compile Include="Memory\Collections\Byte.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="Memory\Collections\UShort.cs" />
     <Compile Include="Memory\Controller.cs" />
     <Compile Include="Memory\CurrentShop.cs" />
+    <Compile Include="Memory\DragoonStatTable.cs" />
     <Compile Include="Memory\Equipment.cs" />
     <Compile Include="Memory\IController.cs" />
     <Compile Include="Memory\IEquipment.cs" />

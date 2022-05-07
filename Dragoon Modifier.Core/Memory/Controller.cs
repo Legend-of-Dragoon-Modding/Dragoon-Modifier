@@ -70,7 +70,8 @@ namespace Dragoon_Modifier.Core.Memory {
         public byte SavePoint { get { return Emulator.DirectAccess.ReadByte(_savePoint); } set { Emulator.DirectAccess.WriteByte(_savePoint, value); } }
         public ushort TextSpeed { get { return Emulator.DirectAccess.ReadUShort(_textSpeed); } set { Emulator.DirectAccess.WriteUShort(_textSpeed, value); } }
         public ushort AutoText { get { return Emulator.DirectAccess.ReadUShort(_autoText); } set { Emulator.DirectAccess.WriteUShort(_autoText, value); } }
-        // public CharacterStatTable[] CharacterStatTable { get; private set; }
+        public CharacterStatTable CharacterStatTable { get; private set; }
+        public DragoonStatTable DragoonStatTable { get; private set; }
         public AdditionTable[] MenuAdditionTable { get; private set; }
         public uint BattleBasePoint { get { return Emulator.DirectAccess.ReadUInt24(_basePoint); } }
         public uint CharacterPoint { get { return Emulator.DirectAccess.ReadUInt24(_basePoint + 0x18); } }
@@ -132,17 +133,11 @@ namespace Dragoon_Modifier.Core.Memory {
             for (int i = 192; i < 256; i++) {
                 Item[i] = new UsableItem(itemTableAddr, itemNamePtr, itemDescPtr, itemBattleNamePtr, itemBattleDescPtr, itemSellPriceAddr, i);
             }
-
-            /*
             var charStatTableAddr = Emulator.GetAddress("CHAR_STAT_TABLE");
-            for (int i = 0; i < _charStatTable.Length; i++) {
-                _charStatTable[i] = new CharacterStatTable(charStatTableAddr, i);
-            }
-            var dragoonStatTableAddr = Emulator.GetAddress("DRAGOON_TABLE");
-            for (int i = 0; i < _dragoonStatTable.Length; i++) {
-                _dragoonStatTable[i] = new DragoonStatTable(dragoonStatTableAddr, i);
-            }
-            */
+            CharacterStatTable = new CharacterStatTable(charStatTableAddr);
+            CharacterStatTable[3].MaxHP[60] = 1;
+            var dragoonStatTableAddr = Emulator.GetAddress("DRAGOON_STAT_TABLE");
+            DragoonStatTable = new DragoonStatTable(dragoonStatTableAddr);
             var addTableAddr = Emulator.GetAddress("MENU_ADDITION_TABLE_FLAT");
             var addMultiAddr = Emulator.GetAddress("MENU_ADDITION_TABLE_MULTI");
             MenuAdditionTable = new AdditionTable[41];

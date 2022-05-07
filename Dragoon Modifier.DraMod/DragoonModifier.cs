@@ -75,19 +75,18 @@ namespace Dragoon_Modifier.DraMod {
             if (Constants.Run) {
 
 
-                Dataset.Scripts.IScript ItemScript = new Dataset.Scripts.DummyScript();
+                Dataset.Scripts.IScript Script = new Dataset.Scripts.DummyScript();
                 switch (mod) {
                     case Preset.Hell:
                     case Preset.HardHell:
                     case Preset.Hard:
-                        // ItemScript = new Dataset.Scripts.HardMode.Script(); TODO
+                        Script = new Dataset.Scripts.HardMode.Script();
                         break;
                 }
                 
 
                 Constants.UIControl.WritePLog("Changing mod directory to " + modString);
-                // _LoDDict = new LoDDict.LoDDictionary(_cwd, modString, ItemScript);
-                Settings.LoadDataset(_cwd, modString); // TODO add Script
+                Settings.LoadDataset(_cwd, modString, Script); // TODO add Script
                 Controller.Main.BattleSetup = false;
                 Controller.Main.AdditionsChanged = false;
                 Controller.Main.ItemsChanged = false;

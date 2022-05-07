@@ -143,6 +143,7 @@
     <Compile Include="Dataset\Monster.cs" />
     <Compile Include="Dataset\Scripts\CustomScript.cs" />
     <Compile Include="Dataset\Scripts\DummyScript.cs" />
+    <Compile Include="Dataset\Scripts\HardMode\Script.cs" />
     <Compile Include="Dataset\Scripts\IScript.cs" />
     <Compile Include="Dataset\UsableItem.cs" />
     <Compile Include="DragoonModifier.cs" />
