@@ -45,5 +45,6 @@ namespace Dragoon_Modifier.Core.Memory {
         ushort TextSpeed { get; set; }
         ushort AutoText { get; set; }
         ushort FieldHPCap { get; set; }
+        FieldPosition FieldPosition { get; }
     }
 }

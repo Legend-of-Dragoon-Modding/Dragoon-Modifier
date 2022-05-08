@@ -68,6 +68,7 @@
     <Compile Include="Memory\CurrentShop.cs" />
     <Compile Include="Memory\DragoonStatTable.cs" />
     <Compile Include="Memory\Equipment.cs" />
+    <Compile Include="Memory\FieldPosition.cs" />
     <Compile Include="Memory\IController.cs" />
     <Compile Include="Memory\IEquipment.cs" />
     <Compile Include="Memory\IItem.cs" />

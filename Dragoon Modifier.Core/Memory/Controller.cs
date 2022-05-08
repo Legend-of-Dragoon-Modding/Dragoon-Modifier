@@ -83,6 +83,7 @@ namespace Dragoon_Modifier.Core.Memory {
         public MenuSubTypes MenuSubTypes { get { return GetMenuSubType(); } }
         public byte DiscGameCheck { get { return Emulator.DirectAccess.ReadByte(_discChangeCheck); } }
         public ushort FieldHPCap { get { return Emulator.DirectAccess.ReadUShort(_fieldHPCap1); } set { SetFieldHPCap(value); } }
+        public FieldPosition FieldPosition { get; }
 
 
         internal Controller() {
@@ -152,6 +153,7 @@ namespace Dragoon_Modifier.Core.Memory {
             _fieldHPCap2 = Emulator.GetAddress("FIELD_HP_CAP_2");
             _fieldHPCap3 = Emulator.GetAddress("FIELD_HP_CAP_3");
             _fieldHPCap4 = Emulator.GetAddress("FIELD_HP_CAP_4");
+            FieldPosition = new FieldPosition();
 
         }
 
