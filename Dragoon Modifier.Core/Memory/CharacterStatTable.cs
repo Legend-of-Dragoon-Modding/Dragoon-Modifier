@@ -12,7 +12,7 @@ namespace Dragoon_Modifier.Core.Memory {
 
         internal CharacterStatTable() {
             var statTableAddr = Emulator.GetAddress("CHAR_STAT_TABLE");
-            var expTableAddr = 0x1134F4;
+            var expTableAddr = Emulator.GetAddress("CHAR_LVL_TABLE");
 
             for (int i = 0; i < _statTable.Length; i++) {
                 _statTable[i] = new StatTable(statTableAddr + i * 0x1E8, expTableAddr + i * 0xF4);
@@ -42,7 +42,7 @@ namespace Dragoon_Modifier.Core.Memory {
                 MAT = Collections.Factory.Create<byte>(statTableAddr + 0x5, 8, 61);
                 DF = Collections.Factory.Create<byte>(statTableAddr + 0x6, 8, 61);
                 MDF = Collections.Factory.Create<byte>(statTableAddr + 0x7, 8, 61);
-                NextLvlExp = Collections.Factory.Create<uint>(expTableAddr, 4, 60);
+                NextLvlExp = Collections.Factory.Create<uint>(expTableAddr, 4, 61);
             }
 
 

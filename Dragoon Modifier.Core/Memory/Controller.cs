@@ -134,8 +134,7 @@ namespace Dragoon_Modifier.Core.Memory {
                 Item[i] = new UsableItem(itemTableAddr, itemNamePtr, itemDescPtr, itemBattleNamePtr, itemBattleDescPtr, itemSellPriceAddr, i);
             }
             CharacterStatTable = new CharacterStatTable();
-            var dragoonStatTableAddr = Emulator.GetAddress("DRAGOON_STAT_TABLE");
-            DragoonStatTable = new DragoonStatTable(dragoonStatTableAddr);
+            DragoonStatTable = new DragoonStatTable();
             var addTableAddr = Emulator.GetAddress("MENU_ADDITION_TABLE_FLAT");
             var addMultiAddr = Emulator.GetAddress("MENU_ADDITION_TABLE_MULTI");
             MenuAdditionTable = new AdditionTable[41];
