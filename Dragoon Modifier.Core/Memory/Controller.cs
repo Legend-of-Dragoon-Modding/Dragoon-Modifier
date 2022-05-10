@@ -84,6 +84,8 @@ namespace Dragoon_Modifier.Core.Memory {
         public byte DiscGameCheck { get { return Emulator.DirectAccess.ReadByte(_discChangeCheck); } }
         public ushort FieldHPCap { get { return Emulator.DirectAccess.ReadUShort(_fieldHPCap1); } set { SetFieldHPCap(value); } }
         public FieldPosition FieldPosition { get; }
+        public Encounter.Map FieldEncounterMap { get; }
+        public Encounter.Slot FieldEncounterSlot { get; }
 
 
         internal Controller() {
@@ -146,8 +148,8 @@ namespace Dragoon_Modifier.Core.Memory {
             _encounterID = Emulator.GetAddress("ENCOUNTER_ID");
             _monsterSize = Emulator.GetAddress("MONSTER_SIZE");
             _uniqueMonsterSize = Emulator.GetAddress("UNIQUE_MONSTER_SIZE");
-            var encounterMapAddr = Emulator.GetAddress("ENCOUNTER_MAP");
-            var encounterTableAddr = Emulator.GetAddress("ENCOUNTER_TABLE");
+            FieldEncounterMap = new Encounter.Map();
+            FieldEncounterSlot = new Encounter.Slot();
             _discChangeCheck = Emulator.GetAddress("DISC_CHANGE_CHECK");
             _fieldHPCap1 = Emulator.GetAddress("FIELD_HP_CAP_1");
             _fieldHPCap2 = Emulator.GetAddress("FIELD_HP_CAP_2");

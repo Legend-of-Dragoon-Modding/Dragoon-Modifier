@@ -46,5 +46,7 @@ namespace Dragoon_Modifier.Core.Memory {
         ushort AutoText { get; set; }
         ushort FieldHPCap { get; set; }
         FieldPosition FieldPosition { get; }
+        Encounter.Map FieldEncounterMap { get; }
+        Encounter.Slot FieldEncounterSlot { get; }
     }
 }
