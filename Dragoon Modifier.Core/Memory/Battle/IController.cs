@@ -23,5 +23,6 @@ namespace Dragoon_Modifier.Core.Memory.Battle {
         Collections.IAddress<byte> RewardsDropChance { get; }
         byte ItemUsed { get; set; }
         ushort DamageCap { get; set; }
+        byte DragoonSpecial { get; set; }
     }
 }

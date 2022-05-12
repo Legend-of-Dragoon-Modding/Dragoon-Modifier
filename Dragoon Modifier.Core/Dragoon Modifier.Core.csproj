@@ -67,7 +67,6 @@
     <Compile Include="Memory\Controller.cs" />
     <Compile Include="Memory\CurrentShop.cs" />
     <Compile Include="Memory\DragoonStatTable.cs" />
-    <Compile Include="Memory\Encounter\Encounter.cs" />
     <Compile Include="Memory\Encounter\Map.cs" />
     <Compile Include="Memory\Encounter\Slot.cs" />
     <Compile Include="Memory\Equipment.cs" />

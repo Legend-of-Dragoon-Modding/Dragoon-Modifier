@@ -143,6 +143,9 @@
     <Compile Include="Dataset\Monster.cs" />
     <Compile Include="Dataset\Scripts\CustomScript.cs" />
     <Compile Include="Dataset\Scripts\DummyScript.cs" />
+    <Compile Include="Dataset\Scripts\HardMode\Characters\Dart.cs" />
+    <Compile Include="Dataset\Scripts\HardMode\Characters\ICharacter.cs" />
+    <Compile Include="Dataset\Scripts\HardMode\Characters\Lavitz.cs" />
     <Compile Include="Dataset\Scripts\HardMode\Script.cs" />
     <Compile Include="Dataset\Scripts\IScript.cs" />
     <Compile Include="Dataset\UsableItem.cs" />
