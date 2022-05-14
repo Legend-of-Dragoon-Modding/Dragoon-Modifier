@@ -448,7 +448,7 @@ namespace Dragoon_Modifier {
 
         #region Monster Changes
         public static void MonsterChanges() {
-            if (Globals.MONSTER_STAT_CHANGE && !Globals.CheckDMScript("btnUltimateBoss")) {
+            if ((Globals.MONSTER_STAT_CHANGE || (Globals.HP_MULTI != 1.0 || Globals.AT_MULTI != 1.0 || Globals.MAT_MULTI != 1.0 || Globals.DF_MULTI != 1.0 || Globals.MDF_MULTI != 1.0 || Globals.SPD_MULTI != 1.0)) && !Globals.CheckDMScript("btnUltimateBoss")) {
                 Constants.WriteOutput("Changing Monster Stats...");
                 for (int slot = 0; slot < Globals.MONSTER_SIZE; slot++) {
                     MonsterStatChange(slot);
@@ -731,7 +731,7 @@ namespace Dragoon_Modifier {
                 dynamic helm = Globals.DICTIONARY.ItemList[Emulator.ReadByte("CHAR_TABLE", character * 0x2C + 0x16)];
                 dynamic boots = Globals.DICTIONARY.ItemList[Emulator.ReadByte("CHAR_TABLE", character * 0x2C + 0x17)];
                 dynamic accessory = Globals.DICTIONARY.ItemList[Emulator.ReadByte("CHAR_TABLE", character * 0x2C + 0x18)];
-
+                
                 Emulator.WriteUShort(address + character * 0xA0 + 0x86, (ushort) (weapon.SPD + armor.SPD + helm.SPD + boots.SPD + accessory.SPD));
                 Emulator.WriteUShort(address + character * 0xA0 + 0x88, (ushort) (weapon.AT + armor.AT + helm.AT + boots.AT + accessory.AT));
                 Emulator.WriteUShort(address + character * 0xA0 + 0x8A, (ushort) (weapon.MAT + armor.MAT + helm.AT + boots.MAT + accessory.MAT));
@@ -833,19 +833,19 @@ namespace Dragoon_Modifier {
                 Emulator.WriteUShort(address + 0x6E, mp_max);
             }
             
-            ushort spd = (ushort) (Emulator.ReadByte(address + 0x69) + Emulator.ReadUShort(address + 0x86));
+            ushort spd = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].SPD + Emulator.ReadUShort(address + character * 0xA0 + 0x86));
             Globals.CHARACTER_TABLE[slot].Write("SPD", spd);
             Globals.CHARACTER_TABLE[slot].Write("OG_SPD", spd);
-            ushort at = (ushort) (Emulator.ReadByte(address + 0x6A) + Emulator.ReadUShort(address + 0x88));
+            ushort at = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].AT + Emulator.ReadUShort(address + character * 0xA0 + 0x88));
             Globals.CHARACTER_TABLE[slot].Write("AT", at);
             Globals.CHARACTER_TABLE[slot].Write("OG_AT", at);
-            ushort mat = (ushort) (Emulator.ReadByte(address + 0x6B) + Emulator.ReadUShort(address + 0x8A));
+            ushort mat = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].MAT + Emulator.ReadUShort(address + character * 0xA0 + 0x8A));
             Globals.CHARACTER_TABLE[slot].Write("MAT", mat);
             Globals.CHARACTER_TABLE[slot].Write("OG_MAT", mat);
-            ushort df = (ushort) (Emulator.ReadByte(address + 0x6C) + Emulator.ReadUShort(address + 0x8C));
+            ushort df = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].DF + Emulator.ReadUShort(address + character * 0xA0 + 0x8C));
             Globals.CHARACTER_TABLE[slot].Write("DF", df);
             Globals.CHARACTER_TABLE[slot].Write("OG_DF", df);
-            ushort mdf = (ushort) (Emulator.ReadByte(address + 0x6D) + Emulator.ReadUShort(address + 0x8E));
+            ushort mdf = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].MDF + Emulator.ReadUShort(address + character * 0xA0 + 0x8E));
             Globals.CHARACTER_TABLE[slot].Write("MDF", mdf);
             Globals.CHARACTER_TABLE[slot].Write("OG_MDF", mdf);
 
