@@ -849,6 +849,12 @@ namespace Dragoon_Modifier {
             Globals.CHARACTER_TABLE[slot].Write("MDF", mdf);
             Globals.CHARACTER_TABLE[slot].Write("OG_MDF", mdf);
 
+            Emulator.WriteByte("SECONDARY_CHARACTER_TABLE", spd, character * 0xA0 + 0x69);
+            Emulator.WriteByte("SECONDARY_CHARACTER_TABLE", at, character * 0xA0 + 0x6A);
+            Emulator.WriteByte("SECONDARY_CHARACTER_TABLE", mat, character * 0xA0 + 0x6B);
+            Emulator.WriteByte("SECONDARY_CHARACTER_TABLE", df, character * 0xA0 + 0x6C);
+            Emulator.WriteByte("SECONDARY_CHARACTER_TABLE", mdf, character * 0xA0 + 0x6D);
+
             ushort hp_max = (ushort) (base_HP * (1 + (double) hp_multi / 100));
             //Globals.CHARACTER_TABLE[slot].Write("Max_HP", (ushort) (base_HP * (1 + hp_multi / 100)));
             //Globals.CHARACTER_TABLE[slot].Write("HP", Math.Min(Emulator2.ReadUShort("CHAR_TABLE", character * 0x2C + 0x8), hp_max));

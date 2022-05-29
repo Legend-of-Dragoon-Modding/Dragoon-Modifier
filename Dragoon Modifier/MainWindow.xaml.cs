@@ -1422,7 +1422,7 @@ namespace Dragoon_Modifier {
                                 }
                             } else if (Globals.HOTKEY == (Hotkey.KEY_SQUARE + Hotkey.KEY_TRIANGLE)) { //Divine Dragoon
                                 byte dragoonSpirits = Emulator.ReadByte("DRAGOON_SPIRITS");
-                                if (!Globals.DIFFICULTY_MODE.Equals("Normal") && ultimateBossCompleted >= 34) {
+                                if (Globals.DIFFICULTY_MODE.Equals("Hard") || (Globals.DIFFICULTY_MODE.Equals("Hell") && ultimateBossCompleted >= 34)) {
                                     if (Globals.MAP == 424 || Globals.MAP == 736) {
                                         if (dragoonSpirits == 127) {
                                             Emulator.WriteByte("DRAGOON_SPIRITS", 254);
@@ -2353,6 +2353,7 @@ namespace Dragoon_Modifier {
                 if (Globals.GAME_STATE != 1 && Constants.BATTLE_UI) {
                     Constants.BATTLE_UI = false;
                     for (int i = 0; i < 5; i++) {
+                        enragedMode[i] = 0;
                         for (int x = 0; x < 6; x++) {
                             monsterDisplay[i, x].Text = "";
                         }
@@ -5870,6 +5871,8 @@ namespace Dragoon_Modifier {
 
                         for (int i = 0; i < Globals.MONSTER_SIZE; i++) {
                             if (Globals.MONSTER_TABLE[i].Read("HP") > 0) {
+                                if (Globals.ENCOUNTER_ID == 386 && i == 1)
+                                    break;
                                 if (Globals.ENCOUNTER_ID == 390 && i == 1)
                                     break;
                                 if (Globals.ENCOUNTER_ID == 433 && i == 1)
