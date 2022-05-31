@@ -29,6 +29,9 @@ namespace Dragoon_Modifier {
         static int bossSPLoss = 0;
         static int ultimateBossStage = 0;
 
+        static bool shanaStatFix = false;
+        static bool haschelStatFix = false;
+
         //Chapter 3 Elemental Buffs
         static int sparkleArrowBuff = 8;
         static int heatBladeBuff = 7;
@@ -553,10 +556,18 @@ namespace Dragoon_Modifier {
 
             if (Globals.ITEM_STAT_CHANGE || Globals.CHARACTER_STAT_CHANGE || Globals.CheckDMScript("btnUltimateBoss")) {
                 Constants.WriteOutput("Changing Character Stats...");
+                shanaStatFix = false;
+                haschelStatFix = false;
                 for (int slot = 0; slot < 3; slot++) {
                     int character = Globals.PARTY_SLOT[slot];
                     if (slot == 0 && Globals.NO_DART != null) {
                         character = (int) Globals.NO_DART;
+                    }
+                    if (character == 2 || character == 8) {
+                        shanaStatFix = true;
+                    }
+                    if (character == 4) {
+                        haschelStatFix = true;
                     }
                     if (character > 8) {
                         break;
@@ -833,6 +844,7 @@ namespace Dragoon_Modifier {
                 Emulator.WriteUShort(address + 0x6E, mp_max);
             }
             
+
             ushort spd = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].SPD + Emulator.ReadUShort(address + character * 0xA0 + 0x86));
             Globals.CHARACTER_TABLE[slot].Write("SPD", spd);
             Globals.CHARACTER_TABLE[slot].Write("OG_SPD", spd);
@@ -849,11 +861,14 @@ namespace Dragoon_Modifier {
             Globals.CHARACTER_TABLE[slot].Write("MDF", mdf);
             Globals.CHARACTER_TABLE[slot].Write("OG_MDF", mdf);
 
-            Emulator.WriteByte("SECONDARY_CHARACTER_TABLE", spd, character * 0xA0 + 0x69);
-            Emulator.WriteByte("SECONDARY_CHARACTER_TABLE", at, character * 0xA0 + 0x6A);
-            Emulator.WriteByte("SECONDARY_CHARACTER_TABLE", mat, character * 0xA0 + 0x6B);
-            Emulator.WriteByte("SECONDARY_CHARACTER_TABLE", df, character * 0xA0 + 0x6C);
-            Emulator.WriteByte("SECONDARY_CHARACTER_TABLE", mdf, character * 0xA0 + 0x6D);
+            if ((Globals.CHARACTER_STAT_CHANGE || Globals.CheckDMScript("btnUltimateBoss")) && (shanaStatFix && haschelStatFix)) {
+                int haschelLv = Emulator.ReadByte("CHAR_TABLE", (4 * 0x2C) + 0x12);
+                Emulator.WriteByte("SECONDARY_CHARACTER_TABLE", Globals.DICTIONARY.CharacterStats[4][haschelLv].SPD, 4 * 0xA0 + 0x69);
+                Emulator.WriteByte("SECONDARY_CHARACTER_TABLE", Globals.DICTIONARY.CharacterStats[4][haschelLv].AT, 4 * 0xA0 + 0x6A);
+                Emulator.WriteByte("SECONDARY_CHARACTER_TABLE", Globals.DICTIONARY.CharacterStats[4][haschelLv].MAT, 4 * 0xA0 + 0x6B);
+                Emulator.WriteByte("SECONDARY_CHARACTER_TABLE", Globals.DICTIONARY.CharacterStats[4][haschelLv].DF, 4 * 0xA0 + 0x6C);
+                Emulator.WriteByte("SECONDARY_CHARACTER_TABLE", Globals.DICTIONARY.CharacterStats[4][haschelLv].MDF, 4 * 0xA0 + 0x6D);
+            }
 
             ushort hp_max = (ushort) (base_HP * (1 + (double) hp_multi / 100));
             //Globals.CHARACTER_TABLE[slot].Write("Max_HP", (ushort) (base_HP * (1 + hp_multi / 100)));
