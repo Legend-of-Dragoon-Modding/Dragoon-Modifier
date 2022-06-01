@@ -30,6 +30,7 @@ namespace Dragoon_Modifier {
         static int ultimateBossStage = 0;
 
         static bool shanaStatFix = false;
+        static bool mirandaStatFix = false;
         static bool haschelStatFix = false;
 
         //Chapter 3 Elemental Buffs
@@ -556,19 +557,19 @@ namespace Dragoon_Modifier {
 
             if (Globals.ITEM_STAT_CHANGE || Globals.CHARACTER_STAT_CHANGE || Globals.CheckDMScript("btnUltimateBoss")) {
                 Constants.WriteOutput("Changing Character Stats...");
-                shanaStatFix = false;
-                haschelStatFix = false;
+                shanaStatFix = haschelStatFix = mirandaStatFix = false;
+
                 for (int slot = 0; slot < 3; slot++) {
                     int character = Globals.PARTY_SLOT[slot];
                     if (slot == 0 && Globals.NO_DART != null) {
                         character = (int) Globals.NO_DART;
                     }
-                    if (character == 2 || character == 8) {
+                    if (character == 2) 
                         shanaStatFix = true;
-                    }
-                    if (character == 4) {
+                    if (character == 4)
                         haschelStatFix = true;
-                    }
+                    if (character == 8)
+                        mirandaStatFix = true;
                     if (character > 8) {
                         break;
                     }
@@ -843,38 +844,74 @@ namespace Dragoon_Modifier {
                 Globals.CHARACTER_TABLE[slot].Write("Max_MP", mp_max);
                 Emulator.WriteUShort(address + 0x6E, mp_max);
             }
-            
 
-            ushort spd = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].SPD + Emulator.ReadUShort(address + character * 0xA0 + 0x86));
+
+            ushort spd = (ushort) (Emulator.ReadByte(address + 0x69) + Emulator.ReadUShort(address + 0x86));
             Globals.CHARACTER_TABLE[slot].Write("SPD", spd);
             Globals.CHARACTER_TABLE[slot].Write("OG_SPD", spd);
-            ushort at = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].AT + Emulator.ReadUShort(address + character * 0xA0 + 0x88));
+            ushort at = (ushort) (Emulator.ReadByte(address + 0x6A) + Emulator.ReadUShort(address + 0x88));
             Globals.CHARACTER_TABLE[slot].Write("AT", at);
             Globals.CHARACTER_TABLE[slot].Write("OG_AT", at);
-            ushort mat = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].MAT + Emulator.ReadUShort(address + character * 0xA0 + 0x8A));
+            ushort mat = (ushort) (Emulator.ReadByte(address + 0x6B) + Emulator.ReadUShort(address + 0x8A));
             Globals.CHARACTER_TABLE[slot].Write("MAT", mat);
             Globals.CHARACTER_TABLE[slot].Write("OG_MAT", mat);
-            ushort df = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].DF + Emulator.ReadUShort(address + character * 0xA0 + 0x8C));
+            ushort df = (ushort) (Emulator.ReadByte(address + 0x6C) + Emulator.ReadUShort(address + 0x8C));
             Globals.CHARACTER_TABLE[slot].Write("DF", df);
             Globals.CHARACTER_TABLE[slot].Write("OG_DF", df);
-            ushort mdf = (ushort) (Globals.DICTIONARY.CharacterStats[character][lv].MDF + Emulator.ReadUShort(address + character * 0xA0 + 0x8E));
+            ushort mdf = (ushort) (Emulator.ReadByte(address + 0x6D) + Emulator.ReadUShort(address + 0x8E));
             Globals.CHARACTER_TABLE[slot].Write("MDF", mdf);
             Globals.CHARACTER_TABLE[slot].Write("OG_MDF", mdf);
-
-            if ((Globals.CHARACTER_STAT_CHANGE || Globals.CheckDMScript("btnUltimateBoss")) && (shanaStatFix && haschelStatFix)) {
-                int haschelLv = Emulator.ReadByte("CHAR_TABLE", (4 * 0x2C) + 0x12);
-                Emulator.WriteByte("SECONDARY_CHARACTER_TABLE", Globals.DICTIONARY.CharacterStats[4][haschelLv].SPD, 4 * 0xA0 + 0x69);
-                Emulator.WriteByte("SECONDARY_CHARACTER_TABLE", Globals.DICTIONARY.CharacterStats[4][haschelLv].AT, 4 * 0xA0 + 0x6A);
-                Emulator.WriteByte("SECONDARY_CHARACTER_TABLE", Globals.DICTIONARY.CharacterStats[4][haschelLv].MAT, 4 * 0xA0 + 0x6B);
-                Emulator.WriteByte("SECONDARY_CHARACTER_TABLE", Globals.DICTIONARY.CharacterStats[4][haschelLv].DF, 4 * 0xA0 + 0x6C);
-                Emulator.WriteByte("SECONDARY_CHARACTER_TABLE", Globals.DICTIONARY.CharacterStats[4][haschelLv].MDF, 4 * 0xA0 + 0x6D);
-            }
 
             ushort hp_max = (ushort) (base_HP * (1 + (double) hp_multi / 100));
             //Globals.CHARACTER_TABLE[slot].Write("Max_HP", (ushort) (base_HP * (1 + hp_multi / 100)));
             //Globals.CHARACTER_TABLE[slot].Write("HP", Math.Min(Emulator2.ReadUShort("CHAR_TABLE", character * 0x2C + 0x8), hp_max));
             Globals.CHARACTER_TABLE[slot].Write("HP", Math.Min(Globals.CURRENT_STATS[slot].HP, Globals.CURRENT_STATS[slot].Max_HP));
             Globals.CHARACTER_TABLE[slot].Write("Max_HP", Globals.CURRENT_STATS[slot].Max_HP);
+
+            Console.WriteLine("who: " + character + " + slot: " + slot);
+
+            if (slot == 2) {
+                if ((Globals.ITEM_STAT_CHANGE || Globals.CheckDMScript("btnUltimateBoss")) && (shanaStatFix && haschelStatFix)) {
+                    dynamic weapon = Globals.DICTIONARY.ItemList[Emulator.ReadByte("CHAR_TABLE", 4 * 0x2C + 0x14)];
+                    dynamic armor = Globals.DICTIONARY.ItemList[Emulator.ReadByte("CHAR_TABLE", 4 * 0x2C + 0x15)];
+                    dynamic helm = Globals.DICTIONARY.ItemList[Emulator.ReadByte("CHAR_TABLE", 4 * 0x2C + 0x16)];
+                    dynamic boots = Globals.DICTIONARY.ItemList[Emulator.ReadByte("CHAR_TABLE", 4 * 0x2C + 0x17)];
+                    dynamic accessory = Globals.DICTIONARY.ItemList[Emulator.ReadByte("CHAR_TABLE", 4 * 0x2C + 0x18)];
+                    int haschelLv = Emulator.ReadByte("CHAR_TABLE", (4 * 0x2C) + 0x12);
+
+                    int haschelSlot = 0;
+                    for (int i = 0; i < 3; i++) {
+                        if (Globals.PARTY_SLOT[i] == 4)
+                            haschelSlot = i;
+                    }
+
+                    Globals.CHARACTER_TABLE[haschelSlot].Write("SPD", Globals.DICTIONARY.CharacterStats[4][haschelLv].SPD + (weapon.SPD + armor.SPD + helm.SPD + boots.SPD + accessory.SPD));
+                    Globals.CHARACTER_TABLE[haschelSlot].Write("OG_SPD", Globals.DICTIONARY.CharacterStats[4][haschelLv].SPD + (weapon.SPD + armor.SPD + helm.SPD + boots.SPD + accessory.SPD));
+                    Emulator.WriteByte("SECONDARY_CHARACTER_TABLE", Globals.DICTIONARY.CharacterStats[4][haschelLv].SPD + (weapon.SPD + armor.SPD + helm.SPD + boots.SPD + accessory.SPD), 4 * 0xA0 + 0x69);
+                }
+
+                if ((Globals.ITEM_STAT_CHANGE || Globals.CheckDMScript("btnUltimateBoss")) && (mirandaStatFix && haschelStatFix)) {
+                    Console.WriteLine("???");
+                    dynamic weapon = Globals.DICTIONARY.ItemList[Emulator.ReadByte("CHAR_TABLE", 8 * 0x2C + 0x14)];
+                    dynamic armor = Globals.DICTIONARY.ItemList[Emulator.ReadByte("CHAR_TABLE", 8 * 0x2C + 0x15)];
+                    dynamic helm = Globals.DICTIONARY.ItemList[Emulator.ReadByte("CHAR_TABLE", 8 * 0x2C + 0x16)];
+                    dynamic boots = Globals.DICTIONARY.ItemList[Emulator.ReadByte("CHAR_TABLE", 8 * 0x2C + 0x17)];
+                    dynamic accessory = Globals.DICTIONARY.ItemList[Emulator.ReadByte("CHAR_TABLE", 8 * 0x2C + 0x18)];
+                    int mirandaLv = Emulator.ReadByte("CHAR_TABLE", (8 * 0x2C) + 0x12);
+
+                    int mirandaSlot = 0;
+                    for (int i = 0; i < 3; i++) {
+                        if (Globals.PARTY_SLOT[i] == 8)
+                            mirandaSlot = i;
+                    }
+                    Emulator.WriteByte("SECONDARY_CHARACTER_TABLE", 0, 8 * 0xA0 + 0x69);
+
+                    Globals.CHARACTER_TABLE[mirandaSlot].Write("SPD", Globals.DICTIONARY.CharacterStats[8][mirandaLv].SPD + (weapon.SPD + armor.SPD + helm.SPD + boots.SPD + accessory.SPD));
+                    Globals.CHARACTER_TABLE[mirandaSlot].Write("OG_SPD", Globals.DICTIONARY.CharacterStats[8][mirandaLv].SPD + (weapon.SPD + armor.SPD + helm.SPD + boots.SPD + accessory.SPD));
+                    Emulator.WriteByte("SECONDARY_CHARACTER_TABLE", Globals.DICTIONARY.CharacterStats[8][mirandaLv].SPD + (weapon.SPD + armor.SPD + helm.SPD + boots.SPD + accessory.SPD), 8 * 0xA0 + 0x69);
+                    Emulator.WriteByte("SECONDARY_CHARACTER_TABLE", 0, 8 * 0xA0 + 0x69 + 0x1D);
+                }
+            }
         }
 
 
