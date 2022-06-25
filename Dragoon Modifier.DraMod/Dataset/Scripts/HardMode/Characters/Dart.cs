@@ -37,20 +37,11 @@ namespace Dragoon_Modifier.DraMod.Dataset.Scripts.HardMode.Characters {
             var battleTable = Emulator.Memory.Battle.CharacterTable[slot];
             // Let's also ignore DragonBlockStuff for now.
 
-            DragoonAttack(battleTable, dragoonSpecial);
+            if (battleTable.Action == 10) {
+                DragoonAttack(battleTable, dragoonSpecial);
 
-            currentMP = battleTable.MP;
-            if (currentMP < previousMP) {
-                byte spell = Emulator.Memory.Battle.CharacterTable[slot].SpellCast;
-
-                if (DivineRedEye) {
-                    DivineRedEyeSpells(battleTable, spell);
-                } else {
-                    RegularSpells(battleTable, spell);
-                }
-                battleTable.SpellCast = 255;
-            }
-            previousMP = currentMP;
+                Spells(battleTable);
+            }            
         }
 
         private void DragoonAttack(Core.Memory.Battle.Character battleTable, byte dragoonSpecial) {
@@ -84,6 +75,21 @@ namespace Dragoon_Modifier.DraMod.Dataset.Scripts.HardMode.Characters {
             // if Burn Stacks
 
             battleTable.DAT = (ushort) (_DAT * multi);
+        }
+
+        private void Spells(Core.Memory.Battle.Character battleTable) {
+            var spell = battleTable.SpellCast;
+            currentMP = battleTable.MP;
+            if (currentMP < previousMP) {
+                if (DivineRedEye) {
+                    DivineRedEyeSpells(battleTable, spell);
+                } else {
+                    RegularSpells(battleTable, spell);
+                }
+                battleTable.SpellCast = 255;
+            }
+            previousMP = currentMP;
+
         }
 
         private void RegularSpells(Core.Memory.Battle.Character battleTable, byte spell) {
