@@ -573,6 +573,7 @@ namespace Dragoon_Modifier {
                     if (character > 8) {
                         break;
                     }
+                    Console.WriteLine("Slot: " + (slot + 1));
                     SetCharacterStats(slot, character);
                 }
 
@@ -749,6 +750,11 @@ namespace Dragoon_Modifier {
                 Emulator.WriteUShort(address + character * 0xA0 + 0x8A, (ushort) (weapon.MAT + armor.MAT + helm.AT + boots.MAT + accessory.MAT));
                 Emulator.WriteUShort(address + character * 0xA0 + 0x8C, (ushort) (weapon.DF + armor.DF + helm.DF + boots.DF + accessory.DF));
                 Emulator.WriteUShort(address + character * 0xA0 + 0x8E, (ushort) (weapon.MDF + armor.MDF + helm.MDF + boots.MDF + accessory.MDF));
+                Emulator.WriteUShort(address + 0x86, (ushort) (weapon.SPD + armor.SPD + helm.SPD + boots.SPD + accessory.SPD));
+                Emulator.WriteUShort(address + 0x88, (ushort) (weapon.AT + armor.AT + helm.AT + boots.AT + accessory.AT));
+                Emulator.WriteUShort(address + 0x8A, (ushort) (weapon.MAT + armor.MAT + helm.AT + boots.MAT + accessory.MAT));
+                Emulator.WriteUShort(address + 0x8C, (ushort) (weapon.DF + armor.DF + helm.DF + boots.DF + accessory.DF));
+                Emulator.WriteUShort(address + 0x8E, (ushort) (weapon.MDF + armor.MDF + helm.MDF + boots.MDF + accessory.MDF));
 
                 byte stat_res = (byte) (weapon.Stat_Res | armor.Stat_Res | helm.Stat_Res | boots.Stat_Res | accessory.Stat_Res);
                 Emulator.WriteByte(address + 0x7E, stat_res);
@@ -868,8 +874,6 @@ namespace Dragoon_Modifier {
             Globals.CHARACTER_TABLE[slot].Write("HP", Math.Min(Globals.CURRENT_STATS[slot].HP, Globals.CURRENT_STATS[slot].Max_HP));
             Globals.CHARACTER_TABLE[slot].Write("Max_HP", Globals.CURRENT_STATS[slot].Max_HP);
 
-            Console.WriteLine("who: " + character + " + slot: " + slot);
-
             if (slot == 2) {
                 if ((Globals.ITEM_STAT_CHANGE || Globals.CheckDMScript("btnUltimateBoss")) && (shanaStatFix && haschelStatFix)) {
                     dynamic weapon = Globals.DICTIONARY.ItemList[Emulator.ReadByte("CHAR_TABLE", 4 * 0x2C + 0x14)];
@@ -891,7 +895,6 @@ namespace Dragoon_Modifier {
                 }
 
                 if ((Globals.ITEM_STAT_CHANGE || Globals.CheckDMScript("btnUltimateBoss")) && (mirandaStatFix && haschelStatFix)) {
-                    Console.WriteLine("???");
                     dynamic weapon = Globals.DICTIONARY.ItemList[Emulator.ReadByte("CHAR_TABLE", 8 * 0x2C + 0x14)];
                     dynamic armor = Globals.DICTIONARY.ItemList[Emulator.ReadByte("CHAR_TABLE", 8 * 0x2C + 0x15)];
                     dynamic helm = Globals.DICTIONARY.ItemList[Emulator.ReadByte("CHAR_TABLE", 8 * 0x2C + 0x16)];
@@ -1325,7 +1328,8 @@ namespace Dragoon_Modifier {
                 Globals.CHARACTER_TABLE[slot].Write("OG_MDF", mdf);
 
                 //HP
-
+                Globals.CHARACTER_TABLE[slot].Write("HP", Math.Min(Globals.CURRENT_STATS[slot].HP, Globals.CURRENT_STATS[slot].Max_HP));
+                Globals.CHARACTER_TABLE[slot].Write("Max_HP", Globals.CURRENT_STATS[slot].Max_HP);
             }
 
             if (!Globals.ITEM_STAT_CHANGE || !Globals.DRAGOON_STAT_CHANGE) {
