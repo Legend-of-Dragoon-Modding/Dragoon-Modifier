@@ -30,9 +30,6 @@
     <Resource Include="Icons\GrayMoon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Dragoon Modifier.DraMod\Dragoon Modifier.DraMod.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Mods\" />
     <Folder Include="Presets\" />
     <Folder Include="Reader\" />
@@ -61,5 +58,8 @@
   <PropertyGroup />
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Dragoon Modifier.DraMod\Dragoon Modifier.DraMod.csproj" />
   </ItemGroup>
 </Project>
