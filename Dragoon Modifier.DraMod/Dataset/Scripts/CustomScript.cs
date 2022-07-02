@@ -4,30 +4,22 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CSScriptLibrary;
 using System.Reflection;
+using CSScriptLib;
 
 namespace Dragoon_Modifier.DraMod.Dataset.Scripts {
     internal class CustomScript : IScript {
         private readonly string _file;
-        private readonly Assembly _script;
-        private readonly MethodDelegate _battleRun;
-        private readonly MethodDelegate _battleSetup;
-        private readonly MethodDelegate _fieldRun;
-        private readonly MethodDelegate _fieldSetup;
+        private readonly dynamic _script;
 
         internal CustomScript(string file) {
             _file = Path.GetFullPath(file);
-            _script = CSScript.LoadFile(_file, null, true);
-            _battleRun = _script.GetStaticMethod("*.BattleRun");
-            _battleSetup = _script.GetStaticMethod("*.BattleSetup");
-            _fieldRun = _script.GetStaticMethod("*.FieldRun");
-            _fieldSetup = _script.GetStaticMethod("*.FieldSetup");
+            _script = CSScript.Evaluator.LoadFile(_file, null, true);
         }
 
         public void BattleRun() {
             try {
-                _battleRun();
+                _script.BattleRun();
             } catch (Exception ex) {
                 WriteError(ex);
             }
@@ -35,7 +27,7 @@ namespace Dragoon_Modifier.DraMod.Dataset.Scripts {
 
         public void BattleSetup() {
             try {
-                _battleSetup();
+                _script.BattleSetup();
             } catch (Exception ex) {
                 WriteError(ex);
             }
@@ -43,7 +35,7 @@ namespace Dragoon_Modifier.DraMod.Dataset.Scripts {
 
         public void FieldRun() {
             try {
-                _fieldRun();
+                _script.FieldRun();
             } catch (Exception ex) {
                 WriteError(ex);
             }
@@ -51,7 +43,7 @@ namespace Dragoon_Modifier.DraMod.Dataset.Scripts {
 
         public void FieldSetup() {
             try {
-                _fieldSetup();
+                _script.FieldSetup();
             } catch (Exception ex) {
                 WriteError(ex);
             }
