@@ -6,9 +6,7 @@
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-  </PropertyGroup>
+  <PropertyGroup />
   <ItemGroup>
     <Resource Include="Fonts\SegoeWP-Semibold.ttf" />
     <Resource Include="Fonts\SegoeWP-Black.ttf" />
@@ -55,8 +53,7 @@
     <Compile Remove="Scripts\Other\Zychronix\[ALL] Debug Save.cs" />
     <Compile Remove="Scripts\Other\[ALL] Base.cs" />
   </ItemGroup>
-  <PropertyGroup />
-  <ItemGroup>
+	<ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>

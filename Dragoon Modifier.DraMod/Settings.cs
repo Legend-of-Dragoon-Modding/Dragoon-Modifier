@@ -76,20 +76,20 @@ namespace Dragoon_Modifier.DraMod {
         public static bool ItemNameDescChange = false;
         public static bool MonsterStatChange = false;
         public static bool CharacterStatChange = false;
-        public static bool AdditionChange = true;
-        public static bool ShopChange = true;
+        public static bool AdditionChange = false;
+        public static bool ShopChange = false;
         public static bool MonsterDropChange = false;
         public static bool MonsterExpGoldChange = false;
         public static bool DragoonStatChange = false;
         public static bool DragoonSpellChange = false;
         public static bool DragoonAdditionChange = false;
         public static bool DragoonDescriptionChange = false;
-        public static bool RemoveHPCap = true;
+        public static bool RemoveHPCap = false;
 
         public static int LoopDelay = 250;
         public static int WaitDelay = 50;
 
-        private static Dataset.ILoDDictionary _dataset = null;
+        private static Dataset.ILoDDictionary? _dataset = null;
 
         public static Dataset.ILoDDictionary Dataset {
             get {
@@ -105,9 +105,9 @@ namespace Dragoon_Modifier.DraMod {
             _dataset = new Dataset.LoDDictionary(cwd, Mod);
         }
 
-        public static void LoadDataset(string cwd, string mod, Dataset.Scripts.IScript script) {
+        public static void LoadDataset(string cwd, string mod, Dataset.Scripts.IScript script, bool dualMonster, string dualMod) {
             Mod = mod;
-            _dataset = new Dataset.LoDDictionary(cwd, mod, script);
+            _dataset = new Dataset.LoDDictionary(cwd, mod, script, dualMonster, dualMod);
         }
     }
 }

@@ -8,16 +8,16 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.Dataset.Scripts.HardMode {
     internal class Script : IScript {
-        private Characters.ICharacter[] _character = new Characters.ICharacter[9] {
+        private readonly Characters.ICharacter[] _character = new Characters.ICharacter[9] {
             new Characters.Dart(),
             new Characters.Lavitz(),
-            new Characters.Dart(), // Placeholder
-            new Characters.Dart(), // Placeholder
-            new Characters.Dart(), // Placeholder
+            new Characters.Shana(),
+            new Characters.Rose(),
+            new Characters.Haschel(),
             new Characters.Lavitz(),
-            new Characters.Dart(), // Placeholder
-            new Characters.Dart(), // Placeholder
-            new Characters.Dart() // Placeholder
+            new Characters.Meru(),
+            new Characters.Kongol(),
+            new Characters.Shana()
         };
 
 

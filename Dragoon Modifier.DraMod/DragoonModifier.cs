@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Dragoon_Modifier.DraMod {
     internal class DragoonModifier : IDraMod {
         private readonly string _cwd;
-        private static readonly List<string> presetMods = new List<string> { "Normal", "NormalHard", "Hard", "HardHell", "Hell" };
+        private static readonly List<string> presetMods = new List<string> { "Normal", "NormalHard", "Hard", "HardHell", "Hell_Mode" };
 
         internal DragoonModifier(UI.IUIControl uiControl, string cwd) {
             Constants.LoadUIControl(uiControl);
@@ -21,7 +21,6 @@ namespace Dragoon_Modifier.DraMod {
         public bool Attach(string emulatorName, long previousOffset) {
             try {
                 Emulator.Attach(emulatorName, previousOffset);
-                Settings.LoadDataset(_cwd, Settings.Mod);
                 
                 Console.WriteLine($"Emulator offset:        {Convert.ToString(Emulator.EmulatorOffset, 16).ToUpper()}");
                 Console.WriteLine($"Region:                 {Emulator.Region}");
@@ -64,29 +63,57 @@ namespace Dragoon_Modifier.DraMod {
         public void ChangeLoDDirectory(Preset mod) {
             string modString = GetEnumDescription(mod);
             Settings.Difficulty = mod.ToString();
-
-            Settings.DualDifficulty = false;
-            if (mod == Preset.NormalHard || mod == Preset.HardHell) {
-                Settings.DualDifficulty = true;
-            } else {
-                Settings.DualDifficulty = false;
-            }
             Settings.Mod = modString;
             if (Constants.Run) {
 
-
-                Dataset.Scripts.IScript Script = new Dataset.Scripts.DummyScript();
-                switch (mod) {
-                    case Preset.Hell:
-                    case Preset.HardHell:
-                    case Preset.Hard:
-                        Script = new Dataset.Scripts.HardMode.Script();
-                        break;
+                Dataset.Scripts.IScript script;
+                if (mod != Preset.Normal) {
+                    script = new Dataset.Scripts.HardMode.Script();
+                    Settings.ItemStatChange = true;
+                    Settings.ItemNameDescChange = true;
+                    Settings.ItemIconChange = true;
+                    Settings.DragoonStatChange = true;
+                    Settings.DragoonSpellChange = true;
+                    Settings.DragoonDescriptionChange = true;
+                    Settings.DragoonAdditionChange = true;
+                    Settings.MonsterStatChange = true;
+                    Settings.MonsterExpGoldChange = true;
+                    Settings.MonsterDropChange = true;
+                } else {
+                    script = new Dataset.Scripts.DummyScript();
+                    Settings.ItemStatChange = false;
+                    Settings.ItemNameDescChange = false;
+                    Settings.ItemIconChange = false;
+                    Settings.DragoonStatChange = false;
+                    Settings.DragoonSpellChange = false;
+                    Settings.DragoonDescriptionChange = false;
+                    Settings.DragoonAdditionChange = false;
+                    Settings.MonsterStatChange = false;
+                    Settings.MonsterExpGoldChange = false;
+                    Settings.MonsterDropChange = false;
                 }
-                
+
+                bool dualMonster;
+                string dualMod;
+                if (mod == Preset.NormalHard || mod == Preset.HardHell) {
+                    Settings.DualDifficulty = true;
+                    dualMonster = true;
+                    if (mod == Preset.NormalHard) {
+                        dualMod = "US_Base";
+                    } else {
+                        dualMod = "Hard_Mode";
+                    }
+                } else {
+                    Settings.DualDifficulty = false;
+                    dualMonster = false;
+                    dualMod = "";
+                }
 
                 Constants.UIControl.WritePLog("Changing mod directory to " + modString);
-                Settings.LoadDataset(_cwd, modString, Script); // TODO add Script
+                Settings.LoadDataset(_cwd, modString, script, dualMonster, dualMod);
+
+                
+
                 Controller.Main.BattleSetup = false;
                 Controller.Main.AdditionsChanged = false;
                 Controller.Main.ItemsChanged = false;
@@ -97,7 +124,7 @@ namespace Dragoon_Modifier.DraMod {
         private static string GetEnumDescription(Preset mod) {
             FieldInfo fi = mod.GetType().GetField(mod.ToString());
 
-            DescriptionAttribute[] attributes = fi.GetCustomAttributes(typeof(DescriptionAttribute), false) as DescriptionAttribute[];
+            DescriptionAttribute[]? attributes = fi.GetCustomAttributes(typeof(DescriptionAttribute), false) as DescriptionAttribute[];
 
             if (attributes != null && attributes.Any()) {
                 return attributes.First().Description;

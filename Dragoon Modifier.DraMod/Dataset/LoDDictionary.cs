@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.Dataset {
     internal sealed class LoDDictionary : ILoDDictionary {
-        private static readonly Dictionary<string, byte> _status2Num = new Dictionary<string, byte>() {
+        private static readonly Dictionary<string, byte> _status2Num = new() {
             {"none", 0 },
             {"", 0 },
             {"petrification", 1 },
@@ -30,7 +30,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             {"po", 128 },
             {"all", 255 }
         };
-        private static readonly Dictionary<byte, string> _num2Status = new Dictionary<byte, string> {
+        private static readonly Dictionary<byte, string> _num2Status = new() {
             {0, "None" },
             {1, "Petrification" },
             {2, "Bewitchment" },
@@ -41,7 +41,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             {64, "Dispirit" },
             {128, "Poison" }
         };
-        private static readonly Dictionary<string, byte> _element2Num = new Dictionary<string, byte>() {
+        private static readonly Dictionary<string, byte> _element2Num = new() {
             {"", 0 },
             {"none", 0 },
             {"null", 0 },
@@ -54,7 +54,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             {"wind", 64 },
             {"fire", 128 }
         };
-        private static readonly Dictionary<byte, string> _num2Element = new Dictionary<byte, string>() {
+        private static readonly Dictionary<byte, string> _num2Element = new() {
             {0, "None" },
             {1, "Water" },
             {2, "Earth" },
@@ -65,7 +65,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             {64, "Wind" },
             {128, "Fire" }
         };
-        private static readonly Dictionary<string, byte> _icon2Num = new Dictionary<string, byte>() {
+        private static readonly Dictionary<string, byte> _icon2Num = new() {
             { "sword", 0 },
             { "axe", 1 },
             { "hammer", 2 },
@@ -125,8 +125,8 @@ namespace Dragoon_Modifier.DraMod.Dataset {
         private readonly string _mod;
         private readonly string _secondaryMod;
         private bool _dualMonster = false;
-        private Dictionary<ushort, IMonster> _monsters = new Dictionary<ushort, IMonster>();
-        private Dictionary<ushort, IMonster> _secondaryMonsters = null;
+        private Dictionary<ushort, IMonster> _monsters = new();
+        private Dictionary<ushort, IMonster>? _secondaryMonsters = null;
 
         public IItem[] Item { get; } = new IItem[256];
         public Dictionary<ushort, IMonster> Monster {
@@ -163,15 +163,23 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             Load();
         }
 
-        internal LoDDictionary(string cwd, string mod, Scripts.IScript script) {
+        internal LoDDictionary(string cwd, string mod, Scripts.IScript script, bool dualMonsters, string dualMod) {
             _cwd = cwd;
             _mod = mod;
-            _dualMonster = false;
-            _secondaryMonsters = null;
+            _dualMonster = dualMonsters;
 
             Script = script;
 
             Load();
+
+            if (dualMonsters) {
+                _secondaryMonsters = new();
+                string modPath = $"{_cwd}\\Mods\\{dualMod}";
+                GetMonsters(modPath, ref _secondaryMonsters);
+            } else {
+                _secondaryMonsters = null;
+            }
+
         }
 
         private void ParseScript() {
@@ -194,7 +202,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             _tryEncodeItemDelegate = TryEncodeItem;
 
             GetItems(modPath);
-            GetMonsters(modPath);
+            GetMonsters(modPath, ref _monsters);
             GetCharacters(modPath);
             GetShops(modPath);
         }
@@ -427,7 +435,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             return result;
         }
 
-        private void GetMonsters(string modPath) {
+        private void GetMonsters(string modPath, ref Dictionary<ushort, IMonster> monsterDict) {
             string file = $"{modPath}\\Monster_Data.tsv";
             int i = 0;
             try {
@@ -437,7 +445,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
                         var line = monsterData.ReadLine();
                         var values = line.Split('\t').ToArray();
                         if (UInt16.TryParse(values[0], out var uskey)) {
-                            Monster.Add(uskey, new Monster(values, _tryEncodeItemDelegate));
+                            monsterDict.Add(uskey, new Monster(values, _tryEncodeItemDelegate));
                         }
                     }
                 }
