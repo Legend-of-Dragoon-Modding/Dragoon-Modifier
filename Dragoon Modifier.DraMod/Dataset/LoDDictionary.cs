@@ -123,15 +123,15 @@ namespace Dragoon_Modifier.DraMod.Dataset {
 
         private readonly string _cwd;
         private readonly string _mod;
-        private readonly string _secondaryMod;
+        private readonly string? _secondaryMod;
         private bool _dualMonster = false;
         private Dictionary<ushort, IMonster> _monsters = new();
-        private Dictionary<ushort, IMonster>? _secondaryMonsters = null;
+        private readonly Dictionary<ushort, IMonster> _secondaryMonsters = new();
 
         public IItem[] Item { get; } = new IItem[256];
         public Dictionary<ushort, IMonster> Monster {
             get {
-                if (!_dualMonster || _secondaryMonsters == null) {
+                if (!_dualMonster || _secondaryMonsters.Count == 0) {
                     return _monsters;
                 }
                 return _secondaryMonsters;
@@ -156,7 +156,8 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             _cwd = cwd;
             _mod = mod;
             _dualMonster = false;
-            _secondaryMonsters = null;
+            _secondaryMod = null;
+            _secondaryMonsters = new();
 
             ParseScript();
 
@@ -166,6 +167,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
         internal LoDDictionary(string cwd, string mod, Scripts.IScript script, bool dualMonsters, string dualMod) {
             _cwd = cwd;
             _mod = mod;
+            _secondaryMod = dualMod;
             _dualMonster = dualMonsters;
 
             Script = script;
@@ -174,10 +176,10 @@ namespace Dragoon_Modifier.DraMod.Dataset {
 
             if (dualMonsters) {
                 _secondaryMonsters = new();
-                string modPath = $"{_cwd}\\Mods\\{dualMod}";
+                string modPath = $"{_cwd}\\Mods\\{_secondaryMod}";
                 GetMonsters(modPath, ref _secondaryMonsters);
             } else {
-                _secondaryMonsters = null;
+                _secondaryMonsters = new();
             }
 
         }
