@@ -9,22 +9,22 @@ using System.Threading.Tasks;
 namespace Dragoon_Modifier.DraMod.Controller {
     internal static class GreenButton {
         internal static void Run() {
-            if (Settings.BtnAddPartyMembers && (Settings.SoloMode || Settings.DuoMode)) {
+            if (Settings.Instance.BtnAddPartyMembers && (Settings.Instance.SoloMode || Settings.Instance.DuoMode)) {
                 AddSoloPartyMembers();
             }
 
-            if (Settings.SwitchSlot1) {
+            if (Settings.Instance.SwitchSlot1) {
                 SwitchSlotOne();
             }
 
-            if (Settings.BtnSwitchExp) {
+            if (Settings.Instance.BtnSwitchExp) {
                 SwitchEXP();
             }
         }
 
         private static void AddSoloPartyMembers() {
-            if (Settings.SoloMode) {
-                Settings.AddSoloPartyMembers = true;
+            if (Settings.Instance.SoloMode) {
+                Settings.Instance.AddSoloPartyMembers = true;
                 Emulator.DirectAccess.WriteByte("PARTY_SLOT", Emulator.DirectAccess.ReadByte("PARTY_SLOT"), 0x4);
                 Emulator.DirectAccess.WriteByte("PARTY_SLOT", 0, 0x5);
                 Emulator.DirectAccess.WriteByte("PARTY_SLOT", 0, 0x6);
@@ -34,8 +34,8 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 Emulator.DirectAccess.WriteByte("PARTY_SLOT", 0, 0xA);
                 Emulator.DirectAccess.WriteByte("PARTY_SLOT", 0, 0xB);
                 Emulator.DirectAccess.WriteByte("CHAR_TABLE", 3, Emulator.DirectAccess.ReadByte("PARTY_SLOT") * 0x2C + 0x4);
-            } else if (Settings.DuoMode) {
-                Settings.AddSoloPartyMembers = true;
+            } else if (Settings.Instance.DuoMode) {
+                Settings.Instance.AddSoloPartyMembers = true;
                 Emulator.DirectAccess.WriteByte("PARTY_SLOT", Emulator.DirectAccess.ReadByte("PARTY_SLOT"), 0x8);
                 Emulator.DirectAccess.WriteByte("PARTY_SLOT", 0, 0x9);
                 Emulator.DirectAccess.WriteByte("PARTY_SLOT", 0, 0xA);
@@ -43,15 +43,15 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 Emulator.DirectAccess.WriteByte("CHAR_TABLE", 3, Emulator.DirectAccess.ReadByte("PARTY_SLOT") * 0x2C + 0x4);
             }
 
-            Settings.BtnAddPartyMembers = false;
+            Settings.Instance.BtnAddPartyMembers = false;
         }
 
         private static void SwitchSlotOne() {
-            if (Emulator.DirectAccess.ReadByte("CHAR_TABLE", 0x2C * Settings.Slot1Select + 0x4) == 0x3 || Emulator.DirectAccess.ReadByte("CHAR_TABLE", 0x2C * Settings.Slot1Select + 0x4) == 0x23) {
+            if (Emulator.DirectAccess.ReadByte("CHAR_TABLE", 0x2C * Settings.Instance.Slot1Select + 0x4) == 0x3 || Emulator.DirectAccess.ReadByte("CHAR_TABLE", 0x2C * Settings.Instance.Slot1Select + 0x4) == 0x23) {
                 //if (Settings.SoloMode || Settings.DuoMode) {
-                Emulator.DirectAccess.WriteByte("PARTY_SLOT", Settings.Slot1Select);
-                    Console.WriteLine("Switched character " + Settings.Slot1Select + ".");
-                Constants.UIControl.WritePLog("Switched character " + Settings.Slot1Select + ".");
+                Emulator.DirectAccess.WriteByte("PARTY_SLOT", Settings.Instance.Slot1Select);
+                    Console.WriteLine("Switched character " + Settings.Instance.Slot1Select + ".");
+                Constants.UIControl.WritePLog("Switched character " + Settings.Instance.Slot1Select + ".");
                 //} else {
                     //TODO: No Dart
                 //}
@@ -60,13 +60,13 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 Constants.UIControl.WritePLog("The selected character is not in the party.");
             }
 
-            Settings.SwitchSlot1 = false;
+            Settings.Instance.SwitchSlot1 = false;
         }
 
         private static void SwitchEXP() {
-            long char1 = Emulator.GetAddress("CHAR_TABLE") + (0x2C * Settings.SwitchEXPSlot1);
-            long char2 = Emulator.GetAddress("CHAR_TABLE") + (0x2C * Settings.SwitchEXPSlot2);
-            int maxEXP = Settings.Difficulty.Equals("Hell") ? 160000 : 80000;
+            long char1 = Emulator.GetAddress("CHAR_TABLE") + (0x2C * Settings.Instance.SwitchEXPSlot1);
+            long char2 = Emulator.GetAddress("CHAR_TABLE") + (0x2C * Settings.Instance.SwitchEXPSlot2);
+            int maxEXP = Settings.Instance.Difficulty.Equals("Hell") ? 160000 : 80000;
 
             if (char1 != char2) {
                 if ((Emulator.DirectAccess.ReadByte(char1 + 0x4) == 0x3 || Emulator.DirectAccess.ReadByte(char1 + 0x4) == 0x23) && (Emulator.DirectAccess.ReadByte(char2 + 0x4) == 0x3 || Emulator.DirectAccess.ReadByte(char2 + 0x4) == 0x23)) {
@@ -86,7 +86,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 }
             }
 
-            Settings.BtnSwitchExp = false;
+            Settings.Instance.BtnSwitchExp = false;
         }
     }
 }

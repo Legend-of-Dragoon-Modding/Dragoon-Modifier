@@ -19,21 +19,21 @@ namespace Dragoon_Modifier.DraMod.Controller {
             if (previousState != Emulator.Memory.GameState) {
                 switch (Emulator.Memory.GameState) {
                     case GameState.Field:
-                        if (Settings.KillBGMMode == 0 || Settings.KillBGMMode == 2) {
+                        if (Settings.Instance.KillBGMMode == 0 || Settings.Instance.KillBGMMode == 2) {
                             KillMusic();
                             musicKillCount = 10;
                             musicSSsq = new ArrayList();
                         }
                         break;
                     case GameState.Menu:
-                        if (Settings.KillBGMMode == 0 || Settings.KillBGMMode == 2) {
+                        if (Settings.Instance.KillBGMMode == 0 || Settings.Instance.KillBGMMode == 2) {
                             KillMusic();
                             musicKillCount = 8;
                             musicSSsq = new ArrayList();
                         }
                         break;
                     case GameState.Battle:
-                        if (Settings.KillBGMMode == 1 || Settings.KillBGMMode == 2) {
+                        if (Settings.Instance.KillBGMMode == 1 || Settings.Instance.KillBGMMode == 2) {
                             KillMusic();
                             musicKillCount = 20;
                             musicSSsq = new ArrayList();

@@ -160,7 +160,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 if (Constants.Run && Emulator.Memory.GameState != GameState.Battle) {
                     return;
                 }
-                Thread.Sleep(Settings.WaitDelay);
+                Thread.Sleep(Settings.Instance.WaitDelay);
             }
 
             Emulator.Memory.LoadBattle();
@@ -179,10 +179,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             Constants.UIControl.UpdateField(Emulator.Memory.BattleValue, Emulator.Memory.EncounterID, Emulator.Memory.MapID);
 
-            if (Settings.DualDifficulty) {
-                Console.WriteLine("[DEBUG] [Dual Difficulty] Changing monster stats...");
-                SwitchDualDifficulty();
-            }
+            Settings.Instance.DualDifficulty = (Settings.Instance.Preset == Preset.NormalHard || Settings.Instance.Preset == Preset.HardHell) && !bosses.Contains(Emulator.Memory.EncounterID);
 
             MonsterChanges();
 
@@ -191,53 +188,53 @@ namespace Dragoon_Modifier.DraMod.Controller {
             Console.WriteLine("Updating UI...");
             UpdateUI();
 
-            if (Settings.SoloMode) {
+            if (Settings.Instance.SoloMode) {
                 SoloModeBattle();
             }
 
-            if (Settings.DuoMode) {
+            if (Settings.Instance.DuoMode) {
                 DuoModeBattle();
             }
 
-            if (Settings.NoDart != 0 && Settings.NoDart != 255) {
-                NoDart.Initialize(Settings.NoDart);
+            if (Settings.Instance.NoDart != 0 && Settings.Instance.NoDart != 255) {
+                NoDart.Initialize(Settings.Instance.NoDart);
             }
 
-            if (Settings.NoDragoon) {
+            if (Settings.Instance.NoDragoon) {
                 NoDragoonMode();
             }
 
-            if (Settings.AspectRatio) {
+            if (Settings.Instance.AspectRatio) {
                 ChangeAspectRatio();
             }
         }
 
         public static void Run() {
-            Settings.Dataset.Script.BattleRun();
+            Settings.Instance.Dataset.Script.BattleRun();
 
             UpdateUI();
 
-            if (Settings.RemoveDamageCaps) {
+            if (Settings.Instance.RemoveDamageCaps) {
                 RemoveDamageCaps();
             }
 
-            if (Settings.ElementalBomb) {
+            if (Settings.Instance.ElementalBomb) {
                 ElementalBomb();
             }
 
-            if (Settings.MonsterHPAsNames) {
+            if (Settings.Instance.MonsterHPAsNames) {
                 MonsterHPNames();
             }
 
-            if (Settings.NeverGuard) {
+            if (Settings.Instance.NeverGuard) {
                 NeverGuard();
             }
 
-            if (Settings.DamageTracker) {
+            if (Settings.Instance.DamageTracker) {
                 DamageTracker();
             }
 
-            if (Settings.EnrageMode || Settings.EnrageBossOnly) {
+            if (Settings.Instance.EnrageMode || Settings.Instance.EnrageBossOnly) {
                 for (int i = 0; i < Emulator.Memory.MonsterSize; i++) {
                     EnrageMode(i); 
                 }
@@ -257,37 +254,22 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
         }
 
-        private static void SwitchDualDifficulty() {
-            string cwd = Directory.GetCurrentDirectory();
-            string mod;
-
-            if (bosses.Contains(Emulator.Memory.Battle.EncounterID)) {
-                mod = DraMod.Settings.Mod.Equals("Hell_Mode") ? "Hard_Mode" : "US_Base";
-                // loDDictionary.SwapMonsters(cwd, mod); TODO
-                Console.WriteLine("[DEBUG] [Dual Difficulty] Mod selected: " + mod);
-                return;
-            }
-
-            // loDDictionary.SwapMonsters(cwd, DraMod.Settings.Mod); TODO
-            Console.WriteLine("[DEBUG] [Dual Difficulty] Mod selected: " + DraMod.Settings.Mod);
-        }
-
         private static void MonsterChanges() {
-            if (Settings.MonsterStatChange) {
+            if (Settings.Instance.MonsterStatChange) {
                 Console.WriteLine("Changing monster stats...");
                 for (int slot = 0; slot < Emulator.Memory.Battle.MonsterTable.Length; slot++) {
                     MonsterStatChange(slot);
                 }
             }
 
-            if (Settings.MonsterDropChange) {
+            if (Settings.Instance.MonsterDropChange) {
                 Console.WriteLine("Changing monster drops...");
                 for (int slot = 0; slot < Emulator.Memory.UniqueMonsterSize; slot++) {
                     MonsterDropChanges(slot);
                 }
             }
 
-            if (Settings.MonsterExpGoldChange) {
+            if (Settings.Instance.MonsterExpGoldChange) {
                 Console.WriteLine("Changing monster exp and gold Rewards...");
                 for (int slot = 0; slot < Emulator.Memory.UniqueMonsterSize; slot++) {
                     MonsterExpGoldChange(slot);
@@ -297,7 +279,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
         private static void MonsterStatChange(int slot) {
             ushort id = Emulator.Memory.Battle.MonsterID[slot];
-            double HP = Math.Round(Settings.Dataset.Monster[id].HP * Settings.HPMulti);
+            double HP = Math.Round(Settings.Instance.Dataset.Monster[id].HP * Settings.Instance.HPMulti);
 
             double resup = 1;
             if (HP > 65535) {
@@ -310,70 +292,70 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             monster.HP = (ushort) HP;
             monster.MaxHP = (ushort) HP;
-            monster.AT = (ushort) Math.Round(Settings.Dataset.Monster[id].AT * Settings.ATMulti);
-            monster.OG_AT = (ushort) Math.Round(Settings.Dataset.Monster[id].AT * Settings.ATMulti);
-            monster.MAT = (ushort) Math.Round(Settings.Dataset.Monster[id].MAT * Settings.MATMulti);
-            monster.OG_MAT = (ushort) Math.Round(Settings.Dataset.Monster[id].MAT * Settings.MATMulti);
-            monster.DF = (ushort) Math.Round(Settings.Dataset.Monster[id].DF * Settings.DFMulti * resup);
-            monster.OG_DF = (ushort) Math.Round(Settings.Dataset.Monster[id].DF * Settings.DFMulti * resup);
-            monster.MDF = (ushort) Math.Round(Settings.Dataset.Monster[id].MDF * Settings.MDFMulti * resup);
-            monster.OG_MDF = (ushort) Math.Round(Settings.Dataset.Monster[id].MDF * Settings.MDFMulti * resup);
-            monster.SPD = (ushort) Math.Round(Settings.Dataset.Monster[id].SPD * Settings.SPDMulti);
-            monster.OG_SPD = (ushort) Math.Round(Settings.Dataset.Monster[id].SPD * Settings.SPDMulti);
-            monster.A_AV = Settings.Dataset.Monster[id].A_AV;
-            monster.M_AV = Settings.Dataset.Monster[id].M_AV;
-            monster.P_Immune = Settings.Dataset.Monster[id].PhysicalImmunity;
-            monster.M_Immune = Settings.Dataset.Monster[id].MagicalImmunity;
-            monster.P_Half = Settings.Dataset.Monster[id].PhysicalResistance;
-            monster.M_Half = Settings.Dataset.Monster[id].MagicalResistance;
-            monster.Element = Settings.Dataset.Monster[id].Element;
-            monster.ElementalImmunity = Settings.Dataset.Monster[id].ElementalImmunity;
-            monster.ElementalResistance = Settings.Dataset.Monster[id].ElementalResistance;
-            monster.StatusResist = Settings.Dataset.Monster[id].StatusResist;
-            monster.SpecialEffect = Settings.Dataset.Monster[id].SpecialEffect;
+            monster.AT = (ushort) Math.Round(Settings.Instance.Dataset.Monster[id].AT * Settings.Instance.ATMulti);
+            monster.OG_AT = (ushort) Math.Round(Settings.Instance.Dataset.Monster[id].AT * Settings.Instance.ATMulti);
+            monster.MAT = (ushort) Math.Round(Settings.Instance.Dataset.Monster[id].MAT * Settings.Instance.MATMulti);
+            monster.OG_MAT = (ushort) Math.Round(Settings.Instance.Dataset.Monster[id].MAT * Settings.Instance.MATMulti);
+            monster.DF = (ushort) Math.Round(Settings.Instance.Dataset.Monster[id].DF * Settings.Instance.DFMulti * resup);
+            monster.OG_DF = (ushort) Math.Round(Settings.Instance.Dataset.Monster[id].DF * Settings.Instance.DFMulti * resup);
+            monster.MDF = (ushort) Math.Round(Settings.Instance.Dataset.Monster[id].MDF * Settings.Instance.MDFMulti * resup);
+            monster.OG_MDF = (ushort) Math.Round(Settings.Instance.Dataset.Monster[id].MDF * Settings.Instance.MDFMulti * resup);
+            monster.SPD = (ushort) Math.Round(Settings.Instance.Dataset.Monster[id].SPD * Settings.Instance.SPDMulti);
+            monster.OG_SPD = (ushort) Math.Round(Settings.Instance.Dataset.Monster[id].SPD * Settings.Instance.SPDMulti);
+            monster.A_AV = Settings.Instance.Dataset.Monster[id].A_AV;
+            monster.M_AV = Settings.Instance.Dataset.Monster[id].M_AV;
+            monster.P_Immune = Settings.Instance.Dataset.Monster[id].PhysicalImmunity;
+            monster.M_Immune = Settings.Instance.Dataset.Monster[id].MagicalImmunity;
+            monster.P_Half = Settings.Instance.Dataset.Monster[id].PhysicalResistance;
+            monster.M_Half = Settings.Instance.Dataset.Monster[id].MagicalResistance;
+            monster.Element = Settings.Instance.Dataset.Monster[id].Element;
+            monster.ElementalImmunity = Settings.Instance.Dataset.Monster[id].ElementalImmunity;
+            monster.ElementalResistance = Settings.Instance.Dataset.Monster[id].ElementalResistance;
+            monster.StatusResist = Settings.Instance.Dataset.Monster[id].StatusResist;
+            monster.SpecialEffect = Settings.Instance.Dataset.Monster[id].SpecialEffect;
         }
 
         private static void MonsterDropChanges(int slot) {
             ushort id = Emulator.Memory.Battle.UniqueMonsterID[slot];
-            Emulator.Memory.Battle.RewardsDropChance[slot] = Settings.Dataset.Monster[id].DropChance;
-            Emulator.Memory.Battle.RewardsItemDrop[slot] = Settings.Dataset.Monster[id].DropItem;
+            Emulator.Memory.Battle.RewardsDropChance[slot] = Settings.Instance.Dataset.Monster[id].DropChance;
+            Emulator.Memory.Battle.RewardsItemDrop[slot] = Settings.Instance.Dataset.Monster[id].DropItem;
         }
 
         private static void MonsterExpGoldChange(int slot) {
             ushort id = Emulator.Memory.Battle.UniqueMonsterID[slot];
-            Emulator.Memory.Battle.RewardsExp[slot] = Settings.Dataset.Monster[id].EXP;
-            Emulator.Memory.Battle.RewardsGold[slot] = Settings.Dataset.Monster[id].Gold;
+            Emulator.Memory.Battle.RewardsExp[slot] = Settings.Instance.Dataset.Monster[id].EXP;
+            Emulator.Memory.Battle.RewardsGold[slot] = Settings.Instance.Dataset.Monster[id].Gold;
         }
 
         private static void CharacterChanges() {
             Console.WriteLine("Loading Character stats...");
             for (byte character = 0; character < 9; character++) {
 
-                if (Settings.CharacterStatChange) {
+                if (Settings.Instance.CharacterStatChange) {
                     Character.ChangeStats(character);
                 }
 
-                if (Settings.ItemStatChange) {
+                if (Settings.Instance.ItemStatChange) {
                     Item.BattleEquipmentChange(character);
                 }
             }
 
-            if (Settings.ItemNameDescChange && Emulator.Region == Region.NTA) { // TODO Remove Region check, when other encoding tables work.
+            if (Settings.Instance.ItemNameDescChange && Emulator.Region == Region.NTA) { // TODO Remove Region check, when other encoding tables work.
                 Console.WriteLine("Changing Usable Item names and descriptions...");
                 Item.BattleItemNameDescChange();
             }
 
-            if (Settings.NoDecaySoulEater) {
+            if (Settings.Instance.NoDecaySoulEater) {
                 NoHPDecaySoulEater();
             }
 
-            Settings.Dataset.Script.BattleSetup();
+            Settings.Instance.Dataset.Script.BattleSetup();
 
             Console.WriteLine("Changing Character stats...");
             uint characterID = 0;
             for (int slot = 0; slot < Emulator.Memory.Battle.CharacterTable.Length; slot++){
-                if (slot == 0 && Settings.NoDart != 255) {
-                    characterID = Settings.NoDart;
+                if (slot == 0 && Settings.Instance.NoDart != 255) {
+                    characterID = Settings.Instance.NoDart;
                 } else {
                     characterID = Emulator.Memory.PartySlot[slot];
                 }
@@ -381,7 +363,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 Emulator.Memory.Battle.CharacterTable[slot].SetStats(characterID);
             }
 
-            if (Settings.AdditionChange) {
+            if (Settings.Instance.AdditionChange) {
                 Console.WriteLine("Changing Additions...");
                 foreach (var character in Emulator.Memory.Battle.CharacterTable) {
                     Addition.ResetAdditionTable(character);
@@ -600,7 +582,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
         }
 
         private static void EnrageMode(int i = 0) {
-            if ((Settings.EnrageBossOnly && CheckEnrageBoss()) || Settings.EnrageMode) { //TODO Ultimate Boss
+            if ((Settings.Instance.EnrageBossOnly && CheckEnrageBoss()) || Settings.Instance.EnrageMode) { //TODO Ultimate Boss
                 var monster = Emulator.Memory.Battle.MonsterTable[i];
                 if (enragedMode[i] == 0 && (monster.HP <= (monster.MaxHP / 2))) {
                     monster.AT = (ushort) Math.Round(monster.OG_AT * 1.1);
@@ -633,8 +615,8 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 return;
             }
 
-            if (Settings.ItemStatChange) {
-                Dataset.IEquipment soulEater = (Dataset.IEquipment) Settings.Dataset.Item[7];
+            if (Settings.Instance.ItemStatChange) {
+                Dataset.IEquipment soulEater = (Dataset.IEquipment) Settings.Instance.Dataset.Item[7];
                 Emulator.Memory.SecondaryCharacterTable[0].HP_Regen -= (sbyte) soulEater.SpecialBonusAmmount;
                 return;
             }
@@ -692,10 +674,10 @@ namespace Dragoon_Modifier.DraMod.Controller {
         }
 
         private static void ChangeAspectRatio() {
-            Console.WriteLine($"[DEBUG][Aspect Ratio] {Settings.AspectRatioMode}");
+            Console.WriteLine($"[DEBUG][Aspect Ratio] {Settings.Instance.AspectRatioMode}");
 
             ushort aspectRatio;
-            switch (Settings.AspectRatioMode) {
+            switch (Settings.Instance.AspectRatioMode) {
                 case 1:
                     aspectRatio = 3072;
                     break;
@@ -715,12 +697,12 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             Emulator.DirectAccess.WriteUShort("ASPECT_RATIO", aspectRatio);
 
-            if (Settings.AdvancedCameraMode == 1)
+            if (Settings.Instance.AdvancedCameraMode == 1)
                 Emulator.DirectAccess.WriteUShort("ADVANCED_CAMERA", aspectRatio);
         }
 
         private static void SoloModeBattle() {
-            byte soloLeader = Settings.SoloLeader;
+            byte soloLeader = Settings.Instance.SoloLeader;
 
             for (int i = 0; i < 3; i++) {
                 if (i != soloLeader) {
@@ -767,14 +749,14 @@ namespace Dragoon_Modifier.DraMod.Controller {
         }
 
         private static void SoloDuoExit() {
-            if (Settings.ReduceSoloDuoEXP) {
+            if (Settings.Instance.ReduceSoloDuoEXP) {
                 for (int i = 0; i < 5; i++) {
-                   Emulator.DirectAccess.WriteUShort("MONSTER_REWARDS", (ushort) Math.Ceiling((double) (Emulator.DirectAccess.ReadShort(Emulator.GetAddress("MONSTER_REWARDS") + (i * 0x1A8)) * (Settings.SoloMode ? (1d / 3) : (2d / 3)))), (i * 0x1A8));
+                   Emulator.DirectAccess.WriteUShort("MONSTER_REWARDS", (ushort) Math.Ceiling((double) (Emulator.DirectAccess.ReadShort(Emulator.GetAddress("MONSTER_REWARDS") + (i * 0x1A8)) * (Settings.Instance.SoloMode ? (1d / 3) : (2d / 3)))), (i * 0x1A8));
                 }
             }
 
-            if (!Settings.AlwaysAddSoloPartyMembers) {
-                Settings.AddSoloPartyMembers = false;
+            if (!Settings.Instance.AlwaysAddSoloPartyMembers) {
+                Settings.Instance.AddSoloPartyMembers = false;
             }
         }
     }

@@ -15,7 +15,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
         /// <param name="characterID"></param>
         internal static void ChangeStats(int characterID) {
             var character = Emulator.Memory.SecondaryCharacterTable[characterID];
-            var baseStats = Settings.Dataset.Character[characterID].BaseStats;
+            var baseStats = Settings.Instance.Dataset.Character[characterID].BaseStats;
 
             byte level = character.Level;
 

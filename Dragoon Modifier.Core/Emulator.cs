@@ -11,7 +11,7 @@ namespace Dragoon_Modifier.Core {
         private static readonly byte[] _AoBCheck = new byte[] { 0x50, 0x53, 0x2D, 0x58, 0x20, 0x45, 0x58, 0x45 };
         private static readonly byte[] _duckstationCheck = new byte[] { 0x53, 0x6F, 0x6E, 0x79, 0x20, 0x43, 0x6F, 0x6D, 0x70, 0x75, 0x74, 0x65, 0x72, 0x20, 0x45, 0x6E, 0x74, 0x65, 0x72, 0x74, 0x61, 0x69, 0x6E, 0x6D, 0x65, 0x6E, 0x74, 0x20, 0x49, 0x6E, 0x63 };
         private static readonly int[] _duckstationOffsets = new int[] { 0x110, 0x118 };
-        private static readonly Dictionary<string, Region> _versions = new Dictionary<string, Region> {
+        private static readonly Dictionary<string, Region> _versions = new() {
             { "SCUS_944.91", Region.NTA },
             { "SCUS_945.84", Region.NTA },
             { "SCUS_945.85", Region.NTA },
@@ -49,7 +49,7 @@ namespace Dragoon_Modifier.Core {
 
         };
 
-        private static readonly Dictionary<string, int[]> _addressList = new Dictionary<string, int[]> {
+        private static readonly Dictionary<string, int[]> _addressList = new() {
             { "PARTY_SLOT", new int[] { 0xBAC50, 0xB9950, 0xBAF38, 0xBAF48, 0x0, 0xBAF78, 0xBAE88 } },
             { "DISC", new int[] { 0xBC058, 0xBAD58 ,0xBC340, 0xBC350, 0x0 ,0xBC380 ,0xBC290 } },
             { "CHAPTER", new int[] { 0xBAC60, 0xB9960, 0xBAF48, 0xBAF58, 0x0, 0xBAF88, 0xBAE98 } },
@@ -121,7 +121,7 @@ namespace Dragoon_Modifier.Core {
             { "DRAGOON_SPECIAL", new int[] { 0x6E648, 0x6D348, 0x0, 0x0, 0x0, 0x6E870, 0x6E880 } }
         };
 
-        private static Emulator _instance = null;
+        private static Emulator? _instance = null;
         public static Emulator DirectAccess {
             get {
                 if (_instance == null) {
@@ -139,8 +139,8 @@ namespace Dragoon_Modifier.Core {
 
         private readonly IntPtr _processHandle;
 
-        private Memory.IController _memory = null;
-        private LoDEncoding _loDEncoding = null;
+        private Memory.IController _memory;
+        private LoDEncoding _loDEncoding;
 
         public static LoDEncoding TextEncoding {  get { return DirectAccess._loDEncoding; }  }
 
@@ -162,7 +162,7 @@ namespace Dragoon_Modifier.Core {
             }
         }
         public static void Attach(string emulatorName, long previousOffset) {
-            _instance = new Emulator(emulatorName, previousOffset);
+            _instance = new(emulatorName, previousOffset);
             _instance._memory = new Memory.Controller();
             _instance._loDEncoding = new LoDEncoding(_instance._region);
 

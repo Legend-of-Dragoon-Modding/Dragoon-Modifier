@@ -29,7 +29,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             var additionID = Emulator.Memory.CharacterTable[characterID].ChosenAddition;
             var additionIndex = Array.IndexOf(Dataset.Addition.AdditionIDs[characterID], additionID);
-            var addition = Settings.Dataset.Character[characterID].Additions[additionIndex];
+            var addition = Settings.Instance.Dataset.Character[characterID].Additions[additionIndex];
 
             byte hitIndex = 0;
             foreach (var hit in addition.AdditionHit) {
@@ -133,7 +133,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                         }
 
                         additionIndex = Core.Emulator.Memory.Battle.BattleMenuChosenSlot;
-                        Thread.Sleep(Settings.WaitDelay);
+                        Thread.Sleep(Settings.Instance.WaitDelay);
                     }
 
                     Core.Emulator.Memory.CharacterTable[characterID].ChosenAddition = Dataset.Addition.AdditionIDs[characterID][additionIndex];
@@ -161,7 +161,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                             break;
                         }
 
-                        Thread.Sleep(Settings.WaitDelay);
+                        Thread.Sleep(Settings.Instance.WaitDelay);
                     }
 
                     character.SP = SP;
@@ -201,7 +201,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                     continue;
                 }
 
-                foreach (var addition in Settings.Dataset.Character[character].Additions) {
+                foreach (var addition in Settings.Instance.Dataset.Character[character].Additions) {
                     var table = Emulator.Memory.MenuAdditionTable[addition.ID];
 
                     table.Damage = (ushort) addition.AdditionHit.Sum(add => add.Damage);

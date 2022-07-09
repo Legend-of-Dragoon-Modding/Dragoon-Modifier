@@ -121,29 +121,27 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             {"", 64 }
         };
 
-        private readonly string _cwd;
-        private readonly string _mod;
-        private readonly string? _secondaryMod;
-        private bool _dualMonster = false;
+        private readonly string _modDirectory;
+        private readonly string? _secondaryModDirectory = null;
         private Dictionary<ushort, IMonster> _monsters = new();
-        private readonly Dictionary<ushort, IMonster> _secondaryMonsters = new();
+        private Dictionary<ushort, IMonster> _secondaryMonsters = new();
 
         public IItem[] Item { get; } = new IItem[256];
         public Dictionary<ushort, IMonster> Monster {
             get {
-                if (!_dualMonster || _secondaryMonsters.Count == 0) {
-                    return _monsters;
+                if (Settings.Instance.DualDifficulty && (_secondaryModDirectory != null || _secondaryMonsters.Count > 0)) {
+                    return _secondaryMonsters;
                 }
-                return _secondaryMonsters;
+                return _monsters;
             }
         }
 
         public ICharacter[] Character { get; } = new ICharacter[9];
 
-        public byte[] ItemNames { get; private set; } = new byte[0];
-        public byte[] ItemDescriptions { get; private set; } = new byte[0];
-        public byte[] ItemBattleNames { get; private set; } = new byte[0];
-        public byte[] ItemBattleDescriptions { get; private set; } = new byte[0];
+        public byte[] ItemNames { get; private set; } = Array.Empty<byte>();
+        public byte[] ItemDescriptions { get; private set; } = Array.Empty<byte>();
+        public byte[] ItemBattleNames { get; private set; } = Array.Empty<byte>();
+        public byte[] ItemBattleDescriptions { get; private set; } = Array.Empty<byte>();
 
         public List<byte>[] Shop { get; } = new List<byte>[45];
 
@@ -153,39 +151,26 @@ namespace Dragoon_Modifier.DraMod.Dataset {
         private MyFunc<string, byte> _tryEncodeItemDelegate;
 
         internal LoDDictionary(string cwd, string mod) {
-            _cwd = cwd;
-            _mod = mod;
-            _dualMonster = false;
-            _secondaryMod = null;
-            _secondaryMonsters = new();
+            _modDirectory = $"{cwd}\\Mods\\{mod}";
 
             ParseScript();
 
             Load();
         }
 
-        internal LoDDictionary(string cwd, string mod, Scripts.IScript script, bool dualMonsters, string dualMod) {
-            _cwd = cwd;
-            _mod = mod;
-            _secondaryMod = dualMod;
-            _dualMonster = dualMonsters;
+        internal LoDDictionary(string cwd, string mod, string? dualMod, Scripts.IScript script) {
+            _modDirectory = $"{cwd}\\Mods\\{mod}";
+            if (dualMod != null) {
+                _secondaryModDirectory = $"{cwd}\\Mods\\{dualMod}";
+            }
 
             Script = script;
 
             Load();
-
-            if (dualMonsters) {
-                _secondaryMonsters = new();
-                string modPath = $"{_cwd}\\Mods\\{_secondaryMod}";
-                GetMonsters(modPath, ref _secondaryMonsters);
-            } else {
-                _secondaryMonsters = new();
-            }
-
         }
 
         private void ParseScript() {
-            foreach (var file in Directory.GetFiles($"{_cwd}\\Mods\\{_mod}", "*.cs")) {
+            foreach (var file in Directory.GetFiles(_modDirectory, "*.cs")) {
                 if (file.Equals("Script.cs")) {
                     try {
                         // Script = new Scripts.CustomScript(file, this);
@@ -200,13 +185,17 @@ namespace Dragoon_Modifier.DraMod.Dataset {
         }
 
         private void Load() {
-            string modPath = $"{_cwd}\\Mods\\{_mod}";
             _tryEncodeItemDelegate = TryEncodeItem;
 
-            GetItems(modPath);
-            GetMonsters(modPath, ref _monsters);
-            GetCharacters(modPath);
-            GetShops(modPath);
+            GetItems();
+            _monsters = GetMonsters(_modDirectory);
+
+            if (_secondaryModDirectory != null) {
+                _secondaryMonsters = GetMonsters(_secondaryModDirectory);
+            }
+
+            GetCharacters();
+            GetShops();
         }
 
         public static string GetStatus(byte status) {
@@ -287,9 +276,9 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             return false;
         }
 
-        private void GetItems(string modPath) {
-            GetEquipment(modPath);
-            GetUsableItems(modPath);
+        private void GetItems() {
+            GetEquipment();
+            GetUsableItems();
 
             ItemNames = GetEncodedNames();
             ItemDescriptions = GetEncodedDescriptions();
@@ -297,8 +286,8 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             ItemBattleDescriptions = GetEncodedBattleDescriptions();
         }
 
-        private void GetEquipment(string modPath) {
-            string file = $"{modPath}\\Equipment.tsv";
+        private void GetEquipment() {
+            string file = $"{_modDirectory}\\Equipment.tsv";
             int i = 0;
             try {
                 using (var itemData = new StreamReader(file)) {
@@ -317,8 +306,8 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             }
         }
 
-        private void GetUsableItems(string modPath) {
-            string file = $"{modPath}\\Items.tsv";
+        private void GetUsableItems() {
+            string file = $"{_modDirectory}\\Items.tsv";
             int i = 192;
             try {
                 using (var itemData = new StreamReader(file)) {
@@ -356,7 +345,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             var end = Emulator.GetAddress("ITEM_NAME_PTR");
             if (result.Length > end - start) {
                 Console.WriteLine($"Item name character limit exceeded! {result.Length} / {end - start} characters. Turning off Name and Description changes.");
-                Settings.ItemNameDescChange = false;
+                Settings.Instance.ItemNameDescChange = false;
             }
 
             return result;
@@ -381,7 +370,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             var end = Emulator.GetAddress("ITEM_DESC_PTR");
             if (result.Length > end - start) {
                 Console.WriteLine($"Item description character limit exceeded! {result.Length} / {end - start} characters. Turning off Name and Description changes.");
-                Settings.ItemNameDescChange = false;
+                Settings.Instance.ItemNameDescChange = false;
             }
 
             return result;
@@ -406,7 +395,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             var end = Emulator.GetAddress("ITEM_BTL_NAME_PTR");
             if (result.Length > end - start) {
                 Console.WriteLine($"Item battle name character limit exceeded! {result.Length} / {end - start} characters. Turning off Name and Description changes.");
-                Settings.ItemNameDescChange = false;
+                Settings.Instance.ItemNameDescChange = false;
             }
 
             return result;
@@ -431,14 +420,15 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             var end = Emulator.GetAddress("ITEM_BTL_DESC_PTR");
             if (result.Length > end - start) {
                 Console.WriteLine($"Item battle description character limit exceeded! {result.Length} / {end - start} characters. Turning off Name and Description changes.");
-                Settings.ItemNameDescChange = false;
+                Settings.Instance.ItemNameDescChange = false;
             }
 
             return result;
         }
 
-        private void GetMonsters(string modPath, ref Dictionary<ushort, IMonster> monsterDict) {
-            string file = $"{modPath}\\Monster_Data.tsv";
+        private Dictionary<ushort, IMonster> GetMonsters(string modDirectory) {
+            Dictionary<ushort, IMonster> monsterDict = new();
+            string file = $"{modDirectory}\\Monster_Data.tsv";
             int i = 0;
             try {
                 using (var monsterData = new StreamReader(file)) {
@@ -456,16 +446,17 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             } catch (IndexOutOfRangeException) {
                 Console.WriteLine($"[ERROR] Incorrect fromat of {file} at line {i + 1}");
             }
+            return monsterDict;
         }
 
-        private void GetCharacters(string modPath) {
+        private void GetCharacters() {
             for (byte i = 0; i < 9; i++) {
-                Character[i] = new Character(i, modPath);
+                Character[i] = new Character(i, _modDirectory);
             }
         }
 
-        private void GetShops(string modPath) {
-            string file = $"{modPath}\\Shops.tsv";
+        private void GetShops() {
+            string file = $"{_modDirectory}\\Shops.tsv";
             for (int i = 0; i < Shop.Length; i++) {
                 Shop[i] = new List<byte>();
             }

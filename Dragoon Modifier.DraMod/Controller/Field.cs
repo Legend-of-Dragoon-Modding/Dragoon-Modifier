@@ -16,69 +16,69 @@ namespace Dragoon_Modifier.DraMod.Controller {
         internal static void Setup() {
             Constants.UIControl.ResetBattle();
             EarlyAdditionsSet = false;
-            Settings.Dataset.Script.FieldSetup();
+            Settings.Instance.Dataset.Script.FieldSetup();
 
         }
 
         internal static void ItemSetup() {
-            if (Settings.ItemIconChange) {
+            if (Settings.Instance.ItemIconChange) {
                 Console.WriteLine("Changing Item Icons...");
                 Item.IconChange();
             }
 
-            if (Settings.ItemNameDescChange) {
+            if (Settings.Instance.ItemNameDescChange) {
                 Console.WriteLine("Changing Item names and descriptions...");
                 Item.FieldItemNameDescChange();
             }
 
-            if (Settings.ItemStatChange) {
+            if (Settings.Instance.ItemStatChange) {
                 Console.WriteLine("Changing Equipment stats...");
                 Item.FieldEquipmentChange();
             }
         }
 
         internal static void AdditionSetup() {
-            if (Settings.AdditionChange) {
+            if (Settings.Instance.AdditionChange) {
                 Console.WriteLine("Changing Additions...");
                 Addition.MenuTableChange();
             }
         }
 
         internal static void Run() {
-            if (Settings.AutoCharmPotion) {
+            if (Settings.Instance.AutoCharmPotion) {
                 AutoCharmPotion();
             }
 
-            if (Settings.SaveAnywhere) {
+            if (Settings.Instance.SaveAnywhere) {
                 SaveAnywhere();
             }
 
-            if (Settings.IncreaseTextSpeed) {
+            if (Settings.Instance.IncreaseTextSpeed) {
                 IncreaseTextSpeed();
             }
 
-            if (Settings.AutoAdvanceText) {
+            if (Settings.Instance.AutoAdvanceText) {
                 AutoText();
             }
 
-            if (Settings.SoloMode) {
+            if (Settings.Instance.SoloMode) {
                 SoloModeField();
             }
 
-            if (Settings.DuoMode) {
+            if (Settings.Instance.DuoMode) {
                 DuoModeField();
             }
 
-            if (Settings.AlwaysAddSoloPartyMembers) {
+            if (Settings.Instance.AlwaysAddSoloPartyMembers) {
                 AddSoloPartyMembers();
             }
 
-            if (Settings.EarlyAdditions && !EarlyAdditionsSet) {
+            if (Settings.Instance.EarlyAdditions && !EarlyAdditionsSet) {
                 EarlyAdditions();
                 EarlyAdditionsSet = true;
             }
 
-            if (EarlyAdditionsSet && !Settings.EarlyAdditions) {
+            if (EarlyAdditionsSet && !Settings.Instance.EarlyAdditions) {
                 TurnOffEarlyAdditions();
                 EarlyAdditionsSet = false;
             }
@@ -87,7 +87,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
         }
 
         private static void SoloModeField() {
-            if (!Settings.AddSoloPartyMembers) {
+            if (!Settings.Instance.AddSoloPartyMembers) {
                 if (Emulator.DirectAccess.ReadByte("PARTY_SLOT", 0x4) != 255 || Emulator.DirectAccess.ReadByte("PARTY_SLOT", 0x8) != 255) {
                     for (int i = 0; i < 8; i++) {
                         Emulator.DirectAccess.WriteByte("PARTY_SLOT", 255, i + 0x4);
@@ -98,7 +98,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
         }
 
         private static void DuoModeField() {
-            if (!Settings.AddSoloPartyMembers) {
+            if (!Settings.Instance.AddSoloPartyMembers) {
                 if (Emulator.DirectAccess.ReadByte("PARTY_SLOT", 0x4) == 255) {
                     Emulator.DirectAccess.WriteByte("PARTY_SLOT", Emulator.DirectAccess.ReadByte("PARTY_SLOT"), 0x4);
                     Emulator.DirectAccess.WriteByte("PARTY_SLOT", 0, 0x5);
@@ -116,8 +116,8 @@ namespace Dragoon_Modifier.DraMod.Controller {
         }
 
         private static void AddSoloPartyMembers() {
-            if (Settings.SoloMode && Emulator.Memory.PartySlot[1] > 8) {
-                Settings.AddSoloPartyMembers = true;
+            if (Settings.Instance.SoloMode && Emulator.Memory.PartySlot[1] > 8) {
+                Settings.Instance.AddSoloPartyMembers = true;
                 Emulator.DirectAccess.WriteByte("PARTY_SLOT", Emulator.DirectAccess.ReadByte("PARTY_SLOT"), 0x4);
                 Emulator.DirectAccess.WriteByte("PARTY_SLOT", 0, 0x5);
                 Emulator.DirectAccess.WriteByte("PARTY_SLOT", 0, 0x6);
@@ -126,8 +126,8 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 Emulator.DirectAccess.WriteByte("PARTY_SLOT", 0, 0x9);
                 Emulator.DirectAccess.WriteByte("PARTY_SLOT", 0, 0xA);
                 Emulator.DirectAccess.WriteByte("PARTY_SLOT", 0, 0xB);
-            } else if (Settings.DuoMode && Emulator.Memory.PartySlot[2] > 8) {
-                Settings.AddSoloPartyMembers = true;
+            } else if (Settings.Instance.DuoMode && Emulator.Memory.PartySlot[2] > 8) {
+                Settings.Instance.AddSoloPartyMembers = true;
                 Emulator.DirectAccess.WriteByte("PARTY_SLOT", Emulator.DirectAccess.ReadByte("PARTY_SLOT"), 0x8);
                 Emulator.DirectAccess.WriteByte("PARTY_SLOT", 0, 0x9);
                 Emulator.DirectAccess.WriteByte("PARTY_SLOT", 0, 0xA);
@@ -267,7 +267,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
         private static void ThrownItemChange() {
             for (int i = 192; i < 255; i++) {
-                var item = (Dataset.IUsableItem) Settings.Dataset.Item[i];
+                var item = (Dataset.IUsableItem) Settings.Instance.Dataset.Item[i];
                 var mem = (Core.Memory.IUsableItem) Emulator.Memory.Item[i];
                 mem.Target = item.Target;
                 mem.Element = item.Element;
@@ -288,12 +288,12 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             int address = Emulator.GetAddress("ITEM_NAME");
             int address2 = Emulator.GetAddress("ITEM_DESC");
-            Emulator.DirectAccess.WriteAoB(address, Settings.Dataset.ItemNames);
-            Emulator.DirectAccess.WriteAoB(address2, Settings.Dataset.ItemDescriptions);
+            Emulator.DirectAccess.WriteAoB(address, Settings.Instance.Dataset.ItemNames);
+            Emulator.DirectAccess.WriteAoB(address2, Settings.Instance.Dataset.ItemDescriptions);
 
             for (int i = 0; i < Emulator.Memory.Item.Length; i++) {
-                Emulator.Memory.Item[i].NamePointer = (uint) Settings.Dataset.Item[i].NamePointer;
-                Emulator.Memory.Item[i].DescriptionPointer = (uint) Settings.Dataset.Item[i].DescriptionPointer;
+                Emulator.Memory.Item[i].NamePointer = (uint) Settings.Instance.Dataset.Item[i].NamePointer;
+                Emulator.Memory.Item[i].DescriptionPointer = (uint) Settings.Instance.Dataset.Item[i].DescriptionPointer;
             }
         }
     }

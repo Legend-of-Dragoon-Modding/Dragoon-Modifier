@@ -10,17 +10,17 @@ namespace Dragoon_Modifier.DraMod.Controller {
     internal static class Shop {
 
         internal static void TableChange() {
-            for (int shop = 0; shop < Settings.Dataset.Shop.Length; shop++) {
-                if (Settings.Dataset.Shop[shop].Count != 0) {
-                    Emulator.Memory.Shop[shop].WeaponItemFlag = Settings.Dataset.Shop[shop][0] >= 192 ? (byte) 1 : (byte) 0;
+            for (int shop = 0; shop < Settings.Instance.Dataset.Shop.Length; shop++) {
+                if (Settings.Instance.Dataset.Shop[shop].Count != 0) {
+                    Emulator.Memory.Shop[shop].WeaponItemFlag = Settings.Instance.Dataset.Shop[shop][0] >= 192 ? (byte) 1 : (byte) 0;
                 }
-                for (int item = 0; item < Settings.Dataset.Shop[shop].Count; item++) {
-                    Emulator.Memory.Shop[shop].Item[item] = Settings.Dataset.Shop[shop][item];
+                for (int item = 0; item < Settings.Instance.Dataset.Shop[shop].Count; item++) {
+                    Emulator.Memory.Shop[shop].Item[item] = Settings.Instance.Dataset.Shop[shop][item];
                 }
             }
 
             for (int item = 0; item < 255; item++) {
-                Emulator.Memory.Item[item].SellPrice = (ushort) Settings.Dataset.Item[item].SellPrice;
+                Emulator.Memory.Item[item].SellPrice = (ushort) Settings.Instance.Dataset.Item[item].SellPrice;
             }
 
             Console.WriteLine("Changing Shop Table and Prices...");
@@ -29,16 +29,16 @@ namespace Dragoon_Modifier.DraMod.Controller {
         internal static void ContentChange() {
             var shopID = Emulator.Memory.ShopID;
 
-            if (Settings.Dataset.Shop[shopID].Count != 0) {
-                Emulator.Memory.CurrentShop.WeaponItemFlag = Settings.Dataset.Shop[shopID][0] >= 192 ? (byte) 1 : (byte) 0;
+            if (Settings.Instance.Dataset.Shop[shopID].Count != 0) {
+                Emulator.Memory.CurrentShop.WeaponItemFlag = Settings.Instance.Dataset.Shop[shopID][0] >= 192 ? (byte) 1 : (byte) 0;
             }
 
-            Emulator.Memory.CurrentShop.ItemCount = (byte) Settings.Dataset.Shop[shopID].Count;
+            Emulator.Memory.CurrentShop.ItemCount = (byte) Settings.Instance.Dataset.Shop[shopID].Count;
 
             int item = 0;
-            foreach (var itemID in Settings.Dataset.Shop[shopID]) {
+            foreach (var itemID in Settings.Instance.Dataset.Shop[shopID]) {
                 Emulator.Memory.CurrentShop.ItemID[item] = itemID;
-                Emulator.Memory.CurrentShop.ItemPrice[item] = (ushort) (Settings.Dataset.Item[itemID].SellPrice * 2);
+                Emulator.Memory.CurrentShop.ItemPrice[item] = (ushort) (Settings.Instance.Dataset.Item[itemID].SellPrice * 2);
                 item++;
             }
 

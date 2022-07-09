@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 namespace Dragoon_Modifier.DraMod {
     internal class DragoonModifier : IDraMod {
         private readonly string _cwd;
-        private static readonly List<string> presetMods = new List<string> { "Normal", "NormalHard", "Hard", "HardHell", "Hell_Mode" };
 
         internal DragoonModifier(UI.IUIControl uiControl, string cwd) {
             Constants.LoadUIControl(uiControl);
@@ -27,13 +26,15 @@ namespace Dragoon_Modifier.DraMod {
 
                 Constants.Run = true;
 
-                if (presetMods.Contains(Settings.Mod)) {
-                    ChangeLoDDirectory(GetValueFromDescription(Settings.Mod));
+                if (Settings.Instance.Preset == Preset.Custom) {
+                    Console.WriteLine("CustomDataset");
+                    // TODO
                 } else {
-                    ChangeLoDDirectory(Settings.Mod);
+                    Console.WriteLine("PresetDataset");
+                    ChangeLoDDirectory(Settings.Instance.Preset);
                 }
                 
-                Thread t = new Thread(() => Controller.Main.Run());
+                Thread t = new(() => Controller.Main.Run());
 
                 t.Start();
                 return true;
@@ -48,11 +49,11 @@ namespace Dragoon_Modifier.DraMod {
         }
 
         public void ChangeLoDDirectory(string mod) {
-            Settings.DualDifficulty = false;
-            Settings.Mod = mod;
+            Settings.Instance.DualDifficulty = false;
+            Settings.Instance.Preset = Preset.Custom;
             if (Constants.Run) {
                 Constants.UIControl.WritePLog("Changing mod directory to " + mod);
-                Settings.LoadDataset(_cwd, mod);
+                Settings.Instance.LoadDataset(_cwd, mod);
                 Controller.Main.BattleSetup = false;
                 Controller.Main.AdditionsChanged = false;
                 Controller.Main.ItemsChanged = false;
@@ -61,91 +62,56 @@ namespace Dragoon_Modifier.DraMod {
         }
 
         public void ChangeLoDDirectory(Preset mod) {
-            string modString = GetEnumDescription(mod);
-            Settings.Difficulty = mod.ToString();
-            Settings.Mod = modString;
+            Settings.Instance.Preset = mod;
             if (Constants.Run) {
-
                 Dataset.Scripts.IScript script;
                 if (mod != Preset.Normal) {
                     script = new Dataset.Scripts.HardMode.Script();
-                    Settings.ItemStatChange = true;
-                    Settings.ItemNameDescChange = true;
-                    Settings.ItemIconChange = true;
-                    Settings.DragoonStatChange = true;
-                    Settings.DragoonSpellChange = true;
-                    Settings.DragoonDescriptionChange = true;
-                    Settings.DragoonAdditionChange = true;
-                    Settings.MonsterStatChange = true;
-                    Settings.MonsterExpGoldChange = true;
-                    Settings.MonsterDropChange = true;
+                    Settings.Instance.ItemStatChange = true;
+                    Settings.Instance.ItemNameDescChange = true;
+                    Settings.Instance.ItemIconChange = true;
+                    Settings.Instance.DragoonStatChange = true;
+                    Settings.Instance.DragoonSpellChange = true;
+                    Settings.Instance.DragoonDescriptionChange = true;
+                    Settings.Instance.DragoonAdditionChange = true;
+                    Settings.Instance.MonsterStatChange = true;
+                    Settings.Instance.MonsterExpGoldChange = true;
+                    Settings.Instance.MonsterDropChange = true;
                 } else {
                     script = new Dataset.Scripts.DummyScript();
-                    Settings.ItemStatChange = false;
-                    Settings.ItemNameDescChange = false;
-                    Settings.ItemIconChange = false;
-                    Settings.DragoonStatChange = false;
-                    Settings.DragoonSpellChange = false;
-                    Settings.DragoonDescriptionChange = false;
-                    Settings.DragoonAdditionChange = false;
-                    Settings.MonsterStatChange = false;
-                    Settings.MonsterExpGoldChange = false;
-                    Settings.MonsterDropChange = false;
+                    Settings.Instance.ItemStatChange = false;
+                    Settings.Instance.ItemNameDescChange = false;
+                    Settings.Instance.ItemIconChange = false;
+                    Settings.Instance.DragoonStatChange = false;
+                    Settings.Instance.DragoonSpellChange = false;
+                    Settings.Instance.DragoonDescriptionChange = false;
+                    Settings.Instance.DragoonAdditionChange = false;
+                    Settings.Instance.MonsterStatChange = false;
+                    Settings.Instance.MonsterExpGoldChange = false;
+                    Settings.Instance.MonsterDropChange = false;
                 }
 
-                bool dualMonster;
-                string dualMod;
+                string? dualMod;
                 if (mod == Preset.NormalHard || mod == Preset.HardHell) {
-                    Settings.DualDifficulty = true;
-                    dualMonster = true;
+                    Settings.Instance.DualDifficulty = true;
                     if (mod == Preset.NormalHard) {
                         dualMod = "US_Base";
                     } else {
                         dualMod = "Hard_Mode";
                     }
                 } else {
-                    Settings.DualDifficulty = false;
-                    dualMonster = false;
-                    dualMod = "";
+                    Settings.Instance.DualDifficulty = false;
+                    dualMod = null;
                 }
 
-                Constants.UIControl.WritePLog("Changing mod directory to " + modString);
-                Settings.LoadDataset(_cwd, modString, script, dualMonster, dualMod);
-
-                
+                Constants.UIControl.WritePLog("Changing mod directory to " + mod.PresetToModFolder());
+                Settings.Instance.LoadDataset(_cwd, mod.PresetToModFolder(), dualMod, script);
 
                 Controller.Main.BattleSetup = false;
                 Controller.Main.AdditionsChanged = false;
                 Controller.Main.ItemsChanged = false;
                 Controller.Main.ShopChanged = false;
             }
-        }
-
-        private static string GetEnumDescription(Preset mod) {
-            FieldInfo fi = mod.GetType().GetField(mod.ToString());
-
-            DescriptionAttribute[]? attributes = fi.GetCustomAttributes(typeof(DescriptionAttribute), false) as DescriptionAttribute[];
-
-            if (attributes != null && attributes.Any()) {
-                return attributes.First().Description;
-            }
-
-            return mod.ToString();
-        }
-
-        private static Preset GetValueFromDescription(string description) {
-            foreach (var field in typeof(Preset).GetFields()) {
-                if (Attribute.GetCustomAttribute(field,
-                typeof(DescriptionAttribute)) is DescriptionAttribute attribute) {
-                    if (attribute.Description == description)
-                        return (Preset) field.GetValue(null);
-                } else {
-                    if (field.Name == description)
-                        return (Preset) field.GetValue(null);
-                }
-            }
-
-            throw new ArgumentException("Not found.", nameof(description));
         }
     }
 }

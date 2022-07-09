@@ -9,36 +9,36 @@ namespace Dragoon_Modifier.DraMod.Controller {
         public static void Setup() {
             Constants.UIControl.ResetBattle();
 
-            if (Settings.ItemIconChange) {
+            if (Settings.Instance.ItemIconChange) {
                 Console.WriteLine("Changing Item icons...");
                 Item.IconChange();
             }
 
-            if (Settings.ItemNameDescChange) {
+            if (Settings.Instance.ItemNameDescChange) {
                 Console.WriteLine("Changing Item names and descriptions...");
                 Item.FieldItemNameDescChange();
             }
 
-            if (Settings.ItemStatChange) {
+            if (Settings.Instance.ItemStatChange) {
                 Console.WriteLine("Changing Items stats...");
                 Item.FieldEquipmentChange();
             }
 
-            if (Settings.AdditionChange) {
+            if (Settings.Instance.AdditionChange) {
                 Console.WriteLine("Changing Additions...");
                 Addition.MenuTableChange();
             }
 
 
-            if (Settings.SoloMode || Settings.DuoMode) {
+            if (Settings.Instance.SoloMode || Settings.Instance.DuoMode) {
                 RemoveExtraPartyMembers();
             }
 
-            Settings.Dataset.Script.FieldSetup();
+            Settings.Instance.Dataset.Script.FieldSetup();
         }
 
         public static void RemoveExtraPartyMembers() {
-            if (Core.Emulator.DirectAccess.ReadByte("PARTY_SLOT", 0x4) != 255 && Settings.SoloMode) {
+            if (Core.Emulator.DirectAccess.ReadByte("PARTY_SLOT", 0x4) != 255 && Settings.Instance.SoloMode) {
                 for (int i = 0; i < 4; i++) {
                     Core.Emulator.DirectAccess.WriteByte("PARTY_SLOT", 255, i + 0x4);
                 }

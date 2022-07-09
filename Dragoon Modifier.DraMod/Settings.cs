@@ -5,93 +5,105 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod {
-    public static class Settings {
+    public sealed class Settings {
+
+        private static Settings? _instance = null;
+
+        public static Settings Instance {
+            get {
+                if (_instance == null) {
+                    _instance = new();
+                }
+                return _instance;
+            }
+        }
+
         //Difficulty
-        public static double HPMulti = 1;
-        public static double ATMulti = 1;
-        public static double MATMulti = 1;
-        public static double DFMulti = 1;
-        public static double MDFMulti = 1;
-        public static double SPDMulti = 1;
-        public static string Difficulty = "Normal";
+        public double HPMulti = 1;
+        public double ATMulti = 1;
+        public double MATMulti = 1;
+        public double DFMulti = 1;
+        public double MDFMulti = 1;
+        public double SPDMulti = 1;
+        public string Difficulty = "Normal";
 
         //Field
-        public static bool SaveAnywhere = false;
-        public static bool AutoCharmPotion = false;
-        public static bool IncreaseTextSpeed = false;
-        public static bool AutoAdvanceText = false;
+        public bool SaveAnywhere = false;
+        public bool AutoCharmPotion = false;
+        public bool IncreaseTextSpeed = false;
+        public bool AutoAdvanceText = false;
 
         //Battle
-        public static bool AutoTransform = true;
-        public static bool RemoveDamageCaps = false;
-        public static bool ElementalBomb = false; 
-        public static bool MonsterHPAsNames = false;
-        public static bool NeverGuard = false;
-        public static bool NoDecaySoulEater = false;
-        public static bool EnrageBossOnly = false;
-        public static bool EnrageMode = false;
-        public static bool DamageTracker = false;
-        public static bool NoDragoon = false;
-        public static bool EarlyAdditions = false;
-        public static bool AdditionLevel = false;
-        public static bool SaveHP = false;
-        public static bool AspectRatio = false;
-        public static bool RGBBattleUI = false;
-        public static byte NoDart = 0;
-        public static byte FlowerStorm = 0;
-        public static byte AspectRatioMode = 0;
-        public static byte AdvancedCameraMode = 0;
+        public bool AutoTransform = true;
+        public bool RemoveDamageCaps = false;
+        public bool ElementalBomb = false; 
+        public bool MonsterHPAsNames = false;
+        public bool NeverGuard = false;
+        public bool NoDecaySoulEater = false;
+        public bool EnrageBossOnly = false;
+        public bool EnrageMode = false;
+        public bool DamageTracker = false;
+        public bool NoDragoon = false;
+        public bool EarlyAdditions = false;
+        public bool AdditionLevel = false;
+        public bool SaveHP = false;
+        public bool AspectRatio = false;
+        public bool RGBBattleUI = false;
+        public byte NoDart = 0;
+        public byte FlowerStorm = 0;
+        public byte AspectRatioMode = 0;
+        public byte AdvancedCameraMode = 0;
 
         //Field & Battle
-        public static bool AddPartyMembers = false;
-        public static bool AddSoloPartyMembers = false;
-        public static bool AlwaysAddSoloPartyMembers = false;
-        public static bool SwitchSlot1 = false;
-        public static byte Slot1Select = 0;
-        public static bool SoloMode = false;
-        public static bool DuoMode = false;
-        public static byte SwitchEXPSlot1 = 0;
-        public static byte SwitchEXPSlot2 = 0;
-        public static bool ReduceSoloDuoEXP = false;
-        public static byte SoloLeader = 0;
-        public static bool KillBGM = false;
-        public static byte KillBGMMode = 0;
+        public bool AddPartyMembers = false;
+        public bool AddSoloPartyMembers = false;
+        public bool AlwaysAddSoloPartyMembers = false;
+        public bool SwitchSlot1 = false;
+        public byte Slot1Select = 0;
+        public bool SoloMode = false;
+        public bool DuoMode = false;
+        public byte SwitchEXPSlot1 = 0;
+        public byte SwitchEXPSlot2 = 0;
+        public bool ReduceSoloDuoEXP = false;
+        public byte SoloLeader = 0;
+        public bool KillBGM = false;
+        public byte KillBGMMode = 0;
 
         //Hard/Hell Mode
-        public static bool DualDifficulty = false;
+        public bool DualDifficulty = false;
 
         //Battle Rows
 
         //Turn Battle System
 
         //Green Buttons
-        public static bool BtnAddPartyMembers = false;
-        public static bool BtnSwitchExp = false;
+        public bool BtnAddPartyMembers = false;
+        public bool BtnSwitchExp = false;
 
         //Other
-        public static string Mod = "US_Base";
+        public Preset Preset = Preset.Normal;
 
-        public static bool ItemStatChange = false;
-        public static bool ItemIconChange = false;
-        public static bool ItemNameDescChange = false;
-        public static bool MonsterStatChange = false;
-        public static bool CharacterStatChange = false;
-        public static bool AdditionChange = false;
-        public static bool ShopChange = false;
-        public static bool MonsterDropChange = false;
-        public static bool MonsterExpGoldChange = false;
-        public static bool DragoonStatChange = false;
-        public static bool DragoonSpellChange = false;
-        public static bool DragoonAdditionChange = false;
-        public static bool DragoonDescriptionChange = false;
-        public static bool RemoveHPCap = false;
+        public bool ItemStatChange = false;
+        public bool ItemIconChange = false;
+        public bool ItemNameDescChange = false;
+        public bool MonsterStatChange = false;
+        public bool CharacterStatChange = false;
+        public bool AdditionChange = false;
+        public bool ShopChange = false;
+        public bool MonsterDropChange = false;
+        public bool MonsterExpGoldChange = false;
+        public bool DragoonStatChange = false;
+        public bool DragoonSpellChange = false;
+        public bool DragoonAdditionChange = false;
+        public bool DragoonDescriptionChange = false;
+        public bool RemoveHPCap = false;
 
-        public static int LoopDelay = 250;
-        public static int WaitDelay = 50;
+        public int LoopDelay = 250;
+        public int WaitDelay = 50;
 
-        private static Dataset.ILoDDictionary? _dataset = null;
+        private Dataset.ILoDDictionary? _dataset = null;
 
-        public static Dataset.ILoDDictionary Dataset {
+        public Dataset.ILoDDictionary Dataset {
             get {
                 if (_dataset == null) {
                     throw new Exception(); // TODO handeling for non-initialized LoDDict. Probably never happens. Can be lazy loaded?
@@ -100,14 +112,12 @@ namespace Dragoon_Modifier.DraMod {
             }
         }
 
-        public static void LoadDataset(string cwd, string mod) {
-            Mod = mod;
-            _dataset = new Dataset.LoDDictionary(cwd, Mod);
+        public void LoadDataset(string cwd, string mod) {
+            _dataset = new Dataset.LoDDictionary(cwd, mod);
         }
 
-        public static void LoadDataset(string cwd, string mod, Dataset.Scripts.IScript script, bool dualMonster, string dualMod) {
-            Mod = mod;
-            _dataset = new Dataset.LoDDictionary(cwd, mod, script, dualMonster, dualMod);
+        public void LoadDataset(string cwd, string mod, string? dualMod, Dataset.Scripts.IScript script) {
+            _dataset = new Dataset.LoDDictionary(cwd, mod, dualMod, script);
         }
     }
 }

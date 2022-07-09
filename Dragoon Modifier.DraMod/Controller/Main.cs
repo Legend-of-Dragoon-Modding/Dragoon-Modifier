@@ -23,7 +23,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                     switch (Emulator.Memory.GameState) {
                         case GameState.Battle:
                             if (!BattleSetup) {
-                                if (Settings.NoDart > 0) {
+                                if (Settings.Instance.NoDart > 0) {
                                     Emulator.Memory.PartySlot[0] = 0;
                                 }
                                 Battle.Setup();
@@ -41,21 +41,21 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
                             if (!ShopChanged) {
                                 Constants.UIControl.ResetBattle();
-                                if (Settings.ShopChange) {
+                                if (Settings.Instance.ShopChange) {
                                     Shop.TableChange();
                                 }
                                 ShopChanged = true;
                             }
 
-                            if (Settings.NoDart != 255 && Emulator.Memory.PartySlot[0] != 0) {
-                                Settings.NoDart = (byte) Emulator.Memory.PartySlot[0];
+                            if (Settings.Instance.NoDart != 255 && Emulator.Memory.PartySlot[0] != 0) {
+                                Settings.Instance.NoDart = (byte) Emulator.Memory.PartySlot[0];
                                 Emulator.Memory.PartySlot[0] = 0;
                             }
                             
 
                             if (!HPCapSet) {
                                 HPCapSet = true;
-                                if (Settings.RemoveHPCap) {
+                                if (Settings.Instance.RemoveHPCap) {
                                     Emulator.Memory.FieldHPCap = 30000;
                                 }
                             }
@@ -69,7 +69,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
                             if (!HPCapSet) {
                                 HPCapSet = true;
-                                if (Settings.RemoveHPCap) {
+                                if (Settings.Instance.RemoveHPCap) {
                                     Emulator.Memory.FieldHPCap = 30000;
                                 }
                             }
@@ -88,12 +88,12 @@ namespace Dragoon_Modifier.DraMod.Controller {
                                 AdditionsChanged = true;
                             }
 
-                            if (Settings.NoDart != 255) {
+                            if (Settings.Instance.NoDart != 255) {
                                 if (Emulator.Memory.MenuSubTypes == MenuSubTypes.Replace) {
-                                    Settings.NoDart = (byte) Emulator.Memory.PartySlot[0];
+                                    Settings.Instance.NoDart = (byte) Emulator.Memory.PartySlot[0];
                                 } else if (Emulator.Memory.MenuSubTypes == MenuSubTypes.FirstMenu) {
                                     Emulator.Memory.MenuUnlock = 1;
-                                    Emulator.Memory.PartySlot[0] = Settings.NoDart;
+                                    Emulator.Memory.PartySlot[0] = Settings.Instance.NoDart;
                                 }
                             }
 
@@ -130,7 +130,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                             }
 
                             if (!ShopChanged) {
-                                if (Settings.ShopChange) {
+                                if (Settings.Instance.ShopChange) {
                                     Shop.TableChange();
                                 }
                                 ShopChanged = true;
@@ -140,11 +140,11 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
                     GreenButton.Run();
 
-                    if (Settings.KillBGM) {
+                    if (Settings.Instance.KillBGM) {
                         KillBGM.Run();
                     }
 
-                    Thread.Sleep(Settings.LoopDelay);
+                    Thread.Sleep(Settings.Instance.LoopDelay);
                 } catch (Exception ex) {
                     Constants.Run = false;
                     Constants.UIControl.WriteGLog("Program stopped.");

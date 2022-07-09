@@ -150,7 +150,7 @@ namespace Dragoon_Modifier.UI {
         }
 
         private void miModOptions_Click(object sender, RoutedEventArgs e) {
-            if (!DraMod.Settings.Difficulty.Equals("Normal")) {
+            if (!DraMod.Settings.Instance.Difficulty.Equals("Normal")) {
                 UIControl.WritePLog("You can't change preset options while using a built-in preset.");
             } else {
                 InputWindow openModWindow = new InputWindow("Mod Options");
@@ -170,55 +170,55 @@ namespace Dragoon_Modifier.UI {
                 CheckBox shop = new CheckBox();
 
                 monsterStat.Content = "Monster Stats";
-                if (DraMod.Settings.MonsterStatChange)
+                if (DraMod.Settings.Instance.MonsterStatChange)
                     monsterStat.IsChecked = true;
 
                 monsterDrop.Content = "Drop";
-                if (DraMod.Settings.MonsterDropChange)
+                if (DraMod.Settings.Instance.MonsterDropChange)
                     monsterDrop.IsChecked = true;
 
                 monsterExpGold.Content = "Exp + Gold";
-                if (DraMod.Settings.MonsterExpGoldChange)
+                if (DraMod.Settings.Instance.MonsterExpGoldChange)
                     monsterExpGold.IsChecked = true;
 
                 characterStat.Content = "Character Stats";
-                if (DraMod.Settings.CharacterStatChange)
+                if (DraMod.Settings.Instance.CharacterStatChange)
                     characterStat.IsChecked = true;
 
                 addition.Content = "Addition";
-                if (DraMod.Settings.AdditionChange)
+                if (DraMod.Settings.Instance.AdditionChange)
                     addition.IsChecked = true;
 
                 dragoonStats.Content = "Dragoon Stats";
-                if (DraMod.Settings.DragoonStatChange)
+                if (DraMod.Settings.Instance.DragoonStatChange)
                     dragoonStats.IsChecked = true;
 
                 dragoonSpell.Content = "Dragoon Spells";
-                if (DraMod.Settings.DragoonSpellChange)
+                if (DraMod.Settings.Instance.DragoonSpellChange)
                     dragoonSpell.IsChecked = true;
 
                 dragoonAddition.Content = "Dragoon Additions";
-                if (DraMod.Settings.DragoonAdditionChange)
+                if (DraMod.Settings.Instance.DragoonAdditionChange)
                     dragoonAddition.IsChecked = true;
 
                 dragoonDescription.Content = "Dragoon Descriptions";
-                if (DraMod.Settings.DragoonDescriptionChange)
+                if (DraMod.Settings.Instance.DragoonDescriptionChange)
                     dragoonDescription.IsChecked = true;
 
                 itemStat.Content = "Item Stats";
-                if (DraMod.Settings.ItemStatChange)
+                if (DraMod.Settings.Instance.ItemStatChange)
                     itemStat.IsChecked = true;
 
                 itemIcon.Content = "Item Icons";
-                if (DraMod.Settings.ItemIconChange)
+                if (DraMod.Settings.Instance.ItemIconChange)
                     itemIcon.IsChecked = true;
 
                 itemNameDescription.Content = "Item Names + Descriptions";
-                if (DraMod.Settings.ItemNameDescChange)
+                if (DraMod.Settings.Instance.ItemNameDescChange)
                     itemNameDescription.IsChecked = true;
 
                 shop.Content = "Shop";
-                if (DraMod.Settings.ShopChange)
+                if (DraMod.Settings.Instance.ShopChange)
                     shop.IsChecked = true;
 
                 string[] dirs = Directory.GetDirectories(AppDomain.CurrentDomain.BaseDirectory + "Mods\\");
@@ -226,7 +226,7 @@ namespace Dragoon_Modifier.UI {
                     mod.Items.Add(new DirectoryInfo(dir).Name);
                 }
 
-                mod.SelectedValue = DraMod.Settings.Mod;
+                mod.SelectedValue = DraMod.Settings.Instance.Preset;
 
                 openModWindow.AddObject(mod);
                 openModWindow.AddTextBlock("Database");
@@ -246,26 +246,29 @@ namespace Dragoon_Modifier.UI {
                 openModWindow.AddTextBlock("Please select the mods you want to turn on or off.");
                 openModWindow.ShowDialog();
 
-                DraMod.Settings.MonsterStatChange = (bool) monsterStat.IsChecked;
-                DraMod.Settings.MonsterDropChange = (bool) monsterDrop.IsChecked;
-                DraMod.Settings.MonsterExpGoldChange = (bool) monsterExpGold.IsChecked;
-                DraMod.Settings.CharacterStatChange = (bool) characterStat.IsChecked;
-                DraMod.Settings.AdditionChange = (bool) addition.IsChecked;
-                DraMod.Settings.DragoonStatChange = (bool) dragoonStats.IsChecked;
-                DraMod.Settings.DragoonSpellChange = (bool) dragoonSpell.IsChecked;
-                DraMod.Settings.DragoonAdditionChange = (bool) dragoonAddition.IsChecked;
-                DraMod.Settings.DragoonDescriptionChange = (bool) dragoonDescription.IsChecked;
-                DraMod.Settings.ItemStatChange = (bool) itemStat.IsChecked;
-                DraMod.Settings.ItemIconChange = (bool) itemIcon.IsChecked;
-                DraMod.Settings.ItemNameDescChange = (bool) itemNameDescription.IsChecked;
-                DraMod.Settings.ShopChange = (bool) shop.IsChecked;
+                DraMod.Settings.Instance.MonsterStatChange = (bool) monsterStat.IsChecked;
+                DraMod.Settings.Instance.MonsterDropChange = (bool) monsterDrop.IsChecked;
+                DraMod.Settings.Instance.MonsterExpGoldChange = (bool) monsterExpGold.IsChecked;
+                DraMod.Settings.Instance.CharacterStatChange = (bool) characterStat.IsChecked;
+                DraMod.Settings.Instance.AdditionChange = (bool) addition.IsChecked;
+                DraMod.Settings.Instance.DragoonStatChange = (bool) dragoonStats.IsChecked;
+                DraMod.Settings.Instance.DragoonSpellChange = (bool) dragoonSpell.IsChecked;
+                DraMod.Settings.Instance.DragoonAdditionChange = (bool) dragoonAddition.IsChecked;
+                DraMod.Settings.Instance.DragoonDescriptionChange = (bool) dragoonDescription.IsChecked;
+                DraMod.Settings.Instance.ItemStatChange = (bool) itemStat.IsChecked;
+                DraMod.Settings.Instance.ItemIconChange = (bool) itemIcon.IsChecked;
+                DraMod.Settings.Instance.ItemNameDescChange = (bool) itemNameDescription.IsChecked;
+                DraMod.Settings.Instance.ShopChange = (bool) shop.IsChecked;
 
-                if (DraMod.Settings.Mod != (string) mod.SelectedValue) {
-                    DraMod.Settings.Mod = (string) mod.SelectedValue;
-                    DragoonModifier.ChangeLoDDirectory(DraMod.Settings.Mod);
+                /*
+                if (DraMod.Settings.Instance.Mod != (string) mod.SelectedValue) {
+                    DraMod.Settings.Instance.Mod = (string) mod.SelectedValue;
+                    DragoonModifier.ChangeLoDDirectory(DraMod.Settings.Instance.Mod);
                 }
+                
 
-                UIControl.WritePLog("Mod directory: " + DraMod.Settings.Mod);
+                UIControl.WritePLog("Mod directory: " + DraMod.Settings.Instance.Mod);
+                */
             }
         }
 
@@ -274,64 +277,64 @@ namespace Dragoon_Modifier.UI {
             switch (btn.Name) {
                 //Field
                 case "btnSaveAnywhere":
-                    ToggleButton(ref btn, ref DraMod.Settings.SaveAnywhere);
+                    ToggleButton(ref btn, ref DraMod.Settings.Instance.SaveAnywhere);
                     break;
                 case "btnCharmPotion":
-                    ToggleButton(ref btn, ref DraMod.Settings.AutoCharmPotion);
+                    ToggleButton(ref btn, ref DraMod.Settings.Instance.AutoCharmPotion);
                     break;
                 case "btnTextSpeed":
-                    ToggleButton(ref btn, ref DraMod.Settings.IncreaseTextSpeed);
+                    ToggleButton(ref btn, ref DraMod.Settings.Instance.IncreaseTextSpeed);
                     break;
                 case "btnAutoText":
-                    ToggleButton(ref btn, ref DraMod.Settings.AutoAdvanceText);
+                    ToggleButton(ref btn, ref DraMod.Settings.Instance.AutoAdvanceText);
                     break;
                 //Battle
                 case "btnRemoveCaps":
-                    ToggleButton(ref btn, ref DraMod.Settings.RemoveDamageCaps);
+                    ToggleButton(ref btn, ref DraMod.Settings.Instance.RemoveDamageCaps);
                     break;
                 case "btnElementalBomb":
-                    ToggleButton(ref btn, ref DraMod.Settings.ElementalBomb);
+                    ToggleButton(ref btn, ref DraMod.Settings.Instance.ElementalBomb);
                     break;
                 case "btnHPNames":
-                    ToggleButton(ref btn, ref DraMod.Settings.MonsterHPAsNames);
+                    ToggleButton(ref btn, ref DraMod.Settings.Instance.MonsterHPAsNames);
                     break;
                 case "btnEnrage":
-                    ToggleButton(ref btn, ref DraMod.Settings.EnrageMode);
+                    ToggleButton(ref btn, ref DraMod.Settings.Instance.EnrageMode);
 
-                    if (DraMod.Settings.EnrageBossOnly) {
+                    if (DraMod.Settings.Instance.EnrageBossOnly) {
                         btnEnrageBoss.Background = _grayOffColor;
-                        DraMod.Settings.EnrageBossOnly = false;
+                        DraMod.Settings.Instance.EnrageBossOnly = false;
                         UIControl.WritePLog("Enrage Boss Only can't be turned on when Enrage Mode is on.");
                     }
                     break;
                 case "btnDamageTracker":
-                    ToggleButton(ref btn, ref DraMod.Settings.DamageTracker);
+                    ToggleButton(ref btn, ref DraMod.Settings.Instance.DamageTracker);
                     break;
                 case "btnNoDragoon":
-                    ToggleButton(ref btn, ref DraMod.Settings.NoDragoon);
+                    ToggleButton(ref btn, ref DraMod.Settings.Instance.NoDragoon);
                     break;
                 case "btnEarlyAdditions":
-                    ToggleButton(ref btn, ref DraMod.Settings.EarlyAdditions);
+                    ToggleButton(ref btn, ref DraMod.Settings.Instance.EarlyAdditions);
                     break;
                 case "btnAdditionLevel":
-                    ToggleButton(ref btn, ref DraMod.Settings.AdditionLevel);
+                    ToggleButton(ref btn, ref DraMod.Settings.Instance.AdditionLevel);
                     break;
                 case "btnSaveHP":
-                    ToggleButton(ref btn, ref DraMod.Settings.SaveHP);
+                    ToggleButton(ref btn, ref DraMod.Settings.Instance.SaveHP);
                     break;
                 case "btnNeverGuard":
-                    ToggleButton(ref btn, ref DraMod.Settings.NeverGuard);
+                    ToggleButton(ref btn, ref DraMod.Settings.Instance.NeverGuard);
                     break;
                 case "btnSoulEater":
-                    ToggleButton(ref btn, ref DraMod.Settings.NoDecaySoulEater);
+                    ToggleButton(ref btn, ref DraMod.Settings.Instance.NoDecaySoulEater);
                     break;
                 case "btnAspectRatio":
-                    ToggleButton(ref btn, ref DraMod.Settings.AspectRatio);
+                    ToggleButton(ref btn, ref DraMod.Settings.Instance.AspectRatio);
                     break;
                 case "btnBattleUI":
-                    ToggleButton(ref btn, ref DraMod.Settings.RGBBattleUI);
+                    ToggleButton(ref btn, ref DraMod.Settings.Instance.RGBBattleUI);
 
-                    if (DraMod.Settings.RGBBattleUI) {
+                    if (DraMod.Settings.Instance.RGBBattleUI) {
                         InputWindow RGBBattleWindow = new InputWindow("RGB Battle UI Window");
                         RadioButton ColourModeSingle = new RadioButton();
                         RadioButton ColourModeCharacter = new RadioButton();
@@ -372,22 +375,22 @@ namespace Dragoon_Modifier.UI {
                     break;
                 //Field & Battle
                 case "btnSoloMode":
-                    ToggleButton(ref btn, ref DraMod.Settings.SoloMode);
+                    ToggleButton(ref btn, ref DraMod.Settings.Instance.SoloMode);
                     break;
                 case "btnDuoMode":
-                    ToggleButton(ref btn, ref DraMod.Settings.DuoMode);
+                    ToggleButton(ref btn, ref DraMod.Settings.Instance.DuoMode);
                     break;
                 case "btnAddPartyMembersOn":
-                    ToggleButton(ref btn, ref DraMod.Settings.AlwaysAddSoloPartyMembers);
-                    DraMod.Settings.AddPartyMembers = DraMod.Settings.AlwaysAddSoloPartyMembers;
-                    DraMod.Settings.BtnAddPartyMembers = DraMod.Settings.AlwaysAddSoloPartyMembers;
-                    DraMod.Settings.AddSoloPartyMembers = DraMod.Settings.AlwaysAddSoloPartyMembers;
+                    ToggleButton(ref btn, ref DraMod.Settings.Instance.AlwaysAddSoloPartyMembers);
+                    DraMod.Settings.Instance.AddPartyMembers = DraMod.Settings.Instance.AlwaysAddSoloPartyMembers;
+                    DraMod.Settings.Instance.BtnAddPartyMembers = DraMod.Settings.Instance.AlwaysAddSoloPartyMembers;
+                    DraMod.Settings.Instance.AddSoloPartyMembers = DraMod.Settings.Instance.AlwaysAddSoloPartyMembers;
                     break;
                 case "btnKillBGM":
-                    ToggleButton(ref btn, ref DraMod.Settings.KillBGM);
+                    ToggleButton(ref btn, ref DraMod.Settings.Instance.KillBGM);
                     break;
                 case "btnReduceSDEXP":
-                    ToggleButton(ref btn, ref DraMod.Settings.ReduceSoloDuoEXP);
+                    ToggleButton(ref btn, ref DraMod.Settings.Instance.ReduceSoloDuoEXP);
                     break;
                     //Hard & Hell Mode
 
@@ -411,13 +414,13 @@ namespace Dragoon_Modifier.UI {
             switch (btn.Name) {
                 //Field & Battle
                 case "btnAddPartyMembers":
-                    DraMod.Settings.BtnAddPartyMembers = true;
+                    DraMod.Settings.Instance.BtnAddPartyMembers = true;
                     break;
                 case "btnSwitchSoloChar":
-                    DraMod.Settings.SwitchSlot1 = true;
+                    DraMod.Settings.Instance.SwitchSlot1 = true;
                     break;
                 case "btnSwitchExp":
-                    DraMod.Settings.BtnSwitchExp = true;
+                    DraMod.Settings.Instance.BtnSwitchExp = true;
                     break;
             }
         }
@@ -426,28 +429,28 @@ namespace Dragoon_Modifier.UI {
             ComboBox cbo = (ComboBox) sender;
             switch (cbo.Name) {
                 case "cboFlowerStorm":
-                    ChangeComboBox(cbo, ref DraMod.Settings.FlowerStorm);
+                    ChangeComboBox(cbo, ref DraMod.Settings.Instance.FlowerStorm);
                     break;
                 case "cboAspectRatio":
-                    ChangeComboBox(cbo, ref DraMod.Settings.AspectRatioMode);
+                    ChangeComboBox(cbo, ref DraMod.Settings.Instance.AspectRatioMode);
                     break;
                 case "cboCamera":
-                    ChangeComboBox(cbo, ref DraMod.Settings.AdvancedCameraMode);
+                    ChangeComboBox(cbo, ref DraMod.Settings.Instance.AdvancedCameraMode);
                     break;
                 case "cboKillBGM":
-                    ChangeComboBox(cbo, ref DraMod.Settings.KillBGMMode);
+                    ChangeComboBox(cbo, ref DraMod.Settings.Instance.KillBGMMode);
                     break;
                 case "cboSoloLeader":
-                    ChangeComboBox(cbo, ref DraMod.Settings.SoloLeader);
+                    ChangeComboBox(cbo, ref DraMod.Settings.Instance.SoloLeader);
                     break;
                 case "cboSwitchChar":
-                    ChangeComboBox(cbo, ref DraMod.Settings.Slot1Select);
+                    ChangeComboBox(cbo, ref DraMod.Settings.Instance.Slot1Select);
                     break;
                 case "cboSwitch1":
-                    ChangeComboBox(cbo, ref DraMod.Settings.SwitchEXPSlot1);
+                    ChangeComboBox(cbo, ref DraMod.Settings.Instance.SwitchEXPSlot1);
                     break;
                 case "cboSwitch2":
-                    ChangeComboBox(cbo, ref DraMod.Settings.SwitchEXPSlot2);
+                    ChangeComboBox(cbo, ref DraMod.Settings.Instance.SwitchEXPSlot2);
                     break;
             }
         }
@@ -501,43 +504,43 @@ namespace Dragoon_Modifier.UI {
                     DragoonModifier.ChangeLoDDirectory(DraMod.Preset.Hell);
                     break;
                 case "btnEnrageBoss":
-                    if (DraMod.Settings.EnrageBossOnly) {
+                    if (DraMod.Settings.Instance.EnrageBossOnly) {
                         btn.Background = _grayOffColor;
                     } else {
                         btn.Background = _onColor;
                     }
-                    DraMod.Settings.EnrageBossOnly = !DraMod.Settings.EnrageBossOnly;
-                    if (DraMod.Settings.EnrageMode) {
-                        ToggleButton(ref btnEnrage, ref DraMod.Settings.EnrageMode);
+                    DraMod.Settings.Instance.EnrageBossOnly = !DraMod.Settings.Instance.EnrageBossOnly;
+                    if (DraMod.Settings.Instance.EnrageMode) {
+                        ToggleButton(ref btnEnrage, ref DraMod.Settings.Instance.EnrageMode);
                         UIControl.WritePLog("Enrage Mode can't be turned on when Enrage Boss Only Mode is on.");
                     }
                     break;
 
             }
 
-            //DragoonModifier.ChangeLoDDirectory(DraMod.Settings.Mod);
+            //DragoonModifier.ChangeLoDDirectory(DraMod.Settings.Instance.Mod);
         }
 
         private void Slider_ValueChanged(object sender, EventArgs e) {
             var slider = sender as Slider;
             switch (slider.Name) {
                 case "sldHP":
-                    DraMod.Settings.HPMulti = slider.Value;
+                    DraMod.Settings.Instance.HPMulti = slider.Value;
                     break;
                 case "sldATK":
-                    DraMod.Settings.ATMulti = slider.Value;
+                    DraMod.Settings.Instance.ATMulti = slider.Value;
                     break;
                 case "sldDEF":
-                    DraMod.Settings.DFMulti = slider.Value;
+                    DraMod.Settings.Instance.DFMulti = slider.Value;
                     break;
                 case "sldMAT":
-                    DraMod.Settings.MATMulti = slider.Value;
+                    DraMod.Settings.Instance.MATMulti = slider.Value;
                     break;
                 case "sldMDF":
-                    DraMod.Settings.MDFMulti = slider.Value;
+                    DraMod.Settings.Instance.MDFMulti = slider.Value;
                     break;
                 case "sldSPD":
-                    DraMod.Settings.SPDMulti = slider.Value;
+                    DraMod.Settings.Instance.SPDMulti = slider.Value;
                     break;
             }
         }

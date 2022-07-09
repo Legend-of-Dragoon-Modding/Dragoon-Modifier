@@ -12,7 +12,7 @@ namespace Dragoon_Modifier.DraMod {
         public static long PreviousOffset = 0xA579A0;
         public static bool Debug = true;
 
-        private static UI.IUIControl _uiControl = null;
+        private static UI.IUIControl? _uiControl = null;
         public static UI.IUIControl UIControl {
             get {
                 if (_uiControl == null) {
