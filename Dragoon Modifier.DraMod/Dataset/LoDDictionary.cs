@@ -171,9 +171,9 @@ namespace Dragoon_Modifier.DraMod.Dataset {
 
         private void ParseScript() {
             foreach (var file in Directory.GetFiles(_modDirectory, "*.cs")) {
-                if (file.Equals("Script.cs")) {
+                if (file.Equals($"{_modDirectory}\\Script.cs")) {
                     try {
-                        // Script = new Scripts.CustomScript(file, this);
+                        Script = new Scripts.CustomScript(file);
                         Console.WriteLine("Custom script inserted.");
                         return;
                     } catch (ApplicationException ex) {

@@ -27,10 +27,8 @@ namespace Dragoon_Modifier.DraMod {
                 Constants.Run = true;
 
                 if (Settings.Instance.Preset == Preset.Custom) {
-                    Console.WriteLine("CustomDataset");
-                    // TODO
+                    ChangeLoDDirectory(Settings.Instance.CustomMod);
                 } else {
-                    Console.WriteLine("PresetDataset");
                     ChangeLoDDirectory(Settings.Instance.Preset);
                 }
                 
@@ -51,6 +49,7 @@ namespace Dragoon_Modifier.DraMod {
         public void ChangeLoDDirectory(string mod) {
             Settings.Instance.DualDifficulty = false;
             Settings.Instance.Preset = Preset.Custom;
+            Settings.Instance.CustomMod = mod;
             if (Constants.Run) {
                 Constants.UIControl.WritePLog("Changing mod directory to " + mod);
                 Settings.Instance.LoadDataset(_cwd, mod);

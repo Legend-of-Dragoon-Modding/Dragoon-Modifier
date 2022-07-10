@@ -82,6 +82,7 @@ namespace Dragoon_Modifier.DraMod {
 
         //Other
         public Preset Preset = Preset.Normal;
+        public string CustomMod = "US_Base_Enhanced";
 
         public bool ItemStatChange = false;
         public bool ItemIconChange = false;

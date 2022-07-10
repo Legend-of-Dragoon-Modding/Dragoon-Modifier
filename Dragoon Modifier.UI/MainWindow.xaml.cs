@@ -226,8 +226,6 @@ namespace Dragoon_Modifier.UI {
                     mod.Items.Add(new DirectoryInfo(dir).Name);
                 }
 
-                mod.SelectedValue = DraMod.Settings.Instance.Preset;
-
                 openModWindow.AddObject(mod);
                 openModWindow.AddTextBlock("Database");
                 openModWindow.AddObject(shop);
@@ -260,15 +258,11 @@ namespace Dragoon_Modifier.UI {
                 DraMod.Settings.Instance.ItemNameDescChange = (bool) itemNameDescription.IsChecked;
                 DraMod.Settings.Instance.ShopChange = (bool) shop.IsChecked;
 
-                /*
-                if (DraMod.Settings.Instance.Mod != (string) mod.SelectedValue) {
-                    DraMod.Settings.Instance.Mod = (string) mod.SelectedValue;
-                    DragoonModifier.ChangeLoDDirectory(DraMod.Settings.Instance.Mod);
-                }
-                
+                DraMod.Settings.Instance.Preset = DraMod.Preset.Custom;
+                DragoonModifier.ChangeLoDDirectory((string) mod.SelectedValue);
 
-                UIControl.WritePLog("Mod directory: " + DraMod.Settings.Instance.Mod);
-                */
+                UIControl.WritePLog($"Mod directory: {(string) mod.SelectedValue}" );
+                
             }
         }
 
@@ -517,8 +511,6 @@ namespace Dragoon_Modifier.UI {
                     break;
 
             }
-
-            //DragoonModifier.ChangeLoDDirectory(DraMod.Settings.Instance.Mod);
         }
 
         private void Slider_ValueChanged(object sender, EventArgs e) {

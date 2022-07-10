@@ -28,7 +28,7 @@
     <Resource Include="Icons\GrayMoon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Mods\" />
+	<Folder Include="Mods\" />
     <Folder Include="Presets\" />
     <Folder Include="Reader\" />
     <Folder Include="Scripts\" />
