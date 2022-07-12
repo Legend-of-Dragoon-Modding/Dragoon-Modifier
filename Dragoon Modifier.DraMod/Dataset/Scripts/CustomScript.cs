@@ -14,7 +14,7 @@ namespace Dragoon_Modifier.DraMod.Dataset.Scripts {
 
         internal CustomScript(string file) {
             _file = Path.GetFullPath(file);
-            _script = CSScript.Evaluator.LoadFile(_file, null, true);
+            _script = CSScript.Evaluator.LoadFile(file);
         }
 
         public void BattleRun() {

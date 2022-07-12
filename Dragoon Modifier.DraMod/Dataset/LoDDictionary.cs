@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CSScriptLib;
 
 namespace Dragoon_Modifier.DraMod.Dataset {
     internal sealed class LoDDictionary : ILoDDictionary {

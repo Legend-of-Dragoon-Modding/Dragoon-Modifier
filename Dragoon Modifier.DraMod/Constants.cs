@@ -25,5 +25,9 @@ namespace Dragoon_Modifier.DraMod {
         public static void LoadUIControl(UI.IUIControl uiControl) {
             _uiControl = uiControl;
         }
+
+        public static void WriteLine(object text) {
+            Console.WriteLine(text);
+        }
     }
 }
