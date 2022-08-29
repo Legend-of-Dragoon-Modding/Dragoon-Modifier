@@ -52,7 +52,7 @@ namespace Dragoon_Modifier.DraMod.Dataset.Scripts {
 
         private static void WriteError(Exception ex) {
             Constants.UIControl.WriteGLog("Program stopped.");
-            Constants.UIControl.WritePLog("CUSTOM ITEM SCRIPT ERROR");
+            Constants.UIControl.WritePLog("CUSTOM SCRIPT ERROR");
             Console.WriteLine("CUSTOM ITEM SCRIPT ERROR\nFatal Error. Closing all threads.");
             Console.WriteLine(ex.ToString());
         }

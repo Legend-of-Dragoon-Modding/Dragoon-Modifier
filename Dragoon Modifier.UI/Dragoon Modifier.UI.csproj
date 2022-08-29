@@ -59,4 +59,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Dragoon Modifier.DraMod\Dragoon Modifier.DraMod.csproj" />
   </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy &quot;$(ProjectDir)Scripts\*.*&quot; &quot;$(ProjectDir)bin\$(ConfigurationName)\net6.0-windows\Scripts\&quot; /E /Y&#xD;&#xA;xcopy &quot;$(ProjectDir)Presets\*.*&quot; &quot;$(ProjectDir)bin\$(ConfigurationName)\net6.0-windows\Presets\&quot; /E /Y&#xD;&#xA;xcopy &quot;$(ProjectDir)Mods\*.*&quot; &quot;$(ProjectDir)bin\$(ConfigurationName)\net6.0-windows\Mods\&quot; /E /Y&#xD;&#xA;xcopy &quot;$(ProjectDir)Reader\*.*&quot; &quot;$(ProjectDir)bin\$(ConfigurationName)\net6.0-windows\Reader\&quot; /E /Y" />
+  </Target>
 </Project>

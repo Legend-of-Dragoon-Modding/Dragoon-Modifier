@@ -50,16 +50,16 @@ namespace Dragoon_Modifier.Core {
         };
 
         private static readonly Dictionary<string, int[]> _addressList = new() {
-            { "PARTY_SLOT", new int[] { 0xBAC50, 0xB9950, 0xBAF38, 0xBAF48, 0x0, 0xBAF78, 0xBAE88 } },
-            { "DISC", new int[] { 0xBC058, 0xBAD58 ,0xBC340, 0xBC350, 0x0 ,0xBC380 ,0xBC290 } },
-            { "CHAPTER", new int[] { 0xBAC60, 0xB9960, 0xBAF48, 0xBAF58, 0x0, 0xBAF88, 0xBAE98 } },
-            { "MAP", new int[] { 0x52C30, 0x51930, 0x52F18, 0x52F2C, 0x0, 0x52F5C, 0x52E6C } },
-            { "DRAGOON_SPIRITS", new int[] { 0xBAD64, 0xB9A64, 0xBAF9C, 0xBB05C, 0x0, 0xBB08C, 0xBAF9C } },
-            { "HOTKEY", new int[] { 0x7A39C, 0x7909C, 0x7A684, 0x547E8, 0x0, 0x7A6C4, 0x7A5D4 } },
-            { "BATTLE_VALUE", new int[] { 0xC6AE8, 0xC5808, 0xC6DD0, 0xC6DE0, 0x0, 0xC6E10, 0xC6D20 } },
-            { "ARMOR_INVENTORY", new int[] { 0xBADB0, 0xB9AB0, 0x0, 0xBB0A8, 0x0, 0xBB0D8, 0xBAFE8 } },
-            { "INVENTORY", new int[] { 0xBAEB1, 0xB9BB1, 0x0, 0xBB1A9, 0x0, 0xBB1D9, 0xBB0E9 } },
-            { "MENU", new int[] { 0xBDC38, 0xBC938, 0xBDF20, 0xBDF30, 0x0, 0x0, 0xBDE70 } },
+            { "PARTY_SLOT", new int[] { 0xBAC50, 0xB9950, 0xBAF38, 0xBAF48, 0xBAF70, 0xBAF78, 0xBAE88 } },
+            { "DISC", new int[] { 0xBC058, 0xBAD58 ,0xBC340, 0xBC350, 0xBC378, 0xBC380 ,0xBC290 } },
+            { "CHAPTER", new int[] { 0xBAC60, 0xB9960, 0xBAF48, 0xBAF58, 0xBAF80, 0xBAF88, 0xBAE98 } },
+            { "MAP", new int[] { 0x52C30, 0x51930, 0x52F18, 0x52F2C, 0x52F54, 0x52F5C, 0x52E6C } },
+            { "DRAGOON_SPIRITS", new int[] { 0xBAD64, 0xB9A64, 0xBAF9C, 0xBB05C, 0xBB084, 0xBB08C, 0xBAF9C } },
+            { "HOTKEY", new int[] { 0x7A39C, 0x7909C, 0x7A684, 0x547E8, 0x7A6BC, 0x7A6C4, 0x7A5D4 } },
+            { "BATTLE_VALUE", new int[] { 0xC6AE8, 0xC5808, 0xC6DD0, 0xC6DE0, 0xC6E08, 0xC6E10, 0xC6D20 } },
+            { "ARMOR_INVENTORY", new int[] { 0xBADB0, 0xB9AB0, 0x0, 0xBB0A8, 0xBB0D0, 0xBB0D8, 0xBAFE8 } },
+            { "INVENTORY", new int[] { 0xBAEB1, 0xB9BB1, 0x0, 0xBB1A9, 0xBB1D1, 0xBB1D9, 0xBB0E9 } },
+            { "MENU", new int[] { 0xBDC38, 0xBC938, 0xBDF20, 0xBDF30, 0xBDF58, 0x0, 0xBDE70 } },
             { "MENU_SUBTYPE", new int[] { 0xBDC30, 0xBC930, 0xBDF18, 0x0, 0x0, 0xBDF58, 0xBDE68 } },
             { "TRANSITION", new int[] { 0xCB430 ,0xCA150, 0xCB718, 0xCB728, 0x0, 0x0, 0xCB668 } },
             { "GOLD", new int[] { 0xBAC5C, 0xB995C, 0xBAE94, 0xBAF54, 0x0, 0xBAF84, 0xBAE94 } },
@@ -97,6 +97,11 @@ namespace Dragoon_Modifier.Core {
             { "DRAGOON_SP_TABLE", new int[] { 0x113B9E, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 } },
             { "DRAGOON_DESC_PTR", new int[] { 0x52018, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 } },
             { "DRAGOON_DESC", new int[] { 0x51858, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 } },
+            { "HASCHEL_FIX", new int[] { 0x1E9E30, 0x1E8E38, 0x0, 0x0, 0x0, 0x0, 0x0 } },
+            { "SPELL_TABLE", new int[] { 0xFA0B7, 0xF8BA3, 0x0, 0x0, 0x0, 0xFA323, 0xFA233 } },
+            { "SLOT1_SPELLS", new int[] { 0xC6961, 0xC5681, 0x0, 0x0, 0x0, 0xC6C89, 0xC6B99 } },
+            { "SLOT2_SPELLS", new int[] { 0xC696A, 0xC568A, 0x0, 0x0, 0x0, 0xC6C92, 0xC6BA2 } },
+            { "SLOT3_SPELLS", new int[] { 0xC6973, 0xC5693, 0x0, 0x0, 0x0, 0xC6C9B, 0xC6BAB } },
             { "WARGOD", new int[] { 0x6E814, 0x6D514, 0x0, 0x6EB08, 0x0, 0x0, 0x6EA4C } },
             { "SAVE_POINT", new int[] { 0x5A368, 0x59068, 0x5A5A0, 0x5A660, 0x0, 0x5A690, 0x5A5A0 } },
             { "TEXT_SPEED", new int[] { 0x26948, 0x26530, 0x0, 0x26CC4, 0x0, 0x26CC0, 0x26B7C } },
@@ -286,7 +291,7 @@ namespace Dragoon_Modifier.Core {
                 ProcessMemory.ReadProcessMemory(_processHandle, key + _emulatorOffset + offset, buffer, 1, out long lpNumberOfBytesRead);
                 return buffer[0];
             }
-            Console.WriteLine($"[ERROR] Incorrect addres key {address}.");
+            Console.WriteLine($"[ERROR] Incorrect address key {address}.");
             return 0;
         }
 
@@ -301,7 +306,7 @@ namespace Dragoon_Modifier.Core {
                 ProcessMemory.WriteProcessMemory(_processHandle, key + _emulatorOffset + offset, val, 1, out int lpNumberOfBytesWritten);
                 return;
             }
-            Console.WriteLine($"[ERROR] Incorrect addres key {address}.");
+            Console.WriteLine($"[ERROR] Incorrect address key {address}.");
         }
 
         #endregion
@@ -385,7 +390,7 @@ namespace Dragoon_Modifier.Core {
                 ProcessMemory.ReadProcessMemory(_processHandle, key + _emulatorOffset + offset, buffer, 2, out long lpNumberOfBytesRead);
                 return BitConverter.ToUInt16(buffer, 0);
             }
-            Console.WriteLine($"[ERROR] Incorrect addres key {address}.");
+            Console.WriteLine($"[ERROR] Incorrect address key {address}.");
             return 0;
         }
 
@@ -400,7 +405,7 @@ namespace Dragoon_Modifier.Core {
                 ProcessMemory.WriteProcessMemory(_processHandle, key + _emulatorOffset + offset, val, 2, out int lpNumberOfBytesWritten);
                 return;
             }
-            Console.WriteLine($"[ERROR] Incorrect addres key {address}.");
+            Console.WriteLine($"[ERROR] Incorrect address key {address}.");
         }
 
         #endregion
@@ -674,7 +679,7 @@ namespace Dragoon_Modifier.Core {
             if (_instance.TryGetAddress(address, out var result)) {
                 return result;
             }
-            Console.WriteLine($"[ERROR] Incorrect addres key {address}.");
+            Console.WriteLine($"[ERROR] Incorrect address key {address}.");
             return 0;
         }
 

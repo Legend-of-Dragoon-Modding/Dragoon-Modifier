@@ -143,6 +143,9 @@ namespace Dragoon_Modifier.DraMod.Dataset {
         public byte[] ItemDescriptions { get; private set; } = Array.Empty<byte>();
         public byte[] ItemBattleNames { get; private set; } = Array.Empty<byte>();
         public byte[] ItemBattleDescriptions { get; private set; } = Array.Empty<byte>();
+        public Dictionary<int, IDragoonAddition> DragoonAddition { get; private set; } = new();
+        public Dictionary<int, IDragoonSpells> DragoonSpell { get; private set; } = new();
+        public dynamic[][] DragoonStats { get; private set; } = new dynamic[9][];
 
         public List<byte>[] Shop { get; } = new List<byte>[45];
 
@@ -196,6 +199,10 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             }
 
             GetCharacters();
+            DragoonAddition = GetDragoonAdditions();
+            DragoonSpell = GetDragoonSpells();
+            GetDragoonAdditions();
+            GetDragoonStats();
             GetShops();
         }
 
@@ -440,6 +447,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
                         if (UInt16.TryParse(values[0], out var uskey)) {
                             monsterDict.Add(uskey, new Monster(values, _tryEncodeItemDelegate));
                         }
+                        i++;
                     }
                 }
             } catch (IOException) {
@@ -454,6 +462,86 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             for (byte i = 0; i < 9; i++) {
                 Character[i] = new Character(i, _modDirectory);
             }
+        }
+
+        private Dictionary<int, IDragoonAddition> GetDragoonAdditions() {
+            Dictionary<int, IDragoonAddition> dragoonAdditionDict = new();
+            string file = $"{_modDirectory}\\Dragoon_Additions.tsv";
+            int i = 0;
+            try {
+                using (var dragoonAdditionData = new StreamReader(file)) {
+                    dragoonAdditionData.ReadLine(); //Skip
+                    while (!dragoonAdditionData.EndOfStream) {
+                        var line = dragoonAdditionData.ReadLine();
+                        var values = line.Split('\t').ToArray();
+                        dragoonAdditionDict.Add(i, new DragoonAddition(values[1], values[2], values[3], values[4], values[5]));
+                        i++;
+                    }
+                }
+            } catch (IOException) {
+                Console.WriteLine($"[ERROR] {file} not found.");
+            } catch (Exception) {
+                Console.WriteLine($"[ERROR] Incorrect fromat of {file} at line {i + 1}");
+            }
+            return dragoonAdditionDict;
+        }
+
+        private void GetDragoonStats() {
+            DragoonStats = new dynamic[9][];
+            string file = $"{_modDirectory}\\Dragoon_Stats.tsv";
+            int i = 0;
+
+            try {
+                using (var dragoonStatsData = new StreamReader(file)) {
+                    dragoonStatsData.ReadLine(); //Skip
+                    while (!dragoonStatsData.EndOfStream) {
+                        var line = dragoonStatsData.ReadLine();
+                        var values = line.Split('\t').ToArray();
+                        DragoonStats[i] = new dynamic[] {
+                                    new DragoonStats("0", "0", "0", "0", "0"),
+                                    new DragoonStats(values[1], values[2], values[3], values[4], values[5]),
+                                    new DragoonStats(values[6], values[7], values[8], values[9], values[10]),
+                                    new DragoonStats(values[11], values[12], values[13], values[14], values[15]),
+                                    new DragoonStats(values[16], values[17], values[18], values[19], values[20]),
+                                    new DragoonStats(values[21], values[22], values[23], values[24], values[25])
+                                };
+                        i++;
+                    }
+                }
+            } catch (IOException) {
+                Console.WriteLine($"[ERROR] {file} not found.");
+            } catch (Exception) {
+                Console.WriteLine($"[ERROR] Incorrect fromat of {file} at line {i + 1}");
+            }
+        }
+
+        private Dictionary<int, IDragoonSpells> GetDragoonSpells() {
+            Dictionary<int, IDragoonSpells> dragoonSpellsDict = new();
+            string file = $"{_modDirectory}\\Dragoon_Spells.tsv";
+            int i = 0;
+            try {
+                using (var dragoonSpellsData = new StreamReader(file)) {
+                    dragoonSpellsData.ReadLine(); //Skip
+                    while (!dragoonSpellsData.EndOfStream) {
+                        var line = dragoonSpellsData.ReadLine();
+                        var values = line.Split('\t').ToArray();
+                        dragoonSpellsDict.Add(i, new DragoonSpells(values, i, _element2Num));
+                        i++;
+                    }
+                }
+
+                long offset = 0x0;
+                long start = Emulator.GetAddress("DRAGOON_DESC");
+                for (int x = 0; x < dragoonSpellsDict.Count; x++) {
+                    dragoonSpellsDict[x].Description_Pointer = start + offset;
+                    offset += dragoonSpellsDict[x].Encoded_Description.Length;
+                }
+            } catch (IOException) {
+                Console.WriteLine($"[ERROR] {file} not found.");
+            } catch (Exception) {
+                Console.WriteLine($"[ERROR] Incorrect fromat of {file} at line {i + 1}");
+            }
+            return dragoonSpellsDict;
         }
 
         private void GetShops() {

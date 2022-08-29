@@ -1,4 +1,4 @@
-Item Name	Target	Element	Damage	Specail 1	Special 2	UU1	Special Ammount	Icon	Status	Percentage	UU2	Base Switch	Description	Price(even)	Battle Description
+Item Name	Target	Element	Damage	Special 1	Special 2	UU1	Special Amount	Icon	Status	Percentage	UU2	Base Switch	Description	Price(even)	Battle Description
 	76	None						Magic						4	
 Detonate Rock	78	None	100					Magic					Detonates and<LINE>attacks all.	10	Weak attack for all
 Spark Net	76	Thunder	150					Magic					Thunder-based,<LINE>single-target<LINE>(multi).	10	Thunder S attack

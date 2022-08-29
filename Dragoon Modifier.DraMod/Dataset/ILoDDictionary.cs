@@ -16,7 +16,8 @@ namespace Dragoon_Modifier.DraMod.Dataset {
         List<byte>[] Shop { get; }
         Scripts.IScript Script { get; }
         bool TryEncodeItem(string name, out byte id);
-        
-
+        Dictionary<int, IDragoonAddition> DragoonAddition { get; }
+        Dictionary<int, IDragoonSpells> DragoonSpell { get; }
+        dynamic[][] DragoonStats { get; }
     }
 }

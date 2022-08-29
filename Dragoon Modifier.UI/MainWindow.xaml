@@ -12,7 +12,6 @@
         Closed="Window_Closed"
         Loaded="Window_Loaded"
         SizeChanged="Window_SizeChanged"
-                 
         Icon="Icons/BlueMoon.ico"
         ShowIconOnTitleBar="True"
         ShowTitleBar="True"
@@ -1219,7 +1218,7 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" Text="HP" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
                                     <Slider x:Name="sldHP" Grid.Column="1" VerticalAlignment="Center" Value="1" Minimum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Maximum="10" ValueChanged="Slider_ValueChanged"/>
-                                    <TextBlock x:Name="lblMultiHP" Grid.Column="2" Text="{Binding ElementName=sldHP,Path=Value}" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
+                                    <TextBlock x:Name="lblMultiHP" Grid.Column="2" Text="{Binding ElementName=sldHP,Path=Value, StringFormat=N1}" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="2" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -1231,7 +1230,7 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" Text="ATK" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
                                     <Slider x:Name="sldATK" Grid.Column="1" VerticalAlignment="Center" Value="1" Minimum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Maximum="10" ValueChanged="Slider_ValueChanged"/>
-                                    <TextBlock x:Name="lblMultiATK" Grid.Column="2" Text="{Binding ElementName=sldATK,Path=Value}" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
+                                    <TextBlock x:Name="lblMultiATK" Grid.Column="2" Text="{Binding ElementName=sldATK,Path=Value, StringFormat=N1}" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="3" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -1243,7 +1242,7 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" Text="MAT" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
                                     <Slider x:Name="sldMAT" Grid.Column="1" VerticalAlignment="Center" Value="1" Minimum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Maximum="10" ValueChanged="Slider_ValueChanged"/>
-                                    <TextBlock  x:Name="lblMultiMAT" Grid.Column="2" Text="{Binding ElementName=sldMAT,Path=Value}" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
+                                    <TextBlock  x:Name="lblMultiMAT" Grid.Column="2" Text="{Binding ElementName=sldMAT,Path=Value, StringFormat=N1}" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="4" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -1255,7 +1254,7 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" Text="DF" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
                                     <Slider x:Name="sldDEF" Grid.Column="1" VerticalAlignment="Center" Value="1" Minimum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Maximum="10" ValueChanged="Slider_ValueChanged"/>
-                                    <TextBlock x:Name="lblMultiDEF" Grid.Column="2" Text="{Binding ElementName=sldDEF,Path=Value}" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
+                                    <TextBlock x:Name="lblMultiDEF" Grid.Column="2" Text="{Binding ElementName=sldDEF,Path=Value, StringFormat=N1}" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="5" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -1267,7 +1266,7 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" Text="MDF" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
                                     <Slider x:Name="sldMDF" Grid.Column="1" VerticalAlignment="Center" Value="1" Minimum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Maximum="10" ValueChanged="Slider_ValueChanged"/>
-                                    <TextBlock x:Name="lblMultiMDF" Grid.Column="2" Text="{Binding ElementName=sldMDF,Path=Value}" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
+                                    <TextBlock x:Name="lblMultiMDF" Grid.Column="2" Text="{Binding ElementName=sldMDF,Path=Value, StringFormat=N1}" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="6" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -1279,7 +1278,7 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" Text="SPD" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
                                     <Slider x:Name="sldSPD" Grid.Column="1" VerticalAlignment="Center" Value="1" Minimum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Maximum="10" ValueChanged="Slider_ValueChanged"/>
-                                    <TextBlock x:Name="lblMultiSPD" Grid.Column="2" Text="{Binding ElementName=sldSPD,Path=Value}" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
+                                    <TextBlock x:Name="lblMultiSPD" Grid.Column="2" Text="{Binding ElementName=sldSPD,Path=Value, StringFormat=N1}" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
                                 </Grid>
                             </DockPanel>
                         </Grid>

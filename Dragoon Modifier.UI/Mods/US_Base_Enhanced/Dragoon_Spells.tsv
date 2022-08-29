@@ -1,33 +1,33 @@
 	is %	Damage	Accuracy	MP	Element	Description
-Flameshot		200	100	10	Fire	Fire STR 200% Single
-Explosion		100	100	20	Fire	Fire STR 100% All
-Final Burst		300	100	30	Fire	Fire STR 300% Single
-Red-Eye Dragon		300	100	80	Fire	Fire STR 300% All
-Divine Dragon Cannon		600	100	50	Non-Elemental	STR 600% Single
-Wing Blaster (Lavitz)		100	100	20	Wind	Wind STR 100% All
-Gaspless (Lavitz)		300	100	30	Wind	Wind STR 300% Single
+Flameshot		200	100	10	Fire	Fire STR 50% Single
+Explosion		100	100	20	Fire	Fire STR 25% All
+Final Burst		300	100	30	Fire	Fire STR 75% Single
+Red-Eye Dragon		300	100	80	Fire	Fire STR 175% All
+Divine Dragon Cannon		600	100	50	Non-Elemental	STR 100% Single
+Wing Blaster (Lavitz)		100	100	20	Wind	Wind STR 25% All
+Gaspless (Lavitz)		300	100	30	Wind	Wind STR 75% Single
 Blossom Storm (Lavitz)	Yes	0	100	20	Wind	Damage Resist 50% Dur 3
-Jade Dragon		300	100	80	Wind	Wind STR 300% All
-Divine Dragon Ball		400	100	50	Non-Elemental	STR 400% All
-Star Children		100	100	20	Light	Light STR 100% All
+Jade Dragon		300	100	80	Wind	Wind STR 75% All
+Divine Dragon Ball		400	100	50	Non-Elemental	STR 50% All
+Star Children		100	100	20	Light	Light STR 25% All
 Moon Light	Yes	100	100	10	Light	Ally Single 100% Rev & Rec
 Gates of Heaven	Yes	100	100	30	Light	Ally All 100% Recover
-White Silver Dragon		300	100	80	Light	Light STR 300% All HP
-Wing Blaster (Albert)		100	100	20	Wind	Wind STR 100% All
-Astral Drain		200	100	10	Dark	Dark STR 200% Single & HP
-Death Dimension		100	100	20	Dark	Dark STR 100% All & Fear
-Gaspless (Albert)		300	100	30	Wind	Wind STR 300% Single
+White Silver Dragon		300	100	80	Light	Light STR 100% All HP
+Wing Blaster (Albert)		100	100	20	Wind	Wind STR 25% All
+Astral Drain		200	100	10	Dark	Dark STR 25% Single & HP
+Death Dimension		100	100	20	Dark	Dark STR 25% All & Fear
+Gaspless (Albert)		300	100	30	Wind	Wind STR 100% Single
 Demon's Gate		100	100	30	Dark	Lethal attack for all
-Dark Dragon		400	100	80	Dark	Dark STR 400% Single
-Atomic Mind		100	100	10	Thunder	Thunder STR 100% Single
-Thunder Kid		200	100	20	Thunder	Thunder STR 200% Single
-Thunder God		300	100	30	Thunder	Thunder STR 300% Single
-Violet Dragon		400	100	80	Thunder	Thunder STR 400% Single
-Freezing Ring		200	100	10	Water	Water STR 200% Single
+Dark Dragon		400	100	80	Dark	Dark STR 100% Single
+Atomic Mind		100	100	10	Thunder	Thunder STR 50% Single
+Thunder Kid		200	100	20	Thunder	Thunder STR 65% Single
+Thunder God		300	100	30	Thunder	Thunder STR 75% Single
+Violet Dragon		400	100	80	Thunder	Thunder STR 100% Single
+Freezing Ring		200	100	10	Water	Water STR 50% Single
 Rainbow Breath	Yes	50	100	20	Water	HP Recv & Cure - All
 Rose Storm (Albert)	Yes	0	100	20	Wind	Damage Resist 50% Dur 3
-Diamond Dust		200	100	30	Water	Water STR 200% All
-Blue Sea Dragon		400	100	80	Water	Water STR 400% Single
-Grand Stream		75	100	10	Earth	Earth STR 150% All
-Meteor Strike		200	100	30	Earth	Earth STR 200% All
-Golden Dragon		300	100	80	Earth	Earth STR 300% All
+Diamond Dust		200	100	30	Water	Water STR 50% All
+Blue Sea Dragon		400	100	80	Water	Water STR 100% Single
+Grand Stream		75	100	10	Earth	Earth STR 25% All
+Meteor Strike		200	100	30	Earth	Earth STR 50% All
+Golden Dragon		300	100	80	Earth	Earth STR 75% All

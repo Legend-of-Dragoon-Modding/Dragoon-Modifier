@@ -30,7 +30,10 @@ namespace Dragoon_Modifier.DraMod.Dataset.Scripts.HardMode {
         }
 
         public void BattleSetup() {
-
+            for (byte slot = 0; slot < Emulator.Memory.Battle.CharacterTable.Length; slot++) {
+                var character = Emulator.Memory.Battle.CharacterTable[slot];
+                _character[character.ID].BattleSetup(slot);
+            }
         }
 
         public void FieldRun() {

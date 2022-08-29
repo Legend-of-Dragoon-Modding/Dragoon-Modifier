@@ -65,17 +65,24 @@ namespace Dragoon_Modifier.DraMod {
             if (Constants.Run) {
                 Dataset.Scripts.IScript script;
                 if (mod != Preset.Normal) {
-                    script = new Dataset.Scripts.HardMode.Script();
+                    if (mod == Preset.NormalHard || mod == Preset.Hard) {
+                        script = new Dataset.Scripts.HardMode.Script();
+                    } else {
+                        script = new Dataset.Scripts.HellMode.Script();
+                    }
                     Settings.Instance.ItemStatChange = true;
                     Settings.Instance.ItemNameDescChange = true;
                     Settings.Instance.ItemIconChange = true;
-                    Settings.Instance.DragoonStatChange = true;
-                    Settings.Instance.DragoonSpellChange = true;
+                    Settings.Instance.DragoonStatChange = false;
+                    Settings.Instance.DragoonSpellChange = false;
                     Settings.Instance.DragoonDescriptionChange = true;
-                    Settings.Instance.DragoonAdditionChange = true;
+                    Settings.Instance.DragoonAdditionChange = false;
                     Settings.Instance.MonsterStatChange = true;
                     Settings.Instance.MonsterExpGoldChange = true;
                     Settings.Instance.MonsterDropChange = true;
+                    Settings.Instance.AdditionChange = true;
+                    Settings.Instance.CharacterStatChange = false;
+                    Settings.Instance.ShopChange = true;
                 } else {
                     script = new Dataset.Scripts.DummyScript();
                     Settings.Instance.ItemStatChange = false;
@@ -88,6 +95,10 @@ namespace Dragoon_Modifier.DraMod {
                     Settings.Instance.MonsterStatChange = false;
                     Settings.Instance.MonsterExpGoldChange = false;
                     Settings.Instance.MonsterDropChange = false;
+                    Settings.Instance.AdditionChange = false;
+                    Settings.Instance.CharacterStatChange = false;
+                    Settings.Instance.ShopChange = false;
+
                 }
 
                 string? dualMod;

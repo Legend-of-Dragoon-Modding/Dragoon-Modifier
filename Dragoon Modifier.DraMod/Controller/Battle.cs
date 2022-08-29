@@ -1,4 +1,5 @@
 ﻿using Dragoon_Modifier.Core;
+using Dragoon_Modifier.DraMod.Dataset;
 
 using System;
 using System.Collections.Generic;
@@ -164,6 +165,13 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
 
             Emulator.Memory.LoadBattle();
+            Debug.WriteLine("---------------------");
+            Debug.WriteLine("Monster Point:       " + Convert.ToString(Emulator.Memory.MonsterPoint + Emulator.EmulatorOffset, 16).ToUpper());
+            Debug.WriteLine("Character Point:     " + Convert.ToString(Emulator.Memory.CharacterPoint + Emulator.EmulatorOffset, 16).ToUpper());
+            Debug.WriteLine("Monster Size:        " + Emulator.Memory.MonsterSize);
+            Debug.WriteLine("Unique Monsters:     " + Emulator.Memory.UniqueMonsterSize);
+            Debug.WriteLine("Monster IDs:         " + String.Join(", ", Emulator.Memory.Battle.MonsterID));
+
 
             for (int i = 0; i < Emulator.Memory.MonsterSize; i++) {
                 /*if (ultimateHP[i] > 0) { //TODO Ultimate boss
@@ -210,7 +218,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
         }
 
         public static void Run() {
-            Settings.Instance.Dataset.Script.BattleRun();
+            //Settings.Instance.Dataset.Script.BattleRun(); TODO UNCOMMENT
 
             UpdateUI();
 
@@ -349,7 +357,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 NoHPDecaySoulEater();
             }
 
-            Settings.Instance.Dataset.Script.BattleSetup();
+            //Settings.Instance.Dataset.Script.BattleSetup();
 
             Console.WriteLine("Changing Character stats...");
             uint characterID = 0;
@@ -367,6 +375,43 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 Console.WriteLine("Changing Additions...");
                 foreach (var character in Emulator.Memory.Battle.CharacterTable) {
                     Addition.ResetAdditionTable(character);
+                }
+            }
+
+            if (Settings.Instance.DragoonAdditionChange) {
+                Console.WriteLine("Changing Dragoon Additions...");
+                for (int slot = 0; slot < Emulator.Memory.Battle.CharacterTable.Length; slot++) {
+                    DragoonAddition.WriteDragoonAdditionTable(slot, Emulator.Memory.PartySlot[slot]);
+                }
+            }
+
+            if (Settings.Instance.DragoonSpellChange) {
+                Console.WriteLine("Changing Dragoon Spells...");
+                for (int slot = 0; slot < Emulator.Memory.Battle.CharacterTable.Length; slot++) {
+                    DragoonSpell.WriteDragoonSpellTable(slot, Emulator.Memory.PartySlot[slot]);
+                }
+            }
+
+            if (Settings.Instance.DragoonDescriptionChange) {
+                Console.WriteLine("Changing Dragoon Spell Descriptions...");
+                long address = Emulator.GetAddress("DRAGOON_DESC_PTR");
+                long descrOffset = 0;
+
+                Dictionary<int, IDragoonSpells> datasetSpell = Settings.Instance.Dataset.DragoonSpell;
+
+                for (int i = 0; i < datasetSpell.Count; i++) {
+                    Emulator.DirectAccess.WriteUInt(address + i * 0x4, (uint) datasetSpell[i].Description_Pointer);
+                    Emulator.DirectAccess.WriteByte(address + i * 0x4 + 0x3, 0x80);
+                    Emulator.DirectAccess.WriteAoB(Emulator.GetAddress("DRAGOON_DESC") + descrOffset, datasetSpell[i].Encoded_Description);
+                    descrOffset += datasetSpell[i].Encoded_Description.Length;
+                }
+
+            }
+
+            if (Settings.Instance.DragoonStatChange) {
+                Console.WriteLine("Changing Dragoon Stats...");
+                for (int slot = 0; slot < Emulator.Memory.Battle.CharacterTable.Length; slot++) {
+                    DragoonStat.WriteDragoonStatTable(slot, Emulator.Memory.Battle.CharacterTable[slot]);
                 }
             }
         }

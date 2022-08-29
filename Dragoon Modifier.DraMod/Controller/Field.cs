@@ -16,8 +16,24 @@ namespace Dragoon_Modifier.DraMod.Controller {
         internal static void Setup() {
             Constants.UIControl.ResetBattle();
             EarlyAdditionsSet = false;
-            Settings.Instance.Dataset.Script.FieldSetup();
 
+            if (Settings.Instance.DragoonStatChange) {
+                Console.WriteLine("Changing Dragoon Stats...");
+                long address = Emulator.GetAddress("DRAGOON_STAT_TABLE");
+                int[] charReorder = new int[] { 5, 7, 0, 4, 6, 8, 1, 3, 2 };
+                for (int character = 0; character < 8; character++) {
+                    int reorderedChar = charReorder[character];
+                    for (int level = 1; level < 6; level++) {
+                        Emulator.DirectAccess.WriteUShort(address + character * 0x30 + level * 0x8, Settings.Instance.Dataset.DragoonStats[reorderedChar][level].MP);
+                        Emulator.DirectAccess.WriteByte(address + character * 0x30 + level * 0x8 + 0x4, Settings.Instance.Dataset.DragoonStats[reorderedChar][level].DAT);
+                        Emulator.DirectAccess.WriteByte(address + character * 0x30 + level * 0x8 + 0x5, Settings.Instance.Dataset.DragoonStats[reorderedChar][level].DMAT);
+                        Emulator.DirectAccess.WriteByte(address + character * 0x30 + level * 0x8 + 0x6, Settings.Instance.Dataset.DragoonStats[reorderedChar][level].DDF);
+                        Emulator.DirectAccess.WriteByte(address + character * 0x30 + level * 0x8 + 0x7, Settings.Instance.Dataset.DragoonStats[reorderedChar][level].DMDF);
+                    }
+                }
+            }
+
+            Settings.Instance.Dataset.Script.FieldSetup();
         }
 
         internal static void ItemSetup() {

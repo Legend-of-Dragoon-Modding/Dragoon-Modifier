@@ -10,6 +10,8 @@ namespace Dragoon_Modifier.DraMod.Dataset.Scripts.HardMode.Characters {
     internal class Rose : ICharacter {
         private const ushort _DAT = 365;
         private const ushort _specialDAT = 510;
+        private const ushort _DDF = 180;
+        private const ushort _DMDF = 180;
 
         private const ushort _astralDrain = 295;
         private const double _astralDrainHeal = 0.05;
@@ -38,9 +40,16 @@ namespace Dragoon_Modifier.DraMod.Dataset.Scripts.HardMode.Characters {
 
             if (battleTable.Action == 10) {
                 DragoonAttack(battleTable, dragoonSpecial);
-
                 Spells(battleTable);
             }
+
+            if (battleTable.Action == 2) {
+                DragoonDefence(battleTable);
+            }
+        }
+
+        public void BattleSetup(byte slot) {
+            var battleTable = Emulator.Memory.Battle.CharacterTable[slot];
         }
 
         private void DragoonAttack(Core.Memory.Battle.Character battleTable, byte dragoonSpecial) {
@@ -50,6 +59,11 @@ namespace Dragoon_Modifier.DraMod.Dataset.Scripts.HardMode.Characters {
             }
 
             battleTable.DAT = (ushort) (_DAT * multi);
+        }
+
+        private void DragoonDefence(Core.Memory.Battle.Character battleTable) {
+            battleTable.DDF = (ushort) (_DDF * multi);
+            battleTable.DMDF = (ushort) (_DMDF * multi);
         }
 
         private void Spells(Core.Memory.Battle.Character battleTable) {

@@ -1,7 +1,7 @@
 	is %	Damage	Accuracy	MP	Element	Description
 Flameshot		255	100	10	Fire	Fire STR 510% x1.00
-Explosion		170	100	20	Fire	Fire STR 340% x1.00<END>
-Final Burst		382.5	100	30	Fire	Fire STR 765% x1.00<END>
+Explosion		170	100	20	Fire	Fire STR 340% x1.00
+Final Burst		382.5	100	30	Fire	Fire STR 765% x1.00
 Red-Eye Dragon		510	100	80	Fire	Fire STR 1020% x1.00
 Divine Dragon Cannon		765	100	50	Non-Elemental	Void STR 1020%
 Wing Blaster (Albert)		220	100	20	Wind	Wind STR 440%

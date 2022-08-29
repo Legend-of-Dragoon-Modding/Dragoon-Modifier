@@ -24,5 +24,6 @@ namespace Dragoon_Modifier.Core.Memory.Battle {
         byte ItemUsed { get; set; }
         ushort DamageCap { get; set; }
         byte DragoonSpecial { get; set; }
+        uint DragoonAdditionTable { get; }
     }
 }

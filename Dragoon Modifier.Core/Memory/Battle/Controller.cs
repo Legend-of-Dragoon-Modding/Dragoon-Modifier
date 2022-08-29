@@ -33,6 +33,7 @@ namespace Dragoon_Modifier.Core.Memory.Battle {
         public ushort DamageCap { get { return GetDamageCap(); } set { SetDamageCap(value); } }
         public byte[] HaschelFix { get { return Emulator.DirectAccess.ReadAoB(_haschelFix + _discOffset[Emulator.Memory.Disc - 1], _haschelFix + _discOffset[Emulator.Memory.Disc - 1] + 116); } set { Emulator.DirectAccess.WriteAoB(_haschelFix + _discOffset[Emulator.Memory.Disc - 1], value); } }
         public byte DragoonSpecial { get { return Emulator.DirectAccess.ReadByte(_dragoonSpecial); } set { Emulator.DirectAccess.WriteByte(_dragoonSpecial, value); } }
+        public uint DragoonAdditionTable { get; private set; }
 
         internal Controller() {
             CharacterPoint = Emulator.Memory.CharacterPoint;
@@ -69,6 +70,7 @@ namespace Dragoon_Modifier.Core.Memory.Battle {
             _damageCap = Emulator.GetAddress("DAMAGE_CAP");
             _haschelFix = Emulator.GetAddress("HASCHEL_FIX");
             _dragoonSpecial = Emulator.GetAddress("DRAGOON_SPECIAL");
+            DragoonAdditionTable = (uint) (Emulator.GetAddress("ADDITION") + GetOffset() + 0x300);
         }
 
         private int GetOffset() {
