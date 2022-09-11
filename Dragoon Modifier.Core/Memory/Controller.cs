@@ -26,6 +26,7 @@ namespace Dragoon_Modifier.Core.Memory {
         private readonly int _autoText;
         private readonly int _basePoint;
         private readonly int _encounterID;
+        private readonly int _battleField;
         private readonly int _monsterSize;
         private readonly int _uniqueMonsterSize;
         private readonly int _discChangeCheck;
@@ -33,6 +34,8 @@ namespace Dragoon_Modifier.Core.Memory {
         private readonly int _fieldHPCap2;
         private readonly int _fieldHPCap3;
         private readonly int _fieldHPCap4;
+        private readonly int _timePlayed;
+        private readonly int _heroTickets;
 
         private Battle.IController _battle = null;
         public Battle.IController Battle {
@@ -77,6 +80,7 @@ namespace Dragoon_Modifier.Core.Memory {
         public uint CharacterPoint { get { return Emulator.DirectAccess.ReadUInt24(_basePoint + 0x18); } }
         public uint MonsterPoint { get { return Emulator.DirectAccess.ReadUInt24(_basePoint + 0x2C); } }
         public ushort EncounterID { get { return Emulator.DirectAccess.ReadUShort(_encounterID); } set { Emulator.DirectAccess.WriteUShort(_encounterID, value); } }
+        public byte BattleField { get { return Emulator.DirectAccess.ReadByte(_battleField); } set { Emulator.DirectAccess.WriteByte(_battleField, value); } }
         public byte MonsterSize { get { return Emulator.DirectAccess.ReadByte(_monsterSize); } }
         public byte UniqueMonsterSize { get { return Emulator.DirectAccess.ReadByte(_uniqueMonsterSize); } }
         public GameState GameState { get { return GetGameState(); } }
@@ -86,6 +90,8 @@ namespace Dragoon_Modifier.Core.Memory {
         public FieldPosition FieldPosition { get; }
         public Encounter.Map FieldEncounterMap { get; }
         public Encounter.Slot FieldEncounterSlot { get; }
+        public int TimePlayed { get { return Emulator.DirectAccess.ReadInt(_timePlayed); } }
+        public int HeroTickets { get { return Emulator.DirectAccess.ReadInt(_heroTickets); } set { Emulator.DirectAccess.WriteInt(_heroTickets, value); } }
 
 
         internal Controller() {
@@ -99,7 +105,7 @@ namespace Dragoon_Modifier.Core.Memory {
             _dragoonSpirits = Emulator.GetAddress("DRAGOON_SPIRITS");
             _hotkey = Emulator.GetAddress("HOTKEY");
             _battleValue = Emulator.GetAddress("BATTLE_VALUE");
-            EquipmentInventory = Collections.Factory.Create<Byte>(Emulator.GetAddress("ARMOR_INVENTORY"), 1, 256);
+            EquipmentInventory = Collections.Factory.Create<byte>(Emulator.GetAddress("ARMOR_INVENTORY"), 1, 255);
             ItemInventory = Collections.Factory.Create<byte>(Emulator.GetAddress("INVENTORY"), 1, 64);
             _menu = Emulator.GetAddress("MENU");
             _menuSubType = Emulator.GetAddress("MENU_SUBTYPE");
@@ -146,6 +152,7 @@ namespace Dragoon_Modifier.Core.Memory {
             }
             _basePoint = Emulator.GetAddress("BATTLE_BASE_POINT");
             _encounterID = Emulator.GetAddress("ENCOUNTER_ID");
+            _battleField = Emulator.GetAddress("BATTLE_FIELD");
             _monsterSize = Emulator.GetAddress("MONSTER_SIZE");
             _uniqueMonsterSize = Emulator.GetAddress("UNIQUE_MONSTER_SIZE");
             FieldEncounterMap = new Encounter.Map();
@@ -156,7 +163,8 @@ namespace Dragoon_Modifier.Core.Memory {
             _fieldHPCap3 = Emulator.GetAddress("FIELD_HP_CAP_3");
             _fieldHPCap4 = Emulator.GetAddress("FIELD_HP_CAP_4");
             FieldPosition = new FieldPosition();
-
+            _timePlayed = Emulator.GetAddress("TIME_PLAYED");
+            _heroTickets = Emulator.GetAddress("HERO_TICKETS");
         }
 
         private GameState GetGameState() {

@@ -50,7 +50,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             if (Emulator.DirectAccess.ReadByte("CHAR_TABLE", 0x2C * Settings.Instance.Slot1Select + 0x4) == 0x3 || Emulator.DirectAccess.ReadByte("CHAR_TABLE", 0x2C * Settings.Instance.Slot1Select + 0x4) == 0x23) {
                 //if (Settings.SoloMode || Settings.DuoMode) {
                 Emulator.DirectAccess.WriteByte("PARTY_SLOT", Settings.Instance.Slot1Select);
-                    Console.WriteLine("Switched character " + Settings.Instance.Slot1Select + ".");
+                Console.WriteLine("Switched character " + Settings.Instance.Slot1Select + ".");
                 Constants.UIControl.WritePLog("Switched character " + Settings.Instance.Slot1Select + ".");
                 //} else {
                     //TODO: No Dart

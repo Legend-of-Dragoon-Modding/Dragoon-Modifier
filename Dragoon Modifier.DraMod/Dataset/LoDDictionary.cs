@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CSScriptLib;
+using System.Reflection;
 
 namespace Dragoon_Modifier.DraMod.Dataset {
     internal sealed class LoDDictionary : ILoDDictionary {
@@ -146,8 +147,8 @@ namespace Dragoon_Modifier.DraMod.Dataset {
         public Dictionary<int, IDragoonAddition> DragoonAddition { get; private set; } = new();
         public Dictionary<int, IDragoonSpells> DragoonSpell { get; private set; } = new();
         public dynamic[][] DragoonStats { get; private set; } = new dynamic[9][];
-
         public List<byte>[] Shop { get; } = new List<byte>[45];
+        public Dictionary<ushort, IMonster> UltimateStats { get; private set; } = new();
 
         public Scripts.IScript Script { get; private set; } = new Scripts.DummyScript();
 
@@ -204,6 +205,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             GetDragoonAdditions();
             GetDragoonStats();
             GetShops();
+            GetUltimateData();
         }
 
         public static string GetStatus(byte status) {
@@ -298,7 +300,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             string file = $"{_modDirectory}\\Equipment.tsv";
             int i = 0;
             try {
-                using (var itemData = new StreamReader(file)) {
+                using (var itemData = Constants.GetMod(file)) {
                     itemData.ReadLine(); // Skip first line
                     while (!itemData.EndOfStream) {
                         var line = itemData.ReadLine();
@@ -310,7 +312,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             } catch (IOException) {
                 Console.WriteLine($"[ERROR] {file} not found.");
             } catch (IndexOutOfRangeException) {
-                Console.WriteLine($"[ERROR] Incorrect fromat of {file} at line {i + 1}");
+                Console.WriteLine($"[ERROR] Incorrect format of {file} at line {i + 1}");
             }
         }
 
@@ -318,7 +320,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             string file = $"{_modDirectory}\\Items.tsv";
             int i = 192;
             try {
-                using (var itemData = new StreamReader(file)) {
+                using (var itemData = Constants.GetMod(file)) {
                     itemData.ReadLine(); // Skip first line
                     while (!itemData.EndOfStream) {
                         var line = itemData.ReadLine();
@@ -330,7 +332,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             } catch (IOException) {
                 Console.WriteLine($"[ERROR] {file} not found.");
             } catch (IndexOutOfRangeException) {
-                Console.WriteLine($"[ERROR] Incorrect fromat of {file} at line {i + 1}");
+                Console.WriteLine($"[ERROR] Incorrect format of {file} at line {i + 1}");
             }
         }
 
@@ -437,9 +439,10 @@ namespace Dragoon_Modifier.DraMod.Dataset {
         private Dictionary<ushort, IMonster> GetMonsters(string modDirectory) {
             Dictionary<ushort, IMonster> monsterDict = new();
             string file = $"{modDirectory}\\Monster_Data.tsv";
+            Constants.GetMod($"{modDirectory}\\Monster_Data.tsv");
             int i = 0;
             try {
-                using (var monsterData = new StreamReader(file)) {
+                using (var monsterData = Constants.GetMod(file)) {
                     monsterData.ReadLine(); // Skip first line
                     while (!monsterData.EndOfStream) {
                         var line = monsterData.ReadLine();
@@ -453,7 +456,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             } catch (IOException) {
                 Console.WriteLine($"[ERROR] {file} not found.");
             } catch (IndexOutOfRangeException) {
-                Console.WriteLine($"[ERROR] Incorrect fromat of {file} at line {i + 1}");
+                Console.WriteLine($"[ERROR] Incorrect format of {file} at line {i + 1}");
             }
             return monsterDict;
         }
@@ -469,7 +472,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             string file = $"{_modDirectory}\\Dragoon_Additions.tsv";
             int i = 0;
             try {
-                using (var dragoonAdditionData = new StreamReader(file)) {
+                using (var dragoonAdditionData = Constants.GetMod(file)) {
                     dragoonAdditionData.ReadLine(); //Skip
                     while (!dragoonAdditionData.EndOfStream) {
                         var line = dragoonAdditionData.ReadLine();
@@ -481,7 +484,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             } catch (IOException) {
                 Console.WriteLine($"[ERROR] {file} not found.");
             } catch (Exception) {
-                Console.WriteLine($"[ERROR] Incorrect fromat of {file} at line {i + 1}");
+                Console.WriteLine($"[ERROR] Incorrect format of {file} at line {i + 1}");
             }
             return dragoonAdditionDict;
         }
@@ -492,7 +495,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             int i = 0;
 
             try {
-                using (var dragoonStatsData = new StreamReader(file)) {
+                using (var dragoonStatsData = Constants.GetMod(file)) {
                     dragoonStatsData.ReadLine(); //Skip
                     while (!dragoonStatsData.EndOfStream) {
                         var line = dragoonStatsData.ReadLine();
@@ -511,7 +514,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             } catch (IOException) {
                 Console.WriteLine($"[ERROR] {file} not found.");
             } catch (Exception) {
-                Console.WriteLine($"[ERROR] Incorrect fromat of {file} at line {i + 1}");
+                Console.WriteLine($"[ERROR] Incorrect format of {file} at line {i + 1}");
             }
         }
 
@@ -520,7 +523,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             string file = $"{_modDirectory}\\Dragoon_Spells.tsv";
             int i = 0;
             try {
-                using (var dragoonSpellsData = new StreamReader(file)) {
+                using (var dragoonSpellsData = Constants.GetMod(file)) {
                     dragoonSpellsData.ReadLine(); //Skip
                     while (!dragoonSpellsData.EndOfStream) {
                         var line = dragoonSpellsData.ReadLine();
@@ -539,7 +542,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             } catch (IOException) {
                 Console.WriteLine($"[ERROR] {file} not found.");
             } catch (Exception) {
-                Console.WriteLine($"[ERROR] Incorrect fromat of {file} at line {i + 1}");
+                Console.WriteLine($"[ERROR] Incorrect format of {file} at line {i + 1}");
             }
             return dragoonSpellsDict;
         }
@@ -551,7 +554,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             }
 
             try {
-                using (var shopData = new StreamReader(file)) {
+                using (var shopData = Constants.GetMod(file)) {
                     shopData.ReadLine(); // Skip first line
                     for (int shop = 0; shop < 45; shop++) {
                         var line = shopData.ReadLine();
@@ -568,6 +571,27 @@ namespace Dragoon_Modifier.DraMod.Dataset {
                 }
             } catch (IOException) {
                 Console.WriteLine($"[ERROR] {file} not found.");
+            }
+        }
+
+        private void GetUltimateData() {
+            int i = 0;
+
+            foreach (var names in Assembly.GetExecutingAssembly().GetManifestResourceNames())
+                Console.WriteLine(names);
+
+            Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Dragoon_Modifier.DraMod.Resources.Ultimate_Data.tsv");
+
+            using (var ultimateData = new StreamReader(stream)) {
+                ultimateData.ReadLine(); // Skip first line
+                while (!ultimateData.EndOfStream) {
+                    var line = ultimateData.ReadLine();
+                    var values = line.Split('\t').ToArray();
+                    if (UInt16.TryParse(values[0], out var uskey)) {
+                        UltimateStats.Add(uskey, new Monster(values, _tryEncodeItemDelegate));
+                    }
+                    i++;
+                }
             }
         }
     }

@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 namespace Dragoon_Modifier.DraMod.UI {
     public class MonsterUpdate {
         public string Name;
-        public ushort HP;
-        public ushort MaxHP;
+        public int HP;
+        public int MaxHP;
         public ushort AT;
         public ushort MAT;
         public ushort DF;
@@ -18,7 +18,7 @@ namespace Dragoon_Modifier.DraMod.UI {
         public ushort Turn;
 
         internal MonsterUpdate(int index) {
-            Name = Emulator.Memory.Battle.MonsterTable[index].Name;
+            Name = Emulator.Memory.Battle.MonsterTable[index].Name.Substring(0, Emulator.Memory.Battle.MonsterTable[index].Name.Length - 5);
             HP = Emulator.Memory.Battle.MonsterTable[index].HP;
             MaxHP = Emulator.Memory.Battle.MonsterTable[index].MaxHP;
             AT = Emulator.Memory.Battle.MonsterTable[index].AT;

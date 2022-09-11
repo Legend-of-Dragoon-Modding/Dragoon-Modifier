@@ -45,17 +45,17 @@ namespace Dragoon_Modifier.Core.Memory.Battle {
         public byte Image { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0x26A); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0x26A, value); } }
         public ushort Detransform1 { get { return Emulator.DirectAccess.ReadUShort(_baseAddress - 0xF0); } set { Emulator.DirectAccess.WriteUShort(_baseAddress - 0xF0, value); } }
         public byte Detransform2 { get { return Emulator.DirectAccess.ReadByte(_baseAddress - 0xEE); } set { Emulator.DirectAccess.WriteByte(_baseAddress - 0xEE, value); } }
-        public sbyte A_HIT_Increase { get { return Emulator.DirectAccess.ReadSByte(_baseAddress + 0xB4); } set { Emulator.DirectAccess.WriteSByte(_baseAddress + 0xB4, value); } }
+        public byte A_HIT_Increase { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0xB4); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0xB4, value); } }
         public byte A_HIT_Increase_Turn { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0xB5); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0xB5, value); } }
-        public sbyte M_HIT_Increase { get { return Emulator.DirectAccess.ReadSByte(_baseAddress + 0xB6); } set { Emulator.DirectAccess.WriteSByte(_baseAddress + 0xB6, value); } }
+        public byte M_HIT_Increase { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0xB6); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0xB6, value); } }
         public byte M_HIT_Increase_Turn { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0xB7); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0xB7, value); } }
-        public sbyte SP_P_Hit_Increase { get { return Emulator.DirectAccess.ReadSByte(_baseAddress + 0xC4); } set { Emulator.DirectAccess.WriteSByte(_baseAddress + 0xC4, value); } }
+        public byte SP_P_Hit_Increase { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0xC4); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0xC4, value); } }
         public byte SP_P_Hit_Increase_Turn { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0xC5); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0xC5, value); } }
-        public sbyte MP_P_Hit_Increase { get { return Emulator.DirectAccess.ReadSByte(_baseAddress + 0xC6); } set { Emulator.DirectAccess.WriteSByte(_baseAddress + 0xC6, value); } }
+        public byte MP_P_Hit_Increase { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0xC6); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0xC6, value); } }
         public byte MP_P_Hit_Increase_Turn { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0xC7); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0xC7, value); } }
-        public sbyte SP_M_Hit_Increase { get { return Emulator.DirectAccess.ReadSByte(_baseAddress + 0xC8); } set { Emulator.DirectAccess.WriteSByte(_baseAddress + 0xC8, value); } }
+        public byte SP_M_Hit_Increase { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0xC8); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0xC8, value); } }
         public byte SP_M_Hit_Increase_Turn { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0xC9); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0xC9, value); } }
-        public sbyte MP_M_Hit_Increase { get { return Emulator.DirectAccess.ReadSByte(_baseAddress + 0xCA); } set { Emulator.DirectAccess.WriteSByte(_baseAddress + 0xCA, value); } }
+        public byte MP_M_Hit_Increase { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0xCA); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0xCA, value); } }
         public byte MP_M_Hit_Increase_Turn { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0xCB); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0xCB, value); } }
         public byte ColorMap { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0x1DD); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0x1DD, value); } }
         public byte AdditionSlotIndex { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0x26E); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0x26E, value); } }

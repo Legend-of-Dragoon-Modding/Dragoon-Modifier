@@ -1,0 +1,81 @@
+M-ID	M-name	Element	HP	AT	MAT	DF	MDF	Speed	A-AV	M-AV	P-Immune	M-Immune	P-Half	M-Half	E-Immune	E-Half	Status-Resist	Death-Resist	EXP	Gold	Drop	Drop-Chance	M-extra-name
+131	Sandora Soldier	Fire	15300	144	144	100	100	60	0	0	0	0	0	0	None	None	99	0	0	0	Broad Sword	0	Sandora Soldier
+135	Commander	Dark	64000	176	144	120	80	70	0	0	0	0	0	0	None	None	99	128	0	0	Sabre	100	Commander
+261	Fruegel	Earth	63000	200	120	100	80	50	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Fruegel
+259	Hellena Warden	Fire	6000	105	105	100	100	50	0	0	0	0	0	0	None	None	255	0	0	0	Broad Sword	0	Hellena Warden
+260	Senior Warden	Fire	10000	120	200	100	100	50	0	0	0	0	0	0	None	None	255	128	0	0	Broad Sword	0	Senior Warden
+332	Urobolus	Earth	61600	176	176	160	120	50	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Urobolus
+102	Sandora Elite	Dark	159600	196	175	100	120	80	10	0	0	0	0	0	None	None	255	128	0	0	Broad Sword	0	Sandora Elite
+325	Drake the Bandit	Wind	148000	200	170	80	80	70	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Drake the Bandit
+326	Wire	Non-Elemental	9600	91	91	120	80	50	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Wire
+327	Bursting Ball	Non-Elemental	10240	450	450	150	50	70	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Bursting Ball
+329	Jiango	Earth	204800	196	153	160	80	50	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Jiango
+262	Fruegel	Earth	220000	200	152	100	80	50	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Fruegel
+263	Rodriguez	Wind	48000	158	158	100	100	70	10	0	0	0	0	0	None	None	255	16	0	0	Broad Sword	0	Rodriguez
+264	Guftas	Dark	60000	172	128	120	60	50	0	0	0	0	0	0	None	None	255	16	0	0	Broad Sword	0	Guftas
+333	Fire Bird	Fire	281600	240	296	80	80	45	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Fire Bird
+334	Volcano Ball	Fire	20000	300	300	80	100	45	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Volcano Ball
+354	GhostFB	Wind	320000	222	178	100	80	60	0	0	0	0	0	0	None	None	255	144	0	3000	Broad Sword	0	GhostFB
+385	Dragon Spirit	Wind	320000	222	178	100	80	60	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Dragon Spirit
+299	Mappi	Dark	128000	210	189	110	100	70	0	0	0	0	0	0	None	None	255	128	0	3000	Broad Sword	0	Mappi
+274	Crafty Thief	Dark	96000	168	162	100	80	70	5	0	0	0	0	0	None	None	255	128	0	0	Broad Sword	0	Crafty Thief
+300	Mappi	Dark	120000	222	192	110	100	65	0	0	0	0	0	0	None	None	255	128	0	0	Broad Sword	0	Mappi
+301	Gehrich	Earth	200000	273	208	120	100	50	0	0	0	0	0	0	None	None	255	128	0	3000	Broad Sword	0	Gehrich
+340	Ghost Commander	Dark	280000	265	371	100	100	60	0	0	0	0	0	0	None	None	255	144	0	6000	Broad Sword	0	Ghost Commander
+341	Ghost Knight	Dark	20	154	154	0	0	60	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Ghost Knight
+343	Kamuy	Non-Elemental	300000	292	292	100	150	70	0	0	0	0	0	0	None	None	255	144	0	6000	Broad Sword	0	Kamuy
+339	Kamuy's tree	Null	0	0	0	50	50	50	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Kamuy's tree
+353	Ghost Regole	Water	336000	274	199	80	120	60	0	5	0	0	0	0	None	None	255	144	0	6000	Broad Sword	0	Ghost Regole
+384	Dragon Spirit	Water	336000	274	199	80	120	60	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Dragon Spirit
+335	Grand Jewel	Earth	337500	160	226	100	160	70	0	0	0	0	0	0	None	None	255	144	0	9000	Broad Sword	0	Grand Jewel
+346	Windigo	Water	700000	320	320	0	0	50	0	0	0	0	0	0	None	None	255	144	0	9000	Broad Sword	0	Windigo
+347	Snow Cannon	Water	8800	210	210	100	80	50	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Snow Cannon
+348	Heart	Water	999	68	68	60	60	50	0	0	0	0	0	0	None	None	255	147	0	0	Broad Sword	0	Heart
+349	Polter Helm	Dark	666666	178	178	100	160	50	0	0	0	0	0	0	None	None	255	144	0	9000	Broad Sword	0	Polter Helm
+350	Polter Armor	Dark	666666	178	261	160	140	50	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Polter Armor
+351	Polter Sword	Dark	666666	469	178	120	120	100	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Polter Sword
+365	Last Kraken	Water	360000	265	216	140	200	50	0	0	0	0	0	0	None	None	255	144	0	12000	Broad Sword	0	Last Kraken
+366	Cleone	Water	8160	182	199	60	160	60	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Cleone
+360	Vector	Dark	180000	240	181	100	100	50	0	0	0	0	0	0	None	None	255	144	0	12000	Broad Sword	0	Vector
+361	Selebus	Dark	135000	192	256	120	180	60	10	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Selebus
+362	Kubila	Dark	157500	216	202	140	140	55	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Kubila
+368	Caterpillar	Non-Elemental	120000	314	262	120	120	70	0	0	0	0	0	0	None	None	255	144	0	12000	Broad Sword	0	Caterpillar
+369	Pupa	Non-Elemental	180000	0	0	32	32	60	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Pupa
+370	Imago	Light	240000	285	382	120	160	70	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Imago
+363	Zackwell	Dark	360000	312	220	140	170	60	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Zackwell
+364	Lavitz's Spirit	Wind	5000	88	88	120	80	50	0	0	0	0	0	0	None	None	255	144	0	15000	Broad Sword	0	Lavitz's Spirit
+352	Divine Dragoon Ghost	Non-Elemental	400000	251	273	160	100	60	0	0	0	0	0	0	None	None	255	144	0	18000	Broad Sword	0	Divine Dragoon Ghost
+383	Dragon Spirit	Non-Elemental	400000	251	273	160	100	60	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Dragon Spirit
+308	Virage(head)	Non-Elemental	336000	384	408	80	120	50	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Virage(head)
+309	Virage(body)	Non-Elemental	224000	320	180	100	100	50	0	0	0	0	0	0	None	None	255	144	0	15000	Broad Sword	0	Virage(body)
+310	Virage(arm)	Non-Elemental	60000	280	180	70	70	50	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Virage(arm)
+266	Kongol	Earth	420000	416	273	210	40	50	0	0	0	0	0	0	None	None	255	144	0	20000	Broad Sword	0	Kongol
+293	Lenus	Water	525000	290	409	80	128	50	0	0	0	0	0	0	None	None	255	144	0	20000	Broad Sword	0	Lenus
+296	Syuveil	Wind	500000	486	382	150	120	50	10	0	0	0	0	0	None	None	255	128	0	25000	Broad Sword	0	Syuveil
+311	Virage(head)	Non-Elemental	1280000	420	420	100	100	50	0	0	0	0	0	0	None	None	255	144	0	30000	Broad Sword	0	Virage(head)
+313	Virage(body)	Non-Elemental	540000	518	420	33	33	50	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Virage(body)
+312	Virage(arm)	Non-Elemental	54000	518	420	25	25	50	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Virage(arm)
+275	Feyrbrand	Wind	288000	360	240	100	80	50	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Feyrbrand
+287	Greham	Wind	210000	260	300	120	100	60	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Greham
+295	Damia	Water	360000	360	360	100	200	60	0	0	0	0	0	0	None	None	255	128	0	0	Broad Sword	0	Damia
+294	Lenus	Water	300000	264	360	100	180	55	0	0	0	0	0	0	None	None	255	128	0	0	Broad Sword	0	Lenus
+279	Regole	Water	300000	354	222	120	80	45	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Regole
+297	Belzac	Earth	608000	712	284	50	20	50	0	0	0	0	0	0	None	None	255	128	0	0	Broad Sword	0	Belzac
+316	S Virage(head)	Non-Elemental	320000	420	1650	100	100	50	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	S Virage(head)
+317	S Virage(body)	Non-Elemental	320000	420	660	100	100	50	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	S Virage(body)
+318	S Virage(arm)	Non-Elemental	160000	480	660	100	100	50	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	S Virage(arm)
+298	Kanzas	Thunder	396000	322	257	120	150	70	10	0	0	0	0	0	None	None	255	128	0	0	Broad Sword	0	Kanzas
+267	Emperor Doel	Thunder	250000	210	210	30	30	55	0	0	0	0	0	0	None	None	255	128	0	0	Broad Sword	0	Emperor Doel
+268	Dragoon Doel	Thunder	750000	224	238	36	30	55	0	0	0	0	0	0	None	None	255	128	0	0	Broad Sword	0	Dragoon Doel
+320	S Virage(head)	Non-Elemental	333333	352	240	150	150	50	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	S Virage(head)
+321	S Virage(arm)	Non-Elemental	666666	288	240	28	24	60	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	S Virage(arm)
+322	S Virage(body)	Non-Elemental	222222	288	240	270	180	40	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	S Virage(body)
+283	Divine Dragon	Non-Elemental	10000	60	53	32000	24000	60	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Divine Dragon
+284	Divine Cannon	Non-Elemental	65535	0	0	16000	24000	50	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Divine Cannon
+285	Divine Ball	Non-Elemental	65535	0	0	16000	24000	50	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Divine Ball
+270	Lloyd	Non-Elemental	666666	80	65	80	120	65	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Lloyd
+277	Dummy Lloyd	Null	0	0	0	50	50	50	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Dummy Lloyd
+344	Magician Faust	Non-Elemental	1000000	345	345	100	50	50	0	20	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Magician Faust
+342	Mazo	Non-Elemental	800	101	101	50	200	50	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Mazo
+387	Zieg Feld	Fire	720000	532	110	120	150	70	0	0	0	0	0	0	None	None	255	144	0	0	Broad Sword	0	Zieg Feld
+386	Missing	Null	0	0	0	50	50	50	0	0	0	0	0	0	None	None	255	128	0	0	Broad Sword	0	Missing

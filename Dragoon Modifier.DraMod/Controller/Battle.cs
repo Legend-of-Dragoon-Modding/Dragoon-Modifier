@@ -1,5 +1,6 @@
 ﻿using Dragoon_Modifier.Core;
 using Dragoon_Modifier.DraMod.Dataset;
+using Dragoon_Modifier.DraMod.UI;
 
 using System;
 using System.Collections.Generic;
@@ -141,6 +142,20 @@ namespace Dragoon_Modifier.DraMod.Controller {
         static bool alwaysAddSoloPartyMembers = false;
         static bool soloModeOnBattleEntry = false;
         static bool duoModeOnBattleEntry = false;
+        //TB
+        static int timePlayed = 0;
+        static int[] extraTurnBattleC = new int[3];
+        static int[] extraTurnBattleM = new int[6];
+        static int[] cooldowns = new int[3];
+        static ushort[] currentHP = new ushort[3];
+        static int qtbCount = 2;
+        static bool qtbLeaderTurn = false;
+        //Ultimate Boss
+        static int[] ultimateHP = new int[6];
+        static int[] ultimateHPSave = new int[6];
+        static int[] ultimateMaxHP = new int[6];
+        static bool ubUltimateHPSet = false;
+        static bool ubPartyAttacking = false;
 
         static readonly List<Hotkey> hotkeys = BattleHotkeys.Load();
 
@@ -215,14 +230,69 @@ namespace Dragoon_Modifier.DraMod.Controller {
             if (Settings.Instance.AspectRatio) {
                 ChangeAspectRatio();
             }
+
+            if (Settings.Instance.BattleRows) {
+                BattleRowFormations();
+            }
+
+            if (Settings.Instance.RGBBattleUI && !Settings.Instance.RGBBattleUICharacter && !Settings.Instance.RGBBattleUICycle) {
+                RGBBattleStatic();
+            }
+
+            if (Settings.Instance.EATB || Settings.Instance.ATB) {
+                timePlayed = Emulator.Memory.TimePlayed;
+                cooldowns[0] = cooldowns[1] = cooldowns[2] = 0;
+                extraTurnBattleC = new int[3];
+                extraTurnBattleM = new int[6];
+            }
+
+            if (Settings.Instance.QTB) {
+                int i = 0;
+                foreach (var character in Emulator.Memory.Battle.CharacterTable) {
+                    currentHP[i] = character.HP;
+                    i++;
+                }
+                qtbCount = Settings.Instance.QTBCount = 2;
+                qtbLeaderTurn = false;
+            }
+
+            if (Settings.Instance.UltimateBoss) {
+                ubUltimateHPSet = ubPartyAttacking = false;
+                if (new ushort[] { 413, 415 }.Contains(Emulator.Memory.EncounterID)) {
+                    UltimateZeroSPStart();
+                }
+
+                if (new ushort[] { 415 }.Contains(Emulator.Memory.EncounterID)) {
+                    UltimateMPAttackStart();
+                }
+            }
         }
 
         public static void Run() {
-            //Settings.Instance.Dataset.Script.BattleRun(); TODO UNCOMMENT
+            Settings.Instance.Dataset.Script.BattleRun();
 
             UpdateUI();
 
-            if (Settings.Instance.RemoveDamageCaps) {
+            if (Settings.Instance.UltimateBoss) {
+                Debug.WriteLine($"Ultimate Boss: Party Attack: {ubPartyAttacking} / HP Set: {ubUltimateHPSet}");
+                Debug.WriteLine("Attack Move: " + Emulator.Memory.Battle.MonsterTable[0].AttackMove);
+                if (!ubUltimateHPSet)
+                    UltimateBossPartyAttackCheck();
+                if (ubUltimateHPSet)
+                    UltimateBossDamageCheck();
+                if (new ushort[] { 412 }.Contains(Emulator.Memory.EncounterID)) {
+                    UltimateBossHealing(0, 3);
+                }
+                if (new ushort[] { 414, 415 }.Contains(Emulator.Memory.EncounterID)) {
+                    if (Emulator.Memory.EncounterID == 414)
+                        UltimateBossGuardBreak(0, 2);
+                    if (Emulator.Memory.EncounterID == 415)
+                        UltimateBossGuardBreak(0, 0);
+                }
+                UltimateBossFinishCheck();
+            }
+
+            if (Settings.Instance.RemoveDamageCaps || Settings.Instance.UltimateBoss) {
                 RemoveDamageCaps();
             }
 
@@ -248,14 +318,33 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 }
             }
 
+            if (Settings.Instance.RGBBattleUICycle || Settings.Instance.RGBBattleUICharacter) {
+                //TODO
+            }
+
+            if (Settings.Instance.EATB || Settings.Instance.ATB) {
+                EATB();
+            }
+
+            if (Settings.Instance.QTB) {
+                QTB();
+            }
+
             foreach (var hotkey in hotkeys) {
                 hotkey.Run();
             }
         }
 
         private static void UpdateUI() {
-            for (int i = 0; i < Emulator.Memory.Battle.MonsterTable.Length; i++) {
-                Constants.UIControl.UpdateMonster(i, new UI.MonsterUpdate(i));
+            for (int i = 0; i < Emulator.Memory.Battle.MonsterTable.Length; i++) { 
+                MonsterUpdate mon = new UI.MonsterUpdate(i);
+                if (Settings.Instance.UltimateBoss) {
+                    if (ultimateMaxHP[i] > 65535) {
+                        mon.HP = ultimateHP[i];
+                        mon.MaxHP = ultimateMaxHP[i];
+                    }
+                }
+                Constants.UIControl.UpdateMonster(i, mon);
             }
             for (int i = 0; i < Emulator.Memory.Battle.CharacterTable.Length; i++) {
                 Constants.UIControl.UpdateCharacter(i, new UI.CharacterUpdate(i));
@@ -287,52 +376,64 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
         private static void MonsterStatChange(int slot) {
             ushort id = Emulator.Memory.Battle.MonsterID[slot];
-            double HP = Math.Round(Settings.Instance.Dataset.Monster[id].HP * Settings.Instance.HPMulti);
+            IMonster mon = Settings.Instance.UltimateBoss ? Settings.Instance.Dataset.UltimateStats[id] : Settings.Instance.Dataset.Monster[id];
+            double HP = Math.Round(mon.HP * Settings.Instance.HPMulti);
 
             double resup = 1;
             if (HP > 65535) {
-                resup = HP / 65535;
+                if (!Settings.Instance.UltimateBoss)
+                    resup = HP / 65535;
                 HP = 65535;
             }
             HP = Math.Round(HP);
 
             Core.Memory.Battle.Monster monster = Emulator.Memory.Battle.MonsterTable[slot];
 
+            if (Settings.Instance.UltimateBoss) {
+                ultimateMaxHP[slot] = (int) (mon.HP * Settings.Instance.HPMulti);
+                ultimateHP[slot] = ultimateMaxHP[slot];
+                if (ultimateMaxHP[slot] >= 65535) {
+                    monster.HP = 65534;
+                }
+            }
+
             monster.HP = (ushort) HP;
             monster.MaxHP = (ushort) HP;
-            monster.AT = (ushort) Math.Round(Settings.Instance.Dataset.Monster[id].AT * Settings.Instance.ATMulti);
-            monster.OG_AT = (ushort) Math.Round(Settings.Instance.Dataset.Monster[id].AT * Settings.Instance.ATMulti);
-            monster.MAT = (ushort) Math.Round(Settings.Instance.Dataset.Monster[id].MAT * Settings.Instance.MATMulti);
-            monster.OG_MAT = (ushort) Math.Round(Settings.Instance.Dataset.Monster[id].MAT * Settings.Instance.MATMulti);
-            monster.DF = (ushort) Math.Round(Settings.Instance.Dataset.Monster[id].DF * Settings.Instance.DFMulti * resup);
-            monster.OG_DF = (ushort) Math.Round(Settings.Instance.Dataset.Monster[id].DF * Settings.Instance.DFMulti * resup);
-            monster.MDF = (ushort) Math.Round(Settings.Instance.Dataset.Monster[id].MDF * Settings.Instance.MDFMulti * resup);
-            monster.OG_MDF = (ushort) Math.Round(Settings.Instance.Dataset.Monster[id].MDF * Settings.Instance.MDFMulti * resup);
-            monster.SPD = (ushort) Math.Round(Settings.Instance.Dataset.Monster[id].SPD * Settings.Instance.SPDMulti);
-            monster.OG_SPD = (ushort) Math.Round(Settings.Instance.Dataset.Monster[id].SPD * Settings.Instance.SPDMulti);
-            monster.A_AV = Settings.Instance.Dataset.Monster[id].A_AV;
-            monster.M_AV = Settings.Instance.Dataset.Monster[id].M_AV;
-            monster.P_Immune = Settings.Instance.Dataset.Monster[id].PhysicalImmunity;
-            monster.M_Immune = Settings.Instance.Dataset.Monster[id].MagicalImmunity;
-            monster.P_Half = Settings.Instance.Dataset.Monster[id].PhysicalResistance;
-            monster.M_Half = Settings.Instance.Dataset.Monster[id].MagicalResistance;
-            monster.Element = Settings.Instance.Dataset.Monster[id].Element;
-            monster.ElementalImmunity = Settings.Instance.Dataset.Monster[id].ElementalImmunity;
-            monster.ElementalResistance = Settings.Instance.Dataset.Monster[id].ElementalResistance;
-            monster.StatusResist = Settings.Instance.Dataset.Monster[id].StatusResist;
-            monster.SpecialEffect = Settings.Instance.Dataset.Monster[id].SpecialEffect;
+            monster.AT = (ushort) Math.Round(mon.AT * Settings.Instance.ATMulti);
+            monster.OG_AT = (ushort) Math.Round(mon.AT * Settings.Instance.ATMulti);
+            monster.MAT = (ushort) Math.Round(mon.MAT * Settings.Instance.MATMulti);
+            monster.OG_MAT = (ushort) Math.Round(mon.MAT * Settings.Instance.MATMulti);
+            monster.DF = (ushort) Math.Round(mon.DF * Settings.Instance.DFMulti * resup);
+            monster.OG_DF = (ushort) Math.Round(mon.DF * Settings.Instance.DFMulti * resup);
+            monster.MDF = (ushort) Math.Round(mon.MDF * Settings.Instance.MDFMulti * resup);
+            monster.OG_MDF = (ushort) Math.Round(mon.MDF * Settings.Instance.MDFMulti * resup);
+            monster.SPD = (ushort) Math.Round(mon.SPD * Settings.Instance.SPDMulti);
+            monster.OG_SPD = (ushort) Math.Round(mon.SPD * Settings.Instance.SPDMulti);
+            monster.A_AV = mon.A_AV;
+            monster.M_AV = mon.M_AV;
+            monster.P_Immune = mon.PhysicalImmunity;
+            monster.M_Immune = mon.MagicalImmunity;
+            monster.P_Half = mon.PhysicalResistance;
+            monster.M_Half = mon.MagicalResistance;
+            monster.Element = mon.Element;
+            monster.ElementalImmunity = mon.ElementalImmunity;
+            monster.ElementalResistance = mon.ElementalResistance;
+            monster.StatusResist = mon.StatusResist;
+            monster.SpecialEffect = mon.SpecialEffect;
         }
 
         private static void MonsterDropChanges(int slot) {
             ushort id = Emulator.Memory.Battle.UniqueMonsterID[slot];
-            Emulator.Memory.Battle.RewardsDropChance[slot] = Settings.Instance.Dataset.Monster[id].DropChance;
-            Emulator.Memory.Battle.RewardsItemDrop[slot] = Settings.Instance.Dataset.Monster[id].DropItem;
+            IMonster mon = Settings.Instance.UltimateBoss ? Settings.Instance.Dataset.UltimateStats[id] : Settings.Instance.Dataset.Monster[id];
+            Emulator.Memory.Battle.RewardsDropChance[slot] = mon.DropChance;
+            Emulator.Memory.Battle.RewardsItemDrop[slot] = mon.DropItem;
         }
 
         private static void MonsterExpGoldChange(int slot) {
             ushort id = Emulator.Memory.Battle.UniqueMonsterID[slot];
-            Emulator.Memory.Battle.RewardsExp[slot] = Settings.Instance.Dataset.Monster[id].EXP;
-            Emulator.Memory.Battle.RewardsGold[slot] = Settings.Instance.Dataset.Monster[id].Gold;
+            IMonster mon = Settings.Instance.UltimateBoss ? Settings.Instance.Dataset.UltimateStats[id] : Settings.Instance.Dataset.Monster[id];
+            Emulator.Memory.Battle.RewardsExp[slot] = mon.EXP;
+            Emulator.Memory.Battle.RewardsGold[slot] = mon.Gold;
         }
 
         private static void CharacterChanges() {
@@ -357,8 +458,6 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 NoHPDecaySoulEater();
             }
 
-            //Settings.Instance.Dataset.Script.BattleSetup();
-
             Console.WriteLine("Changing Character stats...");
             uint characterID = 0;
             for (int slot = 0; slot < Emulator.Memory.Battle.CharacterTable.Length; slot++){
@@ -370,6 +469,8 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
                 Emulator.Memory.Battle.CharacterTable[slot].SetStats(characterID);
             }
+
+            Settings.Instance.Dataset.Script.BattleSetup();
 
             if (Settings.Instance.AdditionChange) {
                 Console.WriteLine("Changing Additions...");
@@ -392,7 +493,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 }
             }
 
-            if (Settings.Instance.DragoonDescriptionChange) {
+            if (Settings.Instance.DragoonDescriptionChange && Emulator.Region == Region.NTA) { // TODO Remove Region check, when other encoding tables work.
                 Console.WriteLine("Changing Dragoon Spell Descriptions...");
                 long address = Emulator.GetAddress("DRAGOON_DESC_PTR");
                 long descrOffset = 0;
@@ -455,7 +556,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             var damageCapScan = Emulator.DirectAccess.ScanAoB(0xA8660, 0x2A865F, damageCapScanPattern);
             long lastAddress = 0;
             foreach (var address in damageCapScan) {
-                long capAddress = address;
+                long capAddress = (long) address;
                 if ((Emulator.DirectAccess.ReadUShort(capAddress) == 9999) && ((lastAddress + 0x10) == capAddress)) {
                     Emulator.DirectAccess.WriteUInt(capAddress, 50000);
                     Emulator.DirectAccess.WriteUInt(lastAddress, 50000);
@@ -802,6 +903,367 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             if (!Settings.Instance.AlwaysAddSoloPartyMembers) {
                 Settings.Instance.AddSoloPartyMembers = false;
+            }
+        }
+
+        public static void BattleRowFormations() {
+            foreach (var character in Emulator.Memory.Battle.CharacterTable) {
+                Console.WriteLine("[DEBUG][ROWS]");
+                Console.WriteLine("[DEBUG][ROWS] CID: " + (int) character.ID);
+                int rowType = Settings.Instance.BattleRowsFormation[(int) character.ID];
+                int boostType = Settings.Instance.BattleRowsBoost[(int) character.ID];
+                double attackBoost = 0, magicBoost = 0, defenseBoost = 0;
+                Console.WriteLine("[DEBUG][ROWS] Row: " + rowType);
+                Console.WriteLine("[DEBUG][ROWS] Boost: " + boostType);
+
+                if (rowType == 0) { //Stay
+                    if (boostType == 0) {
+                        attackBoost = 1;
+                        magicBoost = 1;
+                        defenseBoost = 1;
+                    } else if (boostType == 1) {
+                        attackBoost = 1.1;
+                        magicBoost = 1;
+                        defenseBoost = 0.75;
+                    } else {
+                        attackBoost = 1;
+                        magicBoost = 1.1;
+                        defenseBoost = 0.75;
+                    }
+                } else if (rowType == 1) { //Front
+                    if (boostType == 0) {
+                        attackBoost = 1.25;
+                        magicBoost = 1.25;
+                        defenseBoost = 0.5;
+                    } else if (boostType == 1) {
+                        attackBoost = 1.5;
+                        magicBoost = 1;
+                        defenseBoost = 0.25;
+                    } else {
+                        attackBoost = 1;
+                        magicBoost = 1.5;
+                        defenseBoost = 0.25;
+                    }
+                } else if (rowType == 2) { //Back
+                    if (boostType == 0) {
+                        attackBoost = 0.75;
+                        magicBoost = 0.75;
+                        defenseBoost = 1.25;
+                    } else if (boostType == 1) {
+                        attackBoost = 1;
+                        magicBoost = 0.5;
+                        defenseBoost = 1.1;
+                    } else {
+                        attackBoost = 0.5;
+                        magicBoost = 1;
+                        defenseBoost = 1.1;
+                    }
+                }
+
+
+                Console.WriteLine("[DEBUG][ROWS] AT:  " + character.AT + " / " + Math.Round(character.AT * attackBoost) + " / " + attackBoost);
+                Console.WriteLine("[DEBUG][ROWS] MAT: " + character.MAT + " / " + Math.Round(character.MAT * magicBoost) + " / " + magicBoost);
+                Console.WriteLine("[DEBUG][ROWS] DF:  " + character.DF + " / " + Math.Round(character.DF * defenseBoost) + " / " + defenseBoost);
+                Console.WriteLine("[DEBUG][ROWS] MDF: " + character.MDF + " / " + Math.Round(character.MDF * defenseBoost) + " / " + defenseBoost);
+
+                
+                character.AT = (ushort) Math.Round(character.AT * attackBoost);
+                character.MAT = (ushort) Math.Round(character.MAT * magicBoost);
+                character.DF = (ushort) Math.Round(character.DF * defenseBoost);
+                character.MDF = (ushort) Math.Round(character.MDF * defenseBoost);
+
+                if (rowType == 1) {
+                    character.Pos_FB = 5;
+                } else if (rowType == 2) {
+                    character.Pos_FB = 13;
+                }
+            }
+        }
+
+        public static void RGBBattleStatic() {
+            Emulator.DirectAccess.WriteByte(Emulator.Memory.Battle.BattleUIColour, Settings.Instance.RGBBattleUIColour[0]);
+            Emulator.DirectAccess.WriteByte(Emulator.Memory.Battle.BattleUIColour + 1, Settings.Instance.RGBBattleUIColour[1]);
+            Emulator.DirectAccess.WriteByte(Emulator.Memory.Battle.BattleUIColour + 2, Settings.Instance.RGBBattleUIColour[2]);
+        }
+
+        public static void EATB() {
+            if (timePlayed + 60 < Emulator.Memory.TimePlayed) {
+                timePlayed = Emulator.Memory.TimePlayed;
+
+                int i = 0;
+                foreach (var character in Emulator.Memory.Battle.CharacterTable) {
+                    if (Constants.UIControl.GetCTB(i) < extraTurnBattleC[i]) { //Hotkey used
+                        extraTurnBattleC[i] = 0;
+                        if (Settings.Instance.EATB) {
+                            cooldowns[i] += 90;
+                        } else {
+                            foreach (var monster in Emulator.Memory.Battle.MonsterTable) {
+                                monster.Turn += 50;
+                            }
+                        }
+                    }
+
+                    if (character.HP > 0) {
+                        if (cooldowns[i] > 0) {
+                            cooldowns[i] -= 1;
+                            extraTurnBattleC[i] += character.SPD / 2;
+                        } else {
+                            extraTurnBattleC[i] += character.SPD;
+                        }
+                    }
+
+                    extraTurnBattleC[i] = Math.Min(6000, extraTurnBattleC[i]);
+                    Constants.UIControl.UpdateCTB(extraTurnBattleC[i], i);
+                    i++;
+                }
+
+                i = 0;
+                foreach (var monster in Emulator.Memory.Battle.MonsterTable) {
+                    if (monster.HP > 0) {
+                        if (new ushort[] { 386, 390 }.Contains(Emulator.Memory.EncounterID) && i == 1) 
+                            break;
+                        if (Emulator.Memory.EncounterID == 433 && i == 1)
+                            if (Emulator.Memory.Battle.MonsterTable[0].HP > 0)
+                                break;
+                        if (Emulator.Memory.EncounterID == 433 && i == 2)
+                            if (Emulator.Memory.Battle.MonsterTable[1].HP > 0)
+                                break;
+                        if (Emulator.Memory.EncounterID == 433 && i >= 1)
+                            if (Emulator.Memory.Battle.MonsterTable[i - 1].HP > 0)
+                                continue;
+
+                        extraTurnBattleM[i] += monster.SPD;
+                        if (extraTurnBattleM[i] > 7000 + (1000 * i)) {
+                            extraTurnBattleM[i] = 0;
+                            monster.Turn += 255;
+                        }
+
+                        Constants.UIControl.UpdateMTB(extraTurnBattleM[i], i);
+
+                        if (new ushort[] { 385, 415, 412, 417, 394, 422, 432, 443 }.Contains(Emulator.Memory.EncounterID))
+                            break;
+
+                        i++;
+                    }
+                }
+            }
+        }
+
+        public static void QTB() {
+            byte partyMembersAttacked = 0;
+            int i = 0;
+            int qtbFromBar = Constants.UIControl.GetQTB();
+
+            if (qtbCount < qtbFromBar) //Hotkey used
+                qtbCount = qtbFromBar;
+
+            foreach (var character in Emulator.Memory.Battle.CharacterTable) {
+                if (character.HP > 0) {
+                    if (character.HP < currentHP[i]) {
+                        partyMembersAttacked++;
+                        currentHP[i] = character.HP;
+                    } else {
+                        if (character.ID == Settings.Instance.QTBLeader) {
+                            AddQTB();
+                        }
+                        currentHP[i] = character.HP;
+                    }
+
+                    if (character.ID == Settings.Instance.QTBLeader) {
+                        if (character.Action == 8 || character.Action == 10) {
+                            if (!qtbLeaderTurn)
+                                AddQTB();
+                            qtbLeaderTurn = true;
+                        } else {
+                            qtbLeaderTurn = false;
+                        }
+                    }
+                }
+
+                if (partyMembersAttacked > 1) {
+                    if (!Settings.Instance.QTBUsedDuringEnemyTurn) {
+                        AddQTB(2);
+                    } else {
+                        AddQTB();
+                        Settings.Instance.QTBUsedDuringEnemyTurn = false;
+                    }
+                } else if (partyMembersAttacked == 1) {
+                    if (!Settings.Instance.QTBUsedDuringEnemyTurn) {
+                        AddQTB();
+                    } else {
+                        Settings.Instance.QTBUsedDuringEnemyTurn = false;
+                    }
+                }
+                i++;
+            }
+        }
+
+        public static void AddQTB(int value = 1) {
+            qtbCount = Math.Min(qtbCount + value, 4);
+            Constants.UIControl.UpdateQTB(qtbCount);
+        }
+
+        public static void UltimateBossPartyAttackCheck() {
+            UltimateBossPartyAttacking();
+
+            if (ubPartyAttacking && !ubUltimateHPSet) {
+                int i = 0;
+                foreach (var monster in Emulator.Memory.Battle.MonsterTable) {
+                    if (ultimateMaxHP[i] >= 65535 && ultimateHP[i] > 0) {
+                        monster.HP = 65534;
+                        Debug.WriteLine($"[PC] Ultimate Boss HP Slot {i}: {monster.HP}/{monster.MaxHP} - {ultimateHP[i]}/{ultimateMaxHP[i]}");
+                    }
+                    i++;
+                }
+                ubUltimateHPSet = true;
+            }
+
+            if (!ubPartyAttacking) {
+                int i = 0;
+                foreach (var monster in Emulator.Memory.Battle.MonsterTable) {
+                    if (ultimateMaxHP[i] >= 65535 && ultimateHP[i] > 0) {
+                        monster.HP = (ushort) Math.Round(((double) ultimateHP[i] / ultimateMaxHP[i]) * 65534);
+                        Debug.WriteLine($"[PA] Ultimate Boss HP Slot {i}: {monster.HP}/{monster.MaxHP} - {ultimateHP[i]}/{ultimateMaxHP[i]}");
+                    }
+                    i++;
+                }
+                ubUltimateHPSet = false;
+            }
+        }
+
+        public static void UltimateBossPartyAttacking() {
+            bool guardCheck = false;
+            bool dragoonSpecialCheck = false;
+
+            int i = 0;
+            int guardSlot = 0;
+            foreach (var character in Emulator.Memory.Battle.CharacterTable) {
+                if (new byte[] { 24, 26, 136, 138 }.Contains(character.Action)) {
+                    ubPartyAttacking = true;
+
+                    if (character.Action == 136) {
+                        guardCheck = true;
+                        guardSlot = i;
+                    }
+
+                    if (character.Action == 136) {
+                        dragoonSpecialCheck = true;
+                    }
+                }
+                i++;
+            }
+
+            foreach (var character in Emulator.Memory.Battle.CharacterTable) {
+                if (guardCheck && (Emulator.Memory.PartySlot[guardSlot] != 2 && Emulator.Memory.PartySlot[guardSlot] != 8)) {
+                    if (new byte[] { 0, 2 }.Contains(character.Action)) {
+                        ubPartyAttacking = false;
+                    }
+                }
+
+                if (dragoonSpecialCheck) {
+                    if (new byte[] { 18, 19 }.Contains(character.Action)) {
+                        ubPartyAttacking = false;
+                    }
+                }
+
+                if (new byte[] { 8, 10 }.Contains(character.Action)) {
+                    ubPartyAttacking = false;
+                }
+            }
+        }
+
+        public static void UltimateBossDamageCheck() {
+            int i = 0;
+            foreach (var monster in Emulator.Memory.Battle.MonsterTable) {
+                if (monster.HP < 65534 && ultimateHP[i] > 0 && ultimateMaxHP[i] >= 65535) {
+                    ultimateHP[i] = Math.Max(0, ultimateHP[i] - (65534 - monster.HP));
+                    if (ultimateHP[i] == 0)
+                        monster.HP = 1;
+                    else
+                        monster.HP = 65534;
+                    Debug.WriteLine($"[DC] Ultimate Boss HP Slot {i}: {monster.HP}/{monster.MaxHP} - {ultimateHP[i]}/{ultimateMaxHP[i]}");
+                    ubPartyAttacking = ubUltimateHPSet = false;
+                }
+                i++;
+            }
+            if (ubPartyAttacking) {
+                UltimateBossPartyAttacking();
+                if (!ubPartyAttacking)
+                    ubUltimateHPSet = false;
+            }
+        }
+
+        public static void UltimateBossHealing(int slot, byte attack) {
+            if (Emulator.Memory.Battle.MonsterTable[slot].AttackMove == attack) {
+                if (Emulator.Memory.EncounterID == 412) {
+                    ultimateHP[slot] = Math.Min(ultimateMaxHP[slot], ultimateHP[slot] + 44400);
+                    Console.WriteLine("Drake the Bandit healed 44,400 HP with a healing potion.");
+                }
+                Thread.Sleep(1500);
+                Emulator.Memory.Battle.MonsterTable[slot].AttackMove = 255;
+            }
+        }
+
+        public static void UltimateBossGuardBreak(int slot, byte attack) {
+            if (Emulator.Memory.Battle.MonsterTable[slot].AttackMove == attack) {
+                foreach (var character in Emulator.Memory.Battle.CharacterTable) {
+                    character.Guard = 0;
+                }
+                if (Emulator.Memory.EncounterID == 415) 
+                    Console.WriteLine("Fire Bird initiated a Guard Break attack.");
+                Thread.Sleep(1500);
+                Emulator.Memory.Battle.MonsterTable[slot].AttackMove = 255;
+            }
+        }
+
+        public static void UltimateZeroSPStart() {
+            foreach (var character in Emulator.Memory.Battle.CharacterTable) {
+                character.SP = 0;
+            }
+            Console.WriteLine("Ultimate Boss Zero SP Start.");
+        }
+
+        public static void UltimateMPAttackStart() {
+            foreach (var character in Emulator.Memory.Battle.CharacterTable) {
+                if (Emulator.Memory.EncounterID == 415) {
+                    character.MP_M_Hit_Increase = 246;
+                    character.MP_P_Hit_Increase = 246;
+                    character.MP_M_Hit_Increase_Turn = 255;
+                    character.MP_P_Hit_Increase_Turn = 255;
+                }
+            }
+            Console.WriteLine("Ultimate Boss MP Attack Start.");
+        }
+
+        public static void UltimateBossFinishCheck() {
+            bool finishCheck = true;
+            if (new ushort[] { 387, 415, 403 }.Contains(Emulator.Memory.EncounterID)) {
+                if (Emulator.Memory.Battle.MonsterTable[0].HP > 0)
+                    finishCheck = false;
+            } else {
+                foreach (var monster in Emulator.Memory.Battle.MonsterTable) {
+                    if (monster.HP > 0)
+                        finishCheck = false;
+                }
+            }
+
+            if (finishCheck) {
+                Console.WriteLine("Ultimate Boss Defeated");
+                if (Constants.UltimateBossCompleted < (Settings.Instance.UltimateBossSelected + 1)) {
+                    Constants.UltimateBossCompleted++;
+                    if (Constants.UltimateBossCompleted == 3) {
+                        Constants.InventorySize = 36;
+                        Constants.UIControl.WritePLog("Ultimate Boss Zone 1 complete! Inventory expanded to 36 slots.");
+                        Console.WriteLine("Ultimate Boss Zone 1 complete! Inventory expanded to 36 slots.");
+                    } else if (Constants.UltimateBossCompleted == 8) {
+                        Constants.InventorySize = 40;
+                        Constants.UIControl.WritePLog("Ultimate Boss Zone 2 complete! Inventory expanded to 40 slots.");
+                        Console.WriteLine("Ultimate Boss Zone 2 complete! Inventory expanded to 40 slots.");
+                    }
+                    Console.WriteLine($"Ultimate Boss Defeated. Your current clear count: {Constants.UltimateBossCompleted}");
+                    Constants.UIControl.WriteGLog($"Ultimate Boss Defeated. Your current clear count: {Constants.UltimateBossCompleted}");
+                }
+                Settings.Instance.UltimateBoss = false;
             }
         }
     }

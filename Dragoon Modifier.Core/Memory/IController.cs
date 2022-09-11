@@ -15,6 +15,7 @@ namespace Dragoon_Modifier.Core.Memory {
         byte Disc { get; }
         byte DragoonSpirits { get; set; }
         ushort EncounterID { get; set; }
+        byte BattleField { get; set; }
         Collections.IAddress<byte> EquipmentInventory { get; }
         GameState GameState { get; }
         MenuSubTypes MenuSubTypes { get; }
@@ -48,5 +49,7 @@ namespace Dragoon_Modifier.Core.Memory {
         FieldPosition FieldPosition { get; }
         Encounter.Map FieldEncounterMap { get; }
         Encounter.Slot FieldEncounterSlot { get; }
+        int TimePlayed { get; }
+        int HeroTickets { get; set; }
     }
 }

@@ -27,7 +27,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             string dir = $"{modPath}\\{_characterDir[character]}";
 
             try {
-                BaseStats = new BaseStats(dir);
+                BaseStats = new BaseStats(dir, 0);
 
                 Additions = GetAdditions(dir, character);
             } catch (DirectoryNotFoundException) {

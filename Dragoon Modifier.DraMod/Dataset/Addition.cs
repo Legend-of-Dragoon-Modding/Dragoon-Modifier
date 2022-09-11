@@ -32,7 +32,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
         public readonly List<AdditionHit> AdditionHit = new List<AdditionHit>();
 
         internal Addition(string filePath) {
-            using (var file = new StreamReader(filePath)) {
+            using (var file = Constants.GetMod(filePath)) {
                 var line = file.ReadLine().Split('\t').ToArray();
 
                 if (Byte.TryParse(line[1], out var bkey)) {

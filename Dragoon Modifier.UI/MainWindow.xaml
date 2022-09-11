@@ -1476,7 +1476,7 @@
                                     <ComboBox x:Name="cboFlowerStorm" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
                                     <Button x:Name="btnElementArrow" Grid.Column="0" Grid.Row="1" Content="Element Arrow" Background="#FF8ADAA4" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
                                     <ComboBox x:Name="cboElementArrow" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
-                                    <Button x:Name="btnUltimateBoss" Grid.Column="0" Grid.Row="2" Content="Ultimate Boss" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                                    <Button x:Name="btnUltimateBoss" Grid.Column="0" Grid.Row="2" Content="Ultimate Boss" Background="#FF8ADAA4" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
                                     <ComboBox x:Name="cboUltimateBoss" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
                                     <Button x:Name="btnNewGame" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" Content="New Game+" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20"/>
                                 </Grid>
@@ -1598,9 +1598,9 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.ColumnSpan="2" Text="Hero Compition Shop" Foreground="White" FontWeight="Bold" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <TextBlock Grid.Row="3" Grid.ColumnSpan="2" Text="Ultimate Boss Shop" Foreground="White" FontWeight="Bold" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Button x:Name="btnHeroTicketShop" Grid.Row="1" Grid.Column="1" Content="Buy Ticket" Background="#FF8ADAA4" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20"/>
-                    <Button x:Name="btnHeroItemShop" Grid.Row="2" Grid.Column="1" Content="Buy Item" Background="#FF8ADAA4" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20"/>
-                    <Button x:Name="btnUltimateShop" Grid.Row="4" Grid.Column="1" Content="Buy Item" Background="#FF8ADAA4" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20"/>
+                    <Button x:Name="btnHeroTicketShop" Grid.Row="1" Grid.Column="1" Content="Buy Ticket" Background="#FF8ADAA4" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
+                    <Button x:Name="btnHeroItemShop" Grid.Row="2" Grid.Column="1" Content="Buy Item" Background="#FF8ADAA4" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
+                    <Button x:Name="btnUltimateShop" Grid.Row="4" Grid.Column="1" Content="Buy Item" Background="#FF8ADAA4" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
                     <ListBox x:Name="lstTicketShop" Grid.Row="1"/>
                     <ListBox x:Name="lstHeroShop" Grid.Row="2"/>
                     <ListBox x:Name="lstUltimateShop" Grid.Row="4"/>
@@ -1670,12 +1670,21 @@
                             </MenuItem>
                             <MenuItem Header="Settings" Background="#FFB6B6B6" Foreground="White">
                                 <MenuItem x:Name="miEmulator" Background="#FFB6B6B6" Foreground="White" Header="Emulator">
-                                    <MenuItem Header="RetroArch (Beetle PSX HW)" Background="#FFB6B6B6" Foreground="White" IsCheckable="True"/>
-                                    <MenuItem Header="DuckStation" Background="#FFB6B6B6" Foreground="White" IsCheckable="True"/>
-                                    <MenuItem Header="ePSXe" Background="#FFB6B6B6" Foreground="White" IsCheckable="True"/>
-                                    <MenuItem Header="PCSXR-PGXP" Background="#FFB6B6B6" Foreground="White" IsCheckable="True"/>
-                                    <MenuItem Header="PCSX2" Background="#FFB6B6B6" Foreground="White" IsCheckable="True"/>
-                                    <MenuItem Header="Other" Background="#FFB6B6B6" Foreground="White" IsCheckable="True"/>
+                                    <MenuItem Header="RetroArch (Beetle PSX HW)" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
+                                    <MenuItem Header="DuckStation" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
+                                    <MenuItem Header="ePSXe" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
+                                    <MenuItem Header="PCSXR-PGXP" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
+                                    <MenuItem Header="PCSX2" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
+                                    <MenuItem Header="Other" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
+                                </MenuItem>
+                                <MenuItem x:Name="miRegion" Header="Region" Background="#FFB6B6B6" Foreground="White">
+                                    <MenuItem Header="NTSC English/Pусский" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" IsChecked="True" Click="miRegion_Click"/>
+                                    <MenuItem Header="日本人" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miRegion_Click" IsEnabled="False"/>
+                                    <MenuItem Header="Deutsche" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miRegion_Click" IsEnabled="False"/>
+                                    <MenuItem Header="Français" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miRegion_Click" IsEnabled="False"/>
+                                    <MenuItem Header="Italiano" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miRegion_Click" IsEnabled="False"/>
+                                    <MenuItem Header="Español" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miRegion_Click" IsEnabled="False"/>
+                                    <MenuItem Header="PAL English" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miRegion_Click" IsEnabled="False"/>
                                 </MenuItem>
                                 <MenuItem x:Name="miSaveSlot" Header="Save Slot" Background="#FFB6B6B6" Foreground="White">
                                     <MenuItem Header="1" Background="#FFB6B6B6" Foreground="White" IsCheckable="True"/>

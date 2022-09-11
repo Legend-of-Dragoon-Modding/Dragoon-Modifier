@@ -14,6 +14,7 @@ namespace Dragoon_Modifier.Core.Memory.Battle {
         private readonly int _damageCap;
         private readonly int _haschelFix;
         private readonly int _dragoonSpecial;
+        private readonly int _dragonBlockStaff;
         public uint CharacterPoint { get; private set; }
         public uint MonsterPoint { get; private set; }
         public ushort EncounterID { get; private set; }
@@ -34,6 +35,10 @@ namespace Dragoon_Modifier.Core.Memory.Battle {
         public byte[] HaschelFix { get { return Emulator.DirectAccess.ReadAoB(_haschelFix + _discOffset[Emulator.Memory.Disc - 1], _haschelFix + _discOffset[Emulator.Memory.Disc - 1] + 116); } set { Emulator.DirectAccess.WriteAoB(_haschelFix + _discOffset[Emulator.Memory.Disc - 1], value); } }
         public byte DragoonSpecial { get { return Emulator.DirectAccess.ReadByte(_dragoonSpecial); } set { Emulator.DirectAccess.WriteByte(_dragoonSpecial, value); } }
         public uint DragoonAdditionTable { get; private set; }
+        public byte IconCount { get { return Emulator.DirectAccess.ReadByte(MonsterPoint + 0xE3A); } }
+        public byte IconSelected { get { return Emulator.DirectAccess.ReadByte(MonsterPoint + 0xE4E); } }
+        public byte DragonBlockStaff { get { return Emulator.DirectAccess.ReadByte(_dragonBlockStaff); } }
+        public uint BattleUIColour { get; private set; }
 
         internal Controller() {
             CharacterPoint = Emulator.Memory.CharacterPoint;
@@ -42,7 +47,7 @@ namespace Dragoon_Modifier.Core.Memory.Battle {
             EncounterID = Emulator.Memory.EncounterID;
             var monsterCount = Emulator.Memory.MonsterSize;
             var uniqueMonsterSize = Emulator.Memory.UniqueMonsterSize;
-            UniqueMonsterID = Collections.Factory.Create<ushort>(Emulator.DirectAccess.ReadUShort("UNIQUE_SLOT"), 0x1A8, uniqueMonsterSize);
+            UniqueMonsterID = Collections.Factory.Create<ushort>(Emulator.GetAddress("UNIQUE_SLOT"), 0x1A8, uniqueMonsterSize);
             var rewardsAddress = Emulator.GetAddress("MONSTER_REWARDS");
             RewardsExp = Collections.Factory.Create<ushort>(rewardsAddress, 0x1A8, uniqueMonsterSize);
             RewardsGold = Collections.Factory.Create<ushort>(rewardsAddress + 2, 0x1A8, uniqueMonsterSize);
@@ -71,6 +76,8 @@ namespace Dragoon_Modifier.Core.Memory.Battle {
             _haschelFix = Emulator.GetAddress("HASCHEL_FIX");
             _dragoonSpecial = Emulator.GetAddress("DRAGOON_SPECIAL");
             DragoonAdditionTable = (uint) (Emulator.GetAddress("ADDITION") + GetOffset() + 0x300);
+            BattleUIColour = (uint) Emulator.GetAddress("BATTLE_UI_COLOUR");
+            _dragonBlockStaff = Emulator.GetAddress("DRAGON_BLOCK_STAFF");
         }
 
         private int GetOffset() {
@@ -107,9 +114,9 @@ namespace Dragoon_Modifier.Core.Memory.Battle {
                 cap = 50000;
             }
 
-            Emulator.DirectAccess.WriteUShort(_damageCap, cap);
-            Emulator.DirectAccess.WriteUShort(_damageCap + 0x8, cap);
-            Emulator.DirectAccess.WriteUShort(_damageCap + 0x14, cap);
+            Emulator.DirectAccess.WriteUInt(_damageCap, cap);
+            Emulator.DirectAccess.WriteUInt(_damageCap + 0x8, cap);
+            Emulator.DirectAccess.WriteUInt(_damageCap + 0x14, cap);
         }
     }
 }

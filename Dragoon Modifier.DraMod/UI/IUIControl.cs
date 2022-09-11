@@ -6,5 +6,11 @@
         void WriteGLog(object text);
         void WritePLog(object text);
         void UpdateField(uint battleValue, uint encounterID, uint map);
+        void UpdateQTB(int value);
+        void UpdateMTB(int value, int slot);
+        void UpdateCTB(int value, int slot);
+        int GetQTB();
+        int GetMTB(int slot);
+        int GetCTB(int slot);
     }
 }

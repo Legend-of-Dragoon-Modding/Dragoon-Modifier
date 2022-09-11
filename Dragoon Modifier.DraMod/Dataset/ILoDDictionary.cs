@@ -19,5 +19,6 @@ namespace Dragoon_Modifier.DraMod.Dataset {
         Dictionary<int, IDragoonAddition> DragoonAddition { get; }
         Dictionary<int, IDragoonSpells> DragoonSpell { get; }
         dynamic[][] DragoonStats { get; }
+        Dictionary<ushort, IMonster> UltimateStats { get; }
     }
 }

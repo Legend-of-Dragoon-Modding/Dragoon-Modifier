@@ -9,6 +9,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
         public static void Setup() {
             Constants.UIControl.ResetBattle();
 
+
             if (Settings.Instance.ItemIconChange) {
                 Console.WriteLine("Changing Item icons...");
                 Item.IconChange();

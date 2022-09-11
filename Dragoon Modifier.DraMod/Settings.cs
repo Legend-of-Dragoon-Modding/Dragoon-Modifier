@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -49,6 +50,9 @@ namespace Dragoon_Modifier.DraMod {
         public bool SaveHP = false;
         public bool AspectRatio = false;
         public bool RGBBattleUI = false;
+        public bool RGBBattleUICharacter = false;
+        public bool RGBBattleUICycle = false;
+        public byte[] RGBBattleUIColour = new byte[3];
         public byte NoDart = 0;
         public byte FlowerStorm = 0;
         public byte AspectRatioMode = 0;
@@ -71,10 +75,21 @@ namespace Dragoon_Modifier.DraMod {
 
         //Hard/Hell Mode
         public bool DualDifficulty = false;
+        public bool UltimateBoss = false;
+        public byte UltimateBossSelected = 0;
 
         //Battle Rows
+        public bool BattleRows = false;
+        public byte[] BattleRowsFormation = new byte[9];
+        public byte[] BattleRowsBoost = new byte[9];
 
         //Turn Battle System
+        public bool EATB = false;
+        public bool ATB = false;
+        public bool QTB = false;
+        public int QTBLeader = 0;
+        public int QTBCount = 2;
+        public bool QTBUsedDuringEnemyTurn = false;
 
         //Green Buttons
         public bool BtnAddPartyMembers = false;
@@ -99,7 +114,7 @@ namespace Dragoon_Modifier.DraMod {
         public bool DragoonDescriptionChange = false;
         public bool RemoveHPCap = false;
 
-        public int LoopDelay = 250;
+        public int LoopDelay = 50;
         public int WaitDelay = 50;
 
         private Dataset.ILoDDictionary? _dataset = null;

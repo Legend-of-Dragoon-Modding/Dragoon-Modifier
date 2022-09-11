@@ -19,7 +19,7 @@ namespace Dragoon_Modifier.DraMod {
 
         public bool Attach(string emulatorName, long previousOffset) {
             try {
-                Emulator.Attach(emulatorName, previousOffset);
+                Emulator.Attach(emulatorName, previousOffset, DraMod.Constants.Region);
                 
                 Console.WriteLine($"Emulator offset:        {Convert.ToString(Emulator.EmulatorOffset, 16).ToUpper()}");
                 Console.WriteLine($"Region:                 {Emulator.Region}");

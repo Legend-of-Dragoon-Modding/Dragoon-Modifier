@@ -14,7 +14,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
         public byte[] MDF { get; private set; } = new byte[61];
         public byte[] SPD { get; private set; } = new byte[61];
 
-        internal BaseStats(string path) {
+        internal BaseStats(string path, byte character) {
             path += "\\BaseStats.tsv";
             HP[0] = 0;
             AT[0] = 0;
@@ -23,7 +23,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             MDF[0] = 0;
             SPD[0] = 0;
             try {
-                using (var itemData = new StreamReader(path)) {
+                using (var itemData = Constants.GetMod(path)) {
                     itemData.ReadLine(); // Skip first line
                     int index = 1;
                     while (!itemData.EndOfStream && index < 62) {
