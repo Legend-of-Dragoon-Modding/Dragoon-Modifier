@@ -577,9 +577,6 @@ namespace Dragoon_Modifier.DraMod.Dataset {
         private void GetUltimateData() {
             int i = 0;
 
-            foreach (var names in Assembly.GetExecutingAssembly().GetManifestResourceNames())
-                Console.WriteLine(names);
-
             Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Dragoon_Modifier.DraMod.Resources.Ultimate_Data.tsv");
 
             using (var ultimateData = new StreamReader(stream)) {

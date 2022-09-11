@@ -274,12 +274,11 @@ namespace Dragoon_Modifier.DraMod.Controller {
             UpdateUI();
 
             if (Settings.Instance.UltimateBoss) {
-                Debug.WriteLine($"Ultimate Boss: Party Attack: {ubPartyAttacking} / HP Set: {ubUltimateHPSet}");
-                Debug.WriteLine("Attack Move: " + Emulator.Memory.Battle.MonsterTable[0].AttackMove);
+                //Debug.WriteLine("Attack Move: " + Emulator.Memory.Battle.MonsterTable[0].AttackMove);
                 if (!ubUltimateHPSet)
-                    UltimateBossPartyAttackCheck();
+                    UltimateBossPartyAttacking();
                 if (ubUltimateHPSet)
-                    UltimateBossDamageCheck();
+                    UltimateBossWaitForDamage();
                 if (new ushort[] { 412 }.Contains(Emulator.Memory.EncounterID)) {
                     UltimateBossHealing(0, 3);
                 }
@@ -777,25 +776,24 @@ namespace Dragoon_Modifier.DraMod.Controller {
         }
 
         private static void DamageTracker() {
-            bool partyAttacking = false;
             for (int i = 0; i < Emulator.Memory.Battle.CharacterTable.Length; i++) {
                 byte action = Emulator.Memory.Battle.CharacterTable[i].Action;
                 if (action == 24 || action == 26 || action == 136 || action == 138) {
-                    partyAttacking = true;
                     dmgTrkSlot = i;
                 }
             }
 
-            if (partyAttacking/* || ubCheckDamageCycle > 0*/) {
-                for (int i = 0; i < Emulator.Memory.MonsterSize; i++) {
-                    /*if (ultimateHP[i] > 0) { //TODO Ultimate Boss
-                        if (ultimateHP[i] < dmgTrkHP[i]) {
-                            dmgTrkChr[dmgTrkSlot] += dmgTrkHP[i] - ultimateHP[i];
-                            dmgTrkHP[i] = ultimateHP[i];
-                        } else if (ultimateHP[i] > dmgTrkHP[i]) {
-                            dmgTrkHP[i] = ultimateHP[i];
-                        }
-                    } else {*/
+            for (int i = 0; i < Emulator.Memory.MonsterSize; i++) {
+                if (ultimateHP[i] > 0) { 
+                    if (ultimateHP[i] < dmgTrkHP[i]) {
+                        dmgTrkChr[dmgTrkSlot] += dmgTrkHP[i] - ultimateHP[i];
+                        dmgTrkHP[i] = ultimateHP[i];
+                        Console.WriteLine($"Damage Track: {dmgTrkChr[0]} / {dmgTrkChr[1]} / {dmgTrkChr[2]}");
+                        Constants.UIControl.WriteGLog($"Damage Track: {dmgTrkChr[0]} / {dmgTrkChr[1]} / {dmgTrkChr[2]}");
+                    } else if (ultimateHP[i] > dmgTrkHP[i]) {
+                        dmgTrkHP[i] = ultimateHP[i];
+                    }
+                } else {
                     if (Emulator.Memory.Battle.MonsterTable[i].HP < dmgTrkHP[i]) {
                         dmgTrkChr[dmgTrkSlot] += dmgTrkHP[i] - Emulator.Memory.Battle.MonsterTable[i].HP;
                         dmgTrkHP[i] = Emulator.Memory.Battle.MonsterTable[i].HP;
@@ -804,9 +802,9 @@ namespace Dragoon_Modifier.DraMod.Controller {
                     } else if (Emulator.Memory.Battle.MonsterTable[i].HP > dmgTrkHP[i]) {
                         dmgTrkHP[i] = Emulator.Memory.Battle.MonsterTable[i].HP;
                     }
-                    //}
                 }
             }
+            
             /*Globals.SetCustomValue("Damage Tracker1", dmgTrkChr[0]); //TODO Reader Mode
             Globals.SetCustomValue("Damage Tracker2", dmgTrkChr[1]);
             Globals.SetCustomValue("Damage Tracker3", dmgTrkChr[2]);*/
@@ -1103,51 +1101,20 @@ namespace Dragoon_Modifier.DraMod.Controller {
             Constants.UIControl.UpdateQTB(qtbCount);
         }
 
-        public static void UltimateBossPartyAttackCheck() {
-            UltimateBossPartyAttacking();
-
-            if (ubPartyAttacking && !ubUltimateHPSet) {
-                int i = 0;
-                foreach (var monster in Emulator.Memory.Battle.MonsterTable) {
-                    if (ultimateMaxHP[i] >= 65535 && ultimateHP[i] > 0) {
-                        monster.HP = 65534;
-                        Debug.WriteLine($"[PC] Ultimate Boss HP Slot {i}: {monster.HP}/{monster.MaxHP} - {ultimateHP[i]}/{ultimateMaxHP[i]}");
-                    }
-                    i++;
-                }
-                ubUltimateHPSet = true;
-            }
-
-            if (!ubPartyAttacking) {
-                int i = 0;
-                foreach (var monster in Emulator.Memory.Battle.MonsterTable) {
-                    if (ultimateMaxHP[i] >= 65535 && ultimateHP[i] > 0) {
-                        monster.HP = (ushort) Math.Round(((double) ultimateHP[i] / ultimateMaxHP[i]) * 65534);
-                        Debug.WriteLine($"[PA] Ultimate Boss HP Slot {i}: {monster.HP}/{monster.MaxHP} - {ultimateHP[i]}/{ultimateMaxHP[i]}");
-                    }
-                    i++;
-                }
-                ubUltimateHPSet = false;
-            }
-        }
-
         public static void UltimateBossPartyAttacking() {
             bool guardCheck = false;
-            bool dragoonSpecialCheck = false;
 
             int i = 0;
             int guardSlot = 0;
+            string actionBuilder = " / ";
             foreach (var character in Emulator.Memory.Battle.CharacterTable) {
+                actionBuilder += character.Action + " / ";
                 if (new byte[] { 24, 26, 136, 138 }.Contains(character.Action)) {
                     ubPartyAttacking = true;
 
                     if (character.Action == 136) {
                         guardCheck = true;
                         guardSlot = i;
-                    }
-
-                    if (character.Action == 136) {
-                        dragoonSpecialCheck = true;
                     }
                 }
                 i++;
@@ -1160,15 +1127,61 @@ namespace Dragoon_Modifier.DraMod.Controller {
                     }
                 }
 
-                if (dragoonSpecialCheck) {
-                    if (new byte[] { 18, 19 }.Contains(character.Action)) {
-                        ubPartyAttacking = false;
-                    }
-                }
-
                 if (new byte[] { 8, 10 }.Contains(character.Action)) {
                     ubPartyAttacking = false;
                 }
+            }
+
+            if (!ubPartyAttacking) {
+                i = 0;
+                foreach (var monster in Emulator.Memory.Battle.MonsterTable) {
+                    if (ultimateMaxHP[i] >= 65535 && ultimateHP[i] > 0) {
+                        monster.HP = (ushort) Math.Round(((double) ultimateHP[i] / ultimateMaxHP[i]) * 65534);
+                        Debug.WriteLine($"[NA] Ultimate Boss HP Slot {i}: {monster.HP}/{monster.MaxHP} - {ultimateHP[i]}/{ultimateMaxHP[i]}");
+                    }
+                    i++;
+                }
+                ubUltimateHPSet = false;
+            }
+
+
+            if (ubPartyAttacking && !ubUltimateHPSet) {
+                i = 0;
+                foreach (var monster in Emulator.Memory.Battle.MonsterTable) {
+                    if (ultimateMaxHP[i] >= 65535 && ultimateHP[i] > 0) {
+                        monster.HP = 65534;
+                        Debug.WriteLine($"[PA] Ultimate Boss HP Slot {i}: {monster.HP}/{monster.MaxHP} - {ultimateHP[i]}/{ultimateMaxHP[i]}");
+                    }
+                    i++;
+                }
+                ubUltimateHPSet = true;
+            }
+
+            Debug.WriteLine($"[PC] Ultimate Boss: Party Attack: {ubPartyAttacking} - HP Set: {ubUltimateHPSet} - Action: " + actionBuilder);
+        }
+
+        public static void UltimateBossWaitForDamage() {
+            UltimateBossDamageCheck();
+
+            if (ubPartyAttacking) {
+                string actionBuilder = " / ";
+                bool waitForDamage = false;
+                foreach (var character in Emulator.Memory.Battle.CharacterTable) {
+                    actionBuilder += character.Action + " / ";
+                    if (new byte[] { 0, 2, 8, 10 }.Contains(character.Action)) {
+                        waitForDamage = true;
+                    }
+                }
+
+                if (waitForDamage) {
+                    Debug.WriteLine($"[WW] Ultimate Boss: Party Attack: {ubPartyAttacking} - HP Set: {ubUltimateHPSet} - W4D: {waitForDamage} - Action: " + actionBuilder);
+                    ubPartyAttacking = false;
+                    ubUltimateHPSet = false;
+                    Thread.Sleep(500);
+                    UltimateBossDamageCheck();
+                }
+
+                Debug.WriteLine($"[WD] Ultimate Boss: Party Attack: {ubPartyAttacking} - HP Set: {ubUltimateHPSet} - W4D: {waitForDamage} - Action: " + actionBuilder);
             }
         }
 
@@ -1185,11 +1198,6 @@ namespace Dragoon_Modifier.DraMod.Controller {
                     ubPartyAttacking = ubUltimateHPSet = false;
                 }
                 i++;
-            }
-            if (ubPartyAttacking) {
-                UltimateBossPartyAttacking();
-                if (!ubPartyAttacking)
-                    ubUltimateHPSet = false;
             }
         }
 
@@ -1239,6 +1247,9 @@ namespace Dragoon_Modifier.DraMod.Controller {
             bool finishCheck = true;
             if (new ushort[] { 387, 415, 403 }.Contains(Emulator.Memory.EncounterID)) {
                 if (Emulator.Memory.Battle.MonsterTable[0].HP > 0)
+                    finishCheck = false;
+            } else if (new ushort[] { 449 }.Contains(Emulator.Memory.EncounterID)) {
+                if (Emulator.Memory.Battle.MonsterTable[1].HP > 0)
                     finishCheck = false;
             } else {
                 foreach (var monster in Emulator.Memory.Battle.MonsterTable) {
