@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.Core {
-    public class LoDEncoding {
+    public sealed class LoDEncoding {
         private static readonly Regex _regex = new Regex(@"(<[\s\S]+?>)", RegexOptions.Compiled);
         private static readonly Dictionary<char, ushort> NTA = new Dictionary<char, ushort>() {
             {' ', 0x00 },

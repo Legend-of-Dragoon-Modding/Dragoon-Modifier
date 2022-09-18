@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.Dataset {
-    internal class Equipment : Item, IEquipment {
+    internal sealed class Equipment : Item, IEquipment {
         private static readonly Dictionary<string, byte> _types = new Dictionary<string, byte>() {
             {"weapon", 128 },
             {"armor", 32 },

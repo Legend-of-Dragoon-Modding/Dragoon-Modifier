@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.Core.Memory.Battle {
-    public class Controller : IController {
+    public sealed class Controller : IController {
         private readonly int[] _discOffset = { 0xD80, 0x0, 0x1458, 0x1B0 };
         private readonly int[] _charOffset = { 0x0, 0x180, -0x180, 0x420, 0x540, 0x180, 0x350, 0x2F0, -0x180 };
         private readonly int[] _duoCharOffset = { 0x0, -0x180, 0x180, -0x420, -0x180, -0x540, -0x350, -0x350, -0x2F0 };

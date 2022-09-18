@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.Dataset {
-    public class DragoonSpells : IDragoonSpells {
+    public sealed class DragoonSpells : IDragoonSpells {
         public bool Percentage { get; set; }
         public double Damage { get; set; }
         public byte Accuracy { get; set; }

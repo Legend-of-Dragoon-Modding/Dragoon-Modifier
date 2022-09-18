@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.Core.Memory {
-    internal class UsableItem : Item, IUsableItem {
+    internal sealed class UsableItem : Item, IUsableItem {
         private readonly int _battleNamePointerAddress;
         private readonly int _battleDescriptionPointerAddress;
 

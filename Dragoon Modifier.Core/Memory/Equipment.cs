@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.Core.Memory {
-    internal class Equipment : Item, IEquipment {
+    internal sealed class Equipment : Item, IEquipment {
         public byte SpecialEffect { get { return Emulator.DirectAccess.ReadByte(_baseAddress); } set { Emulator.DirectAccess.WriteByte(_baseAddress, value); } }
         public byte ItemType { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0x1); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0x1, value); } }
         public byte WhoEquips { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0x3); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0x3, value); } }

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.UI {
-    public class MonsterUpdate {
+    public sealed class MonsterUpdate {
         public string Name;
         public int HP;
         public int MaxHP;

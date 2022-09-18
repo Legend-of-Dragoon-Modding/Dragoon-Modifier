@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.Core.Memory.Encounter {
-    public class Slot {
+    public sealed class Slot {
         public Collections.IAddress<ushort> Encounter1 { get; private set; }
         public Collections.IAddress<ushort> Encounter2 { get; private set; }
         public Collections.IAddress<ushort> Encounter3 { get; private set; }

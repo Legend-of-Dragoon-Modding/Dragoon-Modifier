@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.Core.Memory.Encounter {
-    public class Map {
+    public sealed class Map {
         public Collections.IAddress<ushort> Slot { get; private set; }
         public Collections.IAddress<byte> EncounterRate { get; private set; }
         public Collections.IAddress<byte> Background { get; private set; }

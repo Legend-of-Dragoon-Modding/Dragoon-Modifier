@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.Core.Memory.Battle {
-    public class DragoonSpell {
+    public sealed class DragoonSpell {
         protected int _baseAddress;
         protected int spellID;
 

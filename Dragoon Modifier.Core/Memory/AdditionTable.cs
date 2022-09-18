@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.Core.Memory {
-    public class AdditionTable {
+    public sealed class AdditionTable {
         private readonly int _baseAddress;
         private readonly int _multiAddress;
 

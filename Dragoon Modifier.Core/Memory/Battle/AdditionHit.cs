@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.Core.Memory.Battle {
-    public class AdditionHit {
+    public sealed class AdditionHit {
         private readonly int _baseAddress;
 
         public ushort MasterAddition { get { return Emulator.DirectAccess.ReadUShort(_baseAddress); } set { Emulator.DirectAccess.WriteUShort(_baseAddress, value); } }

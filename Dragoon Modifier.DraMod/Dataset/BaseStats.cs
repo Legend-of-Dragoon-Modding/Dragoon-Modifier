@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.Dataset {
-    internal class BaseStats : IBaseStats {
+    internal sealed class BaseStats : IBaseStats {
         public ushort[] HP { get; private set; } = new ushort[61];
         public byte[] AT { get; private set; } = new byte[61];
         public byte[] MAT { get; private set; } = new byte[61];

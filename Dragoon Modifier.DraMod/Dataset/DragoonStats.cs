@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.Dataset {
-    public class DragoonStats : IDragoonStats {
+    public sealed class DragoonStats : IDragoonStats {
 
         public ushort DAT { get; set; }
         public ushort DDF { get; set; }

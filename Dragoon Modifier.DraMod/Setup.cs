@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod {
-    public class Setup {
+    public sealed class Setup {
         public static void Run(UI.IUIControl uiControl) {
             CheckVersion(uiControl);
 

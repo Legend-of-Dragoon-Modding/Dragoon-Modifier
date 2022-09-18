@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.UI {
-    public class CharacterUpdate {
+    public sealed class CharacterUpdate {
         private static readonly string[] _characterNames = new string[] { "Dart", "Lavitz", "Shana", "Rose", "Haschel", "Albert", "Meru", "Kongol", "Miranda" };
 
         public string Name;

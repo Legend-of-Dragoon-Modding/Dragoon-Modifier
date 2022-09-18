@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod {
-    internal class DragoonModifier : IDraMod {
+    internal sealed class DragoonModifier : IDraMod {
         private readonly string _cwd;
 
         internal DragoonModifier(UI.IUIControl uiControl, string cwd) {

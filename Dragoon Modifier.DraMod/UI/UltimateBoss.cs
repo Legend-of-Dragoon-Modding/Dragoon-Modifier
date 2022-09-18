@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.UI {
-    public class UltimateBoss {
+    public sealed class UltimateBoss {
 
         private static ushort[] bossEncounter = { 487, 386, 414, 461, 412, 413, 387, 415, 449, 402, 403, 417, 418, 448, 416, 422, 423, 432, 430, 433, 431, 447, 408, 389, 396, 399, 409, 393, 398, 397, 400, 410, 401, 390, 411, 394, 392, 420, 442, 443 };
         private static byte[] bossField = { 10, 3, 8, 21, 16, 70, 5, 12, 68, 23, 29, 31, 41, 68, 38, 42, 47, 69, 67, 56, 54, 68, 12, 21, 30, 72, 27, 14, 73, 35, 76, 37, 77, 22, 24, 40, 45, 44, 71, 65 };

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.Dataset {
-    public class DragoonAddition : IDragoonAddition {
+    public sealed class DragoonAddition : IDragoonAddition {
         public ushort HIT1 { get; private set; } = 0;
         public ushort HIT2 { get; private set; } = 0;
         public ushort HIT3 { get; private set; } = 0;

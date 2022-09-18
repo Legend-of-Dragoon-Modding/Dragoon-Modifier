@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.Core.Memory.Battle {
-    public class Character : Entity {
+    public sealed class Character : Entity {
         private readonly int _menuBlock;
         private readonly int _dragoonTurns;
         private readonly int _slot;

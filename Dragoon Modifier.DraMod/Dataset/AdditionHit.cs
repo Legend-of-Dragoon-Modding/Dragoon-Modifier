@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.Dataset {
-    public class AdditionHit {
+    public sealed class AdditionHit {
         public readonly ushort Damage = 0;
         public readonly ushort SP = 0;
         public readonly byte NextHit = 0;

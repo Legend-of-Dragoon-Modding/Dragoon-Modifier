@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.UI {
-    public class DraModShop {
+    public sealed class DraModShop {
 
         //Ultimate Boss Shop
         private static int[] uShopPrices = {

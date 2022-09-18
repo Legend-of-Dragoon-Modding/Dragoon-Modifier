@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.Core.Memory {
-    internal class Controller : IController {
+    internal sealed class Controller : IController {
         private readonly int _disc;
         private readonly int _chapter;
         private readonly int _mapId;

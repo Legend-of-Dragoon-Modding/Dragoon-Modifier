@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.Core.Memory {
-    public class FieldPosition {
+    public sealed class FieldPosition {
         private int _baseAddress;
 
         public int X { get { return Emulator.DirectAccess.ReadInt(GetPointer() + 0x12C); } set { Emulator.DirectAccess.WriteInt(GetPointer() + 0x12C, value); } }

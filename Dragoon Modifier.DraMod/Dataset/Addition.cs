@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.Dataset {
-    public class Addition {
+    public sealed class Addition {
         public const ushort EndFlag = 0x4;
         public const ushort RegularAddition = 0xC0;
         public const ushort MasterAddition = 0xE0;

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.Core.Memory {
-    public class CharacterStatTable {
+    public sealed class CharacterStatTable {
         private static readonly byte[] _reorderCharacter = new byte[] { 1, 4, 6, 5, 2, 4, 3, 0, 6 };
 
         private readonly StatTable[] _statTable = new StatTable[7];
@@ -26,7 +26,7 @@ namespace Dragoon_Modifier.Core.Memory {
         }
 
 
-        public class StatTable {
+        public sealed class StatTable {
             public Collections.IAddress<ushort> MaxHP;
             public Collections.IAddress<byte> SPD;
             public Collections.IAddress<byte> AT;

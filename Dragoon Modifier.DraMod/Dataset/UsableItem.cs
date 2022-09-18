@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.Dataset {
-    internal class UsableItem : Item, IUsableItem {
+    internal sealed class UsableItem : Item, IUsableItem {
         private static readonly Dictionary<string, byte> _damageBases = new Dictionary<string, byte>() {
             {"", 0x0 },
             {"none", 0x0 },

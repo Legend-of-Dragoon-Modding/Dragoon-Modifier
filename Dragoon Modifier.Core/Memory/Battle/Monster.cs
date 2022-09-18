@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.Core.Memory.Battle {
-    public class Monster : Entity {
+    public sealed class Monster : Entity {
         private readonly int _rewardsAddress;
         private readonly int _idAddress;
         private readonly int _nameAddress;

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.Core.Memory {
-    public class SecondaryCharacterTable {
+    public sealed class SecondaryCharacterTable {
         private static readonly byte[] _additionCounts = new byte[] { 7, 5, 0, 4, 6, 5, 5, 3, 0 };
 
         private readonly int _baseAddress;

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.Core.Memory {
-    public class CurrentShop {
+    public sealed class CurrentShop {
         private readonly int _baseAddress;
 
         public byte ItemCount { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0x44); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0x44, value); } }

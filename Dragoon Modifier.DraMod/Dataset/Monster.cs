@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.Dataset {
-    internal class Monster : IMonster {
+    internal sealed class Monster : IMonster {
         private static readonly Dictionary<string, byte> _specialEffects = new Dictionary<string, byte>() {
             { "", 0 },
             { "none", 0 },
