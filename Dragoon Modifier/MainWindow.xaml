@@ -1208,7 +1208,7 @@
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.ColumnSpan="2" Text="Hero Compition Shop" Foreground="White" FontWeight="Bold" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Grid.ColumnSpan="2" Text="Hero Competition Shop" Foreground="White" FontWeight="Bold" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <TextBlock Grid.Row="3" Grid.ColumnSpan="2" Text="Ultimate Boss Shop" Foreground="White" FontWeight="Bold" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <Button x:Name="btnHeroTicketShop" Grid.Row="1" Grid.Column="1" Content="Buy Ticket" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
                     <Button x:Name="btnHeroItemShop" Grid.Row="2" Grid.Column="1" Content="Buy Item" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
