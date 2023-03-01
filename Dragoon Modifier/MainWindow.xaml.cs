@@ -1,30 +1,21 @@
-﻿using System;
-using System.Windows;
-using System.IO;
-using System.Threading;
-using System.Diagnostics;
-using System.Windows.Threading;
-using System.Windows.Media;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.Win32;
+
+using System;
 using System.Collections;
-using System.Windows.Controls;
-using System.Text.RegularExpressions;
-using System.Globalization;
+using System.Collections.Generic;
 using System.ComponentModel;
-using Mono.CSharp;
-using Microsoft.Win32;
-using System.Windows.Input;
-using static Dragoon_Modifier.ReaderWindow;
-using Xceed.Wpf.Toolkit.PropertyGrid.Editors;
-using Dragoon_Modifier.Properties;
-using Xceed.Wpf.AvalonDock.Properties;
-using System.Reflection;
-using ControlzEx.Standard;
-using System.Text.Json;
+using System.IO;
+using System.Linq;
 using System.Net;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+using System.Text.Json;
+using System.Threading;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Threading;
+
+using static Dragoon_Modifier.ReaderWindow;
 
 namespace Dragoon_Modifier {
     public partial class MainWindow {
@@ -386,8 +377,8 @@ namespace Dragoon_Modifier {
                 InitUI();
                 LoadKey();
                 Globals.DICTIONARY = new LoDDict();
-                
-                
+
+
                 try {
                     using (WebClient client = new WebClient()) { // This should have a timeout
                         client.Headers.Add("user-agent", "Anything");
@@ -402,7 +393,7 @@ namespace Dragoon_Modifier {
                         }
                     }
                 } catch (Exception e) { }
-                
+
                 if (Constants.EMULATOR_ID != 255) {
                     SetupEmulator(true);
                 } else {
@@ -669,10 +660,10 @@ namespace Dragoon_Modifier {
             lstTicketShop.Items.Add("1 Ticket / 15 G");
             lstTicketShop.Items.Add("5 Tickets / 60 G");
             lstTicketShop.Items.Add("10 Tickets / 100 G");
-            lstHeroShop.Items.Add("Spirit Poition/20 Tickets");
-            lstHeroShop.Items.Add("Total Vanishing/40 Tickets");
-            lstHeroShop.Items.Add("Healing Rain/60 Tickets");
-            lstHeroShop.Items.Add("Moon Serenade/100 Tickets");
+            lstHeroShop.Items.Add("Spirit Potion / 20 Tickets");
+            lstHeroShop.Items.Add("Total Vanishing / 40 Tickets");
+            lstHeroShop.Items.Add("Healing Rain / 60 Tickets");
+            lstHeroShop.Items.Add("Moon Serenade / 100 Tickets");
             lstUltimateShop.Items.Add("Spirit Eater / 70,000 G");
             lstUltimateShop.Items.Add("Harpoon / 70,000 G");
             lstUltimateShop.Items.Add("Element Arrow / 70,000 G");
@@ -1105,7 +1096,7 @@ namespace Dragoon_Modifier {
                         System.Drawing.Bitmap bitmap = newIcon.ToBitmap();
                         IntPtr hBitmap = bitmap.GetHbitmap();
                         this.Icon = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, Int32Rect.Empty, System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
-                    } 
+                    }
 
                     if ((Globals.BATTLE_VALUE > 3840 && Globals.BATTLE_VALUE <= 5120) && currentIconState != 2) {
                         currentIconState = 2;
@@ -1113,16 +1104,16 @@ namespace Dragoon_Modifier {
                         System.Drawing.Bitmap bitmap = newIcon.ToBitmap();
                         IntPtr hBitmap = bitmap.GetHbitmap();
                         this.Icon = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, Int32Rect.Empty, System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
-                    } 
-                    
+                    }
+
                     if ((Globals.BATTLE_VALUE > 2560 && Globals.BATTLE_VALUE <= 3840) && currentIconState != 1) {
                         currentIconState = 1;
                         System.Drawing.Icon newIcon = Properties.Resources.Icon_Yellow;
                         System.Drawing.Bitmap bitmap = newIcon.ToBitmap();
                         IntPtr hBitmap = bitmap.GetHbitmap();
                         this.Icon = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, Int32Rect.Empty, System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
-                    } 
-                    
+                    }
+
                     if (Globals.BATTLE_VALUE <= 2560 && currentIconState != 0) {
                         currentIconState = 0;
                         System.Drawing.Icon newIcon = Properties.Resources.Icon_Blue;
@@ -1392,7 +1383,7 @@ namespace Dragoon_Modifier {
                                     Constants.WriteGLogOutput("Added Dart's Dragoon.");
                                     Globals.LAST_HOTKEY = Constants.GetTime();
                                 }
-                                
+
                                 if (Globals.CheckDMScript("btnSoloMode") || Globals.CheckDMScript("btnDuoMode")) {
                                     for (int i = 0; i < 9; i++) {
                                         Emulator.WriteInt("CHAR_TABLE", 0, 0x0 + 0x2C * i);  // EXP
@@ -1437,7 +1428,7 @@ namespace Dragoon_Modifier {
                                             Globals.LAST_HOTKEY = Constants.GetTime();
                                         }
                                     }
-                                } 
+                                }
                             } else if (Globals.HOTKEY == (Hotkey.KEY_SQUARE + Hotkey.KEY_CROSS)) { //Faust Battle
                                 if (!Globals.DIFFICULTY_MODE.Equals("Normal")) {
                                     if (Globals.MAP == 732) {
@@ -1889,7 +1880,7 @@ namespace Dragoon_Modifier {
         #endregion
 
         #region Shop Changes
-        
+
         public void ShopChanges() {
             if (Globals.GAME_STATE != 1 && SHOP_MAPS.Contains((int) Globals.MAP)) {
                 if (Emulator.ReadByte("SHOP_DISC_SWAP") == 0) {
@@ -2076,7 +2067,7 @@ namespace Dragoon_Modifier {
                     Emulator.ReadByte(address2 + 0xDC + 0x3) >= 80)) {
                     Emulator.WriteByte(address + 0xE * 4 + 0x70, 21); //Flower Storm
                 }
-                
+
                 //Rose
                 Emulator.WriteByte(address + 0xE * 1 + 0xC4, 8); //More & More
                 Emulator.WriteByte(address + 0xE * 2 + 0xC4, 15); //Hard Blade
@@ -2689,7 +2680,7 @@ namespace Dragoon_Modifier {
                             Emulator.WriteByte("PARTY_SLOT", (byte) uiCombo["cboSwitchChar"]);
                         }
                         Constants.WritePLogOutput("No Dart has been activated for Slot 1 and will swap to your select character in battle.");
-                        
+
                     }
                 }
 
@@ -2756,13 +2747,13 @@ namespace Dragoon_Modifier {
 
         public void EquipChangesBattle() {
             if (Globals.GAME_STATE == 1 && Globals.STATS_CHANGED && !equipChangesOnBattleEntry) {
-               
+
             } else {
                 if (Globals.GAME_STATE != 1 && equipChangesOnBattleEntry) {
                     equipChangesOnBattleEntry = false;
                     checkHarpoon = false;
                 } else {
-                    
+
                 }
             }
         }
@@ -5235,7 +5226,7 @@ namespace Dragoon_Modifier {
                 ArrayList singleMagic = new ArrayList();
                 ArrayList wideMagic = new ArrayList();
                 ArrayList powerMagic = new ArrayList();
-                
+
                 int guardingParty = 0;
                 int guardingDragoon = 0;
 
@@ -6283,8 +6274,8 @@ namespace Dragoon_Modifier {
                 if (!this.IsLoaded) {
                     Constants.RUN = false;
                     Thread.Sleep(2000);
-                } 
-                
+                }
+
                 miAttach_Click(null, null);
                 Constants.ProgramInfo();
             }
@@ -6924,7 +6915,7 @@ namespace Dragoon_Modifier {
                 Globals.SHOP_CHANGE = false;
             } else if (btn == btnNormalHard) {
                 btn.Background = new SolidColorBrush(Color.FromArgb(255, 168, 211, 255));
-                btnNormal.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));;
+                btnNormal.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0)); ;
                 btnHard.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
                 btnHardHell.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
                 btnHell.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
@@ -7054,14 +7045,14 @@ namespace Dragoon_Modifier {
         public void HelpTopic() {
             if (cboHelpTopic.SelectedIndex == 0) {
                 txtHelp.Text = "Click on the difficulty tab to change your difficulty or use a preset.\r\n" +
-                    "Click on enhancements tabs to turn on features.\r\n" +
+                    "Click on any enhancement tab to turn on features.\r\n" +
                     "Click on Settings Tab>Settings>Emulator to change your emulator.\r\n" +
                     "Click on Settings Tab>Settings>Region to change your game region.\r\n" +
                     "If everything is setup correctly with your emulator the Encounter Value will display 41215 on the Battle Stats tab. When on the field your Encounter Value will increase when you walk. On the load screen the map id should display 675.\r\n" +
-                    "Please note on emulators ePSXe 2.0 and above, and any other emulator you should follow these addition steps. Open emulator, open game, before you load your save, open Dragoon Modifier. You do not have to do this for ePSXe 1.9.25 and below.\r\n" +
+                    "Please note on emulators ePSXe 2.0 and above, and any other emulator, you should follow these addition steps. Open emulator, open game, before you load your save, open Dragoon Modifier. You do not have to do this for ePSXe 1.9.25 and below.\r\n" +
                     "Please also note to NOT pause the game or speed up the emulator during battle transition to avoid crashing. Let Dragoon Modifier finish the battle setup, you can tell when it is complete when the icon turns green.\r\n" +
-                    "Normal Mode sets the program to a read only state with everything turned off. If your inventory is expanded it will extend it however. To avoid this change to an empty save slot.\r\n" +
-                    "Dragoon Modifier timers are built on the game running at full speed. Please make sure your game is running at full speed, not faster or slower to prevent issues.";
+                    "Normal Mode sets the program to a read only state with everything turned off. If your inventory is expanded it will extend it however. To avoid this change switch to an empty save slot.\r\n" +
+                    "Dragoon Modifier timers are built on the game running at full speed. Please make sure your game is running at full speed, not faster or slower, to prevent issues.";
             } else if (cboHelpTopic.SelectedIndex == 1) {
                 txtHelp.Text = "Encounter Value is how close you are to the next battle. Enemy ID will display the value that determines what monsters show up in battle. Map ID will display where you are in the game.\r\n" +
                     "The top block will display monster stats, the bottom block will display stats.\r\n" +
@@ -7070,7 +7061,7 @@ namespace Dragoon_Modifier {
             } else if (cboHelpTopic.SelectedIndex == 2) {
                 txtHelp.Text = "Presets Hard and Hell mode are plug and play difficulty settings which are locked in. These presets are intended to run on unmodified ISOs. Normal Mode will not do anything unless you have made changes. You can change your current mod loadout and location in Settings Tab>Settings>Mod Options. Hard and Hell Mode have a more detailed changes below.\r\n\r\n" +
                     "Hard Mode\r\nThis preset balances characters, monsters, weapons, additions, boss drops, and is very Dragoon focused. It is intended that you start off with Dragoons using hotkey (CROSS+L1) in starting Map 10. The mod starts off slightly harder than the Japanese version and gets more difficult as you progress through the discs. However you are not meant to grind for EXP in this mode. You can keep everyone at the same level by using Switch EXP in the Enhancements 1 tab up to 80,000 EXP. Dart as well has new Dragoon enhancements called Burn Stacks. Dart can have up to 6 stacks for 20% each and he gains stacks by using Dragoon magic. Select the second red attack icon or the second magic icon to activate a burn stack attack.\r\n\r\n" +
-                    "Hell Mode has the same character, weapon, drop, and dragoon adjustments. However incomplete Additions are punished and you gain about 50% SP from them. To encourage the use of Elemental Bomb the drop rates for magic items are tripled, powerful items are doubled. It is intended for you to start off Hell Mode will all Dragoons with hotkey (CROSS+L1) in Map 10. It is also intended that you use Elemental Bomb, it was left optional as it made Hell Mode easier but it was designed with this turned on. This changes the element of all monsters on the field when a powerful item is used, however you do not have to use this. Monsters are much harder and you may require grinding. You can keep everyone at the same level by using Switch EXP up to 160,000 EXP. In Hell Mode you lose SP after fighting most of the major bosses, if you total SP gained falls below the level threshold you will delevel your Dragoons.\r\n\r\n" +
+                    "Hell Mode has the same character, weapon, drop, and dragoon adjustments. However incomplete Additions are punished and you gain about 50% SP from them. To encourage the use of Elemental Bomb the drop rates for magic items are tripled, powerful items are doubled. It is intended for you to start off Hell Mode with all Dragoons with hotkey (CROSS+L1) in Map 10. It is also intended that you use Elemental Bomb, it was left optional as it made Hell Mode easier but it was designed with this turned on. This changes the element of all monsters on the field when a powerful item is used, however you do not have to use this. Monsters are much harder and you may require grinding. You can keep everyone at the same level by using Switch EXP up to 160,000 EXP. In Hell Mode you lose SP after fighting most of the major bosses, if your total SP gained falls below the level threshold you will delevel your Dragoons.\r\n\r\n" +
                     "Base + Hard (Bosses) uses Hard Mode enhancements but uses normal monster stats for normal encounters (which makes them easier) and uses Hard Mode stats for bosses only.\r\n\r\n" +
                     "Hard + Hell (Bosses) uses Hell Mode enhancements, but uses Hard Mode monster stats for normal encounters and Hell Mode stats for bosses only.\r\n\r\n" +
                     "+\r\nPlus turns on Enrage Mode for bosses only. Originally designed as a part of Hell Mode but separated for the possibility of being too hard.\r\n\r\n" +
@@ -7092,7 +7083,7 @@ namespace Dragoon_Modifier {
                     "Switch Slot 1 Character\r\nTo change Dart out use the \"Switch Slot 1 Character\" button and combobox. You can only switch characters that are in the party. Dart can be switched out now as well through the in-game replacement menu. It may take 1 battle to take effect.\r\n\r\n" +
                     "Aspect Ratio/Advanced Camera\r\nAspect Ratio will change your ratio in battle. If you are on the World Map you can use hotkey (L1 + LEFT) to change it manually. The Advanced Camera combobox beside this will allow you to change some 3D effects to your aspect ratio, however it can glitch some effects.\r\n\r\n" +
                     "Kill BGM\r\nKills the music in field, battle, or both.\r\n\r\n" +
-                    "Switch EXP\r\nAllows you to switch EXP with the charters in both comboboxes. They must be in your party. For Normal/Hard Mode you can swap characters up to 80,000 EXP. In Hell Mode it is 160,000 EXP.\r\n\r\n" +
+                    "Switch EXP\r\nAllows you to switch EXP with the characters in both comboboxes. They must be in your party. For Normal/Hard Mode you can swap characters up to 80,000 EXP. In Hell Mode it is 160,000 EXP.\r\n\r\n" +
                     "New Game+\r\nUnfinished and not usable.";
             } else if (cboHelpTopic.SelectedIndex == 4) {
                 txtHelp.Text = "Battle Rows\r\nCharacters will get stat changes based on their row. You cannot turn this on for Hell Mode.\r\n" +
@@ -7109,7 +7100,7 @@ namespace Dragoon_Modifier {
                     "No Dragoon\r\nRemoves Dragoons in battle.\r\n\r\n" +
                     "Divine Red-Eye\r\nGives Red Eyed Dragoon the same power as Divine Dragoon in Hard & Hell Mode.\r\n\r\n" +
                     "Early Additions\r\nChanges Addition unlock levels.\r\n\r\n" +
-                    "Dart\r\nCrush Dance - 13\r\nMadness Hero - 18\r\nMoon Strike - 23\r\nBlazing Dynmao - 29 if all additions are max level.\r\n\r\n" +
+                    "Dart\r\nCrush Dance - 13\r\nMadness Hero - 18\r\nMoon Strike - 23\r\nBlazing Dynamo - 29 if all additions are max level.\r\n\r\n" +
                     "Lavitz/Albert\r\nRod Typhoon - 10\r\nGust of Wind Dance - 16\r\nFlower Storm - 21 if all additions are max level.\r\n\r\n" +
                     "Rose\r\nMore & More - 8\r\nHard Blade - 15\r\nDemon's Dance - 21 if all additions are max level.\r\n\r\n" +
                     "Kongol\r\nInferno - 10\r\nBone Crush - 20 if all additioins are max level.\r\n\r\n" +
@@ -7125,7 +7116,7 @@ namespace Dragoon_Modifier {
                     "Black Room\r\nIn the forest you can quickly level up additions or practice by using the Black Room. Use hotkey (CIRCLE + R2) to kill monsters in the Black Room. You cannot kill the monsters in Hell mode.\r\n\r\n" +
                     "Zoom\r\nChanges the Zoom value in battle.";
             } else if (cboHelpTopic.SelectedIndex == 6) {
-                txtHelp.Text = "Ultimate Boss\r\nFrom Chapter 4 you can go back to The Forbidden Land to fight tougher versions of bosses. You must be in the correct map per zone and each zone has a reommended level. You can gain lots of Gold from these bosses starting from Zone 3. Each boss is detailed below. The equips are for Hard and Hell mode only.\r\n\r\n" +
+                txtHelp.Text = "Ultimate Boss\r\nFrom Chapter 4 you can go back to The Forbidden Land to fight tougher versions of bosses. You must be in the correct map per zone and each zone has a recommended level. You can gain lots of Gold from these bosses starting from Zone 3. Each boss is detailed below. The equips are for Hard and Hell mode only.\r\n\r\n" +
                     "\r\n\r\nZone 1 - Level 30\r\n\r\n" +
                     "1. Commander - 64,000 HP\r\nDrops Sabre, a +70 AT weapon for Rose.\r\n\r\n" +
                     "2. Fruegel I - 63,000 HP\r\n\r\n" +
@@ -7164,7 +7155,7 @@ namespace Dragoon_Modifier {
                     "32. S Virage I | Head - 320,000 HP | Body - 320,000 HP | Arm - 160,000 HP | 1,000 - 75,000 Gold\r\nThis boss has Gold farming opportunities.\r\nThis boss has countdown changes. For every 40,000 damage, countdown increases. For each countdown increase you get 1,000 Gold each. Killing a body part grants the following gold: 45,000 Gold for the head, 15,000 Gold for the body, 10,000 Gold for the arm.\r\n\r\n" +
                     "33. Kanzas - 396,000 HP | 45,000 Gold\r\nThis boss has Electric Charges, with a maximum of 30 charges. Each charge is released all at once and can be released at any time, each charge grants 5% power on the next attack. Dragoon Addition grants 1 charge. Atomic Mind grants 3 charges and attack down for 3 turns. Thunder Kid grants 5 charges and defense down for 3 turns. Violet Dragon grants 15 charges and instantly releases all charges for this attack and grants power down for 3 turns.\r\n\r\n" +
                     "34. Emperor Doel - 250,000 HP | Dragoon Doel - 750,000 HP | 100,000 Gold\r\nThis boss has Inventory Refresh.\r\nThis boss has Ultimate Enrage Mode.\r\nThis Boss has a Magic Change. Doel can now cast any magic when he is below 75,000 HP and will use elemental weaknesses to his advantage.\r\nThis boss has Enhanced Shield. Doel's Shield when it is about to appear will grant him Damage Immunity. The Shield grants him half damage.\r\nDefeating this boss will increase your inventory to 64 Slots.\r\nIf you are on Hell Mode you will unlock Divine Red-Eyed Dragon mode.\r\n\r\n" +
-                    "35. S Virage II | Head - 333,333 HP | Body - 222,222 HP | Arm 666,666 | 60,000 Gold\r\nThis boss has a modified Shared HP. Attacking the head heals the arm. Each attack to a body part will do 2x damage. Each part healed will recieve 1x HP. Attacking the arm heals the head. Attacking the head heals the body.\r\nThis boss has an enhanced Final Attack.\r\n\r\n" +
+                    "35. S Virage II | Head - 333,333 HP | Body - 222,222 HP | Arm 666,666 | 60,000 Gold\r\nThis boss has a modified Shared HP. Attacking the head heals the arm. Each attack to a body part will do 2x damage. Each part healed will receive 1x HP. Attacking the arm heals the head. Attacking the head heals the body.\r\nThis boss has an enhanced Final Attack.\r\n\r\n" +
                     "36. Divine Dragon - 10,000 HP | 70,000 Gold\r\nThis boss has Armor Guard.\r\nThis Boss has Reverse Dragon Block Staff.\r\nThis boss has Ultimate Enrage Mode.\r\n\r\n" +
                     "37. Lloyd - 666,666 HP | 80,000 Gold\r\nThis boss has modified Ultimate Enrage Mode, Lloyd will increase his AT/MAT stats but lower his DF/MDF stats. Dying by his Dragoon Buster attack will lower his stats, but each time you die Lloyd's base stats increase.\r\nThis boss will remove resistances.\r\nThis boss has a Magic Change every 7%.\r\n\r\n" +
                     "38. Magician Faust - 1,000,000 HP | 120,000 Gold\r\nThis boss has Dragoon Guard.\r\nThis boss has any magic and will play to your weakness and strengths depending on the phase.\r\n\r\n" +
@@ -7178,7 +7169,7 @@ namespace Dragoon_Modifier {
                     "SP Damage - Damages your SP, dragoons are immune to this damage.\r\n" +
                     "Magic Change - Changes magic based on HP intervals. All magic is applicable, Faust and Melbu are the only bosses that can cast Psyche Bomb.\r\n" +
                     "Elemental Shift - Element changes based on the item used.\r\n" +
-                    "Armor Break - Defense drop drastically when a specific monster is targeted.\r\n" +
+                    "Armor Break - Defense drops drastically when a specific monster is targeted.\r\n" +
                     "Shared HP - Attacking one part deals damage to the rest.\r\n" +
                     "Turn Point Damage - Removes turn points on a cetain attack.\r\n" +
                     "Body Damage - Killing one part damages the main part for all of its HP.\r\n" +
@@ -7216,22 +7207,22 @@ namespace Dragoon_Modifier {
                     "Soa's Shield Ring - Sets DF/MDF to 1, Sets A-AV and M-AV to 90, overwrites all equips - Reduces other party members hit accuracy by 20%.\r\n" +
                     "Soa's Siphon Ring - Doubles MAT stats, reduces Dragoon Magic by 70% - Reduces other party members MAT by 20%.";
             } else if (cboHelpTopic.SelectedIndex == 7) {
-                txtHelp.Text = "Hero Competition Shop\r\nAllows you to buy tickets and purchase items from the Hero Compition anywhere.\r\n\r\n" +
+                txtHelp.Text = "Hero Competition Shop\r\nAllows you to buy tickets and purchase items from the Hero Competition anywhere.\r\n\r\n" +
                     "Ultimate Boss Shop\r\n" +
-                    "Allows you to buy new equips from the shop. This equips are only available for Hard & Hell Mode. You can only buy items starting at Chapter 4.";
+                    "Allows you to buy new equips from the shop. These equips are only available for Hard & Hell Mode. You can only buy items starting at Chapter 4.";
             } else if (cboHelpTopic.SelectedIndex == 8) {
                 txtHelp.Text = "Reader Mode will read stats from battle and display them to a window and or write them to a text file for an external application to use.\r\n\r\n" +
-                    "When you open Dragoon Modifier opent Window Config first to load your Reader Mode config. You do not have to do this again once you've done this. Use Add/Change/Delete buttons to add UI elements to the Window, a form will open up to create the display. You can double click items to change them as well, if you can't click the item use Change. On the change windows once you have changed a value, keep it on the same textbox and press enter to update it.\r\n\r\n" +
+                    "When you open Dragoon Modifier, open Window Config first to load your Reader Mode config. You do not have to do this again once you've done this. Use Add/Change/Delete buttons to add UI elements to the Window, a form will open up to create the display. You can double click items to change them as well, if you can't click the item use Change. On the change windows once you have changed a value, keep it on the same textbox and press enter to update it.\r\n\r\n" +
                     "Save will save your current Reader Mode window setup and Load will load a previous setup. Reset will wipe the current setup.\r\n\r\n" +
                     "You can have Dragoon Modifier press a hotkey for you automatically when the Battle UI is open in battle.\r\n\r\n" +
-                    "You have two modes to remove the UI in battle. One is to remove it complete, the other is to remove character display pictures only.\r\n\r\n" +
+                    "You have two modes to remove the UI in battle. One is to remove it completely, the other is to remove character display pictures only.\r\n\r\n" +
                     "For the change forms here are the values you can use for Value/Minimum/Maximum\r\nName, Action, Menu, LV, DLV, HP, Max_HP, MP, Max_MP, SP, Max_SP, Element, Display_Element, AT, OG_AT, MAT, OG_MAT, DF, OG_DF, MDF, OG_MDF, SPD, OG_SPD, Turn, A_HIT, M_HIT, A_AV, M_AV, P_Immune, M_Immune, P_Half, M_Half, E_Immune, E_Half, On_Hit_Status, On_Hit_Status_Chance, Stat_Res, Death_Res, SP_P_Hit, SP_M_Hit, MP_P_Hit, MP_M_Hit, HP_Regen, MP_Regen, SP_Regen, SP_Multi, Revive, Unique_Index, Image, DAT, DMAT, DDF, DMDF, Special_Effect, Guard, Dragoon, Spell_Cast, PWR_AT, PWR_AT_TRN, PWR_MAT, PWR_MAT_TRN, PWR_DF, PWR_DF_TRN, PWR_MDF, PWR_MDF_TRN, ADD_SP_Multi, ADD_DMG_Multi, Weapon, Helmet, Armor, Shoes, Accessory, POS_FB, POS_UD, POS_RL, A_HIT_INC, A_HIT_INC_TRN, M_HIT_INC, M_HIT_INC_TRN, PHYSICAL_IMMUNITY, PHYSICAL_IMMUNITY_TRN, ELEMENTAL_IMMUNITY, ELEMENTAL_IMMUNITY_TRN, SPEED_UP_TRN, SPEED_DOWN_TRN, SP_ONHIT_PHYSICAL, SP_ONHIT_PHYSICAL_TRN, MP_ONHIT_PHYSICAL, MP_ONHIT_PHYSICAL_TRN, SP_ONHIT_MAGIC, SP_ONHIT_MAGIC_TRN, MP_ONHIT_MAGIC, MP_ONHIT_MAGIC_TRN, Color_Map, Burn Stack, Damage Tracker1, Damage Tracker2, Damage Tracker3";
             } else if (cboHelpTopic.SelectedIndex == 9) {
                 txtHelp.Text = "Attach/Detach - Attach or Detach Dragoon Modifier from the emulator. Use this when for example you close ePSXe and reopen it. For RetroArch (and other emulators) please reattach when you are in game or at the load save screen.\r\n" +
                     "Menu - This will wipe, create, or save your current script and mod options. External scripts are in the lists below.\r\n\r\n" +
                     "Settings - Change your Emulator, Game Region, Save Slot, or Mod Options here. Dragoon Modifier will save progress of certain features to your computer. If you want to delete your progress click Delete Current Save. Preset hotkeys are hotkeys that Dragoon Modifier provides and can be turned off.\r\n\r\n" +
-                    "Mod Options - Mods will be placed in the Mods subfolder of Dragoon Modifier and can be accessed through here. You can turn on or off specfic changes.\r\nMonster StatsChanges monster stats.\r\nDrop - Changes what monsters drop.\r\nExp + Gold - Changes the exp and gold rewards for monsters.\r\nAddition - Changes addition damage / sp per hit.\r\nDragoon Stats - Changes stats of dragoons per level.\r\nDragoon Spells - Changes the damage of dragoon spells.\r\nDragoon Additions - Changes the damage of dragoon additions.\r\nItem Stats - Changes the stats of items.\r\nItem Icons - Changes the icons of items on the fields.\r\nItem Names + Descriptions - Changes the name and description of items.\r\nShop - Changes what is displayed in the shop.The item prices are controlled by items spreadsheet.\r\n\r\n\r\n" +
-                    "The list of the four columns below contains external scripts for Dragoon Modifier. Dragoon Modifier requires the Field Controller, Battle Controller, and Hotkey controller to run correctly. Scripts are located in the Scripts sub folder. If something should be run when the player is on the Field should be placed in the Field folder and will display in Dragoon Modifier. Developers will release scripts that will add features not provided by Dragoon Modifier by default. You should only get your scripts from trusted sources.";
+                    "Mod Options - Mods will be placed in the Mods subfolder of Dragoon Modifier and can be accessed through here. You can turn on or off specific changes.\r\nMonster StatsChanges monster stats.\r\nDrop - Changes what monsters drop.\r\nExp + Gold - Changes the exp and gold rewards for monsters.\r\nAddition - Changes addition damage / sp per hit.\r\nDragoon Stats - Changes stats of dragoons per level.\r\nDragoon Spells - Changes the damage of dragoon spells.\r\nDragoon Additions - Changes the damage of dragoon additions.\r\nItem Stats - Changes the stats of items.\r\nItem Icons - Changes the icons of items on the fields.\r\nItem Names + Descriptions - Changes the name and description of items.\r\nShop - Changes what is displayed in the shop. The item prices are controlled by the items spreadsheet.\r\n\r\n\r\n" +
+                    "The list of the four columns below contains external scripts for Dragoon Modifier. Dragoon Modifier requires the Field Controller, Battle Controller, and Hotkey controller to run correctly. Scripts are located in the Scripts sub folder. If something should be run when the player is on the Field, it should be placed in the Field folder and will display in Dragoon Modifier. Developers will release scripts that will add features not provided by Dragoon Modifier by default. You should only get your scripts from trusted sources.";
             } else if (cboHelpTopic.SelectedIndex == 10) {
                 txtHelp.Text = "Field\r\n\r\n" +
                     "L2 + SQAURE       - Shana will use Gates of Heaven outside of battle.\r\n" +
@@ -7263,7 +7254,7 @@ namespace Dragoon_Modifier {
                     "L2 + LEFT         - Activates Soa's Wargod.\r\n" +
                     "L2 + RIGHT        - Activates Soa's Dragoon Boost.\r\n" +
                     "L2 + UP           - Activates Empty Dragoon Crystal.\r\n" +
-                    "L1 + R1           - Activates Adddition Swap in battle if you have no status effects. The number of dragoon spirits the appear are equal to the number of available additions. The additions are ordered from left to right (1 - 7 max, same order as how they appear in the menu), for example Dart's third icon would be Burning Rush. Press Dragoon to automatically transform to switch additions.";
+                    "L1 + R1           - Activates Addition Swap in battle if you have no status effects. The number of dragoon spirits the appear are equal to the number of available additions. The additions are ordered from left to right (1 - 7 max, same order as how they appear in the menu), for example Dart's third icon would be Burning Rush. Press Dragoon to automatically transform to switch additions.";
             } else if (cboHelpTopic.SelectedIndex == 11) {
                 txtHelp.Text = "1. No Dart\r\n" +
                     "When you have three party members use Switch Slot 1 and No Dart should turn on. When you are switching between Solo and Duo Mode or turning them off make sure to turn off No Dart in Enhancements Tab II. To turn off No Dart click the No Dart Mode button in Enhancements Tab 3.\r\n\r\n" +
