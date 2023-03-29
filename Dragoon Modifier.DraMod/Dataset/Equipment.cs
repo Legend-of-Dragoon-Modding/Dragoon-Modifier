@@ -86,7 +86,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
         public byte StatusResistance { get; private set; } = 0;
         public byte SpecialBonus1 { get; private set; } = 0;
         public byte SpecialBonus2 { get; private set; } = 0;
-        public byte SpecialBonusAmmount { get; private set; } = 0;
+        public byte SpecialBonusAmount { get; private set; } = 0;
         public byte SpecialEffect { get; private set; } = 0;
 
         internal Equipment(byte index, string[] values) {
@@ -256,7 +256,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             }
 
             if (Int16.TryParse(values[21], NumberStyles.AllowLeadingSign, null as IFormatProvider, out short skey)) {
-                SpecialBonusAmmount = (byte) skey;
+                SpecialBonusAmount = (byte) skey;
             } else if (values[21] != "") {
                 error.Add($"{values[21]} couldn't be parsed as special ammount");
             }

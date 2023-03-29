@@ -29,5 +29,9 @@ namespace Dragoon_Modifier.Core.Memory.Battle {
         byte IconSelected { get; }
         byte DragonBlockStaff { get; }
         uint BattleUIColour { get; }
+        ushort DamageSlot { get; set; }
+        ushort AutoDragoon1 { get; set; }
+        ushort AutoDragoon2 { get; set; }
+        byte CursorTarget { get; set; }
     }
 }

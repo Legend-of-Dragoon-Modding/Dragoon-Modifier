@@ -1,7 +1,10 @@
-﻿using Dragoon_Modifier.Core;
+﻿using CSScripting;
+
+using Dragoon_Modifier.Core;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,21 +20,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             Constants.UIControl.ResetBattle();
             EarlyAdditionsSet = false;
 
-            if (Settings.Instance.DragoonStatChange) {
-                Console.WriteLine("Changing Dragoon Stats...");
-                long address = Emulator.GetAddress("DRAGOON_STAT_TABLE");
-                int[] charReorder = new int[] { 5, 7, 0, 4, 6, 8, 1, 3, 2 };
-                for (int character = 0; character < 8; character++) {
-                    int reorderedChar = charReorder[character];
-                    for (int level = 1; level < 6; level++) {
-                        Emulator.DirectAccess.WriteUShort(address + character * 0x30 + level * 0x8, Settings.Instance.Dataset.DragoonStats[reorderedChar][level].MP);
-                        Emulator.DirectAccess.WriteByte(address + character * 0x30 + level * 0x8 + 0x4, Settings.Instance.Dataset.DragoonStats[reorderedChar][level].DAT);
-                        Emulator.DirectAccess.WriteByte(address + character * 0x30 + level * 0x8 + 0x5, Settings.Instance.Dataset.DragoonStats[reorderedChar][level].DMAT);
-                        Emulator.DirectAccess.WriteByte(address + character * 0x30 + level * 0x8 + 0x6, Settings.Instance.Dataset.DragoonStats[reorderedChar][level].DDF);
-                        Emulator.DirectAccess.WriteByte(address + character * 0x30 + level * 0x8 + 0x7, Settings.Instance.Dataset.DragoonStats[reorderedChar][level].DMDF);
-                    }
-                }
-            }
+            DragoonSetup();
 
             Settings.Instance.Dataset.Script.FieldSetup();
         }
@@ -57,6 +46,65 @@ namespace Dragoon_Modifier.DraMod.Controller {
             if (Settings.Instance.AdditionChange) {
                 Console.WriteLine("Changing Additions...");
                 Addition.MenuTableChange();
+            }
+        }
+
+        internal static void DragoonSetup() {
+            if (Settings.Instance.DragoonStatChange) {
+                Console.WriteLine("Changing Dragoon Stats...");
+                long address = Emulator.GetAddress("DRAGOON_STAT_TABLE");
+                int[] charReorder = new int[] { 5, 7, 0, 4, 6, 8, 1, 3, 2 };
+                for (int character = 0; character < 9; character++) {
+                    int reorderedChar = charReorder[character];
+                    for (int level = 1; level < 6; level++) {
+                        Console.WriteLine(Settings.Instance.Dataset.DragoonStats[reorderedChar][level].DAT);
+                        Emulator.DirectAccess.WriteUShort(address + character * 0x30 + level * 0x8, (ushort) Settings.Instance.Dataset.DragoonStats[reorderedChar][level].MP);
+                        Emulator.DirectAccess.WriteByte(address + character * 0x30 + level * 0x8 + 0x4, (byte) Settings.Instance.Dataset.DragoonStats[reorderedChar][level].DAT);
+                        Emulator.DirectAccess.WriteByte(address + character * 0x30 + level * 0x8 + 0x5, (byte) Settings.Instance.Dataset.DragoonStats[reorderedChar][level].DMAT);
+                        Emulator.DirectAccess.WriteByte(address + character * 0x30 + level * 0x8 + 0x6, (byte) Settings.Instance.Dataset.DragoonStats[reorderedChar][level].DDF);
+                        Emulator.DirectAccess.WriteByte(address + character * 0x30 + level * 0x8 + 0x7, (byte) Settings.Instance.Dataset.DragoonStats[reorderedChar][level].DMDF);
+                    }
+                }
+
+                if (Settings.Instance.Preset != Preset.Normal && Settings.Instance.Preset != Preset.Custom) {
+                    long nextAddress = Emulator.GetAddress("UNUSED_RAM");
+                    for (int character = 0; character < 9; character++) {
+                        int reorderedChar = charReorder[character];
+                        Emulator.DirectAccess.WriteUInt(Emulator.GetAddress("DRAGOON_STAT_TABLE_POINTER") + 0x4 * reorderedChar, (uint) (0x80000000 + nextAddress));
+
+                        for (int i = 0; i < 0x30; i++) {
+                            Emulator.DirectAccess.WriteByte(nextAddress, Emulator.DirectAccess.ReadByte(address + reorderedChar * 0x30 + i));
+                            nextAddress++;
+                        }
+
+                        Emulator.DirectAccess.WriteUShort(nextAddress, 120);
+                        Emulator.DirectAccess.WriteByte(nextAddress + 2, 255);
+                        Emulator.DirectAccess.WriteByte(nextAddress + 3, 255);
+                        Emulator.DirectAccess.WriteByte(nextAddress + 4, Emulator.DirectAccess.ReadByte(address + reorderedChar * 0x30 + 0x2C));
+                        Emulator.DirectAccess.WriteByte(nextAddress + 5, Emulator.DirectAccess.ReadByte(address + reorderedChar * 0x30 + 0x2D));
+                        Emulator.DirectAccess.WriteByte(nextAddress + 6, Emulator.DirectAccess.ReadByte(address + reorderedChar * 0x30 + 0x2E));
+                        Emulator.DirectAccess.WriteByte(nextAddress + 7, Emulator.DirectAccess.ReadByte(address + reorderedChar * 0x30 + 0x2F));
+                        Emulator.DirectAccess.WriteUShort(nextAddress + 8, 140);
+                        Emulator.DirectAccess.WriteByte(nextAddress + 10, 255);
+                        Emulator.DirectAccess.WriteByte(nextAddress + 11, 255);
+                        Emulator.DirectAccess.WriteByte(nextAddress + 12, Emulator.DirectAccess.ReadByte(address + reorderedChar * 0x30 + 0x2C));
+                        Emulator.DirectAccess.WriteByte(nextAddress + 13, Emulator.DirectAccess.ReadByte(address + reorderedChar * 0x30 + 0x2D));
+                        Emulator.DirectAccess.WriteByte(nextAddress + 14, Emulator.DirectAccess.ReadByte(address + reorderedChar * 0x30 + 0x2E));
+                        Emulator.DirectAccess.WriteByte(nextAddress + 15, Emulator.DirectAccess.ReadByte(address + reorderedChar * 0x30 + 0x2F));
+
+                        Settings.Instance.Dataset.DragoonStats[reorderedChar][6].MP = 120;
+                        Settings.Instance.Dataset.DragoonStats[reorderedChar][7].MP = 140;
+
+                        for (int i = 0; i < 2; i++) {
+                            Settings.Instance.Dataset.DragoonStats[reorderedChar][6 + i].DAT = Settings.Instance.Dataset.DragoonStats[reorderedChar][5].DAT;
+                            Settings.Instance.Dataset.DragoonStats[reorderedChar][6 + i].DMAT = Settings.Instance.Dataset.DragoonStats[reorderedChar][5].DMAT;
+                            Settings.Instance.Dataset.DragoonStats[reorderedChar][6 + i].DDF = Settings.Instance.Dataset.DragoonStats[reorderedChar][5].DDF;
+                            Settings.Instance.Dataset.DragoonStats[reorderedChar][6 + i].DMDF = Settings.Instance.Dataset.DragoonStats[reorderedChar][5].DMDF;
+                        }
+
+                        nextAddress += 16;
+                    }
+                }
             }
         }
 
@@ -175,7 +223,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             if ((Emulator.DirectAccess.ReadByte(address2 + 0x2C) >= 80 &&
                 Emulator.DirectAccess.ReadByte(address2 + 0x2C + 0x1) >= 80 &&
                 Emulator.DirectAccess.ReadByte(address2 + 0x2C + 0x2) >= 80 &&
-                Emulator.DirectAccess.ReadByte(address2 + 0x2C + 0x3) >= 80) || 
+                Emulator.DirectAccess.ReadByte(address2 + 0x2C + 0x3) >= 80) ||
                 (Emulator.DirectAccess.ReadByte(address2 + 0xDC) >= 80 &&
                 Emulator.DirectAccess.ReadByte(address2 + 0xDC + 0x1) >= 80 &&
                 Emulator.DirectAccess.ReadByte(address2 + 0xDC + 0x2) >= 80 &&
@@ -310,6 +358,145 @@ namespace Dragoon_Modifier.DraMod.Controller {
             for (int i = 0; i < Emulator.Memory.Item.Length; i++) {
                 Emulator.Memory.Item[i].NamePointer = (uint) Settings.Instance.Dataset.Item[i].NamePointer;
                 Emulator.Memory.Item[i].DescriptionPointer = (uint) Settings.Instance.Dataset.Item[i].DescriptionPointer;
+            }
+        }
+
+        internal static void BossSPReduction() {
+            int bossSPLoss = 0;
+
+            if (Emulator.Memory.EncounterID == 487) //Marsh Commander
+                bossSPLoss = 500;
+            else if (Emulator.Memory.EncounterID == 386) //Fruegel I
+                bossSPLoss = 250;
+            else if (Emulator.Memory.EncounterID == 414) //Urobolus
+                bossSPLoss = 750;
+            else if (Emulator.Memory.EncounterID == 388) //Kongol I
+                bossSPLoss = 2000;
+            else if (Emulator.Memory.EncounterID == 408) //Virage I
+                bossSPLoss = 250;
+            else if (Emulator.Memory.EncounterID == 415) //Fire Bird
+                bossSPLoss = 1000;
+            else if (Emulator.Memory.EncounterID == 393) //Greham + Ferybrand
+                bossSPLoss = 1500;
+            else if (Emulator.Memory.EncounterID == 412) //Drake the Bandit
+                bossSPLoss = -3;
+            else if (Emulator.Memory.EncounterID == 413) //Jiango
+                bossSPLoss = 500;
+            else if (Emulator.Memory.EncounterID == 387) //Fruegel II
+                bossSPLoss = 1500;
+            else if (Emulator.Memory.EncounterID == 390) //Dragoon Doel
+                bossSPLoss = -4;
+            else if (Emulator.Memory.EncounterID == 402) //Mappi + Craft Theif
+                bossSPLoss = 1000;
+            else if (Emulator.Memory.EncounterID == 409) //Virage II
+                bossSPLoss = 1000;
+            else if (Emulator.Memory.EncounterID == 403) //Gehrich + Mappi
+                bossSPLoss = 2000;
+            else if (Emulator.Memory.EncounterID == 396) //Lenus
+                bossSPLoss = -2;
+            else if (Emulator.Memory.EncounterID == 417) //Ghost Commander
+                bossSPLoss = 1000;
+            else if (Emulator.Memory.EncounterID == 397) //Lenus II
+                bossSPLoss = -4;
+            else if (Emulator.Memory.EncounterID == 410) //S Virage I
+                bossSPLoss = 2000;
+            else if (Emulator.Memory.EncounterID == 416) //Grand Jewel
+                bossSPLoss = 1000;
+            else if (Emulator.Memory.EncounterID == 394) //Divine Dragon
+                bossSPLoss = -2;
+            else if (Emulator.Memory.EncounterID == 392) //Lloyd
+                bossSPLoss = -5;
+            else if (Emulator.Memory.EncounterID == 423) //Polter Set
+                bossSPLoss = 500;
+            else if (Emulator.Memory.EncounterID == 432) //Last Kraken
+                bossSPLoss = -1;
+            else if (Emulator.Memory.EncounterID == 430) //Executioners
+                bossSPLoss = 1000;
+            else if (Emulator.Memory.EncounterID == 431) //Zackwell
+                bossSPLoss = 1000;
+            else if (Emulator.Memory.EncounterID == 433) //Imago
+                bossSPLoss = 1000;
+            else
+                bossSPLoss = 0;
+
+            if (Settings.Instance.UltimateBoss)
+                bossSPLoss = 0;
+
+            if (bossSPLoss != 0) {
+                for (int character = 0; character < 9; character++) {
+                    ushort currentTotalSP = Emulator.Memory.CharacterTable[character].TotalSP;
+                    ushort newSP = Emulator.Memory.CharacterTable[character].TotalSP;
+
+                    if (bossSPLoss > 0)
+                        newSP = (ushort) Math.Max(currentTotalSP - bossSPLoss, 0);
+                    else if (bossSPLoss == -1)
+                        newSP = (ushort) Math.Max(Math.Round(currentTotalSP / 1.2), 0);
+                    else if (bossSPLoss == -2)
+                        newSP = (ushort) Math.Max(currentTotalSP / 2, 0);
+                    else if (bossSPLoss == -3)
+                        newSP = (ushort) Math.Max(currentTotalSP / 2 - 500, 0);
+                    else if (bossSPLoss == -4)
+                        newSP = (ushort) Math.Max(currentTotalSP / 4, 0);
+                    else if (bossSPLoss == -5)
+                        newSP = (ushort) Math.Max(currentTotalSP / 4 - 500, 0);
+
+                    Emulator.Memory.CharacterTable[character].TotalSP = newSP;
+
+                    int dragoonLevel = Emulator.Memory.CharacterTable[character].DragoonLevel;
+
+                    if (character == 0 || character == 3) {
+                        if (newSP < 64000 && dragoonLevel >= 7)
+                            Emulator.Memory.CharacterTable[character].DragoonLevel = 6;
+                        if (newSP < 36000 && dragoonLevel >= 6)
+                            Emulator.Memory.CharacterTable[character].DragoonLevel = 5;
+                        if (newSP < 20000 && dragoonLevel >= 5)
+                            Emulator.Memory.CharacterTable[character].DragoonLevel = 4;
+                        if (newSP < 12000 && dragoonLevel >= 4)
+                            Emulator.Memory.CharacterTable[character].DragoonLevel = 3;
+                        if (newSP < 6000 && dragoonLevel >= 3)
+                            Emulator.Memory.CharacterTable[character].DragoonLevel = 2;
+                        if (newSP < 1200 && dragoonLevel >= 2)
+                            Emulator.Memory.CharacterTable[character].DragoonLevel = 1;
+                    } else if (character == 6 || character == 7) {
+                        if (newSP < 64000 && dragoonLevel >= 7)
+                            Emulator.Memory.CharacterTable[character].DragoonLevel = 6;
+                        if (newSP < 36000 && dragoonLevel >= 6)
+                            Emulator.Memory.CharacterTable[character].DragoonLevel = 5;
+                        if (newSP < 20000 && dragoonLevel >= 5)
+                            Emulator.Memory.CharacterTable[character].DragoonLevel = 4;
+                        if (newSP < 12000 && dragoonLevel >= 4)
+                            Emulator.Memory.CharacterTable[character].DragoonLevel = 3;
+                        if (newSP < 2000 && dragoonLevel >= 3)
+                            Emulator.Memory.CharacterTable[character].DragoonLevel = 2;
+                        if (newSP < 1200 && dragoonLevel >= 2)
+                            Emulator.Memory.CharacterTable[character].DragoonLevel = 1;
+                    } else {
+                        if (newSP < 64000 && dragoonLevel >= 7)
+                            Emulator.Memory.CharacterTable[character].DragoonLevel = 6;
+                        if (newSP < 36000 && dragoonLevel >= 6)
+                            Emulator.Memory.CharacterTable[character].DragoonLevel = 5;
+                        if (newSP < 20000 && dragoonLevel >= 5)
+                            Emulator.Memory.CharacterTable[character].DragoonLevel = 4;
+                        if (newSP < 12000 && dragoonLevel >= 4)
+                            Emulator.Memory.CharacterTable[character].DragoonLevel = 3;
+                        if (newSP < 6000 && dragoonLevel >= 3)
+                            Emulator.Memory.CharacterTable[character].DragoonLevel = 2;
+                        if (newSP < 1000 && dragoonLevel >= 2)
+                            Emulator.Memory.CharacterTable[character].DragoonLevel = 1;
+                    }
+                }
+            }
+        }
+
+        internal static void DragoonLevelUp() {
+            for (int character = 0; character < 9; character++) {
+                int dragoonLevel = Emulator.Memory.CharacterTable[character].DragoonLevel;
+                int currentSP = Emulator.Memory.CharacterTable[character].TotalSP;
+                if (dragoonLevel == 6 && currentSP >= 64000) {
+                    Emulator.Memory.CharacterTable[character].DragoonLevel = 7;
+                } else if (dragoonLevel == 5 && currentSP >= 36000) {
+                    Emulator.Memory.CharacterTable[character].DragoonLevel = 6;
+                }
             }
         }
     }

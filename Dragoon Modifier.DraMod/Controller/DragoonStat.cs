@@ -12,15 +12,14 @@ namespace Dragoon_Modifier.DraMod.Controller {
             long address = Emulator.GetAddress("SECONDARY_CHARACTER_TABLE");
             int dlv = character.DLV;
             uint charID = character.ID;
-
-            Console.WriteLine(Settings.Instance.Dataset.DragoonStats[charID][dlv].DAT + " " + dlv);
+            var s = Emulator.Memory.SecondaryCharacterTable[character.ID];
 
             character.DAT = Settings.Instance.Dataset.DragoonStats[charID][dlv].DAT;
             character.DMAT = Settings.Instance.Dataset.DragoonStats[charID][dlv].DMAT;
             character.DDF = Settings.Instance.Dataset.DragoonStats[charID][dlv].DDF;
             character.DMDF = Settings.Instance.Dataset.DragoonStats[charID][dlv].DMDF;
             double MP_base = Settings.Instance.Dataset.DragoonStats[charID][dlv].MP;
-            double MP_multi = 1 + (double) Emulator.DirectAccess.ReadByte(address + 0x64) / 100;
+            double MP_multi = 1 + (double) s.MP_Multi / 100;
             ushort MP_Max = (ushort) (MP_base * MP_multi);
             ushort MP_Curr = Math.Min(Emulator.DirectAccess.ReadUShort("CHAR_TABLE", (int) (charID * 0x2C) + 0xA), MP_Max);
             character.MP = MP_Curr;

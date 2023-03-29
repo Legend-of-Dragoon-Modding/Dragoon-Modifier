@@ -95,7 +95,7 @@ namespace Dragoon_Modifier.DraMod {
         }
 
         public static StreamReader GetMod(string directory) {
-            if (Settings.Instance.Preset == DraMod.Preset.Normal) {
+            if (Settings.Instance.Preset == DraMod.Preset.Normal || Settings.Instance.Preset == DraMod.Preset.Custom) {
                 return new StreamReader(directory);
             } else {
                 string embeddedResource = "";

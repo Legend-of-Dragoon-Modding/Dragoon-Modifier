@@ -3,6 +3,7 @@ using Dragoon_Modifier.DraMod.Dataset;
 using Dragoon_Modifier.DraMod.UI;
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -127,9 +128,9 @@ namespace Dragoon_Modifier.DraMod.Controller {
         static byte eleBombSlot = 0;
         static byte eleBombElement = 0;
         static bool eleBombChange = false;
-        static ushort[] eleBombOldElement = { 0, 0, 0, 0, 0 };
+        static ushort[] eleBombOldElement = { 0, 0, 0, 0, 0, 0 };
         //Enrage
-        static byte[] enragedMode = { 0, 0, 0, 0, 0 };
+        static byte[] enragedMode = { 0, 0, 0, 0, 0, 0 };
         static bool enrageBoss = false;
 
         //Damage Tracker
@@ -156,11 +157,25 @@ namespace Dragoon_Modifier.DraMod.Controller {
         static int[] ultimateMaxHP = new int[6];
         static bool ubUltimateHPSet = false;
         static bool ubPartyAttacking = false;
+        static ushort[] ubWHP = new ushort[3];
+        static ushort[] ubWMHP = new ushort[3];
+        static bool ubHealthSteal = false;
+        static ushort ubHealthStealDamage = 0;
+        static bool ubMoveChange = false;
+        static bool ubMoveChangeSet = false;
+        static ushort[] ubMoveChangeTurn = new ushort[6];
+        static bool ubUltimateEnrage = false;
+        static bool ubElementalShift = false;
+        static double ubMagicChangeTurns = 0;
+        static byte ubArmorShellTurns = 0;
+        static ushort ubHeartHPSave = 0;
+        static ushort ubArmorShellTP = 0;
+        static bool ubSharedHP = false;
 
         static readonly List<Hotkey> hotkeys = BattleHotkeys.Load();
 
         public static void Setup() {
-            Console.WriteLine("Battle detected. Loading..."); 
+            Console.WriteLine("Battle detected. Loading...");
 
             firstDamageCapRemoval = false;
             lastItemUsedDamageCap = 0;
@@ -176,6 +191,9 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 if (Constants.Run && Emulator.Memory.GameState != GameState.Battle) {
                     return;
                 }
+                if (Settings.Instance.RemoveHPCap) {
+                    Emulator.DirectAccess.WriteShort(Emulator.GetAddress("FIELD_HP_CAP_4"), 30000);
+                }
                 Thread.Sleep(Settings.Instance.WaitDelay);
             }
 
@@ -187,6 +205,13 @@ namespace Dragoon_Modifier.DraMod.Controller {
             Debug.WriteLine("Unique Monsters:     " + Emulator.Memory.UniqueMonsterSize);
             Debug.WriteLine("Monster IDs:         " + String.Join(", ", Emulator.Memory.Battle.MonsterID));
 
+            if (Settings.Instance.Preset != Preset.Normal && Settings.Instance.Preset != Preset.Custom) {
+                SpecialEquips.Reset();
+                Emulator.Memory.BattleSPCap = 700;
+            }
+
+            ubElementalShift = false;
+            ubSharedHP = false;
 
             for (int i = 0; i < Emulator.Memory.MonsterSize; i++) {
                 /*if (ultimateHP[i] > 0) { //TODO Ultimate boss
@@ -258,12 +283,56 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             if (Settings.Instance.UltimateBoss) {
                 ubUltimateHPSet = ubPartyAttacking = false;
-                if (new ushort[] { 413, 415 }.Contains(Emulator.Memory.EncounterID)) {
+                if (new ushort[] { 413, 415, 403, 390 }.Contains(Emulator.Memory.EncounterID)) {
                     UltimateZeroSPStart();
                 }
 
                 if (new ushort[] { 415 }.Contains(Emulator.Memory.EncounterID)) {
                     UltimateMPAttackStart();
+                }
+
+                if (new ushort[] { 417 }.Contains(Emulator.Memory.EncounterID)) {
+                    int i = 0;
+                    foreach (var character in Emulator.Memory.Battle.CharacterTable) {
+                        ubWHP[i] = character.HP;
+                        ubWMHP[i] = character.MaxHP;
+                        i++;
+                    }
+                }
+
+                if (new ushort[] { 418 }.Contains(Emulator.Memory.EncounterID)) {
+                    int i = 0;
+                    foreach (var monster in Emulator.Memory.Battle.MonsterTable) {
+                        ubMoveChangeTurn[i] = 500;
+                    }
+                    ubMoveChangeSet = false;
+                }
+
+                if (new ushort[] { 416 }.Contains(Emulator.Memory.EncounterID)) {
+                    ubMagicChangeTurns = 0;
+                    ubElementalShift = true;
+                }
+
+                if (new ushort[] { 422 }.Contains(Emulator.Memory.EncounterID)) {
+                    ubArmorShellTurns = 0;
+                    ubHeartHPSave = Emulator.Memory.Battle.MonsterTable[3].HP;
+                }
+
+                if (new ushort[] { 423 }.Contains(Emulator.Memory.EncounterID)) {
+                    ubSharedHP = true;
+                }
+                /* ULTIMATE BOSS TODO
+
+                if (new ushort[] { 393 }.Contains(Emulator.Memory.EncounterID)) {
+                    UltimateBossRemoveResistances();
+                }
+
+                */
+            }
+
+            if (Settings.Instance.RemoveHPCap) {
+                if (Emulator.DirectAccess.ReadShort(Emulator.GetAddress("FIELD_HP_CAP_1")) == 10000) {
+                    Emulator.DirectAccess.WriteShort(Emulator.GetAddress("FIELD_HP_CAP_4"), 30000);
                 }
             }
         }
@@ -279,8 +348,11 @@ namespace Dragoon_Modifier.DraMod.Controller {
                     UltimateBossPartyAttacking();
                 if (ubUltimateHPSet)
                     UltimateBossWaitForDamage();
-                if (new ushort[] { 412 }.Contains(Emulator.Memory.EncounterID)) {
-                    UltimateBossHealing(0, 3);
+                if (new ushort[] { 412, 416 }.Contains(Emulator.Memory.EncounterID)) {
+                    if (Emulator.Memory.EncounterID == 412)
+                        UltimateBossHealing(0, 3);
+                    //if (Emulator.Memory.EncounterID == 416)
+                    //    UltimateBossHealing(0, 1);
                 }
                 if (new ushort[] { 414, 415 }.Contains(Emulator.Memory.EncounterID)) {
                     if (Emulator.Memory.EncounterID == 414)
@@ -288,6 +360,105 @@ namespace Dragoon_Modifier.DraMod.Controller {
                     if (Emulator.Memory.EncounterID == 415)
                         UltimateBossGuardBreak(0, 0);
                 }
+                if (new ushort[] { 417 }.Contains(Emulator.Memory.EncounterID)) {
+                    UltimateBossHealthSteal(0, 2);
+                }
+                if (new ushort[] { 417 }.Contains(Emulator.Memory.EncounterID)) {
+                    UltimateBossWoundDamage(0, 0);
+                }
+                if (new ushort[] { 418 }.Contains(Emulator.Memory.EncounterID)) {
+                    UltimateBossMoveChange(0, 2, 25);
+                }
+                if (new ushort[] { 418 }.Contains(Emulator.Memory.EncounterID)) {
+                    if (ultimateHP[0] > 150000)
+                        UltimateBossSPAttack(0, 1, 25, 231, 2);
+                    else if (ultimateHP[0] > 75000)
+                        UltimateBossSPAttack(0, 1, 50, 206, 2);
+                    else
+                        UltimateBossSPAttack(0, 1, 125, 156, 2);
+                }
+                if (new ushort[] { 416, 396, 390, 395, 270, 344, 421, 443 }.Contains(Emulator.Memory.EncounterID)) {
+                    if (Emulator.Memory.EncounterID == 416) {
+                        double hpDamage = ultimateMaxHP[0] - ultimateHP[0];
+                        if ((hpDamage / ultimateMaxHP[0]) * 10 >= ubMagicChangeTurns) {
+                            UltimateBossMagicChange();
+                        }
+                        UltimateBossElementalShift();
+                    } else if (Emulator.Memory.EncounterID == 396) {
+                        double hpDamage = ultimateMaxHP[0] - ultimateHP[0];
+                        if ((hpDamage / ultimateMaxHP[0]) * 20 >= ubMagicChangeTurns) {
+                            UltimateBossMagicChange();
+                        }
+                    }
+                }
+                if (new ushort[] { 422 }.Contains(Emulator.Memory.EncounterID)) {
+                    UltimateBossArmorBreak();
+                }
+
+                if (Emulator.Memory.EncounterID == 432) {
+                    Emulator.Memory.Battle.MonsterTable[0].Pos_RL = 0;
+                }/* ULTIMATE BOSS TODO
+
+                if (new ushort[] { 399 }.Contains(Emulator.Memory.EncounterID)) {
+                    UltimateBossTurnPointDamage();
+                }
+
+                if (new ushort[] { 410 }.Contains(Emulator.Memory.EncounterID)) {
+                    UltimateBossBodyDamage();
+                }
+
+                if (new ushort[] { 393, 397 }.Contains(Emulator.Memory.EncounterID) && ubDragonBondMode != 999) {
+                    UltimateBossDragoonBond();
+                }
+
+                if (new ushort[] { 398 }.Contains(Emulator.Memory.EncounterID)) {
+                    UltimateBossMenuBlock();
+                }
+
+                if (new ushort[] { 400 }.Contains(Emulator.Memory.EncounterID)) {
+                    UltimateBossAccuracyLoss();
+                    UltimateBossPowerDownDefense();
+                    UltimateBossSpeedDown();
+                }
+
+                if (new ushort[] { 401 }.Contains(Emulator.Memory.EncounterID)) {
+                    UltimateBossPowerDownAttack();
+                    UltimateBossPowerDownDefense();
+                    UltimateBossPowerDownFull();
+                    UltimateBossElectricCharge();
+                }
+
+                if (new ushort[] { 390 }.Contains(Emulator.Memory.EncounterID)) {
+                    UltimateBossInventoryRefresh();
+                    UltimateBossEnrage();
+                    UltimateBossEnhancedShield();
+                }
+
+                if (new ushort[] { 411 }.Contains(Emulator.Memory.EncounterID)) {
+                    UltimateBossBodyProtect();
+                    UltimateBossFinalAttack();
+                }
+
+                if (new ushort[] { 395 }.Contains(Emulator.Memory.EncounterID)) {
+                    UltimateBossReverseDragonBlockStaff();
+                    UltimateBossEnrage();
+                    UltimateBossArmorGuard();
+                }
+
+                if (new ushort[] { 393 }.Contains(Emulator.Memory.EncounterID)) {
+                    UltimateBossEnrage();
+                    UltimateBossRemoveResistances();
+                }
+
+                if (new ushort[] { 442 }.Contains(Emulator.Memory.EncounterID)) {
+                    UltimateBossEnrage();
+                    UltimateBossDragoonChangeMove();
+                }
+
+                if (new ushort[] { 443 }.Contains(Emulator.Memory.EncounterID)) {
+                    UltimateMelbu();
+                }*/
+
                 UltimateBossFinishCheck();
             }
 
@@ -469,8 +640,6 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 Emulator.Memory.Battle.CharacterTable[slot].SetStats(characterID);
             }
 
-            Settings.Instance.Dataset.Script.BattleSetup();
-
             if (Settings.Instance.AdditionChange) {
                 Console.WriteLine("Changing Additions...");
                 foreach (var character in Emulator.Memory.Battle.CharacterTable) {
@@ -514,6 +683,8 @@ namespace Dragoon_Modifier.DraMod.Controller {
                     DragoonStat.WriteDragoonStatTable(slot, Emulator.Memory.Battle.CharacterTable[slot]);
                 }
             }
+
+            Settings.Instance.Dataset.Script.BattleSetup();
         }
 
         private static void RemoveDamageCaps() {
@@ -565,8 +736,8 @@ namespace Dragoon_Modifier.DraMod.Controller {
         }
 
         private static void ElementalBomb() {
-            //if (ubElementalShift) TODO Ultimate Boss
-            //    return;
+            if (ubElementalShift)
+                return;
 
             if (eleBombTurns == 0) {
                 eleBombItemUsed = Emulator.Memory.Battle.ItemUsed;
@@ -727,14 +898,14 @@ namespace Dragoon_Modifier.DraMod.Controller {
         }
 
         private static void EnrageMode(int i = 0) {
-            if ((Settings.Instance.EnrageBossOnly && CheckEnrageBoss()) || Settings.Instance.EnrageMode) { //TODO Ultimate Boss
+            if (((Settings.Instance.EnrageBossOnly && CheckEnrageBoss()) || Settings.Instance.EnrageMode) && !ubUltimateEnrage) {
                 var monster = Emulator.Memory.Battle.MonsterTable[i];
                 if (enragedMode[i] == 0 && (monster.HP <= (monster.MaxHP / 2))) {
                     monster.AT = (ushort) Math.Round(monster.OG_AT * 1.1);
                     monster.MAT = (ushort) Math.Round(monster.OG_MAT * 1.1);
                     monster.DF = (ushort) Math.Round(monster.OG_DF * 1.1);
                     monster.MDF = (ushort) Math.Round(monster.OG_MDF * 1.1);
-                    return;
+                    enragedMode[i] = 1;
                 }
 
                 if (enragedMode[i] == 1 && (monster.HP <= (monster.MaxHP / 4))) {
@@ -742,6 +913,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                     monster.MAT = (ushort) Math.Round(monster.OG_MAT * 1.25);
                     monster.DF = (ushort) Math.Round(monster.OG_DF * 1.25);
                     monster.MDF = (ushort) Math.Round(monster.OG_MDF * 1.25);
+                    enragedMode[i] = 2;
                 }
             }
         }
@@ -755,6 +927,12 @@ namespace Dragoon_Modifier.DraMod.Controller {
             return false;
         }
 
+        private static bool CheckEnrage() {
+            if (((Settings.Instance.EnrageBossOnly && CheckEnrageBoss()) || Settings.Instance.EnrageMode) && !ubUltimateEnrage)
+                return true;
+            return false;
+        }
+
         private static void NoHPDecaySoulEater() {
             if (!(Emulator.Memory.CharacterTable[0].Weapon == 7)) {
                 return;
@@ -762,7 +940,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             if (Settings.Instance.ItemStatChange) {
                 Dataset.IEquipment soulEater = (Dataset.IEquipment) Settings.Instance.Dataset.Item[7];
-                Emulator.Memory.SecondaryCharacterTable[0].HP_Regen -= (sbyte) soulEater.SpecialBonusAmmount;
+                Emulator.Memory.SecondaryCharacterTable[0].HP_Regen -= (sbyte) soulEater.SpecialBonusAmount;
                 return;
             }
 
@@ -776,33 +954,37 @@ namespace Dragoon_Modifier.DraMod.Controller {
         }
 
         private static void DamageTracker() {
-            for (int i = 0; i < Emulator.Memory.Battle.CharacterTable.Length; i++) {
-                byte action = Emulator.Memory.Battle.CharacterTable[i].Action;
-                if (action == 24 || action == 26 || action == 136 || action == 138) {
-                    dmgTrkSlot = i;
+            try {
+                for (int i = 0; i < Emulator.Memory.Battle.CharacterTable.Length; i++) {
+                    byte action = Emulator.Memory.Battle.CharacterTable[i].Action;
+                    if (action == 24 || action == 26 || action == 136 || action == 138) {
+                        dmgTrkSlot = i;
+                    }
                 }
-            }
 
-            for (int i = 0; i < Emulator.Memory.MonsterSize; i++) {
-                if (ultimateHP[i] > 0) { 
-                    if (ultimateHP[i] < dmgTrkHP[i]) {
-                        dmgTrkChr[dmgTrkSlot] += dmgTrkHP[i] - ultimateHP[i];
-                        dmgTrkHP[i] = ultimateHP[i];
-                        Console.WriteLine($"Damage Track: {dmgTrkChr[0]} / {dmgTrkChr[1]} / {dmgTrkChr[2]}");
-                        Constants.UIControl.WriteGLog($"Damage Track: {dmgTrkChr[0]} / {dmgTrkChr[1]} / {dmgTrkChr[2]}");
-                    } else if (ultimateHP[i] > dmgTrkHP[i]) {
-                        dmgTrkHP[i] = ultimateHP[i];
-                    }
-                } else {
-                    if (Emulator.Memory.Battle.MonsterTable[i].HP < dmgTrkHP[i]) {
-                        dmgTrkChr[dmgTrkSlot] += dmgTrkHP[i] - Emulator.Memory.Battle.MonsterTable[i].HP;
-                        dmgTrkHP[i] = Emulator.Memory.Battle.MonsterTable[i].HP;
-                        Console.WriteLine($"Damage Track: {dmgTrkChr[0]} / {dmgTrkChr[1]} / {dmgTrkChr[2]}");
-                        Constants.UIControl.WriteGLog($"Damage Track: {dmgTrkChr[0]} / {dmgTrkChr[1]} / {dmgTrkChr[2]}");
-                    } else if (Emulator.Memory.Battle.MonsterTable[i].HP > dmgTrkHP[i]) {
-                        dmgTrkHP[i] = Emulator.Memory.Battle.MonsterTable[i].HP;
+                for (int i = 0; i < Emulator.Memory.MonsterSize; i++) {
+                    if (ultimateHP[i] > 0) {
+                        if (ultimateHP[i] < dmgTrkHP[i]) {
+                            dmgTrkChr[dmgTrkSlot] += dmgTrkHP[i] - ultimateHP[i];
+                            dmgTrkHP[i] = ultimateHP[i];
+                            Console.WriteLine($"Damage Track: {dmgTrkChr[0]} / {dmgTrkChr[1]} / {dmgTrkChr[2]}");
+                            Constants.UIControl.WriteGLog($"Damage Track: {dmgTrkChr[0]} / {dmgTrkChr[1]} / {dmgTrkChr[2]}");
+                        } else if (ultimateHP[i] > dmgTrkHP[i]) {
+                            dmgTrkHP[i] = ultimateHP[i];
+                        }
+                    } else {
+                        if (Emulator.Memory.Battle.MonsterTable[i].HP < dmgTrkHP[i]) {
+                            dmgTrkChr[dmgTrkSlot] += dmgTrkHP[i] - Emulator.Memory.Battle.MonsterTable[i].HP;
+                            dmgTrkHP[i] = Emulator.Memory.Battle.MonsterTable[i].HP;
+                            Console.WriteLine($"Damage Track: {dmgTrkChr[0]} / {dmgTrkChr[1]} / {dmgTrkChr[2]}");
+                            Constants.UIControl.WriteGLog($"Damage Track: {dmgTrkChr[0]} / {dmgTrkChr[1]} / {dmgTrkChr[2]}");
+                        } else if (Emulator.Memory.Battle.MonsterTable[i].HP > dmgTrkHP[i]) {
+                            dmgTrkHP[i] = Emulator.Memory.Battle.MonsterTable[i].HP;
+                        }
                     }
                 }
+            } catch (Exception ex) { 
+                //Used for battle cutscenes
             }
             
             /*Globals.SetCustomValue("Damage Tracker1", dmgTrkChr[0]); //TODO Reader Mode
@@ -843,6 +1025,16 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
             if (Settings.Instance.AdvancedCameraMode == 1)
                 Emulator.DirectAccess.WriteUShort("ADVANCED_CAMERA", aspectRatio);
+        }
+
+        private static void RemoveHPCap() {
+            if (Constants.Run && Emulator.Memory.GameState != GameState.Battle) {
+                return;
+            }
+            Debug.WriteLine("Removing cap...");
+
+            
+           
         }
 
         private static void SoloModeBattle() {
@@ -1136,8 +1328,11 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 i = 0;
                 foreach (var monster in Emulator.Memory.Battle.MonsterTable) {
                     if (ultimateMaxHP[i] >= 65535 && ultimateHP[i] > 0) {
+                        if (Emulator.Memory.EncounterID == 416) {
+                            UltimateBossHealing(0, 1);
+                        }
                         monster.HP = (ushort) Math.Round(((double) ultimateHP[i] / ultimateMaxHP[i]) * 65534);
-                        Debug.WriteLine($"[NA] Ultimate Boss HP Slot {i}: {monster.HP}/{monster.MaxHP} - {ultimateHP[i]}/{ultimateMaxHP[i]}");
+                        //Debug.WriteLine($"[NA] Ultimate Boss HP Slot {i}: {monster.HP}/{monster.MaxHP} - {ultimateHP[i]}/{ultimateMaxHP[i]}");
                     }
                     i++;
                 }
@@ -1150,14 +1345,14 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 foreach (var monster in Emulator.Memory.Battle.MonsterTable) {
                     if (ultimateMaxHP[i] >= 65535 && ultimateHP[i] > 0) {
                         monster.HP = 65534;
-                        Debug.WriteLine($"[PA] Ultimate Boss HP Slot {i}: {monster.HP}/{monster.MaxHP} - {ultimateHP[i]}/{ultimateMaxHP[i]}");
+                        //Debug.WriteLine($"[PA] Ultimate Boss HP Slot {i}: {monster.HP}/{monster.MaxHP} - {ultimateHP[i]}/{ultimateMaxHP[i]}");
                     }
                     i++;
                 }
                 ubUltimateHPSet = true;
             }
 
-            Debug.WriteLine($"[PC] Ultimate Boss: Party Attack: {ubPartyAttacking} - HP Set: {ubUltimateHPSet} - Action: " + actionBuilder);
+            //Debug.WriteLine($"[PC] Ultimate Boss: Party Attack: {ubPartyAttacking} - HP Set: {ubUltimateHPSet} - Action: " + actionBuilder);
         }
 
         public static void UltimateBossWaitForDamage() {
@@ -1174,30 +1369,53 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 }
 
                 if (waitForDamage) {
-                    Debug.WriteLine($"[WW] Ultimate Boss: Party Attack: {ubPartyAttacking} - HP Set: {ubUltimateHPSet} - W4D: {waitForDamage} - Action: " + actionBuilder);
+                    //Debug.WriteLine($"[WW] Ultimate Boss: Party Attack: {ubPartyAttacking} - HP Set: {ubUltimateHPSet} - W4D: {waitForDamage} - Action: " + actionBuilder);
                     ubPartyAttacking = false;
                     ubUltimateHPSet = false;
                     Thread.Sleep(500);
                     UltimateBossDamageCheck();
                 }
 
-                Debug.WriteLine($"[WD] Ultimate Boss: Party Attack: {ubPartyAttacking} - HP Set: {ubUltimateHPSet} - W4D: {waitForDamage} - Action: " + actionBuilder);
+                //Debug.WriteLine($"[WD] Ultimate Boss: Party Attack: {ubPartyAttacking} - HP Set: {ubUltimateHPSet} - W4D: {waitForDamage} - Action: " + actionBuilder);
             }
         }
 
         public static void UltimateBossDamageCheck() {
             int i = 0;
+            int totalDamage = 0;
             foreach (var monster in Emulator.Memory.Battle.MonsterTable) {
                 if (monster.HP < 65534 && ultimateHP[i] > 0 && ultimateMaxHP[i] >= 65535) {
-                    ultimateHP[i] = Math.Max(0, ultimateHP[i] - (65534 - monster.HP));
-                    if (ultimateHP[i] == 0)
-                        monster.HP = 1;
-                    else
-                        monster.HP = 65534;
-                    Debug.WriteLine($"[DC] Ultimate Boss HP Slot {i}: {monster.HP}/{monster.MaxHP} - {ultimateHP[i]}/{ultimateMaxHP[i]}");
+                    int damage = 65534 - monster.HP;
+                    if (!ubSharedHP) {
+                        ultimateHP[i] = Math.Max(0, ultimateHP[i] - damage);
+
+                        if (ultimateHP[i] == 0)
+                            monster.HP = 1;
+                        else
+                            monster.HP = 65534;
+                        //Debug.WriteLine($"[DC] Ultimate Boss HP Slot {i}: {monster.HP}/{monster.MaxHP} - {ultimateHP[i]}/{ultimateMaxHP[i]}");
+
+                    } else {
+                        totalDamage += damage;
+                    }
                     ubPartyAttacking = ubUltimateHPSet = false;
                 }
                 i++;
+            }
+
+            if (ubSharedHP) {
+                i = 0;
+                foreach (var monster in Emulator.Memory.Battle.MonsterTable) {
+                    if (monster.HP < 65534 && ultimateHP[i] > 0 && ultimateMaxHP[i] >= 65535) {
+                        ultimateHP[i] = Math.Max(0, ultimateHP[i] - totalDamage);
+
+                        if (ultimateHP[i] == 0)
+                            monster.HP = 1;
+                        else
+                            monster.HP = 65534;
+                        i++;
+                    }
+                }
             }
         }
 
@@ -1206,6 +1424,13 @@ namespace Dragoon_Modifier.DraMod.Controller {
                 if (Emulator.Memory.EncounterID == 412) {
                     ultimateHP[slot] = Math.Min(ultimateMaxHP[slot], ultimateHP[slot] + 44400);
                     Console.WriteLine("Drake the Bandit healed 44,400 HP with a healing potion.");
+                } else if (Emulator.Memory.EncounterID == 416) {
+                    if (Emulator.Memory.Battle.MonsterTable[slot].HP > (ushort) Math.Round(((double) ultimateHP[slot] / ultimateMaxHP[slot]) * 65534)) {
+                        ultimateHP[slot] = Math.Min(ultimateMaxHP[slot], ultimateHP[slot] + 101250);
+                        Console.WriteLine("Grand Jewel healed 101,250 HP with healing magic.");
+                    } else {
+                        return;
+                    }
                 }
                 Thread.Sleep(1500);
                 Emulator.Memory.Battle.MonsterTable[slot].AttackMove = 255;
@@ -1221,6 +1446,228 @@ namespace Dragoon_Modifier.DraMod.Controller {
                     Console.WriteLine("Fire Bird initiated a Guard Break attack.");
                 Thread.Sleep(1500);
                 Emulator.Memory.Battle.MonsterTable[slot].AttackMove = 255;
+            }
+        }
+
+        public static void UltimateBossHealthSteal(int slot, byte attack) {
+            if (Emulator.Memory.Battle.MonsterTable[slot].AttackMove == attack) {
+                if (ubHealthSteal) {
+                    ushort dmg = Emulator.Memory.Battle.DamageSlot;
+                    if (dmg <= 50000 && dmg != ubHealthStealDamage) {
+                        ubHealthStealDamage = dmg;
+                        ultimateHP[slot] += dmg;
+                        ubHealthSteal = false;
+
+                        if (Emulator.Memory.EncounterID == 417)
+                            Console.WriteLine("Ghost Commander initiated a Health Steal attack.");
+                    }
+                } else {
+                    ubHealthStealDamage = Emulator.Memory.Battle.DamageSlot; ;
+                    ubHealthSteal = true;
+                }
+            } else {
+                ubHealthSteal = false;
+            }
+        }
+
+        public static void UltimateBossWoundDamage(int slot, byte attack) {
+            int i = 0;
+            foreach (var character in Emulator.Memory.Battle.CharacterTable) {
+                ushort hp = character.HP;
+                if (hp < ubWHP[i] && Emulator.Memory.Battle.MonsterTable[slot].AttackMove == attack) {
+                    ushort woundDamage = (ushort) (ubWHP[i] - hp);
+                    character.MaxHP = (ushort) Math.Max(0, character.MaxHP - woundDamage);
+                    if (character.MaxHP == 0 && character.HP > 0)
+                        character.HP = 1;
+
+                    if (Emulator.Memory.EncounterID == 417)
+                        Console.WriteLine("Ghost Commander initiated a Wound Damage attack.");
+                }
+                ubWHP[i] = hp;
+                if (character.Action == 192)
+                    character.MaxHP = ubWMHP[i];
+                i++;
+            }
+        }
+
+        public static void UltimateBossMoveChange(int slot, byte attack, int chance) {
+            var monster = Emulator.Memory.Battle.MonsterTable[slot];
+            ushort turn = Emulator.Memory.Battle.MonsterTable[slot].Turn;
+            if (ubMoveChangeSet) {
+                bool partyAttacking = false;
+                int i = 0;
+                foreach (var character in Emulator.Memory.Battle.CharacterTable) {
+                    if (new byte[] { 8, 10, 24, 26, 136, 138 }.Contains(character.Action))
+                        partyAttacking = true;
+                }
+
+                if (!partyAttacking) {
+                    monster.AttackMove = attack;
+                    Debug.WriteLine("Move changed.");
+                } else {
+                    ubMoveChangeSet = false;
+                    monster.AT = monster.OG_AT;
+                    enragedMode[slot] = 0;
+                    Debug.WriteLine("Move change done, resetting stats.");
+                }
+            } else {
+                if (turn < ubMoveChangeTurn[slot]) {
+                    if (new Random().Next(0, 100) < chance) {
+                        ubMoveChangeSet = true;
+                        if (Emulator.Memory.EncounterID == 418) {
+                            monster.AT = (ushort) Math.Round(monster.AT * 1.75);
+                        }
+                        Debug.WriteLine("Move change chance successful.");
+                    } else {
+                        Debug.WriteLine("Move change chance not successful.");
+                    }
+                }
+                ubMoveChangeTurn[slot] = turn;
+            }
+        }
+
+        public static void UltimateBossSPAttack(int slot, byte attack, short spAmount, byte spOnHit, byte turns) {
+            var monster = Emulator.Memory.Battle.MonsterTable[slot];
+            if (monster.AttackMove == attack) {
+                int i = 0;
+                foreach (var character in Emulator.Memory.Battle.CharacterTable) {
+                    if (character.DragoonTurns == 0) {
+                        if (spOnHit > 0) {
+                            character.SP_P_Hit_Increase = spOnHit;
+                            character.SP_M_Hit_Increase = spOnHit;
+                            character.SP_P_Hit_Increase_Turn = turns;
+                            character.SP_M_Hit_Increase_Turn = turns;
+                        }
+                        short sp = (short) (character.SP - spAmount);
+                        character.SP = (ushort) (sp > 0 ? sp : 0);
+                    }
+                    Thread.Sleep(1500);
+                    monster.AttackMove = 255;
+                }
+            }
+        }
+
+        public static void UltimateBossMagicChange() {
+            ArrayList singleMagic = new ArrayList();
+            ArrayList wideMagic = new ArrayList();
+            ArrayList powerMagic = new ArrayList();
+            int index = 0;
+
+            singleMagic.Add(0xC3);
+            singleMagic.Add(0xC6);
+            singleMagic.Add(0xC7);
+            singleMagic.Add(0xC5);
+            singleMagic.Add(0xCA);
+            singleMagic.Add(0xC9);
+            singleMagic.Add(0xC2);
+            wideMagic.Add(0xD1);
+            wideMagic.Add(0xD6);
+            wideMagic.Add(0xDC);
+            wideMagic.Add(0xD0);
+            wideMagic.Add(0xD8);
+            wideMagic.Add(0xD2);
+            wideMagic.Add(0xCF);
+            powerMagic.Add(0xF2);
+            powerMagic.Add(0xF3);
+            powerMagic.Add(0xF4);
+            powerMagic.Add(0xF5);
+            powerMagic.Add(0xF7);
+            powerMagic.Add(0xF6);
+            powerMagic.Add(0xF8);
+
+            if (Emulator.Memory.EncounterID == 416) {
+                index = new Random().Next(0, singleMagic.Count);
+                Emulator.DirectAccess.WriteByte(Emulator.Memory.Battle.MonsterPoint - 0xF24, Convert.ToByte(singleMagic[index]));
+                singleMagic.RemoveAt(index);
+                index = new Random().Next(0, singleMagic.Count);
+                Emulator.DirectAccess.WriteByte(Emulator.Memory.Battle.MonsterPoint - 0xEE4, Convert.ToByte(singleMagic[index]));
+                singleMagic.RemoveAt(index);
+                index = new Random().Next(0, singleMagic.Count);
+                Emulator.DirectAccess.WriteByte(Emulator.Memory.Battle.MonsterPoint - 0xEA4, Convert.ToByte(singleMagic[index]));
+                singleMagic.RemoveAt(index);
+
+
+                index = new Random().Next(0, wideMagic.Count);
+                Emulator.DirectAccess.WriteByte(Emulator.Memory.Battle.MonsterPoint - 0xE64, Convert.ToByte(wideMagic[index]));
+                wideMagic.RemoveAt(index);
+                index = new Random().Next(0, wideMagic.Count);
+                Emulator.DirectAccess.WriteByte(Emulator.Memory.Battle.MonsterPoint - 0xE24, Convert.ToByte(wideMagic[index]));
+                wideMagic.RemoveAt(index);
+
+
+                index = new Random().Next(0, powerMagic.Count);
+                Emulator.DirectAccess.WriteByte(Emulator.Memory.Battle.MonsterPoint - 0xDE4, Convert.ToByte(powerMagic[index]));
+                powerMagic.RemoveAt(index);
+            } else if (Emulator.Memory.EncounterID == 396) {
+                index = new Random().Next(0, singleMagic.Count);
+                Emulator.DirectAccess.WriteByte(Emulator.Memory.Battle.MonsterPoint - 0xB14, Convert.ToByte(singleMagic[index]));
+                singleMagic.RemoveAt(index);
+                index = new Random().Next(0, singleMagic.Count);
+                Emulator.DirectAccess.WriteByte(Emulator.Memory.Battle.MonsterPoint - 0x9E8, Convert.ToByte(singleMagic[index]));
+                singleMagic.RemoveAt(index);
+
+                index = new Random().Next(0, wideMagic.Count);
+                Emulator.DirectAccess.WriteByte(Emulator.Memory.Battle.MonsterPoint - 0xAB0, Convert.ToByte(wideMagic[index]));
+                wideMagic.RemoveAt(index);
+                index = new Random().Next(0, wideMagic.Count);
+                Emulator.DirectAccess.WriteByte(Emulator.Memory.Battle.MonsterPoint - 0xA4C, Convert.ToByte(wideMagic[index]));
+                wideMagic.RemoveAt(index);
+            }
+
+            ubMagicChangeTurns += 1;
+            Debug.WriteLine("Magic Changed.");
+        }
+
+        public static void UltimateBossElementalShift() {
+            int lastItem = Emulator.Memory.Battle.ItemUsed;
+            if (lastItem == 0xC0 || lastItem == 0xC3 || lastItem == 0xD1 || lastItem == 0xF2) {
+                Emulator.Memory.Battle.MonsterTable[0].Element = 128;
+                Emulator.Memory.Battle.MonsterTable[0].Display_Element = 128;
+            } else if (lastItem == 0xC6 || lastItem == 0xD6 || lastItem == 0xF3) {
+                Emulator.Memory.Battle.MonsterTable[0].Element = 1;
+                Emulator.Memory.Battle.MonsterTable[0].Display_Element = 1;
+            } else if (lastItem == 0xC7 || lastItem == 0xDC || lastItem == 0xF4) {
+                Emulator.Memory.Battle.MonsterTable[0].Element = 64;
+                Emulator.Memory.Battle.MonsterTable[0].Display_Element = 64;
+            } else if (lastItem == 0xC5 || lastItem == 0xD0 || lastItem == 0xF5) {
+                Emulator.Memory.Battle.MonsterTable[0].Element = 2;
+                Emulator.Memory.Battle.MonsterTable[0].Display_Element = 2;
+            } else if (lastItem == 0xCA || lastItem == 0xD8 || lastItem == 0xF7) {
+                Emulator.Memory.Battle.MonsterTable[0].Element = 4;
+                Emulator.Memory.Battle.MonsterTable[0].Display_Element = 4;
+            } else if (lastItem == 0xC9 || lastItem == 0xD2 || lastItem == 0xF6) {
+                Emulator.Memory.Battle.MonsterTable[0].Element = 32;
+                Emulator.Memory.Battle.MonsterTable[0].Display_Element = 32;
+            } else if (lastItem == 0xC2 || lastItem == 0xCF || lastItem == 0xF8) {
+                Emulator.Memory.Battle.MonsterTable[0].Element = 16;
+                Emulator.Memory.Battle.MonsterTable[0].Display_Element = 16;
+            } else if (lastItem == 0xC1 || lastItem == 0xF1) {
+                Emulator.Memory.Battle.MonsterTable[0].Element = 8;
+                Emulator.Memory.Battle.MonsterTable[0].Display_Element = 8;
+            }
+        }
+
+        public static void UltimateBossArmorBreak() {
+            if (Emulator.Memory.Battle.MonsterTable[3].HP != ubHeartHPSave) {
+                ubHeartHPSave = Emulator.Memory.Battle.MonsterTable[3].HP;
+                ubArmorShellTurns = 1;
+                ubArmorShellTP = Emulator.Memory.Battle.MonsterTable[0].Turn;
+            }
+
+            if (ubArmorShellTurns >= 1) {
+                Emulator.Memory.Battle.MonsterTable[0].DF = 36;
+                Emulator.Memory.Battle.MonsterTable[0].MDF = 36;
+
+                if (Emulator.Memory.Battle.MonsterTable[0].Turn < ubArmorShellTP) {
+                    ubArmorShellTurns += 1;
+                }
+                ubArmorShellTP = Emulator.Memory.Battle.MonsterTable[0].Turn;
+            }
+
+            if (ubArmorShellTurns > 3) {
+                Emulator.Memory.Battle.MonsterTable[0].DF = 0;
+                Emulator.Memory.Battle.MonsterTable[0].MDF = 0;
+                ubArmorShellTurns = 0;
             }
         }
 
@@ -1245,10 +1692,10 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
         public static void UltimateBossFinishCheck() {
             bool finishCheck = true;
-            if (new ushort[] { 387, 415, 403 }.Contains(Emulator.Memory.EncounterID)) {
+            if (new ushort[] { 387, 415, 403, 402, 422, 432 }.Contains(Emulator.Memory.EncounterID)) {
                 if (Emulator.Memory.Battle.MonsterTable[0].HP > 0)
                     finishCheck = false;
-            } else if (new ushort[] { 449 }.Contains(Emulator.Memory.EncounterID)) {
+            } else if (new ushort[] { 449, 448 }.Contains(Emulator.Memory.EncounterID)) {
                 if (Emulator.Memory.Battle.MonsterTable[1].HP > 0)
                     finishCheck = false;
             } else {
@@ -1259,7 +1706,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
 
             if (finishCheck) {
-                Console.WriteLine("Ultimate Boss Defeated");
+                Console.WriteLine("Ultimate Boss Defeated.");
                 if (Constants.UltimateBossCompleted < (Settings.Instance.UltimateBossSelected + 1)) {
                     Constants.UltimateBossCompleted++;
                     if (Constants.UltimateBossCompleted == 3) {
@@ -1270,9 +1717,13 @@ namespace Dragoon_Modifier.DraMod.Controller {
                         Constants.InventorySize = 40;
                         Constants.UIControl.WritePLog("Ultimate Boss Zone 2 complete! Inventory expanded to 40 slots.");
                         Console.WriteLine("Ultimate Boss Zone 2 complete! Inventory expanded to 40 slots.");
+                    } else if (Constants.UltimateBossCompleted == 22) {
+                        Constants.InventorySize = 48;
+                        Constants.UIControl.WritePLog("Ultimate Boss Zone 3 complete! Inventory expanded to 48 slots.");
+                        Console.WriteLine("Ultimate Boss Zone 3 complete! Inventory expanded to 48 slots.");
                     }
-                    Console.WriteLine($"Ultimate Boss Defeated. Your current clear count: {Constants.UltimateBossCompleted}");
-                    Constants.UIControl.WriteGLog($"Ultimate Boss Defeated. Your current clear count: {Constants.UltimateBossCompleted}");
+                    Console.WriteLine($"Your current clear count: {Constants.UltimateBossCompleted}");
+                    Constants.UIControl.WriteGLog($"Your current clear count: {Constants.UltimateBossCompleted}");
                 }
                 Settings.Instance.UltimateBoss = false;
             }

@@ -21,7 +21,7 @@ namespace Dragoon_Modifier.DraMod.Dataset {
         byte SPD { get; }
         byte SpecialBonus1 { get; }
         byte SpecialBonus2 { get; }
-        byte SpecialBonusAmmount { get; }
+        byte SpecialBonusAmount { get; }
         byte SpecialEffect { get; }
         byte StatusResistance { get; }
         byte Type { get; }

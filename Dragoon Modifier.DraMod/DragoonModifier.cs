@@ -51,12 +51,13 @@ namespace Dragoon_Modifier.DraMod {
             Settings.Instance.Preset = Preset.Custom;
             Settings.Instance.CustomMod = mod;
             if (Constants.Run) {
-                Constants.UIControl.WritePLog("Changing mod directory to " + mod);
-                Settings.Instance.LoadDataset(_cwd, mod);
                 Controller.Main.BattleSetup = false;
                 Controller.Main.AdditionsChanged = false;
                 Controller.Main.ItemsChanged = false;
                 Controller.Main.ShopChanged = false;
+                Controller.Main.DragoonChanged = false;
+                Constants.UIControl.WritePLog("Changing mod directory to " + mod);
+                Settings.Instance.LoadDataset(_cwd, mod);
             }
         }
 
@@ -64,16 +65,18 @@ namespace Dragoon_Modifier.DraMod {
             Settings.Instance.Preset = mod;
             if (Constants.Run) {
                 Dataset.Scripts.IScript script;
-                if (mod != Preset.Normal) {
+                if (mod != Preset.Normal && mod != Preset.Custom) {
                     if (mod == Preset.NormalHard || mod == Preset.Hard) {
                         script = new Dataset.Scripts.HardMode.Script();
+                        Settings.Instance.Difficulty = "Hard";
                     } else {
                         script = new Dataset.Scripts.HellMode.Script();
+                        Settings.Instance.Difficulty = "Hell";
                     }
                     Settings.Instance.ItemStatChange = true;
                     Settings.Instance.ItemNameDescChange = true;
                     Settings.Instance.ItemIconChange = true;
-                    Settings.Instance.DragoonStatChange = false;
+                    Settings.Instance.DragoonStatChange = true;
                     Settings.Instance.DragoonSpellChange = false;
                     Settings.Instance.DragoonDescriptionChange = true;
                     Settings.Instance.DragoonAdditionChange = false;
@@ -84,6 +87,7 @@ namespace Dragoon_Modifier.DraMod {
                     Settings.Instance.CharacterStatChange = false;
                     Settings.Instance.ShopChange = true;
                 } else {
+                    Settings.Instance.Difficulty = "Normal";
                     script = new Dataset.Scripts.DummyScript();
                     Settings.Instance.ItemStatChange = false;
                     Settings.Instance.ItemNameDescChange = false;
@@ -121,6 +125,7 @@ namespace Dragoon_Modifier.DraMod {
                 Controller.Main.AdditionsChanged = false;
                 Controller.Main.ItemsChanged = false;
                 Controller.Main.ShopChanged = false;
+                Controller.Main.DragoonChanged = false;
             }
         }
     }

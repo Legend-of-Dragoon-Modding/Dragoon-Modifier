@@ -1,6 +1,7 @@
 ﻿using Dragoon_Modifier.Core;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -14,12 +15,13 @@ namespace Dragoon_Modifier.DraMod.Controller {
         internal static bool AdditionsChanged = false;
         internal static bool ItemsChanged = false;
         internal static bool ShopChanged = false;
+        internal static bool DragoonChanged = false;
         private static bool ShopFix = false;
         private static bool HPCapSet = false;
 
         internal static void Run() {
             while (Constants.Run) {
-                try {
+                try { 
                     switch (Emulator.Memory.GameState) {
                         case GameState.Battle:
                             if (!BattleSetup) {
@@ -29,6 +31,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
                                 Battle.Setup();
                                 BattleSetup = true;
                                 AdditionsChanged = false;
+                                DragoonChanged = false;
                                 ItemsChanged = false;
                                 ShopChanged = false;
                                 HPCapSet = false;
@@ -45,6 +48,14 @@ namespace Dragoon_Modifier.DraMod.Controller {
                                     Shop.TableChange();
                                 }
                                 ShopChanged = true;
+                            }
+
+
+                            if (!DragoonChanged) {
+                                if (Settings.Instance.DragoonStatChange) {
+                                    Field.DragoonSetup();
+                                }
+                                DragoonChanged = true;
                             }
 
                             if (Settings.Instance.NoDart != 255 && Emulator.Memory.PartySlot[0] != 0) {
@@ -73,6 +84,13 @@ namespace Dragoon_Modifier.DraMod.Controller {
                                     Emulator.Memory.FieldHPCap = 30000;
                                 }
                             }
+
+                            if (!DragoonChanged) {
+                                if (Settings.Instance.DragoonStatChange) {
+                                    Field.DragoonSetup();
+                                }
+                                DragoonChanged = true;
+                            }
                             break;
 
                         case GameState.Menu:
@@ -86,6 +104,13 @@ namespace Dragoon_Modifier.DraMod.Controller {
                             if (!AdditionsChanged) {
                                 Field.AdditionSetup();
                                 AdditionsChanged = true;
+                            }
+
+                            if (!DragoonChanged) {
+                                if (Settings.Instance.DragoonStatChange) {
+                                    Field.DragoonSetup();
+                                }
+                                DragoonChanged = true;
                             }
 
                             if (Settings.Instance.NoDart != 255) {
@@ -103,13 +128,31 @@ namespace Dragoon_Modifier.DraMod.Controller {
                             BattleSetup = false;
                             if (!ItemsChanged) {
                                 Field.ItemSetup();
+                                if (Settings.Instance.Difficulty.Contains("Hell")) {
+                                    Field.BossSPReduction();
+                                }
+
+                                if (!Settings.Instance.Difficulty.Contains("Normal")) {
+                                    Field.DragoonLevelUp();
+                                }
                                 ItemsChanged = true;
+                            }
+                            if (Settings.Instance.Preset != Preset.Normal && Settings.Instance.Preset != Preset.Custom) {
+                                Emulator.Memory.FieldTotalSPCap = 64000;
+                            }
+
+                            if (!DragoonChanged) {
+                                if (Settings.Instance.DragoonStatChange) {
+                                    Field.DragoonSetup();
+                                }
+                                DragoonChanged = true;
                             }
                             break;
 
                         case GameState.ChangeDisc:
                             ItemsChanged = false;
                             AdditionsChanged = false;
+                            DragoonChanged = false;
                             ShopChanged = false;
                             BattleSetup = false;
                             ShopFix = true;

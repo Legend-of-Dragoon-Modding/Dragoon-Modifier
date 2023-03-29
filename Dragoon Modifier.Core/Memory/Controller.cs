@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,6 +37,14 @@ namespace Dragoon_Modifier.Core.Memory {
         private readonly int _fieldHPCap4;
         private readonly int _timePlayed;
         private readonly int _heroTickets;
+        private readonly int _battleSPCap1;
+        private readonly int _battleSPCap2;
+        private readonly int _battleSPCap3;
+        private readonly int _battleSPCap4;
+        private readonly int _fieldTotalSPCap1;
+        private readonly int _fieldTotalSPCap2;
+        private readonly int _itemInventorySize;
+        private readonly int _screenFade;
 
         private Battle.IController _battle = null;
         public Battle.IController Battle {
@@ -92,6 +101,10 @@ namespace Dragoon_Modifier.Core.Memory {
         public Encounter.Slot FieldEncounterSlot { get; }
         public int TimePlayed { get { return Emulator.DirectAccess.ReadInt(_timePlayed); } }
         public int HeroTickets { get { return Emulator.DirectAccess.ReadInt(_heroTickets); } set { Emulator.DirectAccess.WriteInt(_heroTickets, value); } }
+        public ushort BattleSPCap { get { return Emulator.DirectAccess.ReadUShort(_battleSPCap1); } set { SetBattleSPCap(value); } }
+        public ushort FieldTotalSPCap { get { return Emulator.DirectAccess.ReadUShort(_fieldTotalSPCap2); } set { SetFieldTotalSPCap(value); } }
+        public byte ItemInventorySize { get { return Emulator.DirectAccess.ReadByte(_itemInventorySize); } set { Emulator.DirectAccess.WriteByte(_itemInventorySize, value); } }
+        public byte ScreenFade { get { return Emulator.DirectAccess.ReadByte(_screenFade); } set { Emulator.DirectAccess.WriteByte(_screenFade, value); } }
 
 
         internal Controller() {
@@ -165,6 +178,14 @@ namespace Dragoon_Modifier.Core.Memory {
             FieldPosition = new FieldPosition();
             _timePlayed = Emulator.GetAddress("TIME_PLAYED");
             _heroTickets = Emulator.GetAddress("HERO_TICKETS");
+            _battleSPCap1 = Emulator.GetAddress("BATTLE_SP_CAP_1");
+            _battleSPCap2 = Emulator.GetAddress("BATTLE_SP_CAP_2");
+            _battleSPCap3 = Emulator.GetAddress("BATTLE_SP_CAP_3");
+            _battleSPCap4 = Emulator.GetAddress("BATTLE_SP_CAP_4");
+            _fieldTotalSPCap1 = Emulator.GetAddress("TOTAL_SP_CAP_1");
+            _fieldTotalSPCap2 = Emulator.GetAddress("TOTAL_SP_CAP_2");
+            _itemInventorySize = Emulator.GetAddress("INVENTORY_SIZE");
+            _screenFade = Emulator.GetAddress("SCREEN_FADE");
         }
 
         private GameState GetGameState() {
@@ -237,6 +258,18 @@ namespace Dragoon_Modifier.Core.Memory {
             Emulator.DirectAccess.WriteUShort(_fieldHPCap2, value);
             Emulator.DirectAccess.WriteUShort(_fieldHPCap3, value);
             Emulator.DirectAccess.WriteUShort(_fieldHPCap4, value);
+        }
+
+        private void SetBattleSPCap(ushort value) {
+            Emulator.DirectAccess.WriteUShort(_battleSPCap1, value);
+            Emulator.DirectAccess.WriteUShort(_battleSPCap2, value);
+            Emulator.DirectAccess.WriteUShort(_battleSPCap3, value);
+            Emulator.DirectAccess.WriteUShort(_battleSPCap4, value);
+        }
+
+        private void SetFieldTotalSPCap(ushort value) {
+            Emulator.DirectAccess.WriteUShort(_fieldTotalSPCap1, (ushort) (value + 1));
+            Emulator.DirectAccess.WriteUShort(_fieldTotalSPCap2, value);
         }
 
         public void LoadBattle() {

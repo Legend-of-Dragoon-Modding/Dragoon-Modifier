@@ -1,4 +1,4 @@
-Item Name	Equip Type	Who equips	Icon	Element	Status	Status Chance	AT	MAT	DF	MDF	SPD	A-Hit	M-Hit	A-AV	M-AV	E_Half	E_Immune	Status_Resist	Special1	Special2	Special_Ammount	Death_Res	Description	Price(even)
+Item Name	Equip Type	Who equips	Icon	Element	Status	Status Chance	AT	MAT	DF	MDF	SPD	A-Hit	M-Hit	A-AV	M-AV	E_Half	E_Immune	Status_Resist	Special1	Special2	Special_Amount	Death_Res	Description	Price(even)
 Broad Sword	Weapon	Dart	Sword				2																	20
 Bastard Sword	Weapon	Dart	Sword				7																	60
 Heat Blade	Weapon	Dart	Sword	Fire			18																Fire-based attack.	150
@@ -34,7 +34,7 @@ Virulent Arrow	Weapon	Shana	Bow		Poison	20	30					20											20% chance of<LIN
 Detonate Arrow	Weapon	Shana	Bow				50					20										attack_all	Hits all enemies.	400
 Arrow of Force	Weapon	Shana	Bow				40					20							sp_multi		50		Attacks generate<LINE>50% more SP.	500
 Mace	Weapon	Meru	Mace				15																	200
-Morning Star	Weapon	Meru	Hammer				20																Water-based attack.	250
+Morning Star	Weapon	Meru	Hammer				20																	250
 War Hammer	Weapon	Meru	Hammer				25																	300
 Heavy Mace	Weapon	Meru	Hammer		Stun	20	30																20% chance of<LINE>stunning enemy.	400
 Basher	Weapon	Meru	Hammer				40																	500
@@ -72,7 +72,7 @@ Blue DG Armor	Armor	Meru	Armor						30	54				5	5	Water							Nullifies damage<LI
 Armor of Yore	Armor	Dart, Lavitz	Armor						35	35								Poison, Stun, Arm Blocking					Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.	500
 Satori Vest	Armor	Haschel	Warrior Dress						40	31				10				Poison, Stun, Arm Blocking					Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.	500
 Rainbow Dress	Armor	Female	Robe						32	55				5	5			Poison, Stun, Arm Blocking					Grants immunity<LINE>to poison, stun,<LINE>and arm blocking.	500
-Angel Robe	Armor	Female	Robe						10	20				5	5					revive	40		40% chance of<LINE>reviving from<LINE>death.	500
+Angel Robe	Armor	Female	Robe						10	20				5	5					revive	30		30% chance of<LINE>reviving from<LINE>death.	500
 Armor of Legend	Armor	All	Armor						127														Greatly reduces<LINE>damage from<LINE>physical attacks.	60000
 																								2
 Bandana	Helm	Male	Bandana					3				100	100											10
@@ -129,7 +129,7 @@ Mage Ring	Accessory	All	Ring																	mp_regen	10		Recovers 10% MP<LINE>e
 Wargod's Amulet	Accessory	All	Amulet									20	20										Increases hit rate<LINE>for mag./phys.<LINE>attacks by 20%.	500
 Talisman	Accessory	All	Amulet																			death_res	Grants immunity<LINE>to instant death.	500
 																								500
-Holy Ankh	Accessory	All	Ring																	revive	40		40% chance of<LINE>reviving from<LINE>death.	500
+Holy Ankh	Accessory	All	Ring																	revive	30		30% chance of<LINE>reviving from<LINE>death.	500
 Dancer's Ring	Accessory	Female	Ring								20												Raises speed<LINE>by 20.	5000
 																								500
 Bandit's Ring	Accessory	Male	Ring								20												Raises speed<LINE>by 20.	5000
@@ -184,10 +184,10 @@ Soa's Siphon Ring	Accessory	All	Ring																				Siphons dragoon<LINE>mag
 Stone Axe	Weapon	Kongol	Axe	Earth			31																Earth-based attack.	1500
 Attack Horn	Accessory	All	Horn				30	30															Raises physical<LINE>& magical<LINE>attack by 30.	4000
 Defense Horn	Accessory	All	Horn						30	30													Raises physical<LINE>& magical<LINE>defense by 30.	4000
-																								2
-																								2
-																								2
-																								2
+Lava Blade	Weapon	Dart	Sword	Fire			25																Fire-based attack.	1500
+Spectral Arrow	Weapon	Shana	Bow	Light			17					20											Light-based attack.	1500
+Void Estoc	Weapon	Rose	Sword	Dark			33																Dark-based attack.	1500
+Hydro Hammer	Weapon	Meru	Hammer	Water			0																Water-based attack.	1500
 																								2
 																								2
 																								2

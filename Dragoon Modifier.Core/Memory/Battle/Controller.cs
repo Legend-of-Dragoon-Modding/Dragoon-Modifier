@@ -15,6 +15,10 @@ namespace Dragoon_Modifier.Core.Memory.Battle {
         private readonly int _haschelFix;
         private readonly int _dragoonSpecial;
         private readonly int _dragonBlockStaff;
+        private readonly int _damageSlot;
+        private readonly int _autoDragoon1;
+        private readonly int _autoDragoon2;
+        private readonly int _cursorTarget;
         public uint CharacterPoint { get; private set; }
         public uint MonsterPoint { get; private set; }
         public ushort EncounterID { get; private set; }
@@ -39,6 +43,10 @@ namespace Dragoon_Modifier.Core.Memory.Battle {
         public byte IconSelected { get { return Emulator.DirectAccess.ReadByte(MonsterPoint + 0xE4E); } }
         public byte DragonBlockStaff { get { return Emulator.DirectAccess.ReadByte(_dragonBlockStaff); } }
         public uint BattleUIColour { get; private set; }
+        public ushort DamageSlot { get { return Emulator.DirectAccess.ReadUShort(_damageSlot); } set { Emulator.DirectAccess.WriteUShort(_damageSlot, value); } }
+        public ushort AutoDragoon1 { get { return Emulator.DirectAccess.ReadUShort(_autoDragoon1); } set { Emulator.DirectAccess.WriteUShort(_autoDragoon1, value); } }
+        public ushort AutoDragoon2 { get { return Emulator.DirectAccess.ReadUShort(_autoDragoon2); } set { Emulator.DirectAccess.WriteUShort(_autoDragoon2, value); } }
+        public byte CursorTarget { get { return Emulator.DirectAccess.ReadByte(_cursorTarget); } set { Emulator.DirectAccess.WriteByte(_cursorTarget, value); } }
 
         internal Controller() {
             CharacterPoint = Emulator.Memory.CharacterPoint;
@@ -78,6 +86,10 @@ namespace Dragoon_Modifier.Core.Memory.Battle {
             DragoonAdditionTable = (uint) (Emulator.GetAddress("ADDITION") + GetOffset() + 0x300);
             BattleUIColour = (uint) Emulator.GetAddress("BATTLE_UI_COLOUR");
             _dragonBlockStaff = Emulator.GetAddress("DRAGON_BLOCK_STAFF");
+            _damageSlot = Emulator.GetAddress("DAMAGE_SLOT");
+            _autoDragoon1 = Emulator.GetAddress("AUTO_DRAGOON_1");
+            _autoDragoon2 = Emulator.GetAddress("AUTO_DRAGOON_2");
+            _cursorTarget = Emulator.GetAddress("CURSOR_TARGET");
         }
 
         private int GetOffset() {

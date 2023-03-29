@@ -66,7 +66,7 @@ namespace Dragoon_Modifier.DraMod.Controller {
         private static void SwitchEXP() {
             long char1 = Emulator.GetAddress("CHAR_TABLE") + (0x2C * Settings.Instance.SwitchEXPSlot1);
             long char2 = Emulator.GetAddress("CHAR_TABLE") + (0x2C * Settings.Instance.SwitchEXPSlot2);
-            int maxEXP = Settings.Instance.Difficulty.Equals("Hell") ? 160000 : 80000;
+            int maxEXP = Settings.Instance.Difficulty.Contains("Hell") ? 160000 : 80000;
 
             if (char1 != char2) {
                 if ((Emulator.DirectAccess.ReadByte(char1 + 0x4) == 0x3 || Emulator.DirectAccess.ReadByte(char1 + 0x4) == 0x23) && (Emulator.DirectAccess.ReadByte(char2 + 0x4) == 0x3 || Emulator.DirectAccess.ReadByte(char2 + 0x4) == 0x23)) {

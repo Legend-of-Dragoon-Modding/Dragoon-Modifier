@@ -51,5 +51,9 @@ namespace Dragoon_Modifier.Core.Memory {
         Encounter.Slot FieldEncounterSlot { get; }
         int TimePlayed { get; }
         int HeroTickets { get; set; }
+        ushort BattleSPCap { get; set; }
+        ushort FieldTotalSPCap { get; set; }
+        byte ItemInventorySize { get; set; }
+        byte ScreenFade { get; set; }
     }
 }

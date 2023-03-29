@@ -506,7 +506,9 @@ namespace Dragoon_Modifier.DraMod.Dataset {
                                     new DragoonStats(values[6], values[7], values[8], values[9], values[10]),
                                     new DragoonStats(values[11], values[12], values[13], values[14], values[15]),
                                     new DragoonStats(values[16], values[17], values[18], values[19], values[20]),
-                                    new DragoonStats(values[21], values[22], values[23], values[24], values[25])
+                                    new DragoonStats(values[21], values[22], values[23], values[24], values[25]),
+                                    new DragoonStats("0", "0", "0", "0", "0"),
+                                    new DragoonStats("0", "0", "0", "0", "0")
                                 };
                         i++;
                     }

@@ -47,7 +47,6 @@ namespace Dragoon_Modifier.DraMod {
         public bool NoDragoon = false;
         public bool EarlyAdditions = false;
         public bool AdditionLevel = false;
-        public bool SaveHP = false;
         public bool AspectRatio = false;
         public bool RGBBattleUI = false;
         public bool RGBBattleUICharacter = false;
@@ -114,7 +113,7 @@ namespace Dragoon_Modifier.DraMod {
         public bool DragoonDescriptionChange = false;
         public bool RemoveHPCap = false;
 
-        public int LoopDelay = 50;
+        public int LoopDelay = 20;
         public int WaitDelay = 50;
 
         private Dataset.ILoDDictionary? _dataset = null;

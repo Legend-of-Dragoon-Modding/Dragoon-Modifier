@@ -1,4 +1,4 @@
-Item Name	Equip Type	Who equips	Icon	Element	Status	Status Chance	AT	MAT	DF	MDF	SPD	A-Hit	M-Hit	A-AV	M-AV	E_Half	E_Immune	Status_Resist	Special1	Special2	Special_Ammount	Death_Res	Description	Price(even)
+Item Name	Equip Type	Who equips	Icon	Element	Status	Status Chance	AT	MAT	DF	MDF	SPD	A-Hit	M-Hit	A-AV	M-AV	E_Half	E_Immune	Status_Resist	Special1	Special2	Special_Amount	Death_Res	Description	Price(even)
 Broad Sword	Weapon	Dart	Sword				2																 <END>	20
 Bastard Sword	Weapon	Dart	Sword				7																 <END>	60
 Heat Blade	Weapon	Dart	Sword	Fire			18																Fire-based attack.<END>	150

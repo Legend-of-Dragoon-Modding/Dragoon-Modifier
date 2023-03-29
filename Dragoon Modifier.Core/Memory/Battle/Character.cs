@@ -10,7 +10,23 @@ namespace Dragoon_Modifier.Core.Memory.Battle {
         private readonly int _dragoonTurns;
         private readonly int _slot;
 
+        public uint BattleScriptPtr1 { get { return Emulator.DirectAccess.ReadUInt(_baseAddress - 0x108); } set { Emulator.DirectAccess.WriteUInt(_baseAddress - 0x108, value); } }
+        public uint BattleScriptPtr2 { get { return Emulator.DirectAccess.ReadUInt(_baseAddress - 0x104); } set { Emulator.DirectAccess.WriteUInt(_baseAddress - 0x104, value); } }
+        public uint BattleScriptPtr3 { get { return Emulator.DirectAccess.ReadUInt(_baseAddress - 0x100); } set { Emulator.DirectAccess.WriteUInt(_baseAddress - 0x100, value); } }
+        public uint BattleScriptPtr4 { get { return Emulator.DirectAccess.ReadUInt(_baseAddress - 0xFC); } set { Emulator.DirectAccess.WriteUInt(_baseAddress - 0xFC, value); } }
+        public uint BattleScriptPtr5 { get { return Emulator.DirectAccess.ReadUInt(_baseAddress - 0xF8); } set { Emulator.DirectAccess.WriteUInt(_baseAddress - 0xF8, value); } }
+        public uint BattleScriptPtr6 { get { return Emulator.DirectAccess.ReadUInt(_baseAddress - 0xF4); } set { Emulator.DirectAccess.WriteUInt(_baseAddress - 0xF4, value); } }
+        public uint BattleScriptPtr7 { get { return Emulator.DirectAccess.ReadUInt(_baseAddress - 0xF0); } set { Emulator.DirectAccess.WriteUInt(_baseAddress - 0xF0, value); } }
+        public uint BattleScriptPtr8 { get { return Emulator.DirectAccess.ReadUInt(_baseAddress - 0xEC); } set { Emulator.DirectAccess.WriteUInt(_baseAddress - 0xEC, value); } }
+        public uint BattleScriptPtr9 { get { return Emulator.DirectAccess.ReadUInt(_baseAddress - 0xE8); } set { Emulator.DirectAccess.WriteUInt(_baseAddress - 0xE8, value); } }
+        public uint BattleScriptPtr10 { get { return Emulator.DirectAccess.ReadUInt(_baseAddress - 0xE4); } set { Emulator.DirectAccess.WriteUInt(_baseAddress - 0xE4, value); } } //not sure if these are used or if they are even pointers
+        public uint BattleScriptPtr11 { get { return Emulator.DirectAccess.ReadUInt(_baseAddress - 0xE0); } set { Emulator.DirectAccess.WriteUInt(_baseAddress - 0xE0, value); } }
+        public uint BattleScriptPtr12 { get { return Emulator.DirectAccess.ReadUInt(_baseAddress - 0xCC); } set { Emulator.DirectAccess.WriteUInt(_baseAddress - 0xCC, value); } }
         public byte Menu { get { return Emulator.DirectAccess.ReadByte(_baseAddress - 0xA4); } set { Emulator.DirectAccess.WriteByte(_baseAddress - 0xA4, value); } }
+        public byte SpecialAnimationFrameCounter { get { return Emulator.DirectAccess.ReadByte(_baseAddress - 0x68); } set { Emulator.DirectAccess.WriteByte(_baseAddress - 0x68, value); } }
+        public byte SpellTarget { get { return Emulator.DirectAccess.ReadByte(_baseAddress - 0x54); } set { Emulator.DirectAccess.WriteByte(_baseAddress - 0x54, value); } }
+        public byte CastingSpell { get { return Emulator.DirectAccess.ReadByte(_baseAddress - 0x50); } set { Emulator.DirectAccess.WriteByte(_baseAddress - 0x50, value); } }
+        public byte UnknownShanaBowValue { get { return Emulator.DirectAccess.ReadByte(_baseAddress - 0x4C); } set { Emulator.DirectAccess.WriteByte(_baseAddress - 0x4C, value); } } //don't know what it is used for but it changes from 8->7 when Shana uses her Dragoon Attack
         public byte LV { get { return Emulator.DirectAccess.ReadByte(_baseAddress - 0x4); } set { Emulator.DirectAccess.WriteByte(_baseAddress - 0x4, value); } }
         public byte DLV { get { return Emulator.DirectAccess.ReadByte(_baseAddress - 0x2); } set { Emulator.DirectAccess.WriteByte(_baseAddress - 0x2, value); } }
         public byte Dragoon { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0x7); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0x7, value); } }
@@ -28,11 +44,15 @@ namespace Dragoon_Modifier.Core.Memory.Battle {
         public byte On_Hit_Status_Chance { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0x3C); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0x3C, value); } }
         public ushort Add_DMG_Multi { get { return Emulator.DirectAccess.ReadUShort(_baseAddress + 0x114); } set { Emulator.DirectAccess.WriteUShort(_baseAddress + 0x114, value); } }
         public ushort Add_SP_Multi { get { return Emulator.DirectAccess.ReadUShort(_baseAddress + 0x112); } set { Emulator.DirectAccess.WriteUShort(_baseAddress + 0x112, value); } }
-        public short SP_Multi { get { return Emulator.DirectAccess.ReadShort(_baseAddress + 0x120); } set { Emulator.DirectAccess.WriteShort(_baseAddress + 0x120, value); } }
-        public short SP_P_Hit { get { return Emulator.DirectAccess.ReadShort(_baseAddress + 0x122); } set { Emulator.DirectAccess.WriteShort(_baseAddress + 0x122, value); } }
-        public short MP_P_Hit { get { return Emulator.DirectAccess.ReadShort(_baseAddress + 0x124); } set { Emulator.DirectAccess.WriteShort(_baseAddress + 0x124, value); } }
-        public short SP_M_Hit { get { return Emulator.DirectAccess.ReadShort(_baseAddress + 0x126); } set { Emulator.DirectAccess.WriteShort(_baseAddress + 0x126, value); } }
-        public short MP_M_Hit { get { return Emulator.DirectAccess.ReadShort(_baseAddress + 0x128); } set { Emulator.DirectAccess.WriteShort(_baseAddress + 0x128, value); } }
+        public ushort SP_Multi { get { return Emulator.DirectAccess.ReadUShort(_baseAddress + 0x120); } set { Emulator.DirectAccess.WriteUShort(_baseAddress + 0x120, value); } }
+        public byte SP_P_Hit { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0x122); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0x122, value); } }
+        public byte SP_P_Hit_Turns { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0x123); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0x123, value); } }
+        public byte MP_P_Hit { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0x124); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0x124, value); } }
+        public byte MP_P_Hit_Turns { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0x125); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0x125, value); } }
+        public byte SP_M_Hit { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0x126); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0x126, value); } }
+        public byte SP_M_Hit_Turns { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0x127); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0x127, value); } }
+        public byte MP_M_Hit { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0x128); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0x128, value); } }
+        public byte MP_M_Hit_Turns { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0x129); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0x129, value); } }
         public short HP_Regen { get { return Emulator.DirectAccess.ReadShort(_baseAddress + 0x12C); } set { Emulator.DirectAccess.WriteShort(_baseAddress + 0x12C, value); } }
         public short MP_Regen { get { return Emulator.DirectAccess.ReadShort(_baseAddress + 0x12E); } set { Emulator.DirectAccess.WriteShort(_baseAddress + 0x12E, value); } }
         public short SP_Regen { get { return Emulator.DirectAccess.ReadShort(_baseAddress + 0x130); } set { Emulator.DirectAccess.WriteShort(_baseAddress + 0x130, value); } }
@@ -49,6 +69,7 @@ namespace Dragoon_Modifier.Core.Memory.Battle {
         public byte A_HIT_Increase_Turn { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0xB5); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0xB5, value); } }
         public byte M_HIT_Increase { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0xB6); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0xB6, value); } }
         public byte M_HIT_Increase_Turn { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0xB7); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0xB7, value); } }
+        public byte SelectedItem1 { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0xB8); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0xB8, value); } }
         public byte SP_P_Hit_Increase { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0xC4); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0xC4, value); } }
         public byte SP_P_Hit_Increase_Turn { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0xC5); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0xC5, value); } }
         public byte MP_P_Hit_Increase { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0xC6); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0xC6, value); } }
@@ -57,6 +78,7 @@ namespace Dragoon_Modifier.Core.Memory.Battle {
         public byte SP_M_Hit_Increase_Turn { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0xC9); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0xC9, value); } }
         public byte MP_M_Hit_Increase { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0xCA); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0xCA, value); } }
         public byte MP_M_Hit_Increase_Turn { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0xCB); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0xCB, value); } }
+        public byte SelectedItem2 { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0x14E); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0x14E, value); } }
         public byte ColorMap { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0x1DD); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0x1DD, value); } }
         public byte AdditionSlotIndex { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0x26E); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0x26E, value); } }
         public byte Pandemonium { get { return (byte) (Emulator.DirectAccess.ReadByte(_pShieldMShieldSigStone + 0x1) & 3); } set { Emulator.DirectAccess.WriteByte(_pShieldMShieldSigStone + 0x1, (byte) (Emulator.DirectAccess.ReadByte(_pShieldMShieldSigStone + 0x1) | Math.Min(value, (byte) 3))); } }

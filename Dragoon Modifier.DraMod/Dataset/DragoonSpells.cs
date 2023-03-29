@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Dragoon_Modifier.DraMod.Dataset {
     public sealed class DragoonSpells : IDragoonSpells {
+        public string Name { get; set; }
         public bool Percentage { get; set; }
         public double Damage { get; set; }
         public byte Accuracy { get; set; }
@@ -32,7 +33,8 @@ namespace Dragoon_Modifier.DraMod.Dataset {
             bool key = new bool();
             double dkey = new double();
             byte bkey = new byte();
-            string name = values[0];
+            
+            Name = values[0];
 
             if (perc.TryGetValue(values[1].ToLower(), out key)) {
                 Percentage = key;

@@ -537,8 +537,8 @@ namespace Dragoon_Modifier.UI {
                 case "btnAdditionLevel":
                     ToggleButton(ref btn, ref DraMod.Settings.Instance.AdditionLevel);
                     break;
-                case "btnSaveHP":
-                    ToggleButton(ref btn, ref DraMod.Settings.Instance.SaveHP);
+                case "btnBreakHPCap":
+                    ToggleButton(ref btn, ref DraMod.Settings.Instance.RemoveHPCap);
                     break;
                 case "btnNeverGuard":
                     ToggleButton(ref btn, ref DraMod.Settings.Instance.NeverGuard);

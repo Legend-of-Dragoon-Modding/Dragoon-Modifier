@@ -18,11 +18,11 @@ namespace Dragoon_Modifier.Core.Memory {
         public Collections.IAddress<byte> AdditionLevel { get; private set; }
         public Collections.IAddress<byte> AdditionCount { get; private set; }
         public byte P_Half { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0x4A); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0x4A, value); } }
-        public short SP_Multi { get { return Emulator.DirectAccess.ReadShort(_baseAddress + 0x4C); } set { Emulator.DirectAccess.WriteShort(_baseAddress + 0x4C, value); } }
-        public short SP_P_Hit { get { return Emulator.DirectAccess.ReadShort(_baseAddress + 0x4E); } set { Emulator.DirectAccess.WriteShort(_baseAddress + 0x4E, value); } }
-        public short MP_P_Hit { get { return Emulator.DirectAccess.ReadShort(_baseAddress + 0x50); } set { Emulator.DirectAccess.WriteShort(_baseAddress + 0x50, value); } }
-        public short SP_M_Hit { get { return Emulator.DirectAccess.ReadShort(_baseAddress + 0x52); } set { Emulator.DirectAccess.WriteShort(_baseAddress + 0x52, value); } }
-        public short MP_M_Hit { get { return Emulator.DirectAccess.ReadShort(_baseAddress + 0x54); } set { Emulator.DirectAccess.WriteShort(_baseAddress + 0x54, value); } }
+        public ushort SP_Multi { get { return Emulator.DirectAccess.ReadUShort(_baseAddress + 0x4C); } set { Emulator.DirectAccess.WriteUShort(_baseAddress + 0x4C, value); } }
+        public byte SP_P_Hit { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0x4E); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0x4E, value); } }
+        public byte MP_P_Hit { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0x50); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0x50, value); } }
+        public byte SP_M_Hit { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0x52); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0x52, value); } }
+        public byte MP_M_Hit { get { return Emulator.DirectAccess.ReadByte(_baseAddress + 0x54); } set { Emulator.DirectAccess.WriteByte(_baseAddress + 0x54, value); } }
         public short HP_Regen { get { return Emulator.DirectAccess.ReadShort(_baseAddress + 0x58); } set { Emulator.DirectAccess.WriteShort(_baseAddress + 0x58, value); } }
         public short MP_Regen { get { return Emulator.DirectAccess.ReadShort(_baseAddress + 0x5A); } set { Emulator.DirectAccess.WriteShort(_baseAddress + 0x5A, value); } }
         public short SP_Regen { get { return Emulator.DirectAccess.ReadShort(_baseAddress + 0x5C); } set { Emulator.DirectAccess.WriteShort(_baseAddress + 0x5C, value); } }
