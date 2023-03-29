@@ -1,0 +1,33 @@
+	is %	Damage	Accuracy	MP	Element	Description
+Flameshot		255	100	10	Fire	Fire STR 510% x1.00
+Explosion		170	100	20	Fire	Fire STR 340% x1.00
+Final Burst		382.5	100	30	Fire	Fire STR 765% x1.00
+Red-Eye Dragon		510	100	80	Fire	Fire STR 1020% x1.00
+Divine Dragon Cannon		765	100	50	Non-Elemental	Void STR 1020%
+Wing Blaster (Albert)		220	100	20	Wind	Wind STR 440%
+Gaspless (Albert)		495	100	30	Wind	Wind STR 990%
+Blossom Storm (Albert)	Yes	0	100	20	Wind	Damage Resist 50% Dur 3
+Jade Dragon		660	100	80	Wind	Wind STR 1320%
+Divine Dragon Ball		510	100	50	Non-Elemental	Void STR 1020%
+Star Children		166	100	20	Light	Light STR 330%
+Moon Light	Yes	100	100	10	Light	Single 100% HP 50% RV
+Gates of Heaven	Yes	100	100	30	Light	All 50% HP & 50% RV
+White Silver Dragon		433.5	100	80	Light	Light STR 865% & 100% HP
+Wing Blaster (Lavitz)		220	100	20	Wind	Wind STR 440%
+Astral Drain		295	100	10	Dark	Dark STR 590% & HP
+Death Dimension		197.5	100	20	Dark	Dark STR 395%
+Gaspless (Lavitz)		495	100	30	Wind	Wind STR 990%
+Demon's Gate		100	100	30	Dark	Lethal attack for all
+Dark Dragon		840	100	80	Dark	Dark STR 1680% & HP
+Atomic Mind		165	100	10	Thunder	Thunder STR 330%
+Thunder Kid		330	100	20	Thunder	Thunder STR 660%
+Thunder God		495	100	30	Thunder	Thunder STR 990%
+Violet Dragon		660	100	80	Thunder	Thunder STR 1495%
+Freezing Ring		255	100	10	Water	Water STR 510%
+Rainbow Breath	Yes	50	100	20	Water	HP Recv & Cure - All
+Rose Storm (Lavitz)	Yes	0	100	20	Wind	Damage Resist 50% Dur 3
+Diamond Dust		264	100	30	Water	Water STR 530%
+Blue Sea Dragon		700	100	80	Water	Water STR 1400%
+Grand Stream		270	100	20	Earth	Earth STR 675%
+Meteor Strike		448	100	30	Earth	Earth STR 1120%
+Golden Dragon		888	100	80	Earth	Earth STR 2220%

@@ -1,0 +1,183 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CS-Script" Version="4.4.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Dragoon Modifier.Core\Dragoon Modifier.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Hard_Mode\Dart\BaseStats.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Dart\Blazing Dynamo.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Dart\Burning Rush.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Dart\Crush Dance.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Dart\Double Slash.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Dart\Madness Hero.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Dart\Moon Strike.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Dart\Volcano.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Dragoon_Additions.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Dragoon_Spells.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Dragoon_Stats.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Equipment.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Haschel\5 Ring Shattering.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Haschel\BaseStats.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Haschel\Double Punch.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Haschel\Flurry of Styx.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Haschel\Hex Hammer.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Haschel\Omni-Sweep.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Haschel\Summon 4 Gods.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Items.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Kongol\BaseStats.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Kongol\Bone Crush.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Kongol\Inferno.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Kongol\Pursuit.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Lavitz Albert\BaseStats.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Lavitz Albert\[Albert] Flower Storm.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Lavitz Albert\[Albert] Gust of Wind Dance.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Lavitz Albert\[Albert] Harpoon.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Lavitz Albert\[Albert] Rod Typhoon.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Lavitz Albert\[Albert] Spinning Cane.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Lavitz Albert\[Lavitz] Flower Storm.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Lavitz Albert\[Lavitz] Gust of Wind Dance.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Lavitz Albert\[Lavitz] Harpoon.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Lavitz Albert\[Lavitz] Rod Typhoon.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Lavitz Albert\[Lavitz] Spinning Cane.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Meru\BaseStats.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Meru\Cat's Cradle.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Meru\Cool Boogie.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Meru\Double Smack.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Meru\Hammer Spin.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Meru\Perky Step.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Monster_Data.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Rose\BaseStats.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Rose\Demon's Dance.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Rose\Hard Blade.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Rose\More &amp; More.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Rose\Whip Smack.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Shana Miranda\BaseStats.tsv" />
+    <EmbeddedResource Include="Resources\Hard_Mode\Shops.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Dart\BaseStats.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Dart\Blazing Dynamo.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Dart\Burning Rush.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Dart\Crush Dance.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Dart\Double Slash.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Dart\Madness Hero.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Dart\Moon Strike.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Dart\Volcano.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Dragoon_Additions.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Dragoon_Spells.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Dragoon_Stats.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Equipment.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Haschel\5 Ring Shattering.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Haschel\BaseStats.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Haschel\Double Punch.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Haschel\Flurry of Styx.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Haschel\Hex Hammer.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Haschel\Omni-Sweep.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Haschel\Summon 4 Gods.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Items.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Kongol\BaseStats.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Kongol\Bone Crush.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Kongol\Inferno.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Kongol\Pursuit.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Lavitz Albert\BaseStats.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Lavitz Albert\[Albert] Flower Storm.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Lavitz Albert\[Albert] Gust of Wind Dance.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Lavitz Albert\[Albert] Harpoon.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Lavitz Albert\[Albert] Rod Typhoon.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Lavitz Albert\[Albert] Spinning Cane.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Lavitz Albert\[Lavitz] Flower Storm.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Lavitz Albert\[Lavitz] Gust of Wind Dance.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Lavitz Albert\[Lavitz] Harpoon.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Lavitz Albert\[Lavitz] Rod Typhoon.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Lavitz Albert\[Lavitz] Spinning Cane.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Meru\BaseStats.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Meru\Cat's Cradle.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Meru\Cool Boogie.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Meru\Double Smack.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Meru\Hammer Spin.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Meru\Perky Step.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Monster_Data.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Rose\BaseStats.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Rose\Demon's Dance.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Rose\Hard Blade.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Rose\More &amp; More.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Rose\Whip Smack.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Shana Miranda\BaseStats.tsv" />
+    <EmbeddedResource Include="Resources\Hell_Mode\Shops.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Dart\BaseStats.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Dart\Blazing Dynamo.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Dart\Burning Rush.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Dart\Crush Dance.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Dart\Double Slash.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Dart\Madness Hero.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Dart\Moon Strike.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Dart\Volcano.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Dragoon_Additions.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Dragoon_Spells.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Dragoon_Stats.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Equipment.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Haschel\5 Ring Shattering.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Haschel\BaseStats.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Haschel\Double Punch.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Haschel\Flurry of Styx.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Haschel\Hex Hammer.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Haschel\Omni-Sweep.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Haschel\Summon 4 Gods.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Items.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Kongol\BaseStats.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Kongol\Bone Crush.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Kongol\Inferno.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Kongol\Pursuit.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Lavitz Albert\BaseStats.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Lavitz Albert\[Albert] Flower Storm.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Lavitz Albert\[Albert] Gust of Wind Dance.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Lavitz Albert\[Albert] Harpoon.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Lavitz Albert\[Albert] Rod Typhoon.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Lavitz Albert\[Albert] Spinning Cane.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Lavitz Albert\[Lavitz] Flower Storm.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Lavitz Albert\[Lavitz] Gust of Wind Dance.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Lavitz Albert\[Lavitz] Harpoon.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Lavitz Albert\[Lavitz] Rod Typhoon.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Lavitz Albert\[Lavitz] Spinning Cane.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Meru\BaseStats.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Meru\Cat's Cradle.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Meru\Cool Boogie.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Meru\Double Smack.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Meru\Hammer Spin.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Meru\Perky Step.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Monster_Data.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Rose\BaseStats.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Rose\Demon's Dance.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Rose\Hard Blade.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Rose\More &amp; More.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Rose\Whip Smack.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Shana Miranda\BaseStats.tsv" />
+    <EmbeddedResource Include="Resources\US_Base\Shops.tsv" />
+    <EmbeddedResource Include="Resources\Ultimate_Data.tsv" />
+  </ItemGroup>
+
+</Project>
