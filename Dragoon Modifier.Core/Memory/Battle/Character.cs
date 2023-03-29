@@ -107,9 +107,9 @@ namespace Dragoon_Modifier.Core.Memory.Battle {
         }
 
         public void SetStats(uint character) {
-            Console.WriteLine(character);
             var primaryTable = Emulator.Memory.CharacterTable[character];
             var secondaryTable = Emulator.Memory.SecondaryCharacterTable[character];
+            Console.WriteLine("ID: " + character);
 
             HP = secondaryTable.HP;
             MaxHP = secondaryTable.MaxHP;

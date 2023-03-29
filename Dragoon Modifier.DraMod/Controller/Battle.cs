@@ -1,4 +1,6 @@
-﻿using Dragoon_Modifier.Core;
+﻿using CSScripting;
+
+using Dragoon_Modifier.Core;
 using Dragoon_Modifier.DraMod.Dataset;
 using Dragoon_Modifier.DraMod.UI;
 
@@ -171,11 +173,13 @@ namespace Dragoon_Modifier.DraMod.Controller {
         static ushort ubHeartHPSave = 0;
         static ushort ubArmorShellTP = 0;
         static bool ubSharedHP = false;
+        static bool shanaFix = false;
 
         static readonly List<Hotkey> hotkeys = BattleHotkeys.Load();
 
         public static void Setup() {
             Console.WriteLine("Battle detected. Loading...");
+            shanaFix = false;
 
             firstDamageCapRemoval = false;
             lastItemUsedDamageCap = 0;
@@ -339,6 +343,17 @@ namespace Dragoon_Modifier.DraMod.Controller {
 
         public static void Run() {
             Settings.Instance.Dataset.Script.BattleRun();
+
+            if (Emulator.Memory.PartySlot[0] == 4 && Emulator.DirectAccess.ReadByte(Emulator.GetAddress("HASCHEL_FIX" + Emulator.Memory.Disc)) != 0x80) {
+                HaschelFix();
+            }
+
+            if (slot1FinalBlow.Contains(Emulator.Memory.EncounterID) && sharanda.Contains(Emulator.Memory.PartySlot[0]) && !shanaFix) {
+                ShanaFix(0);
+            }
+            if (slot2FinalBlow.Contains(Emulator.Memory.EncounterID) && sharanda.Contains(Emulator.Memory.PartySlot[1]) && !shanaFix) {
+                ShanaFix(1);
+            }
 
             UpdateUI();
 
@@ -685,6 +700,51 @@ namespace Dragoon_Modifier.DraMod.Controller {
             }
 
             Settings.Instance.Dataset.Script.BattleSetup();
+        }
+
+        private static void HaschelFix() {
+            if (Emulator.Region == Region.NTA) {
+                Console.WriteLine("Haschel Fix for Disc: " + Emulator.Memory.Disc);
+                Emulator.DirectAccess.WriteAoB(Emulator.GetAddress("HASCHEL_FIX" + Emulator.Memory.Disc), "0x80 0x80 0x80 0x00");
+                Emulator.DirectAccess.WriteAoB(Emulator.GetAddress("HASCHEL_FIX" + Emulator.Memory.Disc) + 0x4, Emulator.Memory.Disc == 1 ? "0x90 0xA0" : Emulator.Memory.Disc == 2 ? "0x10 0x93" : Emulator.Memory.Disc == 3 ? "0x68 0xA7" : "0xC0 0x94");
+                Emulator.DirectAccess.WriteAoB(Emulator.GetAddress("HASCHEL_FIX" + Emulator.Memory.Disc) + 0x6, "0x1E 0x80 0x74 0x12 0x00 0x00 0x02 0x00 0x8C 0x8C 0x4D 0x52 0x47 0x1A 0x04 0x00 0x00 0x00 0x28 0x00" +
+                        " 0x00 0x00 0x02 0x00 0x00 0x00 0x2C 0x00 0x00 0x00 0x68 0x00 0x00 0x00 0x94 0x00 0x00 0x00 0xD4 0x11 0x00 0x00 0x68 0x12 0x00 0x00 0xB0 0x05 0x02 0x00 0x00 0x00 0x8C 0x8C 0x00 0x00" +
+                        " 0x00 0x01 0x00 0x02 0x00 0x03 0x00 0x04 0x00 0x05 0x00 0x06 0x00 0x07 0x00 0x08 0x00 0x09 0x00 0x0A 0x00 0x0B 0x00 0x0C 0x00 0x0D 0x00 0x0E 0x00 0x0F 0x00 0x10 0x00 0x11 0x00 0x12" +
+                        " 0x00 0x13 0x00 0x14 0x00 0x15 0x00 0x16 0x00 0x17 0x00 0x18 0x00 0x19 0x00 0x1A 0x00 0x1B");
+            }
+        }
+
+        private static void ShanaFix(byte slot) {
+            byte HP = 0;
+            if (Emulator.Memory.EncounterID == 408 || Emulator.Memory.EncounterID == 409 || Emulator.Memory.EncounterID == 387) {
+                if (Emulator.Memory.Battle.MonsterTable[0].HP != 0) {
+                    HP = 1;
+                }
+            } else {
+                foreach (dynamic monster in Emulator.Memory.Battle.MonsterTable) {
+                    if (monster.HP != 0) {
+                        HP |= 1;
+                    }
+                }
+            }
+            if (HP == 0) {
+                Console.WriteLine("Shana Fix starting...");
+                uint previousPartyMember = Emulator.Memory.Battle.CharacterTable[slot].ID;
+                Emulator.Memory.PartySlot[slot] = 0;
+                Emulator.Memory.Battle.CharacterTable[slot].Action = 2;
+                while (Emulator.Memory.Battle.CharacterTable[slot].Action != 0) {
+                    Thread.Sleep(250);
+                }
+                try {
+                    Thread.Sleep(10000);
+                    Emulator.Memory.PartySlot[slot] = previousPartyMember;
+                    shanaFix = true;
+                    Console.WriteLine("Shana Fix complete.");
+
+                } catch {
+                    Console.WriteLine("No Dart not set");
+                }
+            }
         }
 
         private static void RemoveDamageCaps() {
