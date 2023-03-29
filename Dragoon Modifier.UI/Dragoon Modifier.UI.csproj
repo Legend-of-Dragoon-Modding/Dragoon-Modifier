@@ -1,12 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0-windows</TargetFramework>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
-  <PropertyGroup />
+  <PropertyGroup>
+    <ApplicationIcon>Icons\RedMoon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Resource Include="Fonts\SegoeWP-Semibold.ttf" />
     <Resource Include="Fonts\SegoeWP-Black.ttf" />
@@ -52,6 +54,9 @@
     <Compile Remove="Scripts\Hotkeys\[ALL] Base.cs" />
     <Compile Remove="Scripts\Other\Zychronix\[ALL] Debug Save.cs" />
     <Compile Remove="Scripts\Other\[ALL] Base.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Icons\RedMoon.ico" />
   </ItemGroup>
 	<ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
