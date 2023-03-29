@@ -1,18 +1,21 @@
-<Controls:MetroWindow x:Class="Dragoon_Modifier.MainWindow"
+﻿<mah:MetroWindow x:Class="Dragoon_Modifier.UI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        xmlns:local="clr-namespace:Dragoon_Modifier"
+        xmlns:local="clr-namespace:Dragoon_Modifier.UI"
+        xmlns:DraMod="clr-namespace:Dragoon_Modifier.DraMod"
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
         Closing="Window_Closing"
         Closed="Window_Closed"
         Loaded="Window_Loaded"
-        Icon="1.ico"
+        SizeChanged="Window_SizeChanged"
+        Icon="Icons/BlueMoon.ico"
         ShowIconOnTitleBar="True"
         ShowTitleBar="True"
-        Title=" Dragoon Modifier v3.5.5" Height="750" Width="1075" MinWidth="750" MinHeight="560" WindowStartupLocation="CenterScreen" Background="White">
+        Title=" Dragoon Modifier " Height="750" Width="1075" MinWidth="750" MinHeight="560" WindowStartupLocation="CenterScreen" Background="White">
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Template">
@@ -46,6 +49,284 @@
         </Style>
         <Style TargetType="{x:Type ComboBoxItem}">
             <Setter Property="Foreground" Value="Black" />
+        </Style>
+        <!-- Brushes used in Styling of ScrollViewer -->
+        <SolidColorBrush x:Key="StandardBorderBrush" Color="#888" />
+        <SolidColorBrush x:Key="StandardBackgroundBrush" Color="#FFF" />
+        <SolidColorBrush x:Key="HoverBorderBrush" Color="#DDD" />
+        <SolidColorBrush x:Key="SelectedBackgroundBrush" Color="Gray" />
+        <SolidColorBrush x:Key="SelectedForegroundBrush" Color="White" />
+        <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#888" />
+        <SolidColorBrush x:Key="NormalBrush" Color="#888" />
+        <SolidColorBrush x:Key="NormalBorderBrush" Color="#888" />
+        <SolidColorBrush x:Key="HorizontalNormalBrush" Color="#3393DF" />
+        <SolidColorBrush x:Key="HorizontalNormalBorderBrush" Color="#888" />
+        <LinearGradientBrush x:Key="ListBoxBackgroundBrush" 
+			StartPoint="0,0" EndPoint="1,0.001">
+            <GradientBrush.GradientStops>
+                <GradientStopCollection>
+                    <GradientStop Color="White" Offset="0.0" />
+                    <GradientStop Color="White" Offset="0.6" />
+                    <GradientStop Color="#DDDDDD" Offset="1.2"/>
+                </GradientStopCollection>
+            </GradientBrush.GradientStops>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="StandardBrush" 
+			StartPoint="0,0" EndPoint="0,1">
+            <GradientBrush.GradientStops>
+                <GradientStopCollection>
+                    <GradientStop Color="#FFF" Offset="0.0"/>
+                    <GradientStop Color="#CCC" Offset="1.0"/>
+                </GradientStopCollection>
+            </GradientBrush.GradientStops>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="GlyphBrush" Color="#444" />
+        <LinearGradientBrush x:Key="PressedBrush" 
+			StartPoint="0,0" EndPoint="0,1">
+            <GradientBrush.GradientStops>
+                <GradientStopCollection>
+                    <GradientStop Color="#BBB" Offset="0.0"/>
+                    <GradientStop Color="#EEE" Offset="0.1"/>
+                    <GradientStop Color="#EEE" Offset="0.9"/>
+                    <GradientStop Color="#FFF" Offset="1.0"/>
+                </GradientStopCollection>
+            </GradientBrush.GradientStops>
+        </LinearGradientBrush>
+
+        <!-- SrollViewer ScrollBar Repeat Buttons (at each end) -->
+        <Style x:Key="ScrollBarLineButton" TargetType="{x:Type RepeatButton}">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="Focusable" Value="false"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RepeatButton}">
+                        <Border 
+          Name="Border"
+          Margin="1" 
+          CornerRadius="2" 
+          Background="{StaticResource NormalBrush}"
+          BorderBrush="{StaticResource NormalBorderBrush}"
+          BorderThickness="1">
+                            <Path 
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Fill="{StaticResource GlyphBrush}"
+            Data="{Binding Path=Content,
+				RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter TargetName="Border" Property="Background" 
+								Value="{StaticResource PressedBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" 
+								Value="{StaticResource DisabledForegroundBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- SrollViewer ScrollBar Repeat Buttons (The part in the middle, 
+             not the thumb the long area between the buttons ) -->
+        <Style x:Key="ScrollBarPageButton" TargetType="{x:Type RepeatButton}">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="IsTabStop" Value="false"/>
+            <Setter Property="Focusable" Value="false"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RepeatButton}">
+                        <Border Background="Transparent" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- ScrollViewer ScrollBar Thumb, that part that can be dragged
+            up/down or left/right Buttons -->
+        <Style x:Key="ScrollBarThumb" TargetType="{x:Type Thumb}">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="IsTabStop" Value="false"/>
+            <Setter Property="Focusable" Value="false"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Border 
+          CornerRadius="2" 
+          Background="{TemplateBinding Background}"
+          BorderBrush="{TemplateBinding BorderBrush}"
+          BorderThickness="1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <ControlTemplate x:Key="VerticalScrollBar" 
+			TargetType="{x:Type ScrollBar}">
+            <Grid >
+                <Grid.RowDefinitions>
+                    <RowDefinition MaxHeight="18"/>
+                    <RowDefinition Height="0.00001*"/>
+                    <RowDefinition MaxHeight="18"/>
+                </Grid.RowDefinitions>
+                <Border
+      Grid.RowSpan="3"
+      CornerRadius="2" 
+      Background="#FFB6B6B6" />
+                <RepeatButton 
+      Grid.Row="0"                           
+      Style="{StaticResource ScrollBarLineButton}"
+      Height="18"
+      Command="ScrollBar.LineUpCommand"
+      Content="M 0 4 L 8 4 L 4 0 Z" />
+                <Track 
+      Name="PART_Track"
+      Grid.Row="1"
+      IsDirectionReversed="true">
+                    <Track.DecreaseRepeatButton>
+                        <RepeatButton 
+          Style="{StaticResource ScrollBarPageButton}"
+          Command="ScrollBar.PageUpCommand" />
+                    </Track.DecreaseRepeatButton>
+                    <Track.Thumb>
+                        <Thumb 
+          Style="{StaticResource ScrollBarThumb}" 
+          Margin="1,0,1,0"  
+          Background="{StaticResource HorizontalNormalBrush}"
+          BorderBrush="{StaticResource HorizontalNormalBorderBrush}" />
+                    </Track.Thumb>
+                    <Track.IncreaseRepeatButton>
+                        <RepeatButton 
+          Style="{StaticResource ScrollBarPageButton}"
+          Command="ScrollBar.PageDownCommand" />
+                    </Track.IncreaseRepeatButton>
+                </Track>
+                <RepeatButton 
+      Grid.Row="3" 
+      Style="{StaticResource ScrollBarLineButton}"
+      Height="18"
+      Command="ScrollBar.LineDownCommand"
+      Content="M 0 0 L 4 4 L 8 0 Z"/>
+            </Grid>
+        </ControlTemplate>
+        <!-- HorizontalScrollBar Template using the previously created Templates -->
+        <ControlTemplate x:Key="HorizontalScrollBar" 
+			TargetType="{x:Type ScrollBar}">
+            <Grid >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition MaxWidth="18"/>
+                    <ColumnDefinition Width="0.00001*"/>
+                    <ColumnDefinition MaxWidth="18"/>
+                </Grid.ColumnDefinitions>
+                <Border
+      Grid.ColumnSpan="3"
+      CornerRadius="2" 
+      Background="#F0F0F0" />
+                <RepeatButton 
+      Grid.Column="0"                           
+      Style="{StaticResource ScrollBarLineButton}"
+      Width="18"
+      Command="ScrollBar.LineLeftCommand"
+      Content="M 4 0 L 4 8 L 0 4 Z" />
+                <Track 
+      Name="PART_Track"
+      Grid.Column="1"
+      IsDirectionReversed="False">
+                    <Track.DecreaseRepeatButton>
+                        <RepeatButton 
+          Style="{StaticResource ScrollBarPageButton}"
+          Command="ScrollBar.PageLeftCommand" />
+                    </Track.DecreaseRepeatButton>
+                    <Track.Thumb>
+                        <Thumb 
+          Style="{StaticResource ScrollBarThumb}" 
+          Margin="0,1,0,1"  
+          Background="{StaticResource NormalBrush}"
+          BorderBrush="{StaticResource NormalBorderBrush}" />
+                    </Track.Thumb>
+                    <Track.IncreaseRepeatButton>
+                        <RepeatButton 
+          Style="{StaticResource ScrollBarPageButton}"
+          Command="ScrollBar.PageRightCommand" />
+                    </Track.IncreaseRepeatButton>
+                </Track>
+                <RepeatButton 
+      Grid.Column="3" 
+      Style="{StaticResource ScrollBarLineButton}"
+      Width="18"
+      Command="ScrollBar.LineRightCommand"
+      Content="M 0 0 L 4 4 L 0 8 Z"/>
+            </Grid>
+        </ControlTemplate>
+        <!-- Style for overall  ScrollBar -->
+        <Style x:Key="{x:Type ScrollBar}" TargetType="{x:Type ScrollBar}">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Style.Triggers>
+                <Trigger Property="Orientation" Value="Horizontal">
+                    <Setter Property="Width" Value="Auto"/>
+                    <Setter Property="Height" Value="18" />
+                    <Setter Property="Template" 
+						Value="{StaticResource HorizontalScrollBar}" />
+                </Trigger>
+                <Trigger Property="Orientation" Value="Vertical">
+                    <Setter Property="Width" Value="18"/>
+                    <Setter Property="Height" Value="Auto" />
+                    <Setter Property="Template" 
+						Value="{StaticResource VerticalScrollBar}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Style for overall  ScrollViewer -->
+        <Style x:Key="FavsScrollViewer" TargetType="{x:Type ScrollViewer}">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <ScrollContentPresenter Grid.Column="1"/>
+
+                            <ScrollBar Name="PART_VerticalScrollBar"
+            Value="{TemplateBinding VerticalOffset}"
+            Maximum="{TemplateBinding ScrollableHeight}"
+            ViewportSize="{TemplateBinding ViewportHeight}"
+            Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"/>
+                            <ScrollBar Name="PART_HorizontalScrollBar"
+            Orientation="Horizontal"
+            Grid.Row="1"
+            Grid.Column="1"
+            Value="{TemplateBinding HorizontalOffset}"
+            Maximum="{TemplateBinding ScrollableWidth}"
+            ViewportSize="{TemplateBinding ViewportWidth}"
+            Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"/>
+
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="Separator">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Separator}">
+                        <Rectangle Height="{TemplateBinding Height}" Fill="#3393DF" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </Window.Resources>
     <Grid>
@@ -122,7 +403,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="30*"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="50*"/>
+                        <RowDefinition Height="40*"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="5*"/>
                         <RowDefinition Height="Auto"/>
@@ -137,9 +418,9 @@
                                 <ColumnDefinition Width="1*"/>
                                 <ColumnDefinition Width="0.265*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock x:Name="lblEncounter" Grid.Column="0" Text="Encounter Value:" VerticalAlignment="Center" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" />
-                            <TextBlock x:Name="lblEnemyID" Grid.Column="1" Text="Enemy ID:" VerticalAlignment="Center" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" />
-                            <TextBlock x:Name="lblMapID" Grid.Column="2" Text="Map ID:" VerticalAlignment="Center" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" />
+                            <TextBlock x:Name="lblEncounter" Grid.Column="0" Text="Encounter Value:" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" />
+                            <TextBlock x:Name="lblEnemyID" Grid.Column="1" Text="Enemy ID:" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" />
+                            <TextBlock x:Name="lblMapID" Grid.Column="2" Text="Map ID:" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" />
                             <ProgressBar x:Name="pgrQTB" Grid.Column="3" Value="0" Maximum="4" Height="Auto"/>
                         </Grid>
                     </DockPanel>
@@ -147,6 +428,8 @@
                     <DockPanel Grid.Row="2" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" Grid.ColumnSpan="2" >
                         <Grid HorizontalAlignment="Stretch" Margin="0"  >
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="17*"/>
+                                <RowDefinition Height="3*"/>
                                 <RowDefinition Height="17*"/>
                                 <RowDefinition Height="3*"/>
                                 <RowDefinition Height="17*"/>
@@ -196,15 +479,21 @@
                             <Border Grid.Row="8" Grid.Column="3" Background="#FF8ADAA4" />
                             <Border Grid.Row="8" Grid.Column="4" Background="#FFE3A8FF" />
                             <Border Grid.Row="8" Grid.Column="5" Background="#FFA8A8FF" />
-                            <TextBlock x:Name="lblEnemy1Name" Grid.Row="0" Grid.Column="0" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="/#Segoe WP Black" FontSize="10" />
+                            <Border Grid.Row="10" Grid.Column="0" Background="#FFA8D3FF" />
+                            <Border Grid.Row="10" Grid.Column="1" Background="#FFFFA8A8" />
+                            <Border Grid.Row="10" Grid.Column="2" Background="#FFFFC8A8" />
+                            <Border Grid.Row="10" Grid.Column="3" Background="#FF8ADAA4" />
+                            <Border Grid.Row="10" Grid.Column="4" Background="#FFE3A8FF" />
+                            <Border Grid.Row="10" Grid.Column="5" Background="#FFA8A8FF" />
+                            <TextBlock x:Name="lblEnemy1Name" Grid.Row="0" Grid.Column="0" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" />
                             <DockPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
                                 <Grid HorizontalAlignment="Center" Margin="0"  >
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe0cb;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblEnemy1HP" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe0cb;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblEnemy1HP" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="0" Grid.Column="2" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -213,8 +502,8 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe0bf;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblEnemy1ATK" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe0bf;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblEnemy1ATK" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="0" Grid.Column="3" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -223,8 +512,8 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe2bd;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblEnemy1DEF" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe2bd;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblEnemy1DEF" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="0" Grid.Column="4" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -233,21 +522,21 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe002;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblEnemy1SPD" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe002;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblEnemy1SPD" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
-                            <TextBlock x:Name="lblEnemy1TRN" Grid.Column="5" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#Segoe WP Semibold"/>
+                            <TextBlock x:Name="lblEnemy1TRN" Grid.Column="5" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#Segoe WP Semibold"/>
 
-                            <TextBlock x:Name="lblEnemy2Name" Grid.Row="2" Grid.Column="0" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="/#Segoe WP Black" FontSize="10"  />
+                            <TextBlock x:Name="lblEnemy2Name" Grid.Row="2" Grid.Column="0" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="/Fonts/#Segoe WP Black" FontSize="10"  />
                             <DockPanel Grid.Row="2" Grid.Column="1" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
                                 <Grid HorizontalAlignment="Center" Margin="0"  >
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe0cb;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblEnemy2HP" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe0cb;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblEnemy2HP" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="2" Grid.Column="2" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -256,8 +545,8 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe0bf;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblEnemy2ATK" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe0bf;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblEnemy2ATK" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="2" Grid.Column="3" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -266,8 +555,8 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe2bd;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblEnemy2DEF" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe2bd;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblEnemy2DEF" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="2" Grid.Column="4" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -276,21 +565,21 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe002;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblEnemy2SPD" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe002;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblEnemy2SPD" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
-                            <TextBlock x:Name="lblEnemy2TRN" Grid.Row="2" Grid.Column="5" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#Segoe WP Semibold"/>
+                            <TextBlock x:Name="lblEnemy2TRN" Grid.Row="2" Grid.Column="5" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#Segoe WP Semibold"/>
 
-                            <TextBlock x:Name="lblEnemy3Name" Grid.Row="4" Grid.Column="0" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="/#Segoe WP Black"  FontSize="10" />
+                            <TextBlock x:Name="lblEnemy3Name" Grid.Row="4" Grid.Column="0" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="/Fonts/#Segoe WP Black"  FontSize="10" />
                             <DockPanel Grid.Row="4" Grid.Column="1" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
                                 <Grid HorizontalAlignment="Center" Margin="0"  >
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe0cb;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblEnemy3HP" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe0cb;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblEnemy3HP" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="4" Grid.Column="2" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -299,8 +588,8 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe0bf;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblEnemy3ATK" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe0bf;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblEnemy3ATK" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="4" Grid.Column="3" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -309,8 +598,8 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe2bd;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblEnemy3DEF" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe2bd;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblEnemy3DEF" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="4" Grid.Column="4" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -319,21 +608,21 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe002;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblEnemy3SPD" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe002;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblEnemy3SPD" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
-                            <TextBlock x:Name="lblEnemy3TRN" Grid.Row="4" Grid.Column="5" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#Segoe WP Semibold"/>
+                            <TextBlock x:Name="lblEnemy3TRN" Grid.Row="4" Grid.Column="5" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#Segoe WP Semibold"/>
 
-                            <TextBlock x:Name="lblEnemy4Name" Grid.Row="6" Grid.Column="0" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="/#Segoe WP Black"  FontSize="10" />
+                            <TextBlock x:Name="lblEnemy4Name" Grid.Row="6" Grid.Column="0" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="/Fonts/#Segoe WP Black"  FontSize="10" />
                             <DockPanel Grid.Row="6" Grid.Column="1" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
                                 <Grid HorizontalAlignment="Center" Margin="0"  >
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe0cb;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblEnemy4HP" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe0cb;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblEnemy4HP" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="6" Grid.Column="2" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -342,8 +631,8 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe0bf;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblEnemy4ATK" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe0bf;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblEnemy4ATK" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="6" Grid.Column="3" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -352,8 +641,8 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe2bd;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblEnemy4DEF" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe2bd;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblEnemy4DEF" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="6" Grid.Column="4" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -362,21 +651,21 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe002;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblEnemy4SPD" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe002;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblEnemy4SPD" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
-                            <TextBlock x:Name="lblEnemy4TRN" Grid.Row="6" Grid.Column="5" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#Segoe WP Semibold"/>
+                            <TextBlock x:Name="lblEnemy4TRN" Grid.Row="6" Grid.Column="5" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#Segoe WP Semibold"/>
 
-                            <TextBlock x:Name="lblEnemy5Name" Grid.Row="8" Grid.Column="0" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="/#Segoe WP Black"  FontSize="10" />
+                            <TextBlock x:Name="lblEnemy5Name" Grid.Row="8" Grid.Column="0" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="/Fonts/#Segoe WP Black"  FontSize="10" />
                             <DockPanel Grid.Row="8" Grid.Column="1" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
                                 <Grid HorizontalAlignment="Center" Margin="0"  >
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe0cb;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblEnemy5HP" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe0cb;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblEnemy5HP" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="8" Grid.Column="2" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -385,8 +674,8 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe0bf;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblEnemy5ATK" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe0bf;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblEnemy5ATK" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="8" Grid.Column="3" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -395,8 +684,8 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe2bd;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblEnemy5DEF" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe2bd;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblEnemy5DEF" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="8" Grid.Column="4" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -405,11 +694,54 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe002;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblEnemy5SPD" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe002;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblEnemy5SPD" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
-                            <TextBlock x:Name="lblEnemy5TRN" Grid.Row="8" Grid.Column="5" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#Segoe WP Semibold"/>
+                            <TextBlock x:Name="lblEnemy5TRN" Grid.Row="8" Grid.Column="5" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#Segoe WP Semibold"/>
+
+                            <TextBlock x:Name="lblEnemy6Name" Grid.Row="10" Grid.Column="0" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" />
+                            <DockPanel Grid.Row="10" Grid.Column="1" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
+                                <Grid HorizontalAlignment="Center" Margin="0"  >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="&#xe0cb;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblEnemy6HP" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
+                                </Grid>
+                            </DockPanel>
+                            <DockPanel Grid.Row="10" Grid.Column="2" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
+                                <Grid HorizontalAlignment="Center" Margin="0"  >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="&#xe0bf;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblEnemy6ATK" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
+                                </Grid>
+                            </DockPanel>
+                            <DockPanel Grid.Row="10" Grid.Column="3" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
+                                <Grid HorizontalAlignment="Center" Margin="0"  >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="&#xe2bd;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblEnemy6DEF" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
+                                </Grid>
+                            </DockPanel>
+                            <DockPanel Grid.Row="10" Grid.Column="4" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
+                                <Grid HorizontalAlignment="Center" Margin="0"  >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="&#xe002;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblEnemy6SPD" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
+                                </Grid>
+                            </DockPanel>
+                            <TextBlock x:Name="lblEnemy6TRN" Grid.Row="10" Grid.Column="5" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#Segoe WP Semibold"/>
 
                             <Border Grid.Row="1" Grid.Column="0" Background="#FFA8D3FF" />
                             <Border Grid.Row="1" Grid.Column="1" Background="#FFFFA8A8" />
@@ -472,11 +804,18 @@
                             <Border Grid.Row="9" Grid.Column="4" Background="#FFB6B6B6" />
                             <Border Grid.Row="9" Grid.Column="5" Background="#FFB6B6B6" />
                             <Border Grid.Row="3" Grid.Column="1" Background="#FFB6B6B6" />
+                            <Border Grid.Row="11" Grid.Column="0" Background="#FFB6B6B6" />
+                            <Border Grid.Row="11" Grid.Column="1" Background="#FFB6B6B6" />
+                            <Border Grid.Row="11" Grid.Column="2" Background="#FFB6B6B6" />
+                            <Border Grid.Row="11" Grid.Column="3" Background="#FFB6B6B6" />
+                            <Border Grid.Row="11" Grid.Column="4" Background="#FFB6B6B6" />
+                            <Border Grid.Row="11" Grid.Column="5" Background="#FFB6B6B6" />
                             <ProgressBar x:Name="pgrEATBM1" Grid.Row="1" Grid.ColumnSpan="6" Value="0" Maximum="7000" Background="{x:Null}" BorderBrush="{x:Null}" />
                             <ProgressBar x:Name="pgrEATBM2" Grid.Row="3" Grid.ColumnSpan="6" Value="0" Maximum="8000" Background="{x:Null}" BorderBrush="{x:Null}" />
                             <ProgressBar x:Name="pgrEATBM3" Grid.Row="5" Grid.ColumnSpan="6" Value="0" Maximum="9000" Background="{x:Null}" BorderBrush="{x:Null}" />
                             <ProgressBar x:Name="pgrEATBM4" Grid.Row="7" Grid.ColumnSpan="6" Value="0" Maximum="10000" Background="{x:Null}" BorderBrush="{x:Null}" />
                             <ProgressBar x:Name="pgrEATBM5" Grid.Row="9" Grid.ColumnSpan="6" Value="0" Maximum="11000" Background="{x:Null}" BorderBrush="{x:Null}" />
+                            <ProgressBar x:Name="pgrEATBM6" Grid.Row="11" Grid.ColumnSpan="6" Value="0" Maximum="12000" Background="{x:Null}" BorderBrush="{x:Null}" />
 
 
                         </Grid>
@@ -532,15 +871,15 @@
                             <Border Grid.Row="4" Grid.Column="6" Background="#FFC9B6B2" />
                             <Border Grid.Row="4" Grid.Column="7" Background="#FFE3A8FF" />
                             <Border Grid.Row="4" Grid.Column="8" Background="#FFA8A8FF" />
-                            <TextBlock x:Name="lblCharacter1Name" Grid.Row="0" Grid.Column="0" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="/#Segoe WP Black" />
+                            <TextBlock x:Name="lblCharacter1Name" Grid.Row="0" Grid.Column="0" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="/Fonts/#Segoe WP Black" />
                             <DockPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
                                 <Grid HorizontalAlignment="Center" Margin="0"  >
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe0cb;&#10;&#xe01e;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblCharacter1HMP" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe0cb;&#10;&#xe01e;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblCharacter1HMP" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="0" Grid.Column="2" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -549,8 +888,8 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe0bf;&#10;&#xe136;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblCharacter1ATK" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe0bf;&#10;&#xe136;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblCharacter1ATK" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="0" Grid.Column="3" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -559,8 +898,8 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe2bd;&#10;&#xe223;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblCharacter1DEF" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe2bd;&#10;&#xe223;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblCharacter1DEF" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="0" Grid.Column="4" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -569,8 +908,8 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe30e;&#10;&#xe276;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblCharacter1VHIT" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe30e;&#10;&#xe276;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblCharacter1VHIT" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="0" Grid.Column="5" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -579,8 +918,8 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe286;&#10;&#xe24a;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblCharacter1DATK" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe286;&#10;&#xe24a;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblCharacter1DATK" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="0" Grid.Column="6" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -589,8 +928,8 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe07a;&#10;&#xe224;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblCharacter1DDEF" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe07a;&#10;&#xe224;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblCharacter1DDEF" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="0" Grid.Column="7" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -599,21 +938,21 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe002;&#10;&#xe016;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblCharacter1SPD" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe002;&#10;&#xe016;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblCharacter1SPD" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
-                            <TextBlock x:Name="lblCharacter1TRN" Grid.Row="0" Grid.Column="8" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#Segoe WP Semibold"/>
+                            <TextBlock x:Name="lblCharacter1TRN" Grid.Row="0" Grid.Column="8" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#Segoe WP Semibold"/>
 
-                            <TextBlock x:Name="lblCharacter2Name" Grid.Row="2" Grid.Column="0" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="/#Segoe WP Black" />
+                            <TextBlock x:Name="lblCharacter2Name" Grid.Row="2" Grid.Column="0" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="/Fonts/#Segoe WP Black" />
                             <DockPanel Grid.Row="2" Grid.Column="1" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
                                 <Grid HorizontalAlignment="Center" Margin="0"  >
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe0cb;&#10;&#xe01e;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblCharacter2HMP" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe0cb;&#10;&#xe01e;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblCharacter2HMP" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="2" Grid.Column="2" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -622,8 +961,8 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe0bf;&#10;&#xe136;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblCharacter2ATK" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe0bf;&#10;&#xe136;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblCharacter2ATK" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="2" Grid.Column="3" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -632,8 +971,8 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe2bd;&#10;&#xe223;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblCharacter2DEF" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe2bd;&#10;&#xe223;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblCharacter2DEF" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="2" Grid.Column="4" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -642,8 +981,8 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe30e;&#10;&#xe276;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblCharacter2VHIT" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe30e;&#10;&#xe276;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblCharacter2VHIT" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="2" Grid.Column="5" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -652,8 +991,8 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe286;&#10;&#xe24a;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblCharacter2DATK" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe286;&#10;&#xe24a;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblCharacter2DATK" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="2" Grid.Column="6" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -662,8 +1001,8 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe07a;&#10;&#xe224;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblCharacter2DDEF" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe07a;&#10;&#xe224;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblCharacter2DDEF" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="2" Grid.Column="7" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -672,21 +1011,21 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe002;&#10;&#xe016;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblCharacter2SPD" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe002;&#10;&#xe016;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblCharacter2SPD" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
-                            <TextBlock x:Name="lblCharacter2TRN" Grid.Row="2" Grid.Column="8" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#Segoe WP Semibold"/>
+                            <TextBlock x:Name="lblCharacter2TRN" Grid.Row="2" Grid.Column="8" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#Segoe WP Semibold"/>
 
-                            <TextBlock x:Name="lblCharacter3Name" Grid.Row="4" Grid.Column="0" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="/#Segoe WP Black" />
+                            <TextBlock x:Name="lblCharacter3Name" Grid.Row="4" Grid.Column="0" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="/Fonts/#Segoe WP Black" />
                             <DockPanel Grid.Row="4" Grid.Column="1" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
                                 <Grid HorizontalAlignment="Center" Margin="0"  >
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe0cb;&#10;&#xe01e;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblCharacter3HMP" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe0cb;&#10;&#xe01e;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblCharacter3HMP" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="4" Grid.Column="2" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -695,8 +1034,8 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe0bf;&#10;&#xe136;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblCharacter3ATK" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe0bf;&#10;&#xe136;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblCharacter3ATK" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="4" Grid.Column="3" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -705,8 +1044,8 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe2bd;&#10;&#xe223;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblCharacter3DEF" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe2bd;&#10;&#xe223;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblCharacter3DEF" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="4" Grid.Column="4" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -715,8 +1054,8 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe30e;&#10;&#xe276;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblCharacter3VHIT" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe30e;&#10;&#xe276;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblCharacter3VHIT" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="4" Grid.Column="5" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -725,8 +1064,8 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe286;&#10;&#xe24a;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblCharacter3DATK" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe286;&#10;&#xe24a;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblCharacter3DATK" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="4" Grid.Column="6" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -735,8 +1074,8 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe07a;&#10;&#xe224;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblCharacter3DDEF" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe07a;&#10;&#xe224;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblCharacter3DDEF" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="4" Grid.Column="7" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -745,11 +1084,11 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="&#xe002;&#10;&#xe016;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#rpg-icons" FontSize="26"/>
-                                    <TextBlock x:Name="lblCharacter3SPD" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/#Segoe WP Semibold"/>
+                                    <TextBlock Grid.Column="0" Text="&#xe002;&#10;&#xe016;" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#rpg-icons" FontSize="26"/>
+                                    <TextBlock x:Name="lblCharacter3SPD" Grid.Column="1" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Left" FontFamily="/Fonts/#Segoe WP Semibold"/>
                                 </Grid>
                             </DockPanel>
-                            <TextBlock x:Name="lblCharacter3TRN" Grid.Row="4" Grid.Column="8" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/#Segoe WP Semibold"/>
+                            <TextBlock x:Name="lblCharacter3TRN" Grid.Row="4" Grid.Column="8" Text="" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontFamily="/Fonts/#Segoe WP Semibold"/>
 
                             <Border Grid.Row="1" Grid.Column="0" Background="#FFFFFFFF" />
                             <Border Grid.Row="1" Grid.Column="1" Background="#FFFFA8A8" />
@@ -815,13 +1154,13 @@
                     <Separator Grid.Row="5" Grid.ColumnSpan="2"/>
                     <DockPanel Grid.Row="6" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" Grid.ColumnSpan="2" >
                         <Grid HorizontalAlignment="Stretch" Margin="0" Background="#FFB6B6B6" >
-                            <TextBlock x:Name="lblTurnOrder" Grid.Column="0" Text="Turn Order: " VerticalAlignment="Center" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" />
+                            <TextBlock x:Name="lblTurnOrder" Grid.Column="0" Text="Turn Order: " VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" />
                         </Grid>
                     </DockPanel>
                     <Separator Grid.Row="7" Grid.ColumnSpan="2"/>
                     <DockPanel Grid.Row="8" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" Grid.ColumnSpan="2" >
                         <Grid HorizontalAlignment="Stretch" Margin="0" Background="#FFB6B6B6" >
-                            <TextBlock Grid.Column="0" Text="Legend (Enemy): Name, HP, AT/MAT, DF/MDF, Speed, Turn&#10;Legend (Player): Name, HP/Max HP | MP/Max MP, AT | MAT, DF | MDF, A-HIT/M-HIT | A-AV/M-AV, D-AT | D-MAT, D-DF | D-MDF, Speed/SP, Turn  " VerticalAlignment="Center" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="10" />
+                            <TextBlock Grid.Column="0" Text="Legend (Enemy): Name, HP, AT/MAT, DF/MDF, Speed, Turn&#10;Legend (Player): Name, HP/Max HP | MP/Max MP, AT | MAT, DF | MDF, A-HIT/M-HIT | A-AV/M-AV, D-AT | D-MAT, D-DF | D-MDF, Speed/SP, Turn  " VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" />
                         </Grid>
                     </DockPanel>
                 </Grid>
@@ -835,7 +1174,7 @@
                     </Grid.RowDefinitions>
 
                     <Border Grid.Row="0" Grid.Column="1" Background="#FFFFA8A8" />
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Presets" VerticalAlignment="Center" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" />
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Presets" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" />
                     <DockPanel Grid.Row="1" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
                         <Grid Margin="0"  >
                             <Grid.ColumnDefinitions>
@@ -846,12 +1185,12 @@
                                 <ColumnDefinition Width="16*"/>
                                 <ColumnDefinition Width="4*"/>
                             </Grid.ColumnDefinitions>
-                            <Button x:Name="btnNormal" Grid.Column="0" Content="Normal Mode" Background="#FFA8D3FF" FontFamily="/#Segoe WP Black" FontSize="20" Foreground="White" Click="DifficultyButton"/>
-                            <Button x:Name="btnNormalHard" Grid.Column="1" Content="Base + Hard Bosses" Background="#00000000" FontFamily="/#Segoe WP Black" FontSize="20" Foreground="White" Click="DifficultyButton"/>
-                            <Button x:Name="btnHard" Grid.Column="2" Content="Hard Mode" Background="#00000000" FontFamily="/#Segoe WP Black" FontSize="20" Foreground="White" Click="DifficultyButton"/>
-                            <Button x:Name="btnHardHell" Grid.Column="3" Content="Hard + Hell Bosses" Background="#00000000" FontFamily="/#Segoe WP Black" FontSize="20" Foreground="White" Click="DifficultyButton"/>
-                            <Button x:Name="btnHell" Grid.Column="4" Content="Hell Mode" Background="#00000000" FontFamily="/#Segoe WP Black" FontSize="20" Foreground="White" Click="DifficultyButton"/>
-                            <Button x:Name="btnEnrageBoss" Grid.Column="5" Content="+" Background="#00000000" FontFamily="/#Segoe WP Black" FontSize="20" Foreground="White" Click="DifficultyButton"/>
+                            <Button x:Name="btnNormal" Grid.Column="0" Content="Normal Mode" Background="#FFA8D3FF" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Foreground="White" Click="DifficultyButton"/>
+                            <Button x:Name="btnNormalHard" Grid.Column="1" Content="Base + Hard Bosses" Background="#00000000" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Foreground="White" Click="DifficultyButton"/>
+                            <Button x:Name="btnHard" Grid.Column="2" Content="Hard Mode" Background="#00000000" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Foreground="White" Click="DifficultyButton"/>
+                            <Button x:Name="btnHardHell" Grid.Column="3" Content="Hard + Hell Bosses" Background="#00000000" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Foreground="White" Click="DifficultyButton"/>
+                            <Button x:Name="btnHell" Grid.Column="4" Content="Hell Mode" Background="#00000000" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Foreground="White" Click="DifficultyButton"/>
+                            <Button x:Name="btnEnrageBoss" Grid.Column="5" Content="+" Background="#00000000" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Foreground="White" Click="DifficultyButton"/>
                         </Grid>
                     </DockPanel>
 
@@ -868,7 +1207,7 @@
                             </Grid.RowDefinitions>
 
                             <Border Grid.Row="0" Grid.Column="1" Background="#FFFFA8A8" />
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Multipliers" VerticalAlignment="Center" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" />
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Multipliers" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" />
 
                             <DockPanel Grid.Row="1" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
                                 <Grid Margin="0"  >
@@ -877,9 +1216,9 @@
                                         <ColumnDefinition Width="90*"/>
                                         <ColumnDefinition Width="5*"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="HP" VerticalAlignment="Center" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
+                                    <TextBlock Grid.Column="0" Text="HP" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
                                     <Slider x:Name="sldHP" Grid.Column="1" VerticalAlignment="Center" Value="1" Minimum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Maximum="10" ValueChanged="Slider_ValueChanged"/>
-                                    <TextBlock x:Name="lblMultiHP" Grid.Column="2" Text="{Binding ElementName=sldHP,Path=Value}" VerticalAlignment="Center" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
+                                    <TextBlock x:Name="lblMultiHP" Grid.Column="2" Text="{Binding ElementName=sldHP,Path=Value, StringFormat=N1}" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="2" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -889,9 +1228,9 @@
                                         <ColumnDefinition Width="90*"/>
                                         <ColumnDefinition Width="5*"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="ATK" VerticalAlignment="Center" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
+                                    <TextBlock Grid.Column="0" Text="ATK" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
                                     <Slider x:Name="sldATK" Grid.Column="1" VerticalAlignment="Center" Value="1" Minimum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Maximum="10" ValueChanged="Slider_ValueChanged"/>
-                                    <TextBlock x:Name="lblMultiATK" Grid.Column="2" Text="{Binding ElementName=sldATK,Path=Value}" VerticalAlignment="Center" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
+                                    <TextBlock x:Name="lblMultiATK" Grid.Column="2" Text="{Binding ElementName=sldATK,Path=Value, StringFormat=N1}" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="3" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -901,9 +1240,9 @@
                                         <ColumnDefinition Width="90*"/>
                                         <ColumnDefinition Width="5*"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="MAT" VerticalAlignment="Center" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
+                                    <TextBlock Grid.Column="0" Text="MAT" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
                                     <Slider x:Name="sldMAT" Grid.Column="1" VerticalAlignment="Center" Value="1" Minimum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Maximum="10" ValueChanged="Slider_ValueChanged"/>
-                                    <TextBlock  x:Name="lblMultiMAT" Grid.Column="2" Text="{Binding ElementName=sldMAT,Path=Value}" VerticalAlignment="Center" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
+                                    <TextBlock  x:Name="lblMultiMAT" Grid.Column="2" Text="{Binding ElementName=sldMAT,Path=Value, StringFormat=N1}" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="4" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -913,9 +1252,9 @@
                                         <ColumnDefinition Width="90*"/>
                                         <ColumnDefinition Width="5*"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="DF" VerticalAlignment="Center" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
+                                    <TextBlock Grid.Column="0" Text="DF" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
                                     <Slider x:Name="sldDEF" Grid.Column="1" VerticalAlignment="Center" Value="1" Minimum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Maximum="10" ValueChanged="Slider_ValueChanged"/>
-                                    <TextBlock x:Name="lblMultiDEF" Grid.Column="2" Text="{Binding ElementName=sldDEF,Path=Value}" VerticalAlignment="Center" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
+                                    <TextBlock x:Name="lblMultiDEF" Grid.Column="2" Text="{Binding ElementName=sldDEF,Path=Value, StringFormat=N1}" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="5" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -925,9 +1264,9 @@
                                         <ColumnDefinition Width="90*"/>
                                         <ColumnDefinition Width="5*"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="MDF" VerticalAlignment="Center" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
+                                    <TextBlock Grid.Column="0" Text="MDF" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
                                     <Slider x:Name="sldMDF" Grid.Column="1" VerticalAlignment="Center" Value="1" Minimum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Maximum="10" ValueChanged="Slider_ValueChanged"/>
-                                    <TextBlock x:Name="lblMultiMDF" Grid.Column="2" Text="{Binding ElementName=sldMDF,Path=Value}" VerticalAlignment="Center" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
+                                    <TextBlock x:Name="lblMultiMDF" Grid.Column="2" Text="{Binding ElementName=sldMDF,Path=Value, StringFormat=N1}" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
                                 </Grid>
                             </DockPanel>
                             <DockPanel Grid.Row="6" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
@@ -937,38 +1276,22 @@
                                         <ColumnDefinition Width="90*"/>
                                         <ColumnDefinition Width="5*"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="SPD" VerticalAlignment="Center" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
+                                    <TextBlock Grid.Column="0" Text="SPD" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
                                     <Slider x:Name="sldSPD" Grid.Column="1" VerticalAlignment="Center" Value="1" Minimum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Maximum="10" ValueChanged="Slider_ValueChanged"/>
-                                    <TextBlock x:Name="lblMultiSPD" Grid.Column="2" Text="{Binding ElementName=sldSPD,Path=Value}" VerticalAlignment="Center" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
+                                    <TextBlock x:Name="lblMultiSPD" Grid.Column="2" Text="{Binding ElementName=sldSPD,Path=Value, StringFormat=N1}" VerticalAlignment="Center" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" />
                                 </Grid>
                             </DockPanel>
                         </Grid>
                     </DockPanel>
                 </Grid>
             </TabItem>
-            <TabItem x:Name="tabEnhancements" Header="Enhancements I">
+            <TabItem x:Name="tabEnhancements" Header="Enhancements">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
+                        <RowDefinition Height="10*"/>
+                        <RowDefinition Height="80*"/>
                     </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="125*" />
-                        <ColumnDefinition Width="154*"/>
-                        <ColumnDefinition Width="280*" />
-                        <ColumnDefinition Width="279*" />
-                    </Grid.ColumnDefinitions>
-                    <DockPanel Grid.Row="0" Grid.Column="0" Grid.RowSpan="1" Grid.ColumnSpan="4"  HorizontalAlignment="Stretch" Margin="0" >
+                    <DockPanel Grid.Row="0" Grid.RowSpan="1" Grid.ColumnSpan="4" HorizontalAlignment="Stretch" Margin="0" >
                         <Grid Margin="0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
@@ -981,218 +1304,283 @@
                             <Border Grid.Row="0" Grid.Column="0" Background="#FFFFA8A8" />
                             <Border Grid.Row="0" Grid.Column="1" Background="#FFA8D3FF" />
                             <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Background="#FFB6B6B6" />
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Inactive" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Row="0" Grid.Column="1" Text="Active" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Text="*Green buttons do not have an inactive or active state. New Game+ only activates when it is detected." Foreground="White" FontFamily="/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Inactive" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="Active" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Text="*Green buttons do not have an inactive or active state. New Game+ only activates when it is detected." Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Grid>
                     </DockPanel>
-                    <Button x:Name="btnSoloMode" Grid.Row="5" Grid.Column="2" Content="Solo Mode" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <Button x:Name="btnSolo" Grid.Row="6" Grid.Column="2" Content="Solo Leader" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
-                    <ComboBox x:Name="cboSoloLeader" Grid.Row="6" Grid.Column="3" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
-                    <Button x:Name="btnDuoMode" Grid.Row="5" Grid.Column="3" Content="Duo Mode" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <Button x:Name="btnSaveAnywhere" Grid.Row="1" Grid.Column="2" Content="Save Anywhere" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <Button x:Name="btnEATB" Grid.Row="1" Grid.Column="3" Content="Extra Turn Battle" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <Button x:Name="btnATB" Grid.Row="2" Grid.Column="3" Content="Action Turn Battle" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <Button x:Name="btnQTB" Grid.Row="3" Grid.Column="3" Content="Quick Turn Battle" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <DockPanel Grid.Row="4" Grid.Column="3" Grid.ColumnSpan="1" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
-                        <Grid Margin="0"  >
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="50*"/>
-                                <ColumnDefinition Width="50*"/>
-                            </Grid.ColumnDefinitions>
-                            <Button x:Name="btnQTBSelect" Grid.Row="0" Grid.Column="0" Content="QTB Leader" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
-                            <ComboBox x:Name="cboQTB" Grid.Row="0" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
-                        </Grid>
-                    </DockPanel>
-                    <Button x:Name="btnNeverGuard" Grid.Row="5" Grid.Column="0" Content="Never Guard" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2" Click="SwitchButton"/>
-                    <Button x:Name="btnElementalBomb" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Content="Elemental Bomb" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <Button x:Name="btnCharmPotion" Grid.Row="2" Grid.Column="2" Content="Auto Charm Potion" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <Button x:Name="btnHPNames" Grid.Row="3" Grid.Column="2" Content="Monster HPs as Names" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <Button x:Name="btnEnrage" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Content="Enrage" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <Button x:Name="btnRemoveCaps" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Content="Remove Damage Caps" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <Button x:Name="btnHPCapBreak" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Content="Save >9999 HP" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <Button x:Name="btnSoulEater" Grid.Row="4" Grid.Column="2" Content="No HP Decay Soul Eater" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <Button x:Name="btnAspectRatio" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Content="Aspect Ratio" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <ComboBox x:Name="cboAspectRatio" Grid.Row="8" Grid.Column="2" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" Foreground="Black" SelectionChanged="ComboBox"/>
-                    <ComboBox x:Name="cboCamera" Grid.Row="8" Grid.Column="3" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" Foreground="Black" SelectionChanged="ComboBox"/>
-                    <Button x:Name="btnKillBGM" Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" Content="Kill BGM" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <ComboBox x:Name="cboKillBGM" Grid.Row="9" Grid.Column="2" Grid.ColumnSpan="2" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" Foreground="Black" SelectionChanged="ComboBox"/>
-                    <Button x:Name="btnSwitchEXP" Grid.Row="10" Grid.Column="0" Content="Switch EXP" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2" Click="GreenButton"/>
-                    <ComboBox x:Name="cboSwitch1" Grid.Row="10" Grid.Column="2" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" Foreground="Black" SelectionChanged="ComboBox"/>
-                    <ComboBox x:Name="cboSwitch2" Grid.Row="10" Grid.Column="3" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" Foreground="Black" SelectionChanged="ComboBox"/>
-                    <Button x:Name="btnSwitchSoloChar" Grid.Row="7" Grid.Column="0" Content="Switch Slot 1 Character" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2" Click="GreenButton"/>
-                    <DockPanel Grid.Row="7" Grid.Column="2" Grid.ColumnSpan="2" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
-                        <Grid Margin="0"  >
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="75*"/>
-                                <ColumnDefinition Width="25*"/>
-                            </Grid.ColumnDefinitions>
-                            <ComboBox x:Name="cboSwitchChar" Grid.Row="0" Grid.Column="0" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="Black" SelectionChanged="ComboBox"/>
-                            <Button x:Name="btnAutoTransform" Grid.Row="0" Grid.Column="1" Content="Auto Transform" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                        </Grid>
-                    </DockPanel>
-                    
+                    <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible" Background="#FFB6B6B6">
+                        <StackPanel>
+                            <Separator Height="2"/>
+                            <DockPanel>
+                                <Separator Width="30" Height="2"/>
+                                <TextBlock Text=" Field " Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="25" HorizontalAlignment="Left"/>
+                                <Separator Height="2"/>
+                            </DockPanel>
+                            <Separator Height="2"/>
 
-                    <DockPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
-                        <Grid Margin="0"  >
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="80*"/>
-                                <ColumnDefinition Width="20*"/>
-                            </Grid.ColumnDefinitions>
-                            <Button x:Name="btnAddPartyMembers" Grid.Row="0" Grid.Column="0" Content="Add Party Members" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
-                            <Button x:Name="btnAddPartyMembersOn" Grid.Row="0" Grid.Column="1" Content="On" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                        </Grid>
-                    </DockPanel>
+                            <Separator/>
+                            <Separator/>
+                            <Separator/>
+                            <DockPanel>
+                                <Grid x:Name="gridField">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="50"/>
+                                        <RowDefinition Height="50"/>
+                                    </Grid.RowDefinitions>
 
-                    <Button x:Name="btnNewGame" Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="4" Content="New Game+" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                </Grid>
-            </TabItem>
-            <TabItem x:Name="tabEnhancements2" Header="Enhancements II">
-                <Grid Background="#FFB6B6B6">
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <DockPanel Grid.Row="0" Grid.Column="0" Grid.RowSpan="1" Grid.ColumnSpan="4"  HorizontalAlignment="Stretch" Margin="0" >
-                        <Grid Margin="0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-                            <Border Grid.Row="0" Grid.Column="0" Background="#FFFFA8A8" />
-                            <Border Grid.Row="0" Grid.Column="1" Background="#FFA8D3FF" />
-                            <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Background="#FFB6B6B6" />
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Inactive" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Row="0" Grid.Column="1" Text="Active" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Text="*Green buttons do not have an inactive or active state. New Game+ only activates when it is detected." Foreground="White" FontFamily="/#Segoe WP Black" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Grid>
-                    </DockPanel>
-                    <Button x:Name="btnUltimateBoss" Grid.Row="1" Grid.Column="0" Content="Ultimate Boss" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <ComboBox x:Name="cboUltimateBoss" Grid.Row="1" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                    <Button x:Name="btnRows" Grid.Row="2" Grid.Column="0" Content="Battle Rows" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="2" Click="SwitchButton"/>
-                    <DockPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"  Grid.RowSpan="9" HorizontalAlignment="Stretch" Margin="0" >
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
+                                    <Button x:Name="btnSaveAnywhere" Grid.Column="0" Grid.Row="0" Content="Save Anywhere" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                                    <Button x:Name="btnCharmPotion" Grid.Column="1" Grid.Row="0" Content="Auto Charm Potion" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                                    <Button x:Name="btnTextSpeed" Grid.Column="2" Grid.Row="0" Content="Increase Text Speed" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                                    <Button x:Name="btnAutoText" Grid.Column="0" Grid.Row="1" Content="Auto Advance Text" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                                </Grid>
+                            </DockPanel>
 
-                            <Button x:Name="btnRowDart" Grid.Row="0" Grid.Column="0" Content="Dart" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                            <ComboBox x:Name="cboRowDart" Grid.Row="0" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <ComboBox x:Name="cboRowDartBoost" Grid.Row="0" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <Button x:Name="btnRowLavitz" Grid.Row="1" Grid.Column="0" Content="Lavitz" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                            <ComboBox x:Name="cboRowLavitz" Grid.Row="1" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <ComboBox x:Name="cboRowLavitzBoost" Grid.Row="1" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <Button x:Name="btnRowShana" Grid.Row="2" Grid.Column="0" Content="Shana" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                            <ComboBox x:Name="cboRowShana" Grid.Row="2" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <ComboBox x:Name="cboRowShanaBoost" Grid.Row="2" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <Button x:Name="btnRowRose" Grid.Row="3" Grid.Column="0" Content="Rose" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                            <ComboBox x:Name="cboRowRose" Grid.Row="3" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <ComboBox x:Name="cboRowRoseBoost" Grid.Row="3" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <Button x:Name="btnRowHaschel" Grid.Row="4" Grid.Column="0" Content="Haschel" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                            <ComboBox x:Name="cboRowHaschel" Grid.Row="4" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <ComboBox x:Name="cboRowHaschelBoost" Grid.Row="4" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <Button x:Name="btnRowAlbert" Grid.Row="5" Grid.Column="0" Content="Albert" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                            <ComboBox x:Name="cboRowAlbert" Grid.Row="5" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <ComboBox x:Name="cboRowAlbertBoost" Grid.Row="5" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <Button x:Name="btnRowMeru" Grid.Row="6" Grid.Column="0" Content="Meru" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                            <ComboBox x:Name="cboRowMeru" Grid.Row="6" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <ComboBox x:Name="cboRowMeruBoost" Grid.Row="6" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <Button x:Name="btnRowKongol" Grid.Row="7" Grid.Column="0" Content="Kongol" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                            <ComboBox x:Name="cboRowKongol" Grid.Row="7" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <ComboBox x:Name="cboRowKongolBoost" Grid.Row="7" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <Button x:Name="btnMirandaKongol" Grid.Row="8" Grid.Column="0" Content="Miranda" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20"/>
-                            <ComboBox x:Name="cboRowMiranda" Grid.Row="8" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                            <ComboBox x:Name="cboRowMirandaBoost" Grid.Row="8" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
-                        </Grid>
-                    </DockPanel>
-                    <Button x:Name="btnNoDart" Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" Content="No Dart Mode" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <Button x:Name="btnDamageTracker" Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="2" Content="Damage Tracker" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                            <Separator/>
+                            <Separator/>
+                            <Separator/>
 
-                    <Button x:Name="btnFlowerStorm" Grid.Row="8" Grid.Column="3" Content="Hell Mode - Flower Storm" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
-                    <ComboBox x:Name="cboFlowerStorm" Grid.Row="9" Grid.Column="3" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
-                    <Button x:Name="btnNoDragoon" Grid.Row="3" Grid.Column="2" Content="No Dragoon" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <Button x:Name="btnDivineRed" Grid.Row="4" Grid.Column="2" Content="Divine Red-Eye" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <Button x:Name="btnAdditionLevel" Grid.Row="6" Grid.Column="2" Content="Addition Level Up" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <Button x:Name="btnElementArrow" Grid.Row="10" Grid.Column="2" Content="Element Arrow" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
-                    <Button x:Name="btnEarlyAdditions" Grid.Row="5" Grid.Column="2" Content="Early Additions" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <ComboBox x:Name="cboElement" Grid.Row="11" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
-                    <Button x:Name="btnReduceSDEXP" Grid.Row="7" Grid.Column="2" Content="Reduce Solo/Duo EXP" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                </Grid>
-            </TabItem>
-            <TabItem x:Name="tabEnhancements3" Header="Enhancements III">
-                <Grid Background="#FFB6B6B6">
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <Button x:Name="btnTextSpeed" Grid.Row="0" Grid.Column="0" Content="Text Speed" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <Button x:Name="btnBlackRoom" Grid.Row="2" Grid.Column="0" Content="Black Room" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <Button x:Name="btnAutoText" Grid.Row="1" Grid.Column="0" Content="Auto Advance Text" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <DockPanel Grid.Row="3" Grid.Column="0" HorizontalAlignment="Stretch" Margin="0">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <Button x:Name="btnBattleColourUI" Grid.Row="0" Grid.Column="0" Content="Battle UI Color" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                        </Grid>
-                    </DockPanel>
-                    <DockPanel Grid.Row="4" Grid.Column="0" HorizontalAlignment="Stretch" Margin="0">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <Button x:Name="btnZoom" Grid.Column="0" Content="Zoom" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                            <Slider x:Name="sldZoom" Grid.Column="1" Grid.ColumnSpan="2" VerticalAlignment="Center" Value="4096" Minimum="0" Maximum="16384" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="Slider_ValueChanged"/>
-                            <TextBlock x:Name="lblZoom" Grid.Column="3" Text="{Binding ElementName=sldZoom,Path=Value}" VerticalAlignment="Center" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" />
-                        </Grid>
-                    </DockPanel>
+                            <Separator Height="2"/>
+                            <DockPanel>
+                                <Separator Width="30" Height="2"/>
+                                <TextBlock Text=" Battle " Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="25" HorizontalAlignment="Left"/>
+                                <Separator Height="2"/>
+                            </DockPanel>
+                            <Separator Height="2"/>
+                            
+                            <Separator/>
+                            <Separator/>
+                            <Separator/>
+                            <DockPanel>
+                                <Grid x:Name="gridBattle">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="50"/>
+                                        <RowDefinition Height="50"/>
+                                        <RowDefinition Height="50"/>
+                                        <RowDefinition Height="50"/>
+                                        <RowDefinition Height="50"/>
+                                    </Grid.RowDefinitions>
+
+                                    <Button x:Name="btnRemoveCaps" Grid.Column="0" Grid.Row="0" Content="Remove Damage Caps" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                                    <Button x:Name="btnElementalBomb" Grid.Column="1" Grid.Row="0" Content="Elemental Bomb" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                                    <Button x:Name="btnHPNames" Grid.Column="2" Grid.Row="0" Content="Monster HPs as Names" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                                    <Button x:Name="btnEnrage" Grid.Column="0" Grid.Row="1" Content="Enrage Mode" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                                    <Button x:Name="btnSoulEater" Grid.Column="1" Grid.Row="1" Content="No HP Decay Soul Eater" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                                    <Button x:Name="btnNeverGuard" Grid.Column="2" Grid.Row="1" Content="Never Guard" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                                    <Button x:Name="btnDamageTracker" Grid.Column="0" Grid.Row="2" Content="Damage Tracker" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                                    <Button x:Name="btnNoDragoon" Grid.Column="1" Grid.Row="2" Content="No Dragoon" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                                    <Button x:Name="btnEarlyAdditions" Grid.Column="2" Grid.Row="2" Content="Early Additions" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                                    <Button x:Name="btnAdditionLevel" Grid.Column="0" Grid.Row="3" Content="Addition Level Up in Battle" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                                    <Button x:Name="btnBreakHPCap" Grid.Column="1" Grid.Row="3" Content="Break HP Cap" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                                    <Button x:Name="btnBattleUI" Grid.Column="2" Grid.Row="3" Content="RGB Battle UI" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                                    <Button x:Name="btnAspectRatio" Grid.Column="0" Grid.Row="4" Content="Aspect Ratio" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                                    <ComboBox x:Name="cboAspectRatio" Grid.Column="1" Grid.Row="4" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" Foreground="Black" SelectionChanged="ComboBox"/>
+                                    <ComboBox x:Name="cboCamera" Grid.Column="3" Grid.Row="4" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" Foreground="Black" SelectionChanged="ComboBox"/>
+                                </Grid>
+                            </DockPanel>
+
+                            <Separator/>
+                            <Separator/>
+                            <Separator/>
+                            <Separator Height="2"/>
+                            <DockPanel>
+                                <Separator Width="30" Height="2"/>
+                                <TextBlock Text=" Field &amp; Battle " Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="25" HorizontalAlignment="Left"/>
+                                <Separator Height="2"/>
+                            </DockPanel>
+                            <Separator Height="2"/>
+
+                            <Separator/>
+                            <Separator/>
+                            <Separator/>
+                            <DockPanel>
+                                <Grid x:Name="gridFieldBattle">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="50"/>
+                                        <RowDefinition Height="50"/>
+                                        <RowDefinition Height="50"/>
+                                        <RowDefinition Height="50"/>
+                                        <RowDefinition Height="50"/>
+                                    </Grid.RowDefinitions>
+
+                                    <Button x:Name="btnSoloMode" Grid.Column="0" Grid.Row="0" Content="Solo Mode" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                                    <Button x:Name="btnDuoMode" Grid.Column="1" Grid.Row="0" Content="Duo Mode" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                                    <DockPanel Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
+                                        <Grid Margin="0"  >
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="80*"/>
+                                                <ColumnDefinition Width="20*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Button x:Name="btnAddPartyMembers" Grid.Column="0" Grid.Row="0" Content="Add Party Members" Background="#FF8ADAA4" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
+                                            <Button x:Name="btnAddPartyMembersOn" Grid.Column="1" Grid.Row="0" Content="On" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                                        </Grid>
+                                    </DockPanel>
+                                    <Button x:Name="btnSwitchSoloChar" Grid.Column="0" Grid.Row="1" Content="Switch Slot 1 Character" Background="#FF8ADAA4" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
+                                    <ComboBox x:Name="cboSwitchChar" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
+                                    <Button x:Name="btnNoDart" Grid.Column="2" Grid.Row="1" Content="No Dart" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                                    <Button x:Name="btnSoloLeader" Grid.Column="0" Grid.Row="2" Content="Solo Leader" Background="#FF8ADAA4" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
+                                    <ComboBox x:Name="cboSoloLeader" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
+                                    <Button x:Name="btnSwitchExp" Grid.Column="0" Grid.Row="3" Content="Switch EXP" Background="#FF8ADAA4" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
+                                    <ComboBox x:Name="cboSwitch1" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
+                                    <ComboBox x:Name="cboSwitch2" Grid.Column="2" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
+                                    <Button x:Name="btnKillBGM" Grid.Column="0" Grid.Row="4" Content="Kill BGM" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                                    <ComboBox x:Name="cboKillBGM" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
+                                    <Button x:Name="btnReduceSDEXP" Grid.Column="2" Grid.Row="4" Content="Reduce Solo/Duo EXP" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                                </Grid>
+                            </DockPanel>
+
+                            <Separator/>
+                            <Separator/>
+                            <Separator/>
+                            <Separator Height="2"/>
+                            <DockPanel>
+                                <Separator Width="30" Height="2"/>
+                                <TextBlock Text=" Hard/Hell Mode " Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="25" HorizontalAlignment="Left"/>
+                                <Separator Height="2"/>
+                            </DockPanel>
+                            <Separator Height="2"/>
+
+                            <Separator/>
+                            <Separator/>
+                            <Separator/>
+                            <DockPanel>
+                                <Grid x:Name="gridHardHell">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="50"/>
+                                        <RowDefinition Height="50"/>
+                                        <RowDefinition Height="50"/>
+                                        <RowDefinition Height="50"/>
+                                    </Grid.RowDefinitions>
+
+                                    <Button x:Name="btnFlowerStorm" Grid.Column="0" Grid.Row="0" Content="Hell Mode - Flower Storm" Background="#FF8ADAA4" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
+                                    <ComboBox x:Name="cboFlowerStorm" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
+                                    <Button x:Name="btnElementArrow" Grid.Column="0" Grid.Row="1" Content="Element Arrow" Background="#FF8ADAA4" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
+                                    <ComboBox x:Name="cboElementArrow" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
+                                    <Button x:Name="btnUltimateBoss" Grid.Column="0" Grid.Row="2" Content="Ultimate Boss" Background="#FF8ADAA4" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="GreenButton" IsEnabled="False"/>
+                                    <ComboBox x:Name="cboUltimateBoss" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox" IsEnabled="False"/>
+                                    <Button x:Name="btnNewGame" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" Content="New Game+" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20"/>
+                                </Grid>
+                            </DockPanel>
+
+                            <Separator/>
+                            <Separator/>
+                            <Separator/>
+                            <Separator Height="2"/>
+                            <DockPanel>
+                                <Separator Width="30" Height="2"/>
+                                <TextBlock Text=" Battle Rows " Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="25" HorizontalAlignment="Left"/>
+                                <Separator Height="2"/>
+                            </DockPanel>
+                            <Separator Height="2"/>
+
+                            <Separator/>
+                            <Separator/>
+                            <Separator/>
+                            <DockPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="9" HorizontalAlignment="Stretch" Margin="0" >
+                                <Grid x:Name="gridBattleRows">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="50"/>
+                                        <RowDefinition Height="50"/>
+                                        <RowDefinition Height="50"/>
+                                        <RowDefinition Height="50"/>
+                                        <RowDefinition Height="50"/>
+                                        <RowDefinition Height="50"/>
+                                        <RowDefinition Height="50"/>
+                                        <RowDefinition Height="50"/>
+                                        <RowDefinition Height="50"/>
+                                        <RowDefinition Height="50"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Button x:Name="btnRows" Grid.Column="0" Grid.Row="0" Content="Battle Rows" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Grid.ColumnSpan="3" Click="SwitchButton"/>
+                                    <Button x:Name="btnRowDart" Grid.Column="0" Grid.Row="1" Content="Dart" Background="#FF8ADAA4" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20"/>
+                                    <ComboBox x:Name="cboRowDart" Grid.Column="1" Grid.Row="1" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                                    <ComboBox x:Name="cboRowDartBoost" Grid.Column="2" Grid.Row="1" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                                    <Button x:Name="btnRowLavitz"  Grid.Column="0" Grid.Row="2" Content="Lavitz" Background="#FF8ADAA4" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20"/>
+                                    <ComboBox x:Name="cboRowLavitz" Grid.Column="1" Grid.Row="2" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                                    <ComboBox x:Name="cboRowLavitzBoost" Grid.Column="2" Grid.Row="2" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                                    <Button x:Name="btnRowShana" Grid.Column="0" Grid.Row="3" Content="Shana" Background="#FF8ADAA4" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20"/>
+                                    <ComboBox x:Name="cboRowShana" Grid.Column="1" Grid.Row="3" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                                    <ComboBox x:Name="cboRowShanaBoost" Grid.Column="2" Grid.Row="3" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                                    <Button x:Name="btnRowRose" Grid.Column="0" Grid.Row="4" Content="Rose" Background="#FF8ADAA4" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20"/>
+                                    <ComboBox x:Name="cboRowRose" Grid.Column="1" Grid.Row="4" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                                    <ComboBox x:Name="cboRowRoseBoost" Grid.Column="2" Grid.Row="4" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                                    <Button x:Name="btnRowHaschel" Grid.Column="0" Grid.Row="5" Content="Haschel" Background="#FF8ADAA4" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20"/>
+                                    <ComboBox x:Name="cboRowHaschel" Grid.Column="1" Grid.Row="5" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                                    <ComboBox x:Name="cboRowHaschelBoost" Grid.Column="2" Grid.Row="5" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                                    <Button x:Name="btnRowAlbert" Grid.Column="0" Grid.Row="6" Content="Albert" Background="#FF8ADAA4" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20"/>
+                                    <ComboBox x:Name="cboRowAlbert" Grid.Column="1" Grid.Row="6" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                                    <ComboBox x:Name="cboRowAlbertBoost" Grid.Column="2" Grid.Row="6" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                                    <Button x:Name="btnRowMeru" Grid.Column="0" Grid.Row="7" Content="Meru" Background="#FF8ADAA4" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20"/>
+                                    <ComboBox x:Name="cboRowMeru" Grid.Column="1" Grid.Row="7" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                                    <ComboBox x:Name="cboRowMeruBoost" Grid.Column="2" Grid.Row="7" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                                    <Button x:Name="btnRowKongol" Grid.Column="0" Grid.Row="8" Content="Kongol" Background="#FF8ADAA4" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20"/>
+                                    <ComboBox x:Name="cboRowKongol" Grid.Column="1" Grid.Row="8" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                                    <ComboBox x:Name="cboRowKongolBoost" Grid.Column="2" Grid.Row="8" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                                    <Button x:Name="btnMirandaKongol" Grid.Column="0" Grid.Row="9" Content="Miranda" Background="#FF8ADAA4" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20"/>
+                                    <ComboBox x:Name="cboRowMiranda" Grid.Column="1" Grid.Row="9" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                                    <ComboBox x:Name="cboRowMirandaBoost" Grid.Column="2" Grid.Row="9" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Stretch" SelectionChanged="ComboBox"/>
+                                </Grid>
+                            </DockPanel>
+
+                            <Separator/>
+                            <Separator/>
+                            <Separator/>
+                            <Separator Height="2"/>
+                            <DockPanel>
+                                <Separator Width="30" Height="2"/>
+                                <TextBlock Text=" Turn Battle Systems " Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="25" HorizontalAlignment="Left"/>
+                                <Separator Height="2"/>
+                            </DockPanel>
+                            <Separator Height="2"/>
+
+                            <Separator/>
+                            <Separator/>
+                            <Separator/>
+                            <DockPanel>
+                                <Grid x:Name="gridTurnBattle">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="50"/>
+                                        <RowDefinition Height="50"/>
+                                    </Grid.RowDefinitions>
+
+                                    <Button x:Name="btnEATB" Grid.Column="0" Grid.Row="0" Content="Extra Turn Battle" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                                    <Button x:Name="btnATB" Grid.Column="1" Grid.Row="0" Content="Action Turn Battle" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                                    <Button x:Name="btnQTB" Grid.Column="2" Grid.Row="0" Content="Quick Turn Battle" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
+                                    <Button x:Name="btnQTBSelect" Grid.Column="0" Grid.Row="1" Content="QTB Leader" Background="#FF8ADAA4" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
+                                    <ComboBox x:Name="cboQTB" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
+                                </Grid>
+                            </DockPanel>
+                        </StackPanel>
+                    </ScrollViewer>
                 </Grid>
             </TabItem>
             <TabItem x:Name="tabShop" Header="Shop">
@@ -1208,11 +1596,11 @@
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.ColumnSpan="2" Text="Hero Compition Shop" Foreground="White" FontWeight="Bold" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Row="3" Grid.ColumnSpan="2" Text="Ultimate Boss Shop" Foreground="White" FontWeight="Bold" FontFamily="/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Button x:Name="btnHeroTicketShop" Grid.Row="1" Grid.Column="1" Content="Buy Ticket" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
-                    <Button x:Name="btnHeroItemShop" Grid.Row="2" Grid.Column="1" Content="Buy Item" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
-                    <Button x:Name="btnUltimateShop" Grid.Row="4" Grid.Column="1" Content="Buy Item" Background="#FF8ADAA4" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
+                    <TextBlock Grid.ColumnSpan="2" Text="Hero Compition Shop" Foreground="White" FontWeight="Bold" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Row="3" Grid.ColumnSpan="2" Text="Ultimate Boss Shop" Foreground="White" FontWeight="Bold" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Button x:Name="btnHeroTicketShop" Grid.Row="1" Grid.Column="1" Content="Buy Ticket" Background="#FF8ADAA4" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
+                    <Button x:Name="btnHeroItemShop" Grid.Row="2" Grid.Column="1" Content="Buy Item" Background="#FF8ADAA4" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
+                    <Button x:Name="btnUltimateShop" Grid.Row="4" Grid.Column="1" Content="Buy Item" Background="#FF8ADAA4" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" Click="GreenButton"/>
                     <ListBox x:Name="lstTicketShop" Grid.Row="1"/>
                     <ListBox x:Name="lstHeroShop" Grid.Row="2"/>
                     <ListBox x:Name="lstUltimateShop" Grid.Row="4"/>
@@ -1224,7 +1612,7 @@
                         <RowDefinition Height="10*"/>
                         <RowDefinition Height="90*"/>
                     </Grid.RowDefinitions>
-                    <ComboBox x:Name="cboHelpTopic" Grid.Row="0" Grid.Column="0" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
+                    <ComboBox x:Name="cboHelpTopic" Grid.Row="0" Grid.Column="0" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
                     <TextBox x:Name="txtHelp" Grid.Row="1" TextWrapping="Wrap" Text="" FontSize="20" FontFamily="Consolas" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" IsReadOnly="True"/>
                 </Grid>
             </TabItem>
@@ -1243,15 +1631,15 @@
                         <RowDefinition />
                         <RowDefinition />
                     </Grid.RowDefinitions>
-                    <Button x:Name="btnReader" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Content="Reader Mode" Background="#FFFFA8A8" Foreground="White" FontFamily="/#Segoe WP Black" FontSize="20" Click="SwitchButton"/>
-                    <Button x:Name="btnReaderConfig" Click="GreenButton" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Content="Window Config" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
-                    <Button x:Name="btnReaderSave" Click="GreenButton" Grid.Row="2" Grid.Column="0" Content="Save" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
-                    <Button x:Name="btnReaderLoad" Click="GreenButton" Grid.Row="2" Grid.Column="1" Content="Load" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
-                    <Button x:Name="btnReaderReset" Click="GreenButton" Grid.Row="2" Grid.Column="2" Content="Reset" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
-                    <Button x:Name="btnReaderAdd" Click="GreenButton" Grid.Row="3" Grid.Column="0" Content="Add" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
-                    <Button x:Name="btnReaderChange" Click="GreenButton" Grid.Row="3" Grid.Column="1" Content="Change" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
-                    <Button x:Name="btnReaderDelete" Click="GreenButton" Grid.Row="3" Grid.Column="2" Content="Delete" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
-                    <Button x:Name="btnReaderHotkey" Grid.Row="4" Grid.Column="0" Content="Button On/Off/Field" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
+                    <Button x:Name="btnReader" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Content="Reader Mode" Background="#FFFFA8A8" Foreground="White" FontFamily="/Fonts/#Segoe WP Black" FontSize="20"/>
+                    <Button x:Name="btnReaderConfig" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Content="Window Config" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/Fonts/#Segoe WP Black"/>
+                    <Button x:Name="btnReaderSave" Grid.Row="2" Grid.Column="0" Content="Save" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/Fonts/#Segoe WP Black"/>
+                    <Button x:Name="btnReaderLoad" Grid.Row="2" Grid.Column="1" Content="Load" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/Fonts/#Segoe WP Black"/>
+                    <Button x:Name="btnReaderReset" Grid.Row="2" Grid.Column="2" Content="Reset" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/Fonts/#Segoe WP Black"/>
+                    <Button x:Name="btnReaderAdd" Grid.Row="3" Grid.Column="0" Content="Add" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/Fonts/#Segoe WP Black"/>
+                    <Button x:Name="btnReaderChange" Grid.Row="3" Grid.Column="1" Content="Change" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/Fonts/#Segoe WP Black"/>
+                    <Button x:Name="btnReaderDelete" Grid.Row="3" Grid.Column="2" Content="Delete" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/Fonts/#Segoe WP Black"/>
+                    <Button x:Name="btnReaderHotkey" Grid.Row="4" Grid.Column="0" Content="Button On/Off/Field" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/Fonts/#Segoe WP Black"/>
                     <DockPanel Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -1259,14 +1647,14 @@
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
-                            <ComboBox x:Name="cboReaderOnHotkey" Grid.Row="0" Grid.Column="0" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
-                            <ComboBox x:Name="cboReaderOffHotkey" Grid.Row="0" Grid.Column="1" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
-                            <ComboBox x:Name="cboReaderFieldHotkey" Grid.Row="0" Grid.Column="2" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
+                            <ComboBox x:Name="cboReaderOnHotkey" Grid.Row="0" Grid.Column="0" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
+                            <ComboBox x:Name="cboReaderOffHotkey" Grid.Row="0" Grid.Column="1" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
+                            <ComboBox x:Name="cboReaderFieldHotkey" Grid.Row="0" Grid.Column="2" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
                         </Grid>
                     </DockPanel>
-                    <Button x:Name="btnReaderUIRemoval" Grid.Row="5" Grid.Column="0" Content="UI Removal Mode" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
+                    <Button x:Name="btnReaderUIRemoval" Grid.Row="5" Grid.Column="0" Content="UI Removal Mode" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/Fonts/#Segoe WP Black"/>
                     <DockPanel Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="1" HorizontalAlignment="Stretch" Margin="0" >
-                        <ComboBox x:Name="cboReaderUIRemoval" Foreground="Black" FontFamily="/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
+                        <ComboBox x:Name="cboReaderUIRemoval" Foreground="Black" FontFamily="/Fonts/#Segoe WP Black" FontSize="20" SelectionChanged="ComboBox"/>
                     </DockPanel>
                 </Grid>
             </TabItem>
@@ -1276,14 +1664,14 @@
                         <Menu DockPanel.Dock="Top" Background="#FFB6B6B6">
                             <MenuItem x:Name="miAttach" Header="Attach" Background="#FFB6B6B6" Foreground="White" Click="miAttach_Click"/>
                             <MenuItem Header="Menu" Background="#FFB6B6B6" Foreground="White">
-                                <MenuItem x:Name="miNew" Header="New" Background="#FFB6B6B6" Foreground="White" Click="miNew_Click"/>
-                                <MenuItem x:Name="miOpen" Header="Open" Background="#FFB6B6B6" Foreground="White" Click="miOpen_Click"/>
-                                <MenuItem x:Name="miSave" Header="Save" Background="#FFB6B6B6" Foreground="White" Click="miSave_Click"/>
+                                <MenuItem x:Name="miNew" Header="New" Background="#FFB6B6B6" Foreground="White"/>
+                                <MenuItem x:Name="miOpen" Header="Open" Background="#FFB6B6B6" Foreground="White"/>
+                                <MenuItem x:Name="miSave" Header="Save" Background="#FFB6B6B6" Foreground="White"/>
                             </MenuItem>
                             <MenuItem Header="Settings" Background="#FFB6B6B6" Foreground="White">
                                 <MenuItem x:Name="miEmulator" Background="#FFB6B6B6" Foreground="White" Header="Emulator">
                                     <MenuItem Header="RetroArch (Beetle PSX HW)" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
-                                    <MenuItem Header="DuckStation" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
+                                    <MenuItem Header="DuckStation (Legacy UI)" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
                                     <MenuItem Header="ePSXe" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
                                     <MenuItem Header="PCSXR-PGXP" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
                                     <MenuItem Header="PCSX2" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miEmulator_Click"/>
@@ -1291,49 +1679,49 @@
                                 </MenuItem>
                                 <MenuItem x:Name="miRegion" Header="Region" Background="#FFB6B6B6" Foreground="White">
                                     <MenuItem Header="NTSC English/Pусский" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" IsChecked="True" Click="miRegion_Click"/>
-                                    <MenuItem Header="日本人" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miRegion_Click"/>
+                                    <MenuItem Header="日本人" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miRegion_Click" IsEnabled="False"/>
                                     <MenuItem Header="Deutsche" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miRegion_Click" IsEnabled="False"/>
                                     <MenuItem Header="Français" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miRegion_Click" IsEnabled="False"/>
                                     <MenuItem Header="Italiano" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miRegion_Click" IsEnabled="False"/>
-                                    <MenuItem Header="Español" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miRegion_Click"/>
-                                    <MenuItem Header="PAL English" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miRegion_Click"/>
+                                    <MenuItem Header="Español" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miRegion_Click" IsEnabled="False"/>
+                                    <MenuItem Header="PAL English" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miRegion_Click" IsEnabled="False"/>
                                 </MenuItem>
                                 <MenuItem x:Name="miSaveSlot" Header="Save Slot" Background="#FFB6B6B6" Foreground="White">
-                                    <MenuItem Header="1" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
-                                    <MenuItem Header="2" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
-                                    <MenuItem Header="3" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
-                                    <MenuItem Header="4" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
-                                    <MenuItem Header="5" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
-                                    <MenuItem Header="6" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
-                                    <MenuItem Header="7" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
-                                    <MenuItem Header="8" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
-                                    <MenuItem Header="9" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
-                                    <MenuItem Header="10" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
-                                    <MenuItem Header="11" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
-                                    <MenuItem Header="12" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
-                                    <MenuItem Header="13" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
-                                    <MenuItem Header="14" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
-                                    <MenuItem Header="15" Background="#FFB6B6B6" Foreground="White" IsCheckable="True" Click="miSaveSlot_Click"/>
+                                    <MenuItem Header="1" Background="#FFB6B6B6" Foreground="White" IsCheckable="True"/>
+                                    <MenuItem Header="2" Background="#FFB6B6B6" Foreground="White" IsCheckable="True"/>
+                                    <MenuItem Header="3" Background="#FFB6B6B6" Foreground="White" IsCheckable="True"/>
+                                    <MenuItem Header="4" Background="#FFB6B6B6" Foreground="White" IsCheckable="True"/>
+                                    <MenuItem Header="5" Background="#FFB6B6B6" Foreground="White" IsCheckable="True"/>
+                                    <MenuItem Header="6" Background="#FFB6B6B6" Foreground="White" IsCheckable="True"/>
+                                    <MenuItem Header="7" Background="#FFB6B6B6" Foreground="White" IsCheckable="True"/>
+                                    <MenuItem Header="8" Background="#FFB6B6B6" Foreground="White" IsCheckable="True"/>
+                                    <MenuItem Header="9" Background="#FFB6B6B6" Foreground="White" IsCheckable="True"/>
+                                    <MenuItem Header="10" Background="#FFB6B6B6" Foreground="White" IsCheckable="True"/>
+                                    <MenuItem Header="11" Background="#FFB6B6B6" Foreground="White" IsCheckable="True"/>
+                                    <MenuItem Header="12" Background="#FFB6B6B6" Foreground="White" IsCheckable="True"/>
+                                    <MenuItem Header="13" Background="#FFB6B6B6" Foreground="White" IsCheckable="True"/>
+                                    <MenuItem Header="14" Background="#FFB6B6B6" Foreground="White" IsCheckable="True"/>
+                                    <MenuItem Header="15" Background="#FFB6B6B6" Foreground="White" IsCheckable="True"/>
                                 </MenuItem>
-                                <MenuItem x:Name="miOpenPreset" Header="Open Preset on Open" Background="#FFB6B6B6" Foreground="White" Click="miOpenPreset_Click"/>
+                                <MenuItem x:Name="miOpenPreset" Header="Open Preset on Open" Background="#FFB6B6B6" Foreground="White"/>
                                 <MenuItem x:Name="miModOptions" Header="Mod Options" Background="#FFB6B6B6" Foreground="White" Click="miModOptions_Click"/>
-                                <MenuItem x:Name="miPresetHotkeys" Header="Preset Hotkeys" Background="#FFB6B6B6" Foreground="White" Click="miPresetHotkeys_Click"/>
-                                <MenuItem x:Name="miEatbSound" Header="EATB Beeps" Background="#FFB6B6B6" Foreground="White" Click="miEatbSound_Click"/>
-                                <MenuItem x:Name="miManualOffset" Header="Manual Emulator Offset Entry" Background="#FFB6B6B6" Foreground="White" Click="miManualOffset_Click"/>
-                                <MenuItem x:Name="miDeleteSave" Header="Delete Current Save" Background="#FFB6B6B6" Foreground="White" Click="miDeleteSave_Click"/>
+                                <MenuItem x:Name="miPresetHotkeys" Header="Preset Hotkeys" Background="#FFB6B6B6" Foreground="White"/>
+                                <MenuItem x:Name="miEatbSound" Header="EATB Beeps" Background="#FFB6B6B6" Foreground="White"/>
+                                <MenuItem x:Name="miManualOffset" Header="Manual Emulator Offset Entry" Background="#FFB6B6B6" Foreground="White"/>
+                                <MenuItem x:Name="miDeleteSave" Header="Delete Current Save" Background="#FFB6B6B6" Foreground="White"/>
                             </MenuItem>
                             <MenuItem Header="About" Background="#FFB6B6B6" Foreground="White">
-                                <MenuItem x:Name="miAuthor" Background="#FFB6B6B6" Foreground="White" Header="Author" Click="miAuthor_Click"/>
+                                <MenuItem x:Name="miAuthor" Background="#FFB6B6B6" Foreground="White" Header="Author"/>
                                 <MenuItem Header="Credits" Background="#FFB6B6B6" Foreground="White">
-                                    <MenuItem x:Name="miCredits" Background="#FFB6B6B6" Foreground="White" Header="Credits" Click="miCredits_Click"/>
-                                    <MenuItem x:Name="miCredits1" Background="#FFB6B6B6" Foreground="White" Header="Zychronix" Click="miCredits1_Click"/>
-                                    <MenuItem x:Name="miCredits2" Background="#FFB6B6B6" Foreground="White" Header="Illeprih" Click="miCredits2_Click"/>
-                                    <MenuItem x:Name="miCredits3" Background="#FFB6B6B6" Foreground="White" Header="erfg12" Click="miCredits3_Click"/>
-                                    <MenuItem x:Name="miCredits4" Background="#FFB6B6B6" Foreground="White" Header="CS-Script" Click="miCredits4_Click"/>
+                                    <MenuItem x:Name="miCredits" Background="#FFB6B6B6" Foreground="White" Header="Credits"/>
+                                    <MenuItem x:Name="miCredits1" Background="#FFB6B6B6" Foreground="White" Header="Zychronix"/>
+                                    <MenuItem x:Name="miCredits2" Background="#FFB6B6B6" Foreground="White" Header="Illeprih"/>
+                                    <MenuItem x:Name="miCredits3" Background="#FFB6B6B6" Foreground="White" Header="erfg12"/>
+                                    <MenuItem x:Name="miCredits4" Background="#FFB6B6B6" Foreground="White" Header="CS-Script"/>
                                 </MenuItem>
-                                <MenuItem x:Name="miVersion" Background="#FFB6B6B6" Foreground="White" Header="Version" Click="miVersion_Click"/>
+                                <MenuItem x:Name="miVersion" Background="#FFB6B6B6" Foreground="White" Header="Version"/>
                             </MenuItem>
-                            <MenuItem x:Name="miLog" Header="Expand Log" Background="#FFB6B6B6" Foreground="White" Click="miLog_Click" />
+                            <MenuItem x:Name="miLog" Header="Expand Log" Background="#FFB6B6B6" Foreground="White" Click="miLog_Click"/>
                         </Menu>
                         <Grid>
                             <Grid.RowDefinitions>
@@ -1347,15 +1735,15 @@
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
-                            <Button x:Name="btnField" Click="btnField_Click" Grid.Column="0" Grid.Row="0" Content="Field" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
-                            <Button x:Name="btnBattle" Click="btnBattle_Click" Grid.Column="1" Grid.Row="0" Content="Battle" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
-                            <Button x:Name="btnHotkeys" Click="btnHotkeys_Click" Grid.Column="2" Grid.Row="0" Content="Hotkeys" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
-                            <Button x:Name="btnOther" Click="btnOther_Click" Grid.Column="3" Grid.Row="0" Content="Other" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/#Segoe WP Black"/>
-                            <ListView x:Name="lstField" Grid.Column="0" Grid.Row="1" FontFamily="Consolas" MouseDoubleClick="lstField_MouseDoubleClick" ScrollViewer.ScrollChanged="lstField_ScrollChanged"/>
-                            <ListView x:Name="lstBattle" Grid.Column="1" Grid.Row="1" FontFamily="Consolas" MouseDoubleClick="lstBattle_MouseDoubleClick" ScrollViewer.ScrollChanged="lstBattle_ScrollChanged"/>
-                            <ListView x:Name="lstHotkey" Grid.Column="2" Grid.Row="1" FontFamily="Consolas" MouseDoubleClick="lstHotkey_MouseDoubleClick" ScrollViewer.ScrollChanged="lstHotkey_ScrollChanged"/>
-                            <ListView x:Name="lstOther" Grid.Column="3" Grid.Row="1" FontFamily="Consolas" MouseDoubleClick="lstOther_MouseDoubleClick" ScrollViewer.ScrollChanged="lstOther_ScrollChanged"/>
-                            <TextBox x:Name="txtOutput" Grid.Row="2" Grid.ColumnSpan="4" Text="-----LOGCUT-----" FontFamily="Consolas" Background="#FFB6B6B6" Foreground="White" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible"/>
+                            <Button x:Name="btnField" Grid.Column="0" Grid.Row="0" Content="Field" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/Fonts/#Segoe WP Black"/>
+                            <Button x:Name="btnBattle" Grid.Column="1" Grid.Row="0" Content="Battle" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/Fonts/#Segoe WP Black"/>
+                            <Button x:Name="btnHotkeys" Grid.Column="2" Grid.Row="0" Content="Hotkeys" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/Fonts/#Segoe WP Black"/>
+                            <Button x:Name="btnOther" Grid.Column="3" Grid.Row="0" Content="Other" Background="#FF8ADAA4" Foreground="White" FontSize="20" FontFamily="/Fonts/#Segoe WP Black"/>
+                            <ListView x:Name="lstField" Grid.Column="0" Grid.Row="1" FontFamily="Consolas"/>
+                            <ListView x:Name="lstBattle" Grid.Column="1" Grid.Row="1" FontFamily="Consolas"/>
+                            <ListView x:Name="lstHotkey" Grid.Column="2" Grid.Row="1" FontFamily="Consolas"/>
+                            <ListView x:Name="lstOther" Grid.Column="3" Grid.Row="1" FontFamily="Consolas"/>
+                            <TextBox x:Name="txtOutput" Grid.Row="2" Grid.ColumnSpan="4" Text="-----LOGCUT-----&#x0a;" FontFamily="Consolas" Background="#FFB6B6B6" Foreground="White" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible"/>
                         </Grid>
                     </DockPanel>
                 </Grid>
@@ -1382,4 +1770,4 @@
             </StatusBarItem>
         </StatusBar>
     </Grid>
-</Controls:MetroWindow>
+</mah:MetroWindow>
