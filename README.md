@@ -1,9 +1,9 @@
-# Dragoon Modifier for Emulators is Discounted
+# Dragoon Modifier for Emulators is End of Life (EOL)
 Dragoon Modifier has moved over to the Severed Chains PC Port. Any bugs or issues with the current Emulator version will not be fixed.
-If you are using Dragoon Modifier for Emulators please try to keep to the final stable release of v3.5.5 as it has the less amount of bugs.
-https://legendofdragoon.org/guides/setup-severed-chains/
-https://github.com/Legend-of-Dragoon-Modding/Severed-Chains
-https://github.com/Legend-of-Dragoon-Modding/sc-dragoon-modifier
+If you are using Dragoon Modifier for Emulators please try to keep to the final stable release of v3.5.5 as it has the less amount of bugs.  
+https://legendofdragoon.org/guides/setup-severed-chains/  
+https://github.com/Legend-of-Dragoon-Modding/Severed-Chains  
+https://github.com/Legend-of-Dragoon-Modding/sc-dragoon-modifier  
 
 # Dragoon Modifier
 The open-source version of the Difficulty Modifier, a RAM mod tool for Legend of Dragoon running on PSX emulators. https://legendofdragoonhardmode.wordpress.com/  
